@@ -5,3 +5,23 @@
 # numpy==1.13.3
 # scipy==1.0
 
+Flask
+Flask-HTTPAuth
+Flask-RESTful
+flask-restful-swagger-2
+Flask-Cors
+boto3
+docutils
+numpy
+redis
+requests
+rq
+uWSGI
+fluent-logger
+python-magic
+Sphinx
+google-cloud
+ply
+pycurl
+passlib
+urlparse3

@@ -82,7 +82,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'actinia_core'
-copyright = u'2018, Soeren Gebbert'
+copyright = u'2018, Sören Gebbert'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -233,7 +233,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'user_guide.tex', u'actinia_core Documentation',
-   u'Soeren Gebbert', 'manual'),
+   u'Sören Gebbert', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

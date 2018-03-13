@@ -25,7 +25,11 @@ def setup_package():
     sphinx = ['sphinx'] if needs_sphinx else []
     setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0'] + sphinx,
           entry_points=entry_points,
-          use_pyscaffold=True)
+          use_pyscaffold=True,
+          scripts=['scripts/actinia-user',
+                   'scripts/actinia-bench',
+                   'scripts/rq_custom_worker',
+                   'scripts/rq_starter'])
 
 
 if __name__ == "__main__":

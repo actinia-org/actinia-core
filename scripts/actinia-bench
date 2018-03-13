@@ -1,0 +1,410 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+import argparse
+import requests
+import simplejson
+import time
+from multiprocessing import Process, Queue
+
+__license__ = "GPLv3"
+__author__     = "Sören Gebbert"
+__copyright__  = "Copyright 2016, Sören Gebbert"
+__maintainer__ = "Sören Gebbert"
+__email__      = "soerengebbert@googlemail.com"
+
+PROCESS_CHAIN_ERROR={
+   1:{
+        "module":"g.region",
+        "inputs":{
+            "flaster":"elevation@PERMANENT",
+            "res":"2.5"
+        },
+        "flags":"p",
+        "verbose":True
+   }
+}
+
+PROCESS_CHAIN_SHORT={
+   1:{
+        "module":"g.region",
+        "inputs":{
+            "raster":"elevation@PERMANENT",
+            "res":"2.5"
+        },
+        "flags":"p",
+        "verbose":True
+   },
+   2:{
+        "module":"r.slope.aspect",
+        "inputs":{
+            "elevation":"elevation@PERMANENT",
+            "format":"degrees",
+            "min_slope":"0.0"
+        },
+        "outputs":{
+            "aspect":{
+                "name":"my_aspect"
+            },
+            "slope":{
+                "name":"my_slope",
+                "export":{
+                    "format":"GTiff",
+                    "type":"raster"
+                }
+            }
+        },
+        "flags":"a",
+        "overwrite":True,
+        "verbose":True
+   }
+}
+
+
+PROCESS_CHAIN_LONG={
+   1:{
+        "module":"g.region",
+        "inputs":{
+            "raster":"elevation@PERMANENT",
+            #"res":"4"
+        },
+        "flags":"p",
+        "verbose":True
+   },
+   2:{
+        "module":"r.slope.aspect",
+        "inputs":{
+            "elevation":"elevation@PERMANENT",
+            "format":"degrees",
+            "min_slope":"0.0"
+        },
+        "outputs":{
+            "aspect":{
+                "name":"my_aspect",
+                "export":{
+                    "format":"GTiff",
+                    "type":"raster"
+                }
+            },
+            "slope":{
+                "name":"my_slope",
+                "export":{
+                    "format":"GTiff",
+                    "type":"raster"
+                }
+            }
+        },
+        "flags":"a",
+        "overwrite":True,
+        "verbose":True
+   },
+   3:{
+        "module":"r.watershed",
+        "inputs":{
+            "elevation":"elevation@PERMANENT"
+        },
+        "outputs":{
+            "accumulation":{
+                "name":"my_accumulation",
+                "export":{
+                    "format":"GTiff",
+                    "type":"raster"
+                }
+            }
+        }
+   },
+   4:{
+        "module":"r.info",
+        "inputs":{
+            "map":"my_aspect"
+        },
+        "flags":"gr",
+        "verbose":True
+   }
+}
+
+# NDVI computation based on sentinel data
+# i.vi viname=ndvi red=sentinel2_rhein_may2016_B04 nir=sentinel2_rhein_may2016_B08 output=sentinel2_rhein_may2016_B04_NDVI
+# Data here: http://data.neteler.org/tmp/grassdata_sentinel2_rhein_may2016_chan4_8.tgz
+SENTINEL_NDVI={
+   1:{
+        "module":"g.region",
+        "inputs":{
+            "raster":"sentinel2_rhein_may2016_B04@sentinel2_bonn"
+        },
+        "flags":"p",
+        "verbose":False
+   },
+   2:{
+        "module":"i.vi",
+        "inputs":{
+            "viname":"ndvi",
+            "red":"sentinel2_rhein_may2016_B04@sentinel2_bonn",
+            "nir":"sentinel2_rhein_may2016_B08@sentinel2_bonn",
+        },
+        "outputs":{
+            "output":{
+                "name":"sentinel2_rhein_may2016_B04_NDVI",
+                "export":{
+                    "format":"GTiff",
+                    "type":"raster"
+                }
+            }
+        },
+        "overwrite":True,
+        "verbose":False
+   }
+}
+
+# Sentinel benchmark without and with export
+# Benchmark results google cloud:
+# 12 x 4 vCPU, 100GB SSD
+# Runs:         1.    2.    3.
+#  1 Request:  125s, 122s, 124s
+#  4 Requests: 127s, 120s, 121s
+#  8 Requests: 122s, 121s, 121s
+# 12 Requests: 120s, 120s, 120s
+# 16 Requests: 127s, 125s, 128s
+# 24 Requests: 142s, 141s, 141s
+# 32 Requests: 172s, 173s, 173s
+# 48 Requests: 259s, 260s, 260s
+
+
+# Benchmark results leaseweb cloud without export:
+# 28 Queues, 16 Cores (32Threads), SSD local drives, NFS Storage with HDD's
+# Runs:         1.    2.    3.
+#  1 Request:  156s  156s  156s
+#  4 Requests: 161s  159s  160s
+#  8 Requests: 158s  160s  164s
+# 12 Requests: 174s  186s  175s
+# 16 Requests: 211s  208s  200s
+# 24 Requests: 250s  250s  252s
+# 28 Requests: 275s  283s  282s
+# 32 Requests: 300s  301s  297s
+# 48 Requests: 381s  384s  385s
+
+
+# Benchmark results leaseweb cloud with export:
+# 28 Queues, 16 Cores (32Threads), SSD local drives, NFS Storage with HDD's
+# Runs:         1.    2.    3.
+#  1 Request:  190s  189s  194s
+#  4 Requests: 212s  211s  215s
+#  8 Requests: 251s  259s  245s
+# 12 Requests: 281s  282s  309s  284s
+# 16 Requests: 329s  320s  333s
+# 24 Requests: 425s  476s  478s  435s
+# 28 Requests: 606s  613s        -- Master max load 14 Node 14 Storage 8
+# 32 Requests: 590s  575s  644s  -- Master max load 16 Node 11 Storage 8
+# 48 Requests:
+
+
+# Cloud Sigma benchmark results (sentinel without and with export)
+# 2 Processing units with 4 Cores, 14GB RAM and 43GB SSD
+# Ohne export
+# Runs:         1.
+#  1 Request:  270s
+#  2 Requests: 270s
+#  4 Requests: 300s
+# Mit export
+# Runs:         1.
+#  1 Request:  450s
+#  2 Request:  494s
+#  4 Requests: 610s
+
+
+def main():
+
+    parser = argparse.ArgumentParser(description='Run a simple benchmark on a GRaaS Service '\
+                                                 'based on the north carolina dataset. '\
+                                                 'Example: actinia-bench -s http://127.0.0.1:80 -u soeren -p 12345678 -r 8 -t long',
+                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+
+    parser.add_argument("-s", "--server",
+                        type=str,
+                        default="http://127.0.0.1:5000",
+                        required=False,
+                        help="The hostname:port of the GRaaS server")
+
+    parser.add_argument("-u", "--user_id",
+                        default="soeren",
+                        type=str,
+                        required=False,
+                        help="The user name")
+
+    parser.add_argument("-p", "--password",
+                        default="12345678",
+                        type=str,
+                        required=False,
+                        help="The user password")
+
+    parser.add_argument("-r", "--requests",
+                        default=1,
+                        type=int,
+                        required=False,
+                        help="The number of parallel requests to perform")
+
+    parser.add_argument("-l", "--loop",
+                        default=1,
+                        type=int,
+                        required=False,
+                        help="The number of loops to perform parallel requests")
+
+    parser.add_argument("-t", "--type",
+                        type=str,
+                        default="short",
+                        choices=["long", "long_export", "short", "short_export",
+                                 "ndvi_sent", "ndvi_sent_export", "error"],
+                        required=False,
+                        help="The type of process chain")
+
+    args = parser.parse_args()
+
+    auth=(args.user_id, args.password)
+
+    if args.requests > 96:
+        raise Exception("Too many parallel requests")
+
+    q = Queue()
+
+    result_times = []
+
+    for k in range(args.loop):
+        process_list = []
+        for i in range(args.requests):
+
+            param=[args.server, auth, q, i, args.type]
+
+            try:
+                p = Process(target=start_query_processing_async_export,
+                            args=param)
+
+                p.start()
+                process_list.append(p)
+            except Exception as e:
+                p.join()
+                raise e
+
+        count = 0
+        errors = []
+        for p in process_list:
+            t = q.get()
+            if t < 0:
+                print("Error in process ", i)
+                errors.append(t)
+            else:
+                result_times.append(t)
+            p.join()
+            count += 1
+
+        print("Measured times", result_times)
+        if result_times:
+            mean_time = sum(result_times)/len(result_times)
+        else:
+            mean_time = 0
+
+        if errors:
+            print("Errors in %i requests errors: %s"%(len(errors), str(errors)))
+
+        print("Loop %i Resulting mean time in seconds for %i requests: %.2f"%(k, count - len(errors), mean_time))
+
+
+def start_query_processing_async_export(base_url, auth, q, id, type):
+    """Start an asynchronous GRaaS process and poll until its finished
+
+    This function is the argument for multiprocessing.Process
+
+    Args:
+        base_url (str): The base URL of the GRaaS Server
+        auth (tuple): Username and password as tuple
+        q (multiprocessing.Queue): The queue to store the processing time in
+        id (int): The id of the request
+        type (string): The type of processing
+
+    """
+
+    start = time.time()
+
+    if type == "long_export":
+        url = base_url + "/locations/nc_spm_08/processing_async_export"
+        pc = PROCESS_CHAIN_LONG
+    elif type == "long":
+        url = base_url + "/locations/nc_spm_08/processing_async"
+        pc = PROCESS_CHAIN_LONG
+    elif type == "short_export":
+        url = base_url + "/locations/nc_spm_08/processing_async_export"
+        pc = PROCESS_CHAIN_SHORT
+    elif type == "short":
+        url = base_url + "/locations/nc_spm_08/processing_async"
+        pc = PROCESS_CHAIN_SHORT
+    elif type == "ndvi_sent":
+        url = base_url + "/locations/utm32N/processing_async"
+        pc = SENTINEL_NDVI
+    elif type == "ndvi_sent_export":
+        url = base_url + "/locations/utm32N/processing_async_export"
+        pc = SENTINEL_NDVI
+    elif type == "error":
+        url = base_url + "/locations/utm32N/processing_async"
+        pc = PROCESS_CHAIN_ERROR
+
+    try:
+        # Process chain request
+        r = requests.post(url, data=simplejson.dumps(pc), auth=auth)
+    except:
+        q.close()
+        raise
+
+    if r.status_code == 200:
+        if not r.text:
+            q.put(-1 * r.status_code)
+            q.close()
+            raise Exception("No JSON content in response")
+
+        data = simplejson.loads(r.text)
+
+        poll(data["urls"]["status"], auth, start, q, id)
+    else:
+        q.put(-1 * r.status_code)
+        q.close()
+        string = "Error for Process %i %i HTTP Status %s"%(id, r.status_code, r)
+        raise Exception(string)
+
+
+def poll(url, auth, start, q, id):
+    """Function to poll the status of the asynchronous request
+
+    Args:
+        url (str): The url to poll the status from
+        auth (tuple): Username and password as tuple
+        q (multiprocessing.Queue): The queue to store the processing time in
+        id (int): The id of the request
+        start (float): The start time
+
+    """
+    while True:
+        r = requests.get(url, auth=auth)
+        # print "Process", id, r.status_code, "HTTP Status", r, "\n", r.text
+
+        try:
+            data = simplejson.loads(r.text)
+
+            end = time.time()
+            print("Process", id, r.status_code, "HTTP Status", data["status"],
+                  "Time needed:" , "%.2f"%(end - start), "seconds")
+
+            if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
+                break
+            time.sleep(3)
+        except Exception as a:
+            raise
+
+    # print data["urls"]["status"]
+    # print data["urls"]["resources"]
+
+    if r.status_code != 200:
+        q.put(-1 * r.status_code)
+    else:
+        end = time.time()
+        q.put(end - start)
+
+
+if __name__ == '__main__':
+    main()

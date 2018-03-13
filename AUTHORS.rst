@@ -2,4 +2,4 @@
 Contributors
 ============
 
-* Soeren Gebbert <soerengebbert@googlemai.com>
+* Sören Gebbert <soerengebbert@googlemai.com>

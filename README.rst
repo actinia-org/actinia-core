@@ -1,19 +1,16 @@
 ============
-actinia_core
+Actinia Core
 ============
 
-
-Add a short description here!
+Actinia Core is an open source REST API for scalable, distributed, high performance
+processing of geographical data that uses GRASS GIS for computational tasks.
 
 
 Description
 ===========
 
-A longer description of your project goes here...
+Actinia Core is an open source REST API for scalable, distributed, high performance
+processing of geographical data that uses GRASS GIS for computational tasks.
 
-
-Note
-====
-
-This project has been set up using PyScaffold 3.0.1. For details and usage
-information on PyScaffold see http://pyscaffold.org/.
+It provides a REST API to process satellite images, time series of satellite images,
+arbitrary raster data with geographical relations and vector data.
