@@ -18,13 +18,12 @@ arbitrary raster data with geographical relations and vector data.
 Installation
 ============
 
-A local installation requires a GRASS GSI installation. Make sure all
-requirements are fulfilled to compile GRASS GSI from the svn repository.
+A local installation requires a full GRASS GIS installation. Make sure all
+requirements are fulfilled to compile GRASS GIS from the svn repository.
 
-First install GRASS GIS by downloading the latest svn version and compile it.
+First install Proj4 and GRASS GIS by downloading the latest svn version and compile it.
 
 1. Install the latest projection library.
-
 
     .. code-block:: bash
 
