@@ -45,7 +45,7 @@ First install GRASS GIS by downloading the latest svn version and compile it.
         sudo make install
     ..
 
-Install GRASS GIS and additonal modules:
+2. Install GRASS GIS and additonal modules:
 
     .. code-block:: bash
 
@@ -115,7 +115,7 @@ Install GRASS GIS and additonal modules:
 
     ..
 
-Actinia Core will be run within a virtual python3 environment.
+3. Actinia Core will be run within a virtual python3 environment.
 
     .. code-block:: bash
 
