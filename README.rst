@@ -115,9 +115,7 @@ First install GRASS GIS by downloading the latest svn version and compile it.
 
     ..
 
-3. Download the test locations and place them into a specific directory that will be used by actinia
-as persistent database:
-
+3. Download the test locations and place them into a specific directory that will be used by actinia as persistent database:
 
     .. code-block:: bash
 
