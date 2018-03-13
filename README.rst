@@ -45,7 +45,7 @@ First install GRASS GIS by downloading the latest svn version and compile it.
         sudo make install
     ..
 
-2. Install GRASS GIS and additonal modules:
+2. Install GRASS GIS and additional modules:
 
     .. code-block:: bash
 
@@ -115,7 +115,30 @@ First install GRASS GIS by downloading the latest svn version and compile it.
 
     ..
 
-3. Actinia Core will be run within a virtual python3 environment.
+3. Download the test locations and place them into a specific directory that will be used by actinia
+as persistent database:
+
+
+    .. code-block:: bash
+
+        mkdir -p $HOME/actinia/grassdb
+        cd $HOME/actinia/grassdb
+        wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz
+        tar xzvf nc_spm_08_grass7.tar.gz
+        rm -f nc_spm_08_grass7.tar.gz
+        mv nc_spm_08_grass7 nc_spm_08
+
+        wget https://storage.googleapis.com/datentransfer/ECAD.tar.gz
+        tar xzvf ECAD.tar.gz
+        rm -f ECAD.tar.gz
+
+        wget https://storage.googleapis.com/datentransfer/LL.tar.gz
+        tar xzvf LL.tar.gz
+        rm -f LL.tar.gz
+    ..
+
+
+4. Actinia Core will run within a virtual python3 environment.
 
     .. code-block:: bash
 
