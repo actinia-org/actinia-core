@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 import copy
-from test_resource_base import ActiniaResourceTestCaseBase
+from .test_resource_base import ActiniaResourceTestCaseBase
 from flask.json import loads as json_loads, dumps as json_dumps
 import time
 

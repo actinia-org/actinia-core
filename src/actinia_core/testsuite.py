@@ -4,22 +4,21 @@ import os
 import requests
 import time
 import unittest
-from simplejson import loads as json_loads
+from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
+from actinia_core import main as main
+from actinia_core.resources.common import redis_interface
+from actinia_core.resources.common.config import global_config
+from actinia_core.resources.common.user import ActiniaUser
 
-from graas_api import main as main
-from graas_api.resources.common import redis_interface
-from graas_api.resources.common.config import global_config
-from graas_api.resources.common.user import GRaaSUser
-
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class ActiniaRequests(object):
-    """Requests to a GRaaS server are performed with this class
+    """Requests to a actinia server are performed with this class
 
     The requests.Response object will be extended to imitate a flask Response object
     by adding data and mimetype.
@@ -149,7 +148,12 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                     global_config.REDIS_SERVER_PORT)
 
         # We create 4 user for all roles: guest, user, admin, root
-
+        accessible_datasets = {"nc_spm_08": ["PERMANENT",
+                                             "user1",
+                                             "landsat",
+                                             "test_mapset"],
+                               "ECAD": ["PERMANENT"],
+                               "LL": ["PERMANENT"]}
         # Password is the same for all
         cls.password = "12345678"
 
@@ -157,118 +161,100 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         cls.guest_id = "guest"
         cls.user_group = "test_group"
+        cls.auth = bytes('%s:%s'.format(cls.guest_id, cls.password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.guest_auth_header = Headers()
+
         cls.guest_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode('%s:%s'%(cls.guest_id,
-                                                                       cls.password)))
+                                  'Basic ' + base64.b64encode(cls.auth).decode())
 
         # Make sure the user database is empty
-        user = GRaaSUser(cls.guest_id)
+        user = ActiniaUser(cls.guest_id)
         if user.exists():
             user.delete()
         # Create a user in the database and reduce its credentials
-        cls.guest = GRaaSUser.create_user(cls.guest_id,
-                                          cls.user_group,
-                                          cls.password,
-                                          user_role="user",
-                                          accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                                            "user1",
-                                                                            "landsat",
-                                                                            "test_mapset"],
-                                                               "ECAD":["PERMANENT"],
-                                                               "LL":["PERMANENT"]},
-                                          process_num_limit=3,
-                                          process_time_limit=2)
+        cls.guest = ActiniaUser.create_user(cls.guest_id,
+                                            cls.user_group,
+                                            cls.password,
+                                            user_role="user",
+                                            accessible_datasets=accessible_datasets,
+                                            process_num_limit=3,
+                                            process_time_limit=2)
         cls.guest.add_accessible_modules(["uname", "sleep"])
         cls.guest.update()
 
         ################### NORMAL USER ###################
 
         cls.user_id = "user"
+        cls.auth = bytes('%s:%s' % (cls.user_id, cls.password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.user_auth_header = Headers()
         cls.user_auth_header.add('Authorization',
-                             'Basic ' + base64.b64encode('%s:%s'%(cls.user_id,
-                                                                  cls.password)))
+                                  'Basic ' + base64.b64encode(cls.auth).decode())
 
         # Make sure the user database is empty
-        user = GRaaSUser(cls.user_id)
+        user = ActiniaUser(cls.user_id)
         if user.exists():
             user.delete()
         # Create a user in the database and reduce its credentials
-        cls.user = GRaaSUser.create_user(cls.user_id,
-                                         cls.user_group,
-                                         cls.password,
-                                         user_role="user",
-                                         accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                                           "user1",
-                                                                           "landsat",
-                                                                           "test_mapset"],
-                                                              "ECAD":["PERMANENT"],
-                                                               "LL":["PERMANENT"]},
-                                         process_num_limit=3,
-                                         process_time_limit=2)
+        cls.user = ActiniaUser.create_user(cls.user_id,
+                                           cls.user_group,
+                                           cls.password,
+                                           user_role="user",
+                                           accessible_datasets=accessible_datasets,
+                                           process_num_limit=3,
+                                           process_time_limit=2)
         cls.user.add_accessible_modules(["uname", "sleep"])
         cls.user.update()
 
         ################### ADMIN USER ###################
 
         cls.admin_id = "admin"
+        cls.auth = bytes('%s:%s' % (cls.admin_id, cls.password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.admin_auth_header = Headers()
         cls.admin_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode('%s:%s'%(cls.admin_id,
-                                                                       cls.password)))
+                                  'Basic ' + base64.b64encode(cls.auth).decode())
 
         # Make sure the user database is empty
-        user = GRaaSUser(cls.admin_id)
+        user = ActiniaUser(cls.admin_id)
         if user.exists():
             user.delete()
         # Create a user in the database
-        cls.admin = GRaaSUser.create_user(cls.admin_id,
-                                          cls.user_group,
-                                          cls.password,
-                                          user_role="admin",
-                                          accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                                           "user1",
-                                                                           "landsat",
-                                                                           "test_mapset"],
-                                                               "ECAD":["PERMANENT"],
-                                                               "LL":["PERMANENT"]},
-                                          process_num_limit=1000,
-                                          process_time_limit=6000)
+        cls.admin = ActiniaUser.create_user(cls.admin_id,
+                                            cls.user_group,
+                                            cls.password,
+                                            user_role="admin",
+                                            accessible_datasets=accessible_datasets,
+                                            process_num_limit=1000,
+                                            process_time_limit=6000)
 
         ################### ROOT USER ###################
 
         cls.root_id = "superadmin"
+        cls.auth = bytes('%s:%s' % (cls.root_id, cls.password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.root_auth_header = Headers()
         cls.root_auth_header.add('Authorization',
-                                 'Basic ' + base64.b64encode('%s:%s'%(cls.root_id,
-                                                                      cls.password)))
+                                  'Basic ' + base64.b64encode(cls.auth).decode())
 
         # Make sure the user database is empty
-        user = GRaaSUser(cls.root_id)
+        user = ActiniaUser(cls.root_id)
         if user.exists():
             user.delete()
         # Create a user in the database
-        cls.root = GRaaSUser.create_user(cls.root_id,
-                                         cls.user_group,
-                                         cls.password,
-                                         user_role="superadmin",
-                                         accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                                           "user1",
-                                                                           "landsat",
-                                                                           "test_mapset"],
-                                                              "ECAD":["PERMANENT"],
-                                                               "LL":["PERMANENT"]},
-                                         process_num_limit=1000,
-                                         process_time_limit=6000)
+        cls.root = ActiniaUser.create_user(cls.root_id,
+                                           cls.user_group,
+                                           cls.password,
+                                           user_role="superadmin",
+                                           accessible_datasets=accessible_datasets,
+                                           process_num_limit=1000,
+                                           process_time_limit=6000)
+
     @classmethod
     def tearDownClass(cls):
         if cls.guest:
@@ -284,6 +270,9 @@ class ActiniaTestCaseBase(unittest.TestCase):
             redis_interface.disconnect()
 
     def setUp(self):
+        # We need to set the application context
+        self.app_context = main.flask_app.app_context()
+        self.app_context.push()
 
         # Check if the local or server site tests should be performed
         if self.server_test is False:
@@ -293,6 +282,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
         else:
             self.server = ActiniaRequests()
 
+    def tearDown(self):
+        self.app_context.pop()
 
     def waitAsyncStatusAssertHTTP(self, response, headers, http_status=200, status="finished",
                                   message_check=None):
@@ -314,8 +305,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
         """
         # Check if the resource was accepted
         print(response.data)
-        self.assertEqual(response.status_code, 200, "HTML status code is wrong %i"%response.status_code)
-        self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s"%response.mimetype)
+        self.assertEqual(response.status_code, 200, "HTML status code is wrong %i" % response.status_code)
+        self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s" % response.mimetype)
 
         resp_data = json_loads(response.data)
 
@@ -327,12 +318,13 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                  headers=headers)
             print(rv.data)
             resp_data = json_loads(rv.data)
-            if resp_data["status"] == "finished" or resp_data["status"] == "error" or resp_data["status"] == "terminated":
+            if resp_data["status"] == "finished" or resp_data["status"] == "error" or resp_data[
+                "status"] == "terminated":
                 break
             time.sleep(0.2)
 
         self.assertEquals(resp_data["status"], status)
-        self.assertEqual(rv.status_code, http_status, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, http_status, "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:
             self.assertTrue(message_check in resp_data["message"])

@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-from test_common_base import CommonTestCaseBase
+try:
+    from .test_common_base import CommonTestCaseBase
+except:
+    from test_common_base import CommonTestCaseBase
 from actinia_core.resources.common.api_logger import ApiLogger
 import unittest
 

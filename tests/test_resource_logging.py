@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from test_common_base import CommonTestCaseBase
+from .test_common_base import CommonTestCaseBase
+from .test_common_base import global_config
 from actinia_core.resources.common.resources_logger import ResourceLogger
-from test_common_base import global_config
 import unittest
 import pickle
 import uuid

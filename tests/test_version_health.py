@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from test_resource_base import ActiniaResourceTestCaseBase
+from .test_resource_base import ActiniaResourceTestCaseBase
 import unittest
 
 __license__ = "GPLv3"

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from test_resource_base import ActiniaResourceTestCaseBase
+from .test_resource_base import ActiniaResourceTestCaseBase
 from actinia_core.resources.common.user import ActiniaUser
 from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers

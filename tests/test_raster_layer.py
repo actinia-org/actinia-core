@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from test_resource_base import ActiniaResourceTestCaseBase
+from .test_resource_base import ActiniaResourceTestCaseBase
 from flask.json import loads as json_load, dumps as json_dumps
 import unittest
 

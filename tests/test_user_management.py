@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from actinia_core.resources.common.user import ActiniaUser
-from test_common_base import CommonTestCaseBase
+from .test_common_base import CommonTestCaseBase
 import unittest
 
 __license__ = "GPLv3"

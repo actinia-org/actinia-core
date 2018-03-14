@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-from test_resource_base import ActiniaResourceTestCaseBase
+from .test_resource_base import ActiniaResourceTestCaseBase
 from flask.json import dumps as json_dumps
 
 __license__ = "GPLv3"

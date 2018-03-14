@@ -24,7 +24,7 @@ if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG
     global_config.read(DEFAULT_CONFIG_PATH)
 
 # Create the endpoints based on the global config
-endpoints.create_endpoints(global_config)
+endpoints.create_endpoints()
 
 @flask_app.errorhandler(InvalidUsage)
 def handle_invalid_usage(error):

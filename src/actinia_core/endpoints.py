@@ -4,7 +4,7 @@
 Actinia core Endpoint definitions
 """
 
-from resources.common.app import flask_api
+from actinia_core.resources.common.app import flask_api
 from actinia_core.resources.location_management import ListLocationsResource, LocationManagementResourceUser
 from actinia_core.resources.location_management import LocationManagementResourceAdmin
 from actinia_core.resources.mapset_management import ListMapsetsResource, MapsetManagementResourceUser
@@ -13,7 +13,6 @@ from actinia_core.resources.strds_management import STRDSManagementResource, Lis
 from actinia_core.resources.strds_raster_management import STRDSRasterManagement
 from actinia_core.resources.raster_layer import RasterLayerResource
 from actinia_core.resources.map_layer_management import RasterLayersResource
-from actinia_core.resources.grass_modules import GrassModules
 from actinia_core.resources.map_layer_management import VectorLayersResource
 from actinia_core.resources.vector_layer import VectorLayerResource
 from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralResource
@@ -61,8 +60,6 @@ def create_core_endpoints():
                                   '<string:strds_name>')
     flask_api.add_resource(STRDSRasterManagement, '/locations/<string:location_name>/mapsets/'
                                              '<string:mapset_name>/strds/<string:strds_name>/raster_layers')
-    # Modules
-    flask_api.add_resource(GrassModules, '/modules')
     # Vector management
     flask_api.add_resource(VectorLayersResource, '/locations/<string:location_name>/mapsets/'
                                                  '<string:mapset_name>/vector_layers')
