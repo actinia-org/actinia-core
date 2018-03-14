@@ -84,10 +84,10 @@ def main():
             logger.addHandler(fh)
 
         # Add the log message handler to the logger
-        log_file = '%s_%s.log'%(conf.WORKER_LOGFILE, args.queue)
-        lh = logging.handlers.RotatingFileHandler(log_file,
-                                                 maxBytes=2000000,
-                                                 backupCount=5)
+        log_file_name = '%s_%s.log'%(conf.WORKER_LOGFILE, args.queue)
+        lh = logging.handlers.RotatingFileHandler(log_file_name,
+                                                  maxBytes=2000000,
+                                                  backupCount=5)
         logger.addHandler(lh)
 
         w = Worker([args.queue,])

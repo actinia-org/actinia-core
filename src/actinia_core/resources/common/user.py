@@ -10,7 +10,7 @@ from itsdangerous import (TimedJSONWebSignatureSerializer, BadSignature, Signatu
 from itsdangerous import JSONWebSignatureSerializer
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.redis_user import redis_user_interface
-os.chmod
+
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
@@ -566,7 +566,7 @@ class ActiniaUser(object):
             password (str):
 
         """
-        self.password_hash = pwd_context.encrypt(password)
+        self.password_hash = pwd_context.hash(password)
 
     def list_all_users(self):
         """List all users in the database
@@ -653,17 +653,18 @@ class ActiniaUser(object):
             process_time_limit (int): The maximum number of seconds a user process is allowed to run
 
         Returns:
-            Actinia Core_api.resources.common.user.ActiniaUser:
+            actinia_core_api.resources.common.user.ActiniaUser:
             A new user object in case of success, or None in case of failure
 
         """
-        user = ActiniaUser(user_id=user_id, user_group=user_group,
-                         user_role=user_role,
-                         accessible_datasets=accessible_datasets,
-                         accessible_modules=accessible_modules,
-                         cell_limit=cell_limit,
-                         process_num_limit=process_num_limit,
-                         process_time_limit=process_time_limit)
+        user = ActiniaUser(user_id=user_id,
+                           user_group=user_group,
+                           user_role=user_role,
+                           accessible_datasets=accessible_datasets,
+                           accessible_modules=accessible_modules,
+                           cell_limit=cell_limit,
+                           process_num_limit=process_num_limit,
+                           process_time_limit=process_time_limit)
         user.hash_password(password)
 
         if user.commit() is True:

@@ -102,7 +102,7 @@ class RedisResourceInterface(RedisBaseInterface):
             expiration (int): The time in seconds when this resource should expire
 
         """
-        return self.redis_server.setex(self.resource_id_prefix + str(resource_id),
+        return self.redis_server.setex(self.resource_id_prefix + resource_id,
                                        expiration, resource_entry)
 
     def set_termination(self, resource_id, expiration=3600):
@@ -116,7 +116,7 @@ class RedisResourceInterface(RedisBaseInterface):
             expiration (int): The time in seconds when this resource should expire
 
         """
-        return self.redis_server.setex(self.resource_id_termination_prefix + str(resource_id),
+        return self.redis_server.setex(self.resource_id_termination_prefix + resource_id,
                                        expiration, True)
 
     def get(self, resource_id):
@@ -129,7 +129,11 @@ class RedisResourceInterface(RedisBaseInterface):
             str:
             The resource entry or None
         """
-        return self.redis_server.get(self.resource_id_prefix + str(resource_id))
+        value = self.redis_server.get(self.resource_id_prefix + resource_id)
+
+        if value:
+            value = value.decode()
+        return value
 
     def get_list(self, regexpr):
         """Get a list of resource entries if exists
@@ -141,12 +145,14 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             A list of resource entries
         """
-        key_list = self.redis_server.keys(self.resource_id_prefix + str(regexpr))
+        key_list = self.redis_server.keys(self.resource_id_prefix + regexpr)
         resource_list = []
         if key_list:
             for key in key_list:
-                resource_list.append(self.redis_server.get(key))
-
+                value = self.redis_server.get(key.decode())
+                if value:
+                    value = value.decode()
+                resource_list.append(value)
         return resource_list
 
     def get_termination(self, resource_id):
@@ -162,7 +168,7 @@ class RedisResourceInterface(RedisBaseInterface):
             bool:
             True or False
         """
-        return bool(self.redis_server.get(self.resource_id_termination_prefix + str(resource_id)))
+        return bool(self.redis_server.get(self.resource_id_termination_prefix + resource_id))
 
     def get_termination_list(self, regexpr):
         """Get a list of termination resource entries if exists
@@ -174,12 +180,12 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             A list of resource entries
         """
-        term_key_list = self.redis_server.keys(self.resource_id_termination_prefix + str(regexpr))
+        term_key_list = self.redis_server.keys(self.resource_id_termination_prefix + regexpr)
 
         resource_list = []
         if term_key_list:
             for key in term_key_list:
-                resource_list.append(key)
+                resource_list.append(key.decode())
 
         return resource_list
 
@@ -190,7 +196,7 @@ class RedisResourceInterface(RedisBaseInterface):
             resource_id (str): The unique id of the resource
 
         """
-        return self.redis_server.delete(self.resource_id_prefix + str(resource_id))
+        return self.redis_server.delete(self.resource_id_prefix + resource_id)
 
     def delete_termination(self, resource_id):
         """Delete a termination resource entry
@@ -199,7 +205,7 @@ class RedisResourceInterface(RedisBaseInterface):
             resource_id (str): The unique id of the resource
 
         """
-        return self.redis_server.delete(self.resource_id_termination_prefix + str(resource_id))
+        return self.redis_server.delete(self.resource_id_termination_prefix + resource_id)
 
 
 # Create the Redis interface instance
@@ -266,6 +272,7 @@ def test_resource_entries(r):
         raise Exception("set does not work")
 
     rlist = r.get_list(resource_id + "*")
+    print("line 275", rlist)
     for resource in rlist:
         if "JSON file" not in resource:
             raise Exception("keys does not work")

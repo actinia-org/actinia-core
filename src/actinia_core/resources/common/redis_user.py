@@ -4,7 +4,7 @@ Redis server user interface
 """
 
 from actinia_core.resources.common.redis_base import RedisBaseInterface
-import cPickle
+import pickle
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -46,7 +46,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The password hash of the user id
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "password_hash")
+        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "password_hash").decode()
 
     def get_role(self, user_id):
         """Return the role of the user
@@ -60,7 +60,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The api key of the user id
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_role")
+        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_role").decode()
 
     def get_group(self, user_id):
         """Return the group of the user
@@ -74,7 +74,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The user group
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_group")
+        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_group").decode()
 
     def get_credentials(self, user_id):
         """Return a dictionary that contains the user credentials
@@ -88,13 +88,16 @@ class RedisUserInterface(RedisBaseInterface):
             dict:
             A dictionary that contains the user credentials
         """
-
+        creds = {}
         user_creds = self.redis_server.hgetall(self.user_id_hash_prefix + user_id)
 
         if user_creds:
-            user_creds["permissions"] = cPickle.loads(user_creds["permissions"])
-
-        return user_creds
+            creds["user_id"] = user_creds[b"user_id"].decode()
+            creds["password_hash"] = user_creds[b"password_hash"].decode()
+            creds["user_role"] = user_creds[b"user_role"].decode()
+            creds["user_group"] = user_creds[b"user_group"].decode()
+            creds["permissions"] = pickle.loads(user_creds[b"permissions"])
+        return creds
 
     def add(self, user_id, user_group, password_hash, user_role, permissions):
         """
@@ -116,16 +119,17 @@ class RedisUserInterface(RedisBaseInterface):
         """
         if self.redis_server.exists(self.user_id_hash_prefix + user_id) is True:
             return False
-
-        pstring = cPickle.dumps(permissions)
+        pstring = pickle.dumps(permissions)
 
         lock = self.redis_server.lock(name="add_user_lock", timeout=1)
         lock.acquire()
         # First add the user-id to the user id database
         self.redis_server.hset(self.user_id_db, user_id, user_id)
 
-        mapping = {"user_id":user_id, "password_hash":password_hash,
-                   "user_role":user_role, "user_group":user_group,
+        mapping = {"user_id":user_id,
+                   "password_hash":password_hash,
+                   "user_role":user_role,
+                   "user_group":user_group,
                    "permissions":pstring}
         # Make the database entry
         self.redis_server.hmset(self.user_id_hash_prefix + user_id, mapping=mapping)
@@ -171,7 +175,7 @@ class RedisUserInterface(RedisBaseInterface):
         if permissions is None:
             permissions = user_creds["permissions"]
 
-        pstring = cPickle.dumps(permissions)
+        pstring = pickle.dumps(permissions)
 
         lock = self.redis_server.lock(name="update_user_lock", timeout=1)
         lock.acquire()
@@ -234,7 +238,15 @@ class RedisUserInterface(RedisBaseInterface):
             list:
             A list of all user ids in the database
         """
-        return self.redis_server.hkeys(self.user_id_db)
+        values = []
+        l = self.redis_server.hkeys(self.user_id_db)
+        print(l)
+        for entry in l:
+            if entry:
+                entry = entry.decode()
+            values.append(entry)
+
+        return values
 
 # Create the Redis interface instance
 redis_user_interface = RedisUserInterface()

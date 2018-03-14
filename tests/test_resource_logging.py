@@ -3,7 +3,7 @@ from test_common_base import CommonTestCaseBase
 from actinia_core.resources.common.resources_logger import ResourceLogger
 from test_common_base import global_config
 import unittest
-import cPickle
+import pickle
 import uuid
 
 __license__ = "GPLv3"
@@ -22,7 +22,7 @@ class ResourceLoggingTestCase(CommonTestCaseBase):
         # The test user
         self.user_id = "soeren"
         self.resource_id = uuid.uuid1()
-        self.document = cPickle.dumps({"Status":"running", "URL":"/bla/bla"})
+        self.document = pickle.dumps({"Status":"running", "URL":"/bla/bla"})
         self.log = ResourceLogger(global_config.REDIS_SERVER_URL,
                                   global_config.REDIS_SERVER_PORT)
 

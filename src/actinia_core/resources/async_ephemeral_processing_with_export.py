@@ -3,7 +3,7 @@
 Asynchronous computation in specific temporary generated mapsets
 with export of required map layers.
 """
-import cPickle
+import pickle
 import os
 from flask import jsonify, make_response
 
@@ -101,7 +101,7 @@ class AsyncEphemeralExportResource(AsyncEphemeralResourceBase):
         # RedisQueue approach
         enqueue_job(self.job_timeout, start_job, rdc)
 
-        html_code, response_model = cPickle.loads(self.response_data)
+        html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 
@@ -123,7 +123,7 @@ class AsyncEphemeralExportS3Resource(AsyncEphemeralResourceBase):
 
         enqueue_job(self.job_timeout, start_job, rdc)
 
-        html_code, response_model = cPickle.loads(self.response_data)
+        html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 
@@ -145,7 +145,7 @@ class AsyncEphemeralExportGCSResource(AsyncEphemeralResourceBase):
 
         enqueue_job(self.job_timeout, start_job, rdc)
 
-        html_code, response_model = cPickle.loads(self.response_data)
+        html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 

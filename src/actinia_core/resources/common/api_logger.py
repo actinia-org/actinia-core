@@ -3,7 +3,7 @@
 Actinia Core REST API call logging
 """
 from datetime import datetime
-import cPickle
+import pickle
 from functools import wraps
 from flask import g, abort, request
 import platform
@@ -96,7 +96,7 @@ class ApiLogger(RedisFluentLoggerBase):
                  "status": "api_call"}
 
         # Serialize the entry
-        pentry = cPickle.dumps(entry)
+        pentry = pickle.dumps(entry)
 
         redis_return = bool(self.db.add(user_id, pentry))
 
@@ -141,7 +141,7 @@ class ApiLogger(RedisFluentLoggerBase):
         result_list = []
 
         for pentry in l:
-            entry = cPickle.loads(pentry)
+            entry = pickle.loads(pentry)
             result_list.append(entry)
 
         return result_list

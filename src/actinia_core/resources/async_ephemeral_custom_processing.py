@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Running a custom process
 """
-import cPickle
+import pickle
 from flask import jsonify, make_response
 
 from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
@@ -53,7 +53,7 @@ class AsyncEphemeralCustomResource(AsyncEphemeralResourceBase):
         #proc = multiprocessing.Process(target=start_job, args=args)
         #proc.start()
 
-        html_code, response_model = cPickle.loads(self.response_data)
+        html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 

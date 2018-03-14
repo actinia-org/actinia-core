@@ -76,7 +76,7 @@ def enqueue_job(timeout, func, *args):
     num = redis_conn.incr("Actinia Core_worker_count", 1)
     # Compute the current
     current_queue = num % num_queues
-    print("###  Enqueue job in queue %i"%current_queue)
+    # print("###  Enqueue job in queue %i"%current_queue)
     job_queues[current_queue].enqueue(func, *args, timeout=timeout,
                                       ttl=global_config.REDIS_QUEUE_JOB_TTL,
                                       result_ttl=global_config.REDIS_QUEUE_JOB_TTL)

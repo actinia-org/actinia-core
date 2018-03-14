@@ -3,7 +3,7 @@
 Compute areal categorical statistics on a raster map layer based on an input polygon.
 """
 
-import cPickle
+import pickle
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
@@ -80,7 +80,7 @@ class AsyncProcessValidationResource(AsyncEphemeralResourceBase):
     def post(self, location_name):
 
         self._execute(location_name)
-        html_code, response_model = cPickle.loads(self.response_data)
+        html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 

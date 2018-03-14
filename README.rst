@@ -114,7 +114,8 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 
     ..
 
-3. Download the test locations and place them into a specific directory that will be used by actinia as persistent database:
+3. Download the test locations and place them into a specific directory that will
+   be used by actinia as persistent database:
 
     .. code-block:: bash
 
@@ -138,6 +139,7 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 4. Actinia Core will run within a virtual python3 environment.
 
     .. code-block:: bash
+        mkdir -p $HOME/actinia/workspace/tmp
 
         git clone https://github.com/mundialis/actinia_core.git actinia_core
         virtualenv -p python3.5 actinia_venv

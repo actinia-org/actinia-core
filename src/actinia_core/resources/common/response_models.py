@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import cPickle
+import pickle
 import time
 from datetime import datetime
 from flask import jsonify
@@ -750,6 +750,6 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         resp_dict["api_info"] = api_info
 
     if resp_type == "pickle":
-        return cPickle.dumps([http_code, resp_dict])
+        return pickle.dumps([http_code, resp_dict])
     else:
         return jsonify(resp_dict)

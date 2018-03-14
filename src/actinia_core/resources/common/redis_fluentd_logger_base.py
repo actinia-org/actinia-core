@@ -44,7 +44,7 @@ class RedisFluentLoggerBase(object):
 
         # The fluentd sender
         if fluent_sender is None and has_fluent:
-            self.fluent_sender = sender.FluentSender('Actinia Core_logger', host=self.host, port=self.port)
+            self.fluent_sender = sender.FluentSender('actinia_logger', host=self.host, port=self.port)
 
     def send_to_fluent(self, tag, data):
 

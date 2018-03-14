@@ -55,7 +55,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             The index of the new entry in the api log list
 
         """
-        return self.redis_server.lpush(self.api_log_prefix + str(user_id), log_entry)
+        return self.redis_server.lpush(self.api_log_prefix + user_id, log_entry)
 
     def list(self, user_id, start, end):
         """Return all API log entries between start and end indices
@@ -70,7 +70,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             A list of user specific API log entries
 
         """
-        return self.redis_server.lrange(self.api_log_prefix + str(user_id), start, end)
+        return self.redis_server.lrange(self.api_log_prefix + user_id, start, end)
 
     def trim(self, user_id, start, end):
         """Remove all API log entries outside start and end indices
@@ -85,7 +85,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             True in any case
 
         """
-        return self.redis_server.ltrim(self.api_log_prefix + str(user_id), start, end)
+        return self.redis_server.ltrim(self.api_log_prefix + user_id, start, end)
 
     def size(self, user_id):
         """Return the number of entries in the api log list
@@ -98,7 +98,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             The number of entries in the api log list
 
         """
-        return self.redis_server.llen(self.api_log_prefix + str(user_id))
+        return self.redis_server.llen(self.api_log_prefix + user_id)
 
     def delete(self, user_id):
         """Remove the log list
@@ -111,7 +111,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             True in case of success, False otherwise
 
         """
-        return self.redis_server.delete(self.api_log_prefix + str(user_id))
+        return bool(self.redis_server.delete(self.api_log_prefix + user_id))
 
 # Create the Redis interface instance
 redis_api_log_interface = RedisAPILogInterface()

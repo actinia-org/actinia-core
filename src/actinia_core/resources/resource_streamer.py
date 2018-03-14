@@ -5,7 +5,6 @@ This module is responsible to answer requests for file based resources.
 from flask import jsonify, make_response
 from flask_restful import Resource
 from flask import send_from_directory
-import mimetypes
 import os
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.app import auth

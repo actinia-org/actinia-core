@@ -2,7 +2,7 @@
 """
 Base class for asynchronous responses
 """
-import cPickle
+import pickle
 import time
 import uuid
 from datetime import datetime
@@ -295,7 +295,7 @@ class AsyncEphemeralResourceBase(Resource):
                                                                                          self.resource_id)
                 return make_response(message, 400)
 
-            http_code, response_model = cPickle.loads(response_data)
+            http_code, response_model = pickle.loads(response_data)
             if response_model["status"] == "finished"\
                     or response_model["status"] == "error"\
                     or response_model["status"] == "terminated":

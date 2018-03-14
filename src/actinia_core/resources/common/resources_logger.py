@@ -3,7 +3,7 @@
 Resource logger and management interface
 """
 import sys
-import cPickle
+import pickle
 from actinia_core.resources.common.redis_resources import RedisResourceInterface
 from actinia_core.resources.common.redis_fluentd_logger_base import RedisFluentLoggerBase
 
@@ -43,7 +43,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
-            document (str): The JSON document to store in the database
+            document (str): The pickled document to store in the database
             expiration (int): Number of seconds of expiration time, default 8640000s hence 100 days
 
         Returns:
@@ -57,7 +57,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         log_entry = "empty"
         data = ""
         try:
-            http_code, data = cPickle.loads(document)
+            http_code, data = pickle.loads(document)
             self.send_to_fluent("RESOURCE_LOG", data)
         except Exception as e:
             sys.stderr.write("ResourceLogger ERROR: Unable to connect to fluentd server "
@@ -119,7 +119,7 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         if resource_list_pickled:
             for entry in resource_list_pickled:
-                http_code, data = cPickle.loads(entry)
+                http_code, data = pickle.loads(entry)
                 resource_list.append(data)
 
         return resource_list
@@ -138,7 +138,7 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         if resource_list_pickled:
             for entry in resource_list_pickled:
-                http_code, data = cPickle.loads(entry)
+                http_code, data = pickle.loads(entry)
                 resource_list.append(data)
 
         return resource_list
