@@ -73,14 +73,14 @@ class ActiniaResourceTestCaseBase(ActiniaTestCaseBase):
         # Unlock mapset for deletion
         rv = self.server.delete('/locations/%s/mapsets/%s/lock'%(location_name ,mapset_name),
                               headers=self.admin_auth_header)
-        print(rv.data)
+        print(rv.data.decode())
 
         # Delete any existing mapsets
         rv = self.server.delete('/locations/%s/mapsets/%s'%(location_name ,mapset_name),
                                 headers=self.admin_auth_header)
-        print(rv.data)
+        print(rv.data.decode())
 
         # Create new mapsets
         rv = self.server.post('/locations/%s/mapsets/%s'%(location_name ,mapset_name),
                               headers=self.admin_auth_header)
-        print(rv.data)
+        print(rv.data.decode())

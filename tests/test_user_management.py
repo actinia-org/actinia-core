@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
-from actinia_core.resources.common.user import ActiniaUser
-from .test_common_base import CommonTestCaseBase
 import unittest
+from actinia_core.resources.common.user import ActiniaUser
+from actinia_core import main as main
+try:
+    from .test_common_base import CommonTestCaseBase
+except:
+    from test_common_base import CommonTestCaseBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -17,13 +21,17 @@ class UserTestCase(CommonTestCaseBase):
     """
 
     def setUp(self):
+        # We need to set the application context
+        self.app_context = main.flask_app.app_context()
+        self.app_context.push()
+
         # Create a test user
         self.user_id = "soeren"
         self.password = "1234"
         self.user_group = "test"
 
     def tearDown(self):
-        pass
+        self.app_context.pop()
 
     def test_create_delete_user(self):
 

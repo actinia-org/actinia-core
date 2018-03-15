@@ -980,16 +980,16 @@ class AsyncEphemeralProcessing(object):
         """
 
         # Use temporary files to catch stdout and stderr
-        stdout_buff = tempfile.NamedTemporaryFile(delete=True, dir=self.temp_file_path)
-        stderr_buff = tempfile.NamedTemporaryFile(delete=True, dir=self.temp_file_path)
+        stdout_buff = tempfile.NamedTemporaryFile(mode="w+b", delete=True, dir=self.temp_file_path)
+        stderr_buff = tempfile.NamedTemporaryFile(mode="w+b", delete=True, dir=self.temp_file_path)
         stdin_file = None
 
         if process.stdin_source is not None:
             tmp_file = self.proc_chain_converter.generate_temp_file_path()
-            stdin_file = open(tmp_file, "w")
+            stdin_file = open(tmp_file, "wb")
             stdin_file.write(process.stdin_source())
             stdin_file.close()
-            stdin_file = open(tmp_file, "r")
+            stdin_file = open(tmp_file, "rb")
 
         self._increment_progress(num=1)
 
@@ -1018,8 +1018,10 @@ class AsyncEphemeralProcessing(object):
 
         stdout_buff.flush()
         stderr_buff.flush()
-        stdout_string = open(stdout_buff.name).read()
-        stderr_string = open(stderr_buff.name).read()
+        stdout_buff.seek(0)
+        stderr_buff.seek(0)
+        stdout_string = stdout_buff.read().decode()
+        stderr_string = stderr_buff.read().decode()
         stdout_buff.close()
         stderr_buff.close()
         if stdin_file:

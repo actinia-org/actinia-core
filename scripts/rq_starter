@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3.5
 # -*- coding: utf-8 -*-
 import os
 import signal
@@ -27,7 +27,7 @@ def create_workers(config_file):
         else:
             conf.read()
     except IOError as e:
-        print("Unable to read config file, will use defaults instead, IOError: %s"%str(e))
+        print("WARNING: unable to read config file, will use defaults instead, IOError: %s"%str(e))
 
     # Redis work queue
     global worker_pids

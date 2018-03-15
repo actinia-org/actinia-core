@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
-from .test_resource_base import ActiniaResourceTestCaseBase
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
+except:
+    from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

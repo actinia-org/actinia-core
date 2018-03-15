@@ -5,9 +5,9 @@ Seintinel2A processing commands
 import os
 import requests
 import zipfile
-import urlparse3
 import magic
 from urllib.request import urlopen
+from urllib.parse import urlsplit
 from actinia_core.resources.common.exceptions import AsyncProcessError
 from actinia_core.resources.common.process_object import Process
 
@@ -135,7 +135,7 @@ class GeoDataDownloadImportSupport(object):
             # Extract file name from url and create temp and cache path
             # if the copy_file_path list is empty
             if create_copy_list is True:
-                purl = urlparse3.urlparse(url)
+                purl = urlsplit(url)
                 file_name = os.path.basename(purl.path)
                 source = os.path.join(self.temp_file_path, file_name)
                 dest = os.path.join(self.user_download_cache_path, file_name)

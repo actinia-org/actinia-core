@@ -1,6 +1,10 @@
 # -*- coding: utf-8 -*-
-from .test_resource_base import ActiniaResourceTestCaseBase
 import unittest
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase
+except:
+    from test_resource_base import ActiniaResourceTestCaseBase
+
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
-from .test_common_base import CommonTestCaseBase
-from .test_common_base import global_config
-from actinia_core.resources.common.resources_logger import ResourceLogger
 import unittest
 import pickle
 import uuid
+from actinia_core.resources.common.resources_logger import ResourceLogger
+from actinia_core import main as main
+try:
+    from .test_common_base import CommonTestCaseBase, global_config
+except:
+    from test_common_base import CommonTestCaseBase, global_config
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -19,6 +22,9 @@ class ResourceLoggingTestCase(CommonTestCaseBase):
     """
 
     def setUp(self):
+        # We need to set the application context
+        self.app_context = main.flask_app.app_context()
+        self.app_context.push()
         # The test user
         self.user_id = "soeren"
         self.resource_id = uuid.uuid1()
@@ -27,7 +33,7 @@ class ResourceLoggingTestCase(CommonTestCaseBase):
                                   global_config.REDIS_SERVER_PORT)
 
     def tearDown(self):
-        pass
+        self.app_context.pop()
 
     def test_logging(self):
 

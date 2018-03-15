@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from actinia_core.resources.common.config import global_config
-import actinia_core.resources.common.redis_interface as redis_interface
 import atexit
 import unittest
 import signal
 import time
 import os
+from actinia_core.resources.common.config import global_config
+import actinia_core.resources.common.redis_interface as redis_interface
+from actinia_core import main as main
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -83,3 +84,12 @@ class CommonTestCaseBase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         redis_interface.disconnect()
+
+    def setUp(self):
+        # We need to set the application context
+        self.app_context = main.flask_app.app_context()
+        self.app_context.push()
+
+    def tearDown(self):
+        self.app_context.pop()
+

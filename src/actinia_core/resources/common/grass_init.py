@@ -272,6 +272,8 @@ class GrassModuleRunner(ProcessLogging):
                 return proc
 
             (stdout_buff, stderr_buff) = proc.communicate()
+            stdout_buff = stdout_buff.decode()
+            stderr_buff = stderr_buff.decode()
             self.log_debug("Return code: " + str(proc.returncode))
             self.log_debug(stderr_buff)
         except:

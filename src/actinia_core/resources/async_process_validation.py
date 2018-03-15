@@ -15,7 +15,6 @@ from actinia_core.resources.common.app import auth
 from actinia_core.resources.common.logging_interface import log_api_call
 from actinia_core.resources.common.process_chain import ProcessChainModel
 
-
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
@@ -73,7 +72,7 @@ class AsyncProcessValidationResource(AsyncEphemeralResourceBase):
 
         rdc = self.preprocess(has_json=True, has_xml=True,
                               location_name=location_name)
-
+        print(str(rdc))
         enqueue_job(self.job_timeout, start_job, rdc)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))

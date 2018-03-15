@@ -130,18 +130,18 @@ class ActiniaTestCaseBase(unittest.TestCase):
             global_config.REDIS_QUEUE_SERVER_URL = "localhost"
             global_config.REDIS_QUEUE_SERVER_PORT = 6379
             # Create the job queue
-            redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-                                              global_config.REDIS_QUEUE_SERVER_PORT,
-                                              global_config.NUMBER_OF_QUEUES)
+            #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
+            #                                  global_config.NUMBER_OF_QUEUES)
         # If the custom_graas_cfg variable is set, then the graas config file will be read
         # to configure Redis queue
         if cls.server_test is False and cls.custom_graas_cfg is not False:
             global_config.read(cls.custom_graas_cfg)
 
             # Create the job queue
-            redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-                                              global_config.REDIS_QUEUE_SERVER_PORT,
-                                              global_config.NUMBER_OF_QUEUES)
+            #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
+            #                                  global_config.NUMBER_OF_QUEUES)
 
             # Start the redis interface
             redis_interface.connect(global_config.REDIS_SERVER_URL,
@@ -304,7 +304,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         """
         # Check if the resource was accepted
-        print(response.data)
+        print(response.data.decode())
         self.assertEqual(response.status_code, 200, "HTML status code is wrong %i" % response.status_code)
         self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s" % response.mimetype)
 
@@ -316,14 +316,14 @@ class ActiniaTestCaseBase(unittest.TestCase):
         while True:
             rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=headers)
-            print(rv.data)
+            print(rv.data.decode())
             resp_data = json_loads(rv.data)
             if resp_data["status"] == "finished" or resp_data["status"] == "error" or resp_data[
                 "status"] == "terminated":
                 break
             time.sleep(0.2)
 
-        self.assertEquals(resp_data["status"], status)
+        self.assertEqual(resp_data["status"], status)
         self.assertEqual(rv.status_code, http_status, "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:

@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
-from .test_resource_base import ActiniaResourceTestCaseBase
 import time
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase
+except:
+    from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

@@ -37,9 +37,9 @@ connect(global_config.REDIS_SERVER_URL,
         global_config.REDIS_SERVER_PORT)
 
 # Create the job queue
-create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-                  global_config.REDIS_QUEUE_SERVER_PORT,
-                  global_config.NUMBER_OF_QUEUES)
+#create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+#                  global_config.REDIS_QUEUE_SERVER_PORT,
+#                  global_config.NUMBER_OF_QUEUES)
 
 ########################################################################################################################
 if __name__ == '__main__':

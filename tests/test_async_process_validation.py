@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import unittest
-from .test_resource_base import ActiniaResourceTestCaseBase
 from flask.json import dumps as json_dumps
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase
+except:
+    from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -259,7 +262,7 @@ process_chain_landsat = {
 
 
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
-    def otest_async_processing_legacy(self):
+    def test_async_processing_legacy(self):
         rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_legacy),

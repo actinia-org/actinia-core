@@ -2,7 +2,7 @@
 """
 Redis connection interface
 """
-
+from multiprocessing import Process
 import rq
 from redis import Redis
 from actinia_core.resources.common.redis_user import redis_user_interface
@@ -10,11 +10,10 @@ from actinia_core.resources.common.redis_api_log import redis_api_log_interface
 from actinia_core.resources.common.config import global_config
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
-
+__email__ = "soerengebbert@googlemail.com"
 
 # Job handling
 job_queues = []
@@ -42,15 +41,31 @@ def create_job_queues(host, port, num_of_queues):
     num_queues = num_of_queues
 
     for i in range(num_of_queues):
-        name = "%s_%i"%(global_config.WORKER_QUEUE_NAME, i)
+        name = "%s_%i" % (global_config.WORKER_QUEUE_NAME, i)
 
-        string = "Create queue <%s> with server <%s:%s>"%(name, host, port)
+        string = "Create queue %s with server %s:%s" % (name, host, port)
         print(string)
         queue = rq.Queue(name, connection=redis_conn)
         job_queues.append(queue)
 
 
 def enqueue_job(timeout, func, *args):
+    """Execute the provided function in a subprocess
+
+    Args:
+        func: The function to call from the subprocess
+        *args: The function arguments
+
+    Returns:
+        int:
+        The current queue index
+
+    """
+    p = Process(target=func, args=args)
+    p.start()
+
+
+def enqueue_job_orig(timeout, func, *args):
     """Enqueue a job in the job queues
 
     The enqueue function uses a redis incr approach
@@ -73,13 +88,16 @@ def enqueue_job(timeout, func, *args):
     global job_queues, redis_conn, num_queues
 
     # Increase the counter
-    num = redis_conn.incr("Actinia Core_worker_count", 1)
+    num = redis_conn.incr("actinia_worker_count", 1)
     # Compute the current
     current_queue = num % num_queues
-    # print("###  Enqueue job in queue %i"%current_queue)
-    job_queues[current_queue].enqueue(func, *args, timeout=timeout,
-                                      ttl=global_config.REDIS_QUEUE_JOB_TTL,
-                                      result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
+    print("###  Enqueue job in queue %i" % current_queue)
+    ret = job_queues[current_queue].enqueue(func,
+                                            *args,
+                                            timeout=timeout,
+                                            ttl=global_config.REDIS_QUEUE_JOB_TTL,
+                                            result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
+    print(ret)
 
     return current_queue
 
@@ -105,4 +123,3 @@ def disconnect():
     """
     redis_user_interface.disconnect()
     redis_api_log_interface.disconnect()
-

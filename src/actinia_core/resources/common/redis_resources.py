@@ -130,9 +130,6 @@ class RedisResourceInterface(RedisBaseInterface):
             The resource entry or None
         """
         value = self.redis_server.get(self.resource_id_prefix + resource_id)
-
-        if value:
-            value = value.decode()
         return value
 
     def get_list(self, regexpr):
@@ -150,8 +147,6 @@ class RedisResourceInterface(RedisBaseInterface):
         if key_list:
             for key in key_list:
                 value = self.redis_server.get(key.decode())
-                if value:
-                    value = value.decode()
                 resource_list.append(value)
         return resource_list
 
