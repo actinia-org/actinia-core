@@ -99,9 +99,8 @@ class GActiniaUserTestCase(ActiniaResourceTestCaseBase):
 
         # Now try to create a new user with the thomas account which should fail!
         new_auth_header = Headers()
-        new_auth_header.add('Authorization',
-                            'Basic ' + base64.b64encode('%s:%s'%(new_user_id,
-                                                                 new_password)))
+        auth = bytes('%s:%s' % (new_user_id, new_password), "utf-8")
+        new_auth_header.add('Authorization', 'Basic ' + base64.b64encode(auth).decode())
 
         rv = self.server.post('/users/%s?password=%s&group=%s' % (new_user_id, new_password, new_group),
                               headers=new_auth_header)

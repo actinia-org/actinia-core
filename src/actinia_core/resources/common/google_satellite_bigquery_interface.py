@@ -456,17 +456,12 @@ class GoogleSatelliteBigQueryInterface(object):
                     "FROM `bigquery-public-data.cloud_storage_geo_index.sentinel_2_index` " \
                     "WHERE product_id IN (\"%s\");"%"\",\"".join(product_ids)
 
-            query_results = self.bigquery_client.run_sync_query(query)
-            query_results.use_legacy_sql = False
-            query_results.run()
-
-            if query_results.complete is not True:
-                raise Exception("Unable to finish BigQuery sentinel tile query")
+            rows = list(self.bigquery_client.query_rows(query, timeout=30))  # API request
 
             result = {}
 
-            if query_results.rows:
-                for row in query_results.rows:
+            if rows:
+                for row in rows:
 
                     granule_id, product_id, sensing_time, datatake_identifier, base_url = row
                     tile_base_name = granule_id[4:10] + datatake_identifier[4:20]

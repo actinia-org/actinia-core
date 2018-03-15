@@ -33,7 +33,6 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         # We need to create an HTML basic authorization header
         auth_header = Headers()
         auth = bytes('%s:%s' % (user_id, password), "utf-8")
-        # We need to create an HTML basic authorization header
         auth_header.add('Authorization', 'Basic ' + base64.b64encode(auth).decode())
 
         # Make sure the user database is empty

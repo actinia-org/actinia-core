@@ -136,10 +136,12 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
     ..
 
 
-4. Actinia Core will run within a virtual python3 environment.
+4. Actinia Core must be run within a virtual python3 environment.
 
     .. code-block:: bash
         mkdir -p $HOME/actinia/workspace/tmp
+
+        cd /tmp
 
         git clone https://github.com/mundialis/actinia_core.git actinia_core
         virtualenv -p python3.5 actinia_venv
@@ -147,4 +149,18 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
         cd actinia_core
         pip install -r requirements.txt
         python setup.py install
+        deactivate
+    ..
+
+5. GRASS GIS requires a Python2 environment for running, so we create one.
+   This environment must be specified in the actinia config file:
+
+
+    .. code-block:: bash
+        cd /tmp
+
+        virtualenv -p python2.7 grass_venv
+        source grass_venv/bin/activate
+        cd actinia_core
+        pip install -r requirements-grass-gis.txt
     ..

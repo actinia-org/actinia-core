@@ -993,6 +993,8 @@ class AsyncEphemeralProcessing(object):
 
         self._increment_progress(num=1)
 
+        print(process)
+
         # GRASS and common Unix executables have different run methods
         if process.exec_type in "grass":
             proc = self.ginit.run_module(process.executable,

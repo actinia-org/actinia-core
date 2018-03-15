@@ -1,0 +1,4 @@
+# The requirements for GRASS GIS Python2 environment
+numpy==1.14.2
+pkg-resources==0.0.0
+ply==3.11
