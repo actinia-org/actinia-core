@@ -33,11 +33,13 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 
         tar xzvf proj-4.9.3.tar.gz
 
-        cd proj-4.9.3/
+        cd proj-4.9.3/nad
 
         wget http://download.osgeo.org/proj/proj-datumgrid-1.6.zip
 
         unzip proj-datumgrid-1.6.zip
+
+        cd ..
 
         ./configure
         make -j4
