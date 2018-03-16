@@ -485,7 +485,7 @@ class AsyncEphemeralProcessing(object):
         fluent_sender = None
         if self.has_fluent is True:
             from fluent import sender
-            fluent_sender = sender.FluentSender('Actinia Core_logger',
+            fluent_sender = sender.FluentSender('actinia_core_logger',
                                                 host=self.config.LOG_FLUENT_HOST,
                                                 port=self.config.LOG_FLUENT_PORT)
 
@@ -830,18 +830,20 @@ class AsyncEphemeralProcessing(object):
 
         start_time = time.time()
 
-        check_count = 0
+        termination_check_count = 0
+        update_check_count = 0
         while True:
             if proc.poll() is not None:
                 break
             else:
                 # Sleep some time and update the resource status
                 time.sleep(poll_time)
-                check_count += 1
+                termination_check_count += 1
+                update_check_count += 1
 
-                # Check all 100 loops for termination and send status update
-                if check_count == 100:
-                    check_count = 0
+                # Check all 10 loops for termination
+                if termination_check_count == 10:
+                    termination_check_count = 0
                     # check if the resource should be terminated
                     # and kill the current process
                     if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
@@ -849,6 +851,9 @@ class AsyncEphemeralProcessing(object):
                         raise AsyncProcessTermination("Process <%s> was terminated "
                                                       "by user request" % module_name)
 
+                # Send all 100 loops a status update
+                if update_check_count == 100:
+                    update_check_count = 0
                     # Check max runtime of process
                     curr_time = time.time()
                     if (curr_time - start_time) > self.process_time_limit:

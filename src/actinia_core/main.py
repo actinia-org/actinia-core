@@ -5,7 +5,6 @@ Actinia Core
 """
 
 import os
-
 from  actinia_core import endpoints
 from  actinia_core import health_check
 from  actinia_core import version
@@ -13,6 +12,7 @@ from actinia_core.resources.common.exceptions import InvalidUsage
 from actinia_core.resources.common.app import flask_app
 from actinia_core.resources.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.resources.common.redis_interface import connect, create_job_queues
+from actinia_core.resources.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -36,10 +36,12 @@ def handle_invalid_usage(error):
 connect(global_config.REDIS_SERVER_URL,
         global_config.REDIS_SERVER_PORT)
 
-# Create the job queue
+create_process_queue(global_config)
+
+# Create the job queue for redis
 #create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
 #                  global_config.REDIS_QUEUE_SERVER_PORT,
-#                  global_config.NUMBER_OF_QUEUES)
+#                  global_config.NUMBER_OF_WORKERS)
 
 ########################################################################################################################
 if __name__ == '__main__':

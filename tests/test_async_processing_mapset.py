@@ -252,7 +252,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Check the first runner
         while True:
-            rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -268,7 +268,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv_user_id = resp["user_id"]
         rv_resource_id = resp["resource_id"]
         while True:
-            rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -285,7 +285,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv_resource_id = resp["resource_id"]
         # Check the first runner
         while True:
-            rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)

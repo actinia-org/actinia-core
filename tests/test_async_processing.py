@@ -216,7 +216,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp["resource_id"]
 
         while True:
-            rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -226,7 +226,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             time.sleep(0.2)
 
             # Send the termination request, again and again :)
-            rv = self.server.delete("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.delete("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                     headers=self.admin_auth_header)
             print(rv.data)
 

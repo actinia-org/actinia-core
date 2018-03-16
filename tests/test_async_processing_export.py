@@ -398,7 +398,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/status/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.admin_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=200, status="terminated",
@@ -412,7 +412,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/status/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.user_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=200, status="terminated",
@@ -426,7 +426,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/status/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.root_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.root_auth_header, http_status=200, status="terminated",
@@ -497,7 +497,7 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/status/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.admin_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=200, status="terminated",

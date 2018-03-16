@@ -2,12 +2,12 @@
 """
 Redis connection interface
 """
-from multiprocessing import Process
 import rq
 from redis import Redis
 from actinia_core.resources.common.redis_user import redis_user_interface
 from actinia_core.resources.common.redis_api_log import redis_api_log_interface
 from actinia_core.resources.common.config import global_config
+from actinia_core.resources.common import process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -23,6 +23,8 @@ num_queues = None
 
 def create_job_queues(host, port, num_of_queues):
     """Create the job queues for asynchronous processing
+
+    TODO: The redis queue approach does not work and is deactivated
 
     Note:
         Make sure that the global configuration was updated
@@ -61,12 +63,19 @@ def enqueue_job(timeout, func, *args):
         The current queue index
 
     """
-    p = Process(target=func, args=args)
-    p.start()
+    process_queue.enqueue_job(timeout, func, *args)
+    return
+
+    # Most simple solution is just starting a process
+    #from multiprocessing import Process
+    #p = Process(target=func, args=args)
+    #p.start()
 
 
-def enqueue_job_orig(timeout, func, *args):
+def enqueue_job_redis(timeout, func, *args):
     """Enqueue a job in the job queues
+
+    TODO: The redis queue approach does not work and is deactivated
 
     The enqueue function uses a redis incr approach
     to chose for each job a different queue

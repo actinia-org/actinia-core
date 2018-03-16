@@ -50,7 +50,7 @@ class AsyncPersistentMapsetMergingResource(AsyncEphemeralResourceBase):
               "Status": "accepted",
               "URLs": {
                 "Resources": [],
-                "Status": "http://104.155.60.87/status/soeren/resource_id-985164c9-1db9-49cf-b2c4-3e8e48500e31"
+                "Status": "http://104.155.60.87/resources/soeren/resource_id-985164c9-1db9-49cf-b2c4-3e8e48500e31"
               },
               "User id": "soeren"
             }

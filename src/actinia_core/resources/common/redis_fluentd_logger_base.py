@@ -12,8 +12,6 @@ try:
 except:
     has_fluent = False
 
-from flask import g
-
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
@@ -30,10 +28,7 @@ class RedisFluentLoggerBase(object):
         if config is None:
             config = global_config
         if user_id is None:
-            if hasattr(g, "user"):
-                user_id = g.user.get_id()
-            else:
-                user_id = "Unknown"
+            user_id = "Unknown"
 
         self.host = config.LOG_FLUENT_HOST
         self.port = config.LOG_FLUENT_PORT

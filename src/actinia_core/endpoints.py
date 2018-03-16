@@ -102,7 +102,7 @@ def create_core_endpoints():
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
     # Resource management
-    flask_api.add_resource(ResourceManager, '/status/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(RequestStreamerResource, '/resource/<string:user_id>/<string:resource_id>/'
                                                     '<string:file_name>')

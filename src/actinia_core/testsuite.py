@@ -132,7 +132,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
             # Create the job queue
             #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,
-            #                                  global_config.NUMBER_OF_QUEUES)
+            #                                  global_config.NUMBER_OF_WORKERS)
         # If the custom_graas_cfg variable is set, then the graas config file will be read
         # to configure Redis queue
         if cls.server_test is False and cls.custom_graas_cfg is not False:
@@ -141,7 +141,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
             # Create the job queue
             #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,
-            #                                  global_config.NUMBER_OF_QUEUES)
+            #                                  global_config.NUMBER_OF_WORKERS)
 
             # Start the redis interface
             redis_interface.connect(global_config.REDIS_SERVER_URL,
@@ -313,7 +313,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         rv_resource_id = resp_data["resource_id"]
 
         while True:
-            rv = self.server.get("/status/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=headers)
             print(rv.data.decode())
             resp_data = json_loads(rv.data)

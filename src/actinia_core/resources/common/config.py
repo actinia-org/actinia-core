@@ -70,7 +70,7 @@ class Configuration(object):
         self.PROCESS_TIME_LIMT = 600  # Maximum number of seconds an async process is
         #                                                     allowed to run
         self.PROCESS_NUM_LIMIT = 1000  # Maximum number of processes in a process chain
-        self.NUMBER_OF_QUEUES = 3  # The number of queues that process jobs
+        self.NUMBER_OF_WORKERS = 3  # The number of queues that process jobs
 
         # API SETTINGS
         self.CHECK_CREDENTIALS = True  # If set False all credential checks are disabled
@@ -163,7 +163,7 @@ class Configuration(object):
         config.set('LIMITS', 'MAX_CELL_LIMIT', str(self.MAX_CELL_LIMIT))
         config.set('LIMITS', 'PROCESS_TIME_LIMT', str(self.PROCESS_TIME_LIMT))
         config.set('LIMITS', 'PROCESS_NUM_LIMIT', str(self.PROCESS_NUM_LIMIT))
-        config.set('LIMITS', 'NUMBER_OF_QUEUES', str(self.NUMBER_OF_QUEUES))
+        config.set('LIMITS', 'NUMBER_OF_WORKERS', str(self.NUMBER_OF_WORKERS))
 
         config.add_section('API')
         config.set('API', 'CHECK_CREDENTIALS', str(self.CHECK_CREDENTIALS))
@@ -195,7 +195,6 @@ class Configuration(object):
         config.set('LOGGING', 'LOG_LEVEL', str(self.LOG_LEVEL))
 
         config.add_section('MANAGEMENT')
-        config.set('MANAGEMENT', 'ROLES', ",".join(self.ROLES))
         config.set('MANAGEMENT', 'DEFAULT_USER', str(self.DEFAULT_USER))
         config.set('MANAGEMENT', 'DEFAULT_USER_GROUP', str(self.DEFAULT_USER_GROUP))
 
@@ -258,8 +257,8 @@ class Configuration(object):
                     self.PROCESS_TIME_LIMT = config.getint("LIMITS", "PROCESS_TIME_LIMT")
                 if config.has_option("LIMITS", "PROCESS_NUM_LIMIT"):
                     self.PROCESS_NUM_LIMIT = config.getint("LIMITS", "PROCESS_NUM_LIMIT")
-                if config.has_option("LIMITS", "NUMBER_OF_QUEUES"):
-                    self.NUMBER_OF_QUEUES = config.getint("LIMITS", "NUMBER_OF_QUEUES")
+                if config.has_option("LIMITS", "NUMBER_OF_WORKERS"):
+                    self.NUMBER_OF_WORKERS = config.getint("LIMITS", "NUMBER_OF_WORKERS")
 
             if config.has_section("API"):
                 if config.has_option("API", "CHECK_CREDENTIALS"):
@@ -314,8 +313,6 @@ class Configuration(object):
                     self.LOG_LEVEL = config.getint("LOGGING", "LOG_LEVEL")
 
             if config.has_section("MANAGEMENT"):
-                if config.has_option("MANAGEMENT", "ROLES"):
-                    self.ROLES = config.get("MANAGEMENT", "ROLES").split(",")
                 if config.has_option("MANAGEMENT", "DEFAULT_USER"):
                     self.DEFAULT_USER = config.get("MANAGEMENT", "DEFAULT_USER")
                 if config.has_option("MANAGEMENT", "DEFAULT_USER_GROUP"):

@@ -117,7 +117,7 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
       "timestamp": 1495537293.607947,
       "urls": {
         "resources": [],
-        "status": "http://localhost:5000/status/soeren/resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d"
+        "status": "http://localhost:5000/resources/soeren/resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d"
       },
       "user_id": "soeren"
     }

@@ -74,6 +74,9 @@ class ResourceStorageGCS(ResourceStorageBase):
         file_name = os.path.basename(file_path)
         object_path = os.path.join(self.user_id, self.resource_id, file_name)
 
+        if not self.bucket_name:
+            Exception("No storage bucket was defined")
+
         bucket = self.storage_client.get_bucket(self.bucket_name)
         blob = bucket.blob(object_path)
         blob.upload_from_filename(file_path)

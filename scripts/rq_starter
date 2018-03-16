@@ -4,9 +4,9 @@ import os
 import signal
 import subprocess
 import atexit
-from actinia_core.resources.common.config import Configuration
 import time
 import argparse
+from actinia_core.resources.common.config import Configuration
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -32,7 +32,7 @@ def create_workers(config_file):
     # Redis work queue
     global worker_pids
 
-    for i in range(conf.NUMBER_OF_QUEUES):
+    for i in range(conf.NUMBER_OF_WORKERS):
         name = "%s_%i"%(conf.WORKER_QUEUE_NAME, i)
         print("Start worker queue", name)
         args = ["rq_custom_worker", name]

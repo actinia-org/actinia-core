@@ -19,5 +19,5 @@ def version():
     Returns: Response
 
     """
-    info = {"version":"0.01", "roles":global_config.ROLES}
+    info = {"version":"0.01", "plugins":None}
     return make_response(jsonify(info), 200)

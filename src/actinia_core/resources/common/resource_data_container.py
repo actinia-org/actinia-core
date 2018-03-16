@@ -76,6 +76,9 @@ class ResourceDataContainer(object):
         self.user_data = None
         self.storage_model = "file"
 
+    #def __str__(self):
+    #    return str(self.__dict__)
+
     def set_user_data(self, user_data):
         """Put all required data for processing into the data object
 

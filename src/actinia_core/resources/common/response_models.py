@@ -300,7 +300,7 @@ class ProcessingResponseModel(Schema):
       "timestamp": 1495658241.608716,
       "urls": {
         "resources": [],
-        "status": "http://localhost/status/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
+        "status": "http://localhost/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
       },
       "user_id": "admin"
     }
