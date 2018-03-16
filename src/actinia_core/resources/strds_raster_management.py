@@ -400,7 +400,7 @@ class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
 
         self._setup()
 
-        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True)
+        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True, mode="w")
 
         for map_entry in self.request_data:
             if "name" not in map_entry or "start_time" not in map_entry or "end_time" not in map_entry:
@@ -409,6 +409,7 @@ class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
             line = "%s|%s|%s\n"%(map_entry["name"], map_entry["start_time"], map_entry["end_time"])
             input_file.write(line)
         input_file.flush()
+        input_file.seek(0)
 
         pc = {"1":{"module":"t.register",
                    "inputs":{"input": "%s@%s"%(self.map_name, self.mapset_name),
@@ -444,7 +445,7 @@ class AsyncPersistentUnregisterRaster(AsyncPersistentProcessing):
 
         self._setup()
 
-        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True)
+        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True, mode="w")
 
         for map_name in self.request_data:
             line = "%s\n"%map_name

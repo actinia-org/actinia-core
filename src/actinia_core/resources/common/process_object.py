@@ -32,7 +32,7 @@ class Process(object):
         self.exec_type = exec_type
         self.executable = executable
         if isinstance(self.executable, bytes):
-            self.executable = self.executable.encode()
+            self.executable = self.executable.decode()
 
         self.executable_params = executable_params
         self.stdin_source = stdin_source

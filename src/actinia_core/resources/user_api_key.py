@@ -76,7 +76,7 @@ class APIKeyCreationResource(LoginBase):
 
         try:
             return make_response(jsonify(TokenResponseModel(status="success",
-                                         token=g.user.generate_api_key(),
+                                         token=g.user.generate_api_key().decode(),
                                          message="API key successfully generated")))
         except:
             return make_response(jsonify(TokenResponseModel(status="error",
@@ -131,8 +131,9 @@ class TokenCreationResource(LoginBase):
                         raise Exception("Expiration time is to large. Maximum is 365 days.")
 
             return make_response(jsonify(TokenResponseModel(status="success",
-                                         token=g.user.generate_auth_token(expiration=expiration),
-                                         message="Token successfully generated with an expiration time of %i seconds"%expiration)))
+                                         token=g.user.generate_auth_token(expiration=expiration).decode(),
+                                         message="Token successfully generated with "
+                                                 "an expiration time of %i seconds"%expiration)))
         except Exception as e:
             return make_response(jsonify(TokenResponseModel(status="error",
                                          token="",

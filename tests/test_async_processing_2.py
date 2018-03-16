@@ -261,7 +261,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
-    def otest_async_processing_new_ndvi(self):
+    def test_async_processing_new_ndvi(self):
         rv = self.server.post('/locations/LL/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
@@ -270,7 +270,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
-    def otest_async_processing_new_ndvi_export(self):
+    def test_async_processing_new_ndvi_export(self):
         rv = self.server.post('/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),

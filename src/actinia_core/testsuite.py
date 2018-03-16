@@ -161,11 +161,10 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         cls.guest_id = "guest"
         cls.user_group = "test_group"
-        cls.auth = bytes('%s:%s'.format(cls.guest_id, cls.password), "utf-8")
+        cls.auth = bytes('%s:%s' % (cls.guest_id, cls.password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.guest_auth_header = Headers()
-
         cls.guest_auth_header.add('Authorization',
                                   'Basic ' + base64.b64encode(cls.auth).decode())
 
@@ -177,7 +176,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         cls.guest = ActiniaUser.create_user(cls.guest_id,
                                             cls.user_group,
                                             cls.password,
-                                            user_role="user",
+                                            user_role="guest",
                                             accessible_datasets=accessible_datasets,
                                             process_num_limit=3,
                                             process_time_limit=2)

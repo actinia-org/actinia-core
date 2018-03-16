@@ -986,10 +986,10 @@ class AsyncEphemeralProcessing(object):
 
         if process.stdin_source is not None:
             tmp_file = self.proc_chain_converter.generate_temp_file_path()
-            stdin_file = open(tmp_file, "wb")
+            stdin_file = open(tmp_file, "w")
             stdin_file.write(process.stdin_source())
             stdin_file.close()
-            stdin_file = open(tmp_file, "rb")
+            stdin_file = open(tmp_file, "r")
 
         self._increment_progress(num=1)
 

@@ -19,6 +19,9 @@ from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralReso
 from actinia_core.resources.async_ephemeral_processing_with_export import AsyncEphemeralExportResource
 from actinia_core.resources.async_ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
 from actinia_core.resources.async_ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
+from actinia_core.resources.persistent_mapset_merger import AsyncPersistentMapsetMergingResource
+from actinia_core.resources.raster_export import  AsyncEphemeralRasterLayerRegionExportResource
+from actinia_core.resources.raster_export import AsyncEphemeralRasterLayerExportResource
 from actinia_core.resources.async_persistent_processing import AsyncPersistentResource
 from actinia_core.resources.async_ephemeral_custom_processing import AsyncEphemeralCustomResource
 from actinia_core.resources.async_process_validation import AsyncProcessValidationResource
@@ -83,7 +86,15 @@ def create_core_endpoints():
                            '/locations/<string:location_name>/processing_async_export_gcs')
     flask_api.add_resource(AsyncPersistentResource, '/locations/<string:location_name>/mapsets/'
                                                     '<string:mapset_name>/processing_async')
-
+    flask_api.add_resource(AsyncPersistentMapsetMergingResource, '/locations/<string:location_name>/mapsets/'
+                                                                 '<string:mapset_name>/merging_async')
+    flask_api.add_resource(AsyncEphemeralRasterLayerExportResource, '/locations/<string:location_name>/mapsets/'
+                                                                    '<string:mapset_name>/raster_layers/'
+                                                                    '<string:raster_name>/geotiff_async')
+    flask_api.add_resource(AsyncEphemeralRasterLayerRegionExportResource, '/locations/<string:location_name>'
+                                                                          '/mapsets/<string:mapset_name>'
+                                                                          '/raster_layers/<string:raster_name>'
+                                                                          '/geotiff_async_orig')
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')

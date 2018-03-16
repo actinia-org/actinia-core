@@ -272,7 +272,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 6)
 
-    def otest_async_processing_new(self):
+    def test_async_processing_new(self):
         rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_new),
@@ -282,7 +282,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 6)
 
-    def otest_async_processing_new_ndvi(self):
+    def test_async_processing_new_ndvi(self):
         rv = self.server.post('/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
@@ -293,7 +293,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         print(resp)
         self.assertEqual(len(resp["process_results"]), 29)
 
-    def otest_async_processing_new_ndvi_export_landsat(self):
+    def test_async_processing_new_ndvi_export_landsat(self):
         rv = self.server.post('/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi_landsat),
@@ -303,7 +303,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 26)
 
-    def otest_async_processing_landsat(self):
+    def test_async_processing_landsat(self):
         rv = self.server.post('/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat),

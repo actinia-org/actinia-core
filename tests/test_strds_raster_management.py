@@ -66,7 +66,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         raster_layers = [{"name": "test_layer_1", "start_time": "2000-01-01", "end_time": "2000-01-02"},
                          {"name": "test_layer_2", "start_time": "2000-01-02", "end_time": "2000-01-03"},
-                        {"name": "test_layer_3", "start_time": "2000-01-03", "end_time": "2000-01-04"}]
+                         {"name": "test_layer_3", "start_time": "2000-01-03", "end_time": "2000-01-04"}]
 
         rv = self.server.put("/locations/ECAD/mapsets/%s/strds/test_strds_register/raster_layers"%new_mapset,
                              data=json_dumps(raster_layers),

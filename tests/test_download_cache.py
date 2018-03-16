@@ -58,7 +58,7 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("free" in json_load(rv.data)["process_results"])
         self.assertTrue("free_percent" in json_load(rv.data)["process_results"])
 
-    def otest_download_cache_error_1(self):
+    def test_download_cache_error_1(self):
 
         if os.path.isdir("/tmp/dcache_tmp_nope") is True:
             os.rmdir("/tmp/dcache_tmp_nope")
@@ -72,7 +72,7 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
-    def otest_download_cache_error_2(self):
+    def test_download_cache_error_2(self):
 
         if os.path.isdir("/tmp/dcache_tmp_nope") is True:
             os.rmdir("/tmp/dcache_tmp_nope")

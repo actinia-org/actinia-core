@@ -112,7 +112,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
             self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
 
-            out_file = open("/tmp/bla.zip", "w")
+            out_file = open("/tmp/bla.zip", "wb")
             out_file.write(rv.data)
             out_file.close()
 

@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+import unittest
 try:
     from .test_common_base import CommonTestCaseBase
 except:
     from test_common_base import CommonTestCaseBase
 from actinia_core.resources.common.api_logger import ApiLogger
-import unittest
+from actinia_core import main as main
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -24,15 +25,17 @@ class ApiLoggingTestCase(CommonTestCaseBase):
     """
     This class tests the api logging interface
     """
-
     def setUp(self):
+        # We need to set the application context
+        self.app_context = main.flask_app.app_context()
+        self.app_context.push()
         # The test user
         self.user_id = "soeren"
         self.log = ApiLogger()
         self.request_object = DummyHTTPRequest()
 
     def tearDown(self):
-        pass
+        self.app_context.pop()
 
     def test_logging(self):
 
