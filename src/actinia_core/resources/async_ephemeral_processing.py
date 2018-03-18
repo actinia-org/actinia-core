@@ -2,6 +2,8 @@
 """
 Base class for asynchronous processing
 """
+import sys
+import traceback
 import pickle
 import math
 import os
@@ -20,7 +22,7 @@ from actinia_core.resources.common.resources_logger import ResourceLogger
 from actinia_core.resources.common.process_chain import ProcessChainConverter
 from actinia_core.resources.common.exceptions import AsyncProcessError, AsyncProcessTermination
 from actinia_core.resources.common.exceptions import AsyncProcessTimeLimit
-from actinia_core.resources.common.response_models import ProcessingResponseModel
+from actinia_core.resources.common.response_models import ProcessingResponseModel, ExceptionTracebackModel
 from actinia_core.resources.common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from actinia_core.resources.user_auth import check_location_mapset_module_access
 from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
@@ -358,7 +360,7 @@ class AsyncEphemeralProcessing(object):
                                           process_chain_list=self.process_chain_list)
         self._send_to_database(data)
 
-    def _send_resource_error(self, message, results=None):
+    def _send_resource_error(self, message, results=None, exception=None):
         """Create an HTTP response document and send it to the status database
 
         Args:
@@ -379,7 +381,8 @@ class AsyncEphemeralProcessing(object):
                                           http_code=400,
                                           status_url=self.status_url,
                                           api_info=self.api_info,
-                                          process_chain_list=self.process_chain_list)
+                                          process_chain_list=self.process_chain_list,
+                                          exception=exception)
         self._send_to_database(data)
 
     def _send_to_database(self, document):
@@ -1187,31 +1190,45 @@ class AsyncEphemeralProcessing(object):
             * self._execute()
             * self._final_cleanup()
 
+            e_type, e_value, e_traceback = sys.exc_info()
+            message = [e.__class__, e_type, e_value, traceback.format_tb(e_traceback)]
+            message = pprint.pformat(message)
         """
         try:
             # Run the _execute function that does all the work
             self._execute()
         except AsyncProcessTermination as e:
             self.run_state = {"terminated": str(e)}
-            raise
         except AsyncProcessTimeLimit as e:
             self.run_state = {"time limit exceeded": str(e)}
-            raise
         except AsyncProcessError as e:
-            self.run_state = {"error": str(e.__class__) + ": " + str(e)}
-            raise
+            e_type, e_value, e_tb = sys.exc_info()
+            model = ExceptionTracebackModel(message=str(e_value),
+                                            traceback=str(traceback.format_tb(e_tb)),
+                                            type=str(e_type))
+            self.run_state = {"error": str(e), "exception":model}
         except KeyboardInterrupt as e:
-            self.run_state = {"error": str(e.__class__) + "KeyboardInterrupt: " + str(e)}
-            raise
+            e_type, e_value, e_tb = sys.exc_info()
+            model = ExceptionTracebackModel(message=str(e_value),
+                                            traceback=str(traceback.format_tb(e_tb)),
+                                            type=str(e_type))
+            self.run_state = {"error": str(e), "exception":model}
         except Exception as e:
-            self.run_state = {"error": str(e.__class__) + ": " + str(e)}
-            raise
+            e_type, e_value, e_tb = sys.exc_info()
+            model = ExceptionTracebackModel(message=str(e_value),
+                                            traceback=str(traceback.format_tb(e_tb)),
+                                            type=str(e_type))
+            self.run_state = {"error":str(e), "exception":model}
         finally:
             try:
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()
             except Exception as e:
-                self.run_state = {"error": str(e)}
+                e_type, e_value, e_tb = sys.exc_info()
+                model = ExceptionTracebackModel(message=str(e_value),
+                                                traceback=str(traceback.format_tb(e_tb)),
+                                                type=str(e_type))
+                self.run_state = {"error": str(e), "exception":model}
             # After all processing finished, send the final status
             if "success" in self.run_state:
                 self._send_resource_finished(message=self.finish_message,
@@ -1223,6 +1240,6 @@ class AsyncEphemeralProcessing(object):
                 self._send_resource_time_limit_exceeded(message=self.run_state["time limit exceeded"])
             elif "error" in self.run_state:
                 # Send an error message if an exception was raised
-                self._send_resource_error(message=self.run_state["error"])
+                self._send_resource_error(message=self.run_state["error"], exception=self.run_state["exception"])
             else:
                 self._send_resource_error(message="Unknown error")

@@ -215,6 +215,36 @@ class ApiInfoModel(Schema):
       }
 
 
+class ExceptionTracebackModel(Schema):
+    """Response schema that contains Exception information of the called endpoint
+    in case an Exception was raised.
+
+    This information is required to debug the REST API.
+    """
+    type = 'object'
+    properties = {
+        'message': {
+            'type': 'string',
+            'description': 'The message that was send with the Exception'
+        },
+        'type': {
+            'type': 'string',
+            'description': 'The type of the Exception'
+        },
+        'traceback': {
+            'type': 'string',
+            'description': 'The full traceback of the Exception'
+        }
+    }
+    required = ["message", "type", "traceback"]
+
+    example = {
+        "message": "Error",
+        "type": "exceptions.Exception",
+        "traceback": "File \"main.py\", line 2, in <module>\n    raise Exception(\"Error\")\n"
+      }
+
+
 class ProcessingResponseModel(Schema):
     """This is the base class for all asynchronous response models. This class must
     or a derivative must be used in all asynchronous responses. Usually
@@ -254,6 +284,7 @@ class ProcessingResponseModel(Schema):
             'type': 'string',
             'description': 'Message for the user, maybe status, finished or error message'
         },
+        'exception': ExceptionTracebackModel,
         'accept_timestamp': {
             'type': 'number',
             'format': 'double',
@@ -697,6 +728,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                resource_urls=[],
                                api_info=None,
                                process_chain_list=[],
+                               exception=None,
                                resp_type="pickle"):
     """Create a dictionary and its pickle or JSON representation to represent response information
 
@@ -752,6 +784,8 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         resp_dict["process_chain_list"] = process_chain_list
     if http_code is not None:
         resp_dict["http_code"] = http_code
+    if exception is not None:
+        resp_dict["exception"] = exception
     if http_code is not None:
         resp_dict["urls"] = UrlModel(resources=resource_urls,
                                      status=str(status_url))

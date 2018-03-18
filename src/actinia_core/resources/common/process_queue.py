@@ -332,12 +332,12 @@ def start_process_queue_manager(config, queue, use_logger):
         - Check the timeout of waiting processes
         - Enqueue and start new processes
         - Remove finished processes or processes that exceeded their waiting timeout
-        - Stop the queue and exit all running processes if the "STOP" signal was send via Queue()
+        - Stop the queue and exit all running processes if the "STOP" isgnal was send via Queue()
 
     Args:
         config: The global config
         queue: The multiprocessing.Queue() object that should be listened to
-        use_logger: Set True to create rotating logifle and fluent logger to log the stderr of the processes
+        use_logger: Create logifle and fluent logger to log the stderr of the processes
     """
 
     data_set = set()
@@ -386,12 +386,12 @@ def start_process_queue_manager(config, queue, use_logger):
                         enqproc.terminate(status="error", message="Waiting process was terminated by server shutdown.")
                     del queue_thread
                     queue.close()
-                    # print("Exit loop")
+                    print("Exit loop")
                     exit(0)
                 # Enqueue a new process
                 if data is not None and len(data) == 3:
                     func, timeout, args = data
-                    # print("Enqueue process: ", args[0].api_info)
+                    print("Enqueue process: ", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
                                               timeout=timeout,
                                               resource_logger=resource_logger,
@@ -399,7 +399,6 @@ def start_process_queue_manager(config, queue, use_logger):
 
                     waiting_processes.add(enqproc)
 
-            # Start new processes if a process slot is available
             if len(running_procs) < config.NUMBER_OF_WORKERS:
                 if len(waiting_processes) > 0:
                     enqproc = waiting_processes.pop()
@@ -428,7 +427,6 @@ def start_process_queue_manager(config, queue, use_logger):
                 for enqproc in procs_to_remove:
                     waiting_processes.remove(enqproc)
 
-            # Wait a short time
             time.sleep(0.05)
             count += 1
     except:
