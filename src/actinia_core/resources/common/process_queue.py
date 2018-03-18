@@ -76,6 +76,7 @@ def enqueue_job(timeout, func, *args):
 def stop_process_queue():
     """Destroy the process queue and terminate all running and queued jobs
     """
+    global process_queue_manager
     # Send stop to the queue
     process_queue.put("STOP")
     # Wait for all joining processes
@@ -84,7 +85,6 @@ def stop_process_queue():
         process_queue_manager.join(3)
         print("Terminate process_queue_manager")
         process_queue_manager.terminate()
-    global process_queue_manager
     process_queue_manager = None
 
 
