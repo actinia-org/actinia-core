@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
 Purpose: Command line program to manage GRaaS user
@@ -13,9 +13,9 @@ import pprint
 import sys
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
-__maintainer__ = "Sören Gebbert"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016, Soeren Gebbert"
+__maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
