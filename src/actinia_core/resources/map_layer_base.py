@@ -175,36 +175,40 @@ class MapLayerRegionResourceBase(AsyncEphemeralResourceBase):
         if "res" in args and args["res"] is not None:
             options["res"] = args["res"]
             if options["res"] < 0:
-                self.raise_invalid_usage("Resolution can not be negative")
+                return self.get_error_response(message="Resolution can not be negative")
 
         if "nsres" in args and args["nsres"] is not None:
             options["nsres"] = args["nsres"]
             if options["nsres"] < 0:
-                self.raise_invalid_usage("North-south resolution can not be negative")
+                return self.get_error_response(message="North-south resolution can not be negative")
 
         if "ewres" in args and args["ewres"] is not None:
             options["ewres"] = args["ewres"]
             if options["ewres"] < 0:
-                self.raise_invalid_usage("East-west resolution can not be negative")
+                return self.get_error_response(message="East-west resolution can not be negative")
 
         if "raster" in args and args["raster"] is not None:
             options["raster"] = args["raster"]
             if "@" not in args["raster"]:
-                self.raise_invalid_usage("The raster layer to set the region from must contain the mapset: name@mapset")
+                return self.get_error_response(message="The raster layer to set the region from must "
+                                                       "contain the mapset: name@mapset")
 
         if "align" in args and args["align"] is not None:
             options["align"] = args["align"]
             if "@" not in args["align"]:
-                self.raise_invalid_usage("The raster layer to align the region from must contain the mapset: name@mapset")
+                return self.get_error_response(message="The raster layer to align the region from must "
+                                                       "contain the mapset: name@mapset")
 
         if "zoom" in args and args["zoom"] is not None:
             options["zoom"] = args["zoom"]
             if "@" not in args["zoom"]:
-                self.raise_invalid_usage("The raster layer to zoom the region to must contain the mapset: name@mapset")
+                return self.get_error_response(message="The raster layer to zoom the region to must "
+                                                       "contain the mapset: name@mapset")
 
         if "vector" in args and args["vector"] is not None:
             options["vector"] = args["vector"]
             if "@" not in args["vector"]:
-                self.raise_invalid_usage("The vector layer to set the region from must contain the mapset: name@mapset")
+                return self.get_error_response(message="The vector layer to set the region from must "
+                                                       "contain the mapset: name@mapset")
 
         return options

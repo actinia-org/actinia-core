@@ -260,6 +260,7 @@ class AsyncEphemeralProcessing(object):
         self.proc_chain_converter = None  # The class that converts process chain definitions into
                                           # process lists that will be executed. This variable is
                                           # initiated in the setup method
+        self.process_chain_list = []      # The list of all process chains that were processed
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -305,7 +306,8 @@ class AsyncEphemeralProcessing(object):
                                           http_code=200,
                                           status_url=self.status_url,
                                           api_info=self.api_info,
-                                          resource_urls=self.resource_url_list)
+                                          resource_urls=self.resource_url_list,
+                                          process_chain_list=self.process_chain_list)
         self._send_to_database(data)
 
     def _send_resource_terminated(self, message, results=None):
@@ -328,7 +330,8 @@ class AsyncEphemeralProcessing(object):
                                           orig_datetime=self.orig_datetime,
                                           http_code=200,
                                           status_url=self.status_url,
-                                          api_info=self.api_info)
+                                          api_info=self.api_info,
+                                          process_chain_list=self.process_chain_list)
         self._send_to_database(data)
 
     def _send_resource_time_limit_exceeded(self, message, results=None):
@@ -351,7 +354,8 @@ class AsyncEphemeralProcessing(object):
                                           orig_datetime=self.orig_datetime,
                                           http_code=400,
                                           status_url=self.status_url,
-                                          api_info=self.api_info)
+                                          api_info=self.api_info,
+                                          process_chain_list=self.process_chain_list)
         self._send_to_database(data)
 
     def _send_resource_error(self, message, results=None):
@@ -374,7 +378,8 @@ class AsyncEphemeralProcessing(object):
                                           orig_datetime=self.orig_datetime,
                                           http_code=400,
                                           status_url=self.status_url,
-                                          api_info=self.api_info)
+                                          api_info=self.api_info,
+                                          process_chain_list=self.process_chain_list)
         self._send_to_database(data)
 
     def _send_to_database(self, document):
@@ -393,7 +398,7 @@ class AsyncEphemeralProcessing(object):
     def _validate_process_chain(self, process_chain=None,
                                 skip_permission_check=False):
         """
-        Create the process chain and check for user permissions.
+        Create the process list and check for user permissions.
 
         The following permissions are checked:
 
@@ -411,14 +416,16 @@ class AsyncEphemeralProcessing(object):
             This function raises AsyncProcessError in case of an error.
 
         Returns: list:
-            The process chain list
+            The process list
         """
 
         # Backward compatibility
         if process_chain is None:
             process_list = self.proc_chain_converter.process_chain_to_process_list(self.request_data)
+            self.process_chain_list.append(self.request_data)
         else:
             process_list = self.proc_chain_converter.process_chain_to_process_list(process_chain)
+            self.process_chain_list.append(process_chain)
 
         # Check for empty process chain
         if len(process_list) == 0 and len(self.resource_export_list) == 0:
@@ -439,7 +446,7 @@ class AsyncEphemeralProcessing(object):
                                                                    config=self.config,
                                                                    module_name=process.executable)
                         if resp is not None:
-                          raise AsyncProcessError("Module or executable <%s> is not supported" % process.executable)
+                            raise AsyncProcessError("Module or executable <%s> is not supported" % process.executable)
             else:
                 message = "Wrong process description, type: %s " \
                           "module/executable: %s, args: %s" % (str(process.exec_type),
@@ -456,19 +463,22 @@ class AsyncEphemeralProcessing(object):
         """Setup the logger, the mapset lock and the credentials. Create the temporary grass database
         and temporary file directories
 
-        ATTENTION: This method must be called
+        ATTENTION: This method must be called first before any processing can take place
 
-        Set cell limit, process number limit
-        and process time limit.
+        What is done:
 
-        Create all required paths to original and temporary location
-        and mapsets.
-
-        - temp_location_path
-        - global_location_path
-        - user_location_path <- This path will be created if it does not exist
-        - temp_grass_data_base <- This path will be created
-        - temp_file_path <- This path will be created
+        - Create the resource and message logger
+        - Create the redis lock interface for resource locking
+        - Set cell limit, process number limit and process time limit from user credentials.
+        - Create all required paths to original and temporary location and mapsets.
+            - temp_location_path
+            - global_location_path
+            - grass_user_data_base <- This path will be created if it does not exist
+            - user_location_path <- This path will be created if it does not exist
+            - temp_grass_data_base <- This path will be created
+            - temp_file_path <- This path will be created
+            - Check if the current working location is in a persistent (global) GRASS GIS database (is_global_database)
+        - Create the process chain to process list converter
 
         Args:
             init_grass (bool): Set true to initialize the user credentials
@@ -545,27 +555,27 @@ class AsyncEphemeralProcessing(object):
 
     def _create_temp_database(self, mapsets=[]):
         """Create a temporary gis database with location and mapsets
-        from the global and user database for processing.
+        from the global and user group database for processing.
 
-        All processing and mapaste management is performed within a temporary database!
+        IMPORTANT: All processing and mapaste management is performed within a temporary database!
 
-        Link the required existing mapsets of (global) and user location
+        Link the required existing mapsets of global and user group locations
         into the temporary location directory.
 
         Linking is performed in two steps:
             1.) If the location is a global location, then the mapsets from the global location are
                 linked in the temporary locations
-            2.) After 1. link all required mapsets from the user location into the temporary location
+            2.) Then link all required mapsets from the user group location into the temporary location
 
-        Only mapsets from the global location are linked into the tmeporary location to which the user has access.
-        It checks for access in the global database but not in the user database.
-        The user can always access its own data.
+        Only mapsets from the global location are linked into the temporary location to which the user group has access.
+        It checks for access in the global database but not in the user group database.
+        The user can always access its own data of its group.
 
         Args:
             mapsets: A list of mapset names that should be linked into
                      the temporary location. If the list is empty, all
                      available user accessible mapsets of the global
-                     and user specific location will be linked.
+                     and user group specific location will be linked.
 
         Raises:
             This function raises AsyncProcessError in case of an error.
@@ -684,7 +694,7 @@ class AsyncEphemeralProcessing(object):
 
         It will check access to all required mapsets and adds them to the mapset search path.
 
-        You need to call self._create_grass_environment() to set up the environment
+        IMPORTANT: You need to call self._create_grass_environment() to set up the environment
         before calling this method.
 
         A new temporary mapset is created. All in the process chain detected mapsets
@@ -697,7 +707,7 @@ class AsyncEphemeralProcessing(object):
             source_mapset_name (str): The name of the source mapset to copy the WIND file from
 
         Raises:
-            This function will raise an exception if the g.mapset/g.mapsets modules fail
+            This function will raise an exception if the g.mapset/g.mapsets/db.connect modules fail
 
         """
         self.ginit.run_module("g.mapset", ["-c", "mapset=%s" % temp_mapset_name])
@@ -741,11 +751,11 @@ class AsyncEphemeralProcessing(object):
     def _check_reset_region(self):
         """Check the current region settings against the user cell limit.
 
-        Reset the current processing region to a meaningfull state
-        so that the user cell limit is not reached.
+        Reset the current processing region to a meaningful state
+        so that the user cell limit is not reached and the mapset can be accessed again.
 
         Raises:
-            This method will raise a AsyncProcessError exception
+            This method will raise an AsyncProcessError exception
 
         """
         if self.skip_region_check is True:
@@ -873,18 +883,18 @@ class AsyncEphemeralProcessing(object):
         return time.time() - start_time
 
     def _run_process(self, process, poll_time=0.05):
-        """Run a process with options and send progress updates
-        to the database server that manages the resource entries.
+        """Run a process (common.process_object.Process) with options and send progress updates
+        to the resource database.
 
-        Use this method to run programs that are not GRASS modules.
+        IMPORTANT: Use this method to run programs that are not GRASS modules.
 
         Check each poll the termination status of the resource.
-        If it is set True, terminate the current process
+        If the termination state is set True, terminate the current process
         and raise an AsyncProcessTermination exception that must be catched
         by the run() method.
 
         Args:
-            process (Process): The process object that should be executed
+            process (common.process_object.Process): The process object that should be executed
             poll_time (float): The time to check the process status and to send updates to the resource db
 
         Raises:
@@ -904,19 +914,19 @@ class AsyncEphemeralProcessing(object):
         return self._run_executable(process, poll_time)
 
     def _run_module(self, process, poll_time=0.05):
-        """Run the GRASS module with its module options and send progress updates
+        """Run the GRASS module (common.process_object.Process) with its module options and send progress updates
         to the database server that manages the resource entries.
 
         Check before each module run the size of the region. If the maximum number of cells
         are exceeded then raise an AsyncProcessError exception that the maximum number of
         cells are exceeded and reset them to a meaningful state,
-        so that the user can still run processes.
+        so that the user can still run processes in the mapset.
 
         The region is checked for the first module of a process chain and after that,
         for each g.region call that was present in the process chain.
 
         Check each poll the termination status of the resource.
-        If it is set True, terminate the current process
+        If the termination state is set True, terminate the current process
         and raise an AsyncProcessTermination exception that must be catched
         by the run() method.
 
@@ -925,7 +935,7 @@ class AsyncEphemeralProcessing(object):
         are executed in a large process chain, then this value must be adjusted.
 
         Args:
-            process (Process): The process object that should be executed
+            process (common.process_object.Process): The process object that should be executed
             poll_time (float): The time to check the process status and to send updates to the resource db
 
         Raises:
@@ -968,9 +978,10 @@ class AsyncEphemeralProcessing(object):
         the correct handling of stdout, stderr and stdin, creates the
         process log model and returns stdout, stderr and the return code.
 
+        It creates the temporary file paths.
 
         Args:
-            process (Process): The process object that should be executed
+            process (common.process_object.Process): The process object that should be executed
             poll_time (float): The time to check the process status and to send updates to the resource db
 
         Raises:
@@ -998,7 +1009,7 @@ class AsyncEphemeralProcessing(object):
 
         self._increment_progress(num=1)
 
-        print(process)
+        # print(process)
 
         # GRASS and common Unix executables have different run methods
         if process.exec_type in "grass":
@@ -1103,7 +1114,7 @@ class AsyncEphemeralProcessing(object):
 
         """
         process_chain = self._create_temporary_grass_environment_and_process_chain(skip_permission_check=skip_permission_check)
-        self._execute_process_chain(process_chain=process_chain)
+        self._execute_process_list(process_list=process_chain)
 
     def _create_temporary_grass_environment_and_process_chain(self, process_chain=None,
                                                               skip_permission_check=False):
@@ -1123,7 +1134,7 @@ class AsyncEphemeralProcessing(object):
             This method will raise an AsyncProcessError
 
         Returns: list
-                  The process chain to be executed by _execute_process_chain()
+                  The process chain to be executed by _execute_process_list()
 
         """
         # Setup the user credentials and logger
@@ -1138,11 +1149,11 @@ class AsyncEphemeralProcessing(object):
 
         return process_chain
 
-    def _execute_process_chain(self, process_chain):
-        """Run all modules or executables that are specified in the process chain
+    def _execute_process_list(self, process_list):
+        """Run all modules or executables that are specified in the process list
 
         Args:
-            process_chain: The process chain that was generated by _validate_process_chain()
+            process_list: The process list that was generated by _validate_process_chain()
                            which is also called in _create_temporary_grass_environment_and_process_chain()
 
         Raises:
@@ -1150,7 +1161,7 @@ class AsyncEphemeralProcessing(object):
             or AsyncProcessTermination
 
         """
-        for process in process_chain:
+        for process in process_list:
             if process.exec_type == "grass":
                 self._run_module(process)
             elif process.exec_type == "exec":

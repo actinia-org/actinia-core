@@ -99,12 +99,12 @@ class AsyncPersistentListMapsets(AsyncPersistentProcessing):
         pc = {"1":{"module":"g.mapsets","inputs":{"separator":"newline"},
                    "flags":"l"}}
 
-        process_chain = self._validate_process_chain(process_chain=pc,
+        process_list = self._validate_process_chain(process_chain=pc,
                                                      skip_permission_check=True)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         mapset_lists = []
         mapsets = self.module_output_log[0]["stdout"].split()
@@ -307,13 +307,13 @@ class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
 
         # Do not check the region size
         self.skip_region_check = True
-        process_chain = self._validate_process_chain(process_chain=pc,
+        process_list = self._validate_process_chain(process_chain=pc,
                                                      skip_permission_check=True)
         self._create_temp_database(self.required_mapsets)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         mapset_region ={}
         region_settings = self.module_output_log[0]["stdout"].split()
@@ -354,12 +354,12 @@ class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
         pc = {"1":{"module":"g.mapsets",
                    "flags":"l"}}
 
-        process_chain_1 = self._validate_process_chain(process_chain=pc,
-                                                       skip_permission_check=True)
+        process_list = self._validate_process_chain(process_chain=pc,
+                                                    skip_permission_check=True)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")
 
-        self._execute_process_chain(process_chain_1)
+        self._execute_process_list(process_list)
 
         mapset_list = []
         mapsets = self.module_output_log[0]["stdout"].split()

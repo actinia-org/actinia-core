@@ -194,16 +194,16 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
 
     If target mapset exists:
 
-        - Move the temporary mapset after processing to the persistent DB
+        - Move the temporary mapset after processing to the user group database
         - Merge the temporary mapset into the target mapset
         - Delete the temporary mapset
-        - Unlock the two mapset after processing is finished, terminated or raised an error
+        - Unlock the two mapsets after processing is finished, terminated or raised an error
 
     If target mapset does not exists:
 
         - After processing finished successfully, copy the
-          temporary mapset to the original location using the target mapset name
-        - Unlock the two mapset after processing is finished, terminated or raised an error
+          temporary mapset to the original user group specific location using the target mapset name
+        - Unlock the two mapsets after processing is finished, terminated or raised an error
 
     """
     def __init__(self, rdc):
@@ -270,9 +270,9 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
     def _check_mapset(self, mapset):
         """Check if the target mapset exists
 
-        This method will check if the target mapset exists in the global and user location.
+        This method will check if the target mapset exists in the global and user group locations.
         If the mapset is in the global database, then an AsyncProcessError will be raised, since
-        global mapsets can not be modified.
+        global location/mapsets can not be modified.
 
         This method sets in case of success:
 
@@ -367,6 +367,8 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
 
     def _merge_mapset_into_target(self, source_mapset, target_mapset):
         """Link the source mapset content into the target mapset
+
+        TODO: Implement support for temporal database merging
 
         Attention: Only raster and vector layers are copied at the moment
         """
@@ -465,16 +467,16 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
             self._merge_mapset_into_target(self.temp_mapset_name, self.target_mapset_name)
             shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
 
-    def _execute_process_chain(self, process_chain):
-        """Extend the mapset lock and execute the provided process chain
+    def _execute_process_list(self, process_list):
+        """Extend the mapset lock and execute the provided process list
 
         Args:
-            process_chain: The process chain to execute
+            process_list: The process list to execute
 
         Raises:
             This method will raise an AsyncProcessError or AsyncProcessTermination
         """
-        for process in process_chain:
+        for process in process_list:
             # Extent the lock for each process by max processing time * 2
             if self.target_mapset_lock_set is True:
                 ret = self.lock_interface.extend(resource_id=self.target_mapset_lock_id,
@@ -497,12 +499,13 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
             elif process.exec_type == "python":
                 eval(process.executable)
 
-    def _execute(self):
+    def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses
 
+            - Call self._setup()
+            - Analyse the process chain
             - Check the target mapset and lock it for the maximum time
               a user can consume -> process_num_limit*process_time_limit
-            - Analyse the process chain
             - Initialize and create the temporal database and mapset
               or use the original mapset
             - Run the modules and extend the lock each run
@@ -513,7 +516,7 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
         # Setup the user credentials and logger
         self._setup()
         # Create the process chain
-        process_chain = self._validate_process_chain()
+        process_list = self._validate_process_chain()
         # Check and lock the target and temp mapsets
         self._check_lock_target_mapset()
 
@@ -535,8 +538,8 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
             self._create_temporary_grass_environment(source_mapset_name=self.target_mapset_name)
             self._lock_temp_mapset()
 
-        # Execute the process chain
-        self._execute_process_chain(process_chain)
+        # Execute the process list
+        self._execute_process_list(process_list)
         # Copy local mapset to original location, merge mapsets
         # if necessary
         self._copy_merge_tmp_mapset_to_target_mapset()

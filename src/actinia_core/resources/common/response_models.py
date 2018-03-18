@@ -6,6 +6,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
+from actinia_core.resources.common.process_chain import ProcessChainModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -238,6 +239,11 @@ class ProcessingResponseModel(Schema):
             'type': 'array',
             'items': ProcessLogModel,
             'description': 'A list of ProcessLogModels'
+        },
+        'process_chain_list': {
+            'type': 'array',
+            'items': ProcessChainModel,
+            'description': 'A list of ProcessChainModels that were used in the processing'
         },
         'process_results': {
             'type': 'string',
@@ -690,6 +696,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                orig_datetime=None,
                                resource_urls=[],
                                api_info=None,
+                               process_chain_list=[],
                                resp_type="pickle"):
     """Create a dictionary and its pickle or JSON representation to represent response information
 
@@ -706,7 +713,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         user_id (str): The user id
         resource_id (str): The resource id
         process_log (dict, str, list): The log from the running GRASS module
-        progress (ProcessLogModel): Progress information
+        progress (ProgressInfoModel): Progress information
         results (dict): The results of processing steps as Python data types
         message (str): The message from the running GRASS module or an error message
         http_code (int): The HTTP status code
@@ -715,6 +722,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         orig_datetime (datetime): The datetime of origin (datetime format)
         resource_urls ([str]): The list of url of the new created resources
         api_info (ApiInfoModel): Information about the API call, important for accounting
+        process_chain_list ([ProcessChainModel]): The list of process chains
         resp_type (str): What type of response, "pickle" or "json"
 
     Returns:
@@ -723,7 +731,6 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
     """
     #if issubclass(response_model_class, ProcessingResponseModel) is False:
     #    raise IOError
-
 
     resp_dict = response_model_class(status=status,
                                      user_id=user_id,
@@ -741,6 +748,8 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         resp_dict["progress"] = progress
     if results is not None:
         resp_dict["process_results"] = results
+    if process_chain_list is not None:
+        resp_dict["process_chain_list"] = process_chain_list
     if http_code is not None:
         resp_dict["http_code"] = http_code
     if http_code is not None:

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Running a custom process
+"""Running a custom UNIX process outside the GRASS GIS environment
 """
 import pickle
 from flask import jsonify, make_response
@@ -76,7 +76,7 @@ class AsyncEphemeralCustomProcessing(AsyncEphemeralProcessing):
 
         self._update_num_of_steps(1)
 
-    def _execute(self):
+    def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses
 
         Setup the user credentials, check the executable access and run the process

@@ -8,7 +8,6 @@ import os
 from actinia_core import endpoints
 from actinia_core import health_check
 from actinia_core import version
-from actinia_core.resources.common.exceptions import InvalidUsage
 from actinia_core.resources.common.app import flask_app
 from actinia_core.resources.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.resources.common.redis_interface import connect, create_job_queues
@@ -26,18 +25,21 @@ if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG
 # Create the endpoints based on the global config
 endpoints.create_endpoints()
 
-@flask_app.errorhandler(InvalidUsage)
-def handle_invalid_usage(error):
-    response = error.to_json()
-    response.status_code = error.status_code
-    return response
+# TODO: Implement a better error handler
+#@flask_app.errorhandler(InvalidUsage)
+#def handle_invalid_usage(error):
+#    response = error.to_json()
+#    response.status_code = error.status_code
+#    return response
 
 # Connect the redis interfaces
 connect(global_config.REDIS_SERVER_URL,
         global_config.REDIS_SERVER_PORT)
 
+# Create the process queue
 create_process_queue(global_config)
 
+# Disabled since the redis queue does not work in Python3
 # Create the job queue for redis
 #create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
 #                  global_config.REDIS_QUEUE_SERVER_PORT,

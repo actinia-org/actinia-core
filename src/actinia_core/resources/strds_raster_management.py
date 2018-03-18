@@ -367,13 +367,13 @@ class AsyncPersistentListRasterSTRDS(AsyncPersistentProcessing):
                 if self.rdc.user_data[option] is not None:
                     pc["1"]["inputs"][option] = self.rdc.user_data[option]
 
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
 
         self._create_temp_database(mapsets=self.required_mapsets)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.mapset_name)
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         result_file.flush()
         result = open(result_file.name, "r").readlines()
@@ -432,12 +432,12 @@ class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
 
         self._check_lock_target_mapset()
         self._create_temp_database(mapsets=self.required_mapsets)
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         input_file.close()
 
@@ -470,13 +470,13 @@ class AsyncPersistentUnregisterRaster(AsyncPersistentProcessing):
                              "type": "raster",
                              "file": input_file.name}}}
 
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._check_lock_target_mapset()
         self._create_temp_database(mapsets=self.required_mapsets)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         input_file.close()

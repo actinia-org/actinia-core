@@ -1,7 +1,13 @@
 
 # -*- coding: utf-8 -*-
 """
-Process queue implementation using multiprocessing, Queue() and Thread
+Process queue implementation using multiprocessing, Queue() and Thread.
+
+The process queue is responsible to run all requests in actinia that
+require to execute GRASS GIS processes or UNIX processes to create a respone.
+
+The process queue supports logging of the stderr output of the executed processes
+into a rotating logfile and fluent server.
 """
 
 import pickle
@@ -41,10 +47,13 @@ process_queue_manager = None
 
 def create_process_queue(config, use_logger=True):
     """Create the process queue that will start all processes in a separate
-    process. It uses a Queue() to receive Processes (function and arguments)
+    process. It uses a multiprocessing.Queue() to receive Processes (function and arguments)
+
+    The process queue can only be started once
 
     Args:
         config: The global configuration
+        use_logger: Use the rotating file logger and fluent for stderr logging of the processes
     """
     global process_queue_manager
 
@@ -60,11 +69,6 @@ def enqueue_job(timeout, func, *args):
     Args:
         func: The function to call from the subprocess
         *args: The function arguments
-
-    Returns:
-        int:
-        The current queue index
-
     """
     process_queue.put((func, timeout, args))
 
@@ -89,9 +93,15 @@ atexit.register(stop_process_queue)
 
 
 class EnqueuedProcess(object):
-    """The class that takes care of the process management like timeout check
-    and resource termination commits. It implements methods to start and gently terminate
+    """The class that takes care of the handling of a single process. It provides support for timeout check,
+    exit status check and resource termination commits. It implements methods to start and gently terminate
     processes, so that the resource database will be updated with the current state.
+
+    - timeout check -- Check if a waiting process exceedes its timeout for waiting to be run and terminate it.
+                       A resource update will be send to the resource database.
+    - exits status check -- Check if the exit status of the process was 0, if not check if the resource database
+                            acknowledged this with a termination or error message, if not send a resource update
+    - termination commits - Terminate the process and send an update to the resource database about the termination
     """
 
     def __init__(self, func, timeout,
@@ -110,27 +120,28 @@ class EnqueuedProcess(object):
         self.started = False
 
     def __del__(self):
-        print("Process deleted", self.resource_id)
+        pass
+        # print("Process deleted", self.resource_id)
 
     def start(self):
         """Start the process
 
         :return:
         """
-        print("Start job: ", self.api_info)
+        # print("Start job: ", self.api_info)
         self.started = True
         self.process.start()
 
     def terminate(self, status, message):
-        """Terminate the process if its running or in the queue and not running
+        """Terminate the process
 
-        Send a termination response to the resource logger
+        Send a termination response to the resource database.
 
         Args:
             status: The status why termination was requested
             message: The message why the process was terminated by the server (timeout, server shutdown, ...)
         """
-        print("Terminate process with message: ", message)
+        # print("Terminate process with message: ", message)
 
         if self.process.is_alive():
             self.process.terminate()
@@ -144,12 +155,14 @@ class EnqueuedProcess(object):
         return self.process.exitcode
 
     def check_timeout(self):
-        """Check if the process waited longer for running then the timeout
+        """Check if the process waited longer for running then the timeout that was set
+
+        Terminate the process if the timout limit was exceeded.
 
         Returns:
              False if within timeout, True if the process terminated itself
         """
-        print("Check timeout for process: ", self.api_info)
+        # print("Check timeout for process: ", self.api_info)
         if self.started is False:
             current_time = time.time()
             diff = current_time - self.init_time
@@ -162,9 +175,9 @@ class EnqueuedProcess(object):
         return False
 
     def check_exit(self):
-        """Check the exitcode, if a non-zero exit code created then
-        send an update to the resource logger that something strange happened
-        if the status of the resource is not "error"
+        """Check the exitcode, if a non-zero exit code was received then
+        send an update to the resource logger that something strange happened.
+        Send only if the status of the resource is not "error", "terminated" or "timeout".
 
         """
         if self.process.exitcode is not None and self.process.exitcode is not 0:
@@ -188,8 +201,8 @@ class EnqueuedProcess(object):
             status: The status that should be set (terminated)
             message: The message
         """
-        print("Send resource update status: ", status, " message: ", message)
-        # Get the latest response and use it as template for the kill request
+        # print("Send resource update status: ", status, " message: ", message)
+        # Get the latest response and use it as template for the resource update
         if response_data is None:
             response_data = self.resource_logger.get(self.user_id,
                                                      self.resource_id)
@@ -197,7 +210,7 @@ class EnqueuedProcess(object):
         # Send the termination response
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
-            print("Resource", http_code, response_model)
+            # print("Resource", http_code, response_model)
             response_model["status"] = status
             response_model["message"] = "The process was terminated by the server: %s" % message
             orig_time = response_model["accept_timestamp"]
@@ -233,8 +246,8 @@ class StreamToLogger(object):
 def create_logger(config, name):
     """Create the multiprocessing logger
 
-    It will log stout and stderr from all running processes
-    into a single worker logfile and to the fluentd process
+    It will log stderr from all running processes
+    into a single worker logfile and to the fluentd server
 
     Args:
         config: The global config
@@ -244,8 +257,8 @@ def create_logger(config, name):
     """
 
     # Create the logger for stdout and stderr logging
-    logger = mp.get_logger()
-    # logger = logging.getLogger(name=name)
+    # logger = mp.get_logger()
+    logger = logging.getLogger(name=name)
     logger.setLevel(logging.INFO)
 
     node = platform.node()
@@ -276,8 +289,8 @@ def create_logger(config, name):
     return logger
 
 
-def create_stderr_stdout_logger(config):
-    """Create two logger that catch all stdout and stderr that is emitted by the
+def create_stderr_logger(config):
+    """Create a logger that catch all stderr that is emitted by the
     worker processes
 
     Args:
@@ -289,26 +302,14 @@ def create_stderr_stdout_logger(config):
     sys.stderr = sl2
     return
 
-    stdout_logger = create_logger(config=config, name='stdout_logger')
-    sl1 = StreamToLogger(stdout_logger, logging.INFO)
-    sys.stdout = sl1
-    sys.stderr = sl1
-
-    stderr_logger = create_logger(config=config, name='stderr_logger')
-    sl2 = StreamToLogger(stderr_logger, logging.ERROR)
-    sys.stderr = sl2
-
 
 def queue_watcher(queue, data_set, lock):
     """This function runs in a separate thread to check the queue
 
     Args:
-        queue:
-        data_set:
-        lock:
-
-    Returns:
-
+        queue: The qeue to check
+        data_set: The set to add the received data
+        lock: The lock to be used for locking the set access
     """
 
     while True:
@@ -322,19 +323,21 @@ def queue_watcher(queue, data_set, lock):
 
 
 def start_process_queue_manager(config, queue, use_logger):
-    """The process queue manager that runs the infinit loop
+    """The process queue manager that runs the infinit loop for worker creation
 
-    - This function creates the stdout and stderr logger
-    - It listen to a queue in an infinite loop to
+    - This function creates the stderr logger if requested
+    - It listen to a queue in an infinite loop:
         - The queue is watched in a separate thread so that no data get lost
-        - Check if new porcesses are in the the set that is filled by the queue watcher
+        - Check if new processes are in the data set() that is filled by the queue watcher
         - Check the timeout of waiting processes
-        - Start new processes if existing ones finished
-        - Stop the queue and exit all running processes if the "STOP" isgnal was send via Queue()
+        - Enqueue and start new processes
+        - Remove finished processes or processes that exceeded their waiting timeout
+        - Stop the queue and exit all running processes if the "STOP" signal was send via Queue()
 
     Args:
         config: The global config
         queue: The multiprocessing.Queue() object that should be listened to
+        use_logger: Set True to create rotating logifle and fluent logger to log the stderr of the processes
     """
 
     data_set = set()
@@ -345,7 +348,7 @@ def start_process_queue_manager(config, queue, use_logger):
 
     # Create the logger if required
     if use_logger is True:
-        create_stderr_stdout_logger(config=config)
+        create_stderr_logger(config=config)
 
     running_procs = set()
     waiting_processes = set()
@@ -383,12 +386,12 @@ def start_process_queue_manager(config, queue, use_logger):
                         enqproc.terminate(status="error", message="Waiting process was terminated by server shutdown.")
                     del queue_thread
                     queue.close()
-                    print("Exit loop")
+                    # print("Exit loop")
                     exit(0)
                 # Enqueue a new process
                 if data is not None and len(data) == 3:
                     func, timeout, args = data
-                    print("Enqueue process: ", args[0].api_info)
+                    # print("Enqueue process: ", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
                                               timeout=timeout,
                                               resource_logger=resource_logger,
@@ -396,6 +399,7 @@ def start_process_queue_manager(config, queue, use_logger):
 
                     waiting_processes.add(enqproc)
 
+            # Start new processes if a process slot is available
             if len(running_procs) < config.NUMBER_OF_WORKERS:
                 if len(waiting_processes) > 0:
                     enqproc = waiting_processes.pop()
@@ -424,6 +428,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 for enqproc in procs_to_remove:
                     waiting_processes.remove(enqproc)
 
+            # Wait a short time
             time.sleep(0.05)
             count += 1
     except:

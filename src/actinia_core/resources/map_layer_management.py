@@ -476,13 +476,13 @@ class AsyncPersistentListLayers(AsyncPersistentProcessing):
         pc["1"]["inputs"]["type"] = layer_type
 
         self.skip_region_check = True
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._create_temp_database(self.required_mapsets)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         raster_layers_with_mapset = []
         raster_layers = self.module_output_log[0]["stdout"].split()
@@ -521,14 +521,14 @@ class AsyncPersistentRemoveLayers(AsyncPersistentProcessing):
         pc["1"]["inputs"]["type"] = layer_type
 
         self.skip_region_check = True
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._create_temp_database(self.required_mapsets)
         self._check_lock_target_mapset()
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         if "WARNING: No data base element files found" in "\n".join(self.module_output_log[0]["stderr"]):
             raise AsyncProcessError("<%s> layer not found"%layer_type)
@@ -565,14 +565,14 @@ class AsyncPersistentRenameLayers(AsyncPersistentProcessing):
         pc = {"1":{"module":"g.rename","inputs":{layer_type:name_string}}}
 
         self.skip_region_check = True
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._create_temp_database(self.required_mapsets)
         self._check_lock_target_mapset()
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         if "WARNING: " in "\n".join(self.module_output_log[0]["stderr"]):
             if "not found" in "\n".join(self.module_output_log[0]["stderr"]):

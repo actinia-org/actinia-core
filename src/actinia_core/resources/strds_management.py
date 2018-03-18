@@ -121,13 +121,13 @@ class AsyncPersistentListSTRDS(AsyncPersistentProcessing):
             select = "mapset=\'%s\'"%self.mapset_name
             pc["1"]["inputs"]["where"] = select
 
-        process_chain = self._validate_process_chain(skip_permission_check=True,
+        process_list = self._validate_process_chain(skip_permission_check=True,
                                                      process_chain=pc)
         self._create_temp_database()
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         mapset_lists = []
         mapsets = self.module_output_log[0]["stdout"].split()
@@ -460,13 +460,13 @@ class AsyncPersistentSTRDSInfo(AsyncPersistentProcessing):
                              "input": self.map_name},
               "flags": "gh"}}
 
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
         self._create_temp_database()
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")
 
@@ -508,8 +508,8 @@ class AsyncPersistentSTRDSDelete(AsyncPersistentProcessing):
         if args and "recursive" in args and args["recursive"] is True:
             pc["1"]["flags"] = "rf"
 
-        process_chain = self._validate_process_chain(skip_permission_check=True,
-                                                     process_chain=pc)
+        process_list = self._validate_process_chain(skip_permission_check=True,
+                                                    process_chain=pc)
 
         self._create_temp_database()
         self._check_lock_target_mapset()
@@ -517,7 +517,7 @@ class AsyncPersistentSTRDSDelete(AsyncPersistentProcessing):
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
         self.finish_message = "STRDS <%s> successfully deleted"%self.map_name
 
 
@@ -562,7 +562,7 @@ class AsyncPersistentSTRDSCreate(AsyncPersistentProcessing):
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(pc_1)
+        self._execute_process_list(pc_1)
 
         # check if STRDS exists
         raster_list = self.module_output_log[0]["stdout"].split("\n")
@@ -570,7 +570,7 @@ class AsyncPersistentSTRDSCreate(AsyncPersistentProcessing):
         if len(raster_list[0]) > 0:
             raise AsyncProcessError("STRDS <%s> exists."%self.map_name)
 
-        self._execute_process_chain(pc_2)
+        self._execute_process_list(pc_2)
 
         self.finish_message = "STRDS <%s> successfully created"%self.map_name
 

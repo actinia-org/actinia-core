@@ -311,8 +311,7 @@ class ProcessChainModel(Schema):
 
 
 class ProcessChainConverter(object):
-    """Convert the process chain description into a
-    process chain that can be executed
+    """Convert the process chain description into a process list that can be executed
     """
 
     def __init__(self, config=None, temp_file_path=None, process_dict=None, temporary_pc_files=None,

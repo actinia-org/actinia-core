@@ -66,7 +66,8 @@ def enqueue_job(timeout, func, *args):
     process_queue.enqueue_job(timeout, func, *args)
     return
 
-    # Most simple solution is just starting a process
+    # Just i case the current process queue does not work
+    # Then use the most simple solution by just starting the process
     from multiprocessing import Process
     p = Process(target=func, args=args)
     p.start()

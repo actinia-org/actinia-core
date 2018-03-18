@@ -324,13 +324,13 @@ class AsyncPersistentLocationCreator(AsyncPersistentProcessing):
                                "location": new_location},
                     "flags": "t"}}
 
-        process_chain = self._validate_process_chain(process_chain=pc,
+        process_list = self._validate_process_chain(process_chain=pc,
                                                      skip_permission_check=True)
 
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
             shutil.move(os.path.join(self.temp_grass_data_base, new_location), self.grass_user_data_base)

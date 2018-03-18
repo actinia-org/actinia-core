@@ -381,7 +381,7 @@ class AsyncEphemeralVectorInfo(AsyncEphemeralProcessing):
         self.response_model_class = VectorInfoResponseModel
 
     def _execute(self):
-        """Read info from a raster layer
+        """Read info from a vector layer
 
         Use a temporary mapset for processing
         """
@@ -401,9 +401,9 @@ class AsyncEphemeralVectorInfo(AsyncEphemeralProcessing):
                    "flags":"c"}
 
         self.skip_region_check = True
-        process_chain = self._create_temporary_grass_environment_and_process_chain(process_chain=pc,
-                                                                                   skip_permission_check=True)
-        self._execute_process_chain(process_chain)
+        process_list = self._create_temporary_grass_environment_and_process_chain(process_chain=pc,
+                                                                                  skip_permission_check=True)
+        self._execute_process_list(process_list)
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")
 
@@ -465,13 +465,13 @@ class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
                    "flags":"f"}
 
         self.skip_region_check = True
-        process_chain = self._validate_process_chain(process_chain=pc,
-                                                     skip_permission_check=True)
+        process_list = self._validate_process_chain(process_chain=pc,
+                                                    skip_permission_check=True)
         self._check_lock_target_mapset()
         self._create_grass_environment(grass_data_base=self.grass_user_data_base,
                                        mapset_name=self.target_mapset_name)
 
-        self._execute_process_chain(process_chain)
+        self._execute_process_list(process_list)
 
         if "WARNING: No data base element files found" in "\n".join(self.module_output_log[0]["stderr"]):
             raise AsyncProcessError("Vector layer <%s> not found"%(vector_name))
@@ -499,7 +499,7 @@ class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
         1. Check the process chain
         2. Lock the temp and target mapsets
         3. Setup GRASS and create the temporary mapset
-        4. Execute g.list of the first process chain to check if the target raster exists
+        4. Execute g.list of the first process chain to check if the target vector exists
         5. If the target vector does not exists then run v.random
         6. Copy the local temporary mapset to the storage and merge it into the target mapset
         """
@@ -542,7 +542,7 @@ class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
         self._check_lock_target_mapset()
         self._lock_temp_mapset()
         self._create_temporary_grass_environment(source_mapset_name=self.target_mapset_name)
-        self._execute_process_chain(pc_1)
+        self._execute_process_list(pc_1)
 
         # check if vector exists
         raster_list = self.module_output_log[0]["stdout"].split("\n")
@@ -550,7 +550,7 @@ class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
         if len(raster_list[0]) > 0:
             raise AsyncProcessError("Vector layer <%s> exists."%vector_name)
 
-        self._execute_process_chain(pc_2)
+        self._execute_process_list(pc_2)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
         self.finish_message = "Vector layer <%s> successfully created."%vector_name

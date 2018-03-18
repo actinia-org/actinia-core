@@ -16,7 +16,6 @@ from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.logging_interface import log_api_call
 from actinia_core.resources.common.messages_logger import MessageLogger
 from actinia_core.resources.common.resources_logger import ResourceLogger
-from actinia_core.resources.common.exceptions import InvalidUsage
 from actinia_core.resources.common.resource_data_container import ResourceDataContainer
 from actinia_core.resources.common.response_models import ProcessingResponseModel
 from actinia_core.resources.common.response_models import create_response_from_model, ApiInfoModel
@@ -109,26 +108,6 @@ class AsyncEphemeralResourceBase(Resource):
                                      path=request.path,
                                      request_url=self.request_url)
 
-    def raise_invalid_usage(self, message, status_code=400):
-        """
-        Invoke the InvalidUsage exception and send an error status to the Redis database
-
-        Args:
-            message: The error message that should be shown to the user
-            status_code: The HTTP status code
-
-        Raises:
-            InvalidUsage exception
-
-        """
-        iua = InvalidUsage(message=message, user_id=self.user_id, resource_id=self.resource_id,
-                           status_url=self.status_url, orig_time=self.orig_time,
-                           orig_datetime=self.orig_datetime, status_code=status_code)
-        self.message_logger.error("Error: status code %s message: %s" % (str(status_code), message))
-        self.resource_logger.commit(user_id=self.user_id, resource_id=self.resource_id, document=iua.to_pickle(),
-                                    expiration=global_config.REDIS_RESOURCE_EXPIRE_TIME)
-        raise iua
-
     def create_error_response(self, message, status="error", http_code=400):
         """Create an error response, that by default sets the status to error and the http_code to 400
 
@@ -162,7 +141,7 @@ class AsyncEphemeralResourceBase(Resource):
         Args:
             message: The error message
             status: The status, by default error
-            http_code: The hhtp code by default 400
+            http_code: The http code by default 400
 
         Returns:
             the result of make_response()

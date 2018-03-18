@@ -157,10 +157,12 @@ def start_job(*args):
 class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
     """
     This class processes GRASS data on the local machine in an temporary mapset
-    and copies the exported results to a specific destination directory.
+    and copies the exported results to a dedicated storage location.
 
     The temporary mapset will be removed by this class when the processing finished
-    and the results are stored in the dedicated directory.
+    and the results are stored in the dedicated storage location.
+
+    TODO: Implement the export of arbitrary files that were generated in the processing of the process chain
     """
     def __init__(self, rdc):
         """
@@ -350,6 +352,7 @@ class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
                                                                    format=resource["export"]["format"])
 
                 if output_type == "file":
+                    # TODO: This must be implemented
                     return
 
                 message = "Moving generated resources to final destination"
@@ -361,7 +364,7 @@ class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
 
                 self.resource_url_list.append(resource_url)
 
-    def _execute(self):
+    def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses
 
         Overwrite this function in subclasses
