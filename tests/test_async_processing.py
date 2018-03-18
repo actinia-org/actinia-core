@@ -205,7 +205,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain),
                               content_type="application/json")
-
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
@@ -218,7 +217,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         while True:
             rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
-            print(rv.data)
+            print("Get", rv.data.decode())
             resp = json_loads(rv.data)
             if resp["status"] == "finished" or resp["status"] == "error" or resp["status"] == "terminated":
                 break
@@ -228,11 +227,11 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             # Send the termination request, again and again :)
             rv = self.server.delete("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                     headers=self.admin_auth_header)
-            print(rv.data)
+            print("Delete", rv.data.decode())
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-        self.assertEquals(resp["status"], "terminated")
+        self.assertEqual(resp["status"], "terminated")
 
         time.sleep(1)
 
@@ -296,11 +295,9 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post('/locations/nc_spm_08/processing_async',
                               headers=self.user_auth_header)
 
-        print(rv.data)
+        print(rv.data.decode())
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-
-        time.sleep(1)
 
     def test_async_processing_error_6(self):
 

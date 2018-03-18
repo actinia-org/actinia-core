@@ -78,7 +78,7 @@ class GActiniaUserTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
-        self.assertEquals(json_load(rv.data)["User id"], self.admin_id)
+        self.assertEquals(json_load(rv.data)["User id"], "admin")
         self.assertEquals(json_load(rv.data)["User role"], "admin")
 
         # Delete the user as admin

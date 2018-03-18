@@ -6,7 +6,7 @@ import pickle
 import time
 import uuid
 from datetime import datetime
-from flask import make_response
+from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
@@ -25,10 +25,10 @@ from actinia_core.resources.user_auth import check_user_permissions, create_dumm
 from actinia_core.resources.resource_management import ResourceManager
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class AsyncEphemeralResourceBase(Resource):
@@ -91,7 +91,7 @@ class AsyncEphemeralResourceBase(Resource):
                                             resource_id=self.resource_id,
                                             _external=True)
 
-        if global_config.FORCE_HTTPS_URLS is True and  "http://" in self.status_url:
+        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.status_url:
             self.status_url = self.status_url.replace("http://", "https://")
 
         self.request_url = request.url
@@ -101,9 +101,15 @@ class AsyncEphemeralResourceBase(Resource):
         self.job_timeout = 0
 
         # Replace this with the correct response model in subclasses
-        self.response_model_class = ProcessingResponseModel   # The class that is used to create the response
+        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
 
-    def raise_invalid_usage(self, message, status_code=None):
+        # Put API information in the response for later accounting
+        self.api_info = ApiInfoModel(endpoint=request.endpoint,
+                                     method=request.method,
+                                     path=request.path,
+                                     request_url=self.request_url)
+
+    def raise_invalid_usage(self, message, status_code=400):
         """
         Invoke the InvalidUsage exception and send an error status to the Redis database
 
@@ -118,16 +124,62 @@ class AsyncEphemeralResourceBase(Resource):
         iua = InvalidUsage(message=message, user_id=self.user_id, resource_id=self.resource_id,
                            status_url=self.status_url, orig_time=self.orig_time,
                            orig_datetime=self.orig_datetime, status_code=status_code)
-        self.message_logger.error("Error: status code %s message: %s"%(str(status_code), message))
+        self.message_logger.error("Error: status code %s message: %s" % (str(status_code), message))
         self.resource_logger.commit(user_id=self.user_id, resource_id=self.resource_id, document=iua.to_pickle(),
                                     expiration=global_config.REDIS_RESOURCE_EXPIRE_TIME)
         raise iua
 
+    def create_error_response(self, message, status="error", http_code=400):
+        """Create an error response, that by default sets the status to error and the http_code to 400
+
+        This method sets the self.response_data variable.
+
+        Args:
+            message: The error message
+            status: The status, by default error
+            http_code: The hhtp code by default 400
+
+        """
+        self.response_data = create_response_from_model(self.response_model_class,
+                                                        status=status,
+                                                        user_id=self.user_id,
+                                                        resource_id=self.resource_id,
+                                                        process_log=None,
+                                                        results={},
+                                                        message=message,
+                                                        http_code=http_code,
+                                                        orig_time=self.orig_time,
+                                                        orig_datetime=self.orig_datetime,
+                                                        status_url=self.status_url,
+                                                        api_info=self.api_info)
+
+    def get_error_response(self, message, status="error", http_code=400):
+        """Return the error response.
+
+        This function will generate an error response using make_response()
+        In addition, a resource update is send using the error response.
+
+        Args:
+            message: The error message
+            status: The status, by default error
+            http_code: The hhtp code by default 400
+
+        Returns:
+            the result of make_response()
+
+        """
+        self.create_error_response(message=message, status=status, http_code=http_code)
+        self.resource_logger.commit(user_id=self.user_id,
+                                    resource_id=self.resource_id,
+                                    document=self.response_data)
+        http_code, response_model = pickle.loads(self.response_data)
+        return make_response(jsonify(response_model), http_code)
+
     def check_for_json(self):
         """Check if the Payload is a JSON document
 
-        Return: None:
-            None in case of success, raises an InvalidUsage exception
+        Return: bool:
+            True in case of success, False otherwise
         """
         # First check for the data field and create JSON from it
         if hasattr(request, "data") is True:
@@ -135,36 +187,43 @@ class AsyncEphemeralResourceBase(Resource):
             try:
                 self.request_data = json_loads(request.data)
             except Exception as e:
-                self.raise_invalid_usage(message="No JSON data in request: Exception: %s"%str(e))
-            return
+                self.create_error_response(message="No JSON data in request: Exception: %s" % str(e))
+                return False
 
         if request.is_json is False:
-            self.raise_invalid_usage(message="No JSON data in request")
+            self.create_error_response(message="No JSON data in request")
+            return False
 
         self.request_data = request.get_json()
+
+        return True
 
     def check_for_xml(self):
         """Check if the Payload is a XML document
 
-        Return: None:
-            None in case of success, raises an InvalidUsage exception
+        Return: bool:
+            True in case of success, False otherwise
         """
 
         if "Content-Type" not in request.headers:
-            self.raise_invalid_usage(message="XML content type is required.")
+            self.create_error_response(message="XML content type is required.")
+            return False
 
         if "XML" not in request.headers["Content-Type"].upper():
-            self.raise_invalid_usage(message="XML content type is required.")
+            self.create_error_response(message="XML content type is required.")
+            return False
 
         # Check if payload was provided
         if hasattr(request, "data") is False:
-            self.raise_invalid_usage(message="No XML data section in HTTP header.")
+            self.create_error_response(message="No XML data section in HTTP header.")
+            return False
 
         if request.data:
             self.request_data = request.data
-            return
+            return True
         else:
-            self.raise_invalid_usage(message="Empty XML data section in HTTP header.")
+            self.create_error_response(message="Empty XML data section in HTTP header.")
+            return False
 
     def preprocess(self, has_json=True, has_xml=False,
                    location_name=None, mapset_name=None, map_name=None):
@@ -185,20 +244,22 @@ class AsyncEphemeralResourceBase(Resource):
 
         Returns:
             The ResourceDataContainer that contains all required information for the async process
-
-        Raises:
-            InvalidUsage exception if XML for JSON payload is wrong
+            or None if the request was wrong. Then use the self.response_data variable to send a response.
 
         """
+        print("Hello")
         if has_json is True and has_xml is True:
             if request.is_json is True:
                 self.request_data = request.get_json()
             else:
-                self.check_for_xml()
+                if self.check_for_xml() is False:
+                    return None
         elif has_xml is True:
-            self.check_for_xml()
+            if self.check_for_xml() is False:
+                return None
         elif has_json is True:
-            self.check_for_json()
+            if self.check_for_json() is False:
+                return None
 
         # Compute the job timeout of the worker queue from the user credentials
         process_time_limit = self.user_credentials["permissions"]["process_time_limit"]
@@ -213,14 +274,8 @@ class AsyncEphemeralResourceBase(Resource):
                                                    file_name="__None__",
                                                    _external=True)
 
-        if global_config.FORCE_HTTPS_URLS is True and  "http://" in self.resource_url_base:
+        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.resource_url_base:
             self.resource_url_base = self.resource_url_base.replace("http://", "https://")
-
-        # Put API information in the response for later accounting
-        api_info = ApiInfoModel(endpoint=request.endpoint,
-                                method=request.method,
-                                path=request.path,
-                                request_url=self.request_url)
 
         # Create the accepted response that will be always send
         self.response_data = create_response_from_model(self.response_model_class,
@@ -234,7 +289,7 @@ class AsyncEphemeralResourceBase(Resource):
                                                         orig_time=self.orig_time,
                                                         orig_datetime=self.orig_datetime,
                                                         status_url=self.status_url,
-                                                        api_info=api_info)
+                                                        api_info=self.api_info)
 
         # Send the status to the database
         self.resource_logger.commit(self.user_id, self.resource_id, self.response_data)
@@ -250,7 +305,7 @@ class AsyncEphemeralResourceBase(Resource):
                                      user_credentials=self.user_credentials,
                                      resource_id=self.resource_id,
                                      status_url=self.status_url,
-                                     api_info=api_info,
+                                     api_info=self.api_info,
                                      resource_url_base=self.resource_url_base,
                                      orig_time=self.orig_time,
                                      orig_datetime=self.orig_datetime,
@@ -284,20 +339,19 @@ class AsyncEphemeralResourceBase(Resource):
             (int, dict)
             The http_code and the generated data dictionary
         """
-        http_code = None
-        response_model = None
         # Wait for the async process by asking the redis database for updates
         while True:
             response_data = self.resource_logger.get(self.user_id,
                                                      self.resource_id)
             if not response_data:
-                message = "Unable to receive process status. User id %s resource id %s"%(self.user_id,
-                                                                                         self.resource_id)
+                message = "Unable to receive process status. User id %s resource id %s" % (self.user_id,
+                                                                                           self.resource_id)
                 return make_response(message, 400)
 
             http_code, response_model = pickle.loads(response_data)
-            if response_model["status"] == "finished"\
-                    or response_model["status"] == "error"\
+            if response_model["status"] == "finished" \
+                    or response_model["status"] == "error" \
+                    or response_model["status"] == "timeout" \
                     or response_model["status"] == "terminated":
                 break
             time.sleep(poll_time)

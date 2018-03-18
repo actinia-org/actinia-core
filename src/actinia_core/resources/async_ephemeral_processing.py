@@ -103,8 +103,8 @@ class AsyncEphemeralResource(AsyncEphemeralResourceBase):
         # Preprocess the post call
         rdc = self.preprocess(location_name=location_name)
 
-        # RedisQueue approach
-        enqueue_job(self.job_timeout, start_job, rdc)
+        if rdc:
+            enqueue_job(self.job_timeout, start_job, rdc)
 
         html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)

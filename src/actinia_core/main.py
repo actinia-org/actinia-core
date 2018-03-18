@@ -5,9 +5,9 @@ Actinia Core
 """
 
 import os
-from  actinia_core import endpoints
-from  actinia_core import health_check
-from  actinia_core import version
+from actinia_core import endpoints
+from actinia_core import health_check
+from actinia_core import version
 from actinia_core.resources.common.exceptions import InvalidUsage
 from actinia_core.resources.common.app import flask_app
 from actinia_core.resources.common.config import global_config, DEFAULT_CONFIG_PATH

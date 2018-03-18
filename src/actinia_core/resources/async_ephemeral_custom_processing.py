@@ -46,12 +46,10 @@ class AsyncEphemeralCustomResource(AsyncEphemeralResourceBase):
         """
         # Preprocess the post call
         rdc = self.preprocess(has_json=True)
-        rdc.set_user_data(executable)
 
-        # RedisQueue approach
-        enqueue_job(self.job_timeout, start_job, rdc)
-        #proc = multiprocessing.Process(target=start_job, args=args)
-        #proc.start()
+        if rdc:
+            rdc.set_user_data(executable)
+            enqueue_job(self.job_timeout, start_job, rdc)
 
         html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)

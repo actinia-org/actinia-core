@@ -5,7 +5,7 @@ Raster layer resources
 from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
-
+import pickle
 from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
 from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
 from actinia_core.resources.common.redis_interface import enqueue_job
@@ -164,9 +164,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=raster_name)
+        if rdc:
+            enqueue_job(self.job_timeout, start_info_job, rdc)
+            http_code, response_model = self.wait_until_finish(0.02)
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, start_info_job, rdc)
-        http_code, response_model = self.wait_until_finish(0.02)
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
@@ -224,9 +227,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=raster_name)
+        if rdc:
+            enqueue_job(self.job_timeout, start_delete_job, rdc)
+            http_code, response_model = self.wait_until_finish(0.1)
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, start_delete_job, rdc)
-        http_code, response_model = self.wait_until_finish(0.1)
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
@@ -286,9 +292,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=raster_name)
+        if rdc:
+            enqueue_job(self.job_timeout, start_create_job, rdc)
+            http_code, response_model = self.wait_until_finish(0.1)
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, start_create_job, rdc)
-        http_code, response_model = self.wait_until_finish(0.1)
         return make_response(jsonify(response_model), http_code)
 
 

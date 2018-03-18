@@ -3,11 +3,11 @@ import unittest
 import pickle
 import uuid
 from actinia_core.resources.common.resources_logger import ResourceLogger
-from actinia_core import main as main
+from actinia_core.resources.common.app import flask_app
 try:
-    from .test_common_base import CommonTestCaseBase, global_config
+    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except:
-    from test_common_base import CommonTestCaseBase, global_config
+    from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -16,14 +16,14 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class ResourceLoggingTestCase(CommonTestCaseBase):
+class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
     """
     This class tests the resource logging interface
     """
 
     def setUp(self):
         # We need to set the application context
-        self.app_context = main.flask_app.app_context()
+        self.app_context = flask_app.app_context()
         self.app_context.push()
         # The test user
         self.user_id = "soeren"

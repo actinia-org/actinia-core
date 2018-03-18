@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 import unittest
 from actinia_core.resources.common.user import ActiniaUser
-from actinia_core import main as main
+from actinia_core.resources.common.app import flask_app
 try:
-    from .test_common_base import CommonTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except:
-    from test_common_base import CommonTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -14,7 +14,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class UserTestCase(CommonTestCaseBase):
+class UserTestCase(ActiniaResourceTestCaseBase):
     """
     This class tests the user interface, the creation and deletion
     of a user entry in a Redis database
@@ -22,7 +22,7 @@ class UserTestCase(CommonTestCaseBase):
 
     def setUp(self):
         # We need to set the application context
-        self.app_context = main.flask_app.app_context()
+        self.app_context = flask_app.app_context()
         self.app_context.push()
 
         # Create a test user

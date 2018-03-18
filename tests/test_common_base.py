@@ -6,7 +6,7 @@ import time
 import os
 from actinia_core.resources.common.config import global_config
 import actinia_core.resources.common.redis_interface as redis_interface
-from actinia_core import main as main
+from actinia_core.resources.common.app import flask_app
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -87,7 +87,7 @@ class CommonTestCaseBase(unittest.TestCase):
 
     def setUp(self):
         # We need to set the application context
-        self.app_context = main.flask_app.app_context()
+        self.app_context = flask_app.app_context()
         self.app_context.push()
 
     def tearDown(self):

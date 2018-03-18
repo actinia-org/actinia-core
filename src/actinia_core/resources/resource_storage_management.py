@@ -7,9 +7,8 @@ TODO: Tests required
 
 import os
 from flask import jsonify, make_response
-
 from flask_restful_swagger_2 import swagger
-
+import pickle
 from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
 from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
 from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
@@ -53,8 +52,12 @@ class SyncResourceStorageResource(AsyncEphemeralResourceBase):
         """Returns the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
-        enqueue_job(self.job_timeout, start_resource_storage_size, rdc)
-        http_code, response_model = self.wait_until_finish()
+        if rdc:
+            enqueue_job(self.job_timeout, start_resource_storage_size, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
@@ -75,8 +78,12 @@ class SyncResourceStorageResource(AsyncEphemeralResourceBase):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
-        enqueue_job(self.job_timeout, start_resource_storage_remove, rdc)
-        http_code, response_model = self.wait_until_finish()
+        if rdc:
+            enqueue_job(self.job_timeout, start_resource_storage_remove, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
 

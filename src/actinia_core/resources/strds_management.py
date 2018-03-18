@@ -2,6 +2,7 @@
 """
 TODO: Integrate into the ephemeral process chain approach
 """
+import pickle
 from flask import jsonify, make_response
 from flask_restful import reqparse
 from copy import deepcopy
@@ -72,13 +73,16 @@ class ListSTRDSResource(AsyncEphemeralResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name)
 
-        args = where_parser.parse_args()
-        rdc.set_user_data(args)
+        if rdc:
+            args = where_parser.parse_args()
+            rdc.set_user_data(args)
 
-        enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
-        http_code, response_model = self.wait_until_finish()
+            enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
-
 
 def list_raster_mapsets(*args):
     processing = AsyncPersistentListSTRDS(*args)
@@ -297,9 +301,12 @@ class STRDSManagementResource(AsyncEphemeralResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=strds_name)
+        if rdc:
+            enqueue_job(self.job_timeout, strds_info, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, strds_info, rdc)
-        http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
@@ -356,11 +363,15 @@ class STRDSManagementResource(AsyncEphemeralResourceBase):
                               mapset_name=mapset_name,
                               map_name=strds_name)
 
-        args = recursive_parser.parse_args()
-        rdc.set_user_data(args)
+        if rdc:
+            args = recursive_parser.parse_args()
+            rdc.set_user_data(args)
 
-        enqueue_job(self.job_timeout, strds_delete, rdc)
-        http_code, response_model = self.wait_until_finish()
+            enqueue_job(self.job_timeout, strds_delete, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
@@ -417,8 +428,12 @@ class STRDSManagementResource(AsyncEphemeralResourceBase):
                               mapset_name=mapset_name,
                               map_name=strds_name)
 
-        enqueue_job(self.job_timeout, strds_create, rdc)
-        http_code, response_model = self.wait_until_finish()
+        if rdc:
+            enqueue_job(self.job_timeout, strds_create, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
 

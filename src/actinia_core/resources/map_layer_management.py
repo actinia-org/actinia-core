@@ -5,7 +5,7 @@ Raster layer resources
 
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
-
+import pickle
 from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
 from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
 from actinia_core.resources.common.redis_interface import enqueue_job
@@ -60,13 +60,19 @@ class MapsetLayersResource(AsyncEphemeralResourceBase):
             }
 
         """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name, mapset_name=mapset_name)
-        args = glist_parser.parse_args()
-        rdc.set_user_data((args, self.layer_type))
+        rdc = self.preprocess(has_json=False,
+                              has_xml=False,
+                              location_name=location_name,
+                              mapset_name=mapset_name)
 
-        enqueue_job(self.job_timeout, list_raster_layers, rdc)
-        http_code, response_model = self.wait_until_finish()
+        if rdc:
+            args = glist_parser.parse_args()
+            rdc.set_user_data((args, self.layer_type))
+            enqueue_job(self.job_timeout, list_raster_layers, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
     def _delete(self, location_name, mapset_name):
@@ -84,14 +90,19 @@ class MapsetLayersResource(AsyncEphemeralResourceBase):
             flask.Response: HTTP 200 in case of success, HTTP 400 otherwise
 
         """
-        rdc = self.preprocess(has_json=False, has_xml=False,
+        rdc = self.preprocess(has_json=False,
+                              has_xml=False,
                               location_name=location_name,
                               mapset_name=mapset_name)
-        args = glist_parser.parse_args()
-        rdc.set_user_data((args, self.layer_type))
 
-        enqueue_job(self.job_timeout, remove_raster_layers, rdc)
-        http_code, response_model = self.wait_until_finish()
+        if rdc:
+            args = glist_parser.parse_args()
+            rdc.set_user_data((args, self.layer_type))
+            enqueue_job(self.job_timeout, remove_raster_layers, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
     def _put(self, location_name, mapset_name):
@@ -110,28 +121,33 @@ class MapsetLayersResource(AsyncEphemeralResourceBase):
             flask.Response: HTTP 200 in case of success, HTTP 400 otherwise
 
         """
-        rdc = self.preprocess(has_json=True, has_xml=False,
-                              location_name=location_name, mapset_name=mapset_name)
-        args = glist_parser.parse_args()
+        rdc = self.preprocess(has_json=True,
+                              has_xml=False,
+                              location_name=location_name,
+                              mapset_name=mapset_name)
 
         # Analyse the name list
         if isinstance(self.request_data, list) is False:
-            self.raise_invalid_usage("Wrong format for layer list")
+            return self.get_error_response(message="Wrong format for layer list")
 
         if len(self.request_data) == 0:
-            self.raise_invalid_usage("Empty layer list")
+            return self.get_error_response(message="Empty layer list")
 
         for name_tuple in self.request_data:
             if isinstance(name_tuple, tuple) is False and isinstance(name_tuple, list) is False:
-                self.raise_invalid_usage("List entry is not a tuple or list")
+                return self.get_error_response(message="List entry is not a tuple or list")
 
             if len(name_tuple) != 2:
-                self.raise_invalid_usage("A tuple of layer names must have 2 entries")
+                return self.get_error_response(message="A tuple of layer names must have 2 entries")
 
-        rdc.set_user_data((args, self.layer_type))
+        if rdc:
+            args = glist_parser.parse_args()
+            rdc.set_user_data((args, self.layer_type))
+            enqueue_job(self.job_timeout, rename_raster_layers, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, rename_raster_layers, rdc)
-        http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
 

@@ -64,7 +64,9 @@ __email__      = "soerengebbert@googlemail.com"
 flask_app = Flask(__name__)
 CORS(flask_app)
 
-flask_api = Api(flask_app, api_version='0.1pre-alpha', api_spec_url='/api/swagger',
+flask_api = Api(flask_app,
+                api_version='0.1pre-alpha',
+                api_spec_url='/api/swagger',
                 title=actinia_string,
                 description=actinia_description, schemes=['https'],
                 consumes=['application/gml+xml', 'application/json'])

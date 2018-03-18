@@ -1,17 +1,18 @@
 # -*- coding: utf-8 -*-
 import unittest
-try:
-    from .test_common_base import CommonTestCaseBase
-except:
-    from test_common_base import CommonTestCaseBase
 from actinia_core.resources.common.api_logger import ApiLogger
-from actinia_core import main as main
+from actinia_core.resources.common.app import flask_app
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase
+except:
+    from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
+
 
 class DummyHTTPRequest(object):
 
@@ -21,13 +22,14 @@ class DummyHTTPRequest(object):
         self.url = "url"
         self.method = "GET"
 
-class ApiLoggingTestCase(CommonTestCaseBase):
+
+class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
     """
     This class tests the api logging interface
     """
     def setUp(self):
         # We need to set the application context
-        self.app_context = main.flask_app.app_context()
+        self.app_context = flask_app.app_context()
         self.app_context.push()
         # The test user
         self.user_id = "soeren"

@@ -11,7 +11,7 @@ import shutil
 from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger
-
+import pickle
 from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
 from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
 from actinia_core.resources.common.app import auth
@@ -67,9 +67,12 @@ class ListMapsetsResource(AsyncEphemeralResourceBase):
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
                               mapset_name="PERMANENT")
+        if rdc:
+            enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
-        http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
 

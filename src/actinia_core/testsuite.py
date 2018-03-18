@@ -6,15 +6,25 @@ import time
 import unittest
 from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
-from actinia_core import main as main
+from actinia_core import health_check
+from actinia_core import version
+from actinia_core.resources.common.app import flask_app
 from actinia_core.resources.common import redis_interface
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.user import ActiniaUser
+from actinia_core.endpoints import create_endpoints
+from actinia_core.resources.common.process_queue import create_process_queue
+from actinia_core.resources.common.process_queue import stop_process_queue
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Soeren Gebbert"
 __email__ = "soerengebbert@googlemail.com"
+
+# Create endpoints
+create_endpoints()
+# Process queue
+create_process_queue(config=global_config)
 
 
 class ActiniaRequests(object):
@@ -49,7 +59,7 @@ class ActiniaRequests(object):
             resp.data = resp.text
         return resp
 
-    def post(self, url, **kargs):
+    def _request(self, url, method, **kargs):
         if "content_type" in kargs:
             del kargs["content_type"]
 
@@ -58,46 +68,30 @@ class ActiniaRequests(object):
         else:
             server_url = url
 
-        resp = requests.post(server_url, **kargs)
+        if method == "post":
+            resp = requests.post(server_url, **kargs)
+        elif method == "get":
+            if ".tif" in url:
+                resp = requests.get(server_url, stream=True, **kargs)
+            else:
+                resp = requests.get(server_url, **kargs)
+        elif method == "delete":
+            resp = requests.delete(server_url, **kargs)
+        else:
+            resp = requests.put(server_url, **kargs)
         return self._make_flask_response(resp)
+
+    def post(self, url, **kargs):
+        return self._request(url=url, method="post", **kargs)
 
     def get(self, url, **kargs):
-
-        if "http" not in url:
-            server_url = self.graas_server + url
-        else:
-            server_url = url
-
-        if ".tif" in url:
-            resp = requests.get(server_url, stream=True, **kargs)
-        else:
-            resp = requests.get(server_url, **kargs)
-
-        return self._make_flask_response(resp)
+        return self._request(url=url, method="get", **kargs)
 
     def delete(self, url, **kargs):
-        if "content_type" in kargs:
-            del kargs["content_type"]
-
-        if "http" not in url:
-            server_url = self.graas_server + url
-        else:
-            server_url = url
-
-        resp = requests.delete(server_url, **kargs)
-        return self._make_flask_response(resp)
+        return self._request(url=url, method="delete", **kargs)
 
     def put(self, url, **kargs):
-        if "content_type" in kargs:
-            del kargs["content_type"]
-
-        if "http" not in url:
-            server_url = self.graas_server + url
-        else:
-            server_url = url
-
-        resp = requests.put(server_url, **kargs)
-        return self._make_flask_response(resp)
+        return self._request(url=url, method="put", **kargs)
 
 
 class ActiniaTestCaseBase(unittest.TestCase):
@@ -109,6 +103,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
     user = None
     admin = None
     root = None
+    auth_header = {}
+    users_list = []
 
     if "GRAAS_SERVER_TEST" in os.environ:
         server_test = bool(os.environ["GRAAS_SERVER_TEST"])
@@ -118,11 +114,13 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+
         if cls.server_test is False and cls.custom_graas_cfg is False:
             global_config.REDIS_SERVER_SERVER = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
             global_config.GRASS_RESOURCE_DIR = "/tmp"
             global_config.DOWNLOAD_CACHE = "/tmp/download_cache"
+
             # Start the redis interface
             redis_interface.connect(global_config.REDIS_SERVER_URL,
                                     global_config.REDIS_SERVER_PORT)
@@ -130,22 +128,25 @@ class ActiniaTestCaseBase(unittest.TestCase):
             global_config.REDIS_QUEUE_SERVER_URL = "localhost"
             global_config.REDIS_QUEUE_SERVER_PORT = 6379
             # Create the job queue
-            #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+            # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,
             #                                  global_config.NUMBER_OF_WORKERS)
+
+
         # If the custom_graas_cfg variable is set, then the graas config file will be read
         # to configure Redis queue
         if cls.server_test is False and cls.custom_graas_cfg is not False:
             global_config.read(cls.custom_graas_cfg)
 
-            # Create the job queue
-            #redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
-            #                                  global_config.NUMBER_OF_WORKERS)
-
             # Start the redis interface
             redis_interface.connect(global_config.REDIS_SERVER_URL,
                                     global_config.REDIS_SERVER_PORT)
+
+            # Create the job queue
+            # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
+            #                                  global_config.NUMBER_OF_WORKERS)
+
 
         # We create 4 user for all roles: guest, user, admin, root
         accessible_datasets = {"nc_spm_08": ["PERMANENT",
@@ -154,130 +155,71 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                              "test_mapset"],
                                "ECAD": ["PERMANENT"],
                                "LL": ["PERMANENT"]}
-        # Password is the same for all
-        cls.password = "12345678"
 
-        ################### GUEST USER ###################
+        ################### Create users ###################
 
-        cls.guest_id = "guest"
-        cls.user_group = "test_group"
-        cls.auth = bytes('%s:%s' % (cls.guest_id, cls.password), "utf-8")
+        cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(name="guest", role="guest",
+                                                                               process_num_limit=3,
+                                                                               process_time_limit=2,
+                                                                               accessible_datasets=accessible_datasets)
+        cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(name="user", role="user",
+                                                                            process_num_limit=3,
+                                                                            process_time_limit=4,
+                                                                            accessible_datasets=accessible_datasets)
+        cls.admin_id, cls.admin_group, cls.admin_auth_header = cls.create_user(name="admin", role="admin",
+                                                                               accessible_datasets=accessible_datasets)
+        cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(name="superadmin", role="superadmin",
+                                                                            accessible_datasets=accessible_datasets)
 
-        # We need to create an HTML basic authorization header
-        cls.guest_auth_header = Headers()
-        cls.guest_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode(cls.auth).decode())
+    @classmethod
+    def create_user(cls, name="guest", role="guest",
+                    group="group", password="abcdefgh",
+                    accessible_datasets=None, process_num_limit=1000,
+                    process_time_limit=6000):
 
-        # Make sure the user database is empty
-        user = ActiniaUser(cls.guest_id)
-        if user.exists():
-            user.delete()
-        # Create a user in the database and reduce its credentials
-        cls.guest = ActiniaUser.create_user(cls.guest_id,
-                                            cls.user_group,
-                                            cls.password,
-                                            user_role="guest",
-                                            accessible_datasets=accessible_datasets,
-                                            process_num_limit=3,
-                                            process_time_limit=2)
-        cls.guest.add_accessible_modules(["uname", "sleep"])
-        cls.guest.update()
-
-        ################### NORMAL USER ###################
-
-        cls.user_id = "user"
-        cls.auth = bytes('%s:%s' % (cls.user_id, cls.password), "utf-8")
+        auth = bytes('%s:%s' % (name, password), "utf-8")
 
         # We need to create an HTML basic authorization header
-        cls.user_auth_header = Headers()
-        cls.user_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode(cls.auth).decode())
+        cls.auth_header[role] = Headers()
+        cls.auth_header[role].add('Authorization',
+                                  'Basic ' + base64.b64encode(auth).decode())
 
         # Make sure the user database is empty
-        user = ActiniaUser(cls.user_id)
-        if user.exists():
-            user.delete()
-        # Create a user in the database and reduce its credentials
-        cls.user = ActiniaUser.create_user(cls.user_id,
-                                           cls.user_group,
-                                           cls.password,
-                                           user_role="user",
-                                           accessible_datasets=accessible_datasets,
-                                           process_num_limit=3,
-                                           process_time_limit=2)
-        cls.user.add_accessible_modules(["uname", "sleep"])
-        cls.user.update()
-
-        ################### ADMIN USER ###################
-
-        cls.admin_id = "admin"
-        cls.auth = bytes('%s:%s' % (cls.admin_id, cls.password), "utf-8")
-
-        # We need to create an HTML basic authorization header
-        cls.admin_auth_header = Headers()
-        cls.admin_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode(cls.auth).decode())
-
-        # Make sure the user database is empty
-        user = ActiniaUser(cls.admin_id)
+        user = ActiniaUser(name)
         if user.exists():
             user.delete()
         # Create a user in the database
-        cls.admin = ActiniaUser.create_user(cls.admin_id,
-                                            cls.user_group,
-                                            cls.password,
-                                            user_role="admin",
-                                            accessible_datasets=accessible_datasets,
-                                            process_num_limit=1000,
-                                            process_time_limit=6000)
+        user = ActiniaUser.create_user(name,
+                                       group,
+                                       password,
+                                       user_role=role,
+                                       accessible_datasets=accessible_datasets,
+                                       process_num_limit=process_num_limit,
+                                       process_time_limit=process_time_limit)
+        user.add_accessible_modules(["uname", "sleep"])
+        cls.users_list.append(user)
 
-        ################### ROOT USER ###################
-
-        cls.root_id = "superadmin"
-        cls.auth = bytes('%s:%s' % (cls.root_id, cls.password), "utf-8")
-
-        # We need to create an HTML basic authorization header
-        cls.root_auth_header = Headers()
-        cls.root_auth_header.add('Authorization',
-                                  'Basic ' + base64.b64encode(cls.auth).decode())
-
-        # Make sure the user database is empty
-        user = ActiniaUser(cls.root_id)
-        if user.exists():
-            user.delete()
-        # Create a user in the database
-        cls.root = ActiniaUser.create_user(cls.root_id,
-                                           cls.user_group,
-                                           cls.password,
-                                           user_role="superadmin",
-                                           accessible_datasets=accessible_datasets,
-                                           process_num_limit=1000,
-                                           process_time_limit=6000)
+        return name, group, cls.auth_header[role]
 
     @classmethod
     def tearDownClass(cls):
-        if cls.guest:
-            cls.guest.delete()
-        if cls.user:
-            cls.user.delete()
-        if cls.admin:
-            cls.admin.delete()
-        if cls.root:
-            cls.root.delete()
+
+        for user in cls.users_list:
+            user.delete()
 
         if cls.server_test is False:
             redis_interface.disconnect()
 
     def setUp(self):
         # We need to set the application context
-        self.app_context = main.flask_app.app_context()
+        self.app_context = flask_app.app_context()
         self.app_context.push()
 
         # Check if the local or server site tests should be performed
         if self.server_test is False:
-            main.flask_app.config['TESTING'] = True
+            flask_app.config['TESTING'] = True
 
-            self.server = main.flask_app.test_client()
+            self.server = flask_app.test_client()
         else:
             self.server = ActiniaRequests()
 
@@ -303,7 +245,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         """
         # Check if the resource was accepted
-        print(response.data.decode())
+        print("waitAsyncStatusAssertHTTP:", response.data.decode())
         self.assertEqual(response.status_code, 200, "HTML status code is wrong %i" % response.status_code)
         self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s" % response.mimetype)
 
@@ -315,10 +257,10 @@ class ActiniaTestCaseBase(unittest.TestCase):
         while True:
             rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=headers)
-            print(rv.data.decode())
+            print("waitAsyncStatusAssertHTTP in loop:", rv.data.decode())
             resp_data = json_loads(rv.data)
-            if resp_data["status"] == "finished" or resp_data["status"] == "error" or resp_data[
-                "status"] == "terminated":
+            if resp_data["status"] == "finished" or resp_data["status"] == "error" or \
+                    resp_data["status"] == "terminated" or resp_data["status"] == "timeout":
                 break
             time.sleep(0.2)
 
@@ -330,3 +272,20 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         time.sleep(0.4)
         return resp_data
+
+    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
+
+        # Unlock mapset for deletion
+        rv = self.server.delete('/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
+                                headers=self.admin_auth_header)
+        print(rv.data.decode())
+
+        # Delete any existing mapsets
+        rv = self.server.delete('/locations/%s/mapsets/%s' % (location_name, mapset_name),
+                                headers=self.admin_auth_header)
+        print(rv.data.decode())
+
+        # Create new mapsets
+        rv = self.server.post('/locations/%s/mapsets/%s' % (location_name, mapset_name),
+                              headers=self.admin_auth_header)
+        print(rv.data.decode())

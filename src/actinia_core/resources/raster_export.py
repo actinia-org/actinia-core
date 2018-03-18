@@ -48,9 +48,10 @@ class AsyncEphemeralRasterLayerExportResource(AsyncEphemeralResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=raster_name)
-        rdc.set_user_data(use_raster_region)
+        if rdc:
+            rdc.set_user_data(use_raster_region)
+            enqueue_job(self.job_timeout, start_job, rdc)
 
-        enqueue_job(self.job_timeout, start_job, rdc)
         html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 

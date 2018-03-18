@@ -372,6 +372,9 @@ class ProcessChainConverter(object):
 
     def process_chain_to_process_list(self, process_chain):
 
+        if not process_chain:
+            raise AsyncProcessError("Process chain is empty")
+
         if "list" in process_chain and "version" in process_chain:
             return self._process_chain_to_process_list(process_chain)
         else:

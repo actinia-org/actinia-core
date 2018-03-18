@@ -68,30 +68,37 @@ class AsyncProcessValidationResource(AsyncEphemeralResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
-    def _execute(self, location_name):
-
-        rdc = self.preprocess(has_json=True, has_xml=True,
-                              location_name=location_name)
-        print(str(rdc))
-        enqueue_job(self.job_timeout, start_job, rdc)
-
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
 
-        self._execute(location_name)
+        rdc = self.preprocess(has_json=True, has_xml=True,
+                              location_name=location_name)
+
+        if rdc:
+            rdc.set_storage_model_to_file()
+            enqueue_job(self.job_timeout, start_job, rdc)
+
         html_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), html_code)
 
 
-class SyncProcessValidationResource(AsyncProcessValidationResource):
+class SyncProcessValidationResource(AsyncEphemeralResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
 
-        self._execute(location_name)
-        http_code, response_model = self.wait_until_finish()
+        rdc = self.preprocess(has_json=True, has_xml=True,
+                              location_name=location_name)
+
+        if rdc:
+            rdc.set_storage_model_to_file()
+            enqueue_job(self.job_timeout, start_job, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
+
         return make_response(jsonify(response_model), http_code)
 
 

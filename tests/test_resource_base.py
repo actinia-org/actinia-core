@@ -67,20 +67,4 @@ setup_environment()
 
 
 class ActiniaResourceTestCaseBase(ActiniaTestCaseBase):
-
-    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
-
-        # Unlock mapset for deletion
-        rv = self.server.delete('/locations/%s/mapsets/%s/lock'%(location_name ,mapset_name),
-                              headers=self.admin_auth_header)
-        print(rv.data.decode())
-
-        # Delete any existing mapsets
-        rv = self.server.delete('/locations/%s/mapsets/%s'%(location_name ,mapset_name),
-                                headers=self.admin_auth_header)
-        print(rv.data.decode())
-
-        # Create new mapsets
-        rv = self.server.post('/locations/%s/mapsets/%s'%(location_name ,mapset_name),
-                              headers=self.admin_auth_header)
-        print(rv.data.decode())
+    pass

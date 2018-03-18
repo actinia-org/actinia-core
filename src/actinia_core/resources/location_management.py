@@ -7,6 +7,7 @@ TODO: Integrate into the ephemeral process chain approach
 from flask import jsonify, make_response
 import os
 import shutil
+import pickle
 from flask_restful_swagger_2 import swagger, Schema
 from actinia_core.resources.common.app import auth
 from actinia_core.resources.common.logging_interface import log_api_call
@@ -20,12 +21,11 @@ from actinia_core.resources.mapset_management import AsyncPersistentGetProjectio
 from actinia_core.resources.common.redis_interface import enqueue_job
 from actinia_core.resources.common.exceptions import AsyncProcessError
 
-
 __license__ = "GPLv3"
-__author__     = "S�ren Gebbert"
-__copyright__  = "Copyright 2016, S�ren Gebbert"
+__author__ = "S�ren Gebbert"
+__copyright__ = "Copyright 2016, S�ren Gebbert"
 __maintainer__ = "S�ren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class LocationListResponseModel(Schema):
@@ -39,11 +39,11 @@ class LocationListResponseModel(Schema):
         },
         'locations': {
             'type': 'array',
-            'items':{"type":"string"},
+            'items': {"type": "string"},
             'description': 'The list of locations in the GRASS database'
         }
     }
-    example = {"locations": ["nc_spm_08" "LL", "ECAD"],"status": "success"}
+    example = {"locations": ["nc_spm_08" "LL", "ECAD"], "status": "success"}
     required = ["status", "locations"]
 
 
@@ -58,6 +58,7 @@ class ListLocationsResource(AsyncEphemeralResourceBase):
     """Return a list of all available locations that are located in the GRASS database
     """
     layer_type = None
+
     @swagger.doc({
         'tags': ['location management'],
         'description': 'Return a list of all available locations that are located in the '
@@ -65,11 +66,11 @@ class ListLocationsResource(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'This response returns a list of location names',
-                'schema':LocationListResponseModel
+                'schema': LocationListResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -88,7 +89,8 @@ class ListLocationsResource(AsyncEphemeralResourceBase):
                     if os.path.isdir(mapset_path) and os.access(mapset_path, os.R_OK & os.X_OK):
                         # Check access rights to the global database
                         # Super admin can see all locations
-                        if self.has_superadmin_role or dir in self.user_credentials["permissions"]["accessible_datasets"]:
+                        if self.has_superadmin_role or dir in self.user_credentials["permissions"][
+                            "accessible_datasets"]:
                             locations.append(dir)
         # List all locations in the user database
         user_database = os.path.join(self.grass_user_data_base, self.user_group)
@@ -125,6 +127,7 @@ class ProjectionInfoModel(Schema):
 class LocationManagementResourceUser(AsyncEphemeralResourceBase):
     """This class returns informations about a specific location
     """
+
     def __init__(self):
         AsyncEphemeralResourceBase.__init__(self)
 
@@ -146,11 +149,11 @@ class LocationManagementResourceUser(AsyncEphemeralResourceBase):
             '200': {
                 'description': 'The location projection and current computational '
                                'region of the PERMANENT mapset',
-                'schema':MapsetInfoResponseModel
+                'schema': MapsetInfoResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -160,9 +163,12 @@ class LocationManagementResourceUser(AsyncEphemeralResourceBase):
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
                               mapset_name="PERMANENT")
+        if rdc:
+            enqueue_job(self.job_timeout, read_current_region, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, read_current_region, rdc)
-        http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
 
@@ -193,11 +199,11 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Success message for location deletion',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -206,31 +212,32 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
         """
         # Delete only locations from the user database
         location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
-        permanent_mapset =  os.path.join(location, "PERMANENT")
-        wind_file =  os.path.join(permanent_mapset, "WIND")
+        permanent_mapset = os.path.join(location, "PERMANENT")
+        wind_file = os.path.join(permanent_mapset, "WIND")
         # Check the location path, only "valid" locations can be deleted
         if os.path.isdir(location):
             if os.path.isdir(permanent_mapset) and os.path.isfile(wind_file):
                 try:
                     shutil.rmtree(location)
                     return make_response(jsonify(SimpleResponseModel(status="success",
-                                                                     message="location %s deleted"%location_name)),
+                                                                     message="location %s deleted" % location_name)),
                                          200)
                 except Exception as e:
                     return make_response(jsonify(SimpleResponseModel(status="error",
-                                                  message="Unable to delete "
-                                                          "location %s Exception %s"%(location_name,str(e)))),
+                                                                     message="Unable to delete "
+                                                                             "location %s Exception %s" % (
+                                                                             location_name, str(e)))),
                                          500)
 
         return make_response(jsonify(SimpleResponseModel(status="error",
-                                                         message="location %s does not exists"%location_name)),
+                                                         message="location %s does not exists" % location_name)),
                              400)
 
     @swagger.doc({
         'tags': ['location management'],
         'description': 'Create a new location based on EPSG code in the user database. '
                        'Minimum required user role: admin.',
-        'consumes':['application/json'],
+        'consumes': ['application/json'],
         'parameters': [
             {
                 'name': 'location_name',
@@ -250,11 +257,11 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Create a new location based on EPSG code',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -263,23 +270,28 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
         """
         # Create only new locations if they did not exist in the global database
         location = os.path.join(self.grass_data_base, location_name)
+
         # Check the location path
         if os.path.isdir(location):
-            self.raise_invalid_usage(message="Unable to create location. "
-                                             "Location <%s> exists in global database."%location_name)
+            return self.get_error_response(message="Unable to create location. "
+                                                   "Location <%s> exists in global database." % location_name)
+
         # Check also for the user database
         location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
         # Check the location path
         if os.path.isdir(location):
-            self.raise_invalid_usage(message="Unable to create location. "
-                                             "Location <%s> exists in user database."%location_name)
+            return self.get_error_response(message="Unable to create location. "
+                                                   "Location <%s> exists in user database." % location_name)
 
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
                               mapset_name="PERMANENT")
+        if rdc:
+            enqueue_job(self.job_timeout, create_location, rdc)
+            http_code, response_model = self.wait_until_finish()
+        else:
+            http_code, response_model = pickle.loads(self.response_data)
 
-        enqueue_job(self.job_timeout, create_location, rdc)
-        http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
 
@@ -307,10 +319,10 @@ class AsyncPersistentLocationCreator(AsyncPersistentProcessing):
 
         self._create_temp_database()
 
-        pc = {"1":{"module":"g.proj",
-                   "inputs":{"epsg":epsg_code,
-                             "location":new_location},
-                   "flags":"t"}}
+        pc = {"1": {"module": "g.proj",
+                    "inputs": {"epsg": epsg_code,
+                               "location": new_location},
+                    "flags": "t"}}
 
         process_chain = self._validate_process_chain(process_chain=pc,
                                                      skip_permission_check=True)
@@ -323,9 +335,9 @@ class AsyncPersistentLocationCreator(AsyncPersistentProcessing):
         if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
             shutil.move(os.path.join(self.temp_grass_data_base, new_location), self.grass_user_data_base)
         else:
-            raise AsyncProcessError("Unable to create location <%s>"%new_location)
+            raise AsyncProcessError("Unable to create location <%s>" % new_location)
 
-        self.finish_message = "Location <%s> successfully created"%new_location
+        self.finish_message = "Location <%s> successfully created" % new_location
 
 
 def read_current_region(*args):

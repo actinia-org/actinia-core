@@ -67,12 +67,13 @@ def enqueue_job(timeout, func, *args):
     return
 
     # Most simple solution is just starting a process
-    #from multiprocessing import Process
-    #p = Process(target=func, args=args)
-    #p.start()
+    from multiprocessing import Process
+    p = Process(target=func, args=args)
+    p.start()
 
+    return
 
-def enqueue_job_redis(timeout, func, *args):
+def enqueue_job_old(timeout, func, *args):
     """Enqueue a job in the job queues
 
     TODO: The redis queue approach does not work and is deactivated
