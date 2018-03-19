@@ -23,9 +23,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Create endpoints
 create_endpoints()
-# Process queue
-create_process_queue(config=global_config)
-
 
 class ActiniaRequests(object):
     """Requests to a actinia server are performed with this class
@@ -120,11 +117,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
             global_config.REDIS_SERVER_PORT = 7000
             global_config.GRASS_RESOURCE_DIR = "/tmp"
             global_config.DOWNLOAD_CACHE = "/tmp/download_cache"
-
-            # Start the redis interface
-            redis_interface.connect(global_config.REDIS_SERVER_URL,
-                                    global_config.REDIS_SERVER_PORT)
-
             global_config.REDIS_QUEUE_SERVER_URL = "localhost"
             global_config.REDIS_QUEUE_SERVER_PORT = 6379
             # Create the job queue
@@ -138,15 +130,17 @@ class ActiniaTestCaseBase(unittest.TestCase):
         if cls.server_test is False and cls.custom_graas_cfg is not False:
             global_config.read(cls.custom_graas_cfg)
 
-            # Start the redis interface
-            redis_interface.connect(global_config.REDIS_SERVER_URL,
-                                    global_config.REDIS_SERVER_PORT)
-
             # Create the job queue
             # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,
             #                                  global_config.NUMBER_OF_WORKERS)
 
+        # Start the redis interface
+        redis_interface.connect(global_config.REDIS_SERVER_URL,
+                                global_config.REDIS_SERVER_PORT)
+
+        # Process queue
+        create_process_queue(config=global_config)
 
         # We create 4 user for all roles: guest, user, admin, root
         accessible_datasets = {"nc_spm_08": ["PERMANENT",
