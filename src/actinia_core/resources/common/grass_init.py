@@ -9,7 +9,7 @@ import subprocess
 import tempfile
 import shutil
 import uuid
-from actinia_core.resources.common.messages_logger import MessageLogger
+from .messages_logger import MessageLogger
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

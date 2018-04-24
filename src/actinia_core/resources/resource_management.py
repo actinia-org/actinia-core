@@ -11,12 +11,12 @@ from flask_restful import Resource
 
 from flask_restful_swagger_2 import swagger
 
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.logging_interface import ResourceLogger
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.common.user import ActiniaUser
-from actinia_core.resources.common.response_models import ProcessingResponseModel, SimpleResponseModel,\
+from .common.app import auth
+from .common.config import global_config
+from .common.logging_interface import ResourceLogger
+from .common.logging_interface import log_api_call
+from .common.user import ActiniaUser
+from .common.response_models import ProcessingResponseModel, SimpleResponseModel,\
     ProcessingResponseListModel
 
 __license__ = "GPLv3"

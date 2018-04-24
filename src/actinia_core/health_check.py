@@ -10,7 +10,7 @@ __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
-from actinia_core.resources.common.app import flask_app
+from .resources.common.app import flask_app
 from flask import make_response
 
 # This is a simple endpoint to check the health of the Actinia Core server

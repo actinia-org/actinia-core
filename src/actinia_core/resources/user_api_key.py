@@ -10,9 +10,9 @@ TODO: Implement POST full permission creation
 from flask_restful import reqparse
 from flask_restful_swagger_2 import Schema, swagger
 from flask import jsonify, make_response, g
-from actinia_core.resources.base_login import LoginBase
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.logging_interface import log_api_call
+from .base_login import LoginBase
+from .common.app import auth
+from .common.logging_interface import log_api_call
 
 
 __license__ = "GPLv3"

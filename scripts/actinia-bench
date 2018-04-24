@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 import argparse
 import requests
-import flask.json as simplejson
+import simplejson
 import time
 from multiprocessing import Process, Queue
 
@@ -347,7 +347,8 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
 
     try:
         # Process chain request
-        r = requests.post(url, data=simplejson.dumps(pc), auth=auth)
+        r = requests.post(url, json=pc, auth=auth)
+        print(r.text)
     except:
         q.close()
         raise
@@ -381,6 +382,7 @@ def poll(url, auth, start, q, id):
     """
     while True:
         r = requests.get(url, auth=auth)
+        print(r.text)
         # print "Process", id, r.status_code, "HTTP Status", r, "\n", r.text
 
         try:

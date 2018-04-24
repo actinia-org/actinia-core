@@ -8,8 +8,8 @@ from functools import wraps
 from flask import g, abort, request
 import platform
 import sys
-from actinia_core.resources.common.redis_api_log import redis_api_log_interface
-from actinia_core.resources.common.redis_fluentd_logger_base import RedisFluentLoggerBase
+from .redis_api_log import redis_api_log_interface
+from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 try:
     from fluent import sender

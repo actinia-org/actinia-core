@@ -3,8 +3,8 @@
 Landsat processing commands
 """
 import os
-from actinia_core.resources.common.process_object import Process
-from actinia_core.resources.common.geodata_download_importer import GeoDataDownloadImportSupport
+from .process_object import Process
+from .geodata_download_importer import GeoDataDownloadImportSupport
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

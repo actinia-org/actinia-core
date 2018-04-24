@@ -6,7 +6,7 @@ Log messages as debug, info, warning and error
 import time
 import sys
 import platform
-from actinia_core.resources.common.redis_fluentd_logger_base import RedisFluentLoggerBase
+from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 try:
     from fluent import sender

@@ -4,10 +4,10 @@ Redis connection interface
 """
 import rq
 from redis import Redis
-from actinia_core.resources.common.redis_user import redis_user_interface
-from actinia_core.resources.common.redis_api_log import redis_api_log_interface
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common import process_queue
+from .redis_user import redis_user_interface
+from .redis_api_log import redis_api_log_interface
+from .config import global_config
+from .process_queue import enqueue_job as enqueue_job_local
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -63,7 +63,7 @@ def enqueue_job(timeout, func, *args):
         The current queue index
 
     """
-    process_queue.enqueue_job(timeout, func, *args)
+    enqueue_job_local(timeout, func, *args)
     return
 
     # Just i case the current process queue does not work

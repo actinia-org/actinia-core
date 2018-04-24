@@ -6,7 +6,7 @@ import os
 import datetime
 from google.cloud import storage
 from google.cloud import bigquery
-from actinia_core.resources.common.storage_interface_base import ResourceStorageBase
+from .storage_interface_base import ResourceStorageBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

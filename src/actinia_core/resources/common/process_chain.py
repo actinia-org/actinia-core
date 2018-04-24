@@ -3,13 +3,13 @@
 import os
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
-from actinia_core.resources.common.process_object import Process
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.common.geodata_download_importer import GeoDataDownloadImportSupport
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.sentinel_processing_library import Sentinel2Processing
-from actinia_core.resources.common.landsat_processing_library import LandsatProcessing
-from actinia_core.resources.common.google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
+from .process_object import Process
+from .exceptions import AsyncProcessError
+from .geodata_download_importer import GeoDataDownloadImportSupport
+from .config import global_config
+from .sentinel_processing_library import Sentinel2Processing
+from .landsat_processing_library import LandsatProcessing
+from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

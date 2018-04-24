@@ -6,7 +6,7 @@ import os
 from google.cloud import bigquery
 from google.cloud import storage
 import xml.etree.ElementTree as eTree
-from actinia_core.resources.common.exceptions import GoogleCloudAPIError
+from .exceptions import GoogleCloudAPIError
 import dateutil.parser as dtparser
 
 

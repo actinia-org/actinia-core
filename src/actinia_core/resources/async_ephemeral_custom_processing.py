@@ -4,12 +4,12 @@
 import pickle
 from flask import jsonify, make_response
 
-from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.user_auth import check_location_mapset_module_access
-from actinia_core.resources.common.process_object import Process
+from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .async_resource_base import AsyncEphemeralResourceBase
+from .common.redis_interface import enqueue_job
+from .common.exceptions import AsyncProcessError
+from .user_auth import check_location_mapset_module_access
+from .common.process_object import Process
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

@@ -6,12 +6,12 @@ from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
 import pickle
-from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
-from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.response_models import ProcessingResponseModel
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.map_layer_base import MapLayerRegionResourceBase, SetRegionModel
+from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .async_persistent_processing import AsyncPersistentProcessing
+from .common.redis_interface import enqueue_job
+from .common.response_models import ProcessingResponseModel
+from .common.exceptions import AsyncProcessError
+from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

@@ -5,7 +5,7 @@ Raster layer resources
 from flask_restful_swagger_2 import swagger, Schema
 
 from flask_restful import reqparse
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
+from .async_resource_base import AsyncEphemeralResourceBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

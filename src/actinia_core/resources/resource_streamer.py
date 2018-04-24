@@ -6,9 +6,9 @@ from flask import jsonify, make_response
 from flask_restful import Resource
 from flask import send_from_directory
 import os
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.logging_interface import log_api_call
+from .common.config import global_config
+from .common.app import auth
+from .common.logging_interface import log_api_call
 
 
 __license__ = "GPLv3"

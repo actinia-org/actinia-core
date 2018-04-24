@@ -9,13 +9,13 @@ from flask import jsonify, make_response
 
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
-from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.process_object import Process
-from actinia_core.resources.common.process_chain import ProcessChainModel
-from actinia_core.resources.common.exceptions import AsyncProcessTermination
-from actinia_core.resources.common.response_models import ProcessingResponseModel
+from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .async_resource_base import AsyncEphemeralResourceBase
+from .common.redis_interface import enqueue_job
+from .common.process_object import Process
+from .common.process_chain import ProcessChainModel
+from .common.exceptions import AsyncProcessTermination
+from .common.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

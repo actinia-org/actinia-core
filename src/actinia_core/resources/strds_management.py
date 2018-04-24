@@ -7,12 +7,12 @@ from flask import jsonify, make_response
 from flask_restful import reqparse
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
-from actinia_core.resources.common.request_parser import where_parser
-from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.common.response_models import ProcessingResponseModel,\
+from .common.request_parser import where_parser
+from .async_persistent_processing import AsyncPersistentProcessing
+from .async_resource_base import AsyncEphemeralResourceBase
+from .common.redis_interface import enqueue_job
+from .common.exceptions import AsyncProcessError
+from .common.response_models import ProcessingResponseModel,\
     StringListProcessingResultResponseModel
 
 __author__     = "Sören Gebbert"

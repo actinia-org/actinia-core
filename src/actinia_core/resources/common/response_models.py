@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
-from actinia_core.resources.common.process_chain import ProcessChainModel
+from .process_chain import ProcessChainModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

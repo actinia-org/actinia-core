@@ -5,13 +5,13 @@ Actinia Core
 """
 
 import os
-from actinia_core import endpoints
-from actinia_core import health_check
-from actinia_core import version
-from actinia_core.resources.common.app import flask_app
-from actinia_core.resources.common.config import global_config, DEFAULT_CONFIG_PATH
-from actinia_core.resources.common.redis_interface import connect, create_job_queues
-from actinia_core.resources.common.process_queue import create_process_queue
+from .endpoints import create_endpoints
+from .health_check import health_check
+from .version import version
+from .resources.common.app import flask_app
+from .resources.common.config import global_config, DEFAULT_CONFIG_PATH
+from .resources.common.redis_interface import connect, create_job_queues
+from .resources.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -23,7 +23,7 @@ if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG
     global_config.read(DEFAULT_CONFIG_PATH)
 
 # Create the endpoints based on the global config
-endpoints.create_endpoints()
+create_endpoints()
 
 # TODO: Implement a better error handler
 #@flask_app.errorhandler(InvalidUsage)

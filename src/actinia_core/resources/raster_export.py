@@ -7,9 +7,9 @@ or the raster layer region are used for export.
 """
 from flask import jsonify, make_response
 import pickle
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.async_ephemeral_processing_with_export import AsyncEphemeralProcessingWithExport
-from actinia_core.resources.common.redis_interface import enqueue_job
+from .async_resource_base import AsyncEphemeralResourceBase
+from .async_ephemeral_processing_with_export import AsyncEphemeralProcessingWithExport
+from .common.redis_interface import enqueue_job
 
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"

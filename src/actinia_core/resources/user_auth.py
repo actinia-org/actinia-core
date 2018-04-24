@@ -7,10 +7,10 @@ import os
 from functools import wraps
 
 from flask import g, abort, jsonify, make_response
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.user import ActiniaUser
-from actinia_core.resources.common.messages_logger import MessageLogger
+from .common.config import global_config
+from .common.app import auth
+from .common.user import ActiniaUser
+from .common.messages_logger import MessageLogger
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

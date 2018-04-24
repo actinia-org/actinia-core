@@ -8,8 +8,8 @@ import zipfile
 import magic
 from urllib.request import urlopen
 from urllib.parse import urlsplit
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.common.process_object import Process
+from .exceptions import AsyncProcessError
+from .process_object import Process
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

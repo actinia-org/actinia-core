@@ -4,10 +4,10 @@ Base class for user management resources
 """
 
 from flask_restful import Resource
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.common.messages_logger import MessageLogger
-from actinia_core.resources.user_auth import very_admin_role
+from .common.app import auth
+from .common.logging_interface import log_api_call
+from .common.messages_logger import MessageLogger
+from .user_auth import very_admin_role
 
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"

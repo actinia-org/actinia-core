@@ -22,7 +22,7 @@ import logging.handlers
 import platform
 import sys
 import atexit
-from actinia_core.resources.common.resources_logger import ResourceLogger
+from .resources_logger import ResourceLogger
 
 has_fluent = False
 

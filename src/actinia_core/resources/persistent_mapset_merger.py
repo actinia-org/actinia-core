@@ -6,10 +6,10 @@ import pickle
 import os
 from flask import jsonify, make_response
 
-from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.exceptions import AsyncProcessError, AsyncProcessTermination
+from .async_persistent_processing import AsyncPersistentProcessing
+from .async_resource_base import AsyncEphemeralResourceBase
+from .common.redis_interface import enqueue_job
+from .common.exceptions import AsyncProcessError, AsyncProcessTermination
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

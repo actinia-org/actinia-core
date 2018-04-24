@@ -9,17 +9,17 @@ import os
 import shutil
 import pickle
 from flask_restful_swagger_2 import swagger, Schema
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.user_auth import very_admin_role
-from actinia_core.resources.user_auth import check_user_permissions
-from actinia_core.resources.common.response_models import ProcessingResponseModel
-from actinia_core.resources.common.response_models import SimpleResponseModel, MapsetInfoResponseModel
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
-from actinia_core.resources.mapset_management import AsyncPersistentGetProjectionRegionInfo
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.exceptions import AsyncProcessError
+from .common.app import auth
+from .common.logging_interface import log_api_call
+from .user_auth import very_admin_role
+from .user_auth import check_user_permissions
+from .common.response_models import ProcessingResponseModel
+from .common.response_models import SimpleResponseModel, MapsetInfoResponseModel
+from .async_resource_base import AsyncEphemeralResourceBase
+from .async_persistent_processing import AsyncPersistentProcessing
+from .mapset_management import AsyncPersistentGetProjectionRegionInfo
+from .common.redis_interface import enqueue_job
+from .common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "S�ren Gebbert"

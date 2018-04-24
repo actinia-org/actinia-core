@@ -10,18 +10,18 @@ from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.app import flask_api
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.common.messages_logger import MessageLogger
-from actinia_core.resources.common.resources_logger import ResourceLogger
-from actinia_core.resources.common.resource_data_container import ResourceDataContainer
-from actinia_core.resources.common.response_models import ProcessingResponseModel
-from actinia_core.resources.common.response_models import create_response_from_model, ApiInfoModel
-from actinia_core.resources.resource_streamer import RequestStreamerResource
-from actinia_core.resources.user_auth import check_user_permissions, create_dummy_user
-from actinia_core.resources.resource_management import ResourceManager
+from .common.app import auth
+from .common.app import flask_api
+from .common.config import global_config
+from .common.logging_interface import log_api_call
+from .common.messages_logger import MessageLogger
+from .common.resources_logger import ResourceLogger
+from .common.resource_data_container import ResourceDataContainer
+from .common.response_models import ProcessingResponseModel
+from .common.response_models import create_response_from_model, ApiInfoModel
+from .resource_streamer import RequestStreamerResource
+from .user_auth import check_user_permissions, create_dummy_user
+from .resource_management import ResourceManager
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

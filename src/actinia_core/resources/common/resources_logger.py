@@ -4,8 +4,8 @@ Resource logger and management interface
 """
 import sys
 import pickle
-from actinia_core.resources.common.redis_resources import RedisResourceInterface
-from actinia_core.resources.common.redis_fluentd_logger_base import RedisFluentLoggerBase
+from .redis_resources import RedisResourceInterface
+from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 try:
     from fluent import sender

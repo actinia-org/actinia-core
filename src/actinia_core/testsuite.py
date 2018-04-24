@@ -6,15 +6,15 @@ import time
 import unittest
 from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
-from actinia_core import health_check
-from actinia_core import version
-from actinia_core.resources.common.app import flask_app
-from actinia_core.resources.common import redis_interface
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.user import ActiniaUser
-from actinia_core.endpoints import create_endpoints
-from actinia_core.resources.common.process_queue import create_process_queue
-from actinia_core.resources.common.process_queue import stop_process_queue
+from .health_check import health_check
+from .version import version
+from .resources.common.app import flask_app
+from .resources.common import redis_interface
+from .resources.common.config import global_config
+from .resources.common.user import ActiniaUser
+from .endpoints import create_endpoints
+from .resources.common.process_queue import create_process_queue
+from .resources.common.process_queue import stop_process_queue
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016, Sören Gebbert"

@@ -5,10 +5,10 @@ Seintinel2A processing commands
 import os
 import requests
 import dateutil.parser as dtparser
-from actinia_core.resources.common.google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
-from actinia_core.resources.common.aws_sentinel_interface import AWSSentinel2AInterface
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.common.process_object import Process
+from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
+from .aws_sentinel_interface import AWSSentinel2AInterface
+from .exceptions import AsyncProcessError
+from .process_object import Process
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

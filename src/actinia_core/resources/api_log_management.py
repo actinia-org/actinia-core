@@ -9,11 +9,11 @@ from flask_restful import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful_swagger_2 import Schema
 
-from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.api_logger import ApiLogger
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.common.response_models import SimpleResponseModel
-from actinia_core.resources.user_auth import check_user_permissions
+from .common.app import auth
+from .common.api_logger import ApiLogger
+from .common.logging_interface import log_api_call
+from .common.response_models import SimpleResponseModel
+from .user_auth import check_user_permissions
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

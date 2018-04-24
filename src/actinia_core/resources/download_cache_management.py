@@ -9,17 +9,17 @@ import os
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from actinia_core.resources.async_ephemeral_processing import AsyncEphemeralProcessing
-from actinia_core.resources.async_persistent_processing import AsyncPersistentProcessing
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.process_object import Process
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.user_auth import very_admin_role
-from actinia_core.resources.user_auth import check_user_permissions
-from actinia_core.resources.common.app import auth
+from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .async_persistent_processing import AsyncPersistentProcessing
+from .async_resource_base import AsyncEphemeralResourceBase
+from .common.redis_interface import enqueue_job
+from .common.process_object import Process
+from .common.exceptions import AsyncProcessError
+from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel
+from .common.logging_interface import log_api_call
+from .user_auth import very_admin_role
+from .user_auth import check_user_permissions
+from .common.app import auth
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

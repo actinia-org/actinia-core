@@ -3,7 +3,7 @@
 Redis server resource logging interface
 """
 
-from actinia_core.resources.common.redis_base import RedisBaseInterface
+from .redis_base import RedisBaseInterface
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

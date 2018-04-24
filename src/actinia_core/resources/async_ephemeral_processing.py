@@ -14,18 +14,18 @@ import time
 import uuid
 from flask import jsonify, make_response
 
-from actinia_core.resources.common.grass_init import GrassInitializer
-from actinia_core.resources.common.messages_logger import MessageLogger
-from actinia_core.resources.common.redis_interface import enqueue_job
-from actinia_core.resources.common.redis_lock import RedisLockingInterface
-from actinia_core.resources.common.resources_logger import ResourceLogger
-from actinia_core.resources.common.process_chain import ProcessChainConverter
-from actinia_core.resources.common.exceptions import AsyncProcessError, AsyncProcessTermination
-from actinia_core.resources.common.exceptions import AsyncProcessTimeLimit
-from actinia_core.resources.common.response_models import ProcessingResponseModel, ExceptionTracebackModel
-from actinia_core.resources.common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
-from actinia_core.resources.user_auth import check_location_mapset_module_access
-from actinia_core.resources.async_resource_base import AsyncEphemeralResourceBase
+from .common.grass_init import GrassInitializer
+from .common.messages_logger import MessageLogger
+from .common.redis_interface import enqueue_job
+from .common.redis_lock import RedisLockingInterface
+from .common.resources_logger import ResourceLogger
+from .common.process_chain import ProcessChainConverter
+from .common.exceptions import AsyncProcessError, AsyncProcessTermination
+from .common.exceptions import AsyncProcessTimeLimit
+from .common.response_models import ProcessingResponseModel, ExceptionTracebackModel
+from .common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
+from .user_auth import check_location_mapset_module_access
+from .async_resource_base import AsyncEphemeralResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

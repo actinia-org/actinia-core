@@ -4,7 +4,7 @@ Storage base class
 """
 import os
 import shutil
-from actinia_core.resources.common.storage_interface_base import ResourceStorageBase
+from .storage_interface_base import ResourceStorageBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

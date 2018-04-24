@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-from actinia_core.resources.common.storage_interface_filesystem import ResourceStorageFilesystem
-from actinia_core.resources.common.storage_interface_aws_s3 import ResourceStorageS3
-from actinia_core.resources.common.storage_interface_gcs import ResourceStorageGCS
+from .storage_interface_filesystem import ResourceStorageFilesystem
+from .storage_interface_aws_s3 import ResourceStorageS3
+from .storage_interface_gcs import ResourceStorageGCS
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"

@@ -3,7 +3,7 @@
 Base class for logger that use fluentd for logging and resource storage
 """
 import time
-from actinia_core.resources.common.config import global_config
+from .config import global_config
 
 try:
     from fluent import sender
