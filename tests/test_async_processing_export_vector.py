@@ -74,6 +74,55 @@ vector_layer_buffer = {
 }
 
 
+vector_layer_clean = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "https://storage.googleapis.com/graas-geodata/rio.json",
+                "type": "vector"
+            },
+            "param": "map",
+            "value": "map_to_clean"
+        }]
+    }, {
+        "id": "v_clean",
+        "module": "v.clean",
+        "inputs": [{
+            "param": "input",
+            "value": "map_to_clean"
+        }, {
+            "param": "output",
+            "value": "map_cleaned"
+        }, {
+            "param": "type",
+            "value": "area"
+        }, {
+            "param": "tool",
+            "value": "rmarea"
+        }, {
+            "param": "threshold",
+            "value": "0.0000000001"
+        }]
+    },
+        {
+            "id": "exporter_1",
+            "module": "exporter",
+            "outputs": [{
+                "export": {
+                    "type": "vector",
+                    "format": "GeoJSON"
+                },
+                "param": "map",
+                "value": "map_cleaned"
+            }]
+        },
+    ],
+    "version": "1"
+}
+
+
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_vector_export(self):
@@ -98,6 +147,28 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post('/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_buffer),
+                              content_type="application/json")
+
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                              http_status=200, status="finished")
+
+        # Get the exported results
+        urls = resp["urls"]["resources"]
+
+        for url in urls:
+            print(url)
+            rv = self.server.get(url, headers=self.user_auth_header)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
+
+            out_file = open("/tmp/bla.zip", "wb")
+            out_file.write(rv.data)
+            out_file.close()
+
+    def test_vector_clean(self):
+        rv = self.server.post('/locations/LL/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(vector_layer_clean),
                               content_type="application/json")
 
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
