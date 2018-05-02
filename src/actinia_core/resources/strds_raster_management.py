@@ -14,10 +14,10 @@ from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.response_models import ProcessingResponseModel
 
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class STRDSRasterListEntryModel(Schema):
@@ -25,19 +25,33 @@ class STRDSRasterListEntryModel(Schema):
 
     columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols
     """
+    description = "A single raster map layer information entry"
     type = 'object'
     properties = {
-        'id':  {'type': 'string'},
+        'id': {'type': 'string'},
         'start_time': {'type': 'string'},
-        'end_time':   {'type': 'string'},
-        'min':   {'type': 'string'},
-        'max':   {'type': 'string'},
+        'end_time': {'type': 'string'},
+        'min': {'type': 'string'},
+        'max': {'type': 'string'},
         'north': {'type': 'string'},
         'south': {'type': 'string'},
-        'east':  {'type': 'string'},
-        'west':  {'type': 'string'},
-        'rows':  {'type': 'string'},
-        'cols':  {'type': 'string'}
+        'east': {'type': 'string'},
+        'west': {'type': 'string'},
+        'rows': {'type': 'string'},
+        'cols': {'type': 'string'}
+    }
+    example = {
+        "cols": "201",
+        "east": "75.5",
+        "end_time": "2013-06-01 00:00:00",
+        "id": "precipitation_monthly_mm_760@PERMANENT",
+        "max": "403.8",
+        "min": "0.0",
+        "north": "75.5",
+        "rows": "464",
+        "south": "25.25",
+        "start_time": "2013-05-01 00:00:00",
+        "west": "-40.5"
     }
 
 
@@ -52,85 +66,86 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
     example = {
-      "accept_datetime": "2017-05-23 13:01:32.517207",
-      "accept_timestamp": 1495537292.517203,
-      "api_info": {
-        "endpoint": "strdsrastermanagement",
-        "method": "GET",
-        "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers",
-        "request_url": "http://localhost:5000/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers?where=start_time > '2013-05-01'"
-      },
-      "datetime": "2017-05-23 13:01:33.607950",
-      "http_code": 200,
-      "message": "Processing successfully finished",
-      "process_log": [
-        {
-          "executable": "t.rast.list",
-          "parameter": [
-            "input=precipitation_1950_2013_monthly_mm@PERMANENT",
-            "separator=|",
-            "where=start_time > '2013-05-01'",
-            "columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols",
-            "output=/tmp/gisdbase_cdc689a958b948a58cb4165e5a4d9daf/.tmp/tmpBFJABA",
-            "-u"
-          ],
-          "return_code": 0,
-          "stderr": [
-            ""
-          ],
-          "stdout": ""
-        }
-      ],
-      "process_results": [
-        {
-          "cols": "201",
-          "east": "75.5",
-          "end_time": "2013-06-01 00:00:00",
-          "id": "precipitation_monthly_mm_760@PERMANENT",
-          "max": "403.8",
-          "min": "0.0",
-          "north": "75.5",
-          "rows": "464",
-          "south": "25.25",
-          "start_time": "2013-05-01 00:00:00",
-          "west": "-40.5"
+        "accept_datetime": "2017-05-23 13:01:32.517207",
+        "accept_timestamp": 1495537292.517203,
+        "api_info": {
+            "endpoint": "strdsrastermanagement",
+            "method": "GET",
+            "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers",
+            "request_url": "http://localhost:5000/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers?where=start_time > '2013-05-01'"
         },
-        {
-          "cols": "201",
-          "east": "75.5",
-          "end_time": "2013-07-01 00:00:00",
-          "id": "precipitation_monthly_mm_761@PERMANENT",
-          "max": "283.4",
-          "min": "0.0",
-          "north": "75.5",
-          "rows": "464",
-          "south": "25.25",
-          "start_time": "2013-06-01 00:00:00",
-          "west": "-40.5"
-        }
-      ],
-      "progress": {
-        "num_of_steps": 1,
-        "step": 1
-      },
-      "resource_id": "resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d",
-      "status": "finished",
-      "timestamp": 1495537293.607947,
-      "urls": {
-        "resources": [],
-        "status": "http://localhost:5000/resources/soeren/resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d"
-      },
-      "user_id": "soeren"
+        "datetime": "2017-05-23 13:01:33.607950",
+        "http_code": 200,
+        "message": "Processing successfully finished",
+        "process_log": [
+            {
+                "executable": "t.rast.list",
+                "parameter": [
+                    "input=precipitation_1950_2013_monthly_mm@PERMANENT",
+                    "separator=|",
+                    "where=start_time > '2013-05-01'",
+                    "columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols",
+                    "output=/tmp/gisdbase_cdc689a958b948a58cb4165e5a4d9daf/.tmp/tmpBFJABA",
+                    "-u"
+                ],
+                "return_code": 0,
+                "stderr": [
+                    ""
+                ],
+                "stdout": ""
+            }
+        ],
+        "process_results": [
+            {
+                "cols": "201",
+                "east": "75.5",
+                "end_time": "2013-06-01 00:00:00",
+                "id": "precipitation_monthly_mm_760@PERMANENT",
+                "max": "403.8",
+                "min": "0.0",
+                "north": "75.5",
+                "rows": "464",
+                "south": "25.25",
+                "start_time": "2013-05-01 00:00:00",
+                "west": "-40.5"
+            },
+            {
+                "cols": "201",
+                "east": "75.5",
+                "end_time": "2013-07-01 00:00:00",
+                "id": "precipitation_monthly_mm_761@PERMANENT",
+                "max": "283.4",
+                "min": "0.0",
+                "north": "75.5",
+                "rows": "464",
+                "south": "25.25",
+                "start_time": "2013-06-01 00:00:00",
+                "west": "-40.5"
+            }
+        ],
+        "progress": {
+            "num_of_steps": 1,
+            "step": 1
+        },
+        "resource_id": "resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d",
+        "status": "finished",
+        "timestamp": 1495537293.607947,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:5000/resources/soeren/resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d"
+        },
+        "user_id": "soeren"
     }
 
 
 class RasterListEntryModel(Schema):
     type = 'object'
     properties = {
-        'name':  {'type': 'string'},
+        'name': {'type': 'string'},
         'start_time': {'type': 'string'},
-        'end_time':   {'type': 'string'}
+        'end_time': {'type': 'string'}
     }
+
 
 class RasterListRegisterModel(Schema):
     type = 'array'
@@ -181,12 +196,12 @@ class STRDSRasterManagement(AsyncEphemeralResourceBase):
                 'description': 'This response returns a list of all raster map layers '
                                'that are registered a specific STRDS and the log '
                                'of the process chain that was used to create the response.',
-                'schema':STRDSRasterListResponseModel
+                'schema': STRDSRasterListResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why creating a list of raster '
                                'map layers from STRDS did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -246,12 +261,12 @@ class STRDSRasterManagement(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Registration of raster map layers was successfully finished.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why raster map layer '
                                'registration did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -308,12 +323,12 @@ class STRDSRasterManagement(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Unregistration of raster map layers was successfully finished.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why raster map layer '
                                'unregistration did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -354,13 +369,13 @@ class AsyncPersistentListRasterSTRDS(AsyncPersistentProcessing):
 
         result_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True)
 
-        pc = {"1":{"module":"t.rast.list",
-                   "inputs":{"input": "%s@%s"%(self.map_name, self.mapset_name),
-                             "columns": "id,start_time,end_time,north,south,"
-                                        "east,west,min,max,rows,cols",
-                             "separator": "|"},
-                   "outputs": {"output": {"name": result_file.name}},
-                   "flags": "u"}}
+        pc = {"1": {"module": "t.rast.list",
+                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
+                               "columns": "id,start_time,end_time,north,south,"
+                                          "east,west,min,max,rows,cols",
+                               "separator": "|"},
+                    "outputs": {"output": {"name": result_file.name}},
+                    "flags": "u"}}
 
         if self.rdc.user_data:
             for option in self.rdc.user_data:
@@ -419,16 +434,16 @@ class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
             if "name" not in map_entry or "start_time" not in map_entry or "end_time" not in map_entry:
                 raise AsyncProcessError("Wrong input format for raster map layer registration")
 
-            line = "%s|%s|%s\n"%(map_entry["name"], map_entry["start_time"], map_entry["end_time"])
+            line = "%s|%s|%s\n" % (map_entry["name"], map_entry["start_time"], map_entry["end_time"])
             input_file.write(line)
         input_file.flush()
         input_file.seek(0)
 
-        pc = {"1":{"module":"t.register",
-                   "inputs":{"input": "%s@%s"%(self.map_name, self.mapset_name),
-                             "type": "raster",
-                             "separator": "|",
-                             "file": input_file.name}}}
+        pc = {"1": {"module": "t.register",
+                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
+                               "type": "raster",
+                               "separator": "|",
+                               "file": input_file.name}}}
 
         self._check_lock_target_mapset()
         self._create_temp_database(mapsets=self.required_mapsets)
@@ -455,20 +470,19 @@ class AsyncPersistentUnregisterRaster(AsyncPersistentProcessing):
         AsyncPersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True, mode="w")
 
         for map_name in self.request_data:
-            line = "%s\n"%map_name
+            line = "%s\n" % map_name
             input_file.write(line)
         input_file.flush()
 
-        pc = {"1":{"module":"t.unregister",
-                   "inputs":{"input": "%s@%s"%(self.map_name, self.mapset_name),
-                             "type": "raster",
-                             "file": input_file.name}}}
+        pc = {"1": {"module": "t.unregister",
+                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
+                               "type": "raster",
+                               "file": input_file.name}}}
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)

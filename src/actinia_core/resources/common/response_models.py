@@ -630,6 +630,93 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
     properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = MapsetInfoModel
     required = deepcopy(ProcessingResponseModel.required)
+    example = {
+        "accept_datetime": "2018-05-02 10:53:20.254387",
+        "accept_timestamp": 1525258400.2543857,
+        "api_info": {
+            "endpoint": "mapsetmanagementresourceuser",
+            "method": "GET",
+            "path": "/locations/ECAD/mapsets/PERMANENT/info",
+            "request_url": "http://localhost:8080/locations/ECAD/mapsets/PERMANENT/info"
+        },
+        "datetime": "2018-05-02 10:53:20.392509",
+        "http_code": 200,
+        "message": "Processing successfully finished",
+        "process_chain_list": [
+            {
+                "1": {
+                    "flags": "ug3",
+                    "module": "g.region"
+                },
+                "2": {
+                    "flags": "fw",
+                    "module": "g.proj"
+                }
+            }
+        ],
+        "process_log": [
+            {
+                "executable": "g.region",
+                "parameter": [
+                    "-ug3"
+                ],
+                "return_code": 0,
+                "run_time": 0.05018115043640137,
+                "stderr": [
+                    ""
+                ],
+                "stdout": "..."},
+            {
+                "executable": "g.proj",
+                "parameter": [
+                    "-fw"
+                ],
+                "return_code": 0,
+                "run_time": 0.05016374588012695,
+                "stderr": [
+                    ""
+                ],
+                "stdout": "..."}
+        ],
+        "process_results": {
+            "projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]\n",
+            "region": {
+                "b": 0.0,
+                "cells": 1,
+                "cells3": 1,
+                "cols": 1,
+                "cols3": 1,
+                "depths": 1,
+                "e": 1.0,
+                "ewres": 1.0,
+                "ewres3": 1.0,
+                "n": 1.0,
+                "nsres": 1.0,
+                "nsres3": 1.0,
+                "projection": 3,
+                "rows": 1,
+                "rows3": 1,
+                "s": 0.0,
+                "t": 1.0,
+                "tbres": 1.0,
+                "w": 0.0,
+                "zone": 0
+            }
+        },
+        "progress": {
+            "num_of_steps": 2,
+            "step": 2
+        },
+        "resource_id": "resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518",
+        "status": "finished",
+        "time_delta": 0.13819408416748047,
+        "timestamp": 1525258400.392495,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:8080/resources/user/resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518"
+        },
+        "user_id": "user"
+    }
 
 
 class RasterAreaStatsResponseModel(ProcessingResponseModel):
@@ -641,6 +728,7 @@ class RasterAreaStatsResponseModel(ProcessingResponseModel):
     properties["process_results"]["type"] = "array"
     properties["process_results"]["items"] = CategoricalStatisticsResultModel
     required = deepcopy(ProcessingResponseModel.required)
+    example = {}
 
 
 class AreaUnivarResultModel(Schema):
@@ -727,6 +815,7 @@ class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
     properties["process_results"]["items"] = AreaUnivarResultModel
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
+    example = {}
 
 
 class StorageResponseModel(ProcessingResponseModel):
@@ -737,6 +826,54 @@ class StorageResponseModel(ProcessingResponseModel):
     properties["process_results"] = StorageModel
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
+    example = {
+        "accept_datetime": "2018-05-02 10:51:27.988969",
+        "accept_timestamp": 1525258287.9889677,
+        "api_info": {
+            "endpoint": "syncresourcestorageresource",
+            "method": "GET",
+            "path": "/resource_storage",
+            "request_url": "http://localhost:8080/resource_storage"
+        },
+        "datetime": "2018-05-02 10:51:28.100659",
+        "http_code": 200,
+        "message": "Resource storage size successfully computed",
+        "process_chain_list": [],
+        "process_log": [
+            {
+                "executable": "/usr/bin/du",
+                "parameter": [
+                    "-sb",
+                    "/actinia/resources/superadmin"
+                ],
+                "return_code": 0,
+                "run_time": 0.05042886734008789,
+                "stderr": [
+                    ""
+                ],
+                "stdout": "4096\t/actinia/resources/superadmin\n"
+            }
+        ],
+        "process_results": {
+            "free": 107374178304,
+            "free_percent": 99,
+            "quota": 107374182400,
+            "used": 4096
+        },
+        "progress": {
+            "num_of_steps": 0,
+            "step": 1
+        },
+        "resource_id": "resource_id-f9463d91-04a6-497c-b107-37c4ee013530",
+        "status": "finished",
+        "time_delta": 0.11174893379211426,
+        "timestamp": 1525258288.1006439,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:8080/resources/superadmin/resource_id-f9463d91-04a6-497c-b107-37c4ee013530"
+        },
+        "user_id": "superadmin"
+    }
 
 
 class StringListProcessingResultResponseModel(ProcessingResponseModel):

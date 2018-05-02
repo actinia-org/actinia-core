@@ -15,10 +15,10 @@ from .common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class VectorAttributeModel(Schema):
@@ -29,12 +29,13 @@ class VectorAttributeModel(Schema):
                   'type': {'type': 'string'}}
     example = {"cat": "INTEGER", "z": "DOUBLE PRECISION"}
 
+
 class VectorInfoModel(Schema):
     """Schema that contains vector map layer information
     """
     type = 'object'
     properties = {
-        'Attributes':{'type': 'array', "items":VectorAttributeModel},
+        'Attributes': {'type': 'array', "items": VectorAttributeModel},
         'COMMAND': {'type': 'string'},
         'areas': {'type': 'string'},
         'bottom': {'type': 'string'},
@@ -79,53 +80,54 @@ class VectorInfoModel(Schema):
         'attribute_layer_number': {'type': 'string'},
     }
     example = {
-    "Attributes": [
-      {"column": "cat","type": "INTEGER"},
-      {"column": "z","type": "DOUBLE PRECISION"}
-    ],
-    "COMMAND": " v.random -z output=\"test_layer\" npoints=1 layer=\"-1\" zmin=1.0 zmax=1.0 seed=1 column=\"z\" column_type=\"double precision\"",
-    "areas": "0",
-    "bottom": "1.000000",
-    "boundaries": "0",
-    "centroids": "0",
-    "comment": "",
-    "creator": "soeren",
-    "database": "/tmp/gisdbase_b83bebdb543440c7b9991e2e5602ba91",
-    "digitization_threshold": "0.000000",
-    "east": "644375.544828422",
-    "faces": "0",
-    "format": "native",
-    "holes": "0",
-    "islands": "0",
-    "kernels": "0",
-    "level": "2",
-    "lines": "0",
-    "location": "nc_spm_08",
-    "map3d": "1",
-    "mapset": "user1",
-    "name": "test_layer",
-    "nodes": "0",
-    "north": "221135.648003836",
-    "num_dblinks": "1",
-    "organization": "",
-    "points": "1",
-    "primitives": "1",
-    "projection": "Lambert Conformal Conic",
-    "scale": "1:1",
-    "source_date": "Thu May 18 21:40:02 2017",
-    "south": "221135.648003836",
-    "timestamp": "none",
-    "title": "",
-    "top": "1.000000",
-    "volumes": "0",
-    "west": "644375.544828422",
-    "attribute_database": "/tmp/gisdbase_eabed7327ec84d219698670884136c2a/nc_spm_08/user1/vector/test_layer/sqlite.db",
-    "attribute_database_driver": "sqlite",
-    "attribute_layer_name": "test_layer",
-    "attribute_layer_number": "1",
-    "attribute_primary_key": "cat",
-    "attribute_table": "test_layer",
-  }
+        "Attributes": [
+            {"column": "cat", "type": "INTEGER"},
+            {"column": "z", "type": "DOUBLE PRECISION"}
+        ],
+        "COMMAND": " v.random -z output=\"test_layer\" npoints=1 layer=\"-1\" zmin=1.0 zmax=1.0 seed=1 column=\"z\" column_type=\"double precision\"",
+        "areas": "0",
+        "bottom": "1.000000",
+        "boundaries": "0",
+        "centroids": "0",
+        "comment": "",
+        "creator": "soeren",
+        "database": "/tmp/gisdbase_b83bebdb543440c7b9991e2e5602ba91",
+        "digitization_threshold": "0.000000",
+        "east": "644375.544828422",
+        "faces": "0",
+        "format": "native",
+        "holes": "0",
+        "islands": "0",
+        "kernels": "0",
+        "level": "2",
+        "lines": "0",
+        "location": "nc_spm_08",
+        "map3d": "1",
+        "mapset": "user1",
+        "name": "test_layer",
+        "nodes": "0",
+        "north": "221135.648003836",
+        "num_dblinks": "1",
+        "organization": "",
+        "points": "1",
+        "primitives": "1",
+        "projection": "Lambert Conformal Conic",
+        "scale": "1:1",
+        "source_date": "Thu May 18 21:40:02 2017",
+        "south": "221135.648003836",
+        "timestamp": "none",
+        "title": "",
+        "top": "1.000000",
+        "volumes": "0",
+        "west": "644375.544828422",
+        "attribute_database": "/tmp/gisdbase_eabed7327ec84d219698670884136c2a/nc_spm_08/user1/vector/test_layer/sqlite.db",
+        "attribute_database_driver": "sqlite",
+        "attribute_layer_name": "test_layer",
+        "attribute_layer_number": "1",
+        "attribute_primary_key": "cat",
+        "attribute_table": "test_layer",
+    }
+
 
 class VectorInfoResponseModel(ProcessingResponseModel):
     """Response schema for vector map layer information.
@@ -135,6 +137,170 @@ class VectorInfoResponseModel(ProcessingResponseModel):
     properties["process_results"] = VectorInfoModel
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
+    example = {
+        "accept_datetime": "2018-05-02 10:55:55.901464",
+        "accept_timestamp": 1525258555.9014626,
+        "api_info": {
+            "endpoint": "vectorlayerresource",
+            "method": "GET",
+            "path": "/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology",
+            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+        },
+        "datetime": "2018-05-02 10:55:56.111661",
+        "http_code": 200,
+        "message": "Processing successfully finished",
+        "process_chain_list": [
+            {
+                "1": {
+                    "flags": "gte",
+                    "inputs": {
+                        "map": "geology@PERMANENT"
+                    },
+                    "module": "v.info"
+                },
+                "2": {
+                    "flags": "h",
+                    "inputs": {
+                        "map": "geology@PERMANENT"
+                    },
+                    "module": "v.info"
+                },
+                "3": {
+                    "flags": "c",
+                    "inputs": {
+                        "map": "geology@PERMANENT"
+                    },
+                    "module": "v.info"
+                }
+            }
+        ],
+        "process_log": [
+            {
+                "executable": "v.info",
+                "parameter": [
+                    "map=geology@PERMANENT",
+                    "-gte"
+                ],
+                "return_code": 0,
+                "run_time": 0.050165653228759766,
+                "stderr": [
+                    ""
+                ],
+                "stdout": "..."},
+            {
+                "executable": "v.info",
+                "parameter": [
+                    "map=geology@PERMANENT",
+                    "-h"
+                ],
+                "return_code": 0,
+                "run_time": 0.050263166427612305,
+                "stderr": [
+                    ""
+                ],
+                "stdout": "..."},
+            {
+                "executable": "v.info",
+                "parameter": [
+                    "map=geology@PERMANENT",
+                    "-c"
+                ],
+                "return_code": 0,
+                "run_time": 0.050176382064819336,
+                "stderr": [
+                    "Displaying column types/names for database connection of layer <1>:",
+                    ""
+                ],
+                "stdout": "..."}
+        ],
+        "process_results": {
+            "Attributes": [
+                {
+                    "column": "cat",
+                    "type": "INTEGER"
+                },
+                {
+                    "column": "onemap_pro",
+                    "type": "DOUBLE PRECISION"
+                },
+                {
+                    "column": "PERIMETER",
+                    "type": "DOUBLE PRECISION"
+                },
+                {
+                    "column": "GEOL250_",
+                    "type": "INTEGER"
+                },
+                {
+                    "column": "GEOL250_ID",
+                    "type": "INTEGER"
+                },
+                {
+                    "column": "GEO_NAME",
+                    "type": "CHARACTER"
+                },
+                {
+                    "column": "SHAPE_area",
+                    "type": "DOUBLE PRECISION"
+                },
+                {
+                    "column": "SHAPE_len",
+                    "type": "DOUBLE PRECISION"
+                }
+            ],
+            "COMMAND": " v.db.connect -o map=\"geology@PERMANENT\" driver=\"sqlite\" database=\"$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\" table=\"geology\" key=\"cat\" layer=\"1\" separator=\"|\"",
+            "areas": "1832",
+            "attribute_database": "/actinia/workspace/temp_db/gisdbase_2536e440d0604d43ab3e25da23b98b35/nc_spm_08/PERMANENT/sqlite/sqlite.db",
+            "attribute_database_driver": "sqlite",
+            "attribute_layer_name": "geology",
+            "attribute_layer_number": "1",
+            "attribute_primary_key": "cat",
+            "attribute_table": "geology",
+            "bottom": "0.000000",
+            "boundaries": "3649",
+            "centroids": "1832",
+            "comment": "",
+            "creator": "helena",
+            "database": "/actinia/workspace/temp_db/gisdbase_2536e440d0604d43ab3e25da23b98b35",
+            "digitization_threshold": "0.000000",
+            "east": "930172.312822711",
+            "format": "native",
+            "islands": "907",
+            "level": "2",
+            "lines": "0",
+            "location": "nc_spm_08",
+            "map3d": "0",
+            "mapset": "PERMANENT",
+            "name": "geology",
+            "nodes": "2724",
+            "north": "318117.437416345",
+            "num_dblinks": "1",
+            "organization": "NC OneMap",
+            "points": "0",
+            "primitives": "5481",
+            "projection": "Lambert Conformal Conic",
+            "scale": "1:1",
+            "source_date": "Mon Nov  6 15:48:53 2006",
+            "south": "10875.8272320917",
+            "timestamp": "none",
+            "title": "North Carolina geology map (polygon map)",
+            "top": "0.000000",
+            "west": "123971.194989783"
+        },
+        "progress": {
+            "num_of_steps": 3,
+            "step": 3
+        },
+        "resource_id": "resource_id-737767c7-7436-43ad-a280-ce629525ba5a",
+        "status": "finished",
+        "time_delta": 0.21027016639709473,
+        "timestamp": 1525258556.1116493,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:8080/resources/user/resource_id-737767c7-7436-43ad-a280-ce629525ba5a"
+        },
+        "user_id": "user"
+    }
 
 
 class VectorCreationModel(Schema):
@@ -145,7 +311,7 @@ class VectorCreationModel(Schema):
         'npoints': {
             'type': 'number',
             'format': 'integer',
-            'description':'Number of points to be created',
+            'description': 'Number of points to be created',
             'default': 5
         },
         'seed': {
@@ -175,12 +341,12 @@ class VectorRegionCreationModel(Schema):
     type = 'object'
     properties = {
         'region': SetRegionModel,
-        'parameter':VectorCreationModel
+        'parameter': VectorCreationModel
     }
-    example = {"region":{"n":228500, "s":215000,
-                         "e":645000,"w":630000},
-               "parameter": { "npoints":1, "zmin":1,
-                              "zmax":1, "seed":1}}
+    example = {"region": {"n": 228500, "s": 215000,
+                          "e": 645000, "w": 630000},
+               "parameter": {"npoints": 1, "zmin": 1,
+                             "zmax": 1, "seed": 1}}
 
 
 class VectorLayerResource(MapLayerRegionResourceBase):
@@ -217,17 +383,17 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'default': 'boundary_county'
             }
         ],
-        'consumes':['application/json'],
-        'produces':["application/json"],
+        'consumes': ['application/json'],
+        'produces': ["application/json"],
         'responses': {
             '200': {
                 'description': 'The vector map layer information',
-                'schema':VectorInfoResponseModel
+                'schema': VectorInfoResponseModel
             },
             '400': {
-                'description':'The error message and a detailed log why gathering vector map '
-                              'layer information did not succeeded',
-                'schema':ProcessingResponseModel
+                'description': 'The error message and a detailed log why gathering vector map '
+                               'layer information did not succeeded',
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -274,16 +440,16 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'type': 'string'
             }
         ],
-        'produces':["application/json"],
+        'produces': ["application/json"],
         'responses': {
             '200': {
                 'description': 'Successfully delete a vector map layer',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
-                'description':'The error message and a detailed log why vector map '
-                              'layer deletion did not succeeded',
-                'schema':ProcessingResponseModel
+                'description': 'The error message and a detailed log why vector map '
+                               'layer deletion did not succeeded',
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -338,17 +504,17 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'schema': VectorRegionCreationModel
             }
         ],
-        'consumes':['application/json'],
-        'produces':["application/json"],
+        'consumes': ['application/json'],
+        'produces': ["application/json"],
         'responses': {
             '200': {
                 'description': 'The vector map layer information',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
-                'description':'The error message and a detailed log why gathering vector map '
-                              'layer information did not succeeded',
-                'schema':ProcessingResponseModel
+                'description': 'The error message and a detailed log why gathering vector map '
+                               'layer information did not succeeded',
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -391,14 +557,14 @@ class AsyncEphemeralVectorInfo(AsyncEphemeralProcessing):
         self.required_mapsets.append(self.mapset_name)
 
         pc = {}
-        pc["1"] = {"module":"v.info","inputs":{"map":vector_name + "@" + self.mapset_name},
-                   "flags":"gte"}
+        pc["1"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
+                   "flags": "gte"}
 
-        pc["2"] = {"module":"v.info","inputs":{"map":vector_name + "@" + self.mapset_name},
-                   "flags":"h"}
+        pc["2"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
+                   "flags": "h"}
 
-        pc["3"] = {"module":"v.info","inputs":{"map":vector_name + "@" + self.mapset_name},
-                   "flags":"c"}
+        pc["3"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
+                   "flags": "c"}
 
         self.skip_region_check = True
         process_list = self._create_temporary_grass_environment_and_process_chain(process_chain=pc,
@@ -446,7 +612,6 @@ def start_delete_job(*args):
 class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
 
     def __init__(self, *args):
-
         AsyncPersistentProcessing.__init__(self, *args)
 
     def _execute(self):
@@ -460,9 +625,9 @@ class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         pc = {}
-        pc["1"] = {"module":"g.remove","inputs":{"type":"vector",
-                                                 "name":vector_name},
-                   "flags":"f"}
+        pc["1"] = {"module": "g.remove", "inputs": {"type": "vector",
+                                                    "name": vector_name},
+                   "flags": "f"}
 
         self.skip_region_check = True
         process_list = self._validate_process_chain(process_chain=pc,
@@ -474,9 +639,9 @@ class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
         self._execute_process_list(process_list)
 
         if "WARNING: No data base element files found" in "\n".join(self.module_output_log[0]["stderr"]):
-            raise AsyncProcessError("Vector layer <%s> not found"%(vector_name))
+            raise AsyncProcessError("Vector layer <%s> not found" % (vector_name))
 
-        self.finish_message = "Vector layer <%s> successfully removed."%vector_name
+        self.finish_message = "Vector layer <%s> successfully removed." % vector_name
 
 
 def start_create_job(*args):
@@ -511,29 +676,29 @@ class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         pc_1 = {}
-        pc_1["1"] = {"module":"g.list","inputs":{"type":"vector",
-                                                 "pattern":vector_name,
-                                                 "mapset":self.target_mapset_name}}
+        pc_1["1"] = {"module": "g.list", "inputs": {"type": "vector",
+                                                    "pattern": vector_name,
+                                                    "mapset": self.target_mapset_name}}
         # Check the first process chain
         self.skip_region_check = True
         pc_1 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_1)
 
         pc_2 = {}
-        pc_2["1"] = {"module":"g.region","inputs":{},"flags":"g"}
+        pc_2["1"] = {"module": "g.region", "inputs": {}, "flags": "g"}
         if region:
             for key in region:
                 value = region[key]
                 pc_2["1"]["inputs"][key] = value
 
-        pc_2["2"] = {"module":"v.random",
-                     "inputs":{"column":"z",
-                               "npoints":parameter["npoints"],
-                               "zmin":parameter["zmin"],
-                               "zmax":parameter["zmax"],
-                               "seed":parameter["seed"]},
-                     "outputs":{"output":{"name":vector_name}},
-                     "flags":"z"}
+        pc_2["2"] = {"module": "v.random",
+                     "inputs": {"column": "z",
+                                "npoints": parameter["npoints"],
+                                "zmin": parameter["zmin"],
+                                "zmax": parameter["zmax"],
+                                "seed": parameter["seed"]},
+                     "outputs": {"output": {"name": vector_name}},
+                     "flags": "z"}
         # Check the second process chain
         self.skip_region_check = True
         pc_2 = self._validate_process_chain(skip_permission_check=True,
@@ -548,9 +713,9 @@ class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
         raster_list = self.module_output_log[0]["stdout"].split("\n")
 
         if len(raster_list[0]) > 0:
-            raise AsyncProcessError("Vector layer <%s> exists."%vector_name)
+            raise AsyncProcessError("Vector layer <%s> exists." % vector_name)
 
         self._execute_process_list(pc_2)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        self.finish_message = "Vector layer <%s> successfully created."%vector_name
+        self.finish_message = "Vector layer <%s> successfully created." % vector_name

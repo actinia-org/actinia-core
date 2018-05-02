@@ -1,9 +1,9 @@
 #!flask/bin/python
 # -*- coding: utf-8 -*-
 """
-Actinia Core server script
+Actinia server script
 
-This script is for testing purpose only, since the actinia core server should run behind
+This script is for testing purpose only, since the actinia server should run behind
 the uwsgi application server.
 """
 import argparse
@@ -25,7 +25,7 @@ __email__      = "soerengebbert@googlemail.com"
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start actinia core server. A running redis server is required.')
+    parser = argparse.ArgumentParser(description='Start actinia server. A running redis server is required.')
 
     parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
                         help="The IP address that should be used for the server")

@@ -20,20 +20,21 @@ from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
-from .common.response_models import ProcessingResponseModel,\
+from .common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, MapsetInfoModel, RegionModel
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class ListMapsetsResource(AsyncEphemeralResourceBase):
     """List all mapsets in a location
     """
     layer_type = None
+
     @swagger.doc({
         'tags': ['mapset management'],
         'description': 'Return a list of all mapsets that are located in a specific location. '
@@ -52,12 +53,12 @@ class ListMapsetsResource(AsyncEphemeralResourceBase):
             '200': {
                 'description': 'This response returns a list of mapset names and the log '
                                'of the process chain that was used to create the response.',
-                'schema':StringListProcessingResultResponseModel
+                'schema': StringListProcessingResultResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'mapsets did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -86,21 +87,19 @@ class AsyncPersistentListMapsets(AsyncPersistentProcessing):
     """
 
     def __init__(self, *args):
-
         AsyncPersistentProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
-
         self._setup()
         # Create the temporary database and link all available mapsets into is
         self._create_temp_database()
 
-        pc = {"1":{"module":"g.mapsets","inputs":{"separator":"newline"},
-                   "flags":"l"}}
+        pc = {"1": {"module": "g.mapsets", "inputs": {"separator": "newline"},
+                    "flags": "l"}}
 
         process_list = self._validate_process_chain(process_chain=pc,
-                                                     skip_permission_check=True)
+                                                    skip_permission_check=True)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")
 
@@ -118,6 +117,7 @@ class AsyncPersistentListMapsets(AsyncPersistentProcessing):
 class MapsetManagementResourceUser(AsyncEphemeralResourceBase):
     """This class returns information about a mapsets
     """
+
     def __init__(self):
         AsyncEphemeralResourceBase.__init__(self)
 
@@ -147,11 +147,11 @@ class MapsetManagementResourceUser(AsyncEphemeralResourceBase):
             '200': {
                 'description': 'The current computational region of the '
                                'mapset and the projection of the location',
-                'schema':MapsetInfoResponseModel
+                'schema': MapsetInfoResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -200,11 +200,11 @@ class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Success message for mapset creation',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -235,7 +235,6 @@ class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
         """
         pass
 
-
     @swagger.doc({
         'tags': ['mapset management'],
         'description': 'Delete an existing mapset. Minimum required user role: admin.',
@@ -258,11 +257,11 @@ class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Success message for mapset deletion',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -300,22 +299,22 @@ class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
 
         self._setup()
 
-        pc = {"1":{"module":"g.region",
-                   "flags":"ug3"},
-              "2":{"module":"g.proj",
-                   "flags":"fw"}}
+        pc = {"1": {"module": "g.region",
+                    "flags": "ug3"},
+              "2": {"module": "g.proj",
+                    "flags": "fw"}}
 
         # Do not check the region size
         self.skip_region_check = True
         process_list = self._validate_process_chain(process_chain=pc,
-                                                     skip_permission_check=True)
+                                                    skip_permission_check=True)
         self._create_temp_database(self.required_mapsets)
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
 
         self._execute_process_list(process_list)
 
-        mapset_region ={}
+        mapset_region = {}
         region_settings = self.module_output_log[0]["stdout"].split()
 
         for region_token in region_settings:
@@ -329,7 +328,7 @@ class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
         self.module_results = dict(region=RegionModel(**mapset_region),
                                    projection=self.module_output_log[1]["stdout"])
 
-        #self.module_results = MapsetInfoModel(region=RegionModel(**mapset_region),
+        # self.module_results = MapsetInfoModel(region=RegionModel(**mapset_region),
         #                                      projection=self.module_output_log[1]["stdout"])
 
 
@@ -351,8 +350,8 @@ class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
         # Create temporary database
         self._create_temp_database()
 
-        pc = {"1":{"module":"g.mapsets",
-                   "flags":"l"}}
+        pc = {"1": {"module": "g.mapsets",
+                    "flags": "l"}}
 
         process_list = self._validate_process_chain(process_chain=pc,
                                                     skip_permission_check=True)
@@ -368,7 +367,7 @@ class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
             mapset_list.append(mapset.strip())
 
         if self.target_mapset_name in mapset_list:
-            raise AsyncProcessError("Mapset <%s> exists."%self.target_mapset_name)
+            raise AsyncProcessError("Mapset <%s> exists." % self.target_mapset_name)
 
         # Create the new temporary mapset and merge it into the user database location
         self._check_lock_target_mapset()
@@ -376,7 +375,7 @@ class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        self.finish_message = "Mapset <%s> successfully created."%self.target_mapset_name
+        self.finish_message = "Mapset <%s> successfully created." % self.target_mapset_name
 
 
 def delete_mapset(*args):
@@ -412,19 +411,48 @@ class AsyncPersistentDeleteMapset(AsyncPersistentProcessing):
         if self.target_mapset_exists is True:
             shutil.rmtree(self.orig_mapset_path)
             self.lock_interface.unlock(self.target_mapset_lock_id)
-            self.finish_message = "Mapset <%s> successfully removed."%self.target_mapset_name
+            self.finish_message = "Mapset <%s> successfully removed." % self.target_mapset_name
         else:
-            raise AsyncProcessError("Mapset <%s> does not exits"%self.target_mapset_name)
+            raise AsyncProcessError("Mapset <%s> does not exits" % self.target_mapset_name)
 
 
 class MapsetLockManagementResponseModel(ProcessingResponseModel):
     """The response content that is returned by the GET request
     """
     type = 'object'
-    properties =  deepcopy(ProcessingResponseModel.properties)
+    properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = {}
     properties["process_results"]["type"] = "boolean"
-    required =  deepcopy(ProcessingResponseModel.required)
+    required = deepcopy(ProcessingResponseModel.required)
+    example = {
+        "accept_datetime": "2018-05-02 11:03:26.529673",
+        "accept_timestamp": 1525259006.5296717,
+        "api_info": {
+            "endpoint": "mapsetlockmanagementresource",
+            "method": "GET",
+            "path": "/locations/nc_spm_08/mapsets/PERMANENT/lock",
+            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/PERMANENT/lock"
+        },
+        "datetime": "2018-05-02 11:03:26.586348",
+        "http_code": 200,
+        "message": "Mapset lock state: False",
+        "process_chain_list": [],
+        "process_log": [],
+        "process_results": False,
+        "progress": {
+            "num_of_steps": 0,
+            "step": 0
+        },
+        "resource_id": "resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf",
+        "status": "finished",
+        "time_delta": 0.056743621826171875,
+        "timestamp": 1525259006.5863316,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:8080/resources/admin/resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf"
+        },
+        "user_id": "admin"
+    }
 
 
 class MapsetLockManagementResource(AsyncEphemeralResourceBase):
@@ -432,6 +460,7 @@ class MapsetLockManagementResource(AsyncEphemeralResourceBase):
     """
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
+
     @swagger.doc({
         'tags': ['mapset management'],
         'description': 'Return the location/mapset lock status. '
@@ -457,11 +486,11 @@ class MapsetLockManagementResource(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Get the location/mapset lock status, either "True" or "None"',
-                'schema':MapsetLockManagementResponseModel
+                'schema': MapsetLockManagementResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -502,11 +531,11 @@ class MapsetLockManagementResource(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Success message if the location/mapset was locked successfully',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -547,11 +576,11 @@ class MapsetLockManagementResource(AsyncEphemeralResourceBase):
         'responses': {
             '200': {
                 'description': 'Success message if the location/mapset was unlocked successfully',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -577,13 +606,12 @@ class AsyncPersistentGetMapsetLock(AsyncPersistentProcessing):
     """
 
     def __init__(self, *args):
-
         AsyncPersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
         self.module_results = self.lock_interface.get(self.target_mapset_lock_id)
-        self.finish_message = "Mapset lock state: %s"%str(self.module_results)
+        self.finish_message = "Mapset lock state: %s" % str(self.module_results)
 
 
 def lock_mapset(*args):
@@ -596,16 +624,15 @@ class AsyncPersistentMapsetLocker(AsyncPersistentProcessing):
     """
 
     def __init__(self, *args):
-
         AsyncPersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
         self._check_lock_target_mapset()
         if self.target_mapset_exists is False:
-            raise AsyncProcessError("Unable to lock mapset <%s>. Mapset doesn not exists."%self.target_mapset_name)
+            raise AsyncProcessError("Unable to lock mapset <%s>. Mapset doesn not exists." % self.target_mapset_name)
 
-        self.finish_message = "Mapset <%s> successfully locked"%self.target_mapset_name
+        self.finish_message = "Mapset <%s> successfully locked" % self.target_mapset_name
 
     def _final_cleanup(self):
         """Final cleanup called in the run function at the very end of processing
@@ -624,11 +651,10 @@ class AsyncPersistentMapsetUnlocker(AsyncPersistentProcessing):
     """
 
     def __init__(self, *args):
-
         AsyncPersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
         self.lock_interface.unlock(self.target_mapset_lock_id)
 
-        self.finish_message = "Mapset <%s> successfully unlocked"%self.target_mapset_name
+        self.finish_message = "Mapset <%s> successfully unlocked" % self.target_mapset_name
