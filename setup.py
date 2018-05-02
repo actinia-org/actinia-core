@@ -29,7 +29,8 @@ def setup_package():
           scripts=['scripts/actinia-user',
                    'scripts/actinia-bench',
                    'scripts/rq_custom_worker',
-                   'scripts/rq_starter'])
+                   'scripts/rq_starter',
+                   'scripts/run_server'])
 
 
 if __name__ == "__main__":

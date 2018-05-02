@@ -9,16 +9,16 @@ from copy import deepcopy
 from .process_chain import ProcessChainModel
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class ProgressInfoModel(Schema):
     """This class defines the model for progress information.
 
-    Progress information is generated in case a chain of several commands is processed.
+    Progress information is generated in case a process chain with at least one commands is processed.
     """
     type = 'object'
     properties = {
@@ -48,7 +48,7 @@ class ProgressInfoModel(Schema):
     example = {
         "num_of_steps": 6,
         "step": 6
-      }
+    }
 
 
 class StorageModel(Schema):
@@ -123,22 +123,12 @@ class ProcessLogModel(Schema):
     required = ['executable', 'parameter', 'stdout', 'stderr', 'return_code']
 
     example = {
-      "executable": "g.region",
-      "parameter": [
-        "raster=elevation@PERMANENT",
-        "res=10000",
-        "-p",
-        "--v"
-      ],
-      "return_code": 0,
-      "stderr": [
-        "NS resolution has been changed",
-        "EW resolution has been changed",
-        "NS and EW resolutions are different",
-        ""
-      ],
-      "stdout": "projection: 99 (Lambert Conformal Conic)\nzone:       0\ndatum:      nad83\nellipsoid:  a=6378137 es=0.006694380022900787\nnorth:      228500\nsouth:      215000\nwest:       630000\neast:       645000\nnsres:      13500\newres:      7500\nrows:       1\ncols:       2\ncells:      2\n"
-    }
+        "executable": "g.list",
+        "parameter": ["type=raster", "mapset=PERMANENT"],
+        "return_code": 0,
+        "run_time": 0.05017662048339844,
+        "stderr": [""],
+        "stdout": "aspect\nbasin_50K\n"}
 
 
 class UrlModel(Schema):
@@ -159,6 +149,9 @@ class UrlModel(Schema):
         }
     }
     required = ["status", "resources"]
+    example = {"resources": [
+        "http://localhost:5000/resource/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"],
+        "status": "http://localhost:5000/resources/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
 
 
 class SimpleResponseModel(Schema):
@@ -212,7 +205,7 @@ class ApiInfoModel(Schema):
         "method": "POST",
         "path": "/locations/nc_spm_08/processing_async",
         "request_url": "http://localhost/locations/nc_spm_08/processing_async"
-      }
+    }
 
 
 class ExceptionTracebackModel(Schema):
@@ -242,7 +235,7 @@ class ExceptionTracebackModel(Schema):
         "message": "Error",
         "type": "exceptions.Exception",
         "traceback": "File \"main.py\", line 2, in <module>\n    raise Exception(\"Error\")\n"
-      }
+    }
 
 
 class ProcessingResponseModel(Schema):
@@ -320,26 +313,26 @@ class ProcessingResponseModel(Schema):
                 'accept_datetime', 'message']
 
     example = {
-      "accept_datetime": "2017-05-24 22:37:21.607255",
-      "accept_timestamp": 1495658241.607252,
-      "api_info": {
-        "endpoint": "asyncephemeralresource",
-        "method": "POST",
-        "path": "/locations/nc_spm_08/processing_async",
-        "request_url": "http://localhost/locations/nc_spm_08/processing_async"
-      },
-      "datetime": "2017-05-24 22:37:21.608717",
-      "http_code": 200,
-      "message": "Resource accepted",
-      "process_results": {},
-      "resource_id": "resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1",
-      "status": "accepted",
-      "timestamp": 1495658241.608716,
-      "urls": {
-        "resources": [],
-        "status": "http://localhost/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
-      },
-      "user_id": "admin"
+        "accept_datetime": "2017-05-24 22:37:21.607255",
+        "accept_timestamp": 1495658241.607252,
+        "api_info": {
+            "endpoint": "asyncephemeralresource",
+            "method": "POST",
+            "path": "/locations/nc_spm_08/processing_async",
+            "request_url": "http://localhost/locations/nc_spm_08/processing_async"
+        },
+        "datetime": "2017-05-24 22:37:21.608717",
+        "http_code": 200,
+        "message": "Resource accepted",
+        "process_results": {},
+        "resource_id": "resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1",
+        "status": "accepted",
+        "timestamp": 1495658241.608716,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
+        },
+        "user_id": "admin"
     }
 
 
@@ -568,6 +561,27 @@ class RegionModel(Schema):
         }
     }
 
+    example = {"b": 0.0,
+               "cells": 29535,
+               "cells3": 29535,
+               "cols": 179,
+               "cols3": 179,
+               "depths": 1,
+               "e": 639530.0,
+               "ewres": 10.0,
+               "ewres3": 10.0,
+               "n": 221230.0,
+               "nsres": 10.0,
+               "nsres3": 10.0,
+               "projection": 99,
+               "rows": 165,
+               "rows3": 165,
+               "s": 219580.0,
+               "t": 1.0,
+               "tbres": 1.0,
+               "w": 637740.0,
+               "zone": 0}
+
 
 class MapsetInfoModel(Schema):
     """Schema for projection and region information from a specific mapset
@@ -582,26 +596,51 @@ class MapsetInfoModel(Schema):
     }
     required = ["projection", "region"]
 
+    example = {
+        "projection": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n",
+        "region": {
+            "b": 0.0,
+            "cells": 29535,
+            "cells3": 29535,
+            "cols": 179,
+            "cols3": 179,
+            "depths": 1,
+            "e": 639530.0,
+            "ewres": 10.0,
+            "ewres3": 10.0,
+            "n": 221230.0,
+            "nsres": 10.0,
+            "nsres3": 10.0,
+            "projection": 99,
+            "rows": 165,
+            "rows3": 165,
+            "s": 219580.0,
+            "t": 1.0,
+            "tbres": 1.0,
+            "w": 637740.0,
+            "zone": 0}
+    }
+
 
 class MapsetInfoResponseModel(ProcessingResponseModel):
     """Response schema that includes projection and region information
     about a specific mapset as processing results
     """
     type = 'object'
-    properties =  deepcopy(ProcessingResponseModel.properties)
+    properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = MapsetInfoModel
-    required =  deepcopy(ProcessingResponseModel.required)
+    required = deepcopy(ProcessingResponseModel.required)
 
 
 class RasterAreaStatsResponseModel(ProcessingResponseModel):
     """Response schema for a list of categorical statistics
     """
     type = 'object'
-    properties =  deepcopy(ProcessingResponseModel.properties)
+    properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = {}
     properties["process_results"]["type"] = "array"
     properties["process_results"]["items"] = CategoricalStatisticsResultModel
-    required =  deepcopy(ProcessingResponseModel.required)
+    required = deepcopy(ProcessingResponseModel.required)
 
 
 class AreaUnivarResultModel(Schema):
@@ -682,11 +721,11 @@ class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
      as processing results.
     """
     type = 'object'
-    properties =  deepcopy(ProcessingResponseModel.properties)
+    properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = {}
     properties["process_results"]["type"] = "array"
     properties["process_results"]["items"] = AreaUnivarResultModel
-    required =  deepcopy(ProcessingResponseModel.required)
+    required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
 
 
@@ -705,12 +744,74 @@ class StringListProcessingResultResponseModel(ProcessingResponseModel):
      as processing results.
     """
     type = 'object'
-    properties =  deepcopy(ProcessingResponseModel.properties)
+    properties = deepcopy(ProcessingResponseModel.properties)
     properties["process_results"] = {}
     properties["process_results"]["type"] = "array"
-    properties["process_results"]["items"] = {'type':"string"}
+    properties["process_results"]["items"] = {'type': "string"}
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
+    example = {
+        "accept_datetime": "2018-05-02 12:02:20.746845",
+        "accept_timestamp": 1525255340.746844,
+        "api_info": {
+            "endpoint": "listmapsetsresource",
+            "method": "GET",
+            "path": "/locations/nc_spm_08/mapsets",
+            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets"
+        },
+        "datetime": "2018-05-02 12:02:20.861017",
+        "http_code": 200,
+        "message": "Processing successfully finished",
+        "process_chain_list": [
+            {
+                "1": {
+                    "flags": "l",
+                    "inputs": {
+                        "separator": "newline"
+                    },
+                    "module": "g.mapsets"
+                }
+            }
+        ],
+        "process_log": [
+            {
+                "executable": "g.mapsets",
+                "parameter": [
+                    "separator=newline",
+                    "-l"
+                ],
+                "return_code": 0,
+                "run_time": 0.0501406192779541,
+                "stderr": [
+                    "Available mapsets:",
+                    ""
+                ],
+                "stdout": "PERMANENT\nSource_A\nSource_B\nTarget\nlandsat\nraster_test_mapset\nuser1\n"
+            }
+        ],
+        "process_results": [
+            "PERMANENT",
+            "Source_A",
+            "Source_B",
+            "Target",
+            "landsat",
+            "raster_test_mapset",
+            "user1"
+        ],
+        "progress": {
+            "num_of_steps": 1,
+            "step": 1
+        },
+        "resource_id": "resource_id-715530fe-53e2-4b2b-87b2-3777c90fec7c",
+        "status": "finished",
+        "time_delta": 0.11421895027160645,
+        "timestamp": 1525255340.8610027,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:5000/resources/user/resource_id-715530fe-53e2-4b2b-87b2-3777c90fec7c"
+        },
+        "user_id": "user"
+    }
 
 
 def create_response_from_model(response_model_class=ProcessingResponseModel,
@@ -761,7 +862,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         A pickle string or json string
 
     """
-    #if issubclass(response_model_class, ProcessingResponseModel) is False:
+    # if issubclass(response_model_class, ProcessingResponseModel) is False:
     #    raise IOError
 
     resp_dict = response_model_class(status=status,

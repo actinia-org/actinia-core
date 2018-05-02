@@ -458,7 +458,7 @@ class AsyncPersistentSTRDSInfo(AsyncPersistentProcessing):
         pc = {"1":{"module":"t.info",
                    "inputs":{"type": "strds",
                              "input": self.map_name},
-              "flags": "gh"}}
+              "flags": "g"}}
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)

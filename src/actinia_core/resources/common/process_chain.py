@@ -17,8 +17,8 @@ __copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
+SUPPORTED_EXPORT_FORMATS = ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV"]
 
-SUPPORTED_EXPORT_FORMATS= ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV"]
 
 class IOParameterBase(Schema):
     """This is the input parameter of a GRASS GIS module definition
@@ -101,7 +101,7 @@ class InputParameter(IOParameterBase):
                 'type': 'string',
                 'description': 'The input source that may be a landsat scene name, '
                                'a sentinel2 scene name, or an URL that points '
-                               'to a online accessable raster or vector file. '
+                               'to a online accessible raster or vector file. '
                                'A HTTP, HTTPS or FTP connection must be '
                                'specified in case of raster or vector types. '
                                'In this case the source string must contain the protocol that '
@@ -117,7 +117,7 @@ class InputParameter(IOParameterBase):
         'description': 'Input/output parameter definition of a GRASS GIS module '
                        'that should be executed in the Actinia Core environment.',
         'required': ["source", "type"],
-        'example': {"source": "https://storage.googleapis.com/Actinia Core-geodata/geology_30m.zip",
+        'example': {"source": "https://storage.googleapis.com/graas-geodata/geology_30m.zip",
                     "type": "raster", 'basic_auth': 'username:password'}
     }
 
@@ -204,29 +204,15 @@ class GrassModule(Schema):
                   'module will be run in a location/mapset environment and is part of a process chain. ' \
                   'The stdout and stderr output of modules that were run before this module in the process ' \
                   'chain can be used as stdin for this module.'
-    example = {'id': 'r.slope.aspect_run_1',
-               'module': 'r.slope.aspect',
-               'inputs': [
-                   {'param': 'elevation',
-                    'value': 'elevation@PERMANENT'},
-                   {'param': 'format',
-                    'value': 'degrees'},
-                   {'param': 'precision',
-                    'value': 'DCELL'}
-               ],
-               'outputs': [
-                   {'param': 'slope',
-                    'value': 'elevation_slope',
-                    'export': {'type': 'raster',
-                               'format': 'GeoTIFF'}},
-                   {'param': 'aspect',
-                    'value': 'elevation_aspect',
-                    'export': {'type': 'raster',
-                               'format': 'GeoTIFF'}}
-               ],
-               'flags': 'a',
-               'overwrite': False,
-               'verbose': False}
+    example = {'module': 'r.slope.aspect',
+               'id': 'r_slope_aspect_1',
+               'inputs': [{'param': 'elevation',
+                           'value': 'elev_ned_30m_new'}],
+               'outputs': [{'export': {'format': 'GTiff',
+                                       'type': 'raster'},
+                            'param': 'slope',
+                            'value': 'elev_ned_30m_new_slope'}],
+               'flags': 'a'}
 
 
 class Executable(Schema):
@@ -280,33 +266,21 @@ class ProcessChainModel(Schema):
     required = ['version', 'list']
     example = {'list': [{'module': 'g.region',
                          'id': 'g_region_1',
-                         'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/Actinia Core-geodata/elev_ned_30m.tif',
-                                                      'type'  : 'raster'},
-                                      'param': 'raster',
-                                      'value': 'elev_ned_30m_new'}],
-                         'flags': 'p',
-                         'overwrite': True,
-                         'verbose': True},
+                         'inputs': [{'import_descr': {
+                             'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                             'type': 'raster'},
+                                     'param': 'raster',
+                                     'value': 'elev_ned_30m_new'}],
+                         'flags': 'p'},
                         {'module': 'r.slope.aspect',
                          'id': 'r_slope_aspect_1',
                          'inputs': [{'param': 'elevation',
-                                     'value': 'elev_ned_30m_new'},
-                                    {'param': 'format',
-                                     'value': 'degree'},
-                                    {'param': 'precision',
-                                     'value': 'DCELL'}],
-
+                                     'value': 'elev_ned_30m_new'}],
                          'outputs': [{'export': {'format': 'GTiff',
                                                  'type': 'raster'},
                                       'param': 'slope',
-                                      'value': 'elev_ned_30m_new_slope'},
-                                     {'export': {'format': 'GTiff',
-                                                 'type': 'raster'},
-                                      'param': 'aspect',
-                                      'value': 'elev_ned_30m_new_aspect'}],
-                         'flags': 'a',
-                         'overwrite': True,
-                         'verbose': True}],
+                                      'value': 'elev_ned_30m_new_slope'}],
+                         'flags': 'a'}],
                'version': '1'}
 
 
@@ -367,7 +341,6 @@ class ProcessChainConverter(object):
         self.send_resource_update = send_resource_update
         self.message_logger = message_logger
         self.import_descr_list = []
-
 
     def process_chain_to_process_list(self, process_chain):
 
@@ -446,11 +419,11 @@ class ProcessChainConverter(object):
                 raise AsyncProcessError("Source specification is required in import definition")
 
             if entry["import_descr"]["type"] not in ["raster", "vector", "sentinel2", "landsat", "file"]:
-                raise AsyncProcessError("Unkown type specification: %s"%entry["import_descr"]["type"])
+                raise AsyncProcessError("Unkown type specification: %s" % entry["import_descr"]["type"])
 
             if entry["import_descr"]["type"].lower() == "raster" or \
-               entry["import_descr"]["type"].lower() == "vector" or \
-               entry["import_descr"]["type"].lower() == "file":
+                    entry["import_descr"]["type"].lower() == "vector" or \
+                    entry["import_descr"]["type"].lower() == "file":
 
                 url = entry["import_descr"]["source"]
 
@@ -459,7 +432,7 @@ class ProcessChainConverter(object):
                                                     download_cache=self.temp_file_path,
                                                     message_logger=self.message_logger,
                                                     send_resource_update=self.send_resource_update,
-                                                    url_list=[url,])
+                                                    url_list=[url, ])
 
                 download_commands, import_file_info = gdis.get_download_process_list()
                 downimp_list.extend(download_commands)
@@ -496,10 +469,10 @@ class ProcessChainConverter(object):
                 band = entry["import_descr"]["sentinel_band"]
 
                 gqi = GoogleSatelliteBigQueryInterface(config=self.config)
-                query_result = gqi.get_sentinel_urls(product_ids=[scene,],
-                                                     bands=[band,])
+                query_result = gqi.get_sentinel_urls(product_ids=[scene, ],
+                                                     bands=[band, ])
                 sp = Sentinel2Processing(config=self.config,
-                                         bands=[band,],
+                                         bands=[band, ],
                                          download_cache=self.temp_file_path,
                                          temp_file_path=self.temp_file_path,
                                          message_logger=self.message_logger,
@@ -514,7 +487,7 @@ class ProcessChainConverter(object):
 
                 input_file, map_name = import_file_info[band]
                 p = Process(exec_type="grass", executable="g.rename",
-                                 executable_params=["raster=%s,%s"%(map_name, entry["value"]),])
+                            executable_params=["raster=%s,%s" % (map_name, entry["value"]), ])
                 downimp_list.append(p)
 
             elif entry["import_descr"]["type"].lower() == "landsat":
@@ -544,7 +517,7 @@ class ProcessChainConverter(object):
                 atcor_commands = lp.get_i_landsat_toar_process_list(atcor)
                 downimp_list.extend(atcor_commands)
             else:
-                raise AsyncProcessError("Unknown import type specification: %s"%entry["import_descr"]["type"])
+                raise AsyncProcessError("Unknown import type specification: %s" % entry["import_descr"]["type"])
 
         return downimp_list
 
@@ -619,10 +592,10 @@ class ProcessChainConverter(object):
                     self.import_descr_list.append(input)
 
                 if "value" not in input:
-                    raise AsyncProcessError("<value> is missing in input description of process id: %s"%id)
+                    raise AsyncProcessError("<value> is missing in input description of process id: %s" % id)
 
                 if "param" not in input:
-                    raise AsyncProcessError(" <param> is missing in input description of process id: %s"%id)
+                    raise AsyncProcessError(" <param> is missing in input description of process id: %s" % id)
 
                 value = input["value"]
                 param = input["param"]
@@ -668,10 +641,10 @@ class ProcessChainConverter(object):
             for output in module_descr["outputs"]:
 
                 if "value" not in output:
-                    raise AsyncProcessError("<value> is missing in input description of process id: %s"%id)
+                    raise AsyncProcessError("<value> is missing in input description of process id: %s" % id)
 
                 if "param" not in output:
-                    raise AsyncProcessError(" <param> is missing in input description of process id: %s"%id)
+                    raise AsyncProcessError(" <param> is missing in input description of process id: %s" % id)
 
                 value = output["value"]
                 param = output["param"]
@@ -695,10 +668,10 @@ class ProcessChainConverter(object):
                         raise AsyncProcessError("Invalid export parameter in description of module <%s>" % module_name)
                     if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
                         raise AsyncProcessError(
-                                "Invalid export <format> parameter in description of module <%s>" % module_name)
+                            "Invalid export <format> parameter in description of module <%s>" % module_name)
                     if exp["type"] not in ["raster", "vector", "strds", "file", "stvds"]:
                         raise AsyncProcessError(
-                                "Invalid export <type> parameter in description of module <%s>" % module_name)
+                            "Invalid export <type> parameter in description of module <%s>" % module_name)
                     self.resource_export_list.append(output)
 
         if "flags" in module_descr:
@@ -722,7 +695,7 @@ class ProcessChainConverter(object):
 
         if module_name != "importer" and module_name != "exporter":
             p = Process(exec_type="grass", executable=module_name, executable_params=params,
-                             stdin_source=stdin_func)
+                        stdin_source=stdin_func)
 
             self.process_dict[id] = p
 
@@ -794,9 +767,9 @@ class ProcessChainConverter(object):
                                         "description for %s" % executable)
 
         p = Process(exec_type="exec",
-                         executable=executable,
-                         executable_params=params,
-                         stdin_source=stdin_func)
+                    executable=executable,
+                    executable_params=params,
+                    stdin_source=stdin_func)
 
         self.process_dict[id] = p
 
@@ -943,7 +916,6 @@ class ProcessChainConverter(object):
                         # symbols like *, +, :, /, {, (,},], ... by spaces and split
                         # the string by spaces, searching in each substring for @
 
-
                         symbols = ['*', '+', '-', '/', '%', '$', '!', ':', '(', ')',
                                    '{', '}', '&', '?', '#', '=', '^', '~',
                                    '<', '>', '\\']
@@ -984,13 +956,13 @@ class ProcessChainConverter(object):
                         exp = module_descr["outputs"][key]["export"]
                         if "format" not in exp or "type" not in exp:
                             raise AsyncProcessError(
-                                    "Invalid export parameter in description of module <%s>" % module_name)
+                                "Invalid export parameter in description of module <%s>" % module_name)
                         if exp["format"] not in ["GTiff", "ESRI_Shapefile"]:
                             raise AsyncProcessError(
-                                    "Invalid export <format> parameter in description of module <%s>" % module_name)
+                                "Invalid export <format> parameter in description of module <%s>" % module_name)
                         if exp["type"] not in ["raster", "vector", "strds", "file", "stvds"]:
                             raise AsyncProcessError(
-                                    "Invalid export <type> parameter in description of module <%s>" % module_name)
+                                "Invalid export <type> parameter in description of module <%s>" % module_name)
                         self.resource_export_list.append(module_descr["outputs"][key])
 
         if "flags" in module_descr:
@@ -1013,7 +985,7 @@ class ProcessChainConverter(object):
                                         "description for %s" % module_name)
 
         p = Process(exec_type="grass", executable=module_name, executable_params=parameters,
-                         stdin_source=stdin_func)
+                    stdin_source=stdin_func)
 
         self.process_dict[id] = p
 
@@ -1076,9 +1048,9 @@ class ProcessChainConverter(object):
                                         "description for %s" % executable)
 
         p = Process(exec_type="exec",
-                         executable=executable,
-                         executable_params=parameters,
-                         stdin_source=stdin_func)
+                    executable=executable,
+                    executable_params=parameters,
+                    stdin_source=stdin_func)
 
         self.process_dict[id] = p
 
@@ -1090,8 +1062,9 @@ def test_process_chain():
 
     elev_in = InputParameter(param="elevation",
                              value="elev_10m",
-                             import_descr={"source": "https://storage.googleapis.com/Actinia Core-geodata/elev_ned_30m.tif",
-                                           "type": "raster"})
+                             import_descr={
+                                 "source": "https://storage.googleapis.com/Actinia Core-geodata/elev_ned_30m.tif",
+                                 "type": "raster"})
     format_in = InputParameter(param="format",
                                value="degree")
     precision_in = InputParameter(param="precision",
@@ -1108,42 +1081,44 @@ def test_process_chain():
                                  export=export)
 
     module_1 = GrassModule(id="r_slope_aspect_1",
-                         module='r.slope.aspect',
-                         inputs=[elev_in, format_in, precision_in],
-                         outputs=[slope_out, aspect_out],
-                         flags='a',
-                         overwrite=True,
-                         verbose=False)
+                           module='r.slope.aspect',
+                           inputs=[elev_in, format_in, precision_in],
+                           outputs=[slope_out, aspect_out],
+                           flags='a',
+                           overwrite=True,
+                           verbose=False)
 
     file_in = InputParameter(param="name",
                              value="$file::polygon",
-                             import_descr={"source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
-                                           "type": "file"})
+                             import_descr={
+                                 "source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
+                                 "type": "file"})
 
     module_2 = GrassModule(id="importer",
-                         module='importer',
-                         inputs=[file_in])
+                           module='importer',
+                           inputs=[file_in])
 
     exe_1 = Executable(id="cat_1",
-                     exe='/bin/cat',
-                     params=[],
-                     stdin='r_slope_aspect_1::stderr')
+                       exe='/bin/cat',
+                       params=[],
+                       stdin='r_slope_aspect_1::stderr')
 
     func_in_1 = InputParameter(param="pyfile",
-                             value="$file::polygon")
+                               value="$file::polygon")
 
     module_3 = GrassModule(id="udf",
-                         module='t.rast.aggr_func',
-                         inputs=[func_in_1])
+                           module='t.rast.aggr_func',
+                           inputs=[func_in_1])
 
     func_in_2 = InputParameter(param="pyfile",
-                             value="$file::polygon",
-                             import_descr={"source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
-                                           "type": "file"})
+                               value="$file::polygon",
+                               import_descr={
+                                   "source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
+                                   "type": "file"})
 
     module_4 = GrassModule(id="udf",
-                         module='t.rast.aggr_func',
-                         inputs=[func_in_2])
+                           module='t.rast.aggr_func',
+                           inputs=[func_in_2])
 
     pc = ProcessChainModel(version='1', list=[module_1, module_2, exe_1, module_3, module_4])
 

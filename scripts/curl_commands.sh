@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PORT=8080
+export PORT=5000
 export IP=http://localhost
 export AUTH='-u user:abcdefgh'
 
