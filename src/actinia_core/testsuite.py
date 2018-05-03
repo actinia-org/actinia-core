@@ -21,8 +21,6 @@ __copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Soeren Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-# Create endpoints
-create_endpoints()
 
 class ActiniaRequests(object):
     """Requests to a actinia server are performed with this class

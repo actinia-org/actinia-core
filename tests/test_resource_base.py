@@ -5,12 +5,16 @@ import signal
 import time
 from actinia_core.testsuite import ActiniaTestCaseBase
 from actinia_core.resources.common.config import global_config
+from actinia_core.endpoints import create_endpoints
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
+
+# Create endpoints
+create_endpoints()
 
 redis_pid = None
 server_test = False

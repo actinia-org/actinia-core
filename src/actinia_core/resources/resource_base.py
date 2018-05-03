@@ -31,7 +31,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class ResourceBase(Resource):
-    """This is the base class for all GRASS GIS processing resources.
+    """This is the base class for all GRASS GIS asynchronous processing resources.
     """
 
     # Authorization is required for all resources

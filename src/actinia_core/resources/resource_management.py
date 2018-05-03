@@ -7,10 +7,8 @@ processes.
 import pickle
 from flask import g
 from flask import jsonify, make_response
-from flask_restful import Resource
-
+from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
-
 from .common.app import auth
 from .common.config import global_config
 from .common.logging_interface import ResourceLogger
@@ -32,6 +30,9 @@ class ResourceManagerBase(Resource):
     decorators = [log_api_call, auth.login_required]
 
     def __init__(self):
+
+        # Configuration
+        Resource.__init__(self)
 
         self.resource_logger = ResourceLogger(host=global_config.REDIS_SERVER_URL,
                                               port=global_config.REDIS_SERVER_PORT)
