@@ -6,8 +6,8 @@ import pickle
 import os
 from flask import jsonify, make_response
 
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError, AsyncProcessTermination
 
@@ -18,10 +18,10 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class AsyncPersistentMapsetMergingResource(AsyncEphemeralResourceBase):
+class AsyncPersistentMapsetMergerResource(ResourceBase):
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     def post(self, location_name, mapset_name):
         """Merge several existing mapsets into a single one.
@@ -68,11 +68,11 @@ class AsyncPersistentMapsetMergingResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncPersistentMapsetMerging(*args)
+    processing = PersistentMapsetMerger(*args)
     processing.run()
 
 
-class AsyncPersistentMapsetMerging(AsyncPersistentProcessing):
+class PersistentMapsetMerger(PersistentProcessing):
     """Processing of grass modules in a temporary or original mapset.
 
     This class is designed to run GRASS modules that are specified in a process chain
@@ -89,7 +89,7 @@ class AsyncPersistentMapsetMerging(AsyncPersistentProcessing):
 
         """
 
-        AsyncPersistentProcessing.__init__(self, rdc)
+        PersistentProcessing.__init__(self, rdc)
         self.lock_ids = {}                    # This dict holds the lock ids of all locked mapsets
 
     def _check_lock_mapset(self, mapset_name):
@@ -212,7 +212,7 @@ class AsyncPersistentMapsetMerging(AsyncPersistentProcessing):
         """
         # Clean up and remove the temporary gisdbase
         # Unlock mapsets
-        AsyncPersistentProcessing._final_cleanup(self)
+        PersistentProcessing._final_cleanup(self)
         # Unlock the mapsets
         for lock_id in self.lock_ids:
             self.lock_interface.unlock(lock_id)

@@ -9,9 +9,9 @@ import os
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
@@ -28,7 +28,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class SyncDownloadCacheResource(AsyncEphemeralResourceBase):
+class SyncDownloadCacheResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
 
@@ -90,12 +90,12 @@ def start_download_cache_size(*args):
     processing.run()
 
 
-class DownloadCacheSize(AsyncEphemeralProcessing):
+class DownloadCacheSize(EphemeralProcessing):
     """Compute the download cache size
     """
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
         self.user_download_cache_path = os.path.join(self.config.DOWNLOAD_CACHE, self.user_id)
         self.response_model_class = StorageResponseModel
 
@@ -131,13 +131,13 @@ def start_download_cache_remove(*args):
     processing.run()
 
 
-class DownloadCacheDelete(AsyncPersistentProcessing):
+class DownloadCacheDelete(PersistentProcessing):
     """Delete the whole download cache directory
     """
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.user_download_cache_path = os.path.join(self.config.DOWNLOAD_CACHE, self.user_id)
 
     def _execute(self):

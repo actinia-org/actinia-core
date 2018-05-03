@@ -5,7 +5,7 @@ Raster layer resources
 from flask_restful_swagger_2 import swagger, Schema
 
 from flask_restful import reqparse
-from .async_resource_base import AsyncEphemeralResourceBase
+from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -111,7 +111,7 @@ class SetRegionModel(Schema):
     }
 
 
-class MapLayerRegionResourceBase(AsyncEphemeralResourceBase):
+class MapLayerRegionResourceBase(ResourceBase):
     """The base class for map layer (raster, vector) resources that make use of region settings
     """
 

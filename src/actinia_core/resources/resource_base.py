@@ -30,8 +30,8 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class AsyncEphemeralResourceBase(Resource):
-    """This is the base class for all GRASS GIS asynchronous processing resources.
+class ResourceBase(Resource):
+    """This is the base class for all GRASS GIS processing resources.
     """
 
     # Authorization is required for all resources

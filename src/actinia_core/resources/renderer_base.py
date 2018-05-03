@@ -4,8 +4,8 @@ Render base classes
 """
 
 from flask_restful import reqparse
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 import os
 
 __license__ = "GPLv3"
@@ -63,7 +63,7 @@ REGION_PARAMETERS={
  }
 
 
-class RendererBaseResource(AsyncEphemeralResourceBase):
+class RendererBaseResource(ResourceBase):
     """Base class for render resources
     """
 
@@ -149,10 +149,10 @@ class RendererBaseResource(AsyncEphemeralResourceBase):
         return options
 
 
-class AsyncEphemeralRendererBase(AsyncEphemeralProcessing):
+class EphemeralRendererBase(EphemeralProcessing):
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _setup_render_environment_and_region(self, options, result_file, legacy=True):
         """Setup the render environment and create a g.region

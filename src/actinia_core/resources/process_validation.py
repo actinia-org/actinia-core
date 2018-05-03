@@ -7,8 +7,8 @@ import pickle
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.response_models import ProcessingResponseModel
 from .common.app import auth
@@ -64,7 +64,7 @@ SCHEMA_DOC={
  }
 
 
-class AsyncProcessValidationResource(AsyncEphemeralResourceBase):
+class AsyncProcessValidationResource(ResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
@@ -82,7 +82,7 @@ class AsyncProcessValidationResource(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), html_code)
 
 
-class SyncProcessValidationResource(AsyncEphemeralResourceBase):
+class SyncProcessValidationResource(ResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
@@ -103,14 +103,14 @@ class SyncProcessValidationResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncProcessValidation(*args)
+    processing = ProcessValidation(*args)
     processing.run()
 
 
-class AsyncProcessValidation(AsyncEphemeralProcessing):
+class ProcessValidation(EphemeralProcessing):
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self):
 

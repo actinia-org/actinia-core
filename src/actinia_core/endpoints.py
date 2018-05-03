@@ -9,23 +9,23 @@ from .resources.location_management import ListLocationsResource, LocationManage
 from .resources.location_management import LocationManagementResourceAdmin
 from .resources.mapset_management import ListMapsetsResource, MapsetManagementResourceUser
 from .resources.mapset_management import MapsetLockManagementResource, MapsetManagementResourceAdmin
-from .resources.strds_management import STRDSManagementResource, ListSTRDSResource
+from .resources.strds_management import STRDSManagementResource, SyncSTRDSListerResource
 from .resources.strds_raster_management import STRDSRasterManagement
 from .resources.raster_layer import RasterLayerResource
 from .resources.map_layer_management import RasterLayersResource
 from .resources.map_layer_management import VectorLayersResource
 from .resources.vector_layer import VectorLayerResource
-from .resources.async_ephemeral_processing import AsyncEphemeralResource
-from .resources.async_ephemeral_processing_with_export import AsyncEphemeralExportResource
-from .resources.async_ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
-from .resources.async_ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
-from .resources.persistent_mapset_merger import AsyncPersistentMapsetMergingResource
-from .resources.raster_export import  AsyncEphemeralRasterLayerRegionExportResource
-from .resources.raster_export import AsyncEphemeralRasterLayerExportResource
-from .resources.async_persistent_processing import AsyncPersistentResource
-from .resources.async_ephemeral_custom_processing import AsyncEphemeralCustomResource
-from .resources.async_process_validation import AsyncProcessValidationResource
-from .resources.async_process_validation import SyncProcessValidationResource
+from .resources.ephemeral_processing import AsyncEphemeralResource
+from .resources.ephemeral_processing_with_export import AsyncEphemeralExportResource
+from .resources.ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
+from .resources.ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
+from .resources.persistent_mapset_merger import AsyncPersistentMapsetMergerResource
+from .resources.raster_export import  AsyncEphemeralRasterLayerRegionExporterResource
+from .resources.raster_export import AsyncEphemeralRasterLayerExporterResource
+from .resources.persistent_processing import AsyncPersistentResource
+from .resources.ephemeral_custom_processing import AsyncEphemeralCustomResource
+from .resources.process_validation import AsyncProcessValidationResource
+from .resources.process_validation import SyncProcessValidationResource
 from .resources.user_management import UserListResource, UserManagementResource
 from .resources.api_log_management import APILogResource
 from .resources.user_api_key import TokenCreationResource, APIKeyCreationResource
@@ -77,7 +77,7 @@ def create_core_endpoints():
     flask_api.add_resource(SyncEphemeralRasterShapeRendererResource, '/locations/<string:location_name>/mapsets/'
                                                                      '<string:mapset_name>/render_shade')
     # STRDS management
-    flask_api.add_resource(ListSTRDSResource, '/locations/<string:location_name>/mapsets/'
+    flask_api.add_resource(SyncSTRDSListerResource, '/locations/<string:location_name>/mapsets/'
                                           '<string:mapset_name>/strds')
     flask_api.add_resource(STRDSManagementResource, '/locations/<string:location_name>/mapsets/<string:mapset_name>/strds/'
                                   '<string:strds_name>')
@@ -111,12 +111,12 @@ def create_core_endpoints():
                            '/locations/<string:location_name>/processing_async_export_gcs')
     flask_api.add_resource(AsyncPersistentResource, '/locations/<string:location_name>/mapsets/'
                                                     '<string:mapset_name>/processing_async')
-    flask_api.add_resource(AsyncPersistentMapsetMergingResource, '/locations/<string:location_name>/mapsets/'
+    flask_api.add_resource(AsyncPersistentMapsetMergerResource, '/locations/<string:location_name>/mapsets/'
                                                                  '<string:mapset_name>/merging_async')
-    flask_api.add_resource(AsyncEphemeralRasterLayerExportResource, '/locations/<string:location_name>/mapsets/'
+    flask_api.add_resource(AsyncEphemeralRasterLayerExporterResource, '/locations/<string:location_name>/mapsets/'
                                                                     '<string:mapset_name>/raster_layers/'
                                                                     '<string:raster_name>/geotiff_async')
-    flask_api.add_resource(AsyncEphemeralRasterLayerRegionExportResource, '/locations/<string:location_name>'
+    flask_api.add_resource(AsyncEphemeralRasterLayerRegionExporterResource, '/locations/<string:location_name>'
                                                                           '/mapsets/<string:mapset_name>'
                                                                           '/raster_layers/<string:raster_name>'
                                                                           '/geotiff_async_orig')

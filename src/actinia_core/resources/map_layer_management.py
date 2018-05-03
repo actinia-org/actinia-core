@@ -6,8 +6,8 @@ Raster layer resources
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.request_parser import glist_parser, extract_glist_parameters
 from .common.exceptions import AsyncProcessError
@@ -21,11 +21,11 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class MapsetLayersResource(AsyncEphemeralResourceBase):
+class MapsetLayersResource(ResourceBase):
     """Manage layers of a mapset
     """
     def __init__(self, layer_type):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
         self.layer_type = layer_type
 
     def _get(self, location_name, mapset_name):
@@ -445,17 +445,17 @@ class VectorLayersResource(MapsetLayersResource):
 
 
 def list_raster_layers(*args):
-    processing = AsyncPersistentListLayers(*args)
+    processing = PersistentListLayers(*args)
     processing.run()
 
 
-class AsyncPersistentListLayers(AsyncPersistentProcessing):
+class PersistentListLayers(PersistentProcessing):
     """List all map layers (raster, vector) of a specific mapset,
      dependent on the provided type.
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
@@ -494,17 +494,17 @@ class AsyncPersistentListLayers(AsyncPersistentProcessing):
 
 
 def remove_raster_layers(*args):
-    processing = AsyncPersistentRemoveLayers(*args)
+    processing = PersistentRemoveLayers(*args)
     processing.run()
 
 
-class AsyncPersistentRemoveLayers(AsyncPersistentProcessing):
+class PersistentRemoveLayers(PersistentProcessing):
     """Remove layers in a mapset
     """
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 
@@ -536,17 +536,17 @@ class AsyncPersistentRemoveLayers(AsyncPersistentProcessing):
         self.finish_message = "Successfully removed %s layers."%layer_type
 
 def rename_raster_layers(*args):
-    processing = AsyncPersistentRenameLayers(*args)
+    processing = PersistentRenameLayers(*args)
     processing.run()
 
 
-class AsyncPersistentRenameLayers(AsyncPersistentProcessing):
+class PersistentRenameLayers(PersistentProcessing):
     """Rename raster layers in a mapset
     """
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 

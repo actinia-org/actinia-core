@@ -5,9 +5,9 @@ Raster map renderer
 """
 
 from flask import jsonify, make_response, Response
-from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
-from .renderer_base import RendererBaseResource, AsyncEphemeralRendererBase
+from .renderer_base import RendererBaseResource, EphemeralRendererBase
 import tempfile
 import os
 from flask_restful_swagger_2 import swagger
@@ -159,15 +159,15 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralSTRDSRenderer(*args)
+    processing = EphemeralSTRDSRenderer(*args)
     processing.run()
 
 
-class AsyncEphemeralSTRDSRenderer(AsyncEphemeralRendererBase):
+class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
     def __init__(self, *args):
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render the raster map layers of a STRDS

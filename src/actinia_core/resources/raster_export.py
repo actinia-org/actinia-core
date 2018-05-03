@@ -7,8 +7,8 @@ or the raster layer region are used for export.
 """
 from flask import jsonify, make_response
 import pickle
-from .async_resource_base import AsyncEphemeralResourceBase
-from .async_ephemeral_processing_with_export import AsyncEphemeralProcessingWithExport
+from .resource_base import ResourceBase
+from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from .common.redis_interface import enqueue_job
 
 __license__ = "GPLv3"
@@ -18,14 +18,14 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class AsyncEphemeralRasterLayerExportResource(AsyncEphemeralResourceBase):
+class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
     """This class represents a raster layer resource as geotiff file that
     will be created asynchronously and streamed with the resource streamer.
 
     The region settings of the mapset is used for export.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     def get(self, location_name, mapset_name, raster_name):
         """Export a specific raster layer
@@ -57,7 +57,7 @@ class AsyncEphemeralRasterLayerExportResource(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), html_code)
 
 
-class AsyncEphemeralRasterLayerRegionExportResource(AsyncEphemeralRasterLayerExportResource):
+class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerExporterResource):
     """This class represents a raster layer resource as geotiff file that
     will be created asynchronously.
 
@@ -66,7 +66,7 @@ class AsyncEphemeralRasterLayerRegionExportResource(AsyncEphemeralRasterLayerExp
     the region settings.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     def get(self, location_name, mapset_name, raster_name):
         """Export a specific raster layer and use the raster region for export
@@ -86,11 +86,11 @@ class AsyncEphemeralRasterLayerRegionExportResource(AsyncEphemeralRasterLayerExp
 
 
 def start_job(*args):
-    processing = AsyncEphemeralRasterLayerExport(*args)
+    processing = EphemeralRasterLayerExporter(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterLayerExport(AsyncEphemeralProcessingWithExport):
+class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
     """Export a raster layer from a specific mapset as geotiff file.
 
     The region of tha raster layer can be used for export. In this case a
@@ -105,7 +105,7 @@ class AsyncEphemeralRasterLayerExport(AsyncEphemeralProcessingWithExport):
 
         """
 
-        AsyncEphemeralProcessingWithExport.__init__(self, rdc)
+        EphemeralProcessingWithExport.__init__(self, rdc)
 
         self.raster_name = self.map_name
         self.use_raster_region = self.rdc.user_data

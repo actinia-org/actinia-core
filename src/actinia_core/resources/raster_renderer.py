@@ -8,9 +8,9 @@ import tempfile
 import os
 from copy import deepcopy
 from flask import jsonify, make_response, Response
-from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
-from .renderer_base import RendererBaseResource, AsyncEphemeralRendererBase
+from .renderer_base import RendererBaseResource, EphemeralRendererBase
 from .common.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
@@ -145,14 +145,14 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralRasterRenderer(*args)
+    processing = EphemeralRasterRenderer(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterRenderer(AsyncEphemeralRendererBase):
+class EphemeralRasterRenderer(EphemeralRendererBase):
 
     def __init__(self, *args):
-        AsyncEphemeralRendererBase.__init__(self, *args)
+        EphemeralRendererBase.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render the raster image
@@ -371,15 +371,15 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
 
 def start_rgb_job(*args):
-    processing = AsyncEphemeralRasterRGBRenderer(*args)
+    processing = EphemeralRasterRGBRenderer(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterRGBRenderer(AsyncEphemeralRendererBase):
+class EphemeralRasterRGBRenderer(EphemeralRendererBase):
 
     def __init__(self, *args):
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render three raster layer as rgb image
@@ -589,14 +589,14 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
 
 def start_shade_job(*args):
-    processing = AsyncEphemeralRasterShadeRenderer(*args)
+    processing = EphemeralRasterShadeRenderer(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterShadeRenderer(AsyncEphemeralRendererBase):
+class EphemeralRasterShadeRenderer(EphemeralRendererBase):
 
     def __init__(self, *args):
-        AsyncEphemeralRendererBase.__init__(self, *args)
+        EphemeralRendererBase.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render two raster layer as shaded image

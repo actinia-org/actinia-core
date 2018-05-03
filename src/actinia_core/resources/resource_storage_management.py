@@ -9,9 +9,9 @@ import os
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
@@ -29,7 +29,7 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class SyncResourceStorageResource(AsyncEphemeralResourceBase):
+class SyncResourceStorageResource(ResourceBase):
 
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
@@ -92,12 +92,12 @@ def start_resource_storage_size(*args):
     processing.run()
 
 
-class ResourceStorageSize(AsyncEphemeralProcessing):
+class ResourceStorageSize(EphemeralProcessing):
     """Compute the download cache size
     """
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
         self.response_model_class = StorageResponseModel
         self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
 
@@ -133,12 +133,12 @@ def start_resource_storage_remove(*args):
     processing.run()
 
 
-class ResourceStorageDelete(AsyncPersistentProcessing):
+class ResourceStorageDelete(PersistentProcessing):
     """Delete the user specific resource directory
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
 
     def _execute(self):

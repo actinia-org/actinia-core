@@ -7,8 +7,8 @@ from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
 import pickle
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_persistent_processing import AsyncPersistentProcessing
+from .ephemeral_processing import EphemeralProcessing
+from .persistent_processing import PersistentProcessing
 from .common.redis_interface import enqueue_job
 from .common.response_models import ProcessingResponseModel
 from .common.exceptions import AsyncProcessError
@@ -536,14 +536,14 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
 
 def start_info_job(*args):
-    processing = AsyncEphemeralVectorInfo(*args)
+    processing = EphemeralVectorInfo(*args)
     processing.run()
 
 
-class AsyncEphemeralVectorInfo(AsyncEphemeralProcessing):
+class EphemeralVectorInfo(EphemeralProcessing):
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
         self.response_model_class = VectorInfoResponseModel
 
     def _execute(self):
@@ -605,14 +605,14 @@ class AsyncEphemeralVectorInfo(AsyncEphemeralProcessing):
 
 
 def start_delete_job(*args):
-    processing = AsyncPersistentVectorDeletion(*args)
+    processing = PersistentVectorDeleter(*args)
     processing.run()
 
 
-class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
+class PersistentVectorDeleter(PersistentProcessing):
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         """Delete a specific vector layer from a location in the user database
@@ -645,15 +645,15 @@ class AsyncPersistentVectorDeletion(AsyncPersistentProcessing):
 
 
 def start_create_job(*args):
-    processing = AsyncPersistentVectorCreation(*args)
+    processing = PersistentVectorCreator(*args)
     processing.run()
 
 
-class AsyncPersistentVectorCreation(AsyncPersistentProcessing):
+class PersistentVectorCreator(PersistentProcessing):
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         """Create a specific vector layer

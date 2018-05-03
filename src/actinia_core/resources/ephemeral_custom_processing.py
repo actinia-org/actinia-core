@@ -4,8 +4,8 @@
 import pickle
 from flask import jsonify, make_response
 
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .user_auth import check_location_mapset_module_access
@@ -18,13 +18,13 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class AsyncEphemeralCustomResource(AsyncEphemeralResourceBase):
+class AsyncEphemeralCustomResource(ResourceBase):
     """This class represents a custom process resource
     that will be asynchronously executed without the initialization
     of the GRASS environment.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     def post(self, executable):
         """Run a custom process
@@ -56,11 +56,11 @@ class AsyncEphemeralCustomResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralCustomProcessing(*args)
+    processing = EphemeralCustomProcessing(*args)
     processing.run()
 
 
-class AsyncEphemeralCustomProcessing(AsyncEphemeralProcessing):
+class EphemeralCustomProcessing(EphemeralProcessing):
     """Run a custom process asynchronously
     """
     def __init__(self, *args):
@@ -70,7 +70,7 @@ class AsyncEphemeralCustomProcessing(AsyncEphemeralProcessing):
             rdc (ResourceDataContainer): The data container that contains all required variables for processing
         """
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
         self.executable = self.rdc.user_data
         self.executable_params = self.rdc.request_data
 

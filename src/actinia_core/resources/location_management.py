@@ -15,9 +15,9 @@ from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
 from .common.response_models import ProcessingResponseModel
 from .common.response_models import SimpleResponseModel, MapsetInfoResponseModel
-from .async_resource_base import AsyncEphemeralResourceBase
-from .async_persistent_processing import AsyncPersistentProcessing
-from .mapset_management import AsyncPersistentGetProjectionRegionInfo
+from .resource_base import ResourceBase
+from .persistent_processing import PersistentProcessing
+from .mapset_management import PersistentGetProjectionRegionInfo
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 
@@ -47,13 +47,13 @@ class LocationListResponseModel(Schema):
     required = ["status", "locations"]
 
 
-class ListLocationsResource(AsyncEphemeralResourceBase):
+class ListLocationsResource(ResourceBase):
     """This resource represents grass database directory
     that contains locations.
     """
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     """Return a list of all available locations that are located in the GRASS database
     """
@@ -124,12 +124,12 @@ class ProjectionInfoModel(Schema):
     required = ["epsg"]
 
 
-class LocationManagementResourceUser(AsyncEphemeralResourceBase):
+class LocationManagementResourceUser(ResourceBase):
     """This class returns informations about a specific location
     """
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc({
         'tags': ['location management'],
@@ -172,7 +172,7 @@ class LocationManagementResourceUser(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), http_code)
 
 
-class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
+class LocationManagementResourceAdmin(ResourceBase):
     """This class manages the creation, deletion and modification of a mapsets
 
     This is only allowed for administrators
@@ -181,7 +181,7 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
                   very_admin_role, auth.login_required]
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc({
         'tags': ['location management'],
@@ -296,16 +296,16 @@ class LocationManagementResourceAdmin(AsyncEphemeralResourceBase):
 
 
 def create_location(*args):
-    processing = AsyncPersistentLocationCreator(*args)
+    processing = PersistentLocationCreator(*args)
     processing.run()
 
 
-class AsyncPersistentLocationCreator(AsyncPersistentProcessing):
+class PersistentLocationCreator(PersistentProcessing):
     """Create a new location based on EPSG code
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 
@@ -341,5 +341,5 @@ class AsyncPersistentLocationCreator(AsyncPersistentProcessing):
 
 
 def read_current_region(*args):
-    processing = AsyncPersistentGetProjectionRegionInfo(*args)
+    processing = PersistentGetProjectionRegionInfo(*args)
     processing.run()

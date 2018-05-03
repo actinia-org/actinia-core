@@ -9,8 +9,8 @@ from flask import jsonify, make_response
 
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.process_chain import ProcessChainModel
@@ -82,13 +82,13 @@ SCHEMA_DOC={
  }
 
 
-class AsyncEphemeralExportResource(AsyncEphemeralResourceBase):
+class AsyncEphemeralExportResource(ResourceBase):
     """
     This class represents a resource that runs asynchronous processing tasks in
     a temporary mapset and exports the computed results as geotiff files.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
@@ -105,14 +105,14 @@ class AsyncEphemeralExportResource(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), html_code)
 
 
-class AsyncEphemeralExportS3Resource(AsyncEphemeralResourceBase):
+class AsyncEphemeralExportS3Resource(ResourceBase):
     """
     This class represents a resource that runs asynchronous processing tasks in
     a temporary mapset and exports the computed results as geotiff files to the Amazon S3
     storage.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
@@ -127,14 +127,14 @@ class AsyncEphemeralExportS3Resource(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), html_code)
 
 
-class AsyncEphemeralExportGCSResource(AsyncEphemeralResourceBase):
+class AsyncEphemeralExportGCSResource(ResourceBase):
     """
     This class represents a resource that runs asynchronous processing tasks in
     a temporary mapset and exports the computed results as geotiff files to the
     Google Cloud Storage.
     """
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
@@ -150,11 +150,11 @@ class AsyncEphemeralExportGCSResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralProcessingWithExport(*args)
+    processing = EphemeralProcessingWithExport(*args)
     processing.run()
 
 
-class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
+class EphemeralProcessingWithExport(EphemeralProcessing):
     """
     This class processes GRASS data on the local machine in an temporary mapset
     and copies the exported results to a dedicated storage location.
@@ -172,7 +172,7 @@ class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
             rdc (ResourceDataContainer): The data container that contains all required variables for processing
 
         """
-        AsyncEphemeralProcessing.__init__(self, rdc)
+        EphemeralProcessing.__init__(self, rdc)
         # Create the storage interface to store the exported resources
         self.storage_interface = rdc.create_storage_interface()
 
@@ -384,7 +384,7 @@ class AsyncEphemeralProcessingWithExport(AsyncEphemeralProcessing):
         # Create and check the resource directory
         self.storage_interface.setup()
 
-        AsyncEphemeralProcessing._execute(self)
+        EphemeralProcessing._execute(self)
 
         # Export all resources and generate the finish response
         self._export_resources()

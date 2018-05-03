@@ -12,8 +12,8 @@ from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 import pickle
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.app import auth
 from .common.logging_interface import log_api_call
 from .common.redis_interface import enqueue_job
@@ -30,7 +30,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class ListMapsetsResource(AsyncEphemeralResourceBase):
+class ListMapsetsResource(ResourceBase):
     """List all mapsets in a location
     """
     layer_type = None
@@ -78,16 +78,16 @@ class ListMapsetsResource(AsyncEphemeralResourceBase):
 
 
 def list_raster_mapsets(*args):
-    processing = AsyncPersistentListMapsets(*args)
+    processing = PersistentMapsetLister(*args)
     processing.run()
 
 
-class AsyncPersistentListMapsets(AsyncPersistentProcessing):
+class PersistentMapsetLister(PersistentProcessing):
     """List all mapsets in a location
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
@@ -114,12 +114,12 @@ class AsyncPersistentListMapsets(AsyncPersistentProcessing):
         self.module_results = mapset_lists
 
 
-class MapsetManagementResourceUser(AsyncEphemeralResourceBase):
+class MapsetManagementResourceUser(ResourceBase):
     """This class returns information about a mapsets
     """
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc({
         'tags': ['mapset management'],
@@ -167,7 +167,7 @@ class MapsetManagementResourceUser(AsyncEphemeralResourceBase):
         return make_response(jsonify(response_model), http_code)
 
 
-class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
+class MapsetManagementResourceAdmin(ResourceBase):
     """This class manages the creation, deletion and modification of a mapsets
 
     This is only allowed for administrators
@@ -176,7 +176,7 @@ class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
                   very_admin_role, auth.login_required]
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc({
         'tags': ['mapset management'],
@@ -278,11 +278,11 @@ class MapsetManagementResourceAdmin(AsyncEphemeralResourceBase):
 
 
 def read_current_region(*args):
-    processing = AsyncPersistentGetProjectionRegionInfo(*args)
+    processing = PersistentGetProjectionRegionInfo(*args)
     processing.run()
 
 
-class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
+class PersistentGetProjectionRegionInfo(PersistentProcessing):
     """Read the current region and projection information
     """
 
@@ -292,7 +292,7 @@ class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
                     "nsres3", "ewres", "ewres3", "tbres"]
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = MapsetInfoResponseModel
 
     def _execute(self):
@@ -333,16 +333,16 @@ class AsyncPersistentGetProjectionRegionInfo(AsyncPersistentProcessing):
 
 
 def create_mapset(*args):
-    processing = AsyncPersistentCreateMapset(*args)
+    processing = PersistentMapsetCreator(*args)
     processing.run()
 
 
-class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
+class PersistentMapsetCreator(PersistentProcessing):
     """Create a mapset in an existing location
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 
@@ -379,11 +379,11 @@ class AsyncPersistentCreateMapset(AsyncPersistentProcessing):
 
 
 def delete_mapset(*args):
-    processing = AsyncPersistentDeleteMapset(*args)
+    processing = PersistentMapsetDeleter(*args)
     processing.run()
 
 
-class AsyncPersistentDeleteMapset(AsyncPersistentProcessing):
+class PersistentMapsetDeleter(PersistentProcessing):
     """Delete a mapset from a location
 
     1. Create temporary database
@@ -392,7 +392,7 @@ class AsyncPersistentDeleteMapset(AsyncPersistentProcessing):
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 
@@ -455,7 +455,7 @@ class MapsetLockManagementResponseModel(ProcessingResponseModel):
     }
 
 
-class MapsetLockManagementResource(AsyncEphemeralResourceBase):
+class MapsetLockManagementResource(ResourceBase):
     """Lock a mapset
     """
     decorators = [log_api_call, check_user_permissions,
@@ -597,16 +597,16 @@ class MapsetLockManagementResource(AsyncEphemeralResourceBase):
 
 
 def get_mapset_lock(*args):
-    processing = AsyncPersistentGetMapsetLock(*args)
+    processing = PersistentGetMapsetLock(*args)
     processing.run()
 
 
-class AsyncPersistentGetMapsetLock(AsyncPersistentProcessing):
+class PersistentGetMapsetLock(PersistentProcessing):
     """Get the mapset lock status
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
@@ -615,16 +615,16 @@ class AsyncPersistentGetMapsetLock(AsyncPersistentProcessing):
 
 
 def lock_mapset(*args):
-    processing = AsyncPersistentMapsetLocker(*args)
+    processing = PersistentMapsetLocker(*args)
     processing.run()
 
 
-class AsyncPersistentMapsetLocker(AsyncPersistentProcessing):
+class PersistentMapsetLocker(PersistentProcessing):
     """Lock a mapset
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
@@ -642,16 +642,16 @@ class AsyncPersistentMapsetLocker(AsyncPersistentProcessing):
 
 
 def unlock_mapset(*args):
-    processing = AsyncPersistentMapsetUnlocker(*args)
+    processing = PersistentMapsetUnlocker(*args)
     processing.run()
 
 
-class AsyncPersistentMapsetUnlocker(AsyncPersistentProcessing):
+class PersistentMapsetUnlocker(PersistentProcessing):
     """Unlock a locked mapset
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()

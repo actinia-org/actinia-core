@@ -25,7 +25,7 @@ from .common.exceptions import AsyncProcessTimeLimit
 from .common.response_models import ProcessingResponseModel, ExceptionTracebackModel
 from .common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from .user_auth import check_location_mapset_module_access
-from .async_resource_base import AsyncEphemeralResourceBase
+from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -34,12 +34,12 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class AsyncEphemeralResource(AsyncEphemeralResourceBase):
+class AsyncEphemeralResource(ResourceBase):
     """This class represents a processing resource that works on a temporary mapset.
     """
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     def post(self, location_name):
         """Start an async GRASS processing task, that is completely temporary.
@@ -113,11 +113,11 @@ class AsyncEphemeralResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralProcessing(*args)
+    processing = EphemeralProcessing(*args)
     processing.run()
 
 
-class AsyncEphemeralProcessing(object):
+class EphemeralProcessing(object):
     """This class processes GRASS data on the local machine in an temporary mapset.
 
     The temporary mapset will be removed by this class when the processing finished

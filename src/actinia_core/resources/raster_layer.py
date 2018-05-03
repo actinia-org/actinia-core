@@ -6,8 +6,8 @@ from flask import jsonify, make_response
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
 import pickle
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_persistent_processing import AsyncPersistentProcessing
+from .ephemeral_processing import EphemeralProcessing
+from .persistent_processing import PersistentProcessing
 from .common.redis_interface import enqueue_job
 from .common.response_models import ProcessingResponseModel
 from .common.exceptions import AsyncProcessError
@@ -382,15 +382,15 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
 
 def start_info_job(*args):
-    processing = AsyncEphemeralRasterInfo(*args)
+    processing = EphemeralRasterInfo(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterInfo(AsyncEphemeralProcessing):
+class EphemeralRasterInfo(EphemeralProcessing):
 
     def __init__(self, *args):
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self):
         """Read info from a raster layer
@@ -424,14 +424,14 @@ class AsyncEphemeralRasterInfo(AsyncEphemeralProcessing):
 
 
 def start_delete_job(*args):
-    processing = AsyncPersistentRasterDeletion(*args)
+    processing = PersistentRasterDeleter(*args)
     processing.run()
 
 
-class AsyncPersistentRasterDeletion(AsyncPersistentProcessing):
+class PersistentRasterDeleter(PersistentProcessing):
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         """Delete a specific raster layer
@@ -465,15 +465,15 @@ class AsyncPersistentRasterDeletion(AsyncPersistentProcessing):
 
 
 def start_create_job(*args):
-    processing = AsyncPersistentRasterCreation(*args)
+    processing = PersistentRasterCreator(*args)
     processing.run()
 
 
-class AsyncPersistentRasterCreation(AsyncPersistentProcessing):
+class PersistentRasterCreator(PersistentProcessing):
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         """Create a specific raster layer

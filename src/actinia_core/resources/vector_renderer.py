@@ -9,9 +9,9 @@ import os
 from flask_restful_swagger_2 import swagger, Schema
 from flask import jsonify, make_response, Response
 import pickle
-from .async_ephemeral_processing import AsyncEphemeralProcessing
+from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
-from .renderer_base import RendererBaseResource, AsyncEphemeralRendererBase
+from .renderer_base import RendererBaseResource, EphemeralRendererBase
 from .common.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
@@ -147,15 +147,15 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralVectorRenderer(*args)
+    processing = EphemeralVectorRenderer(*args)
     processing.run()
 
 
-class AsyncEphemeralVectorRenderer(AsyncEphemeralRendererBase):
+class EphemeralVectorRenderer(EphemeralRendererBase):
 
     def __init__(self, *args):
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render the raster image

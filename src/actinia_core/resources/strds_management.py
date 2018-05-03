@@ -8,8 +8,8 @@ from flask_restful import reqparse
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
 from .common.request_parser import where_parser
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.response_models import ProcessingResponseModel, \
@@ -21,7 +21,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class ListSTRDSResource(AsyncEphemeralResourceBase):
+class SyncSTRDSListerResource(ResourceBase):
     """List all STRDS in a location/mapset
     """
     layer_type = None
@@ -86,15 +86,15 @@ class ListSTRDSResource(AsyncEphemeralResourceBase):
 
 
 def list_raster_mapsets(*args):
-    processing = AsyncPersistentListSTRDS(*args)
+    processing = PersistentSTRDSLister(*args)
     processing.run()
 
 
-class AsyncPersistentListSTRDS(AsyncPersistentProcessing):
+class PersistentSTRDSLister(PersistentProcessing):
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
@@ -337,7 +337,7 @@ class STRDSCreationModel(Schema):
                "ttype": "absolute"}
 
 
-class STRDSManagementResource(AsyncEphemeralResourceBase):
+class STRDSManagementResource(ResourceBase):
     """List all STRDS in a location/mapset
     """
 
@@ -525,17 +525,17 @@ class STRDSManagementResource(AsyncEphemeralResourceBase):
 
 
 def strds_info(*args):
-    processing = AsyncPersistentSTRDSInfo(*args)
+    processing = PersistentSTRDSInfo(*args)
     processing.run()
 
 
-class AsyncPersistentSTRDSInfo(AsyncPersistentProcessing):
+class PersistentSTRDSInfo(PersistentProcessing):
     """Gather the STRDS information
     """
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = STRDSInfoResponseModel
 
     def _execute(self):
@@ -569,16 +569,16 @@ class AsyncPersistentSTRDSInfo(AsyncPersistentProcessing):
 
 
 def strds_delete(*args):
-    processing = AsyncPersistentSTRDSDelete(*args)
+    processing = PersistentSTRDSDeleter(*args)
     processing.run()
 
 
-class AsyncPersistentSTRDSDelete(AsyncPersistentProcessing):
+class PersistentSTRDSDeleter(PersistentProcessing):
     """Delete a STRDS
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
@@ -608,16 +608,16 @@ class AsyncPersistentSTRDSDelete(AsyncPersistentProcessing):
 
 
 def strds_create(*args):
-    processing = AsyncPersistentSTRDSCreate(*args)
+    processing = PersistentSTRDSCreator(*args)
     processing.run()
 
 
-class AsyncPersistentSTRDSCreate(AsyncPersistentProcessing):
+class PersistentSTRDSCreator(PersistentProcessing):
     """Create a STRDS
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 

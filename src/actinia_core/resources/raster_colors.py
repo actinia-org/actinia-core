@@ -6,9 +6,9 @@ TODO: Tests required
 """
 
 from flask import jsonify, make_response
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 import tempfile
 import os
@@ -21,7 +21,7 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class SyncPersistentRasterColorsResource(AsyncEphemeralResourceBase):
+class SyncPersistentRasterColorsResource(ResourceBase):
     """Manage the color table
     """
 
@@ -90,14 +90,14 @@ class SyncPersistentRasterColorsResource(AsyncEphemeralResourceBase):
 
 
 def start_job_colors_out(*args):
-    processing = AsyncEphemeralRasterColorsOutput(*args)
+    processing = EphemeralRasterColorsOutput(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterColorsOutput(AsyncEphemeralProcessing):
+class EphemeralRasterColorsOutput(EphemeralProcessing):
 
     def __init__(self, *args):
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
 
@@ -122,11 +122,11 @@ class AsyncEphemeralRasterColorsOutput(AsyncEphemeralProcessing):
 
 
 def start_job_from_rules(*args):
-    processing = AsyncPersistentRasterColorsRules(*args)
+    processing = PersistentRasterColorsRules(*args)
     processing.run()
 
 
-class AsyncPersistentRasterColorsRules(AsyncPersistentProcessing):
+class PersistentRasterColorsRules(PersistentProcessing):
     """Set the color table of a raster map from color rules
 
     Perform the processing in the original mapset
@@ -134,7 +134,7 @@ class AsyncPersistentRasterColorsRules(AsyncPersistentProcessing):
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
 

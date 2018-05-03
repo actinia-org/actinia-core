@@ -5,8 +5,8 @@ Raster map renderer
 
 from flask import jsonify, make_response, Response
 from flask_restful import reqparse
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 import tempfile
 import os
@@ -18,7 +18,7 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
-class SyncEphemeralRasterLegendResource(AsyncEphemeralResourceBase):
+class SyncEphemeralRasterLegendResource(ResourceBase):
     """Render the raster legend with d.legend
     """
     def create_parser(self):
@@ -127,15 +127,15 @@ class SyncEphemeralRasterLegendResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncEphemeralRasterLegend(*args)
+    processing = EphemeralRasterLegend(*args)
     processing.run()
 
 
-class AsyncEphemeralRasterLegend(AsyncEphemeralProcessing):
+class EphemeralRasterLegend(EphemeralProcessing):
 
     def __init__(self, *args):
 
-        AsyncEphemeralProcessing.__init__(self, *args)
+        EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
         """Render the raster legend with d.legend

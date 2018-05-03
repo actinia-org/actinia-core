@@ -10,8 +10,8 @@ import subprocess
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 
-from .async_ephemeral_processing import AsyncEphemeralProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .ephemeral_processing import EphemeralProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.process_chain import ProcessChainModel
@@ -57,10 +57,10 @@ in an ephemeral database and then merged or copied into the persistent database.
 """
 
 
-class AsyncPersistentResource(AsyncEphemeralResourceBase):
+class AsyncPersistentResource(ResourceBase):
 
     def __init__(self):
-        AsyncEphemeralResourceBase.__init__(self)
+        ResourceBase.__init__(self)
 
     @swagger.doc({
         'tags': ['persistent processing'],
@@ -173,11 +173,11 @@ class AsyncPersistentResource(AsyncEphemeralResourceBase):
 
 
 def start_job(*args):
-    processing = AsyncPersistentProcessing(*args)
+    processing = PersistentProcessing(*args)
     processing.run()
 
 
-class AsyncPersistentProcessing(AsyncEphemeralProcessing):
+class PersistentProcessing(EphemeralProcessing):
     """Processing of grass modules in a temporary or original mapset.
 
     This class is designed to run GRASS modules that are specified in a process chain
@@ -214,7 +214,7 @@ class AsyncPersistentProcessing(AsyncEphemeralProcessing):
 
         """
 
-        AsyncEphemeralProcessing.__init__(self, rdc)
+        EphemeralProcessing.__init__(self, rdc)
         self.target_mapset_name = self.mapset_name
         self.target_mapset_exists = False     # By default the target mapset does not exists
         self.target_mapset_lock_set = False   # Set True if this process was successful in setting the lock

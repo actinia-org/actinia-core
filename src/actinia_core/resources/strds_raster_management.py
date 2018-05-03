@@ -8,8 +8,8 @@ from copy import deepcopy
 import tempfile
 import pickle
 from .common.request_parser import where_parser
-from .async_persistent_processing import AsyncPersistentProcessing
-from .async_resource_base import AsyncEphemeralResourceBase
+from .persistent_processing import PersistentProcessing
+from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.response_models import ProcessingResponseModel
@@ -152,7 +152,7 @@ class RasterListRegisterModel(Schema):
     items = STRDSRasterListEntryModel
 
 
-class STRDSRasterManagement(AsyncEphemeralResourceBase):
+class STRDSRasterManagement(ResourceBase):
     """Manage raster layer in a space time raster dataset
     """
 
@@ -350,17 +350,17 @@ class STRDSRasterManagement(AsyncEphemeralResourceBase):
 
 
 def list_raster_strds(*args):
-    processing = AsyncPersistentListRasterSTRDS(*args)
+    processing = PersistentRasterSTRDSLister(*args)
     processing.run()
 
 
-class AsyncPersistentListRasterSTRDS(AsyncPersistentProcessing):
+class PersistentRasterSTRDSLister(PersistentProcessing):
     """List all mapsets in a location
     """
 
     def __init__(self, *args):
 
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
         self.response_model_class = STRDSRasterListResponseModel
 
     def _execute(self):
@@ -413,16 +413,16 @@ class AsyncPersistentListRasterSTRDS(AsyncPersistentProcessing):
 
 
 def register_raster(*args):
-    processing = AsyncPersistentRegisterRaster(*args)
+    processing = PersistentRasterSTRDSRegisterer(*args)
     processing.run()
 
 
-class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
+class PersistentRasterSTRDSRegisterer(PersistentProcessing):
     """Register a list of timestamped raster map layers in a STRDS
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
 
@@ -458,16 +458,16 @@ class AsyncPersistentRegisterRaster(AsyncPersistentProcessing):
 
 
 def unregister_raster(*args):
-    processing = AsyncPersistentUnregisterRaster(*args)
+    processing = PersistentRasterSTRDSUnregisterer(*args)
     processing.run()
 
 
-class AsyncPersistentUnregisterRaster(AsyncPersistentProcessing):
+class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
     """Unregister a list of timestamped raster map layers from a STRDS
     """
 
     def __init__(self, *args):
-        AsyncPersistentProcessing.__init__(self, *args)
+        PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
         self._setup()
