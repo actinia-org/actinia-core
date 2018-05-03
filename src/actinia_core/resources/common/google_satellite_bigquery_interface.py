@@ -229,17 +229,11 @@ class GoogleSatelliteBigQueryInterface(object):
                     query += " (%s) "%cloud_cover_query
                 statement_count += 1
 
-            query_results = self.bigquery_client.run_sync_query(query)
-            query_results.use_legacy_sql = False
-            query_results.run()
-
-            if query_results.complete is not True:
-                raise Exception("Unable to finish BigQuery query")
-
+            query_results = self.bigquery_client.query(query)
             result = []
 
-            if query_results.rows:
-                for row in query_results.rows:
+            if query_results.result():
+                for row in query_results.result():
                     scene_id, sensing_time, north_lat, south_lat, east_lon, west_lon, cloud_cover, total_size = row
                     result.append(dict(scene_id=scene_id, sensing_time=sensing_time,
                                        north_lat=north_lat, south_lat=south_lat,
@@ -333,17 +327,11 @@ class GoogleSatelliteBigQueryInterface(object):
                     "FROM `bigquery-public-data.cloud_storage_geo_index.landsat_index` " \
                     "WHERE scene_id IN (\"%s\");"%"\",\"".join(scene_ids)
 
-            query_results = self.bigquery_client.run_sync_query(query)
-            query_results.use_legacy_sql = False
-            query_results.run()
-
-            if query_results.complete is not True:
-                raise Exception("Unable to finish BigQuery landsat tile query")
-
+            query_results = self.bigquery_client.query(query)
             result = {}
 
-            if query_results.rows:
-                for row in query_results.rows:
+            if query_results.result():
+                for row in query_results.result():
 
                     scene_id, sensing_time, base_url = row
                     public_url = self.gcs_url + base_url[5:]
