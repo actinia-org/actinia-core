@@ -407,8 +407,8 @@ class AsyncEphemeralRasterInfo(AsyncEphemeralProcessing):
                    "flags": "gre"}
 
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_chain(process_chain=pc,
-                                                                                  skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
+                                                                                 skip_permission_check=True)
         self._execute_process_list(process_list)
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")

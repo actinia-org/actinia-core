@@ -116,7 +116,7 @@ class AsyncProcessValidation(AsyncEphemeralProcessing):
 
         self._setup()
 
-        process_chain = self._create_temporary_grass_environment_and_process_chain()
+        process_chain = self._create_temporary_grass_environment_and_process_list()
 
         result = []
         for process in process_chain:

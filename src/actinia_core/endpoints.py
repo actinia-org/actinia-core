@@ -33,6 +33,13 @@ from .resources.resource_management import ResourceManager, ResourcesManager
 from .resources.resource_streamer import RequestStreamerResource
 from .resources.download_cache_management import SyncDownloadCacheResource
 from .resources.resource_storage_management import SyncResourceStorageResource
+from .resources.vector_renderer import SyncEphemeralVectorRendererResource
+from .resources.raster_legend import SyncEphemeralRasterLegendResource
+from .resources.raster_colors import SyncPersistentRasterColorsResource
+from .resources.raster_renderer import SyncEphemeralRasterRendererResource
+from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
+from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
+from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -56,6 +63,19 @@ def create_core_endpoints():
                                                  '<string:mapset_name>/raster_layers')
     flask_api.add_resource(RasterLayerResource, '/locations/<string:location_name>/mapsets/'
                                                 '<string:mapset_name>/raster_layers/<string:raster_name>')
+    flask_api.add_resource(SyncEphemeralRasterLegendResource, '/locations/<string:location_name>/mapsets/'
+                                                              '<string:mapset_name>/raster_layers/'
+                                                              '<string:raster_name>/legend')
+    flask_api.add_resource(SyncPersistentRasterColorsResource, '/locations/<string:location_name>/mapsets/'
+                                                               '<string:mapset_name>/raster_layers/'
+                                                               '<string:raster_name>/colors')
+    flask_api.add_resource(SyncEphemeralRasterRendererResource, '/locations/<string:location_name>/mapsets/'
+                                                                '<string:mapset_name>/raster_layers/'
+                                                                '<string:raster_name>/render')
+    flask_api.add_resource(SyncEphemeralRasterRGBRendererResource, '/locations/<string:location_name>/mapsets/'
+                                                                   '<string:mapset_name>/render_rgb')
+    flask_api.add_resource(SyncEphemeralRasterShapeRendererResource, '/locations/<string:location_name>/mapsets/'
+                                                                     '<string:mapset_name>/render_shade')
     # STRDS management
     flask_api.add_resource(ListSTRDSResource, '/locations/<string:location_name>/mapsets/'
                                           '<string:mapset_name>/strds')
@@ -68,6 +88,11 @@ def create_core_endpoints():
                                                  '<string:mapset_name>/vector_layers')
     flask_api.add_resource(VectorLayerResource, '/locations/<string:location_name>/mapsets/'
                                                 '<string:mapset_name>/vector_layers/<string:vector_name>')
+    flask_api.add_resource(SyncEphemeralVectorRendererResource, '/locations/<string:location_name>/mapsets/'
+                                                                '<string:mapset_name>/vector_layers/'
+                                                                '<string:vector_name>/render')
+    flask_api.add_resource(SyncEphemeralSTRDSRendererResource, '/locations/<string:location_name>/mapsets/'
+                                                               '<string:mapset_name>/strds/<string:strds_name>/render')
 
     # Validation
     flask_api.add_resource(AsyncProcessValidationResource,

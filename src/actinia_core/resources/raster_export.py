@@ -11,6 +11,7 @@ from .async_resource_base import AsyncEphemeralResourceBase
 from .async_ephemeral_processing_with_export import AsyncEphemeralProcessingWithExport
 from .common.redis_interface import enqueue_job
 
+__license__ = "GPLv3"
 __author__     = "Sören Gebbert"
 __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
