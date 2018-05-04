@@ -226,7 +226,6 @@ class ResourceBase(Resource):
             or None if the request was wrong. Then use the self.response_data variable to send a response.
 
         """
-        print("Hello")
         if has_json is True and has_xml is True:
             if request.is_json is True:
                 self.request_data = request.get_json()

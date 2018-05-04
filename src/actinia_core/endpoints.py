@@ -141,11 +141,11 @@ def create_core_endpoints():
 
 
 def check_import_plugins():
-    import_run_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
+    import_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
 create_plugin_endpoints(flask_api=flask_api)
     """
     for plugin in global_config.PLUGINS:
-        import_run_str = import_run_str.format(plugin)
+        import_run_str = import_str.format(plugin)
         print(import_run_str)
         exec(import_run_str)
 

@@ -79,7 +79,7 @@ class Configuration(object):
         self.LOGIN_REQUIRED = True     # If set False, login is not required
         self.FORCE_HTTPS_URLS = False  # Force the use of https in response urls that
         #                                point to actinia services like status URL or data storage
-        self.PLUGINS = [] # ["actinia_satellite_plugin"]
+        self.PLUGINS = [] # ["actinia_satellite_plugin", "actinia_statistic_plugin"]
 
         # REDIS
         self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
