@@ -3,8 +3,11 @@
 """
 Actinia core Endpoint definitions
 """
-
+import traceback
+import sys
+from pprint import pprint
 from .resources.common.app import flask_api
+from .resources.common.config import global_config
 from .resources.location_management import ListLocationsResource, LocationManagementResourceUser
 from .resources.location_management import LocationManagementResourceAdmin
 from .resources.mapset_management import ListMapsetsResource, MapsetManagementResourceUser
@@ -40,6 +43,7 @@ from .resources.raster_renderer import SyncEphemeralRasterRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
 from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
+
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -136,8 +140,26 @@ def create_core_endpoints():
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')
 
 
+def check_import_plugins():
+    import_run_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
+create_plugin_endpoints(flask_api=flask_api)
+    """
+    for plugin in global_config.PLUGINS:
+        import_run_str = import_run_str.format(plugin)
+        print(import_run_str)
+        exec(import_run_str)
+
 def create_endpoints():
     create_core_endpoints()
+    try:
+        check_import_plugins()
+    except:
+        e_type, e_value, e_tb = sys.exc_info()
+        pprint(dict(message=str(e_value), traceback=str(traceback.format_tb(e_tb)), type=str(e_type)))
+
+
+
+
 
 
 

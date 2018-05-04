@@ -2,7 +2,7 @@
 Actinia - The GRASS GIS REST API
 ================================
 
-Actinia Core is an open source REST API for scalable, distributed, high performance
+Actinia is an open source REST API for scalable, distributed, high performance
 processing of geographical data that uses GRASS GIS for computational tasks.
 
 It provides a REST API to process satellite images, time series of satellite images,
@@ -21,7 +21,7 @@ Sentinel2A scenes in an ephemeral databases. The computational results of epheme
 are available via object storage as GeoTIFF files.
 
 The Actinia service consists of the *Actinia Core* that provides the basic but sophisticated processing service
-and *Actinia addons* that provide problem specific services like Sentinel 2A and Landsat NDVI computation,
+and *Actinia plugins* that provide problem specific services like Sentinel 2A and Landsat NDVI computation,
 spatio-temporal statistical analysis and many more.
 
 This documentation focus on the basic processing services that are provided by the *Actinia Core*

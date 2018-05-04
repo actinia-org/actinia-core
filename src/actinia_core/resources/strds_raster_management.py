@@ -149,7 +149,19 @@ class RasterListEntryModel(Schema):
 
 class RasterListRegisterModel(Schema):
     type = 'array'
-    items = STRDSRasterListEntryModel
+    items = RasterListEntryModel
+    example = [
+    {
+      "end_time": "2013-06-01 00:00:00",
+      "start_time": "2013-05-01 00:00:00",
+      "name": "precipitation_monthly_mm_760",
+    },
+    {
+      "end_time": "2013-07-01 00:00:00",
+      "start_time": "2013-06-01 00:00:00",
+      "name": "precipitation_monthly_mm_761",
+    }
+  ]
 
 
 class STRDSRasterManagement(ResourceBase):

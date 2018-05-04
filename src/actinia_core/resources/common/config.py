@@ -54,7 +54,7 @@ class Configuration(object):
         #                                                          are stored. This is the base path, der user group
         #                                                          will be added on runtime
         self.GRASS_DEFAULT_LOCATION = "nc_spm_08"  # The default GRASS location in the global database that
-        #                                                     is used for location generation
+        #                                            is used for location generation
         self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home  # The directory to store temporary GRASS databases
         self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home  # Directory to store exported resources
         self.GRASS_RESOURCE_QUOTA = 100  # The size quota of the resource storage in Gigibit
@@ -62,39 +62,40 @@ class Configuration(object):
         self.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass75"
         self.GRASS_ADDON_PATH = ""
         self.GRASS_MODULES_XML_PATH = os.path.join(self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
-        self.GRASS_VENV = "%s/src/GRaaS/grass_venv/bin/activate_this.py" % home # The path to the activation
-                                                                                # script of the python2 venv
+        self.GRASS_VENV = "%s/src/GRaaS/grass_venv/bin/activate_this.py" % home  # The path to the activation
+        #                                                                          script of the python2 venv
 
         # DEFAULT LIMITS when a user is created
         self.MAX_CELL_LIMIT = 1000 * 1000 * 1000  # Maximum number of cells that are allowed to process
-        self.PROCESS_TIME_LIMT = 600  # Maximum number of seconds an async process is
-        #                                                     allowed to run
+        self.PROCESS_TIME_LIMT = 600   # Maximum number of seconds an async process is
+        #                                allowed to run
         self.PROCESS_NUM_LIMIT = 1000  # Maximum number of processes in a process chain
-        self.NUMBER_OF_WORKERS = 3  # The number of queues that process jobs
+        self.NUMBER_OF_WORKERS = 3     # The number of queues that process jobs
 
         # API SETTINGS
         self.CHECK_CREDENTIALS = True  # If set False all credential checks are disabled
-        self.CHECK_LIMITS = True  # If set False all limit checks are disabled
-        self.LOG_API_CALL = True  # If set False the API calls are not logged
-        self.LOGIN_REQUIRED = True  # If set False, login is not required
+        self.CHECK_LIMITS = True       # If set False all limit checks are disabled
+        self.LOG_API_CALL = True       # If set False the API calls are not logged
+        self.LOGIN_REQUIRED = True     # If set False, login is not required
         self.FORCE_HTTPS_URLS = False  # Force the use of https in response urls that
-        #                                                     point to actinia services like status URL or data storage
+        #                                point to actinia services like status URL or data storage
+        self.PLUGINS = [] # ["actinia_satellite_plugin"]
 
         # REDIS
-        self.REDIS_SERVER_URL = "127.0.0.1"  # The hostname of the redis server
-        self.REDIS_SERVER_PORT = 6379  # The port of the redis server
+        self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
+        self.REDIS_SERVER_PORT = 6379             # The port of the redis server
         self.REDIS_RESOURCE_EXPIRE_TIME = 864000  # Default expire time is 10 days for resource logs,
-        #                                                     that are used for calculating the price of resource usage
-        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"  # The hostname of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PORT = 6379  # The port of the redis work queue server
-        self.REDIS_QUEUE_JOB_TTL = 0  # This is the time the rq:job will be stored in the redis
+        #                                           that are used for calculating the price of resource usage
+        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1" # The hostname of the redis work queue server
+        self.REDIS_QUEUE_SERVER_PORT = 6379   # The port of the redis work queue server
+        self.REDIS_QUEUE_JOB_TTL = 0          # This is the time the rq:job will be stored in the redis
         self.WORKER_QUEUE_NAME = "job_queue"  # The base name of the redis worker queue,
-        #                                                     it will be extended by a numerical suffix
-        #                                                     that represents the worker id/number
-        #                                                     database to re-queue it, usually this is not necessary
+        #                                       it will be extended by a numerical suffix
+        #                                       that represents the worker id/number
+        #                                       database to re-queue it, usually this is not necessary
         self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker" % home  # The base name of the redis worker queue logfile,
-        #                                                     it will be extended by a numerical suffix
-        #                                                     that represents the worker id/number
+        #                                                                 it will be extended by a numerical suffix
+        #                                                                 that represents the worker id/number
         # MISC
         self.TMP_WORKDIR = "%s/actinia/workspace/tmp" % home  # The directory to store temporary files
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
@@ -102,12 +103,12 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100  # The quota of the download cache in Gigibit
 
         # Logging
-        self.LOG_LEVEL = 1  # 1 Error, 2 Warning, 3 Info, 4 Debug
-        self.LOG_INTERFACE = "fluentd"  # The logging interface to use: "stderr" or "fluentd"
+        self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
+        self.LOG_INTERFACE = "fluentd"      # The logging interface to use: "stderr" or "fluentd"
         self.LOG_FLUENT_HOST = "127.0.0.1"  # The Fluentd host used for fluent logging
-        self.LOG_FLUENT_PORT = 24224  # The Fluentd host used for fluent logging
+        self.LOG_FLUENT_PORT = 24224        # The Fluentd host used for fluent logging
 
-        self.DEFAULT_USER = "user"  # If authentication is not required, a default user is used
+        self.DEFAULT_USER = "user"         # If authentication is not required, a default user is used
         self.DEFAULT_USER_GROUP = "group"  # If authentication is not required, a default group is used
 
         # Not in config file
@@ -123,7 +124,7 @@ class Configuration(object):
         self.GOOGLE_APPLICATION_CREDENTIALS = "/etc/GCS_credentials.json"  # This file stores the Google
         #                                                                    Cloud Storage credentials
         self.GOOGLE_CLOUD_PROJECT = ""  # The google project
-        self.GCS_RESOURCE_BUCKET = ""  # The Google Cloud Storage bucket to store user resources
+        self.GCS_RESOURCE_BUCKET = ""   # The Google Cloud Storage bucket to store user resources
 
     def __str__(self):
         string = ""
@@ -171,6 +172,7 @@ class Configuration(object):
         config.set('API', 'LOG_API_CALL', str(self.LOG_API_CALL))
         config.set('API', 'LOGIN_REQUIRED', str(self.LOGIN_REQUIRED))
         config.set('API', 'FORCE_HTTPS_URLS', str(self.FORCE_HTTPS_URLS))
+        config.set('API', 'PLUGINS', str(self.PLUGINS))
 
         config.add_section('REDIS')
         config.set('REDIS', 'REDIS_SERVER_URL', self.REDIS_SERVER_URL)
@@ -271,6 +273,8 @@ class Configuration(object):
                     self.LOGIN_REQUIRED = config.getboolean("API", "LOGIN_REQUIRED")
                 if config.has_option("API", "FORCE_HTTPS_URLS"):
                     self.FORCE_HTTPS_URLS = config.getboolean("API", "FORCE_HTTPS_URLS")
+                if config.has_option("API", "PLUGINS"):
+                    self.PLUGINS = config.get("API", "PLUGINS")
 
             if config.has_section("REDIS"):
                 if config.has_option("REDIS", "REDIS_SERVER_URL"):
