@@ -10,7 +10,7 @@ import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
@@ -24,6 +24,7 @@ __email__ = "soerengebbert@googlemail.com"
 class VectorAttributeModel(Schema):
     """Simple model that represent the description of vector attributes
     """
+    description = "Description of a vector map layer attribute"
     type = 'object'
     properties = {'column': {'type': 'string'},
                   'type': {'type': 'string'}}
@@ -33,6 +34,7 @@ class VectorAttributeModel(Schema):
 class VectorInfoModel(Schema):
     """Schema that contains vector map layer information
     """
+    description = "Description of a GRASS GIS vector map layer"
     type = 'object'
     properties = {
         'Attributes': {'type': 'array', "items": VectorAttributeModel},
@@ -138,15 +140,15 @@ class VectorInfoResponseModel(ProcessingResponseModel):
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
     example = {
-        "accept_datetime": "2018-05-02 10:55:55.901464",
-        "accept_timestamp": 1525258555.9014626,
+        "accept_datetime": "2018-05-06 21:36:53.825043",
+        "accept_timestamp": 1525635413.8250418,
         "api_info": {
             "endpoint": "vectorlayerresource",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology",
-            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
         },
-        "datetime": "2018-05-02 10:55:56.111661",
+        "datetime": "2018-05-06 21:36:54.032325",
         "http_code": 200,
         "message": "Processing successfully finished",
         "process_chain_list": [
@@ -182,11 +184,12 @@ class VectorInfoResponseModel(ProcessingResponseModel):
                     "-gte"
                 ],
                 "return_code": 0,
-                "run_time": 0.050165653228759766,
+                "run_time": 0.050188302993774414,
                 "stderr": [
                     ""
                 ],
-                "stdout": "..."},
+                "stdout": "..."
+            },
             {
                 "executable": "v.info",
                 "parameter": [
@@ -194,11 +197,12 @@ class VectorInfoResponseModel(ProcessingResponseModel):
                     "-h"
                 ],
                 "return_code": 0,
-                "run_time": 0.050263166427612305,
+                "run_time": 0.05018758773803711,
                 "stderr": [
                     ""
                 ],
-                "stdout": "..."},
+                "stdout": "..."
+            },
             {
                 "executable": "v.info",
                 "parameter": [
@@ -206,12 +210,13 @@ class VectorInfoResponseModel(ProcessingResponseModel):
                     "-c"
                 ],
                 "return_code": 0,
-                "run_time": 0.050176382064819336,
+                "run_time": 0.050185441970825195,
                 "stderr": [
                     "Displaying column types/names for database connection of layer <1>:",
                     ""
                 ],
-                "stdout": "..."}
+                "stdout": "..."
+            }
         ],
         "process_results": {
             "Attributes": [
@@ -250,7 +255,7 @@ class VectorInfoResponseModel(ProcessingResponseModel):
             ],
             "COMMAND": " v.db.connect -o map=\"geology@PERMANENT\" driver=\"sqlite\" database=\"$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\" table=\"geology\" key=\"cat\" layer=\"1\" separator=\"|\"",
             "areas": "1832",
-            "attribute_database": "/actinia/workspace/temp_db/gisdbase_2536e440d0604d43ab3e25da23b98b35/nc_spm_08/PERMANENT/sqlite/sqlite.db",
+            "attribute_database": "/home/soeren/actinia/workspace/temp_db/gisdbase_d98fc0548fc44fac8fe43abd575e98cc/nc_spm_08/PERMANENT/sqlite/sqlite.db",
             "attribute_database_driver": "sqlite",
             "attribute_layer_name": "geology",
             "attribute_layer_number": "1",
@@ -261,7 +266,7 @@ class VectorInfoResponseModel(ProcessingResponseModel):
             "centroids": "1832",
             "comment": "",
             "creator": "helena",
-            "database": "/actinia/workspace/temp_db/gisdbase_2536e440d0604d43ab3e25da23b98b35",
+            "database": "/home/soeren/actinia/workspace/temp_db/gisdbase_d98fc0548fc44fac8fe43abd575e98cc",
             "digitization_threshold": "0.000000",
             "east": "930172.312822711",
             "format": "native",
@@ -291,13 +296,13 @@ class VectorInfoResponseModel(ProcessingResponseModel):
             "num_of_steps": 3,
             "step": 3
         },
-        "resource_id": "resource_id-737767c7-7436-43ad-a280-ce629525ba5a",
+        "resource_id": "resource_id-5494af8c-8c9d-4f8e-a568-d6e86d69d8fd",
         "status": "finished",
-        "time_delta": 0.21027016639709473,
-        "timestamp": 1525258556.1116493,
+        "time_delta": 0.20732927322387695,
+        "timestamp": 1525635414.0323067,
         "urls": {
             "resources": [],
-            "status": "http://localhost:8080/resources/user/resource_id-737767c7-7436-43ad-a280-ce629525ba5a"
+            "status": "http://localhost:5000/resources/user/resource_id-5494af8c-8c9d-4f8e-a568-d6e86d69d8fd"
         },
         "user_id": "user"
     }
@@ -354,7 +359,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
     """
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
+        'tags': ['Vector Management'],
         'description': 'Get information about an existing vector map layer. '
                        'Minimum required user role: user.',
         'parameters': [
@@ -393,12 +398,12 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why gathering vector map '
                                'layer information did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, vector_name):
-        """Return informations about a specific vector layer as JSON
+        """Get information about an existing vector map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -414,7 +419,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
+        'tags': ['Vector Management'],
         'description': 'Delete an existing vector map layer. '
                        'Minimum required user role: user.',
         'parameters': [
@@ -449,12 +454,12 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why vector map '
                                'layer deletion did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name, vector_name):
-        """Delete a specific vector map layer
+        """Delete an existing vector map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -470,7 +475,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
+        'tags': ['Vector Management'],
         'description': 'Create a new vector map layer based on randomly generated point coordinates '
                        'in a user specific region. This method will fail if the map already exists. '
                        'Minimum required user role: user.',
@@ -514,12 +519,12 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why gathering vector map '
                                'layer information did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name, vector_name):
-        """Create a new vector map point layer within a specific region
+        """Create a new vector map layer based on randomly generated point coordinates in a user specific region.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,

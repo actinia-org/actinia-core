@@ -2,7 +2,7 @@
 
 # First run the actinia server and wait it for running
 make install
-actinia_server &
+actinia-server &
 sleep 3
 
 # Then download the json file

@@ -93,7 +93,7 @@ class APILogResource(Resource):
         self.user_role = g.user.get_role()
 
     @swagger.doc({
-        'tags': ['api_log'],
+        'tags': ['API Log'],
         'description': 'Get a list of all API calls that have been called by the provided user. '
                        'Admin and superadmin roles can list API calls from any user. A user role '
                        'can only list API calls from itself. '
@@ -120,6 +120,7 @@ class APILogResource(Resource):
         }
      })
     def get(self, user_id):
+        """Get a list of all API calls that have been called by the provided user."""
 
         if self.user_role not in ["admin", "superadmin"] and user_id != self.user_id:
             return make_response(jsonify(SimpleResponseModel(status="error",

@@ -10,7 +10,7 @@ from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.app import auth
 from .common.logging_interface import log_api_call
 from .common.process_chain import ProcessChainModel
@@ -23,13 +23,13 @@ __email__      = "soerengebbert@googlemail.com"
 
 
 DESCR="""Validate a process chain, check the provided sources (links)
-and the mapsets. The list of processes that are executed by Actinia Core are returned in the
+and the mapsets. The list of processes that were checked by Actinia are returned in the
 JSON response.
 """
 
 
 SCHEMA_DOC={
-    'tags': ['ephemeral processing'],
+    'tags': ['Processing'],
     'description': DESCR,
     'consumes':['application/json'],
     'parameters': [
@@ -58,7 +58,7 @@ SCHEMA_DOC={
         '400': {
             'description':'The error message and a detailed log why process chain validation '
                           'did not succeeded',
-            'schema':ProcessingResponseModel
+            'schema':ProcessingErrorResponseModel
         }
     }
  }
@@ -70,6 +70,7 @@ class AsyncProcessValidationResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
+        """Validate a process chain asynchronously, check the provided sources and the mapsets."""
 
         rdc = self.preprocess(has_json=True, has_xml=True,
                               location_name=location_name)
@@ -88,6 +89,7 @@ class SyncProcessValidationResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
+        """Validate a process chain synchronously, check the provided sources and the mapsets."""
 
         rdc = self.preprocess(has_json=True, has_xml=True,
                               location_name=location_name)

@@ -11,7 +11,7 @@ from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -25,8 +25,8 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
     """
 
     @swagger.doc({
-        'tags': ['raster map layer rendering'],
-        'description': 'Render a raster map layer. Minimum required user role: user.',
+        'tags': ['Raster Management'],
+        'description': 'Render a raster map layer as a PNG image. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -109,12 +109,12 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
                 'description': 'The PNG image'},
             '400': {
                 'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, raster_name):
-        """Render a raster image with g.region/d.rast approach
+        """Render a raster map layer as a PNG image.
         """
         parser = self.create_parser()
         args = parser.parse_args()
@@ -228,8 +228,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
         return options
 
     @swagger.doc({
-        'tags': ['raster map layer rendering'],
-        'description': 'Render three map layer as RGB image. Minimum required user role: user.',
+        'tags': ['Raster Management'],
+        'description': 'Render three raster map layer as composed RGB PNG image. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -328,12 +328,12 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
                 'description': 'The RGB composition PNG image'},
             '400': {
                 'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name):
-        """Render three raster layer as rgb image with g.region/d.rgb approach
+        """Render three raster map layer as composed RGB PNG image.
         """
 
         parser = self.create_parser()
@@ -457,8 +457,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
 
     @swagger.doc({
-        'tags': ['raster map layer rendering'],
-        'description': 'Render a raster map layer with shading. Minimum required user role: user.',
+        'tags': ['Raster Management'],
+        'description': 'Render two raster layers as a composed shade PNG image. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -549,12 +549,12 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
                 'description': 'The shade/color composition PNG image'},
             '400': {
                 'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name):
-        """Render two raster layer as shade image with g.region/d.shade approach
+        """Render two raster layers as a composed shade PNG image
         """
         parser = self.create_parser()
         parser.add_argument('shade', required=True, type=str,

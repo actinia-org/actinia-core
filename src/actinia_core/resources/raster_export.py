@@ -7,9 +7,11 @@ or the raster layer region are used for export.
 """
 from flask import jsonify, make_response
 import pickle
+from flask_restful_swagger_2 import swagger, Schema
 from .resource_base import ResourceBase
 from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from .common.redis_interface import enqueue_job
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -27,19 +29,53 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    def get(self, location_name, mapset_name, raster_name):
-        """Export a specific raster layer
-
-        Args:
-            location_name (str): The name of the location
-            mapset_name (str): The name of the mapset
-            raster_name (str): The name of the raster layer to export
-
-        Returns:
-            flask.Response:
-            The HTTP status and a JSON document that includes the
-            status URL of the export task that must be polled for updates.
-
+    @swagger.doc({
+        'tags': ['Raster Management'],
+        'description': 'Export an existing raster map layer as GeoTiff. The link to the exported raster map '
+                       'layer is located in the JSON response. The current region settings of the mapset'
+                       'are used to export the raster layer. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'location_name',
+                'description': 'The location name',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'nc_spm_08'
+            },
+            {
+                'name': 'mapset_name',
+                'description': 'The name of the mapset that contains the required raster map layer',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'PERMANENT'
+            },
+            {
+                'name': 'raster_name',
+                'description': 'The name of the raster map layer to export',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'elevation'
+            }
+        ],
+        'consumes': ['application/json'],
+        'produces': ["application/json"],
+        'responses': {
+            '200': {
+                'description': 'The response including the URL to the raster map layer GeoTiff file',
+                'schema': ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message and a detailed log why gathering raster map '
+                               'layer information did not succeeded',
+                'schema': ProcessingErrorResponseModel
+            }
+        }
+    })
+    def post(self, location_name, mapset_name, raster_name):
+        """Export an existing raster map layer as GeoTiff.
         """
         return self._execute(location_name, mapset_name, raster_name, False)
 
@@ -68,19 +104,53 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
     def __init__(self):
         ResourceBase.__init__(self)
 
+    @swagger.doc({
+        'tags': ['Raster Management'],
+        'description': 'Export an existing raster map layer as GeoTiff using the raster map layer specific region. '
+                       'The link to the exported raster map '
+                       'layer is located in the JSON response. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'location_name',
+                'description': 'The location name',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'nc_spm_08'
+            },
+            {
+                'name': 'mapset_name',
+                'description': 'The name of the mapset that contains the required raster map layer',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'PERMANENT'
+            },
+            {
+                'name': 'raster_name',
+                'description': 'The name of the raster map layer to export',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'elevation'
+            }
+        ],
+        'consumes': ['application/json'],
+        'produces': ["application/json"],
+        'responses': {
+            '200': {
+                'description': 'The response including the URL to the raster map layer GeoTiff file',
+                'schema': ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message and a detailed log why gathering raster map '
+                               'layer information did not succeeded',
+                'schema': ProcessingErrorResponseModel
+            }
+        }
+    })
     def get(self, location_name, mapset_name, raster_name):
-        """Export a specific raster layer and use the raster region for export
-
-        Args:
-            location_name (str): The name of the location
-            mapset_name (str): The name of the mapset
-            raster_name (str): The name of the raster layer to export
-
-        Returns:
-            flask.Response:
-            The HTTP status and a JSON document that includes the
-            status URL of the export task that must be polled for updates.
-
+        """Export an existing raster map layer as GeoTiff using the raster map specific region.
         """
         return self._execute(location_name, mapset_name, raster_name, True)
 

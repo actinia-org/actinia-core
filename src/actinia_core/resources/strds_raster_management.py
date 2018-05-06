@@ -12,7 +12,7 @@ from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016, Sören Gebbert"
@@ -66,29 +66,49 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
     required = deepcopy(ProcessingResponseModel.required)
     # required.append("process_results")
     example = {
-        "accept_datetime": "2017-05-23 13:01:32.517207",
-        "accept_timestamp": 1495537292.517203,
+        "accept_datetime": "2018-05-06 21:28:18.583050",
+        "accept_timestamp": 1525634898.5830483,
         "api_info": {
             "endpoint": "strdsrastermanagement",
             "method": "GET",
-            "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers",
-            "request_url": "http://localhost:5000/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_monthly_mm/raster_layers?where=start_time > '2013-05-01'"
+            "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers",
+            "request_url": "http://localhost:5000/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>'2010-01-01'"
         },
-        "datetime": "2017-05-23 13:01:33.607950",
+        "datetime": "2018-05-06 21:28:19.187395",
         "http_code": 200,
         "message": "Processing successfully finished",
+        "process_chain_list": [
+            {
+                "1": {
+                    "flags": "u",
+                    "inputs": {
+                        "columns": "id,start_time,end_time,north,south,east,west,min,max,rows,cols",
+                        "input": "precipitation_1950_2013_yearly_mm@PERMANENT",
+                        "separator": "|",
+                        "where": "start_time>'2010-01-01'"
+                    },
+                    "module": "t.rast.list",
+                    "outputs": {
+                        "output": {
+                            "name": "/home/soeren/actinia/workspace/temp_db/gisdbase_1b72938d2ef54c199f6627b8720f21e1/.tmp/tmptps71vn7"
+                        }
+                    }
+                }
+            }
+        ],
         "process_log": [
             {
                 "executable": "t.rast.list",
                 "parameter": [
-                    "input=precipitation_1950_2013_monthly_mm@PERMANENT",
+                    "input=precipitation_1950_2013_yearly_mm@PERMANENT",
+                    "where=start_time>'2010-01-01'",
                     "separator=|",
-                    "where=start_time > '2013-05-01'",
                     "columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols",
-                    "output=/tmp/gisdbase_cdc689a958b948a58cb4165e5a4d9daf/.tmp/tmpBFJABA",
+                    "output=/home/soeren/actinia/workspace/temp_db/gisdbase_1b72938d2ef54c199f6627b8720f21e1/.tmp/tmptps71vn7",
                     "-u"
                 ],
                 "return_code": 0,
+                "run_time": 0.5023984909057617,
                 "stderr": [
                     ""
                 ],
@@ -99,27 +119,40 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
             {
                 "cols": "201",
                 "east": "75.5",
-                "end_time": "2013-06-01 00:00:00",
-                "id": "precipitation_monthly_mm_760@PERMANENT",
-                "max": "403.8",
-                "min": "0.0",
+                "end_time": "2011-01-01 00:00:00",
+                "id": "precipitation_yearly_mm_60@PERMANENT",
+                "max": "2899.6",
+                "min": "22.5",
                 "north": "75.5",
                 "rows": "464",
                 "south": "25.25",
-                "start_time": "2013-05-01 00:00:00",
+                "start_time": "2010-01-01 00:00:00",
                 "west": "-40.5"
             },
             {
                 "cols": "201",
                 "east": "75.5",
-                "end_time": "2013-07-01 00:00:00",
-                "id": "precipitation_monthly_mm_761@PERMANENT",
-                "max": "283.4",
+                "end_time": "2012-01-01 00:00:00",
+                "id": "precipitation_yearly_mm_61@PERMANENT",
+                "max": "4226.0",
+                "min": "10.0",
+                "north": "75.5",
+                "rows": "464",
+                "south": "25.25",
+                "start_time": "2011-01-01 00:00:00",
+                "west": "-40.5"
+            },
+            {
+                "cols": "201",
+                "east": "75.5",
+                "end_time": "2013-01-01 00:00:00",
+                "id": "precipitation_yearly_mm_62@PERMANENT",
+                "max": "3442.6",
                 "min": "0.0",
                 "north": "75.5",
                 "rows": "464",
                 "south": "25.25",
-                "start_time": "2013-06-01 00:00:00",
+                "start_time": "2012-01-01 00:00:00",
                 "west": "-40.5"
             }
         ],
@@ -127,14 +160,15 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
             "num_of_steps": 1,
             "step": 1
         },
-        "resource_id": "resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d",
+        "resource_id": "resource_id-729ace44-6245-43c7-a875-d2059c1a1549",
         "status": "finished",
-        "timestamp": 1495537293.607947,
+        "time_delta": 0.6043989658355713,
+        "timestamp": 1525634899.1873734,
         "urls": {
             "resources": [],
-            "status": "http://localhost:5000/resources/soeren/resource_id-f6651ec2-73bc-42bc-aa64-aa21ee8ab35d"
+            "status": "http://localhost:5000/resources/user/resource_id-729ace44-6245-43c7-a875-d2059c1a1549"
         },
-        "user_id": "soeren"
+        "user_id": "user"
     }
 
 
@@ -151,17 +185,17 @@ class RasterListRegisterModel(Schema):
     type = 'array'
     items = RasterListEntryModel
     example = [
-    {
-      "end_time": "2013-06-01 00:00:00",
-      "start_time": "2013-05-01 00:00:00",
-      "name": "precipitation_monthly_mm_760",
-    },
-    {
-      "end_time": "2013-07-01 00:00:00",
-      "start_time": "2013-06-01 00:00:00",
-      "name": "precipitation_monthly_mm_761",
-    }
-  ]
+        {
+            "end_time": "2013-06-01 00:00:00",
+            "start_time": "2013-05-01 00:00:00",
+            "name": "precipitation_monthly_mm_760",
+        },
+        {
+            "end_time": "2013-07-01 00:00:00",
+            "start_time": "2013-06-01 00:00:00",
+            "name": "precipitation_monthly_mm_761",
+        }
+    ]
 
 
 class STRDSRasterManagement(ResourceBase):
@@ -169,9 +203,9 @@ class STRDSRasterManagement(ResourceBase):
     """
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
-        'description': 'Return of all raster map layers that are registered in '
-                       'a STRDS that is located in a specific location/mapset. '
+        'tags': ['STRDS Management'],
+        'description': 'Get a list of all raster map layers that are registered in a STRDS  '
+                       'that is located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -213,12 +247,12 @@ class STRDSRasterManagement(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why creating a list of raster '
                                'map layers from STRDS did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, strds_name):
-        """Return information about a STRDS that is located in a specific location/mapset
+        """Get a list of all raster map layers that are registered in a STRDS
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -237,8 +271,8 @@ class STRDSRasterManagement(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
-        'description': 'Register raster map layer in a STRDS in a specific location/mapset. '
+        'tags': ['STRDS Management'],
+        'description': 'Register raster map layers in a STRDS located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -278,12 +312,12 @@ class STRDSRasterManagement(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why raster map layer '
                                'registration did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def put(self, location_name, mapset_name, strds_name):
-        """Register raster layer in a strds
+        """Register raster map layers in a STRDS located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
@@ -299,8 +333,8 @@ class STRDSRasterManagement(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
-        'description': 'Unregister raster map layer from a STRDS in a specific location/mapset. '
+        'tags': ['STRDS Management'],
+        'description': 'Unregister raster map layers from a STRDS located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -340,12 +374,12 @@ class STRDSRasterManagement(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why raster map layer '
                                'unregistration did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name, strds_name):
-        """Unregister raster layer from the strds
+        """Unregister raster map layers from a STRDS located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,

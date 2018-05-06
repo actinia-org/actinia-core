@@ -21,7 +21,8 @@ from .common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
 from .common.response_models import ProcessingResponseModel, \
-    StringListProcessingResultResponseModel, MapsetInfoResponseModel, MapsetInfoModel, RegionModel
+    StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
+    MapsetInfoModel, RegionModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -36,8 +37,8 @@ class ListMapsetsResource(ResourceBase):
     layer_type = None
 
     @swagger.doc({
-        'tags': ['mapset management'],
-        'description': 'Return a list of all mapsets that are located in a specific location. '
+        'tags': ['Mapset Management'],
+        'description': 'Get a list of all mapsets that are located in a specific location. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -58,12 +59,12 @@ class ListMapsetsResource(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'mapsets did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name):
-        """Return a list of all mapsets in a location
+        """Get a list of all mapsets that are located in a specific location.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -122,8 +123,8 @@ class MapsetManagementResourceUser(ResourceBase):
         ResourceBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['mapset management'],
-        'description': 'Return the current computational region of the mapset and the '
+        'tags': ['Mapset Management'],
+        'description': 'Get the current computational region of the mapset and the '
                        'projection of the location as WKT string. Minimum required user role: user.',
         'parameters': [
             {
@@ -150,13 +151,13 @@ class MapsetManagementResourceUser(ResourceBase):
                 'schema': MapsetInfoResponseModel
             },
             '400': {
-                'description': 'The error message',
-                'schema': ProcessingResponseModel
+                'description': 'The error message and a detailed error log',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name):
-        """Return the current region of the mapset
+        """Get the current computational region of the mapset and the projection of the location as WKT string.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -179,7 +180,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
         ResourceBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['mapset management'],
+        'tags': ['Mapset Management'],
         'description': 'Create a new mapset in an existing location. Minimum required user role: admin.',
         'parameters': [
             {
@@ -203,13 +204,13 @@ class MapsetManagementResourceAdmin(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message',
-                'schema': ProcessingResponseModel
+                'description': 'The error message and a detailed error log',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name):
-        """Create a new mapset in the provided location
+        """Create a new mapset in an existing location.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -236,7 +237,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
         pass
 
     @swagger.doc({
-        'tags': ['mapset management'],
+        'tags': ['Mapset Management'],
         'description': 'Delete an existing mapset. Minimum required user role: admin.',
         'parameters': [
             {
@@ -260,13 +261,13 @@ class MapsetManagementResourceAdmin(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message',
-                'schema': ProcessingResponseModel
+                'description': 'The error message and a detailed error log',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name):
-        """Delete a specific mapset and everything inside
+        """Delete an existing mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -462,8 +463,8 @@ class MapsetLockManagementResource(ResourceBase):
                   very_admin_role, auth.login_required]
 
     @swagger.doc({
-        'tags': ['mapset management'],
-        'description': 'Return the location/mapset lock status. '
+        'tags': ['Mapset Management'],
+        'description': 'Get the location/mapset lock status. '
                        'Minimum required user role: admin.',
         'parameters': [
             {
@@ -489,13 +490,13 @@ class MapsetLockManagementResource(ResourceBase):
                 'schema': MapsetLockManagementResponseModel
             },
             '400': {
-                'description': 'The error message',
+                'description': 'The error message and a detailed error log',
                 'schema': ProcessingResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name):
-        """Get the lock status of a mapset
+        """Get the location/mapset lock status.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -506,7 +507,7 @@ class MapsetLockManagementResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['mapset management'],
+        'tags': ['Mapset Management'],
         'description': 'Create a location/mapset lock. A location/mapset lock can be created '
                        'so that no operation can be performed on it until it is unlocked. '
                        'Minimum required user role: admin.',
@@ -534,13 +535,13 @@ class MapsetLockManagementResource(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message',
+                'description': 'The error message and a detailed error log',
                 'schema': ProcessingResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name):
-        """Lock a mapset
+        """Create a location/mapset lock.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -551,7 +552,7 @@ class MapsetLockManagementResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['mapset management'],
+        'tags': ['Mapset Management'],
         'description': 'Delete a location/mapset lock. A location/mapset lock can be deleted '
                        'so that operation can be performed on it until it is locked. '
                        'Minimum required user role: admin.',
@@ -579,13 +580,13 @@ class MapsetLockManagementResource(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message',
+                'description': 'The error message and a detailed error log',
                 'schema': ProcessingResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name):
-        """Unlock a locked mapset
+        """Delete a location/mapset lock.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,

@@ -6,7 +6,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
-from .process_chain import ProcessChainModel
+from .process_chain import GrassModule
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -225,7 +225,8 @@ class ExceptionTracebackModel(Schema):
             'description': 'The type of the Exception'
         },
         'traceback': {
-            'type': 'string',
+            'type': 'array',
+            'items': {'type': 'string'},
             'description': 'The full traceback of the Exception'
         }
     }
@@ -265,8 +266,8 @@ class ProcessingResponseModel(Schema):
         },
         'process_chain_list': {
             'type': 'array',
-            'items': ProcessChainModel,
-            'description': 'A list of ProcessChainModels that were used in the processing'
+            'items': GrassModule,
+            'description': 'The list of GRASS modules that were used in the processing'
         },
         'process_results': {
             'type': 'string',
@@ -333,6 +334,78 @@ class ProcessingResponseModel(Schema):
             "status": "http://localhost/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
         },
         "user_id": "admin"
+    }
+
+
+class ProcessingErrorResponseModel(ProcessingResponseModel):
+    """Response schema that error messages from a failed process execution
+    """
+    type = 'object'
+    properties = deepcopy(ProcessingResponseModel.properties)
+    required = deepcopy(ProcessingResponseModel.required)
+    example = {
+        "accept_datetime": "2018-05-06 22:02:14.323815",
+        "accept_timestamp": 1525636934.3238132,
+        "api_info": {
+            "endpoint": "mapsetmanagementresourceuser",
+            "method": "GET",
+            "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
+            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets/PERMANE/info"
+        },
+        "datetime": "2018-05-06 22:02:14.398927",
+        "exception": {
+            "message": "AsyncProcessError:  Error while running executable <g.region>",
+            "traceback": [
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 1200, in run\n    self._execute()\n",
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/mapset_management.py\", line 315, in _execute\n    self._execute_process_list(process_list)\n",
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/persistent_processing.py\", line 496, in _execute_process_list\n    self._run_module(process)\n",
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 977, in _run_module\n    return self._run_executable(process, poll_time)\n",
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 1063, in _run_executable\n    raise AsyncProcessError(\"Error while running executable <%s>\" % process.executable)\n"
+            ],
+            "type": "<class 'actinia_core.resources.common.exceptions.AsyncProcessError'>"
+        },
+        "http_code": 400,
+        "message": "AsyncProcessError:  Error while running executable <g.region>",
+        "process_chain_list": [
+            {
+                "1": {
+                    "flags": "ug3",
+                    "module": "g.region"
+                },
+                "2": {
+                    "flags": "fw",
+                    "module": "g.proj"
+                }
+            }
+        ],
+        "process_log": [
+            {
+                "executable": "g.region",
+                "parameter": [
+                    "-ug3"
+                ],
+                "return_code": 1,
+                "run_time": 0.05020904541015625,
+                "stderr": [
+                    "ERROR: MAPSET PERMANE not found at /home/soeren/actinia/workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba0b8b/nc_spm_08",
+                    ""
+                ],
+                "stdout": ""
+            }
+        ],
+        "progress": {
+            "num_of_steps": 2,
+            "step": 1
+        },
+        "resource_id": "resource_id-79608249-521c-4a98-9e1f-9201f693870b",
+        "status": "error",
+        "time_delta": 0.07516026496887207,
+        "timestamp": 1525636934.3989098,
+        "urls": {
+            "resources": [],
+            "status": "http://localhost:5000/resources/user/resource_id-79608249-521c-4a98-9e1f-9201f693870b"
+        },
+        "user_id": "user"
     }
 
 

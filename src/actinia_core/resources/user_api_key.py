@@ -58,7 +58,7 @@ class APIKeyCreationResource(LoginBase):
         LoginBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['api key management'],
+        'tags': ['Authentication Management'],
         'description': 'Create an API key for permanent authentication. API keys have no expiration time. '
                        'Minimum required user role: admin.',
         'responses': {
@@ -73,6 +73,7 @@ class APIKeyCreationResource(LoginBase):
         }
     })
     def get(self):
+        """Create an API key for permanent authentication."""
 
         try:
             return make_response(jsonify(TokenResponseModel(status="success",
@@ -93,7 +94,7 @@ class TokenCreationResource(LoginBase):
         LoginBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['api key management'],
+        'tags': ['Authentication Management'],
         'description': 'Create an authentication token. Tokens have an expiration time. '
                        'The default expiration time is one day (86400s). maximum length is 365 days. '
                        'Minimum required user role: user.',
@@ -118,6 +119,7 @@ class TokenCreationResource(LoginBase):
         }
     })
     def get(self):
+        """Create an authentication token."""
 
         args = expiration_time_parser.parse_args()
         expiration = 86400

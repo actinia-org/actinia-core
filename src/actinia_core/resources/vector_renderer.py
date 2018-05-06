@@ -12,7 +12,7 @@ import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -26,8 +26,8 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
     """
 
     @swagger.doc({
-        'tags': ['vector map layer rendering'],
-        'description': 'Render a vector map layer. Minimum required user role: user.',
+        'tags': ['Vector Management'],
+        'description': 'Render a single vector map layer. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -110,12 +110,12 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
                 'description': 'The PNG image'},
             '400': {
                 'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, vector_name):
-        """Render a vector layer with g.region/d.vect approach
+        """Render a single vector map layer
         """
         parser = self.create_parser()
         args = parser.parse_args()
@@ -158,7 +158,7 @@ class EphemeralVectorRenderer(EphemeralRendererBase):
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
-        """Render the raster image
+        """Render the vector image
 
         Workflow:
 

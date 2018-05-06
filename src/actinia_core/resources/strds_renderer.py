@@ -11,7 +11,7 @@ from .renderer_base import RendererBaseResource, EphemeralRendererBase
 import tempfile
 import os
 from flask_restful_swagger_2 import swagger
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -21,12 +21,11 @@ __email__      = "soerengebbert@googlemail.com"
 
 
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
-    """Render a list of raster images with g.region/d.rast.multi approach synchronously
-    """
 
     @swagger.doc({
-        'tags': ['strds rendering'],
-        'description': 'Render the raster map layer of a STRDS. Minimum required user role: user.',
+        'tags': ['STRDS Management'],
+        'description': 'Render the raster map layers of a specific STRDS as a single image. All raster layers are '
+                       'rendered in order of their time stamps, from past to future. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -123,12 +122,12 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
                 'description': 'The PNG image'},
             '400': {
                 'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, strds_name):
-        """Render a raster image with g.region/d.rast approach
+        """Render the raster map layers of a specific STRDS as a single image.
         """
         parser = self.create_parser()
         args = parser.parse_args()

@@ -59,6 +59,21 @@ curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary/raste
 # Delete the temporary mapset
 curl ${AUTH} -X DELETE -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary # Success
 
+
+###############################################################################
+###############  STDRS  #######################################################
+###############################################################################
+
+# Get a list or raster layers from a STRDS
+curl ${AUTH} -X GET -i "${IP}:${PORT}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>2013-05-01"
+
+###############################################################################
+###############  Vector  ######################################################
+###############################################################################
+
+curl ${AUTH} -X GET -i "${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+
+
 ###############################################################################
 ################# ASYNC REST API CALLS ########################################
 ###############################################################################

@@ -10,6 +10,9 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 import tempfile
 import os
+from flask_restful_swagger_2 import swagger, Schema
+from .common.response_models import ProcessingErrorResponseModel
+
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -85,18 +88,47 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         return options
 
+    @swagger.doc({
+        'tags': ['Raster Management'],
+        'description': 'Render the legend of a raster map layer as a PNG image. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'location_name',
+                'description': 'The location name',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'nc_spm_08'
+            },
+            {
+                'name': 'mapset_name',
+                'description': 'The name of the mapset that contains the required raster map layer',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'PERMANENT'
+            },
+            {
+                'name': 'raster_name',
+                'description': 'The name of the raster map layer of which the legend should be rendered',
+                'required': True,
+                'in': 'path',
+                'type': 'string',
+                'default': 'elevation'
+            }
+        ],
+        'produces':["image/png"],
+        'responses': {
+            '200': {
+                'description': 'The PNG image'},
+            '400': {
+                'description':'The error message and a detailed log why legend rendering did not succeeded',
+                'schema':ProcessingErrorResponseModel
+            }
+        }
+    })
     def get(self, location_name, mapset_name, raster_name):
-        """Render the raster legend with d.legend
-
-        Args:
-            location_name: Name of the location
-            mapset_name: Name of the mapset
-            raster_name: name of the raster map
-
-        Returns:
-            flask.Response:
-            HTTP 200 with image/png content in case of success, HTTP 400 otherwise
-
+        """Render the legend of a raster map layer as a PNG image.
         """
         parser = self.create_parser()
         args = parser.parse_args()

@@ -1205,19 +1205,19 @@ class EphemeralProcessing(object):
         except AsyncProcessError as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
-                                            traceback=str(traceback.format_tb(e_tb)),
+                                            traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
             self.run_state = {"error": str(e), "exception":model}
         except KeyboardInterrupt as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
-                                            traceback=str(traceback.format_tb(e_tb)),
+                                            traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
             self.run_state = {"error": str(e), "exception":model}
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
-                                            traceback=str(traceback.format_tb(e_tb)),
+                                            traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
             self.run_state = {"error":str(e), "exception":model}
         finally:
@@ -1227,7 +1227,7 @@ class EphemeralProcessing(object):
             except Exception as e:
                 e_type, e_value, e_tb = sys.exc_info()
                 model = ExceptionTracebackModel(message=str(e_value),
-                                                traceback=str(traceback.format_tb(e_tb)),
+                                                traceback=traceback.format_tb(e_tb),
                                                 type=str(e_type))
                 self.run_state = {"error": str(e), "exception":model}
             # After all processing finished, send the final status

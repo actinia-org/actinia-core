@@ -33,8 +33,8 @@ class SyncDownloadCacheResource(ResourceBase):
                   very_admin_role, auth.login_required]
 
     @swagger.doc({
-        'tags': ['download cache management'],
-        'description': 'Returns the current size of the download cache. Minimum required user role: admin.',
+        'tags': ['Cache Management'],
+        'description': 'Get the current size of the download cache. Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'The current state of the download cache',
@@ -47,7 +47,7 @@ class SyncDownloadCacheResource(ResourceBase):
         }
     })
     def get(self):
-        """Returns the current size of the download cache"""
+        """Get the current size of the download cache"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
@@ -59,7 +59,7 @@ class SyncDownloadCacheResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['download cache management'],
+        'tags': ['Cache Management'],
         'description': 'Clean the download cache and remove all cached data. Minimum required user role: admin.',
         'responses': {
             '200': {

@@ -9,7 +9,7 @@ import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
@@ -195,7 +195,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
     """
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
+        'tags': ['Raster Management'],
         'description': 'Get information about an existing raster map layer. Minimum required user role: user.',
         'parameters': [
             {
@@ -233,12 +233,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why gathering raster map '
                                'layer information did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, raster_name):
-        """Return information about a specific raster layer
+        """Get information about an existing raster map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -253,7 +253,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
+        'tags': ['Raster Management'],
         'description': 'Delete an existing raster map layer. Minimum required user role: user.',
         'parameters': [
             {
@@ -285,23 +285,14 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why vector map '
+                'description': 'The error message and a detailed log why raster map '
                                'layer deletion did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name, raster_name):
-        """Delete a specific raster layer
-
-        Args:
-            location_name (str): The name of the location
-            mapset_name (str): The name of the mapset
-            raster_name (str): Name of the raster layer
-
-        Returns:
-            flask.Response: HTTP 200 and raster layer information as JSON document in case of success, HTTP 400 otherwise
-
+        """Delete an existing raster map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -316,7 +307,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
+        'tags': ['Raster Management'],
         'description': 'Create a new raster map layer based on a r.mapcalc expression '
                        'in a user specific region. This method will fail if the map already exists. '
                        'Minimum required user role: user.',
@@ -361,7 +352,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why raster map '
                                'layer creation did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })

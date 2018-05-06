@@ -15,7 +15,7 @@ from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.process_chain import ProcessChainModel
 from .common.exceptions import AsyncProcessTermination
-from .common.response_models import ProcessingResponseModel
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -48,7 +48,7 @@ in the process chain for export.
 
 
 SCHEMA_DOC={
-    'tags': ['ephemeral processing'],
+    'tags': ['Processing'],
     'description': DESCR,
     'consumes':['application/json'],
     'parameters': [
@@ -76,7 +76,7 @@ SCHEMA_DOC={
         '400': {
             'description':'The error message and a detailed log why process chain execution '
                           'did not succeeded',
-            'schema':ProcessingResponseModel
+            'schema':ProcessingErrorResponseModel
         }
     }
  }
@@ -92,7 +92,7 @@ class AsyncEphemeralExportResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
-        """Execute a user defined process chain in an ephemera location/mapset and store the processing results
+        """Execute a user defined process chain in an ephemeral location/mapset and store the processing results
         for download.
         """
         rdc = self.preprocess(has_json=True, location_name=location_name)
@@ -116,7 +116,7 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
-        """Execute a user defined process chain in an ephemera location/mapset and store the processing result in an Amazon S3 bucket
+        """Execute a user defined process chain in an ephemeral location/mapset and store the processing result in an Amazon S3 bucket
         """
         rdc = self.preprocess(has_json=True, location_name=location_name)
         rdc.set_storage_model_to_s3()
@@ -138,7 +138,7 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
-        """Execute a user defined process chain in an ephemera location/mapset and store the processing result in an Google cloud storage bucket
+        """Execute a user defined process chain in an ephemeral location/mapset and store the processing result in an Google cloud storage bucket
         """
         rdc = self.preprocess(has_json=True, location_name=location_name)
         rdc.set_storage_model_to_gcs()

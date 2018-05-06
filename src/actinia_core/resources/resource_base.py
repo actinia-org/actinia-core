@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Base class for asynchronous responses
+Base class for asynchronous and synchronous responses
 """
 import pickle
 import time
@@ -31,7 +31,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class ResourceBase(Resource):
-    """This is the base class for all GRASS GIS asynchronous processing resources.
+    """This is the base class for all asynchronous and synchronous processing resources.
     """
 
     # Authorization is required for all resources

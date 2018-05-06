@@ -15,7 +15,8 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
-from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel
+from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel,\
+    ProcessingErrorResponseModel
 
 from .common.app import auth
 from .common.logging_interface import log_api_call
@@ -35,8 +36,8 @@ class SyncResourceStorageResource(ResourceBase):
                   very_admin_role, auth.login_required]
 
     @swagger.doc({
-        'tags': ['resource management'],
-        'description': 'Returns the current size of the resource storage. Minimum required user role: admin.',
+        'tags': ['Resource Management'],
+        'description': 'Get the current size of the resource storage. Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'The current state of the resource storage',
@@ -44,12 +45,12 @@ class SyncResourceStorageResource(ResourceBase):
             },
             '400': {
                 'description': 'The error message why resource storage information gathering did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
      })
     def get(self):
-        """Returns the current size of the resource storage"""
+        """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
@@ -61,7 +62,7 @@ class SyncResourceStorageResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['resource management'],
+        'tags': ['Resource Management'],
         'description': 'Clean the resource storage and remove all cached data. Minimum required user role: admin.',
         'responses': {
             '200': {
@@ -70,7 +71,7 @@ class SyncResourceStorageResource(ResourceBase):
             },
             '400': {
                 'description': 'The error message why resource storage cleaning did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema':ProcessingErrorResponseModel
             }
         }
      })

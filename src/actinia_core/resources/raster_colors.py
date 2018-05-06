@@ -5,6 +5,7 @@ Raster colors management
 TODO: Tests required
 """
 
+from flask_restful_swagger_2 import swagger, Schema
 from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
@@ -13,6 +14,8 @@ from .common.redis_interface import enqueue_job
 import tempfile
 import os
 import atexit
+from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel,\
+    StringListProcessingResultResponseModel
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -21,12 +24,81 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
+class RasterColorModel(Schema):
+    """Response schema that is used in cases that no asynchronous run was performed.
+
+    """
+    description = "Set the color table for an existing raster map layer with a set of rules, " \
+                  "a specific color or an other raster map layer"
+    type = 'object'
+    properties = {
+        'rules': {
+            'type': 'array',
+            'description': 'A list of rules to set the color table of a raster map layer',
+            'items': {'type': "string"}
+        },
+        'color': {
+            'type': 'string',
+            'description': 'The name of a color to be set for a raster map layer'
+        },
+        'raster': {
+            'type': 'string',
+            'description': 'The name of an existing raster map layer to copy the color table from'
+        }
+    }
+    required = []
+    example = {
+        "rules":["1 0:0:0",
+                 "default 255:255:255"],
+        "color":"ndvi",
+        "raster":"elevation@PERMANENT"
+    }
+
+
 class SyncPersistentRasterColorsResource(ResourceBase):
     """Manage the color table
     """
 
+    @swagger.doc({
+        'tags': ['Raster Management'],
+        'description': 'Get the color definition of an existing raster map layer. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'location_name',
+                'description': 'The location name',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'mapset_name',
+                'description': 'The name of the mapset that contains the required raster map layer',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'raster_name',
+                'description': 'The name of the raster map layer to get the color table from',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'produces': ["application/json"],
+        'responses': {
+            '200': {
+                'description': 'A list of color rules',
+                'schema': StringListProcessingResultResponseModel
+            },
+            '400': {
+                'description': 'The error message and a detailed error log',
+                'schema': ProcessingErrorResponseModel
+            }
+        }
+    })
     def get(self, location_name, mapset_name, raster_name):
-        """Prepare and enqueue
+        """Get the color definition of an existing raster map layer.
 
         Args:
             location_name: Name of the location
@@ -43,8 +115,54 @@ class SyncPersistentRasterColorsResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
+    @swagger.doc({
+        'tags': ['Raster Management'],
+        'description': 'Set the color definition for an existing raster map layer. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'location_name',
+                'description': 'The location name',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'mapset_name',
+                'description': 'The name of the mapset that contains the required raster map layer',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'raster_name',
+                'description': 'The name of the raster map layer to set the color table',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'color',
+                'description': 'The color definition.',
+                'required': True,
+                'in': 'body',
+                'schema': RasterColorModel
+            }
+        ],
+        'produces': ["application/json"],
+        'consumes': ["application/json"],
+        'responses': {
+            '200': {
+                'description': 'Successfuly set the color table for a raster map layer',
+                'schema': ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message and a detailed error log',
+                'schema': ProcessingErrorResponseModel
+            }
+        }
+    })
     def post(self, location_name, mapset_name, raster_name):
-        """Set the color table from JSON definition
+        """Set the color definition for an existing raster map layer.
 
         The JSON input should contain the color rules, a predefined color table
         or a raster layer:
@@ -52,6 +170,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
             {"rules":["1 0:0:0", "default 255:255:255"]}
             {"color":"gbr"}
             {"raster":"elevation"}
+
 
         Args:
             location_name: Name of the location

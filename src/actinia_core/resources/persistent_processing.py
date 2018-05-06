@@ -24,8 +24,8 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 DESCR="""Execute a user defined process chain in an existing mapset
-of the persistent Actinia Core database or in a new mapset that will be
-created by this reuqest in the persistent Actinia Core database.
+of the persistent user database or in a new mapset that will be
+created by this reuqest in the persistent user database.
 
 The process chain is executed asynchronously. The provided status URL
 in the response must be polled to gain information about the processing
@@ -41,9 +41,9 @@ The mapset that is used for processing will be locked until the process
 chain execution finished (successfully or not), even if the mapset is be created by the request.
 Other requests on the locked mapset will abort with a mapset lock error.
 
-The persistent Actinia Core database will not be modified if
+The persistent user database will not be modified if
 the process chain does not run successfully. The processing is performed
-in an ephemeral database and then merged or copied into the persistent database.
+in an ephemeral database and then merged or copied into the persistent user database.
 
 **Note**
 
@@ -63,7 +63,7 @@ class AsyncPersistentResource(ResourceBase):
         ResourceBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['persistent processing'],
+        'tags': ['Processing'],
         'description': DESCR,
         'consumes':['application/json'],
         'parameters': [

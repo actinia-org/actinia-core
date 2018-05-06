@@ -13,7 +13,7 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.response_models import ProcessingResponseModel, \
-    StringListProcessingResultResponseModel
+    StringListProcessingResultResponseModel, ProcessingErrorResponseModel
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016, Sören Gebbert"
@@ -27,8 +27,8 @@ class SyncSTRDSListerResource(ResourceBase):
     layer_type = None
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
-        'description': 'Return a list of all STRDS that are located in a specific location/mapset. '
+        'tags': ['STRDS Management'],
+        'description': 'Get a list of all STRDS that are located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -62,12 +62,12 @@ class SyncSTRDSListerResource(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'STRDS did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name):
-        """Return a list of all STRDS in a location/mapset
+        """Get a list of all STRDS that are located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -146,6 +146,7 @@ class PersistentSTRDSLister(PersistentProcessing):
 class STRDSInfoModel(Schema):
     """Schema that contains space-time raster dataset (STRDS) information
     """
+    description = "Information abou a spcefic space-time raster dataset (STRDS)"
     type = 'object'
     properties = {
         'aggregation_type': {'type': 'string'},
@@ -312,8 +313,9 @@ recursive_parser.add_argument('recursive', type=bool, help='Set True to recursiv
 
 
 class STRDSCreationModel(Schema):
-    """Schema for random raster map layer generation using r.mapcalc in a specific region
+    """Schema for STRDS creation
     """
+    description = "Information required to create a new STRDS"
     type = 'object'
     properties = {
         'title': {
@@ -342,8 +344,8 @@ class STRDSManagementResource(ResourceBase):
     """
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
-        'description': 'Return information about a STRDS that is located in a specific location/mapset. '
+        'tags': ['STRDS Management'],
+        'description': 'Get information about a STRDS that is located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -377,12 +379,12 @@ class STRDSManagementResource(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why information gathering of the'
                                'STRDS did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def get(self, location_name, mapset_name, strds_name):
-        """Return information about a STRDS that is located in a specific location/mapset
+        """Get information about a STRDS that is located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -397,7 +399,7 @@ class STRDSManagementResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
+        'tags': ['STRDS Management'],
         'description': 'Delete a STRDS that is located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
@@ -438,12 +440,12 @@ class STRDSManagementResource(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why deletion of the'
                                'STRDS did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name, strds_name):
-        """Delete a STRDS that is located in a specific location/mapset
+        """Delete a STRDS that is located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -462,7 +464,7 @@ class STRDSManagementResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @swagger.doc({
-        'tags': ['space-time raster dataset management'],
+        'tags': ['STRDS Management'],
         'description': 'Create a new STRDS in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
@@ -503,12 +505,12 @@ class STRDSManagementResource(ResourceBase):
             '400': {
                 'description': 'The error message and a detailed log why creation of the'
                                'STRDS did not succeeded',
-                'schema': ProcessingResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name, strds_name):
-        """Create a new STRDS in a specific location/mapset
+        """Create a new STRDS in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,

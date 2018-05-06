@@ -159,8 +159,8 @@ class RasterLayersResource(MapsetLayersResource):
         MapsetLayersResource.__init__(self, layer_type="raster")
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
-        'description': 'Return a list of raster map layer names that are located in a specific location/mapset.'
+        'tags': ['Raster Management'],
+        'description': 'Get a list of raster map layer names that are located in a specific location/mapset.'
                        ' Minimum required user role: user.',
         'parameters': [
             {
@@ -202,12 +202,12 @@ class RasterLayersResource(MapsetLayersResource):
         }
     })
     def get(self, location_name, mapset_name):
-        """Return a list of raster map layer names that are located in a specific location/mapset
+        """Get a list of raster map layer names that are located in a specific location/mapset
         """
         return self._get(location_name, mapset_name)
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
+        'tags': ['Raster Management'],
         'description': 'Rename a single raster map layer or a list of raster map layers that '
                        'are located in a specific location/mapset. Minimum required user role: user.',
         'parameters': [
@@ -252,7 +252,7 @@ class RasterLayersResource(MapsetLayersResource):
         return self._put(location_name, mapset_name)
 
     @swagger.doc({
-        'tags': ['raster map layer management'],
+        'tags': ['Raster Management'],
         'description': 'Delete a single raster map layer or a list of raster map layer names that '
                        'are located in a specific location/mapset. Minimum required user role: user.',
         'parameters': [
@@ -305,8 +305,8 @@ class VectorLayersResource(MapsetLayersResource):
         MapsetLayersResource.__init__(self, layer_type="vector")
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
-        'description': 'Return a list of vector map layer names that are located in a specific location/mapset.'
+        'tags': ['Vector Management'],
+        'description': 'Get a list of vector map layer names that are located in a specific location/mapset.'
                        ' Minimum required user role: user.',
         'parameters': [
             {
@@ -348,12 +348,12 @@ class VectorLayersResource(MapsetLayersResource):
         }
     })
     def get(self, location_name, mapset_name):
-        """Return a list of vector map layer names that are located in a specific location/mapset
+        """Get a list of vector map layer names that are located in a specific location/mapset
         """
         return self._get(location_name, mapset_name)
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
+        'tags': ['Vector Management'],
         'description': 'Rename a single vector map layer or a list of vector map layers that '
                        'are located in a specific location/mapset. Minimum required user role: user.',
         'parameters': [
@@ -398,7 +398,7 @@ class VectorLayersResource(MapsetLayersResource):
         return self._put(location_name, mapset_name)
 
     @swagger.doc({
-        'tags': ['vector map layer management'],
+        'tags': ['Vector Management'],
         'description': 'Delete a single vector map layer or a list of vector map layer names that '
                        'are located in a specific location/mapset. Minimum required user role: user.',
         'parameters': [

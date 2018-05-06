@@ -60,8 +60,8 @@ class ListLocationsResource(ResourceBase):
     layer_type = None
 
     @swagger.doc({
-        'tags': ['location management'],
-        'description': 'Return a list of all available locations that are located in the '
+        'tags': ['Location Management'],
+        'description': 'Get a list of all available locations that are located in the '
                        'GRASS database and the user has access to. Minimum required user role: user.',
         'responses': {
             '200': {
@@ -75,7 +75,7 @@ class ListLocationsResource(ResourceBase):
         }
     })
     def get(self):
-        """Return a list of all available locations
+        """Get a list of all available locations
         """
         locations = []
 
@@ -132,8 +132,8 @@ class LocationManagementResourceUser(ResourceBase):
         ResourceBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['location management'],
-        'description': 'Return the location projection and current computational '
+        'tags': ['Location Management'],
+        'description': 'Get the location projection and current computational '
                        'region of the PERMANENT mapset. Minimum required user role: user.',
         'parameters': [
             {
@@ -158,7 +158,7 @@ class LocationManagementResourceUser(ResourceBase):
         }
     })
     def get(self, location_name):
-        """Return the current region of the mapset
+        """Get the location projection and current computational region of the PERMANENT mapset
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -184,7 +184,7 @@ class LocationManagementResourceAdmin(ResourceBase):
         ResourceBase.__init__(self)
 
     @swagger.doc({
-        'tags': ['location management'],
+        'tags': ['Location Management'],
         'description': 'Delete an existing location and everything inside from the user database. '
                        'Minimum required user role: admin.',
         'parameters': [
@@ -208,7 +208,7 @@ class LocationManagementResourceAdmin(ResourceBase):
         }
     })
     def delete(self, location_name):
-        """Delete a specific location by name
+        """Delete an existing location and everything inside from the user database.
         """
         # Delete only locations from the user database
         location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
@@ -234,7 +234,7 @@ class LocationManagementResourceAdmin(ResourceBase):
                              400)
 
     @swagger.doc({
-        'tags': ['location management'],
+        'tags': ['Location Management'],
         'description': 'Create a new location based on EPSG code in the user database. '
                        'Minimum required user role: admin.',
         'consumes': ['application/json'],
@@ -266,7 +266,7 @@ class LocationManagementResourceAdmin(ResourceBase):
         }
     })
     def post(self, location_name):
-        """Create a new location based on EPSG code
+        """Create a new location based on EPSG code in the user database.
         """
         # Create only new locations if they did not exist in the global database
         location = os.path.join(self.grass_data_base, location_name)
