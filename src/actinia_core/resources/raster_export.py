@@ -149,7 +149,7 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
             }
         }
     })
-    def get(self, location_name, mapset_name, raster_name):
+    def post(self, location_name, mapset_name, raster_name):
         """Export an existing raster map layer as GeoTiff using the raster map specific region.
         """
         return self._execute(location_name, mapset_name, raster_name, True)

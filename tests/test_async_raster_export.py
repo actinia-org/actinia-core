@@ -17,7 +17,7 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
     def test_export(self):
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async',
+        rv = self.server.post('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async',
                              headers=self.user_auth_header)
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
 
@@ -35,7 +35,7 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
     def test_export_region(self):
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async_orig',
+        rv = self.server.post('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async_orig',
                              headers=self.user_auth_header)
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
 
@@ -53,7 +53,7 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
     def test_export_error(self):
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevationion/geotiff_async',
+        rv = self.server.post('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevationion/geotiff_async',
                              headers=self.user_auth_header)
         self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
                                        message_check="AsyncProcessError:")

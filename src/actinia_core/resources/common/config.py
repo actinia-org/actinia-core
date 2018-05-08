@@ -5,6 +5,7 @@ Gobal configuration
 
 import os
 import configparser
+import ast
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -79,7 +80,7 @@ class Configuration(object):
         self.LOGIN_REQUIRED = True     # If set False, login is not required
         self.FORCE_HTTPS_URLS = False  # Force the use of https in response urls that
         #                                point to actinia services like status URL or data storage
-        self.PLUGINS = [] # ["actinia_satellite_plugin", "actinia_statistic_plugin"]
+        self.PLUGINS = ["actinia_satellite_plugin", "actinia_statistic_plugin"]
 
         # REDIS
         self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
@@ -274,7 +275,7 @@ class Configuration(object):
                 if config.has_option("API", "FORCE_HTTPS_URLS"):
                     self.FORCE_HTTPS_URLS = config.getboolean("API", "FORCE_HTTPS_URLS")
                 if config.has_option("API", "PLUGINS"):
-                    self.PLUGINS = config.get("API", "PLUGINS")
+                    self.PLUGINS = ast.literal_eval(config.get("API", "PLUGINS"))
 
             if config.has_section("REDIS"):
                 if config.has_option("REDIS", "REDIS_SERVER_URL"):
