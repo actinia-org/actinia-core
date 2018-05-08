@@ -39,7 +39,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                 response = urlopen(url)
                 mime_type = magic.from_buffer(response.read(256), mime=True).lower()
                 print(mime_type)
-                self.assertTrue(mime_type in ["application/xml"])
+                self.assertTrue(mime_type in ["application/xml"] or mime_type in ["text/xml"])
 
                 url = tile["preview"]
                 response = urlopen(url)
