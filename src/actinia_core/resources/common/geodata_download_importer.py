@@ -18,10 +18,11 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 # Mimetypes supported for download
-SUPPORTED_MIMETYPES=["application/zip", "image/tiff", "application/gml", "application/xml", "text/plain", "text/x-python"]
+SUPPORTED_MIMETYPES=["application/zip", "image/tiff", "application/gml", "text/xml",
+                     "application/xml", "text/plain", "text/x-python"]
 # Suffixes supported in zip files
 SUPPORTED_SUFFIXES=[".tif", ".tiff", ".xml", ".gml", ".shp", ".dbf", ".shx", ".atx", ".sbx",
-                    ".qix", ".aih", ".prj", ".cpg"]
+                    ".qix", ".aih", ".prj", ".cpg", ".json"]
 
 
 class GeoDataDownloadImportSupport(object):
