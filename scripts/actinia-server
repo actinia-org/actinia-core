@@ -17,9 +17,9 @@ from actinia_core.resources.common.redis_interface import connect
 from actinia_core.resources.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016, Sören Gebbert"
-__maintainer__ = "Sören Gebbert"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016, Soeren Gebbert"
+__maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 
