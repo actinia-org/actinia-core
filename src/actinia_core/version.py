@@ -19,5 +19,5 @@ def version():
     Returns: Response
 
     """
-    info = {"version":"0.01", "plugins":None}
+    info = {"version":"0.1", "plugins":",".join(global_config.PLUGINS)}
     return make_response(jsonify(info), 200)

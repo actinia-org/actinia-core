@@ -241,7 +241,7 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
         source actinia_venv/bin/activate
 
         # Create the superuser
-        actinia-user create -u superadmin -w abcdefgh -r superadmin -g group -c 100000000000 -n 1000 -t 6000
+        actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 100000000000 -n 1000 -t 6000
 
         # Start the actinia service with
         actinia_server --host 0.0.0.0 --port 5000
@@ -265,7 +265,7 @@ Tutorial
 ========
 
 In this short tutorial we will access the Actinia persistent database analysing
-raster and time-series data.  We will use the the import and export features of Actinia
+raster and raster-time-series data.  We will use the the import and export features of Actinia
 specific process chains to process Sentinel2A scenes with several GRASS GIS modules and
 export the result as GeoTiff files.
 
