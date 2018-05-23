@@ -61,12 +61,18 @@ __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
+API_VERSION="v1"
+
+# This is the URL prefix that must be used in the tests
+URL_PREFIX="/api/%s"%API_VERSION
+
+
 flask_app = Flask(__name__)
 CORS(flask_app)
 
-flask_api = Api(flask_app,
+flask_api = Api(flask_app, prefix=URL_PREFIX,
                 api_version='0.1pre-alpha',
-                api_spec_url='/api/v0/swagger',
+                api_spec_url='swagger',
                 title=actinia_string,
                 description=actinia_description, schemes=['https'],
                 consumes=['application/gml+xml', 'application/json'])

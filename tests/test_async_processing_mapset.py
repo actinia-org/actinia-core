@@ -4,9 +4,9 @@ from flask.json import loads as json_loads, dumps as json_dumps
 from flask.json import loads as json_load
 import time
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -99,7 +99,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def check_remove_test_mapset(self):
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -109,7 +109,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         if "test_mapset" in mapsets:
             # Delete the mapset if it already exists
-            rv = self.server.delete('/locations/nc_spm_08/mapsets/test_mapset',
+            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                     headers=self.admin_auth_header)
             print(rv.data)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -122,13 +122,13 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         """
         self.check_remove_test_mapset()
 
-        rv = self.server.post('/locations/nc_spm_08/mapsets/test_mapset/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -138,7 +138,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         self.assertTrue("test_mapset" in  mapsets)
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -150,7 +150,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.assertTrue("my_slope" in map_list)
 
         # Remove the mapset
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/test_mapset',
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -164,7 +164,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.check_remove_test_mapset()
 
         # Create new mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/test_mapset',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                               headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -172,13 +172,13 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Run the processing using an existing mapset
         # Atemporary mapset will be created and merged in the existing
-        rv = self.server.post('/locations/nc_spm_08/mapsets/test_mapset/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -190,7 +190,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.assertTrue("my_slope" in map_list)
 
         # Remove the mapset
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/test_mapset',
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -206,14 +206,14 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.check_remove_test_mapset()
 
         # Create new mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/test_mapset',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                               headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Run the processing inside the new mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/test_mapset/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
@@ -232,7 +232,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         # Try to lock again and again
         # Run the processing inside the new mapset
         # Second runner
-        rv_lock_1 = self.server.post('/locations/nc_spm_08/mapsets/test_mapset/processing_async',
+        rv_lock_1 = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                                      headers=self.admin_auth_header,
                                      data=json_dumps(process_chain_short),
                                      content_type="application/json")
@@ -241,7 +241,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.assertEqual(rv_lock_1.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv_lock_1.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
         # Third runner
-        rv_lock_2 = self.server.post('/locations/nc_spm_08/mapsets/test_mapset/processing_async',
+        rv_lock_2 = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                                      headers=self.admin_auth_header,
                                      data=json_dumps(process_chain_long),
                                      content_type="application/json")
@@ -252,7 +252,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Check the first runner
         while True:
-            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -268,7 +268,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv_user_id = resp["user_id"]
         rv_resource_id = resp["resource_id"]
         while True:
-            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -285,7 +285,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv_resource_id = resp["resource_id"]
         # Check the first runner
         while True:
-            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=self.admin_auth_header)
             print(rv.data)
             resp = json_loads(rv.data)
@@ -297,7 +297,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
 
         # Remove the mapset
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/test_mapset',
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -305,7 +305,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_4_create_global_mapset(self):
 
-        rv = self.server.post('/locations/nc_spm_08/mapsets/PERMANENT/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")

@@ -3,9 +3,9 @@ from flask.json import loads as json_load
 import unittest
 import os
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -30,7 +30,7 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
         except:
             pass
 
-        rv = self.server.get('/resource_storage',
+        rv = self.server.get(URL_PREFIX + '/resource_storage',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -41,13 +41,13 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("free" in json_load(rv.data)["process_results"])
         self.assertTrue("free_percent" in json_load(rv.data)["process_results"])
 
-        rv = self.server.delete('/resource_storage',
+        rv = self.server.delete(URL_PREFIX + '/resource_storage',
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
-        rv = self.server.get('/resource_storage',
+        rv = self.server.get(URL_PREFIX + '/resource_storage',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -63,7 +63,7 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
         global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
         global_config.GRASS_RESOURCE_QUOTA = 1
 
-        rv = self.server.get('/resource_storage',
+        rv = self.server.get(URL_PREFIX + '/resource_storage',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
@@ -74,7 +74,7 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
         global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
         global_config.GRASS_RESOURCE_QUOTA = 1
 
-        rv = self.server.delete('/resource_storage',
+        rv = self.server.delete(URL_PREFIX + '/resource_storage',
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)

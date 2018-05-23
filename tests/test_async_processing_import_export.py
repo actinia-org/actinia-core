@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -198,7 +198,7 @@ process_chain_sentinel_import_export_sentinel_ndvi = {
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_export_sentinel_ndvi(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_export_sentinel_ndvi),
                               content_type="application/json")
@@ -207,7 +207,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_raster_import_export(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_export),
                               content_type="application/json")
@@ -216,7 +216,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_raster_import(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_raster_import_info),
                               content_type="application/json")
@@ -225,7 +225,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_raster_import_nofile(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_raster_import_error_no_file),
                               content_type="application/json")
@@ -234,7 +234,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=400, status="error")
 
     def test_import_export(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_raster_import_export),
                               content_type="application/json")
@@ -243,7 +243,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_vector_import(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_vector_import_info),
                               content_type="application/json")
@@ -252,7 +252,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_sentinel_import_info(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_info),
                               content_type="application/json")
@@ -261,7 +261,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_sentinel_import_univar(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_univar),
                               content_type="application/json")
@@ -270,7 +270,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_sentinel_import_stats(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_stats),
                               content_type="application/json")
@@ -279,7 +279,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_sentinel_import_error(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_error),
                               content_type="application/json")
