@@ -71,8 +71,8 @@ flask_app = Flask(__name__)
 CORS(flask_app)
 
 flask_api = Api(flask_app, prefix=URL_PREFIX,
-                api_version='0.1pre-alpha',
-                api_spec_url='swagger',
+                api_version=API_VERSION,
+                api_spec_url='/swagger',
                 title=actinia_string,
                 description=actinia_description, schemes=['https'],
                 consumes=['application/gml+xml', 'application/json'])
