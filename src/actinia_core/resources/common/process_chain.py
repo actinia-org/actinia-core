@@ -115,7 +115,7 @@ class InputParameter(IOParameterBase):
             }
         },
         'description': 'Input/output parameter definition of a GRASS GIS module '
-                       'that should be executed in the Actinia Core environment.',
+                       'that should be executed in the actinia environment.',
         'required': ["source", "type"],
         'example': {"source": "https://storage.googleapis.com/graas-geodata/geology_30m.zip",
                     "type": "raster", 'basic_auth': 'username:password'}
@@ -148,7 +148,7 @@ class OutputParameter(IOParameterBase):
             },
         },
         'description': 'Input/output parameter definition of a GRASS GIS module '
-                       'that should be executed in the Actinia Core environment.',
+                       'that should be executed in the actinia environment.',
         'required': ["format", "type"],
         'example': {"format": "GTiff", "type": "raster"}
     }
@@ -250,7 +250,7 @@ class Executable(Schema):
 
 
 class ProcessChainModel(Schema):
-    """Definition of the Actinia Core process chain that includes GRASS GIS modules
+    """Definition of the actinia process chain that includes GRASS GIS modules
     and common Linux commands
     """
     type = 'object'
@@ -294,7 +294,7 @@ class ProcessChainConverter(object):
         """Constructor to convert the process chain into a process list
 
         Args:
-            config: The Actinia Core configuration object
+            config: The actinia configuration object
             temp_file_path: The path to the temporary directory to store temporary files.
                             It is assumed that this path is available when the generated
                             commands are executed.
@@ -1063,7 +1063,7 @@ def test_process_chain():
     elev_in = InputParameter(param="elevation",
                              value="elev_10m",
                              import_descr={
-                                 "source": "https://storage.googleapis.com/Actinia Core-geodata/elev_ned_30m.tif",
+                                 "source": "https://storage.googleapis.com/actinia -geodata/elev_ned_30m.tif",
                                  "type": "raster"})
     format_in = InputParameter(param="format",
                                value="degree")
@@ -1091,7 +1091,7 @@ def test_process_chain():
     file_in = InputParameter(param="name",
                              value="$file::polygon",
                              import_descr={
-                                 "source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
+                                 "source": "https://storage.googleapis.com/actinia-geodata/brazil_polygon.json",
                                  "type": "file"})
 
     module_2 = GrassModule(id="importer",
@@ -1113,7 +1113,7 @@ def test_process_chain():
     func_in_2 = InputParameter(param="pyfile",
                                value="$file::polygon",
                                import_descr={
-                                   "source": "https://storage.googleapis.com/Actinia Core-geodata/brazil_polygon.json",
+                                   "source": "https://storage.googleapis.com/actinia-geodata/brazil_polygon.json",
                                    "type": "file"})
 
     module_4 = GrassModule(id="udf",

@@ -1,40 +1,40 @@
-Data Access Tutorial
-====================
+Database access
+===============
 
-In this short tutorial we will access the Actinia persistent database analysing
-raster and raster-time-series data.  We will use the the import and export features of Actinia
+The Actinia databases
+---------------------
+
+Actinia manage many GRASS GIS locations in its *persistent database*.
+User are not permitted to modify data in a persistent database, but can access all data
+read only for processing and visualization. Data in the persistent database can only accessed
+via HTTP GET API calls.
+
+The user can either process data in an *ephemeral databases*, that will be removed after
+the processing is finished, or in a *user specific database*. A user specific database is persistent,
+only visible to users of the same user-group and can contain any data the user
+has imported.The user can read-access all data from the persistent database
+while running analysis in the ephemeral database or user specific database.
+
+
+In this short tutorial we will access the actinia persistent database analysing
+raster and raster-time-series data.  We will use the the import and export features of actinia
 specific process chains to process Sentinel2A scenes with several GRASS GIS modules and
 export the result as GeoTiff files.
 
-Preparation
------------
+The following examples shows the REST service access using the command line tool **curl** [#curl]_.
+**Curl** should be available on many Linux systems.
+However, tools like *postman* [#post]_ allow a more comfortable way to access
+Actinia.
 
-Actinia is fully documented using the OpenAPI standard [#openapi]_,
-better known as swagger [#swagger]_.
-The JSON definition of the API can be accessed here:
+.. rubric:: Footnotes
 
-      https://actinia.mundialis.de/api/v0/swagger.json
+.. [#curl] https://en.wikipedia.org/wiki/CURL
+.. [#post] https://www.getpostman.com/apps
 
+Using curl for HTTP requests
+----------------------------
 
-The full API documentation is available here: https://actinia.mundialis.de/api_docs/
-
-To generate a readable documentation out of the swagger.json file, the spectacle
-tool can be used:
-
-    .. code-block:: bash
-
-        # Download the latest swagger definition from the actinia service
-        wget  https://actinia.mundialis.de/api/v0/swagger.json -O /tmp/actinia.json
-
-        # Run spectacle docker image to generate the HTML documentation
-        docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
-
-        # Start Firefox to show the documentation
-        firefox /tmp/index.html
-
-The petstore swagger UI creator [#swaggerui]_ can be used to show
-all available REST API calls and all response models in a convenient way.
-
+We will use the Unix shell and curl to access the REST API.
 First open a shell of choice (we use bash here) and setup the login information,
 the IP address and the port on which the Actinia service is running,
 so you can simply change the IP and Port if your sever uses a different
@@ -45,13 +45,6 @@ address:
         export PORT=5000
         export HOST=http://localhost
         export AUTH='-u superadmin:abcdefgh'
-
-.. rubric:: Footnotes
-
-.. [#openapi] https://www.openapis.org/
-.. [#swagger] https://swagger.io
-.. [#swaggerui] https://petstore.swagger.io
-
 
 Access to locations and mapsets in the persistent database
 ----------------------------------------------------------

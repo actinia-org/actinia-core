@@ -327,7 +327,9 @@ class Sentinel2Processing(object):
 
         1. Import footprint with v.import
         2. Set the timestamp of the footprint with v.timestamp
+
         For each band:
+
             0. Use gdaltrans to select the footprint bbox
                that should be imported from the raster layer
             1. Import band with r.import
@@ -338,10 +340,9 @@ class Sentinel2Processing(object):
             6. Remove uncropped version with g.remove
             7. Remove the mask with r.mask
 
-        Args:
-            counter:
-
         Returns:
+            list[Process]:
+            The list of import commands
 
         """
 

@@ -1,31 +1,117 @@
-Process Chain Tutorial
-======================
-
-The actinia specific process chain will be introduced in this part of the actinia tutorial.
+User defined processing
+=======================
 
 The actinia process chain
---------------------------------------------------
+-------------------------
 
-Actinia supports the definition of a **process chain** to specify import, processing and export of geo-data
-using the actinia processing system. The process chain must be formulated in JSON.
-The processing is always performed in an ephemeral database that use
-locations of the persistent database as computational environment. If required the ephemeral database can
+Actinia provides the **process chain** approach to specify import, processing and export of geo-data
+using the actinia GRASS GIS processing system. The process chain must be formulated in JSON.
+The processing is always performed in an ephemeral database. The computational environment
+is based on locations in the persistent database. If required, the ephemeral database can
 be moved into the persistent user database, so that the computational results can be used in further processing
 steps or visualized using the actinia rendering REST calls.
 
-If the ephemeral database will be removed after computation in case it should not be moved to
-a persistent user database. Hence, any results of the ephemeral processing should be exported to access them.
+The ephemeral database will be removed after computation.
+However, all raster and vector data that was generated during the processing can be exported
+using gdal/ogr specific datatypes and stored in an object storage, outside the actinia environment.
 Within a process chain we have read only access to all raster maps of the persistent database location that
 is used as computational environment.
 
-In the following example we define a process chain
-using JSON. We use the latitude/longitude location **LL** as processing
-environment. We create a process chain that computes the NDVI
+A process chain is a list of GRASS GIS modules [#grassmodulelist]_
+that will executed in serial, based on the order of the list.
+GRASS GIS modules are specified as process definitions [#grassmodule]_ that includes the name of the command,
+the inputs [#inputs]_ and outputs [#outputs]_,
+including import and export definitions as well as the module flags. The following example defines a single process
+that runs the GRASS GIS module *r.slope.aspect* [#rlopeaspect]_ to compute the *slope*
+for the raster map layer *elev_ned_30m* that is located in the mapset [#mapset]_ *PERMANENT*.
+The output of the module is named *elev_ned_30m_slope* and should be exported as a GeoTiff file.
+
+    .. code-block:: json
+
+        {
+          "module": "r.slope.aspect",
+          "id": "r_slope_aspect_1",
+          "inputs": [
+            {
+              "param": "elevation",
+              "value": "elev_ned_30m@PERMANENT"
+            }
+          ],
+          "outputs": [
+            {
+              "export": {
+                "format": "GTiff",
+                "type": "raster"
+              },
+              "param": "slope",
+              "value": "elev_ned_30m_slope"
+            }
+          ],
+          "flags": "a"
+        }
+    ..
+
+The GRASS module definition includes the unique id *r_slope_aspect_1* that can be used in following
+process definitions to address module specific files or the stdout of a module.
+
+The actinia process chain supports the definition of HTTP accessible raster layers in GeoTiff format
+as inputs. The following process definition imports a raster map layer that is located
+in an object storage with the name *elev_ned_30m*. Slope and aspect are computed and specified for export
+as GeoTiff files.
+
+    .. code-block:: json
+
+        {
+          "module": "r.slope.aspect",
+          "id": "r_slope_aspect_1",
+          "inputs": [
+            {
+              "import_descr": {"source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
+                                "type"  : "raster"},
+              "param": "elevation",
+              "value": "elev_ned_30m"
+            }
+          ],
+          "outputs": [
+            {
+              "export": {
+                "format": "GTiff",
+                "type": "raster"
+              },
+              "param": "slope",
+              "value": "elev_ned_30m_slope"
+            },
+            {
+              "export": {
+                "format": "GTiff",
+                "type": "raster"
+              },
+              "param": "aspect",
+              "value": "elev_ned_30m_aspect"
+            }
+          ],
+          "flags": "a"
+        }
+    ..
+
+.. rubric:: Footnotes
+
+.. [#grassmodulelist] https://grass.osgeo.org/grass74/manuals/index.html
+.. [#grassmodule] https://actinia.mundialis.de/api_docs/#/definitions/GrassModule
+.. [#inputs] https://actinia.mundialis.de/api_docs/#/definitions/InputParameter
+.. [#outputs] https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter
+.. [#rlopeaspect] https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html
+.. [#mapset] https://grass.osgeo.org/grass74/manuals/grass_database.html
+
+Sentiel2A NDVI processing
+-------------------------
+
+We create a process chain that computes the NDVI
 from a Sentinel2A scene based on the bands 8 and 4
-with the GRASS GIS module r.mapcalc. We use the computational region of sentinel band B04
-for the NDVI computation. Then we calculate univariate statistics for the Sentinel2A scene
-and the corresponding MODIS map at the region
-of the Sentinel2A scene for comparison.
+with the GRASS GIS module r.mapcalc.
+We use the latitude/longitude location **LL** as processing environment.
+and the computational region of sentinel band B04
+for the NDVI processing. Then we calculate univariate statistics for the Sentinel2A scene.
 The computed NDVI raster layer will be exported as geotiff file that can be accessed via an URL.
 
 The following JSON code has 6 process definitions:

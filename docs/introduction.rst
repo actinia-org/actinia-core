@@ -10,58 +10,104 @@ Actinia allows the processing of cloud based data, for example all Landsat 4-8 s
 Sentinel2A scenes in an ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
-The Actinia service consists of the *Actinia Core* that provides the basic but sophisticated processing service
-and *Actinia plugins* that provide problem specific services like Sentinel 2A and Landsat NDVI computation,
+The actinia service consists of the *actinia core* that provides the basic but sophisticated processing service
+and *actinia plugins* that provide problem specific services like Sentinel 2A and Landsat NDVI computation,
 spatio-temporal statistical analysis and many more.
 
-This documentation focus on the basic processing services that are provided by the *Actinia Core*
-service.
-
-.. rubric:: Footnotes
-
-.. [#GRASS] https://grass.osgeo.org/
-.. [#REST] https://en.wikipedia.org/wiki/Representational_State_Transfer
-
-To use Actinia the user must have an understanding of the GRASS GIS concept [#grassloc]_
+To use actinia the user must have an understanding of the GRASS GIS concept [#grassloc]_
 of location, mapsets, raster maps, space-time datasets and modules.
 The URLs that provide access to the GRASS database reflect
 these concepts. Hence, the location, the mapset, the required raster
 map are part of the URL to access the service.
 
-Howto use the REST API
-----------------------
+What is REST?
+-------------
 
-The REST approach uses the HTTP [#http]_ method GET [#method]_,
-DELETE [#method]_, POST [#method]_ and PUT [#method]_ to manipulate and receive resource.
+The Representational state transfer (REST) [#REST]_ is an architectural style
+based on HTTP [#http]_ that uses GET [#method]_,
+DELETE [#method]_, POST [#method]_ and PUT [#method]_ methods to manipulate and receive resource
+with stateless operations.
 
 While GET requests can be send easily from a browser, POST, PUT or DELETE request can not.
-To access the full potential of Actinia you will need a HTTP client, that talks
+To access the full potential of actinia you will need a HTTP client, that talks
 all HTTP communication methods.
 
-The following examples shows the REST service access using the command line tool **curl** [#curl]_.
-**Curl** should be available on many Linux systems.
-However, tools like *postman* [#post]_ allow a more comfortable way to access
-Actinia.
+
+Actinia REST API documentation
+------------------------------
+
+Actinia is fully documented using the OpenAPI standard [#openapi]_,
+better known as swagger [#swagger]_.
+The JSON definition of the API can be accessed here:
+
+      https://actinia.mundialis.de/latest/swagger.json
+
+
+The full API documentation is available here:
+
+    https://actinia.mundialis.de/api_docs/
+
+To generate a readable documentation out of the swagger.json file, the spectacle
+tool can be used:
+
+    .. code-block:: bash
+
+        # Download the latest swagger definition from the actinia service
+        wget  https://actinia.mundialis.de/api/v0/swagger.json -O /tmp/actinia.json
+
+        # Run spectacle docker image to generate the HTML documentation
+        docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
+
+        # Start Firefox to show the documentation
+        firefox /tmp/index.html
+
+The petstore swagger UI creator [#swaggerui]_ can be used to show
+all available REST API calls and all response models in a convenient way.
+
+Examples
+--------
+
+**Data management**
+
+- List all locations that are available in the actinia persistent database:
+
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H  "authorization: Basic ..."
+
+- List all mapsets in the location LL:
+
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets" -H  "authorization: Basic ..."
+
+- List all space-time raster datasets (STRDS) in location LL and mapset Sentinel_timeseries:
+
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds" -H  "authorization: Basic ..."
+
+- List all raster map layers of the STRDS:
+
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H  "authorization: Basic ..."
+
+**Landsat and Sentinel2A NDVI computation**
+
+This API call will compute the NDVI of the top of athmosphere (TOAR)
+corrected Landsat4 scene LC80440342016259LGN00:
+
+    curl -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI" -H  "authorization: Basic ..."
+
+NDVI computation of Sentinel2A scene S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
+
+    curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" -H  "authorization: Basic ..."
+
+The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
+
 
 .. rubric:: Footnotes
 
+.. [#openapi] https://www.openapis.org/
+.. [#swagger] https://swagger.io
+.. [#swaggerui] https://petstore.swagger.io
+.. [#GRASS] https://grass.osgeo.org/
+.. [#REST] https://en.wikipedia.org/wiki/Representational_State_Transfer
 .. [#curl] https://en.wikipedia.org/wiki/CURL
 .. [#post] https://www.getpostman.com/apps
 .. [#http] https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
 .. [#method] https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
 .. [#grassloc] https://grass.osgeo.org/grass72/manuals/helptext.html#2.-background:-grass-gis-location-structure
-
-
-The Actinia databases
----------------------
-
-Actinia manage many GRASS GIS locations in its *persistent database*.
-User are not permitted to modify data in a persistent database, but can access all data
-read only for processing and visualization. Data in the persistent database can only accessed
-via HTTP GET API calls.
-
-The user can either process data in an *ephemeral databases*, that will be removed after
-the processing is finished, or in a *user specific database*. A user specific database is persistent,
-only visible to users of the same user-group and can contain any data the user
-has imported.The user can read-access all data from the persistent database
-while running analysis in the ephemeral database or user specific database.

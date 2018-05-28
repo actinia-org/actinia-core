@@ -49,7 +49,7 @@ class ResourceDataContainer(object):
             orig_time (time): The time of origin (seconds)
             orig_datetime (datetime): The datetime of origin (datetime format)
             user_credentials (dict): The user credentials dict
-            config (Actinia Core_api.resources.common.config.Configuration): The Actinia Core configuration
+            config (actinia_core.resources.common.config.Configuration): The actinia configuration
             location_name (str): The name of the location to work in
             mapset_name (str): The name of the target mapset in which the computation should be performed
             map_name: The name of the map or other resource (raster, vector, STRDS, color, ...)
