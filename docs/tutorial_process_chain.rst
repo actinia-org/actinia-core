@@ -51,46 +51,54 @@ The output of the module is named *elev_ned_30m_slope* and should be exported as
         }
     ..
 
-The GRASS module definition includes the unique id *r_slope_aspect_1* that can be used in following
-process definitions to address module specific files or the stdout of a module.
-
-The actinia process chain supports the definition of HTTP accessible raster layers in GeoTiff format
-as inputs. The following process definition imports a raster map layer that is located
-in an object storage with the name *elev_ned_30m*. Slope and aspect are computed and specified for export
-as GeoTiff files.
+The actinia process chain supports the specification of URL's to raster layers in the input definition.
+The following process chain imports a raster map layer that is located
+in an object storage with the name *elev_ned_30m_new* and sets the computational region
+for the following processing step with the GRASS GIS module *g.region* [#gregion]_.
+Then slope and aspect are computed with *r.slope.aspect* and specified for export as GeoTiff files.
 
     .. code-block:: json
 
         {
-          "module": "r.slope.aspect",
-          "id": "r_slope_aspect_1",
-          "inputs": [
+          "list": [
             {
-              "import_descr": {"source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
-                                "type"  : "raster"},
-              "param": "elevation",
-              "value": "elev_ned_30m"
-            }
-          ],
-          "outputs": [
-            {
-              "export": {
-                "format": "GTiff",
-                "type": "raster"
-              },
-              "param": "slope",
-              "value": "elev_ned_30m_slope"
+              "module": "g.region",
+              "id": "g_region_1",
+              "inputs": [
+                {
+                  "import_descr": {
+                    "source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
+                    "type": "raster"
+                  },
+                  "param": "raster",
+                  "value": "elev_ned_30m_new"
+                }
+              ],
+              "flags": "p"
             },
             {
-              "export": {
-                "format": "GTiff",
-                "type": "raster"
-              },
-              "param": "aspect",
-              "value": "elev_ned_30m_aspect"
+              "module": "r.slope.aspect",
+              "id": "r_slope_aspect_1",
+              "inputs": [
+                {
+                  "param": "elevation",
+                  "value": "elev_ned_30m_new"
+                }
+              ],
+              "outputs": [
+                {
+                  "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                  },
+                  "param": "slope",
+                  "value": "elev_ned_30m_new_slope"
+                }
+              ],
+              "flags": "a"
             }
           ],
-          "flags": "a"
+          "version": "1"
         }
     ..
 
@@ -102,6 +110,7 @@ as GeoTiff files.
 .. [#outputs] https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter
 .. [#rlopeaspect] https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html
 .. [#mapset] https://grass.osgeo.org/grass74/manuals/grass_database.html
+.. [#gregion] https://grass.osgeo.org/grass74/manuals/g.region.html
 
 Sentiel2A NDVI processing
 -------------------------
