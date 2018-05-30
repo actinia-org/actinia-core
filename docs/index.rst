@@ -30,6 +30,3 @@ The full API documentation is available here: https://actinia.mundialis.de/api_d
    User defined processing <tutorial_process_chain>
    License <license>
    Authors <authors>
-   Actinia Core Module Reference <api/actinia_core>
-   Actinia Core Module Resource Reference <api/actinia_core.resources>
-   Actinia Core Module Common Reference <api/actinia_core.resources.common>
