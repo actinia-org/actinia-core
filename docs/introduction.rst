@@ -33,37 +33,6 @@ To access the full potential of actinia you will need a HTTP client, that talks
 all HTTP communication methods.
 
 
-Actinia REST API documentation
-------------------------------
-
-Actinia is fully documented using the OpenAPI standard [#openapi]_,
-better known as swagger [#swagger]_.
-The JSON definition of the API can be accessed here:
-
-      https://actinia.mundialis.de/latest/swagger.json
-
-
-The full API documentation is available here:
-
-    https://actinia.mundialis.de/api_docs/
-
-To generate a readable documentation out of the swagger.json file, the spectacle
-tool can be used:
-
-    .. code-block:: bash
-
-        # Download the latest swagger definition from the actinia service
-        wget  https://actinia.mundialis.de/api/v0/swagger.json -O /tmp/actinia.json
-
-        # Run spectacle docker image to generate the HTML documentation
-        docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
-
-        # Start Firefox to show the documentation
-        firefox /tmp/index.html
-
-The petstore swagger UI creator [#swaggerui]_ can be used to show
-all available REST API calls and all response models in a convenient way.
-
 Examples
 --------
 
@@ -101,9 +70,6 @@ The results of the asynchronous computations are available as GeoTIFF file in a 
 
 .. rubric:: Footnotes
 
-.. [#openapi] https://www.openapis.org/
-.. [#swagger] https://swagger.io
-.. [#swaggerui] https://petstore.swagger.io
 .. [#GRASS] https://grass.osgeo.org/
 .. [#REST] https://en.wikipedia.org/wiki/Representational_State_Transfer
 .. [#curl] https://en.wikipedia.org/wiki/CURL

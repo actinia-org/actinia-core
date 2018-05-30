@@ -18,11 +18,15 @@ are available via object storage as GeoTIFF files.
 The full API documentation is available here: https://actinia.mundialis.de/api_docs/
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    Introduction <introduction>
+   Introduction <actinia_concepts>
    Installation <installation>
    Actinia database access <tutorial_data_access>
+   Time-series sampling <tutorial_strds_sampling>
+   Landsat NDVI computation <tutorial_landsat_ndvi>
+   Sentinel2A NDVI computation <tutorial_sentinel2a_ndvi>
    User defined processing <tutorial_process_chain>
    License <license>
    Authors <authors>

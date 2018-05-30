@@ -112,8 +112,8 @@ Then slope and aspect are computed with *r.slope.aspect* and specified for expor
 .. [#mapset] https://grass.osgeo.org/grass74/manuals/grass_database.html
 .. [#gregion] https://grass.osgeo.org/grass74/manuals/g.region.html
 
-Sentiel2A NDVI processing
--------------------------
+Sentinel2A NDVI process chain
+-----------------------------
 
 We create a process chain that computes the NDVI
 from a Sentinel2A scene based on the bands 8 and 4
