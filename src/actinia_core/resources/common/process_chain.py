@@ -236,7 +236,7 @@ class Executable(Schema):
         'stdin': {'type': 'string',
                   'description': 'Use the output of a GRASS GIS module or executable in of the process '
                                  'chain as input for this module. Refer to the module/executable output '
-                                 'as id::stderr or id@stdout, the \"id\" is the unique identifier '
+                                 'as id::stderr or id::stdout, the \"id\" is the unique identifier '
                                  'of a GRASS GIS module.'}
     }
     required = ['id', 'exe']
