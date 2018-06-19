@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import unittest
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
 __license__ = "GPLv3"
@@ -16,14 +16,15 @@ __email__      = "soerengebbert@googlemail.com"
 class VersionHealthTestCase(ActiniaResourceTestCaseBase):
 
     def test_version(self):
-        rv = self.server.get('/version')
+        rv = self.server.get(URL_PREFIX + '/version')
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
 
     def test_health_check(self):
-        rv = self.server.get('/health_check')
+        rv = self.server.get(URL_PREFIX + '/health_check')
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1032,8 +1032,8 @@ class EphemeralProcessing(object):
                                     stdin=stdin_file)
 
         run_time = self._wait_for_process(process.executable,
-                                            process.executable_params,
-                                            proc, poll_time)
+                                          process.executable_params,
+                                          proc, poll_time)
 
         proc.wait()
 

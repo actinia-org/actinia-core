@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -240,7 +240,7 @@ process_chain_sent_2 = {
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_error_1(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_error_1),
                               content_type="application/json")
@@ -250,7 +250,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_error_2(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_error_2),
                               content_type="application/json")
@@ -260,7 +260,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_error_3(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_error_3),
                               content_type="application/json")
@@ -270,7 +270,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_error_4(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_error_4),
                               content_type="application/json")
@@ -280,7 +280,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_error_5(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_error_5),
                               content_type="application/json")
@@ -290,7 +290,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_output_error_1(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_output_error_1),
                               content_type="application/json")
@@ -300,7 +300,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_output_error_2(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_output_error_2),
                               content_type="application/json")
@@ -310,7 +310,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_landsat_error_1(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat_error_1),
                               content_type="application/json")
@@ -320,7 +320,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_landsat_error_2(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat_error_2),
                               content_type="application/json")
@@ -330,7 +330,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_landsat_error_3(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat_error_3),
                               content_type="application/json")
@@ -340,7 +340,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_sent_error_1(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sent_1),
                               content_type="application/json")
@@ -350,7 +350,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_async_processing_sent_error_2(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sent_2),
                               content_type="application/json")

@@ -3,9 +3,9 @@ from flask.json import loads as json_load
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
 __license__ = "GPLv3"
@@ -25,7 +25,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset)
 
         # Create
-        rv = self.server.post('/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
                                                          "e":645000,"w":630000},
@@ -37,7 +37,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Create fail
-        rv = self.server.post('/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"npoints":1, "zmin":1, "zmax":1, "seed":1}),
                               content_type="application/json")
@@ -46,7 +46,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Check
-        rv = self.server.get('/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -61,21 +61,21 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(centroids, "0")
 
         # Delete
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
                                 headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Delete fail
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer'%new_mapset,
                                 headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_layer_info(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -91,7 +91,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     def test_layer_info_error_1(self):
         # Raster does not exist
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county_nope',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county_nope',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)

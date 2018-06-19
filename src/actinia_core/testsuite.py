@@ -8,7 +8,7 @@ from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
 from .health_check import health_check
 from .version import version
-from .resources.common.app import flask_app
+from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common import redis_interface
 from .resources.common.config import global_config
 from .resources.common.user import ActiniaUser
@@ -247,7 +247,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         rv_resource_id = resp_data["resource_id"]
 
         while True:
-            rv = self.server.get("/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
                                  headers=headers)
             print("waitAsyncStatusAssertHTTP in loop:", rv.data.decode())
             resp_data = json_loads(rv.data)
@@ -268,16 +268,16 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
 
         # Unlock mapset for deletion
-        rv = self.server.delete('/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
 
         # Delete any existing mapsets
-        rv = self.server.delete('/locations/%s/mapsets/%s' % (location_name, mapset_name),
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
 
         # Create new mapsets
-        rv = self.server.post('/locations/%s/mapsets/%s' % (location_name, mapset_name),
+        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
                               headers=self.admin_auth_header)
         print(rv.data.decode())

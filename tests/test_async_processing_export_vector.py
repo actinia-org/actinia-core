@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -126,7 +126,7 @@ vector_layer_clean = {
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_vector_export(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_export),
                               content_type="application/json")
@@ -144,7 +144,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
 
     def test_vector_buffer(self):
-        rv = self.server.post('/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_buffer),
                               content_type="application/json")
@@ -166,7 +166,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             out_file.close()
 
     def test_vector_clean(self):
-        rv = self.server.post('/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_clean),
                               content_type="application/json")

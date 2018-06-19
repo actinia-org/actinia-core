@@ -3,9 +3,9 @@ import unittest
 from pprint import pprint
 from flask.json import loads as json_load
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
 __license__ = "GPLv3"
@@ -20,14 +20,14 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
     #################### IMAGE ################################################
 
     def test_vectorlayer_image_no_args(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render',
                              headers=self.user_auth_header)
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
 
     def test_vectorlayer_image_args_1(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
                              'n=228500&s=215000&w=630000&e=645000',
                              headers=self.user_auth_header)
 
@@ -35,7 +35,7 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
 
     def test_vectorlayer_image_args_2(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
                              'n=228500&s=215000&w=630000&e=645000&width=100&height=100',
                              headers=self.user_auth_header)
 
@@ -43,7 +43,7 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
 
     def test_vectorlayer_image_args_3(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
                              'width=100&height=100',
                              headers=self.user_auth_header)
 
@@ -52,7 +52,7 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_error_1(self):
         # North is smaller then south
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render?'
                              'n=-228500&s=215000',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
@@ -61,7 +61,7 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_error_2(self):
         # Negative size
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/'
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/'
                              'render?&width=-100&height=-100',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
@@ -70,7 +70,7 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_error_3(self):
         # Raster does not exist
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county_nomap/render?',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county_nomap/render?',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)

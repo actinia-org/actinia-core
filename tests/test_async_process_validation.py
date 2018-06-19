@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -263,7 +263,7 @@ process_chain_landsat = {
 
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_legacy),
                               content_type="application/json")
@@ -273,7 +273,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 6)
 
     def test_async_processing_new(self):
-        rv = self.server.post('/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_new),
                               content_type="application/json")
@@ -283,7 +283,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 6)
 
     def test_async_processing_new_ndvi(self):
-        rv = self.server.post('/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -294,7 +294,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 29)
 
     def test_async_processing_new_ndvi_export_landsat(self):
-        rv = self.server.post('/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi_landsat),
                               content_type="application/json")
@@ -304,7 +304,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 26)
 
     def test_async_processing_landsat(self):
-        rv = self.server.post('/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat),
                               content_type="application/json")

@@ -188,7 +188,7 @@ def check_location_mapset_module_access(user_credentials,
 
     Args:
         user_credentials (dict): The user credentials dictionary
-        config (Actinia Core_api.resources.common.config.Configuration): The Actinia Core configuration
+        config (actinia_core.resources.common.config.Configuration): The actinia configuration
         location_name (str): Name of the location to access
         mapset_name (str): Name of the mapset to access
         module_name (str): Name of the module to access

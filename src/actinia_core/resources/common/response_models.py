@@ -25,7 +25,7 @@ class ProgressInfoModel(Schema):
         'step': {
             'type': 'integer',
             'format': 'int64',
-            'description': 'The current step of processing'
+            'description': 'The current processing step'
         },
         'num_of_steps': {
             'type': 'integer',
@@ -51,36 +51,6 @@ class ProgressInfoModel(Schema):
     }
 
 
-class StorageModel(Schema):
-    """This class defines the model to inform about available storage
-    that is used for caching or user specific resource storage.
-    """
-    type = 'object'
-    properties = {
-        'used': {
-            'type': 'number',
-            'format': 'int64',
-            'description': 'The used storage in bytes'
-        },
-        'free': {
-            'type': 'number',
-            'format': 'int64',
-            'description': 'The free storage in bytes'
-        },
-        'quota': {
-            'type': 'number',
-            'format': 'int64',
-            'description': 'The current quota in bytes'
-        },
-        'free_percent': {
-            'type': 'number',
-            'format': 'int32',
-            'description': 'The free storage in percent'
-        },
-    }
-    required = ['used', 'free', 'quota', 'free_percent']
-
-
 class ProcessLogModel(Schema):
     """This class defines the model for Unix process information.
 
@@ -93,12 +63,12 @@ class ProcessLogModel(Schema):
     properties = {
         'executable': {
             'type': 'string',
-            'description': 'The name of the executable that was executed'
+            'description': 'The name of the executable'
         },
         'parameter': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'The parameter of the executable that was executed'
+            'description': 'The parameter of the executable'
         },
         'stdout': {
             'type': 'string',
@@ -145,17 +115,19 @@ class UrlModel(Schema):
         'resources': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'A list of URLs to generated resources'
+            'description': 'A list of URLs to generated resources, that may be GeoTiff files, '
+                           'vector files, ASCII files or png images'
         }
     }
     required = ["status", "resources"]
     example = {"resources": [
-        "http://localhost:5000/resource/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"],
-        "status": "http://localhost:5000/resources/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
+        "http://localhost/api/v1/resource/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"],
+        "status": "http://localhost/api/v1/resources/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
 
 
 class SimpleResponseModel(Schema):
-    """Response schema that is used in cases that no asynchronous run was performed.
+    """Response schema that is used in cases that no asynchronous run was performed and the
+    generated information is very simple.
 
     """
     type = 'object'
@@ -203,14 +175,14 @@ class ApiInfoModel(Schema):
     example = {
         "endpoint": "asyncephemeralresource",
         "method": "POST",
-        "path": "/locations/nc_spm_08/processing_async",
-        "request_url": "http://localhost/locations/nc_spm_08/processing_async"
+        "path": "/api/v1//locations/nc_spm_08/processing_async",
+        "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
     }
 
 
 class ExceptionTracebackModel(Schema):
-    """Response schema that contains Exception information of the called endpoint
-    in case an Exception was raised.
+    """Response schema that contains python3 exception information of the called endpoint
+    in case an exception was raised.
 
     This information is required to debug the REST API.
     """
@@ -218,16 +190,16 @@ class ExceptionTracebackModel(Schema):
     properties = {
         'message': {
             'type': 'string',
-            'description': 'The message that was send with the Exception'
+            'description': 'The message that was send with the exception'
         },
         'type': {
             'type': 'string',
-            'description': 'The type of the Exception'
+            'description': 'The type of the exception'
         },
         'traceback': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'The full traceback of the Exception'
+            'description': 'The full traceback of the exception'
         }
     }
     required = ["message", "type", "traceback"]
@@ -240,10 +212,10 @@ class ExceptionTracebackModel(Schema):
 
 
 class ProcessingResponseModel(Schema):
-    """This is the base class for all asynchronous response models. This class must
-    or a derivative must be used in all asynchronous responses. Usually
-    specify derivatives different process_result schemas.
+    """This is the base class for ALL response models.
 
+    This class or its derivatives must be used in all responses that run GRASS modules or
+    Unix programs. Derivatives only differ in the *process_result* schema.
     """
     type = 'object'
     properties = {
@@ -320,7 +292,7 @@ class ProcessingResponseModel(Schema):
             "endpoint": "asyncephemeralresource",
             "method": "POST",
             "path": "/locations/nc_spm_08/processing_async",
-            "request_url": "http://localhost/locations/nc_spm_08/processing_async"
+            "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
         },
         "datetime": "2017-05-24 22:37:21.608717",
         "http_code": 200,
@@ -331,14 +303,15 @@ class ProcessingResponseModel(Schema):
         "timestamp": 1495658241.608716,
         "urls": {
             "resources": [],
-            "status": "http://localhost/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
+            "status": "http://localhost/api/v1/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
         },
         "user_id": "admin"
     }
 
 
 class ProcessingErrorResponseModel(ProcessingResponseModel):
-    """Response schema that error messages from a failed process execution
+    """Response schema that returns error messages from a failed process execution
+    that includes debug information (python traceback) and process logs.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)
@@ -350,16 +323,12 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
-            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets/PERMANE/info"
+            "request_url": "http://localhost/api/v1/locations/nc_spm_08/mapsets/PERMANE/info"
         },
         "datetime": "2018-05-06 22:02:14.398927",
         "exception": {
             "message": "AsyncProcessError:  Error while running executable <g.region>",
             "traceback": [
-                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 1200, in run\n    self._execute()\n",
-                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/mapset_management.py\", line 315, in _execute\n    self._execute_process_list(process_list)\n",
-                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/persistent_processing.py\", line 496, in _execute_process_list\n    self._run_module(process)\n",
-                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 977, in _run_module\n    return self._run_executable(process, poll_time)\n",
                 "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 1063, in _run_executable\n    raise AsyncProcessError(\"Error while running executable <%s>\" % process.executable)\n"
             ],
             "type": "<class 'actinia_core.resources.common.exceptions.AsyncProcessError'>"
@@ -403,7 +372,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
         "timestamp": 1525636934.3989098,
         "urls": {
             "resources": [],
-            "status": "http://localhost:5000/resources/user/resource_id-79608249-521c-4a98-9e1f-9201f693870b"
+            "status": "http://localhost/api/v1/resources/user/resource_id-79608249-521c-4a98-9e1f-9201f693870b"
         },
         "user_id": "user"
     }
@@ -423,10 +392,43 @@ class ProcessingResponseListModel(Schema):
     required = ["resource_list"]
 
 
+class StorageModel(Schema):
+    """This class defines the model to inform about available storage
+    that is used for caching or user specific resource storage.
+
+    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    """
+    type = 'object'
+    properties = {
+        'used': {
+            'type': 'number',
+            'format': 'int64',
+            'description': 'The used storage in bytes'
+        },
+        'free': {
+            'type': 'number',
+            'format': 'int64',
+            'description': 'The free storage in bytes'
+        },
+        'quota': {
+            'type': 'number',
+            'format': 'int64',
+            'description': 'The current quota in bytes'
+        },
+        'free_percent': {
+            'type': 'number',
+            'format': 'int32',
+            'description': 'The free storage in percent'
+        },
+    }
+    required = ['used', 'free', 'quota', 'free_percent']
+
+
+
 class UnivarResultModel(Schema):
     """Response schema for the result of univariate computations of raster layers.
 
-    It is used as schema to define the process_result in a  ProcessingResponseModel.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
     """
     type = 'object'
     properties = {
@@ -491,7 +493,7 @@ class UnivarResultModel(Schema):
 class CategoricalStatisticsResultModel(Schema):
     """Response schema for the result of r.stats computations of raster layers.
 
-    It is used as schema to define the process_result in a  ProcessingResponseModel.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
     """
     type = 'object'
     properties = {
@@ -525,7 +527,7 @@ class CategoricalStatisticsResultModel(Schema):
 class RegionModel(Schema):
     """Output og GRASS module g.region -gu3
 
-    It is used as schema to define the process_result in a  ProcessingResponseModel.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
 
     GRASS 7.3.svn (LL):~ > g.region -gu3
     projection=3
@@ -657,7 +659,9 @@ class RegionModel(Schema):
 
 
 class MapsetInfoModel(Schema):
-    """Schema for projection and region information from a specific mapset
+    """Schema for projection and region information from a specific mapset.
+
+    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
     """
     type = 'object'
     properties = {
@@ -697,7 +701,10 @@ class MapsetInfoModel(Schema):
 
 class MapsetInfoResponseModel(ProcessingResponseModel):
     """Response schema that includes projection and region information
-    about a specific mapset as processing results
+    about a specific mapset as processing results.
+
+    This schema is a derivative of the ProcessingResponseModel that defines a different
+    *process_results* schema.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)
@@ -709,8 +716,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
-            "path": "/locations/ECAD/mapsets/PERMANENT/info",
-            "request_url": "http://localhost:8080/locations/ECAD/mapsets/PERMANENT/info"
+            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/info",
+            "request_url": "http://localhost/api/v1/locations/ECAD/mapsets/PERMANENT/info"
         },
         "datetime": "2018-05-02 10:53:20.392509",
         "http_code": 200,
@@ -786,14 +793,17 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525258400.392495,
         "urls": {
             "resources": [],
-            "status": "http://localhost:8080/resources/user/resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518"
+            "status": "http://localhost/api/v1/resources/user/resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518"
         },
         "user_id": "user"
     }
 
 
 class RasterAreaStatsResponseModel(ProcessingResponseModel):
-    """Response schema for a list of categorical statistics
+    """Response schema for a list of categorical statistics.
+
+    This schema is a derivative of the ProcessingResponseModel that defines a different
+    *process_results* schema.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)
@@ -880,6 +890,9 @@ class AreaUnivarResultModel(Schema):
 class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
     """Response schema for resources that generate area univariate result lists
      as processing results.
+
+    This schema is a derivative of the ProcessingResponseModel that defines a different
+    *process_results* schema.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)
@@ -893,6 +906,9 @@ class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
 
 class StorageResponseModel(ProcessingResponseModel):
     """Response schema for storage management calls.
+
+    This schema is a derivative of the ProcessingResponseModel that defines a different
+    *process_results* schema.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)
@@ -952,6 +968,9 @@ class StorageResponseModel(ProcessingResponseModel):
 class StringListProcessingResultResponseModel(ProcessingResponseModel):
     """Response schema for resources that generate string list
      as processing results.
+
+    This schema is a derivative of the ProcessingResponseModel that defines a different
+    *process_results* schema.
     """
     type = 'object'
     properties = deepcopy(ProcessingResponseModel.properties)

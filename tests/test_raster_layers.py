@@ -2,9 +2,9 @@
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -19,11 +19,11 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def create_raster_layer(self, mapset_name, raster_name):
         # Remove potentially existing raster layer
-        rv = self.server.delete('/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
                                 headers=self.user_auth_header)
         # print(rv.data)
         # Create
-        rv = self.server.post('/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
                                                          "e":645000,"w":630000,
@@ -35,7 +35,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
     def test_list_raster_layers(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers',
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -48,7 +48,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("slope" in map_list)
 
     def test_list_raster_layers_pattern(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*',
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -61,7 +61,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertFalse("slope" in map_list)
 
     def test_list_raster_layers_empty_list(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=NONE',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=NONE',
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -84,14 +84,14 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             self.create_raster_layer(new_mapset, map_name)
 
         # Delete raster layers
-        #rv = self.server.delete('/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
+        #rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
         #                     headers=self.user_auth_header)
         #print(rv.data)
         #self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # List raster layer
-        rv = self.server.get('/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*'%new_mapset,
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*'%new_mapset,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -103,7 +103,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # Delete raster layers
         for map_name in map_list:
-            rv = self.server.delete('/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
+            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
                                     headers=self.user_auth_header)
             print(rv.data.decode())
 
@@ -122,7 +122,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             self.create_raster_layer(new_mapset, map_name)
 
         # Rename raster layer
-        rv = self.server.put('/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
+        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
                              headers=self.user_auth_header,
                              data=json_dumps(rename_map_list),
                              content_type="application/json")
@@ -131,7 +131,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Rename raster layer
-        rv = self.server.put('/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
+        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
                              headers=self.user_auth_header,
                              data=json_dumps(rename_map_list),
                              content_type="application/json")
@@ -141,7 +141,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # Delete raster layers
         for map_name in new_map_list:
-            rv = self.server.delete('/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
+            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
                                     headers=self.user_auth_header)
             print(rv.data.decode())
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)

@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -244,7 +244,7 @@ process_chain_ndvi_landsat = {
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_legacy),
                               content_type="application/json")
@@ -253,7 +253,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new(self):
-        rv = self.server.post('/locations/nc_spm_08/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_new),
                               content_type="application/json")
@@ -262,7 +262,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi(self):
-        rv = self.server.post('/locations/LL/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -271,7 +271,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi_export(self):
-        rv = self.server.post('/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -280,7 +280,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi_export_landsat(self):
-        rv = self.server.post('/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi_landsat),
                               content_type="application/json")

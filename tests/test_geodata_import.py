@@ -81,7 +81,7 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
                                             url_list=[gml,])
 
         pl, import_file_info = gddl.get_download_process_list()
-        self.assertEqual("application/xml", import_file_info[0][0])
+        self.assertTrue("xml" in import_file_info[0][0])
         self.assertTrue(len(pl) == 2)
 
         for p in pl:

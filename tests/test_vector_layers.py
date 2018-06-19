@@ -2,9 +2,9 @@
 import unittest
 from flask.json import loads as json_load
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -18,7 +18,7 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
     #################### LIST RASTER ##########################################
 
     def test_list_vector_layers(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -31,7 +31,7 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("hospitals" in map_list)
 
     def test_list_vector_layers_pattern(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=elev_*',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=elev_*',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -46,7 +46,7 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("elev_lidrural_mrptsft" in map_list)
 
     def test_list_vector_layers_empty_list(self):
-        rv = self.server.get('/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=NONE',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=NONE',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)

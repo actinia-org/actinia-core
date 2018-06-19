@@ -2,9 +2,9 @@
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -17,7 +17,7 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_async_processing(self):
 
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=self.admin_auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
@@ -29,7 +29,7 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post('/custom_process/uname_nopo',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname_nopo',
                               headers=self.admin_auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
@@ -41,7 +41,7 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post('/custom_process/cat',
+        rv = self.server.post(URL_PREFIX + '/custom_process/cat',
                               headers=self.admin_auth_header,
                               data=json_dumps(["non_existing_file"]),
                               content_type="application/json")
@@ -54,7 +54,7 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=self.user_auth_header,
                               data=json_dumps(["1"]),
                               content_type="application/json")
@@ -66,9 +66,9 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=self.user_auth_header,
-                              data=json_dumps(["5"]),
+                              data=json_dumps(["10"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="terminated",
                                        message_check="AsyncProcessTimeLimit:")
@@ -79,7 +79,7 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post('/custom_process/ps',
+        rv = self.server.post(URL_PREFIX + '/custom_process/ps',
                               headers=self.user_auth_header,
                               data=json_dumps(["-rf"]),
                               content_type="application/json")

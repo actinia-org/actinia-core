@@ -8,16 +8,16 @@ __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
 from flask import make_response, jsonify
-from actinia_core.resources.common.app import flask_app
-from actinia_core.resources.common.config import global_config
+from .resources.common.app import flask_app, API_VERSION, URL_PREFIX
+from .resources.common.config import global_config
 
 # Return the version of Actinia Core as REST API call
-@flask_app.route('/version')
+@flask_app.route(URL_PREFIX + '/version')
 def version():
     """Return the version information and the roles that are activated
 
     Returns: Response
 
     """
-    info = {"version":"0.01", "plugins":None}
+    info = {"version":API_VERSION, "plugins":",".join(global_config.PLUGINS)}
     return make_response(jsonify(info), 200)

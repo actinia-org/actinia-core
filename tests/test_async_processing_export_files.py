@@ -3,9 +3,9 @@ import unittest
 from flask.json import loads as json_loads, dumps as json_dumps
 import requests
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -73,7 +73,7 @@ class AsyncProcessExport2TestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_async_processing_export(self):
 
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
@@ -99,7 +99,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
 
     def otest_async_processing_export(self):
 
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export_s3',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
@@ -116,7 +116,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
 
     def otest_termination(self):
 
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export_s3',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
@@ -138,7 +138,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
 
     def otest_async_processing_export(self):
 
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export_gcs',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")
@@ -155,7 +155,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
 
     def otest_termination(self):
 
-        rv = self.server.post('/locations/nc_spm_08/processing_async_export_gcs',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_long),
                               content_type="application/json")

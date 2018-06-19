@@ -8,9 +8,9 @@ import base64
 from random import randint
 
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 from actinia_core.resources.common.user import ActiniaUser
 
 __author__ = "Sören Gebbert"
@@ -53,25 +53,25 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             process_time_limit=2)
 
         # Create three successfully run resources
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -90,25 +90,25 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         # Check permission access using the default users
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.root_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -143,42 +143,42 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                                                                "test_mapset"],
                                                                  "ECAD": ["PERMANENT"]},
                                             process_num_limit=3,
-                                            process_time_limit=2)
+                                            process_time_limit=5)
 
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=auth_header)
 
-        rv = self.server.post('/custom_process/uname',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=auth_header)
 
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
-                              data=json_dumps(["5"]),
+                              data=json_dumps(["10"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=auth_header,
                                        http_status=400, status="terminated")
 
-        rv = self.server.post('/custom_process/uname_Fail',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname_Fail',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=auth_header,
                                        http_status=400, status="error")
 
-        rv = self.server.post('/custom_process/uname_Fail',
+        rv = self.server.post(URL_PREFIX + '/custom_process/uname_Fail',
                               headers=auth_header,
                               data=json_dumps(["-a"]),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=auth_header,
                                        http_status=400, status="error")
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -203,25 +203,25 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         # Check permission access using the default users
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.root_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -250,7 +250,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             user_group,
                                             password)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -261,25 +261,25 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         # Check permission access using the default users
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.root_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -317,22 +317,22 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             process_time_limit=2)
 
         # Start three processes that exceeds the time limit
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -341,7 +341,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         # Wait for termination
         time.sleep(5)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -390,44 +390,44 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             process_time_limit=100)
 
         # Start three processes that will be terminated
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
         # Test guest termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Delete the resources
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -436,7 +436,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         # Wait for termination
         time.sleep(5)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -485,34 +485,34 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             process_time_limit=100)
 
         # Start three processes that will be terminated
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
         # Test guest termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination success
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test superadmin termination success
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.root_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -521,7 +521,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         # Wait for termination
         time.sleep(5)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -570,34 +570,34 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             process_time_limit=100)
 
         # Start three processes that will be terminated
-        rv = self.server.post('/custom_process/sleep',
+        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
                               headers=auth_header,
                               data=json_dumps(["20"]),
                               content_type="application/json")
 
         # Test guest termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination error
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test superadmin termination success
-        rv = self.server.delete('/resources/%s' % user_id,
+        rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.root_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -606,7 +606,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         # Wait for termination
         time.sleep(5)
 
-        rv = self.server.get('/resources/%s' % user_id,
+        rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)

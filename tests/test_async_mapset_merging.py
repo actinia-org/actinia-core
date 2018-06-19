@@ -4,9 +4,9 @@ from flask.json import dumps as json_dumps
 from flask.json import loads as json_load
 import time
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__     = "Sören Gebbert"
@@ -92,11 +92,11 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         for mapset in test_mapsets:
                 # Unlock mapset for deletion
-                rv = self.server.delete('/locations/%s/mapsets/%s/lock'%("nc_spm_08", mapset),
+                rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock'%("nc_spm_08", mapset),
                                       headers=self.admin_auth_header)
                 print(rv.data)
 
-        rv = self.server.get('/locations/nc_spm_08/mapsets',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -107,7 +107,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         for mapset in test_mapsets:
             if mapset in mapsets:
                 # Delete the mapset if it already exists
-                rv = self.server.delete('/locations/nc_spm_08/mapsets/%s' % mapset,
+                rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s' % mapset,
                                         headers=self.admin_auth_header)
                 print(rv.data)
                 self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -116,7 +116,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
     def test_1_merge_no_access_to_target_mapset_error(self):
         """No access to target mapset error test"""
         # Try merge source mapsets into target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/user1/merging_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/merging_async',
                               headers=self.user_auth_header,
                               data=json_dumps(["Source_A", "Source_B"]),
                               content_type="application/json")
@@ -131,7 +131,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Try merge source mapsets into target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target/merging_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/merging_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(["Source_A", "Source_B"]),
                               content_type="application/json")
@@ -145,7 +145,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Create target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -153,7 +153,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Try merge source mapsets into target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target/merging_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/merging_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(["Source_A", "Source_B"]),
                               content_type="application/json")
@@ -167,7 +167,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Create target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -175,7 +175,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Try merge source mapsets into target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target/merging_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/merging_async',
                               headers=self.admin_auth_header,
                               data=json_dumps([]),
                               content_type="application/json")
@@ -189,13 +189,13 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Create the source mapsets
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Source_A/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Source_A/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_short_1),
                               content_type="application/json")
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Source_B/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Source_B/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_short_2),
                               content_type="application/json")
@@ -203,7 +203,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Create target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
@@ -211,7 +211,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Merge source mapsets into target mapset
-        rv = self.server.post('/locations/nc_spm_08/mapsets/Target/merging_async',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/merging_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(["Source_A", "Source_B"]),
                               content_type="application/json")
@@ -219,19 +219,19 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         ############################################################################
         # Check copied raster
-        rv = self.server.get('/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_1',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_1',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertTrue("my_aspect_1", json_load( rv.data)["process_results"]["map"])
-        rv = self.server.get('/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_2',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_2',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertTrue("my_aspect_2", json_load( rv.data)["process_results"]["map"])
-        rv = self.server.get('/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_1',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_1',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertTrue("my_slope_1", json_load( rv.data)["process_results"]["map"])
-        rv = self.server.get('/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_2',
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_2',
                              headers=self.admin_auth_header)
         print(rv.data)
         self.assertTrue("my_slope_2", json_load( rv.data)["process_results"]["map"])

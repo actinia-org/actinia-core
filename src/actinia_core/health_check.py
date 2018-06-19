@@ -10,12 +10,12 @@ __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
-from .resources.common.app import flask_app
+from .resources.common.app import flask_app, URL_PREFIX
 from flask import make_response
 
 # This is a simple endpoint to check the health of the Actinia Core server
 # This is needed by Google load balancer
-@flask_app.route('/health_check')
+@flask_app.route(URL_PREFIX + '/health_check')
 def health_check():
     # TODO: Add checks of the Actinia Core compute node state
     #       - is the config correct
