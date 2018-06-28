@@ -231,9 +231,14 @@ class EphemeralProcessing(object):
         self.process_num_limit = 0
         self.skip_region_check = False    # Set this True so that regions are not checked before processing
 
-        self.module_output_log = list()  # The stdout, stderr and parameter log of the module chains
-        self.module_results = dict()  # A dictionary that has the process id as key to store module
-        #  outputs like images, dicts, files and so on
+        self.module_output_log = list()   # The stdout, stderr and parameter log of the module chains
+        self.module_output_dict = dict()  # The stdout, stderr and parameter log of the module chains
+                                          # using a dict with the process id as key
+        self.output_parser_list = []      # The list of output parser definitions that must be applied
+                                          # after the module run. The parser result will be stored in
+                                          # the module_result dictionary using the parser id
+        self.module_results = dict()      # A dictionary that has the process id as key to store module
+                                          # outputs like images, dicts, files and so on
 
         self.required_mapsets = list()  # The process chain analysis will provide
         # a list of required mapsets that must be
@@ -553,6 +558,7 @@ class EphemeralProcessing(object):
                                                           temporary_pc_files=self.temporary_pc_files,
                                                           required_mapsets=self.required_mapsets,
                                                           resource_export_list=self.resource_export_list,
+                                                          output_parser_list=self.output_parser_list,
                                                           message_logger=self.message_logger,
                                                           send_resource_update=self._send_resource_update)
 
@@ -1058,6 +1064,9 @@ class EphemeralProcessing(object):
                               run_time=run_time)
 
         self.module_output_log.append(plm)
+        # Store the log in an additional dictionary for automated output generation
+        if process.id is not None:
+            self.module_output_dict[process.id] = plm
 
         if proc.returncode != 0:
             raise AsyncProcessError("Error while running executable <%s>" % process.executable)
@@ -1116,8 +1125,12 @@ class EphemeralProcessing(object):
             or AsyncProcessTermination
 
         """
+        # Create the process chain
         process_chain = self._create_temporary_grass_environment_and_process_list(skip_permission_check=skip_permission_check)
+        # Run all executables
         self._execute_process_list(process_list=process_chain)
+        # Parse the module sdtout outputs and create the results
+        self._parse_module_outputs()
 
     def _create_temporary_grass_environment_and_process_list(self, process_chain=None,
                                                              skip_permission_check=False):
@@ -1152,6 +1165,52 @@ class EphemeralProcessing(object):
         self._create_temporary_grass_environment()
 
         return process_list
+
+    def _parse_module_outputs(self):
+        """Parse the module stdout outputs and parse them into the required formats: table, list or kv
+
+        This functions analyzes the output_parser_list for entries to parse.
+        It will convert the stdout strings into tables, lists or key/value outputs and stores the result
+        in the module_result dictionary using the provided id of the StdoutParser.
+
+        """
+
+        for entry in self.output_parser_list:
+            for process_id, stdout_def in entry.items():
+                id = stdout_def["id"]
+                format = stdout_def["format"]
+                delimiter = stdout_def["delimiter"]
+                if process_id not in self.module_output_dict:
+                    raise AsyncProcessError("Unable to find process id in module output dictionary")
+                stdout = self.module_output_dict[process_id]["stdout"]
+                result = None
+                # Split the rows by the \n new line delimiter
+                rows = stdout.split("\n")
+                if "table" in format:
+                    result = []
+                    for row in rows:
+                        row = row.strip()
+                        values = row.split(delimiter)
+                        value_list = []
+                        for value in values:
+                            value_list.append(value.strip())
+                        result.append(value_list)
+                elif "list" in format:
+                    result = []
+                    for row in rows:
+                        value = row.strip()
+                        result.append(value)
+                elif "kv" in format:
+                    result = dict()
+                    for row in rows:
+                        row = row.strip()
+                        key, value = row.split(delimiter, 1)
+                        result[key.strip()] = value.strip()
+                else:
+                    raise AsyncProcessError("Wrong stdout parser format")
+
+                # Store the parser result
+                self.module_results[id] = result
 
     def _execute_process_list(self, process_list):
         """Run all modules or executables that are specified in the process list

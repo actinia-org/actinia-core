@@ -27,20 +27,19 @@ class IOParameterBase(Schema):
     properties = {
         'param': {
             'type': 'string',
-            'description': 'The name of a GRASS GIS module parameter'
+            'description': 'The name of a GRASS GIS module parameter like *map* or *elevation*. '
         },
         'value': {
             'type': 'string',
             'description': 'The value of the GRASS GIS module parameter. '
                            'Raster, vector and STDS inputs must contain the '
-                           'mapset name in their id: slope@PERMANENT if '
+                           'mapset name in their id: *slope@PERMANENT*, if '
                            'they are not located in the working mapset. '
                            'Do not contain the mapset name in map names that are '
-                           'processed in an ephemeral database, since the mapset names are '
-                           'randomly generated on demand. '
-                           'Outputs must not contain mapset names.'
-                           'Files that are used in the process chain to exchange data '
-                           'can be specified using the $file::id identifier. '
+                           'processed, since the mapsets are generated on demand using random names. '
+                           'Outputs are not allowed to contain mapset names.'
+                           'Files that are created in the process chain to exchange data '
+                           'can be specified using the *$file::id* identifier. '
                            'The \"id\" will be replaced with a temporary file name, that'
                            'is available in the whole process chain at runtime. The \"id\" '
                            'is the identifier that can be used by different modules in a process '
@@ -48,7 +47,10 @@ class IOParameterBase(Schema):
         },
     }
     description = 'Input/output parameter definition of a GRASS GIS module that should be executed ' \
-                  'in the Actinia Core environment.'
+                  'in the actinia environment. A GRASS GIS module will be usually called like: ' \
+                  '\"g.region raster=elevation30m -p\". ' \
+                  'The GRASS GIS module parameter *raster* has the value *elevation30m*. This is reflected ' \
+                  'by the *param* and *value* properties.'
     required = ["param", "value"]
     example = {"param": "file", "value": "$file::ascii_points"}
 
@@ -123,7 +125,11 @@ class InputParameter(IOParameterBase):
 
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
-    example = {"param": "file", "value": "$file::ascii_points"}
+    example = {"import_descr": {"source": "LT52170762005240COA00",
+                                "type": "landsat",
+                                "landsat_atcor": "dos1"},
+               "param": "map",
+               "value": "ignored"}
 
 
 class OutputParameter(IOParameterBase):
@@ -161,6 +167,39 @@ class OutputParameter(IOParameterBase):
                           'format': 'GTiff'}}
 
 
+class StdoutParser(Schema):
+    """This is the schema of the stdout output parser for GRASS GIS modules
+    """
+    type = 'object'
+    properties = {
+        'id': {'type': 'string',
+               'description': 'The unique id that is used to identify the '
+                              'parsed output in the result dictionary.'},
+        'format': {'type': 'string',
+                   'description': 'The stdout format to be parsed.',
+                   'enum': ['table', 'list', 'kv']},
+        'delimiter': {'type': 'string',
+                      'description': 'The delimiter that should be used to parse table, '
+                                     'list and key/value module output. Many GRASS GIS  modules '
+                                     'use by default \"|\" in tables and \"=\" in key/value pairs. '
+                                     'A new line \"\\n\" is always the delimiter between rows in the output.'},
+    }
+    # required = ['id', 'format', 'delimiter']
+    description = 'Use this parameter to automatically parse the output of GRASS GIS modules ' \
+                  'and convert the output into tables, lists or key/value pairs in the result ' \
+                  'section of the response.' \
+                  'If the property type is set to *table*, *list* or *kv* then ' \
+                  'the stdout of the current command will be parsed and ' \
+                  'the result of the parse operation will be added to the ' \
+                  'result dictionary using the provided id as key. GRASS GIS modules ' \
+                  'produce regular output. Many modules have the flag *-g* to ' \
+                  'create key value pairs as stdout output. Other create a list of values ' \
+                  'or a table with/without header.'
+    example = {'id': 'stats',
+               'format': 'table',
+               'delimiter': '|'}
+
+
 class GrassModule(Schema):
     """The definition of a GRASS GIS module and its inputs, outputs and flags
     """
@@ -175,7 +214,7 @@ class GrassModule(Schema):
                    'description': 'The name of the GRASS GIS module that should be executed '
                                   'as part of the process chain. '
                                   'Use as module names "importer" or "exportert" to import or export '
-                                  'geographical data without calling a GRASS GIS module'
+                                  'geographical data outside a GRASS GIS module definition.'
                    },
         'inputs': {'type': 'array',
                    'items': InputParameter,
@@ -188,10 +227,12 @@ class GrassModule(Schema):
         'flags': {'type': 'string',
                   'description': 'The flags that should be set for the GRASS GIS module.'},
         'stdin': {'type': 'string',
-                  'description': 'Use the output of a GRASS GIS module or executable in of the process '
+                  'description': 'Use the output of a GRASS GIS module or executable of the process '
                                  'chain as input for this module. Refer to the module/executable output '
-                                 'as id::stderr or id@stdout, the \"id\" is the unique identifier '
+                                 'as id::stderr or id::stdout, the \"id\" is the unique identifier '
                                  'of a GRASS GIS module.'},
+        'stdout': {'type': StdoutParser,
+                   'description': 'The stdout parser description'},
         'overwrite': {'type': 'boolean',
                       'description': 'Set True to overwrite existing data.'},
         'verbose': {'type': 'boolean',
@@ -236,7 +277,7 @@ class Executable(Schema):
         'stdin': {'type': 'string',
                   'description': 'Use the output of a GRASS GIS module or executable in of the process '
                                  'chain as input for this module. Refer to the module/executable output '
-                                 'as id::stderr or id@stdout, the \"id\" is the unique identifier '
+                                 'as id::stderr or id::stdout, the \"id\" is the unique identifier '
                                  'of a GRASS GIS module.'}
     }
     required = ['id', 'exe']
@@ -269,8 +310,8 @@ class ProcessChainModel(Schema):
                          'inputs': [{'import_descr': {
                              'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
                              'type': 'raster'},
-                                     'param': 'raster',
-                                     'value': 'elev_ned_30m_new'}],
+                             'param': 'raster',
+                             'value': 'elev_ned_30m_new'}],
                          'flags': 'p'},
                         {'module': 'r.slope.aspect',
                          'id': 'r_slope_aspect_1',
@@ -280,7 +321,23 @@ class ProcessChainModel(Schema):
                                                  'type': 'raster'},
                                       'param': 'slope',
                                       'value': 'elev_ned_30m_new_slope'}],
-                         'flags': 'a'}],
+                         'flags': 'a'},
+                        {'module': 'r.univar',
+                         'id': 'r_univar_1',
+                         'inputs': [{"import_descr": {"source": "LT52170762005240COA00",
+                                                      "type": "landsat",
+                                                      "landsat_atcor": "dos1"},
+                                     'param': 'map',
+                                     'value': 'LT52170762005240COA00_dos1.1'}],
+                         'stdout': {'id': 'stats', 'format': 'kv', 'delimiter': '='},
+                         'flags': 'a'},
+                        {'module': 'exporter',
+                         'id': 'exporter_1',
+                         'outputs': [{'export': {'format': 'GTiff',
+                                                 'type': 'raster'},
+                                      'param': 'map',
+                                      'value': 'LT52170762005240COA00_dos1.1'}]
+                         }],
                'version': '1'}
 
 
@@ -290,7 +347,7 @@ class ProcessChainConverter(object):
 
     def __init__(self, config=None, temp_file_path=None, process_dict=None, temporary_pc_files=None,
                  required_mapsets=None, resource_export_list=None, message_logger=None,
-                 send_resource_update=None):
+                 output_parser_list=None, send_resource_update=None):
         """Constructor to convert the process chain into a process list
 
         Args:
@@ -306,6 +363,9 @@ class ProcessChainConverter(object):
                                      that must be linked for processing
             resource_export_list (list): A list that will be filled with export definitions found in
                                          output descriptions for geodata export
+            output_parser_list (list): A list that will be filled with output parser definitions found in
+                                       module descriptions. The stdout definition will be stored in a dict
+                                       that has the process id a key {process_id:StdoutParser}
             send_resource_update: The function to call for resource updates
 
         Returns:
@@ -337,6 +397,10 @@ class ProcessChainConverter(object):
             self.resource_export_list = []
         else:
             self.resource_export_list = resource_export_list
+        if output_parser_list is None:
+            self.output_parser_list = []
+        else:
+            self.output_parser_list = output_parser_list
 
         self.send_resource_update = send_resource_update
         self.message_logger = message_logger
@@ -486,7 +550,8 @@ class ProcessChainConverter(object):
                 downimp_list.extend(import_commands)
 
                 input_file, map_name = import_file_info[band]
-                p = Process(exec_type="grass", executable="g.rename",
+                p = Process(exec_type="grass",
+                            executable="g.rename",
                             executable_params=["raster=%s,%s" % (map_name, entry["value"]), ])
                 downimp_list.append(p)
 
@@ -573,6 +638,18 @@ class ProcessChainConverter(object):
                 stdin_func = self.process_dict[object_id].stderr
             else:
                 raise AsyncProcessError("The stdout or stderr flag in id %s is missing" % str(id))
+
+        # Check for stdout parser that can be of type table, list or key/value pairs
+        # and store the definition in a list
+        if "stdout" in module_descr:
+            if "id" not in module_descr["stdout"]:
+                raise AsyncProcessError("Missing unique *id* in stdout parser description of process id %s" % str(id))
+            if "format" not in module_descr["stdout"]:
+                raise AsyncProcessError("Missing *format* in stdout parser description of process id %s" % str(id))
+            if "delimiter" not in module_descr["stdout"]:
+                raise AsyncProcessError("Missing *delimiter* in stdout parser description of process id %s" % str(id))
+
+            self.output_parser_list.append({id: module_descr["stdout"]})
 
         if "module" not in module_descr:
             raise AsyncProcessError("Missing module name in module description of id %s" % str(id))
@@ -694,8 +771,11 @@ class ProcessChainConverter(object):
                                         "description for %s" % module_name)
 
         if module_name != "importer" and module_name != "exporter":
-            p = Process(exec_type="grass", executable=module_name, executable_params=params,
-                        stdin_source=stdin_func)
+            p = Process(exec_type="grass",
+                        executable=module_name,
+                        executable_params=params,
+                        stdin_source=stdin_func,
+                        id=id)
 
             self.process_dict[id] = p
 
@@ -769,7 +849,8 @@ class ProcessChainConverter(object):
         p = Process(exec_type="exec",
                     executable=executable,
                     executable_params=params,
-                    stdin_source=stdin_func)
+                    stdin_source=stdin_func,
+                    id=id)
 
         self.process_dict[id] = p
 
@@ -984,8 +1065,11 @@ class ProcessChainConverter(object):
                 raise AsyncProcessError("Character '&' not supported in process "
                                         "description for %s" % module_name)
 
-        p = Process(exec_type="grass", executable=module_name, executable_params=parameters,
-                    stdin_source=stdin_func)
+        p = Process(exec_type="grass",
+                    executable=module_name,
+                    executable_params=parameters,
+                    stdin_source=stdin_func,
+                    id=id)
 
         self.process_dict[id] = p
 
@@ -1050,7 +1134,8 @@ class ProcessChainConverter(object):
         p = Process(exec_type="exec",
                     executable=executable,
                     executable_params=parameters,
-                    stdin_source=stdin_func)
+                    stdin_source=stdin_func,
+                    id=id)
 
         self.process_dict[id] = p
 
@@ -1063,7 +1148,7 @@ def test_process_chain():
     elev_in = InputParameter(param="elevation",
                              value="elev_10m",
                              import_descr={
-                                 "source": "https://storage.googleapis.com/actinia -geodata/elev_ned_30m.tif",
+                                 "source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
                                  "type": "raster"})
     format_in = InputParameter(param="format",
                                value="degree")
@@ -1091,7 +1176,7 @@ def test_process_chain():
     file_in = InputParameter(param="name",
                              value="$file::polygon",
                              import_descr={
-                                 "source": "https://storage.googleapis.com/actinia-geodata/brazil_polygon.json",
+                                 "source": "https://storage.googleapis.com/graas-geodata/brazil_polygon.json",
                                  "type": "file"})
 
     module_2 = GrassModule(id="importer",
@@ -1113,14 +1198,36 @@ def test_process_chain():
     func_in_2 = InputParameter(param="pyfile",
                                value="$file::polygon",
                                import_descr={
-                                   "source": "https://storage.googleapis.com/actinia-geodata/brazil_polygon.json",
+                                   "source": "https://storage.googleapis.com/graas-geodata/brazil_polygon.json",
                                    "type": "file"})
 
     module_4 = GrassModule(id="udf",
                            module='t.rast.aggr_func',
                            inputs=[func_in_2])
 
-    pc = ProcessChainModel(version='1', list=[module_1, module_2, exe_1, module_3, module_4])
+    landsat_import = InputParameter(param="map",
+                                    value="ignored",
+                                    import_descr={"source": "LT52170762005240COA00",
+                                                  "type": "landsat",
+                                                  "landsat_atcor": "dos1"})
+
+    stdout_parser = StdoutParser(id="stats", format="kv", delimiter="=")
+
+    module_5 = GrassModule(id="r_univar_1",
+                           module='r.univar',
+                           inputs=[landsat_import],
+                           stdout=stdout_parser)
+
+    exporter_output = OutputParameter(param="map", value='LT52170762005240COA00_dos1.1',
+                                      export={'format': 'GTiff',
+                                              'type': 'raster'})
+
+    module_export = GrassModule(id="exporter_1",
+                                module='exporter',
+                                outputs=[exporter_output])
+
+    pc = ProcessChainModel(version='1', list=[module_1, module_2, exe_1,
+                                              module_3, module_4, module_5, module_export])
 
     pprint(pc)
 
@@ -1134,6 +1241,7 @@ def test_process_chain():
     pprint(pconv.required_mapsets)
     pprint(pconv.resource_export_list)
     pprint(pconv.import_descr_list)
+    pprint(pconv.output_parser_list)
     pprint(pconv.temporary_pc_files)
 
 
