@@ -5,59 +5,59 @@ export IP=http://localhost
 export AUTH='-u user:abcdefgh'
 
 # Show all locations in the GRASS database
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations
 
 # Create a new location based on an EPSG code
 # curl -d "epsg=4326" -X POST -i ${IP}:${PORT}/locations/LL_new # BUG
 # Check if the location is listed
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations
 # Delete the new location
 # curl -X DELETE -i ${IP}:${PORT}/locations/LL_new # BUG
 
 # Get information of the NC location
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/info
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/info
 
 # List all mapsets in that location
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets
+curl ${AUTH} -X GET -i ${IP}:${PORT}//api/v1locations/nc_spm_08/mapsets
 
 # Create a new mapset
-curl ${AUTH} -X POST -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary # Success
+curl ${AUTH} -X POST -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary # Success
 # Check if the new mapset is listed
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets
 
 # Get a list of all raster layers in the PERMANENT location
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
 
 # Get a list of all raster layer using a g.list pattern
 curl ${AUTH} -d "pattern=*lsat*" \
-    -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
+    -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
 
 # Get the information about the elevation
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
 
 # Render an image of the elevation raster layer
 curl ${AUTH} -d "n=228500&s=215000&w=630000&e=645000&ewres=50&nsres=50" \
-    -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > /dev/null
+    -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > /dev/null
 
 # Get the interface description of r.slope.aspect
-curl ${AUTH} -X GET ${IP}:${PORT}/locations/nc_spm_08/modules/r.slope.aspect
+curl ${AUTH} -X GET ${IP}:${PORT}/api/v1/locations/nc_spm_08/modules/r.slope.aspect
 
 # Run g.region in the new mapset to set the extent and resolution for computation
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d '{"inputs":{"raster":"elevation@PERMANENT"}, "flags":"g"}' \
-    ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary/modules/g.region
+    ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary/modules/g.region
 
 # Start the module r.slope.aspect
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d '{"inputs":{"elevation":"elevation@PERMANENT"},"outputs":{"slope":"my_slope", "aspect":"my_aspect"}}' \
-    ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary/modules/r.slope.aspect
+    ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary/modules/r.slope.aspect
 
 # Get information about the new created raster layer
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary/raster_layers/my_slope
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary/raster_layers/my_aspect
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary/raster_layers/my_slope
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary/raster_layers/my_aspect
 
 # Delete the temporary mapset
-curl ${AUTH} -X DELETE -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary # Success
+curl ${AUTH} -X DELETE -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/temporary # Success
 
 
 ###############################################################################
@@ -65,13 +65,13 @@ curl ${AUTH} -X DELETE -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/temporary # 
 ###############################################################################
 
 # Get a list or raster layers from a STRDS
-curl ${AUTH} -X GET -i "${IP}:${PORT}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>2013-05-01"
+curl ${AUTH} -X GET -i "${IP}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>2013-05-01"
 
 ###############################################################################
 ###############  Vector  ######################################################
 ###############################################################################
 
-curl ${AUTH} -X GET -i "${IP}:${PORT}/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+curl ${AUTH} -X GET -i "${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
 
 
 ###############################################################################
@@ -116,7 +116,7 @@ PROCESS_CHAIN='{
 
 # Start the module r.slope.aspect
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN}" ${IP}:${PORT}/locations/nc_spm_08/processing_async_export
+    -d "${PROCESS_CHAIN}" ${IP}:${PORT}/api/v1/locations/nc_spm_08/processing_async_export
 
 # Get status
 curl ${AUTH} -X GET -i
@@ -176,19 +176,19 @@ PROCESS_CHAIN_LONG='{
 
 # Start the module r.slope.aspect
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset/processing_async
+    -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset/processing_async
 
 # Get status
 curl ${AUTH} -X GET -i
 
 # List all raster layer in the new mapset
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset/raster_layers
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers
 
 # Info about my_accumulation
-curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation/info
+curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation/info
 
 # Remove the new mapset
-curl ${AUTH} -X DELETE -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset
+curl ${AUTH} -X DELETE -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset
 
 # Parallel computation
 LIST="1
@@ -198,7 +198,7 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run local process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/locations/nc_spm_08/processing_async
+        -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/api/v1/locations/nc_spm_08/processing_async
 done
 
 # Export Parallel computation
@@ -211,7 +211,7 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run export process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN}" ${IP}:${PORT}/locations/nc_spm_08/processing_async_export
+        -d "${PROCESS_CHAIN}" ${IP}:${PORT}/api/v1/locations/nc_spm_08/processing_async_export
 done
 
 # New mapsets in massive parallel computation
@@ -234,22 +234,22 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run new mapset process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset_${i}/processing_async
+        -d "${PROCESS_CHAIN_LONG}" ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}/processing_async
 done
 
 curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets
 
 for i in ${LIST} ; do
     echo "Run ${i}"
-    curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers
+    curl ${AUTH} -X GET -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers
     curl ${AUTH} -X GET -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers/my_accumulation/info
-    curl ${AUTH} -X DELETE -i ${IP}:${PORT}/locations/nc_spm_08/mapsets/test_mapset_${i}
+    curl ${AUTH} -X DELETE -i ${IP}:${PORT}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}
 done
 
 # Spatio-Temporal sampling
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d '[["a", 10.5, 52.5], ["b", 10, 52], ["c", 11, 53]]' \
-     ${IP}:${PORT}/locations/ECAD/mapsets/PERMANENT/strds/P_sum_yearly_mm/sampling_sync
+     ${IP}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/P_sum_yearly_mm/sampling_sync
 
 
 JSON='{"bands":["B04", "B08"],
@@ -263,7 +263,7 @@ JSON='{"bands":["B04", "B08"],
 "S2B_MSIL1C_20170711T102029_N0205_R065_T32UPC_20170711T102309",
 "S2A_MSIL1C_20170706T102021_N0205_R065_T32UPC_20170706T102301"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/locations/LL/mapsets/Sentinel2A/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/locations/LL/mapsets/Sentinel2A/sentinel2_import
 
 
 JSON='{"bands": ["B04", "B08"],
@@ -271,7 +271,7 @@ JSON='{"bands": ["B04", "B08"],
                        "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",
                        "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/sentinel2a_aws_query
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/sentinel2a_aws_query
 
 
 JSON='{"bands":["B04", "B08"],
@@ -285,7 +285,7 @@ JSON='{"bands":["B04", "B08"],
 "S2A_MSIL1C_20170208T092131_N0204_R093_T35VNC_20170208T092143",
 "S2A_MSIL1C_20170208T092131_N0204_R093_T36UUG_20170208T092143"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/sentinel2a_aws_query
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/sentinel2a_aws_query
 
 # OpenEO use cases
 JSON='{"bands":["B04", "B08"],
@@ -298,7 +298,7 @@ JSON='{"bands":["B04", "B08"],
 "S2A_MSIL1C_20170621T110651_N0205_R137_T30SUJ_20170621T111222",
 "S2A_MSIL1C_20170412T110621_N0204_R137_T30SUJ_20170412T111708"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/locations/LL/mapsets/sentinel2A_openeo_subset/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset/sentinel2_import
 
 
 JSON='{
@@ -327,7 +327,7 @@ JSON='{
  "version": "1"
 }'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
 
 
 JSON='{
@@ -358,7 +358,7 @@ JSON='{
 '
 
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
 
 
 JSON='{"list": [{
@@ -405,8 +405,7 @@ JSON='{"list": [{
     "version": "1"}
 '
 
-
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/locations/LL/process_chain_validation_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${IP}:${PORT}/api/v1/locations/LL/process_chain_validation_async
 
 
 
