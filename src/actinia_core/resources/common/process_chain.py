@@ -86,7 +86,7 @@ class InputParameter(IOParameterBase):
                                'imported Landsat bands. '
                                'Use the file option to download any kind of files that should'
                                'be processed by a grass gis module. ',
-                'enum': ['raster', 'vector', 'landsat', 'sentinel2', 'file']
+                'enum': ['raster', 'vector', 'landsat', 'sentinel2', 'postgis', 'file']
             },
             'sentinel_band': {
                 'type': 'string',
@@ -99,15 +99,22 @@ class InputParameter(IOParameterBase):
                 'description': 'The atmospheric correction that should be applied to the landsat scene',
                 'enum': ["uncorrected", "dos1", "dos2", "dos2b", "dos3", "dos4"]
             },
+            'vector_layer': {
+                'type': 'string',
+                'description': 'The name of the layer that should be imported form the vector file or postGIS database'
+            },
             'source': {
                 'type': 'string',
                 'description': 'The input source that may be a landsat scene name, '
-                               'a sentinel2 scene name, or an URL that points '
-                               'to a online accessible raster or vector file. '
+                               'a sentinel2 scene name, a postGIS database string,'
+                               ' or an URL that points '
+                               'to an accessible raster or vector file. '
                                'A HTTP, HTTPS or FTP connection must be '
                                'specified in case of raster or vector types. '
                                'In this case the source string must contain the protocol that '
-                               'will used for connection: http:// or https:// or ftp://',
+                               'will used for connection: http:// or https:// or ftp://. '
+                               'PostGIS vector layer can be imported by defining a database string '
+                               'as source and a layer name.',
             },
             'basic_auth': {
                 'type': 'string',
@@ -115,12 +122,7 @@ class InputParameter(IOParameterBase):
                                'authentication of the source connection. The user name '
                                'and password must be separated by a colon: username:password'
             }
-        },
-        'description': 'Input/output parameter definition of a GRASS GIS module '
-                       'that should be executed in the actinia environment.',
-        'required': ["source", "type"],
-        'example': {"source": "https://storage.googleapis.com/graas-geodata/geology_30m.zip",
-                    "type": "raster", 'basic_auth': 'username:password'}
+        }
     }
 
     required = deepcopy(IOParameterBase.required)
@@ -232,7 +234,7 @@ class GrassModule(Schema):
                                  'as id::stderr or id::stdout, the \"id\" is the unique identifier '
                                  'of a GRASS GIS module.'},
         'stdout': {'type': StdoutParser,
-                   'description': 'The stdout parser description'},
+                   'description': 'The definition of a module stdout output parser.'},
         'overwrite': {'type': 'boolean',
                       'description': 'Set True to overwrite existing data.'},
         'verbose': {'type': 'boolean',
@@ -305,40 +307,63 @@ class ProcessChainModel(Schema):
                                 "in the order provided by the list."}
     }
     required = ['version', 'list']
-    example = {'list': [{'module': 'g.region',
-                         'id': 'g_region_1',
-                         'inputs': [{'import_descr': {
-                             'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
-                             'type': 'raster'},
-                             'param': 'raster',
-                             'value': 'elev_ned_30m_new'}],
-                         'flags': 'p'},
-                        {'module': 'r.slope.aspect',
-                         'id': 'r_slope_aspect_1',
-                         'inputs': [{'param': 'elevation',
-                                     'value': 'elev_ned_30m_new'}],
-                         'outputs': [{'export': {'format': 'GTiff',
-                                                 'type': 'raster'},
-                                      'param': 'slope',
-                                      'value': 'elev_ned_30m_new_slope'}],
-                         'flags': 'a'},
-                        {'module': 'r.univar',
-                         'id': 'r_univar_1',
-                         'inputs': [{"import_descr": {"source": "LT52170762005240COA00",
-                                                      "type": "landsat",
-                                                      "landsat_atcor": "dos1"},
-                                     'param': 'map',
-                                     'value': 'LT52170762005240COA00_dos1.1'}],
-                         'stdout': {'id': 'stats', 'format': 'kv', 'delimiter': '='},
-                         'flags': 'a'},
-                        {'module': 'exporter',
-                         'id': 'exporter_1',
-                         'outputs': [{'export': {'format': 'GTiff',
-                                                 'type': 'raster'},
-                                      'param': 'map',
-                                      'value': 'LT52170762005240COA00_dos1.1'}]
-                         }],
-               'version': '1'}
+    example = {
+        'list': [{
+            'module': 'g.region',
+            'id': 'g_region_1',
+            'inputs': [{'import_descr': {
+                'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                'type': 'raster'},
+                'param': 'raster',
+                'value': 'elev_ned_30m_new'}],
+            'flags': 'p'},
+            {
+                'module': 'r.slope.aspect',
+                'id': 'r_slope_aspect_1',
+                'inputs': [{'param': 'elevation',
+                            'value': 'elev_ned_30m_new'}],
+                'outputs': [{'export': {'format': 'GTiff',
+                                        'type': 'raster'},
+                             'param': 'slope',
+                             'value': 'elev_ned_30m_new_slope'}],
+                'flags': 'a'},
+            {
+                'module': 'r.univar',
+                'id': 'r_univar_1',
+                'inputs': [{"import_descr": {"source": "LT52170762005240COA00",
+                                             "type": "landsat",
+                                             "landsat_atcor": "dos1"},
+                            'param': 'map',
+                            'value': 'LT52170762005240COA00_dos1.1'}],
+                'stdout': {'id': 'stats', 'format': 'kv', 'delimiter': '='},
+                'flags': 'a'
+            },
+            {
+                'module': 'exporter',
+                'id': 'exporter_1',
+                'outputs': [{'export': {'format': 'GTiff',
+                                        'type': 'raster'},
+                             'param': 'map',
+                             'value': 'LT52170762005240COA00_dos1.1'}]
+            },
+            {
+                "id": "ascii_out",
+                "module": "r.out.ascii",
+                "inputs": [{"param": "input",
+                            "value": "elevation@PERMANENT"},
+                           {"param": "precision", "value": "0"}],
+                "stdout": {"id": "elev_1", "format": "table", "delimiter": " "},
+                "flags": "h"
+            },
+            {
+                "id": "raster_list",
+                "module": "g.list",
+                "inputs": [{"param": "type",
+                            "value": "raster"}],
+                "stdout": {"id": "raster", "format": "list", "delimiter": "\n"}
+            }
+        ],
+        'version': '1'}
 
 
 class ProcessChainConverter(object):
@@ -464,6 +489,11 @@ class ProcessChainConverter(object):
         return downimp_list
 
     def _create_download_process_list(self):
+        """This function analysis the process chain import options and creates download and import commands.
+
+        Returns:
+
+        """
 
         downimp_list = []
 
@@ -482,9 +512,10 @@ class ProcessChainConverter(object):
             if "source" not in entry["import_descr"]:
                 raise AsyncProcessError("Source specification is required in import definition")
 
-            if entry["import_descr"]["type"] not in ["raster", "vector", "sentinel2", "landsat", "file"]:
+            if entry["import_descr"]["type"] not in ["raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
                 raise AsyncProcessError("Unkown type specification: %s" % entry["import_descr"]["type"])
 
+            # RASTER; VECTOR, FILE
             if entry["import_descr"]["type"].lower() == "raster" or \
                     entry["import_descr"]["type"].lower() == "vector" or \
                     entry["import_descr"]["type"].lower() == "file":
@@ -501,21 +532,30 @@ class ProcessChainConverter(object):
                 download_commands, import_file_info = gdis.get_download_process_list()
                 downimp_list.extend(download_commands)
 
+                map_name = entry["value"]
+                input_source = import_file_info[0][2]
+                layer = None
+                if "vector_layer" in entry["import_descr"]:
+                    layer = entry["import_descr"]["vector_layer"]
+
                 if entry["import_descr"]["type"] == "raster":
-                    import_command = gdis.get_raster_import_command(import_file_info[0][2], entry["value"])
+                    import_command = GeoDataDownloadImportSupport.get_raster_import_command(file_path=input_source,
+                                                                                            raster_name=entry["value"])
                     downimp_list.append(import_command)
                 if entry["import_descr"]["type"] == "vector":
-                    import_command = gdis.get_vector_import_command(import_file_info[0][2], entry["value"])
+                    import_command = GeoDataDownloadImportSupport.get_vector_import_command(input_source=input_source,
+                                                                                            vector_name=map_name,
+                                                                                            layer_name=layer)
                     downimp_list.append(import_command)
                 if entry["import_descr"]["type"] == "file":
-                    value = entry["value"]
                     # Search for file identifiers
-                    if "$file" in value and "::" in value:
-                        file_id = value.split("::")[1]
+                    if "$file" in map_name and "::" in map_name:
+                        file_id = map_name.split("::")[1]
                         # Use the temporary file name as copy target
                         if file_id in self.temporary_pc_files:
-                            rename_commands = gdis.get_file_rename_command(import_file_info[0][2],
-                                                                           self.temporary_pc_files[file_id])
+                            rename_commands = GeoDataDownloadImportSupport.get_file_rename_command(
+                                import_file_info[0][2],
+                                self.temporary_pc_files[file_id])
                             downimp_list.append(rename_commands)
                         else:
                             raise AsyncProcessError("A file id is required for a download file "
@@ -524,6 +564,20 @@ class ProcessChainConverter(object):
                         raise AsyncProcessError("A file id is required for a download file "
                                                 "to use it in the process chain.")
 
+            # POSTGIS
+            elif entry["import_descr"]["type"].lower() == "postgis":
+                dbstring = "\"%s\""%entry["import_descr"]["source"]
+                vector_name = entry["value"]
+                layer = None
+                if "vector_layer" in entry["import_descr"]:
+                    layer = entry["import_descr"]["vector_layer"]
+
+                import_command = GeoDataDownloadImportSupport.get_vector_import_command(input_source=dbstring,
+                                                                                        vector_name=vector_name,
+                                                                                        layer_name=layer)
+                downimp_list.append(import_command)
+
+            # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
                 # Check for band information
                 if "sentinel_band" not in entry["import_descr"]:
@@ -555,6 +609,7 @@ class ProcessChainConverter(object):
                             executable_params=["raster=%s,%s" % (map_name, entry["value"]), ])
                 downimp_list.append(p)
 
+            # LANDSAT
             elif entry["import_descr"]["type"].lower() == "landsat":
                 # Check for band information
                 if "landsat_atcor" not in entry["import_descr"]:

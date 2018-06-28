@@ -1113,8 +1113,9 @@ class EphemeralProcessing(object):
         - Setup logger and credentials
         - Analyse the process chain
         - Create the temporal database
-        - Initialze the GRASS environment and create the temporary mapset
+        - Initialize the GRASS environment and create the temporary mapset
         - Run the modules
+        - Parse the stdout output of the modules and generate the module results
 
         Args:
             skip_permission_check (bool): If set True, the permission checks of module access and
@@ -1183,9 +1184,8 @@ class EphemeralProcessing(object):
                 if process_id not in self.module_output_dict:
                     raise AsyncProcessError("Unable to find process id in module output dictionary")
                 stdout = self.module_output_dict[process_id]["stdout"]
-                result = None
                 # Split the rows by the \n new line delimiter
-                rows = stdout.split("\n")
+                rows = stdout.strip().split("\n")
                 if "table" in format:
                     result = []
                     for row in rows:

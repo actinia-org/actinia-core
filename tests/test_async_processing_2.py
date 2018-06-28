@@ -241,7 +241,7 @@ process_chain_ndvi_landsat = {
 }
 
 
-class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
+class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,

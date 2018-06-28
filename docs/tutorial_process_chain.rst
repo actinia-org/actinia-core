@@ -51,6 +51,8 @@ The output of the module is named *elev_ned_30m_slope* and should be exported as
         }
     ..
 
+**Import and export**
+
 The actinia process chain supports the specification of URL's to raster layers in the input definition.
 The following process chain imports a raster map layer that is located
 in an object storage with the name *elev_ned_30m_new* and sets the computational region
@@ -102,6 +104,7 @@ Then slope and aspect are computed with *r.slope.aspect* and specified for expor
         }
     ..
 
+
 .. rubric:: Footnotes
 
 .. [#grassmodulelist] https://grass.osgeo.org/grass74/manuals/index.html
@@ -111,6 +114,497 @@ Then slope and aspect are computed with *r.slope.aspect* and specified for expor
 .. [#rlopeaspect] https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html
 .. [#mapset] https://grass.osgeo.org/grass74/manuals/grass_database.html
 .. [#gregion] https://grass.osgeo.org/grass74/manuals/g.region.html
+
+
+**Output parsing**
+
+Many GRASS GIS modules produce textual output in form of lists, tables and key/value pairs.
+Actinia supports the analysis of this data and the parsing and transformation in JSON
+accessible data. For each GRASS GIS module the property "stdout" can be specified to transform the
+output of the module into a list of values, a key/value list or a table.
+
+The following options are available as format:
+
+    - "kv" parses the module output and creates key/value pairs
+    - "list" parses the module output and creates a list of values
+    - "table" parses the module output and creates a list of lists with values aka 2D array aka table
+
+Additionally the unique id that will be used in the response process result dictionary
+and the delimiter must be defined.
+
+The following process chain demonstrates all available approaches, to parse the stdout output of a module:
+
+
+    .. code-block:: json
+
+        {
+            "version": 1,
+            "list": [
+                {
+                    "id": "1",
+                    "module": "g.region",
+                    "inputs": [
+                        {"param": "raster",
+                         "value": "elevation@PERMANENT"},
+                        {"param": "res",
+                         "value": "5000"}
+                    ],
+                    "stdout": {"id": "region", "format": "kv", "delimiter": "="},
+                    "flags": "g"
+                },
+                {
+                    "id": "2",
+                    "module": "r.out.ascii",
+                    "inputs": [{"param": "input",
+                                "value": "elevation@PERMANENT"},
+                               {"param": "precision", "value": "0"}],
+                    "stdout": {"id": "elevation", "format": "table", "delimiter": " "},
+                    "flags": "h"
+                },
+                {
+                    "id": "3",
+                    "module": "g.list",
+                    "inputs": [{"param": "type",
+                                "value": "raster"}],
+                    "stdout": {"id": "map_list", "format": "list", "delimiter": "\n"}
+                },
+                {
+                    "id": "4",
+                    "module": "r.univar",
+                    "inputs": [{"param": "map",
+                                "value": "elevation@PERMANENT"}],
+                    "stdout": {"id": "stats", "format": "kv", "delimiter": "="},
+                    "flags": "g"
+                },
+                {
+                    "id": "5",
+                    "module": "r.univar",
+                    "inputs": [{"param": "map",
+                                "value": "elevation@PERMANENT"},
+                               {"param": "zones",
+                                "value": "basin_50K@PERMANENT"},
+                               {"param": "separator",
+                                "value": "pipe"}],
+                    "stdout": {"id": "stats_zonal", "format": "table", "delimiter": "|"},
+                    "flags": "t"
+                }
+            ]
+        }
+
+    ..
+
+The result of the process chain evaluation is the following JSON response:
+
+
+    .. code-block:: json
+
+        {
+          "accept_datetime": "2018-06-28 14:11:03.439431",
+          "accept_timestamp": 1530195063.439429,
+          "api_info": {
+            "endpoint": "asyncephemeralresource",
+            "method": "POST",
+            "path": "/api/v1/locations/nc_spm_08/processing_async",
+            "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
+          },
+          "datetime": "2018-06-28 14:11:03.878996",
+          "http_code": 200,
+          "message": "Processing successfully finished",
+          "process_chain_list": [
+            {
+              "list": [
+                {
+                  "flags": "g",
+                  "id": "1",
+                  "inputs": [
+                    {
+                      "param": "raster",
+                      "value": "elevation@PERMANENT"
+                    },
+                    {
+                      "param": "res",
+                      "value": "5000"
+                    }
+                  ],
+                  "module": "g.region",
+                  "stdout": {
+                    "delimiter": "=",
+                    "format": "kv",
+                    "id": "region"
+                  }
+                },
+                {
+                  "flags": "h",
+                  "id": "2",
+                  "inputs": [
+                    {
+                      "param": "input",
+                      "value": "elevation@PERMANENT"
+                    },
+                    {
+                      "param": "precision",
+                      "value": "0"
+                    }
+                  ],
+                  "module": "r.out.ascii",
+                  "stdout": {
+                    "delimiter": " ",
+                    "format": "table",
+                    "id": "elevation"
+                  }
+                },
+                {
+                  "id": "3",
+                  "inputs": [
+                    {
+                      "param": "type",
+                      "value": "raster"
+                    }
+                  ],
+                  "module": "g.list",
+                  "stdout": {
+                    "delimiter": "\n",
+                    "format": "list",
+                    "id": "map_list"
+                  }
+                },
+                {
+                  "flags": "g",
+                  "id": "4",
+                  "inputs": [
+                    {
+                      "param": "map",
+                      "value": "elevation@PERMANENT"
+                    }
+                  ],
+                  "module": "r.univar",
+                  "stdout": {
+                    "delimiter": "=",
+                    "format": "kv",
+                    "id": "stats"
+                  }
+                },
+                {
+                  "flags": "t",
+                  "id": "5",
+                  "inputs": [
+                    {
+                      "param": "map",
+                      "value": "elevation@PERMANENT"
+                    },
+                    {
+                      "param": "zones",
+                      "value": "basin_50K@PERMANENT"
+                    },
+                    {
+                      "param": "separator",
+                      "value": "pipe"
+                    }
+                  ],
+                  "module": "r.univar",
+                  "stdout": {
+                    "delimiter": "|",
+                    "format": "table",
+                    "id": "stats_zonal"
+                  }
+                }
+              ],
+              "version": 1
+            }
+          ],
+          "process_log": [
+            {
+              "executable": "g.region",
+              "parameter": [
+                "raster=elevation@PERMANENT",
+                "res=5000",
+                "-g"
+              ],
+              "return_code": 0,
+              "run_time": 0.050546884536743164,
+              "stderr": [
+                ""
+              ],
+              "stdout": "projection=99\nzone=0\nn=228500\ns=215000\nw=630000\ne=645000\nnsres=4500\newres=5000\nrows=3\ncols=3\ncells=9\n"
+            },
+            {
+              "executable": "r.out.ascii",
+              "parameter": [
+                "input=elevation@PERMANENT",
+                "precision=0",
+                "-h"
+              ],
+              "return_code": 0,
+              "run_time": 0.05101513862609863,
+              "stderr": [
+                "0..33..66.."
+              ],
+              "stdout": "147 138 100 \n125 114 76 \n125 121 96 \n"
+            },
+            {
+              "executable": "g.list",
+              "parameter": [
+                "type=raster"
+              ],
+              "return_code": 0,
+              "run_time": 0.05074191093444824,
+              "stderr": [
+                ""
+              ],
+              "stdout": "aspect\nbasin_50K\nboundary_county_500m\ncfactorbare_1m\ncfactorgrow_1m\nel_D782_6m\nel_D783_6m\nel_D792_6m\nel_D793_6m\nelev_lid792_1m\nelev_ned_30m\nelev_srtm_30m\nelev_state_500m\nelevation\nelevation_shade\nfacility\ngeology_30m\nlakes\nlandclass96\nlandcover_1m\nlanduse96_28m\nlsat7_2002_10\nlsat7_2002_20\nlsat7_2002_30\nlsat7_2002_40\nlsat7_2002_50\nlsat7_2002_61\nlsat7_2002_62\nlsat7_2002_70\nlsat7_2002_80\nncmask_500m\northo_2001_t792_1m\nroadsmajor\nslope\nsoilsID\nsoils_Kfactor\nstreams_derived\ntowns\nurban\nzipcodes\nzipcodes_dbl\n"
+            },
+            {
+              "executable": "r.univar",
+              "parameter": [
+                "map=elevation@PERMANENT",
+                "-g"
+              ],
+              "return_code": 0,
+              "run_time": 0.05033302307128906,
+              "stderr": [
+                ""
+              ],
+              "stdout": "n=9\nnull_cells=0\ncells=9\nmin=75.9926223754883\nmax=147.101608276367\nrange=71.1089859008789\nmean=115.709356519911\nmean_of_abs=115.709356519911\nstddev=20.8179625939249\nvariance=433.387566562055\ncoeff_var=17.9915982769661\nsum=1041.3842086792\n"
+            },
+            {
+              "executable": "r.univar",
+              "parameter": [
+                "map=elevation@PERMANENT",
+                "zones=basin_50K@PERMANENT",
+                "separator=pipe",
+                "-t"
+              ],
+              "return_code": 0,
+              "run_time": 0.05089259147644043,
+              "stderr": [
+                "0..33..66..100",
+                ""
+              ],
+              "stdout": "zone|label|non_null_cells|null_cells|min|max|range|mean|mean_of_abs|stddev|variance|coeff_var|sum|sum_abs\n2||1|0|99.7889709472656|99.7889709472656|0|99.7889709472656|99.7889709472656|0|0|0|99.7889709472656|99.7889709472656\n8||1|0|137.68424987793|137.68424987793|0|137.68424987793|137.68424987793|0|0|0|137.68424987793|137.68424987793\n14||1|0|114.471084594727|114.471084594727|0|114.471084594727|114.471084594727|0|0|0|114.471084594727|114.471084594727\n16||1|0|75.9926223754883|75.9926223754883|0|75.9926223754883|75.9926223754883|0|0|0|75.9926223754883|75.9926223754883\n20||2|0|124.611175537109|125.171577453613|0.560401916503906|124.891376495361|124.891376495361|0.280200958251953|0.0785125770053128|0.224355729046161|249.782752990723|249.782752990723\n24||1|0|120.942115783691|120.942115783691|0|120.942115783691|120.942115783691|0|0|0|120.942115783691|120.942115783691\n"
+            }
+          ],
+          "process_results": {
+            "elevation": [
+              [
+                "147",
+                "138",
+                "100"
+              ],
+              [
+                "125",
+                "114",
+                "76"
+              ],
+              [
+                "125",
+                "121",
+                "96"
+              ]
+            ],
+            "map_list": [
+              "aspect",
+              "basin_50K",
+              "boundary_county_500m",
+              "cfactorbare_1m",
+              "cfactorgrow_1m",
+              "el_D782_6m",
+              "el_D783_6m",
+              "el_D792_6m",
+              "el_D793_6m",
+              "elev_lid792_1m",
+              "elev_ned_30m",
+              "elev_srtm_30m",
+              "elev_state_500m",
+              "elevation",
+              "elevation_shade",
+              "facility",
+              "geology_30m",
+              "lakes",
+              "landclass96",
+              "landcover_1m",
+              "landuse96_28m",
+              "lsat7_2002_10",
+              "lsat7_2002_20",
+              "lsat7_2002_30",
+              "lsat7_2002_40",
+              "lsat7_2002_50",
+              "lsat7_2002_61",
+              "lsat7_2002_62",
+              "lsat7_2002_70",
+              "lsat7_2002_80",
+              "ncmask_500m",
+              "ortho_2001_t792_1m",
+              "roadsmajor",
+              "slope",
+              "soilsID",
+              "soils_Kfactor",
+              "streams_derived",
+              "towns",
+              "urban",
+              "zipcodes",
+              "zipcodes_dbl"
+            ],
+            "region": {
+              "cells": "9",
+              "cols": "3",
+              "e": "645000",
+              "ewres": "5000",
+              "n": "228500",
+              "nsres": "4500",
+              "projection": "99",
+              "rows": "3",
+              "s": "215000",
+              "w": "630000",
+              "zone": "0"
+            },
+            "stats": {
+              "cells": "9",
+              "coeff_var": "17.9915982769661",
+              "max": "147.101608276367",
+              "mean": "115.709356519911",
+              "mean_of_abs": "115.709356519911",
+              "min": "75.9926223754883",
+              "n": "9",
+              "null_cells": "0",
+              "range": "71.1089859008789",
+              "stddev": "20.8179625939249",
+              "sum": "1041.3842086792",
+              "variance": "433.387566562055"
+            },
+            "stats_zonal": [
+              [
+                "zone",
+                "label",
+                "non_null_cells",
+                "null_cells",
+                "min",
+                "max",
+                "range",
+                "mean",
+                "mean_of_abs",
+                "stddev",
+                "variance",
+                "coeff_var",
+                "sum",
+                "sum_abs"
+              ],
+              [
+                "2",
+                "",
+                "1",
+                "0",
+                "99.7889709472656",
+                "99.7889709472656",
+                "0",
+                "99.7889709472656",
+                "99.7889709472656",
+                "0",
+                "0",
+                "0",
+                "99.7889709472656",
+                "99.7889709472656"
+              ],
+              [
+                "8",
+                "",
+                "1",
+                "0",
+                "137.68424987793",
+                "137.68424987793",
+                "0",
+                "137.68424987793",
+                "137.68424987793",
+                "0",
+                "0",
+                "0",
+                "137.68424987793",
+                "137.68424987793"
+              ],
+              [
+                "14",
+                "",
+                "1",
+                "0",
+                "114.471084594727",
+                "114.471084594727",
+                "0",
+                "114.471084594727",
+                "114.471084594727",
+                "0",
+                "0",
+                "0",
+                "114.471084594727",
+                "114.471084594727"
+              ],
+              [
+                "16",
+                "",
+                "1",
+                "0",
+                "75.9926223754883",
+                "75.9926223754883",
+                "0",
+                "75.9926223754883",
+                "75.9926223754883",
+                "0",
+                "0",
+                "0",
+                "75.9926223754883",
+                "75.9926223754883"
+              ],
+              [
+                "20",
+                "",
+                "2",
+                "0",
+                "124.611175537109",
+                "125.171577453613",
+                "0.560401916503906",
+                "124.891376495361",
+                "124.891376495361",
+                "0.280200958251953",
+                "0.0785125770053128",
+                "0.224355729046161",
+                "249.782752990723",
+                "249.782752990723"
+              ],
+              [
+                "24",
+                "",
+                "1",
+                "0",
+                "120.942115783691",
+                "120.942115783691",
+                "0",
+                "120.942115783691",
+                "120.942115783691",
+                "0",
+                "0",
+                "0",
+                "120.942115783691",
+                "120.942115783691"
+              ]
+            ]
+          },
+          "progress": {
+            "num_of_steps": 5,
+            "step": 5
+          },
+          "resource_id": "resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561",
+          "status": "finished",
+          "time_delta": 0.4396040439605713,
+          "timestamp": 1530195063.878975,
+          "urls": {
+            "resources": [],
+            "status": "http://localhost/api/v1/resources/admin/resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561"
+          },
+          "user_id": "admin"
+        }
+
+    ..
+
+The result of the stdout output parsing for each module is located in the "process_results" section
+of the json response.
 
 Sentinel2A NDVI process chain
 -----------------------------
