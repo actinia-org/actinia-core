@@ -17,7 +17,7 @@ __copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_EXPORT_FORMATS = ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV"]
+SUPPORTED_EXPORT_FORMATS = ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT"]
 
 
 class IOParameterBase(Schema):
@@ -781,19 +781,7 @@ class ProcessChainConverter(object):
                 value = output["value"]
                 param = output["param"]
 
-                # Search for file identifiers and generate the temporary file path
-                if "$file" in value and "::" in value:
-                    file_id = value.split("::")[1]
-                    # Generate the temporary file path and store it in the dict
-                    if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
-
-                    param = "%s=%s" % (param, self.temporary_pc_files[file_id])
-                else:
-                    param = "%s=%s" % (param, value)
-                params.append(param)
-
-                # List the resource for potential export
+                # Check the resource for potential export
                 if "export" in output:
                     exp = output["export"]
                     if "format" not in exp or "type" not in exp:
@@ -804,6 +792,29 @@ class ProcessChainConverter(object):
                     if exp["type"] not in ["raster", "vector", "strds", "file", "stvds"]:
                         raise AsyncProcessError(
                             "Invalid export <type> parameter in description of module <%s>" % module_name)
+                    if "file" in exp["type"] and ("$file" in value and "::" in value) is False:
+                        raise AsyncProcessError(
+                            "The value filed must contain a file identifier ($file::unique_id) to export a "
+                            "file generated from module <%s> as resource." % module_name)
+
+                # Search for file identifiers and generate the temporary file path
+                if "$file" in value and "::" in value:
+                    file_id = value.split("::")[1]
+                    # Generate the temporary file path and store it in the dict
+                    if file_id not in self.temporary_pc_files:
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                    # Store the file path in the output description for export
+                    param = "%s=%s" % (param, self.temporary_pc_files[file_id])
+                    # Add the temp file path and the new file name with suffix to the output dict
+                    if "export" in output:
+                        output["tmp_file"] = self.temporary_pc_files[file_id]
+                        output["file_name"] = "%s.%s"%(file_id, output["export"]["format"].lower())
+                else:
+                    param = "%s=%s" % (param, value)
+                params.append(param)
+
+                # save the output dict in a resource export list
+                if "export" in output:
                     self.resource_export_list.append(output)
 
         if "flags" in module_descr:

@@ -133,7 +133,7 @@ def create_core_endpoints():
     # Resource management
     flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
-    flask_api.add_resource(RequestStreamerResource, '/resource/<string:user_id>/<string:resource_id>/'
+    flask_api.add_resource(RequestStreamerResource, '/resources/<string:user_id>/<string:resource_id>/'
                                                     '<string:file_name>')
     # Download and resource management
     flask_api.add_resource(SyncDownloadCacheResource, '/download_cache')

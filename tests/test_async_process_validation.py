@@ -81,7 +81,8 @@ process_chain_new = {
             "inputs": [{"param":"input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"param":"output",
+                {"export": {"type": "file", "format": "TXT"},
+                 "param":"output",
                  "value": "$file::out1"}
             ]
         },
@@ -96,7 +97,8 @@ process_chain_new = {
             "inputs": [{"param": "input",
                        "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"param": "output",
+                {"export": {"type": "file", "format": "TXT"},
+                 "param": "output",
                  "value": "$file::out2"}
             ]
         },
