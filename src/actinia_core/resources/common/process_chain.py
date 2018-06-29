@@ -188,9 +188,9 @@ class StdoutParser(Schema):
                       'description': 'The delimiter that should be used to parse table, '
                                      'list and key/value module output. Many GRASS GIS  modules '
                                      'use by default \"|\" in tables and \"=\" in key/value pairs. '
-                                     'A new line \"\\n\" is always the delimiter between rows in the output.'},
+                                     'A new line \"\\n\" is always the delimiter between rows in the output.'}
     }
-    # required = ['id', 'format', 'delimiter']
+    required = ['id', 'format', 'delimiter']
     description = 'Use this parameter to automatically parse the output of GRASS GIS modules ' \
                   'and convert the output into tables, lists or key/value pairs in the result ' \
                   'section of the response.' \
@@ -201,9 +201,7 @@ class StdoutParser(Schema):
                   'produce regular output. Many modules have the flag *-g* to ' \
                   'create key value pairs as stdout output. Other create a list of values ' \
                   'or a table with/without header.'
-    example = {'id': 'stats',
-               'format': 'table',
-               'delimiter': '|'}
+    example = {'id': 'stats', 'format': 'table', 'delimiter': '|'}
 
 
 class GrassModule(Schema):
@@ -237,8 +235,7 @@ class GrassModule(Schema):
                                  'chain as input for this module. Refer to the module/executable output '
                                  'as id::stderr or id::stdout, the \"id\" is the unique identifier '
                                  'of a GRASS GIS module.'},
-        'stdout': {'type': StdoutParser,
-                   'description': 'The definition of a module stdout output parser.'},
+        'stdout': StdoutParser,
         'overwrite': {'type': 'boolean',
                       'description': 'Set True to overwrite existing data.'},
         'verbose': {'type': 'boolean',
