@@ -49,7 +49,7 @@ Examples:
 
 **Landsat and Sentinel2A NDVI computation**
 
-This API call will compute the NDVI of the top of athmosphere (TOAR)
+This API call will compute the NDVI of the top of atmosphere (TOAR)
 corrected Landsat4 scene LC80440342016259LGN00:
 
     curl -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI" -H  "authorization: Basic ..."

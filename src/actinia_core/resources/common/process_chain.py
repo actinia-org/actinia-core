@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import requests
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
 from .process_object import Process
@@ -40,17 +41,19 @@ class IOParameterBase(Schema):
                            'Outputs are not allowed to contain mapset names.'
                            'Files that are created in the process chain to exchange data '
                            'can be specified using the *$file::unique_id* identifier. '
-                           'The \"unique_id\" will be replaced with a temporary file name, that'
-                           'is available in the whole process chain at runtime. The \"unique_id\" '
+                           'The **unique_id** will be replaced with a temporary file name, that'
+                           'is available in the whole process chain at runtime. The **unique_id** '
                            'is the identifier that can be used by different modules in a process '
                            'chain to access the same temporary file or to prepare it for export.'
         },
     }
-    description = 'Input/output parameter definition of a GRASS GIS module that should be executed ' \
-                  'in the actinia environment. A GRASS GIS module will be usually called like: ' \
-                  '\"g.region raster=elevation30m -p\". ' \
-                  'The GRASS GIS module parameter *raster* has the value *elevation30m*. This is reflected ' \
-                  'by the *param* and *value* properties.'
+    description = 'Parameter definition of a GRASS GIS module that should be executed ' \
+                  'in the actinia environment. Parameters can be of type input or output. ' \
+                  'A GRASS GIS module will be usually called like: ' \
+                  '<p>g.region raster=elevation30m@PERMANENT</p> ' \
+                  'The GRASS GIS module *g.region* parameter *raster* has the value *elevation30m@PERMANENT*. ' \
+                  'This is reflected by the *param* and *value* properties that can specify input and output ' \
+                  'parameters.'
     required = ["param", "value"]
     example = {"param": "file", "value": "$file::ascii_points"}
 
@@ -127,11 +130,14 @@ class InputParameter(IOParameterBase):
 
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
-    example = {"import_descr": {"source": "LT52170762005240COA00",
-                                "type": "landsat",
-                                "landsat_atcor": "dos1"},
-               "param": "map",
-               "value": "ignored"}
+    example = {
+        "import_descr": {
+            "source": "LT52170762005240COA00",
+            "type": "landsat",
+            "landsat_atcor": "dos1"},
+        "param": "map",
+        "value": "ignored"
+    }
 
 
 class OutputParameter(IOParameterBase):
@@ -215,10 +221,11 @@ class GrassModule(Schema):
                               'other modules.'
                },
         'module': {'type': 'string',
-                   'description': 'The name of the GRASS GIS module that should be executed '
-                                  'as part of the process chain. '
-                                  'Use as module names "importer" or "exportert" to import or export '
-                                  'geographical data outside a GRASS GIS module definition.'
+                   'description': 'The name of the GRASS GIS module (r.univar, r.slope.aspect, v.select, ...) '
+                                  'that should be executed. '
+                                  'Use as module names "importer" or "exporter" to import or export '
+                                  'raster layer, vector layer or other file based data without '
+                                  'calling a GRASS GIS module.'
                    },
         'inputs': {'type': 'array',
                    'items': InputParameter,
@@ -226,15 +233,15 @@ class GrassModule(Schema):
                    },
         'outputs': {'type': 'array',
                     'items': OutputParameter,
-                    'description': 'A list of input parameters of a GRASS GIS module.'
+                    'description': 'A list of output parameters of a GRASS GIS module.'
                     },
         'flags': {'type': 'string',
                   'description': 'The flags that should be set for the GRASS GIS module.'},
         'stdin': {'type': 'string',
-                  'description': 'Use the output of a GRASS GIS module or executable of the process '
+                  'description': 'Use the stdout output of a GRASS GIS module or executable of the process '
                                  'chain as input for this module. Refer to the module/executable output '
-                                 'as id::stderr or id::stdout, the \"id\" is the unique identifier '
-                                 'of a GRASS GIS module.'},
+                                 'as *id::stderr* or *id::stdout*, the \"id\" is the unique identifier '
+                                 'of a GRASS GIS module definition.'},
         'stdout': StdoutParser,
         'overwrite': {'type': 'boolean',
                       'description': 'Set True to overwrite existing data.'},
@@ -244,16 +251,19 @@ class GrassModule(Schema):
                        'description': 'Set True to silence the output of the module.'}
     }
     required = ['id', 'module']
-    description = 'The definition of a GRASS GIS module and its inputs, outputs and flags. This ' \
+    description = 'The definition of a single GRASS GIS module and its inputs, outputs and flags. This ' \
                   'module will be run in a location/mapset environment and is part of a process chain. ' \
                   'The stdout and stderr output of modules that were run before this module in the process ' \
-                  'chain can be used as stdin for this module.'
+                  'chain can be used as stdin for this module. The stdout of a module can be automatically ' \
+                  'transformed in list, table or key/value JSON representations in the HTTP response.'
     example = {'module': 'r.slope.aspect',
                'id': 'r_slope_aspect_1',
-               'inputs': [{'param': 'elevation',
-                           'value': 'elev_ned_30m_new'}],
-               'outputs': [{'export': {'format': 'GTiff',
-                                       'type': 'raster'},
+               'inputs': [
+                   {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                                     'type': 'raster'},
+                    'param': 'raster',
+                    'value': 'elev_ned_30m_new'}],
+               'outputs': [{'export': {'format': 'GTiff', 'type': 'raster'},
                             'param': 'slope',
                             'value': 'elev_ned_30m_new_slope'}],
                'flags': 'a'}
@@ -302,6 +312,13 @@ class ProcessChainModel(Schema):
         'version': {'type': 'string',
                     'default': '1',
                     'description': 'The version string of the process chain'},
+        'webhook': {'type': 'string',
+                    'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
+                                   'when the process chain was executed successful or unsuccessfully. '
+                                   'The actinia JSON response will be send as JSON content to the POST endpoint after '
+                                   'processing finished. '
+                                   'The GET endpoint, that must be available by the same URL as the POST endpoint, '
+                                   'will be used to check if the webhook endpoint is available.'},
         'list': {'type': 'array',
                  'items': GrassModule,
                  'description': "A list of process definitions that should be executed "
@@ -400,6 +417,7 @@ class ProcessChainModel(Schema):
                 "stdout": {"id": "sample", "format": "table", "delimiter": "|"}
             }
         ],
+        'webhook': 'http://business-logic.company.com/api/v1/actinia-webhook',
         'version': '1'}
 
 
@@ -467,6 +485,7 @@ class ProcessChainConverter(object):
         self.send_resource_update = send_resource_update
         self.message_logger = message_logger
         self.import_descr_list = []
+        self.webhook = None
 
     def process_chain_to_process_list(self, process_chain):
 
@@ -503,6 +522,14 @@ class ProcessChainConverter(object):
         if "list" not in process_chain:
             raise AsyncProcessError("List of processes to be executed is missing "
                                     "in the process chain definition")
+
+        # Check for the webhook
+        if "webhook" in process_chain:
+            self.webhook = process_chain["webhook"]
+            # Check if thr URL exists by investigating the HTTP header
+            resp = requests.head(self.webhook)
+            if resp.status_code != 200:
+                raise AsyncProcessError("The webhook URL %s can not be accessed." % self.webhook)
 
         for process_descr in process_chain["list"]:
 
