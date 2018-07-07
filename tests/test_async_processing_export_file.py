@@ -16,7 +16,8 @@ __email__ = "soerengebbert@googlemail.com"
 # Module  example for r.out.ascii output file export
 file_export = {
     "version":1,
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
         {
             "id": "1",

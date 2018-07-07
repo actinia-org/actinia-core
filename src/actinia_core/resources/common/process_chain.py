@@ -303,6 +303,39 @@ class Executable(Schema):
                'params': []}
 
 
+class Webhooks(Schema):
+    """The definition of finished and update webhooks
+    """
+    type = 'object'
+    properties = {
+        'update': {'type': 'string',
+                   'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
+                                  'when a status update is available while the process chain is executed. '
+                                  'The actinia JSON status response will be send as JSON '
+                                  'content to the POST endpoint for each status update until the process finished. '
+                                  'The GET endpoint, that must be available by the same URL as the POST endpoint, '
+                                  'will be used to check if the webhook endpoint is available.'},
+        'finished': {'type': 'string',
+                     'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
+                                    'when the process chain was executed successful or unsuccessfully. '
+                                    'The actinia JSON response will be send as JSON content '
+                                    'to the POST endpoint after processing finished. '
+                                    'The GET endpoint, that must be available by the same URL as the POST endpoint, '
+                                    'will be used to check if the webhook endpoint is available.'},
+    }
+    required = ['finished']
+    description = 'Specify HTTP(S) GET/POST endpoints that should be called ' \
+                  'when the process chain was executed successful or unsuccessfully (finished) ' \
+                  'or when a status/progress update is available (update). ' \
+                  'The actinia JSON response will be send as JSON content to the POST endpoints after ' \
+                  'processing finished or the status was updated. ' \
+                  'The GET endpoints, that must be available by the same URL as the POST endpoints (update/finished),' \
+                  'will be used to check if the webhooks endpoints are available.' \
+                  'The finished endpoint is mandatory, the update endpoint is optional.'
+    example = {'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
+               'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'}
+
+
 class ProcessChainModel(Schema):
     """Definition of the actinia process chain that includes GRASS GIS modules
     and common Linux commands
@@ -312,17 +345,11 @@ class ProcessChainModel(Schema):
         'version': {'type': 'string',
                     'default': '1',
                     'description': 'The version string of the process chain'},
-        'webhook': {'type': 'string',
-                    'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
-                                   'when the process chain was executed successful or unsuccessfully. '
-                                   'The actinia JSON response will be send as JSON content to the POST endpoint after '
-                                   'processing finished. '
-                                   'The GET endpoint, that must be available by the same URL as the POST endpoint, '
-                                   'will be used to check if the webhook endpoint is available.'},
         'list': {'type': 'array',
                  'items': GrassModule,
                  'description': "A list of process definitions that should be executed "
-                                "in the order provided by the list."}
+                                "in the order provided by the list."},
+        'webhooks': Webhooks,
     }
     required = ['version', 'list']
     example = {
@@ -417,7 +444,8 @@ class ProcessChainModel(Schema):
                 "stdout": {"id": "sample", "format": "table", "delimiter": "|"}
             }
         ],
-        'webhook': 'http://business-logic.company.com/api/v1/actinia-webhook',
+        'webhooks': {'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
+                     'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'},
         'version': '1'}
 
 
@@ -485,7 +513,8 @@ class ProcessChainConverter(object):
         self.send_resource_update = send_resource_update
         self.message_logger = message_logger
         self.import_descr_list = []
-        self.webhook = None
+        self.webhook_finished = None
+        self.webhook_update = None
 
     def process_chain_to_process_list(self, process_chain):
 
@@ -523,13 +552,24 @@ class ProcessChainConverter(object):
             raise AsyncProcessError("List of processes to be executed is missing "
                                     "in the process chain definition")
 
-        # Check for the webhook
-        if "webhook" in process_chain:
-            self.webhook = process_chain["webhook"]
-            # Check if thr URL exists by investigating the HTTP header
-            resp = requests.head(self.webhook)
-            if resp.status_code != 200:
-                raise AsyncProcessError("The webhook URL %s can not be accessed." % self.webhook)
+        # Check for the webhooks
+        if "webhooks" in process_chain:
+
+            if "finished" in process_chain["webhooks"]:
+                self.webhook_finished = process_chain["webhooks"]["finished"]
+                # Check if thr URL exists by investigating the HTTP header
+                resp = requests.head(self.webhook_finished)
+                if resp.status_code != 200:
+                    raise AsyncProcessError("The finished webhook URL %s can not be accessed." % self.webhook_finished)
+            else:
+                raise AsyncProcessError("The finished URL is missing in the webhooks definition.")
+
+            if "update" in process_chain["webhooks"]:
+                self.webhook_update = process_chain["webhooks"]["update"]
+                # Check if thr URL exists by investigating the HTTP header
+                resp = requests.head(self.webhook_update)
+                if resp.status_code != 200:
+                    raise AsyncProcessError("The update webhook URL %s can not be accessed." % self.webhook_update)
 
         for process_descr in process_chain["list"]:
 

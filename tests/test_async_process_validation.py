@@ -63,7 +63,8 @@ process_chain_legacy = {
 # Module  example for r.out.ascii with g.region adjustment and temporary file handling
 process_chain_new = {
     "version": 1,
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
         {
             "id": "1",
@@ -156,7 +157,8 @@ process_chain_ndvi = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -226,7 +228,8 @@ process_chain_ndvi_landsat = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -261,7 +264,7 @@ process_chain_landsat = {
                      "value": "ignored"}
                     ]
          }],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished"},
     "version": "1"
 }
 
@@ -276,7 +279,8 @@ process_chain_postgis = {
                      "value": "test"}
                     ]
          }],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
