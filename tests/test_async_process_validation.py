@@ -272,9 +272,19 @@ process_chain_postgis = {
     "list": [
         {"id": "importer_1",
          "module": "importer",
-         "inputs": [{"import_descr": {"source": "dbname=test user=test db=test",
+         "inputs": [{"import_descr": {"source": "PG:host=localhost dbname=postgis user=postgres",
                                       "type": "postgis",
                                       "vector_layer": "test"},
+                     "param": "map",
+                     "value": "test"}
+                    ]
+         },
+        {"id": "exporter_1",
+         "module": "exporter",
+         "outputs": [{"export": {"dbstring": "PG:host=localhost dbname=postgis user=postgres",
+                                 "format": "PostgreSQL",
+                                 "type": "vector",
+                                 "output_layer": "test"},
                      "param": "map",
                      "value": "test"}
                     ]

@@ -312,6 +312,41 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         return archive_name, compressed_output_path
 
+    def _export_postgis(self, vector_name, dbstring,
+                       output_layer=None,
+                       additional_options=[]):
+        """Export a specific vector layer with v.out.ogr to a PostGIS database
+
+        Args:
+            vector_name (str): The name of the raster layer
+            dbstring (str): The PostgreSQL database string to connect to the output database
+            output_layer (str): The name of the PostgreSQL database table
+            additional_options (list): Unused
+
+        Raises:
+            AsyncProcessError: If a GRASS module return status is not 0
+
+        """
+
+        module_name = "v.out.ogr"
+        args = ["-e", "input=%s"%vector_name, "format=PostgreSQLs",
+                "output=%s"%dbstring]
+
+        if output_layer:
+            args.append("output_layer=%s"%output_layer)
+
+        if additional_options:
+            args.extend(additional_options)
+
+        # Export
+        p = Process(exec_type="grass",
+                         executable=module_name,
+                         executable_params=args,
+                         stdin_source=None)
+
+        self._update_num_of_steps(1)
+        self._run_module(p)
+
     def _export_file(self, tmp_file, file_name):
         """Export a specific file
 
@@ -363,7 +398,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
         for resource in self.resource_export_list:
 
-            print("Check for termination %i"%self.resource_logger.get_termination(self.user_id, self.resource_id))
+            # print("Check for termination %i"%self.resource_logger.get_termination(self.user_id, self.resource_id))
 
             # Check for termination requests between the exports
             if bool(self.resource_logger.get_termination(self.user_id, self.resource_id)) is True:
@@ -373,6 +408,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             if resource["export"]["type"] in ["raster", "vector", "file"]:
 
                 output_type = resource["export"]["type"]
+                output_path = None
 
                 # Legacy code
                 if "name" in resource:
@@ -387,10 +423,21 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                                                                    format=resource["export"]["format"],
                                                                    use_raster_region=use_raster_region)
                 elif output_type == "vector":
-                    message = "Export vector layer <%s> with format %s"%(file_name, resource["export"]["format"])
-                    self._send_resource_update(message)
-                    output_name, output_path = self._export_vector(vector_name=file_name,
-                                                                   format=resource["export"]["format"])
+                    if "PostgreSQL" in resource["export"]["format"]:
+                        dbstring = resource["export"]["dbstring"]
+                        output_layer = None
+                        if "output_layer" in resource["export"]:
+                            output_layer = resource["export"]["output_layer"]
+
+                        message = "Export vector layer <%s> to PostgreSQL database"%(file_name)
+                        self._send_resource_update(message)
+                        self._export_postgis(vector_name=file_name, dbstring=dbstring, output_layer=output_layer)
+                        continue
+                    else:
+                        message = "Export vector layer <%s> with format %s"%(file_name, resource["export"]["format"])
+                        self._send_resource_update(message)
+                        output_name, output_path = self._export_vector(vector_name=file_name,
+                                                                       format=resource["export"]["format"])
                 elif output_type == "file":
                     file_name = resource["file_name"]
                     tmp_file = resource["tmp_file"]
@@ -403,8 +450,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
                 # Store the temporary file in the resource storage
                 # and receive the resource URL
-                resource_url = self.storage_interface.store_resource(output_path)
-                self.resource_url_list.append(resource_url)
+                if output_path is not None:
+                    resource_url = self.storage_interface.store_resource(output_path)
+                    self.resource_url_list.append(resource_url)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses
