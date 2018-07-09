@@ -268,33 +268,6 @@ process_chain_landsat = {
     "version": "1"
 }
 
-process_chain_postgis = {
-    "list": [
-        {"id": "importer_1",
-         "module": "importer",
-         "inputs": [{"import_descr": {"source": "PG:host=localhost dbname=postgis user=postgres",
-                                      "type": "postgis",
-                                      "vector_layer": "test"},
-                     "param": "map",
-                     "value": "test"}
-                    ]
-         },
-        {"id": "exporter_1",
-         "module": "exporter",
-         "outputs": [{"export": {"dbstring": "PG:host=localhost dbname=postgis user=postgres",
-                                 "format": "PostgreSQL",
-                                 "type": "vector",
-                                 "output_layer": "test"},
-                     "param": "map",
-                     "value": "test"}
-                    ]
-         }],
-    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
-                 "update": "http://0.0.0.0:5005/webhook/update"},
-    "version": "1"
-}
-
-
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -346,16 +319,6 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 96)
-
-    def test_async_processing_postgis(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_postgis),
-                              content_type="application/json")
-
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 1)
 
 
 if __name__ == '__main__':

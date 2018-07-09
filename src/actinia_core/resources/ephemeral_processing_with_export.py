@@ -329,7 +329,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
 
         module_name = "v.out.postgis"
-        args = ["-e", "input=%s"%vector_name, "output=%s"%dbstring]
+        args = ["-l", "input=%s"%vector_name, "output=%s"%dbstring]
 
         if output_layer:
             args.append("output_layer=%s"%output_layer)

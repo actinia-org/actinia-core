@@ -46,7 +46,7 @@ class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
     def gen_output_layer_name(self):
         process_chain_postgis["list"][1]["outputs"][0]["export"]["output_layer"] = "poly_%i"%randint(0, 1000000000)
 
-    def otest_1_async_processing_postgis_validation(self):
+    def test_1_async_processing_postgis_validation(self):
         rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_postgis),
