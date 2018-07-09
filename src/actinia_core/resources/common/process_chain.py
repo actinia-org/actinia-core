@@ -686,7 +686,7 @@ class ProcessChainConverter(object):
 
             # POSTGIS
             elif entry["import_descr"]["type"].lower() == "postgis":
-                dbstring = "\"%s\"" % entry["import_descr"]["source"]
+                dbstring = "%s" % entry["import_descr"]["source"]
                 vector_name = entry["value"]
                 layer = None
                 if "vector_layer" in entry["import_descr"]:

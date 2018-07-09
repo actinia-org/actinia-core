@@ -315,7 +315,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
     def _export_postgis(self, vector_name, dbstring,
                        output_layer=None,
                        additional_options=[]):
-        """Export a specific vector layer with v.out.ogr to a PostGIS database
+        """Export a specific vector layer with v.out.postgis to a PostGIS database
 
         Args:
             vector_name (str): The name of the raster layer
@@ -328,9 +328,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         """
 
-        module_name = "v.out.ogr"
-        args = ["-e", "input=%s"%vector_name, "format=PostgreSQLs",
-                "output=%s"%dbstring]
+        module_name = "v.out.postgis"
+        args = ["-e", "input=%s"%vector_name, "output=%s"%dbstring]
 
         if output_layer:
             args.append("output_layer=%s"%output_layer)
@@ -432,7 +431,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         message = "Export vector layer <%s> to PostgreSQL database"%(file_name)
                         self._send_resource_update(message)
                         self._export_postgis(vector_name=file_name, dbstring=dbstring, output_layer=output_layer)
-                        continue
+                        # continue
                     else:
                         message = "Export vector layer <%s> with format %s"%(file_name, resource["export"]["format"])
                         self._send_resource_update(message)
