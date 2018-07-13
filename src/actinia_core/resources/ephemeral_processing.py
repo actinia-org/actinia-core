@@ -459,7 +459,7 @@ class EphemeralProcessing(object):
             self.process_chain_list.append(process_chain)
 
         # Check for the webhook
-        if self.proc_chain_converter.webhook is not None:
+        if hasattr(self.proc_chain_converter,'webhook') and self.proc_chain_converter.webhook is not None:
             self.webhook = self.proc_chain_converter.webhook
 
         # Check for empty process chain
