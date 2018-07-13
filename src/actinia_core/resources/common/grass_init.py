@@ -306,12 +306,17 @@ class GrassModuleRunner(ProcessLogging):
             self.log_debug("Looking for %s"%grass_module_path)
             # if the module was not found in the bin dir, test the script directory
             if os.path.isfile(grass_module_path) is not True:
-                grass_module_path = os.path.join(self.grass_addon_path, grass_module)
+                grass_module_path = os.path.join(self.grass_addon_path, "bin", grass_module)
                 pathList.append(grass_module_path)
                 self.log_debug("Looking for %s"%grass_module_path)
                 # if the module was not found in the script dir, test the addon path
                 if os.path.isfile(grass_module_path) is not True:
-                    raise GrassInitError("GRASS module " + grass_module + " not found in " + str(pathList))
+                    grass_module_path = os.path.join(self.grass_addon_path, "scripts", grass_module)
+                    pathList.append(grass_module_path)
+                    self.log_debug("Looking for %s"%grass_module_path)
+                    # if the module was not found in the script dir, test the addon path
+                    if os.path.isfile(grass_module_path) is not True:
+                        raise GrassInitError("GRASS module " + grass_module + " not found in " + str(pathList))
 
         self.log_debug("GRASS module path is " + grass_module_path)
 

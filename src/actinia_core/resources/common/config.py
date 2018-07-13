@@ -61,7 +61,7 @@ class Configuration(object):
         self.GRASS_RESOURCE_QUOTA = 100  # The size quota of the resource storage in Gigibit
         self.GRASS_GIS_BASE = "/usr/local/grass-7.5.svn"  # Installation directory of GRASS
         self.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass75"
-        self.GRASS_ADDON_PATH = ""
+        self.GRASS_ADDON_PATH = "%s/.grass7/addons/" % home
         self.GRASS_MODULES_XML_PATH = os.path.join(self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
         self.GRASS_VENV = "%s/src/GRaaS/grass_venv/bin/activate_this.py" % home  # The path to the activation
         #                                                                          script of the python2 venv
