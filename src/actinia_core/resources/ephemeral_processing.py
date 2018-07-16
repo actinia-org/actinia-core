@@ -728,6 +728,7 @@ class EphemeralProcessing(object):
                                       grass_base_dir=self.config.GRASS_GIS_BASE,
                                       location_name=self.location_name,
                                       mapset_name=mapset_name, config=self.config,
+                                      grass_addon_path=self.config.GRASS_ADDON_PATH,
                                       user_id=self.user_id)
 
         self.ginit.initialize()
