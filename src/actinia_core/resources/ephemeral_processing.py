@@ -12,7 +12,8 @@ import subprocess
 import tempfile
 import time
 import uuid
-from flask import jsonify, make_response
+import requests
+from flask import jsonify, make_response, json
 
 from .common.grass_init import GrassInitializer
 from .common.messages_logger import MessageLogger
@@ -189,14 +190,14 @@ class EphemeralProcessing(object):
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
 
-        self.grass_data_base = self.rdc.grass_data_base               # Global database
-        self.grass_user_data_base = self.rdc.grass_user_data_base     # User database base path, this path will be
-                                                                      # extended with the user group name in the setup
+        self.grass_data_base = self.rdc.grass_data_base  # Global database
+        self.grass_user_data_base = self.rdc.grass_user_data_base  # User database base path, this path will be
+        # extended with the user group name in the setup
         self.grass_base_dir = self.rdc.grass_base_dir
 
         self.location_name = self.rdc.location_name
         self.mapset_name = self.rdc.mapset_name
-        self.is_global_database = False             # Set this True if the work is performed based on global database
+        self.is_global_database = False  # Set this True if the work is performed based on global database
 
         self.map_name = self.rdc.map_name
 
@@ -229,11 +230,16 @@ class EphemeralProcessing(object):
         self.cell_limit = 0
         self.process_time_limit = 0
         self.process_num_limit = 0
-        self.skip_region_check = False    # Set this True so that regions are not checked before processing
+        self.skip_region_check = False  # Set this True so that regions are not checked before processing
 
         self.module_output_log = list()  # The stdout, stderr and parameter log of the module chains
+        self.module_output_dict = dict()  # The stdout, stderr and parameter log of the module chains
+        # using a dict with the process id as key
+        self.output_parser_list = []  # The list of output parser definitions that must be applied
+        # after the module run. The parser result will be stored in
+        # the module_result dictionary using the parser id
         self.module_results = dict()  # A dictionary that has the process id as key to store module
-        #  outputs like images, dicts, files and so on
+        # outputs like images, dicts, files and so on
 
         self.required_mapsets = list()  # The process chain analysis will provide
         # a list of required mapsets that must be
@@ -260,9 +266,12 @@ class EphemeralProcessing(object):
 
         self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
         self.proc_chain_converter = None  # The class that converts process chain definitions into
-                                          # process lists that will be executed. This variable is
-                                          # initiated in the setup method
-        self.process_chain_list = []      # The list of all process chains that were processed
+        # process lists that will be executed. This variable is
+        # initiated in the setup method
+        self.process_chain_list = []  # The list of all process chains that were processed
+        self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
+        # process chain finished
+        self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -285,7 +294,7 @@ class EphemeralProcessing(object):
                                           http_code=200,
                                           status_url=self.status_url,
                                           api_info=self.api_info)
-        self._send_to_database(data)
+        self._send_to_database(document=data, final=False)
 
     def _send_resource_finished(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -310,7 +319,7 @@ class EphemeralProcessing(object):
                                           api_info=self.api_info,
                                           resource_urls=self.resource_url_list,
                                           process_chain_list=self.process_chain_list)
-        self._send_to_database(data)
+        self._send_to_database(document=data, final=True)
 
     def _send_resource_terminated(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -334,7 +343,7 @@ class EphemeralProcessing(object):
                                           status_url=self.status_url,
                                           api_info=self.api_info,
                                           process_chain_list=self.process_chain_list)
-        self._send_to_database(data)
+        self._send_to_database(document=data, final=True)
 
     def _send_resource_time_limit_exceeded(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -358,7 +367,7 @@ class EphemeralProcessing(object):
                                           status_url=self.status_url,
                                           api_info=self.api_info,
                                           process_chain_list=self.process_chain_list)
-        self._send_to_database(data)
+        self._send_to_database(document=data, final=True)
 
     def _send_resource_error(self, message, results=None, exception=None):
         """Create an HTTP response document and send it to the status database
@@ -383,20 +392,46 @@ class EphemeralProcessing(object):
                                           api_info=self.api_info,
                                           process_chain_list=self.process_chain_list,
                                           exception=exception)
-        self._send_to_database(data)
+        self._send_to_database(document=data, final=True)
 
-    def _send_to_database(self, document):
+    def _send_to_database(self, document, final=False):
         """Send the document to the database
 
-        The resource expiration time set in the Actinia Core config file will be used for every resource commit.
+        The resource expiration time set in the actinia config file will be used for every resource commit.
+
+        If a webhook URL is provided, the JSON response will be send to the provided endpoint using a POST request.
 
         Args:
             document (str): The response document
+            final (bool): Set True if this was the final resource commit (no update) to activate the webhook call
 
         """
 
         self.resource_logger.commit(user_id=self.user_id, resource_id=self.resource_id, document=document,
                                     expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
+
+        # Call the webhook after the final result was send to the database
+        try:
+            if final is True and self.webhook_finished is not None:
+                self.message_logger.info("Send POST request to finished webhook url: %s"%self.webhook_finished)
+                http_code, response_model = pickle.loads(document)
+                r = requests.post(self.webhook_finished, json=json.dumps(response_model))
+                if r.status_code != 200:
+                    raise AsyncProcessError("Unable to access finished webhook URL %s"%self.webhook_finished)
+            elif final is False and self.webhook_update is not None:
+                self.message_logger.info("Send POST request to update webhook url: %s"%self.webhook_update)
+                http_code, response_model = pickle.loads(document)
+                r = requests.post(self.webhook_update, json=json.dumps(response_model))
+                if r.status_code != 200:
+                    raise AsyncProcessError("Unable to access the update webhook URL %s"%self.webhook_update)
+        except Exception as e:
+            e_type, e_value, e_tb = sys.exc_info()
+            model = ExceptionTracebackModel(message=str(e_value),
+                                            traceback=traceback.format_tb(e_tb),
+                                            type=str(e_type))
+            run_state = {"error": str(e), "exception": model}
+            print(str(run_state))
+            self.message_logger.error("Unable to send webhook request. Traceback: %s" % str(run_state))
 
     def _validate_process_chain(self, process_chain=None,
                                 skip_permission_check=False):
@@ -429,6 +464,12 @@ class EphemeralProcessing(object):
         else:
             process_list = self.proc_chain_converter.process_chain_to_process_list(process_chain)
             self.process_chain_list.append(process_chain)
+
+        # Check for the webhooks
+        if self.proc_chain_converter.webhook_finished is not None:
+            self.webhook_finished = self.proc_chain_converter.webhook_finished
+        if self.proc_chain_converter.webhook_update is not None:
+            self.webhook_update = self.proc_chain_converter.webhook_update
 
         # Check for empty process chain
         if len(process_list) == 0 and len(self.resource_export_list) == 0:
@@ -553,6 +594,7 @@ class EphemeralProcessing(object):
                                                           temporary_pc_files=self.temporary_pc_files,
                                                           required_mapsets=self.required_mapsets,
                                                           resource_export_list=self.resource_export_list,
+                                                          output_parser_list=self.output_parser_list,
                                                           message_logger=self.message_logger,
                                                           send_resource_update=self._send_resource_update)
 
@@ -595,7 +637,7 @@ class EphemeralProcessing(object):
 
             mapsets_to_link = []
             check_all_mapsets = False
-            if not  mapsets:
+            if not mapsets:
                 check_all_mapsets = True
 
             # Global location mapset linking
@@ -618,10 +660,10 @@ class EphemeralProcessing(object):
                                     if resp is None:
                                         mapsets_to_link.append((mapset_path, mapset))
                             else:
-                                raise AsyncProcessError("Invalid mapset <%s> in location <%s>"%(mapset,
-                                                                                                self.location_name))
+                                raise AsyncProcessError("Invalid mapset <%s> in location <%s>" % (mapset,
+                                                                                                  self.location_name))
                 else:
-                    raise AsyncProcessError("Unable to access global location <%s>"%self.location_name)
+                    raise AsyncProcessError("Unable to access global location <%s>" % self.location_name)
 
             # Check for leftover mapsets
             left_over_mapsets = []
@@ -641,10 +683,10 @@ class EphemeralProcessing(object):
                             if mapset not in mapsets_to_link:
                                 mapsets_to_link.append((mapset_path, mapset))
                         else:
-                            raise AsyncProcessError("Invalid mapset <%s> in location <%s>"%(mapset,
-                                                                                            self.location_name))
+                            raise AsyncProcessError("Invalid mapset <%s> in location <%s>" % (mapset,
+                                                                                              self.location_name))
             else:
-                raise AsyncProcessError("Unable to access user location <%s>"%self.location_name)
+                raise AsyncProcessError("Unable to access user location <%s>" % self.location_name)
 
             # Check if we missed some of the required mapsets
             if check_all_mapsets is False:
@@ -655,8 +697,8 @@ class EphemeralProcessing(object):
                 for mapset in mapsets:
                     if mapset not in mapset_list:
                         raise AsyncProcessError("Unable to link all required mapsets into temporary location. "
-                                                "Missing or un-accessible mapset <%s> in location <%s>"%(mapset,
-                                                                                                         self.location_name))
+                                                "Missing or un-accessible mapset <%s> in location <%s>" % (mapset,
+                                                                                                           self.location_name))
 
             # Link the original mapsets from global and user database into the temporary location
             for mapset_path, mapset in mapsets_to_link:
@@ -665,7 +707,7 @@ class EphemeralProcessing(object):
 
         except Exception as e:
             raise AsyncProcessError("Unable to create a temporary GIS database"
-                                    ", Exception: %s" %str(e))
+                                    ", Exception: %s" % str(e))
 
     def _create_grass_environment(self, grass_data_base, mapset_name="PERMANENT"):
         """Sets up the GRASS environment to run modules
@@ -805,7 +847,7 @@ class EphemeralProcessing(object):
                                                                                        stderr_buff))
             raise AsyncProcessError("Region to large, set a coarser " \
                                     "resolution to minimum nsres: %f ewres: %f [num_cells: %d]" % (ns_res,
-                                                                                   ew_res, num_cells))
+                                                                                                   ew_res, num_cells))
 
     def _increment_progress(self, num=1):
         """Increment the progress step by a specific number
@@ -1058,6 +1100,9 @@ class EphemeralProcessing(object):
                               run_time=run_time)
 
         self.module_output_log.append(plm)
+        # Store the log in an additional dictionary for automated output generation
+        if process.id is not None:
+            self.module_output_dict[process.id] = plm
 
         if proc.returncode != 0:
             raise AsyncProcessError("Error while running executable <%s>" % process.executable)
@@ -1104,8 +1149,9 @@ class EphemeralProcessing(object):
         - Setup logger and credentials
         - Analyse the process chain
         - Create the temporal database
-        - Initialze the GRASS environment and create the temporary mapset
+        - Initialize the GRASS environment and create the temporary mapset
         - Run the modules
+        - Parse the stdout output of the modules and generate the module results
 
         Args:
             skip_permission_check (bool): If set True, the permission checks of module access and
@@ -1116,8 +1162,13 @@ class EphemeralProcessing(object):
             or AsyncProcessTermination
 
         """
-        process_chain = self._create_temporary_grass_environment_and_process_list(skip_permission_check=skip_permission_check)
+        # Create the process chain
+        process_chain = self._create_temporary_grass_environment_and_process_list(
+            skip_permission_check=skip_permission_check)
+        # Run all executables
         self._execute_process_list(process_list=process_chain)
+        # Parse the module sdtout outputs and create the results
+        self._parse_module_outputs()
 
     def _create_temporary_grass_environment_and_process_list(self, process_chain=None,
                                                              skip_permission_check=False):
@@ -1152,6 +1203,51 @@ class EphemeralProcessing(object):
         self._create_temporary_grass_environment()
 
         return process_list
+
+    def _parse_module_outputs(self):
+        """Parse the module stdout outputs and parse them into the required formats: table, list or kv
+
+        This functions analyzes the output_parser_list for entries to parse.
+        It will convert the stdout strings into tables, lists or key/value outputs and stores the result
+        in the module_result dictionary using the provided id of the StdoutParser.
+
+        """
+
+        for entry in self.output_parser_list:
+            for process_id, stdout_def in entry.items():
+                id = stdout_def["id"]
+                format = stdout_def["format"]
+                delimiter = stdout_def["delimiter"]
+                if process_id not in self.module_output_dict:
+                    raise AsyncProcessError("Unable to find process id in module output dictionary")
+                stdout = self.module_output_dict[process_id]["stdout"]
+                # Split the rows by the \n new line delimiter
+                rows = stdout.strip().split("\n")
+                if "table" in format:
+                    result = []
+                    for row in rows:
+                        row = row.strip()
+                        values = row.split(delimiter)
+                        value_list = []
+                        for value in values:
+                            value_list.append(value.strip())
+                        result.append(value_list)
+                elif "list" in format:
+                    result = []
+                    for row in rows:
+                        value = row.strip()
+                        result.append(value)
+                elif "kv" in format:
+                    result = dict()
+                    for row in rows:
+                        row = row.strip()
+                        key, value = row.split(delimiter, 1)
+                        result[key.strip()] = value.strip()
+                else:
+                    raise AsyncProcessError("Wrong stdout parser format")
+
+                # Store the parser result
+                self.module_results[id] = result
 
     def _execute_process_list(self, process_list):
         """Run all modules or executables that are specified in the process list
@@ -1207,19 +1303,19 @@ class EphemeralProcessing(object):
             model = ExceptionTracebackModel(message=str(e_value),
                                             traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
-            self.run_state = {"error": str(e), "exception":model}
+            self.run_state = {"error": str(e), "exception": model}
         except KeyboardInterrupt as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
                                             traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
-            self.run_state = {"error": str(e), "exception":model}
+            self.run_state = {"error": str(e), "exception": model}
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
                                             traceback=traceback.format_tb(e_tb),
                                             type=str(e_type))
-            self.run_state = {"error":str(e), "exception":model}
+            self.run_state = {"error": str(e), "exception": model}
         finally:
             try:
                 # Call the final cleanup, before sending the status messages
@@ -1229,7 +1325,7 @@ class EphemeralProcessing(object):
                 model = ExceptionTracebackModel(message=str(e_value),
                                                 traceback=traceback.format_tb(e_tb),
                                                 type=str(e_type))
-                self.run_state = {"error": str(e), "exception":model}
+                self.run_state = {"error": str(e), "exception": model}
             # After all processing finished, send the final status
             if "success" in self.run_state:
                 self._send_resource_finished(message=self.finish_message,

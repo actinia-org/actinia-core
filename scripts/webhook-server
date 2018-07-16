@@ -1,0 +1,56 @@
+#!flask/bin/python
+# -*- coding: utf-8 -*-
+"""
+Dummy server to response HTTP code 200 to a POST call from an actinia webhook
+"""
+import argparse
+from pprint import pprint
+from flask import Flask, make_response, jsonify, request, json
+
+__license__ = "GPLv3"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016, Soeren Gebbert"
+__maintainer__ = "Soeren Gebbert"
+__email__      = "soerengebbert@googlemail.com"
+
+
+flask_app = Flask(__name__)
+
+
+@flask_app.route('/webhook/finished', methods=['GET', 'POST'])
+def finished():
+    if request.get_json():
+        pprint(json.loads(request.get_json()))
+    return make_response(jsonify("OK"), 200)
+
+
+@flask_app.route('/webhook/update', methods=['GET', 'POST'])
+def update():
+    if request.get_json():
+        pprint(json.loads(request.get_json()))
+    return make_response(jsonify("OK"), 200)
+
+
+def main():
+
+    parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a two GET/POST endpoint '
+                                                 'which returns HTTP code 200 if called. The endpoints are: '
+                                                 ' - /webhook/finished for finished callbacks '
+                                                 ' - /webhook/update for status update callbacks')
+
+    parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
+                        help="The IP address that should be used for the webhook server")
+
+    parser.add_argument("--port", type=int, required=False, default=5005,
+                        help="The port that should be used for the webhook server")
+
+    parser.add_argument("--debug", type=bool, required=False, default=True,
+                        help="Set True to activate debugging")
+
+    args = parser.parse_args()
+
+    flask_app.run(host=args.host, port=args.port, debug=args.debug)
+
+
+if __name__ == '__main__':
+    main()

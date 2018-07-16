@@ -46,7 +46,6 @@ class RasterColorModel(Schema):
             'description': 'The name of an existing raster map layer to copy the color table from'
         }
     }
-    required = []
     example = {
         "rules":["1 0:0:0",
                  "default 255:255:255"],

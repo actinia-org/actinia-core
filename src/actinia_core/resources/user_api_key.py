@@ -105,7 +105,7 @@ class TokenCreationResource(LoginBase):
                 'required': False,
                 'in': 'query',
                 'type': 'integer',
-                'default': '86400'
+                'default': 86400
             }],
         'responses': {
             '200': {

@@ -30,6 +30,7 @@ def setup_package():
                    'scripts/actinia-bench',
                    'scripts/rq_custom_worker',
                    'scripts/rq_starter',
+                   'scripts/webhook-server',
                    'scripts/actinia-server'])
 
 

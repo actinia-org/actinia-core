@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import unittest
 from flask.json import dumps as json_dumps
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
@@ -61,7 +62,9 @@ process_chain_legacy = {
 
 # Module  example for r.out.ascii with g.region adjustment and temporary file handling
 process_chain_new = {
-    "version":1,
+    "version": 1,
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
         {
             "id": "1",
@@ -69,7 +72,7 @@ process_chain_new = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -78,10 +81,11 @@ process_chain_new = {
         {
             "id": "2",
             "module": "r.out.ascii",
-            "inputs": [{"param":"input",
+            "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"param":"output",
+                {"export": {"type": "file", "format": "TXT"},
+                 "param": "output",
                  "value": "$file::out1"}
             ]
         },
@@ -94,9 +98,10 @@ process_chain_new = {
             "id": "4",
             "module": "r.out.ascii",
             "inputs": [{"param": "input",
-                       "value": "elevation@PERMANENT"}],
+                        "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"param": "output",
+                {"export": {"type": "file", "format": "TXT"},
+                 "param": "output",
                  "value": "$file::out2"}
             ]
         },
@@ -112,7 +117,6 @@ process_chain_new = {
         }
     ]
 }
-
 
 # Import a Sentinel2A scene and compute the NDVI for a specific polygon
 process_chain_ndvi = {
@@ -130,32 +134,33 @@ process_chain_ndvi = {
                      "param": "map",
                      "value": "B08"}]},
 
-         {"id": "g_region_1",
-          "module": "g.region",
-          "inputs": [{"param": "raster",
-                      "value": "B04"}],
-          "flags": "g"},
+        {"id": "g_region_1",
+         "module": "g.region",
+         "inputs": [{"param": "raster",
+                     "value": "B04"}],
+         "flags": "g"},
 
-         {"id": "rmapcalc_1",
-          "module": "r.mapcalc",
-          "inputs": [{"param": "expression",
-                      "value": "NDVI = float((B08 - B04)/(B08 + B04))"}]},
+        {"id": "rmapcalc_1",
+         "module": "r.mapcalc",
+         "inputs": [{"param": "expression",
+                     "value": "NDVI = float((B08 - B04)/(B08 + B04))"}]},
 
-         {"id": "r_univar_sentinel2",
-          "module": "r.univar",
-          "inputs": [{"param": "map",
-                      "value": "NDVI"}],
-          "flags": "g"},
+        {"id": "r_univar_sentinel2",
+         "module": "r.univar",
+         "inputs": [{"param": "map",
+                     "value": "NDVI"}],
+         "flags": "g"},
 
-         {"id": "exporter_1",
-          "module": "exporter",
-          "outputs": [{"export": {"type": "raster", "format": "GTiff"},
-                       "param": "map",
-                       "value": "NDVI"}]}
-         ],
+        {"id": "exporter_1",
+         "module": "exporter",
+         "outputs": [{"export": {"type": "raster", "format": "GTiff"},
+                      "param": "map",
+                      "value": "NDVI"}]}
+    ],
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
-
 
 # Import a Sentinel2A scene and compute the NDVI for a specific polygon
 # https://storage.googleapis.com/graas-geodata/rio.json
@@ -165,8 +170,8 @@ process_chain_ndvi_landsat = {
         {"id": "importer_1",
          "module": "importer",
          "inputs": [{"import_descr": {"source": "LT52170762005240COA00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
                     {"import_descr": {"source": "https://storage.googleapis.com/graas-geodata/rio.json",
@@ -174,55 +179,57 @@ process_chain_ndvi_landsat = {
                      "param": "map",
                      "value": "polygon"}]},
 
-         {"id": "g_list",
-          "module": "g.list",
-          "inputs": [{"param": "type",
-                      "value": "raster"}]},
+        {"id": "g_list",
+         "module": "g.list",
+         "inputs": [{"param": "type",
+                     "value": "raster"}]},
 
-         {"id": "g_rename_1",
-          "module": "g.rename",
-          "inputs": [{"param": "raster",
-                      "value": "LT52170762005240COA00_dos1.4,RED"}]},
+        {"id": "g_rename_1",
+         "module": "g.rename",
+         "inputs": [{"param": "raster",
+                     "value": "LT52170762005240COA00_dos1.4,RED"}]},
 
-         {"id": "g_rename_2",
-          "module": "g.rename",
-          "inputs": [{"param": "raster",
-                      "value": "LT52170762005240COA00_dos1.5,NIR"}]},
+        {"id": "g_rename_2",
+         "module": "g.rename",
+         "inputs": [{"param": "raster",
+                     "value": "LT52170762005240COA00_dos1.5,NIR"}]},
 
-         {"id": "g_region_1",
-          "module": "g.region",
-          "inputs": [{"param": "raster",
-                      "value": "RED"}],
-          "flags": "g"},
+        {"id": "g_region_1",
+         "module": "g.region",
+         "inputs": [{"param": "raster",
+                     "value": "RED"}],
+         "flags": "g"},
 
-          {"id": "g_region_2",
-           "module": "g.region",
-           "inputs": [{"param": "vector",
-                      "value": "polygon"}],
-           "flags": "g"},
+        {"id": "g_region_2",
+         "module": "g.region",
+         "inputs": [{"param": "vector",
+                     "value": "polygon"}],
+         "flags": "g"},
 
-          {"id": "r_mask",
-           "module": "r.mask",
-           "inputs": [{"param": "vector",
-                      "value": "polygon"}]},
+        {"id": "r_mask",
+         "module": "r.mask",
+         "inputs": [{"param": "vector",
+                     "value": "polygon"}]},
 
-         {"id": "rmapcalc_1",
-          "module": "r.mapcalc",
-          "inputs": [{"param": "expression",
-                      "value": "NDVI = float((NIR - RED)/(NIR + RED))"}]},
+        {"id": "rmapcalc_1",
+         "module": "r.mapcalc",
+         "inputs": [{"param": "expression",
+                     "value": "NDVI = float((NIR - RED)/(NIR + RED))"}]},
 
-         {"id": "r_univar_ndvi",
-          "module": "r.univar",
-          "inputs": [{"param": "map",
-                      "value": "NDVI"}],
-          "flags": "g"},
+        {"id": "r_univar_ndvi",
+         "module": "r.univar",
+         "inputs": [{"param": "map",
+                     "value": "NDVI"}],
+         "flags": "g"},
 
-         {"id": "exporter_1",
-          "module": "exporter",
-          "outputs": [{"export": {"type": "raster", "format": "GTiff"},
-                       "param": "map",
-                       "value": "NDVI"}]}
-         ],
+        {"id": "exporter_1",
+         "module": "exporter",
+         "outputs": [{"export": {"type": "raster", "format": "GTiff"},
+                      "param": "map",
+                      "value": "NDVI"}]}
+    ],
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -231,35 +238,35 @@ process_chain_landsat = {
         {"id": "importer_1",
          "module": "importer",
          "inputs": [{"import_descr": {"source": "LT52170762005240COA00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
                     {"import_descr": {"source": "LE70030041999205KIS00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
                     {"import_descr": {"source": "LC80050042013137LGN01",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
                     {"import_descr": {"source": "LE72170762002288CUB00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
                     {"import_descr": {"source": "LT52170762007278COA00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"}
                     ]
          }],
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished"},
     "version": "1"
 }
-
 
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):

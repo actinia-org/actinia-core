@@ -4,7 +4,7 @@
 Process queue implementation using multiprocessing, Queue() and Thread.
 
 The process queue is responsible to run all requests in actinia that
-require to execute GRASS GIS processes or UNIX processes to create a respone.
+require to execute GRASS GIS processes or UNIX processes to create a response.
 
 The process queue supports logging of the stderr output of the executed processes
 into a rotating logfile and fluent server.

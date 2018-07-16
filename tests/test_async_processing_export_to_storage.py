@@ -97,7 +97,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     Deactivated due to credential exposition problem
     """
 
-    def otest_async_processing_export(self):
+    def test_async_processing_export(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
                               headers=self.admin_auth_header,
@@ -114,7 +114,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
             print(rv)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
 
-    def otest_termination(self):
+    def test_termination(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
                               headers=self.admin_auth_header,
@@ -122,7 +122,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete(URL_PREFIX + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.admin_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
@@ -136,7 +136,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     Deactivated due to credential exposition problem
     """
 
-    def otest_async_processing_export(self):
+    def test_async_processing_export(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',
                               headers=self.admin_auth_header,
@@ -153,7 +153,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
             print(rv)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
 
-    def otest_termination(self):
+    def test_termination(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',
                               headers=self.admin_auth_header,
@@ -161,7 +161,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
                               content_type="application/json")
         resp = json_loads(rv.data)
         # Send the termination request
-        self.server.delete("/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+        self.server.delete(URL_PREFIX + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
                            headers=self.admin_auth_header)
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,

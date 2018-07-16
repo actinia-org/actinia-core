@@ -15,7 +15,7 @@ class Process(object):
     """
 
     def __init__(self, exec_type, executable, executable_params,
-                 stdin_source=None, skip_permission_check=False):
+                 stdin_source=None, skip_permission_check=False, id=None):
         """
 
         Args:
@@ -27,6 +27,7 @@ class Process(object):
                                             this is meaningful for internal process chain use.
                                             Hence the user can use internal process chains that
                                             contain module he has no permissions to use.
+            id (str): The unique id of the process
         """
 
         self.exec_type = exec_type
@@ -39,6 +40,7 @@ class Process(object):
         self.stdout = None
         self.stderr = None
         self.skip_permission_check = skip_permission_check
+        self.id = id
 
     def set_stdouts(self, stdout, stderr):
         """Set the content of stdout and stderr of this process
