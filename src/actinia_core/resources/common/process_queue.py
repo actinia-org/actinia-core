@@ -70,7 +70,12 @@ def enqueue_job(timeout, func, *args):
         func: The function to call from the subprocess
         *args: The function arguments
     """
+
+    print(str(datetime.now()) + ' in pq - enqueue_job - before put')
+    print(str(datetime.now()) + str(args))
+    print(str(datetime.now()) + ' in pq - enqueue_job - ' + str(process_queue))
     process_queue.put((func, timeout, args))
+    print(str(datetime.now()) + ' in pq - enqueue_job - after put')
 
 
 def stop_process_queue():
@@ -314,9 +319,16 @@ def queue_watcher(queue, data_set, lock):
 
     while True:
         try:
+            print(str(datetime.now()) + ' in pq - queue_watcher - 00 ' + str(queue))
+            print(str(datetime.now()) + ' in pq - queue_watcher - 0 - queue size: ' + str(queue.qsize()))
             data = queue.get(block=True)
+            print(str(datetime.now()) + ' in pq - queue_watcher - 1 - queue smaller - queue size: ' + str(queue.qsize()))
             lock.acquire_lock()
+            print(str(datetime.now()) + ' in pq - queue_watcher - 2 - set size: ' + str(len(data_set)))
+            print(str(datetime.now()) + str(data))
             data_set.add(data)
+            print(str(datetime.now()) + ' in pq - queue_watcher - 3 - set larger - set size: ' + str(len(data_set)))
+            print(str(datetime.now()) + str(data))
             lock.release_lock()
         except standard_queue.Empty:
             pass
@@ -373,10 +385,16 @@ def start_process_queue_manager(config, queue, use_logger):
             data = None
             lock.acquire_lock()
             if len(data_set) > 0:
+                print(str(datetime.now()) + ' in pq - start_process_queue_manager' + ' - 0 - set size: ' + str(len(data_set)))
+                print(str(datetime.now()) + str(data_set))
                 data = data_set.pop()
+                print(str(datetime.now()) + str(data_set))
+                print(str(datetime.now()) + str(data))
+                print(str(datetime.now()) + ' in pq - start_process_queue_manager' + ' - 1 - set size: ' + str(len(data_set)))
             lock.release_lock()
 
             if data:
+                print(str(datetime.now()) + ' in pq - start_process_queue_manager' + ' - 2 - in if data')
                 # Stop all (running and waiting) processes if the STOP command was detected
                 # and leave the loop
                 if data is not None and "STOP" in data:
@@ -390,6 +408,7 @@ def start_process_queue_manager(config, queue, use_logger):
                     exit(0)
                 # Enqueue a new process
                 if data is not None and len(data) == 3:
+                    print(str(datetime.now()) + ' in pq - start_process_queue_manager' + ' - 3 - in if data == 3')
                     func, timeout, args = data
                     print("Enqueue process: ", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
