@@ -29,6 +29,7 @@ PROCESS_CHAIN_SHORT={
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
+            "res":"2.5"
         },
         "flags":"p",
         "verbose":True
@@ -255,6 +256,12 @@ def main():
                         required=False,
                         help="The type of process chain")
 
+    parser.add_argument("-o", "--poll",
+                        type=int,
+                        default=1,
+                        required=False,
+                        help="Should the results be polled from the actinia server.")
+
     args = parser.parse_args()
 
     auth=(args.user_id, args.password)
@@ -270,7 +277,7 @@ def main():
         process_list = []
         for i in range(args.requests):
 
-            param=[args.server, auth, q, i, args.type]
+            param=[args.server, auth, q, i, args.type, bool(args.poll)]
 
             try:
                 p = Process(target=start_query_processing_async_export,
@@ -286,7 +293,7 @@ def main():
         errors = []
         for p in process_list:
             t = q.get()
-            if t < 0:
+            if t < 0 and bool(args.poll) is True:
                 print("Error in process ", i)
                 errors.append(t)
             else:
@@ -306,7 +313,7 @@ def main():
         print("Loop %i Resulting mean time in seconds for %i requests: %.2f"%(k, count - len(errors), mean_time))
 
 
-def start_query_processing_async_export(base_url, auth, q, id, type):
+def start_query_processing_async_export(base_url, auth, q, id, type, polling):
     """Start an asynchronous GRaaS process and poll until its finished
 
     This function is the argument for multiprocessing.Process
@@ -317,6 +324,7 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
         q (multiprocessing.Queue): The queue to store the processing time in
         id (int): The id of the request
         type (string): The type of processing
+        polling (bool): Set True if polling should be enabled
 
     """
 
@@ -352,9 +360,10 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
         q.close()
         raise
 
-    q.put(-1 * r.status_code)
-    q.close()
-    return
+    if polling is False:
+        q.put(-1 * r.status_code)
+        q.close()
+        return
 
     if r.status_code == 200:
         if not r.text:

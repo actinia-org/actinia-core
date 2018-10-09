@@ -81,9 +81,9 @@ def stop_process_queue():
     process_queue.put("STOP")
     # Wait for all joining processes
     if process_queue_manager:
-        print("Waited for process_queue_manager")
+        # print("Waited for process_queue_manager")
         process_queue_manager.join(3)
-        print("Terminate process_queue_manager")
+        # print("Terminate process_queue_manager")
         process_queue_manager.terminate()
     process_queue_manager = None
 
@@ -157,7 +157,7 @@ class EnqueuedProcess(object):
     def check_timeout(self):
         """Check if the process waited longer for running then the timeout that was set
 
-        Terminate the process if the timout limit was exceeded.
+        Terminate the process if the timeout limit was exceeded.
 
         Returns:
              False if within timeout, True if the process terminated itself
@@ -314,11 +314,11 @@ def queue_watcher(queue, data_set, lock):
 
     while True:
         try:
-            print("Check for new data in queue")
+            # print("Check for new data in queue")
             data = queue.get(block=True)
             lock.acquire_lock()
             data_set.add(data)
-            print("Add data to set", len(data_set))
+            # print("Add data to set", len(data_set))
             lock.release_lock()
         except standard_queue.Empty:
             pass
@@ -395,22 +395,18 @@ def start_process_queue_manager(config, queue, use_logger):
                 # Enqueue a new process
                 elif len(data) == 3:
                     func, timeout, args = data
-                    #print("Enqueue process: ", args[0].api_info)
+                    print("Enqueue process: ", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
                                               timeout=timeout,
                                               resource_logger=resource_logger,
                                               args=args)
                     waiting_processes.add(enqproc)
 
-            #print("Size of waiting procs:", len(waiting_processes))
-            #print("Size of running procs:", len(running_procs))
             if len(running_procs) < config.NUMBER_OF_WORKERS:
                 if len(waiting_processes) > 0:
-                    print("Start new process")
                     enqproc = waiting_processes.pop()
                     running_procs.add(enqproc)
                     enqproc.start()
-                    #print("Size of waiting procs after pop:", len(waiting_processes))
 
             # Purge processes that are finished or exceeded their timeout each 40th loop
             if count % 10 == 0:
@@ -418,13 +414,11 @@ def start_process_queue_manager(config, queue, use_logger):
                 procs_to_remove = []
                 # purge processes that has been finished
                 for enqproc in running_procs:
-                    #print("Check for running process", enqproc.api_info, enqproc.is_alive())
                     if enqproc.started is True and enqproc.is_alive() is False:
                         # Check if the process finished with an error and send a resource update if required
                         enqproc.check_exit()
                         procs_to_remove.append(enqproc)
                 for enqproc in procs_to_remove:
-                    print("Remove finished running process", enqproc.api_info)
                     running_procs.remove(enqproc)
 
                 procs_to_remove = []
@@ -434,7 +428,6 @@ def start_process_queue_manager(config, queue, use_logger):
                     if check is True:
                         procs_to_remove.append(enqproc)
                 for enqproc in procs_to_remove:
-                    print("Remove timeout process: ", enqproc.api_info)
                     waiting_processes.remove(enqproc)
 
             time.sleep(0.05)

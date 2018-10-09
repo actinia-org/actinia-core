@@ -17,3 +17,5 @@ Sphinx==1.7.1
 google-cloud==0.32.0
 pycurl==7.43.0.1
 passlib==1.7.1
+gunicorn==19.9.0
+
