@@ -29,7 +29,6 @@ PROCESS_CHAIN_SHORT={
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-            "res":"2.5"
         },
         "flags":"p",
         "verbose":True
@@ -220,18 +219,18 @@ def main():
 
     parser.add_argument("-s", "--server",
                         type=str,
-                        default="http://127.0.0.1:5000",
+                        default="http://127.0.0.1:8080/api/v1",
                         required=False,
                         help="The hostname:port of the GRaaS server")
 
     parser.add_argument("-u", "--user_id",
-                        default="soeren",
+                        default="superadmin",
                         type=str,
                         required=False,
                         help="The user name")
 
     parser.add_argument("-p", "--password",
-                        default="12345678",
+                        default="abcdefgh",
                         type=str,
                         required=False,
                         help="The user password")
@@ -353,6 +352,10 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
         q.close()
         raise
 
+    q.put(-1 * r.status_code)
+    q.close()
+    return
+
     if r.status_code == 200:
         if not r.text:
             q.put(-1 * r.status_code)
@@ -382,8 +385,8 @@ def poll(url, auth, start, q, id):
     """
     while True:
         r = requests.get(url, auth=auth)
-        print(r.text)
-        # print "Process", id, r.status_code, "HTTP Status", r, "\n", r.text
+        # print(r.text)
+        # print("Process", id, r.status_code)
 
         try:
             data = simplejson.loads(r.text)
@@ -394,7 +397,7 @@ def poll(url, auth, start, q, id):
 
             if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
                 break
-            time.sleep(3)
+            time.sleep(1)
         except Exception as a:
             raise
 

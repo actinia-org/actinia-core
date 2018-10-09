@@ -3,7 +3,8 @@ import unittest
 import time
 import datetime
 from copy import deepcopy
-from actinia_core.resources.common.process_queue import create_process_queue, enqueue_job, stop_process_queue
+from actinia_core.resources.common.process_queue import create_process_queue,\
+    enqueue_job, stop_process_queue
 from actinia_core.resources.common.resource_data_container import ResourceDataContainer
 from actinia_core.resources.common.app import flask_app
 try:
@@ -20,14 +21,14 @@ __email__      = "soerengebbert@googlemail.com"
 
 def job_with_exception(rdc):
     print("job_with_exception", rdc.api_info, rdc.orig_time)
-    time.sleep(3)
-    raise Exception("job_with_exception")
+    # time.sleep(3)
+    # raise Exception("job_with_exception")
 
 
 def job_short_run(rdc):
     for i in range(3):
         print("job_short_run", rdc.api_info, rdc.orig_time)
-        time.sleep(1)
+        #time.sleep(1)
 
 
 def job_long_run(rdc):
@@ -48,7 +49,7 @@ class ProcessQueueTestCase(unittest.TestCase):
         self.user_id = "soeren"
 
         global global_config
-        global_config.NUMBER_OF_WORKERS = 2
+        global_config.NUMBER_OF_WORKERS = 1
 
         self.rdc = ResourceDataContainer(grass_data_base="grass_data_base",
                                          grass_user_data_base="grass_user_data_base",
@@ -72,6 +73,43 @@ class ProcessQueueTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def otest_1(self):
+
+        create_process_queue(config=global_config, use_logger=False)
+
+        args = deepcopy(self.rdc)
+        args.api_info = 0
+
+        args = deepcopy(self.rdc)
+        args.api_info = 1
+        enqueue_job(15, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 2
+        enqueue_job(15, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 3
+        enqueue_job(1, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 4
+        enqueue_job(1, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 5
+        enqueue_job(1, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 6
+        enqueue_job(15, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 7
+        enqueue_job(15, job_with_exception, args)
+        args = deepcopy(self.rdc)
+        args.api_info = 8
+        enqueue_job(15, job_with_exception, args)
+
+        time.sleep(10)
+        stop_process_queue()
+
+        return
+
+    def otest_2(self):
 
         create_process_queue(config=global_config, use_logger=False)
 
