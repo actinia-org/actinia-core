@@ -1,6 +1,6 @@
 # Python3 requirements for actinia core
 
-Flask==0.12.2
+Flask==0.12.3
 Flask-HTTPAuth==3.2.3
 Flask-RESTful==0.3.6
 flask-restful-swagger-2

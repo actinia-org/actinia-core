@@ -14,20 +14,6 @@ __copyright__  = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
-SCENE_SUFFIXES={
-"LT04":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF","_MTL.txt"],
-"LT05":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF","_MTL.txt"],
-"LE07":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
-        "_B7.TIF", "_B8.TIF","_MTL.txt"],
-"LC08":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
-        "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF","_MTL.txt"]}
-
-RASTER_SUFFIXES={
-"LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-"LT05":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-"LE07":[".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
-"LC08":[".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
-
 
 class ResourceStorageGCS(ResourceStorageBase):
     """Storage class of generated resources to be put in a Google Cloud Storage bucket

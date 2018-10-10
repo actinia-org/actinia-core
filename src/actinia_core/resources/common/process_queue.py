@@ -406,6 +406,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 if len(waiting_processes) > 0:
                     enqproc = waiting_processes.pop()
                     running_procs.add(enqproc)
+                    print("Run process: ", enqproc.api_info)
                     enqproc.start()
 
             # Purge processes that are finished or exceeded their timeout each 40th loop
