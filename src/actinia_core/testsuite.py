@@ -117,6 +117,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
             global_config.DOWNLOAD_CACHE = "/tmp/download_cache"
             global_config.REDIS_QUEUE_SERVER_URL = "localhost"
             global_config.REDIS_QUEUE_SERVER_PORT = 6379
+            global_config.NUMBER_OF_WORKERS = 3
             # Create the job queue
             # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,

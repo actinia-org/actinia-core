@@ -220,18 +220,18 @@ def main():
 
     parser.add_argument("-s", "--server",
                         type=str,
-                        default="http://127.0.0.1:5000",
+                        default="http://127.0.0.1:8080/api/v1",
                         required=False,
                         help="The hostname:port of the GRaaS server")
 
     parser.add_argument("-u", "--user_id",
-                        default="soeren",
+                        default="superadmin",
                         type=str,
                         required=False,
                         help="The user name")
 
     parser.add_argument("-p", "--password",
-                        default="12345678",
+                        default="abcdefgh",
                         type=str,
                         required=False,
                         help="The user password")
@@ -256,6 +256,12 @@ def main():
                         required=False,
                         help="The type of process chain")
 
+    parser.add_argument("-o", "--poll",
+                        type=int,
+                        default=1,
+                        required=False,
+                        help="Should the results be polled from the actinia server.")
+
     args = parser.parse_args()
 
     auth=(args.user_id, args.password)
@@ -271,7 +277,7 @@ def main():
         process_list = []
         for i in range(args.requests):
 
-            param=[args.server, auth, q, i, args.type]
+            param=[args.server, auth, q, i, args.type, bool(args.poll)]
 
             try:
                 p = Process(target=start_query_processing_async_export,
@@ -287,7 +293,7 @@ def main():
         errors = []
         for p in process_list:
             t = q.get()
-            if t < 0:
+            if t < 0 and bool(args.poll) is True:
                 print("Error in process ", i)
                 errors.append(t)
             else:
@@ -307,7 +313,7 @@ def main():
         print("Loop %i Resulting mean time in seconds for %i requests: %.2f"%(k, count - len(errors), mean_time))
 
 
-def start_query_processing_async_export(base_url, auth, q, id, type):
+def start_query_processing_async_export(base_url, auth, q, id, type, polling):
     """Start an asynchronous GRaaS process and poll until its finished
 
     This function is the argument for multiprocessing.Process
@@ -318,6 +324,7 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
         q (multiprocessing.Queue): The queue to store the processing time in
         id (int): The id of the request
         type (string): The type of processing
+        polling (bool): Set True if polling should be enabled
 
     """
 
@@ -353,6 +360,11 @@ def start_query_processing_async_export(base_url, auth, q, id, type):
         q.close()
         raise
 
+    if polling is False:
+        q.put(-1 * r.status_code)
+        q.close()
+        return
+
     if r.status_code == 200:
         if not r.text:
             q.put(-1 * r.status_code)
@@ -382,8 +394,8 @@ def poll(url, auth, start, q, id):
     """
     while True:
         r = requests.get(url, auth=auth)
-        print(r.text)
-        # print "Process", id, r.status_code, "HTTP Status", r, "\n", r.text
+        # print(r.text)
+        # print("Process", id, r.status_code)
 
         try:
             data = simplejson.loads(r.text)
@@ -394,7 +406,7 @@ def poll(url, auth, start, q, id):
 
             if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
                 break
-            time.sleep(3)
+            time.sleep(1)
         except Exception as a:
             raise
 

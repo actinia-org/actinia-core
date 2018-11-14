@@ -18,7 +18,7 @@ __copyright__ = "Copyright 2016, Sören Gebbert"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_EXPORT_FORMATS = ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT"]
+SUPPORTED_EXPORT_FORMATS = ['GTiff', "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT", "PostgreSQL"]
 
 
 class IOParameterBase(Schema):
@@ -153,7 +153,12 @@ class OutputParameter(IOParameterBase):
                 'description': 'The format of the output file in case of raster layer, '
                                'vector layer or text file export. '
                                'Raster layer export support only GeoTiff format, all other formats are '
-                               'vector layer export formats. Some GRASS GIS modules allow the export of text files. '
+                               'vector layer export formats. '
+                               'If the *PostgeSQL* format was chosen, a postgis database string *dbstring* '
+                               'must be provided  so that the GRASS GIS module *v.out.ogr knows to '
+                               'which PostgreSQL database it should be connect. The name of the output layer can '
+                               'be specified as *output_layer* for PostgreSQL database exports. '
+                               'Some GRASS GIS modules allow the export of text files. '
                                'These files can be exported and provided as downloadable link as well.',
                 'enum': SUPPORTED_EXPORT_FORMATS
             },
@@ -165,12 +170,23 @@ class OutputParameter(IOParameterBase):
                                'Exported text and vector files will always be compressed with zip.',
                 'enum': ['raster', 'vector', 'file']
             },
+            'dbstring': {
+                'type': 'string',
+                'description': 'The database string to be used to connect to a PostgreSQL database for vector export.'
+            },
+            'output_layer': {
+                'type': 'string',
+                'description': 'Name for output PostgreSQL layer. If not specified, '
+                               'GRASS GIS vector map layer name is used.'
+            },
         },
         'description': 'The raster, vector or text file export parameter.',
         'required': ["format", "type"],
-        'example': {"format": "TXT", "type": "file"}
+        'example': {"format": "PostgreSQL",
+                    "type": "vector",
+                    "dbstring": "PG:host=localhost dbname=postgis user=postgres",
+                    "output_layer": "roads"}
     }
-
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
     example = {'param': 'slope',
@@ -303,6 +319,39 @@ class Executable(Schema):
                'params': []}
 
 
+class Webhooks(Schema):
+    """The definition of finished and update webhooks
+    """
+    type = 'object'
+    properties = {
+        'update': {'type': 'string',
+                   'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
+                                  'when a status update is available while the process chain is executed. '
+                                  'The actinia JSON status response will be send as JSON '
+                                  'content to the POST endpoint for each status update until the process finished. '
+                                  'The GET endpoint, that must be available by the same URL as the POST endpoint, '
+                                  'will be used to check if the webhook endpoint is available.'},
+        'finished': {'type': 'string',
+                     'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
+                                    'when the process chain was executed successful or unsuccessfully. '
+                                    'The actinia JSON response will be send as JSON content '
+                                    'to the POST endpoint after processing finished. '
+                                    'The GET endpoint, that must be available by the same URL as the POST endpoint, '
+                                    'will be used to check if the webhook endpoint is available.'},
+    }
+    required = ['finished']
+    description = 'Specify HTTP(S) GET/POST endpoints that should be called ' \
+                  'when the process chain was executed successful or unsuccessfully (finished) ' \
+                  'or when a status/progress update is available (update). ' \
+                  'The actinia JSON response will be send as JSON content to the POST endpoints after ' \
+                  'processing finished or the status was updated. ' \
+                  'The GET endpoints, that must be available by the same URL as the POST endpoints (update/finished),' \
+                  'will be used to check if the webhooks endpoints are available.' \
+                  'The finished endpoint is mandatory, the update endpoint is optional.'
+    example = {'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
+               'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'}
+
+
 class ProcessChainModel(Schema):
     """Definition of the actinia process chain that includes GRASS GIS modules
     and common Linux commands
@@ -312,17 +361,11 @@ class ProcessChainModel(Schema):
         'version': {'type': 'string',
                     'default': '1',
                     'description': 'The version string of the process chain'},
-        'webhook': {'type': 'string',
-                    'description': 'Specify a HTTP(S) GET/POST endpoint that should be called '
-                                   'when the process chain was executed successful or unsuccessfully. '
-                                   'The actinia JSON response will be send as JSON content to the POST endpoint after '
-                                   'processing finished. '
-                                   'The GET endpoint, that must be available by the same URL as the POST endpoint, '
-                                   'will be used to check if the webhook endpoint is available.'},
         'list': {'type': 'array',
                  'items': GrassModule,
                  'description': "A list of process definitions that should be executed "
-                                "in the order provided by the list."}
+                                "in the order provided by the list."},
+        'webhooks': Webhooks,
     }
     required = ['version', 'list']
     example = {
@@ -417,7 +460,8 @@ class ProcessChainModel(Schema):
                 "stdout": {"id": "sample", "format": "table", "delimiter": "|"}
             }
         ],
-        'webhook': 'http://business-logic.company.com/api/v1/actinia-webhook',
+        'webhooks': {'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
+                     'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'},
         'version': '1'}
 
 
@@ -485,7 +529,8 @@ class ProcessChainConverter(object):
         self.send_resource_update = send_resource_update
         self.message_logger = message_logger
         self.import_descr_list = []
-        self.webhook = None
+        self.webhook_finished = None
+        self.webhook_update = None
 
     def process_chain_to_process_list(self, process_chain):
 
@@ -523,13 +568,24 @@ class ProcessChainConverter(object):
             raise AsyncProcessError("List of processes to be executed is missing "
                                     "in the process chain definition")
 
-        # Check for the webhook
-        if "webhook" in process_chain:
-            self.webhook = process_chain["webhook"]
-            # Check if thr URL exists by investigating the HTTP header
-            resp = requests.head(self.webhook)
-            if resp.status_code != 200:
-                raise AsyncProcessError("The webhook URL %s can not be accessed." % self.webhook)
+        # Check for the webhooks
+        if "webhooks" in process_chain:
+
+            if "finished" in process_chain["webhooks"]:
+                self.webhook_finished = process_chain["webhooks"]["finished"]
+                # Check if thr URL exists by investigating the HTTP header
+                resp = requests.head(self.webhook_finished)
+                if resp.status_code != 200:
+                    raise AsyncProcessError("The finished webhook URL %s can not be accessed." % self.webhook_finished)
+            else:
+                raise AsyncProcessError("The finished URL is missing in the webhooks definition.")
+
+            if "update" in process_chain["webhooks"]:
+                self.webhook_update = process_chain["webhooks"]["update"]
+                # Check if thr URL exists by investigating the HTTP header
+                resp = requests.head(self.webhook_update)
+                if resp.status_code != 200:
+                    raise AsyncProcessError("The update webhook URL %s can not be accessed." % self.webhook_update)
 
         for process_descr in process_chain["list"]:
 
@@ -630,7 +686,7 @@ class ProcessChainConverter(object):
 
             # POSTGIS
             elif entry["import_descr"]["type"].lower() == "postgis":
-                dbstring = "\"%s\"" % entry["import_descr"]["source"]
+                dbstring = "%s" % entry["import_descr"]["source"]
                 vector_name = entry["value"]
                 layer = None
                 if "vector_layer" in entry["import_descr"]:
@@ -724,7 +780,9 @@ class ProcessChainConverter(object):
         """Analyse a grass process description dict and create a Process
         that is used to execute a GRASS GIS binary.
 
-        Identify the required mapsets from the input definition and stores them in a list.
+        - Identify the required mapsets from the input definition and stores them in a list.
+        - Identify input and output options
+        - Add export options to the export list
 
         Args:
             module_descr (dict): The module description
@@ -853,6 +911,9 @@ class ProcessChainConverter(object):
                     if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
                         raise AsyncProcessError(
                             "Invalid export <format> parameter in description of module <%s>" % module_name)
+                    if "PostgreSQL" in exp["format"] and "dbstring" not in exp:
+                        raise AsyncProcessError(
+                            "The dbstring parameter is missing for PostgreSQL export")
                     if exp["type"] not in ["raster", "vector", "strds", "file", "stvds"]:
                         raise AsyncProcessError(
                             "Invalid export <type> parameter in description of module <%s>" % module_name)

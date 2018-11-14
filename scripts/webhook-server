@@ -17,8 +17,15 @@ __email__      = "soerengebbert@googlemail.com"
 flask_app = Flask(__name__)
 
 
-@flask_app.route('/webhook', methods=['GET', 'POST'])
-def dummy():
+@flask_app.route('/webhook/finished', methods=['GET', 'POST'])
+def finished():
+    if request.get_json():
+        pprint(json.loads(request.get_json()))
+    return make_response(jsonify("OK"), 200)
+
+
+@flask_app.route('/webhook/update', methods=['GET', 'POST'])
+def update():
     if request.get_json():
         pprint(json.loads(request.get_json()))
     return make_response(jsonify("OK"), 200)
@@ -26,8 +33,10 @@ def dummy():
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a single POST endpoint '
-                                                 'which returns HTTP code 200 if called.')
+    parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a two GET/POST endpoint '
+                                                 'which returns HTTP code 200 if called. The endpoints are: '
+                                                 ' - /webhook/finished for finished callbacks '
+                                                 ' - /webhook/update for status update callbacks')
 
     parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
                         help="The IP address that should be used for the webhook server")

@@ -239,9 +239,31 @@ process_chain_sent_2 = {
 
 
 # Wrong webhook URL
-process_chain_error_webhook = {
+process_chain_error_webhook_finished = {
     "version":1,
-    "webhook": "http://0.0.0.0:5005/webhooker",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished_not",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
+    "list": [
+        {
+            "id": "1",
+            "module": "g.region",
+            "inputs": [
+                {"param": "raster",
+                 "value": "elevation@PERMANENT"},
+                {"param":"res",
+                 "value": "10000"}
+            ],
+            "flags": "p",
+            "verbose": True
+        }
+    ]
+}
+
+
+process_chain_error_webhook_update = {
+    "version":1,
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update_not"},
     "list": [
         {
             "id": "1",
@@ -261,10 +283,20 @@ process_chain_error_webhook = {
 
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
 
-    def test_async_processing_error_webhook(self):
+    def test_async_processing_error_webhook_finished(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_error_webhook),
+                              data=json_dumps(process_chain_error_webhook_finished),
+                              content_type="application/json")
+
+        pprint(json_loads(rv.data))
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+
+    def test_async_processing_error_webhook_update(self):
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_error_webhook_update),
                               content_type="application/json")
 
         pprint(json_loads(rv.data))

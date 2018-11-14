@@ -63,7 +63,8 @@ process_chain_legacy = {
 # Module  example for r.out.ascii with g.region adjustment and temporary file handling
 process_chain_new = {
     "version": 1,
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
         {
             "id": "1",
@@ -156,7 +157,8 @@ process_chain_ndvi = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -226,7 +228,8 @@ process_chain_ndvi_landsat = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
+                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -261,25 +264,9 @@ process_chain_landsat = {
                      "value": "ignored"}
                     ]
          }],
-    "webhook": "http://0.0.0.0:5005/webhook",
+    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished"},
     "version": "1"
 }
-
-process_chain_postgis = {
-    "list": [
-        {"id": "importer_1",
-         "module": "importer",
-         "inputs": [{"import_descr": {"source": "dbname=test user=test db=test",
-                                      "type": "postgis",
-                                      "vector_layer": "test"},
-                     "param": "map",
-                     "value": "test"}
-                    ]
-         }],
-    "webhook": "http://0.0.0.0:5005/webhook",
-    "version": "1"
-}
-
 
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
@@ -332,16 +319,6 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 96)
-
-    def test_async_processing_postgis(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_postgis),
-                              content_type="application/json")
-
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 1)
 
 
 if __name__ == '__main__':

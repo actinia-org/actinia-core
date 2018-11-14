@@ -1,15 +1,14 @@
 Tutorial
 ========
 
-In thie following tutorial we will access the persistent database analysing
-raster and raster-time-series data.  We will use the the import and export features of actinia
-specific process chains to process Sentinel2A scenes with several GRASS GIS modules and
+In the following tutorial we will access the persistent database analysing
+raster and raster-time-series data. We will use the import and export features of actinia-specific process chains to process Sentinel2A scenes with several GRASS GIS modules and
 export the result as GeoTiff files.
 
 The following examples shows the REST service access using the command line tool **curl** [#curl]_.
 **Curl** should be available on many Linux systems.
 However, tools like *postman* [#post]_ allow a more comfortable way to access
-Actinia.
+actinia.
 
 .. rubric:: Footnotes
 
@@ -21,8 +20,8 @@ Using curl for HTTP requests
 
 We will use the Unix shell and curl to access the REST API.
 First open a shell of choice (we use bash here) and setup the login information,
-the IP address and the port on which the Actinia service is running,
-so you can simply change the IP and Port if your sever uses a different
+the IP address and the port on which the actinia service is running,
+so you can simply change the IP and Port if your server uses a different
 address:
 
     .. code-block:: bash
@@ -66,8 +65,8 @@ To show the region settings and the projection of the GRASS GIS standard locatio
 
    ..
 
-The JSON response is the standard response of the Actinia REST API. Most API calls
-response using this JSON structure. The difference between API calls is the result part that
+The JSON response is the standard response of the actinia REST API. Most API calls
+respond using this JSON structure. The difference between API calls is the result part that
 is located in the JSON section with the name *process_results*.
 The response includes all steps that were executed
 to receive the projection information and the region information. It is located in
@@ -241,7 +240,7 @@ The response of this synchronous call lists all mapsets of the location in the *
 
    ..
 
-Use the following API call shows all information about the mapset *PERMANENT*:
+Using the following API call will show all information about the mapset *PERMANENT*:
 
    .. code-block:: bash
 
@@ -347,14 +346,14 @@ section:
 Access to raster layers in the persistent database
 --------------------------------------------------
 
-The location ECAD contains yearly climate data (precipitation and temperatur) of Europe
+The location ECAD contains yearly climate data (precipitation and temperature) of Europe
 for 60 years. We list all raster layers of the location ECAD in mapset *PERMANENT*:
 
    .. code-block:: bash
 
       curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers"
 
-The response list all raster layers of the mapset in the *process_results* section:
+The response lists all raster layers of the mapset in the *process_results* section:
 
    .. code-block:: json
 
@@ -431,7 +430,7 @@ Show info about the raster layer *temperature_mean_yearly_celsius_60*:
 
       curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
 
-The response list information about the raster layer *temperature_mean_yearly_celsius_60*
+The response lists information about the raster layer *temperature_mean_yearly_celsius_60*
 in the *process_results* section:
 
    .. code-block:: json

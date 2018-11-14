@@ -314,7 +314,6 @@ class GrassModuleRunner(ProcessLogging):
                     grass_module_path = os.path.join(self.grass_addon_path, "scripts", grass_module)
                     pathList.append(grass_module_path)
                     self.log_debug("Looking for %s"%grass_module_path)
-                    # if the module was not found in the script dir, test the addon path
                     if os.path.isfile(grass_module_path) is not True:
                         raise GrassInitError("GRASS module " + grass_module + " not found in " + str(pathList))
 
@@ -322,8 +321,10 @@ class GrassModuleRunner(ProcessLogging):
 
         return grass_module_path
 
-    def run_module(self, grass_module, args, raw=False,
-                   stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+    def run_module(self, grass_module,
+                   args, raw=False,
+                   stdout=subprocess.PIPE,
+                   stderr=subprocess.PIPE,
                    stdin=subprocess.PIPE):
         """Set all input and output options and start the module
 
@@ -339,6 +340,7 @@ class GrassModuleRunner(ProcessLogging):
                         a tuple of (errorid, stdout_buff, stderr_buff) is returned
             stdout (file): A file object that receives stdout, default subprocess.PIPE
             stderr (file): A file object that receives stderr, default subprocess.PIPE
+            stdin (file): A file object that provides stdin, default subprocess.PIPE
 
         Returns:
             subprocess:

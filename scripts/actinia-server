@@ -51,7 +51,7 @@ def main():
     # Create the process queue
     create_process_queue(global_config)
 
-    flask_app.run(host=args.host, port=args.port, debug=args.debug)
+    flask_app.run(host=args.host, port=args.port)
 
 
 if __name__ == '__main__':
