@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#######
+# actinia-core - an open source REST API for scalable, distributed, high
+# performance processing of geographical data that uses GRASS GIS for
+# computational tasks. For details, see https://actinia.mundialis.de/
+#
+# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#######
+
+import argparse
+import requests
+import simplejson
+import time
+from multiprocessing import Process, Queue
+import sys
+import os
+import grass.script as grass
+import subprocess
+from pprint import pprint
+
+__license__ = "GPLv3"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016, Soeren Gebbert"
+__maintainer__ = "Soeren Gebbert"
+__email__      = "soerengebbert@googlemail.com"
+
+
+"""
+export ACTINIA_USER='demouser'
+export ACTINIA_PASSWORD='gu3st!pa55w0rd'
+export ACTINIA_URL='https://actinia.mundialis.de/latest'
+"""
+
+# Default values
+ACTINIA_USER='demouser'
+ACTINIA_PASSWORD='gu3st!pa55w0rd'
+ACTINIA_URL='https://actinia.mundialis.de/latest'
+
+PCHAIN = {
+    "version": "1",
+    "list": list()
+}
+
+
+def main():
+
+    act_user = os.getenv("ACTINIA_USER")
+    act_pass = os.getenv("ACTINIA_PASSWORD")
+    act_url = os.getenv("ACTINIA_URL")
+
+    # Read location and mapset
+    mapset = grass.read_command("g.mapset", "p").strip()
+    location = grass.read_command("g.gisenv", get="LOCATION_NAME")
+
+    if act_user is None:
+        act_user = ACTINIA_USER
+
+    if act_pass is None:
+        act_pass = ACTINIA_PASSWORD
+
+    if act_url is None:
+        act_url = ACTINIA_URL
+
+    auth=(act_user, act_pass)
+
+    if len(sys.argv) > 2:
+        command = sys.argv[1:]
+
+        if "--json" not in command:
+            command.append("--json")
+
+        proc = subprocess.Popen(args=command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                                stdin=subprocess.PIPE)
+        (stdout_buff, stderr_buff) = proc.communicate()
+        stdout_buff = stdout_buff.decode()
+        stderr_buff = stderr_buff.decode()
+
+        # print("stdout", stdout_buff)
+        # print("stderr", stderr_buff)
+
+        try:
+            actinia_proc = simplejson.loads(stdout_buff)
+        except:
+            raise
+
+        PCHAIN["list"].append(actinia_proc)
+        #print(PCHAIN)
+
+        url = act_url + "/locations/%s/processing_async"%location
+        r = requests.post(url, json=PCHAIN, auth=auth)
+
+        data = simplejson.loads(r.text)
+        print("Resource status", data["status"])
+
+        poll_url = data["urls"]["status"]
+
+        print("Polling:", poll_url)
+
+        while True:
+            r = requests.get(poll_url, auth=auth)
+
+            try:
+                data = simplejson.loads(r.text)
+
+                if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
+                    break
+                time.sleep(1)
+            except Exception as a:
+                raise
+
+        print("Resource status", data["status"])
+        print("--------------------------------------------------------------------------")
+
+        if r.status_code == 200:
+            print(data["process_log"][0]["stdout"])
+        else:
+            print(r.text)
+    else:
+        url = act_url + "/version"
+        r = requests.get(url, auth=auth)
+        print(r.text)
+
+
+if __name__ == '__main__':
+    main()
