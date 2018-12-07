@@ -127,7 +127,7 @@ def execute_script(script):
     for line in lines:
         line = line.strip()
         # Get all lines that have no comments
-        if "#" not in line[:1]:
+        if line and "#" not in line[:1]:
             tokens = line.split()
             commands.append(tokens)
 
@@ -179,6 +179,9 @@ def send_poll_commands(commands: List[List[str]]) -> None:
     print("--------------------------------------------------------------------------")
 
     if r.status_code == 200:
+
+        print(r.text)
+
         for entry in data["process_log"]:
             if entry["stdout"]:
                 print(entry["stdout"])
@@ -197,7 +200,6 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 
     Returns:
         The actinia process dictionary
-
     """
     if not command:
         return None
