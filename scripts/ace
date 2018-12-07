@@ -232,10 +232,10 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 @click.command(context_settings=dict(ignore_unknown_options=True,))
 @click.option('--script', "-s", help="The script file from which all all commands will be executed"
                                      " on the actinia server.")
-@click.option("--version", "-v", is_flag=True, help="Show the version of the server.")
+@click.option("--version", "-v", is_flag=True, help="Request the version of the server.")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
 def main(script: str, version: bool, grass_command: tuple):
-    """This tool allows the execution of single GRASS GIS commands or a list of GRASS GIS commands
+    """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
     on an actinia REST service.
 
     It must be executed in an active GRASS GIS session and will use the current location
@@ -245,15 +245,22 @@ def main(script: str, version: bool, grass_command: tuple):
     This tool takes a GRASS GIS command as argument or a list of commands
     from an input script file.
 
-    GRASS GIS Commands can be augmented with actinia specific extensions. The
-    following commands from a script will import a raster layer from an internet
+    GRASS GIS commands can be augmented with actinia specific extensions.
+    The + operator can be specified for an input parameter
+    to import a web located resource and to specify the export of an
+    output parameter.
+
+    The following commands from a script will import a raster layer from an internet
     source as raster map *elev*, sets the computational region to the map and
-    computes the slope. Additional information about the raster layer will be provided:
+    computes the slope. Additional information about the raster layer are requested with r.info:
 
         \b
+        # Import the web resource and  compute univariate statistics
         r.univar map=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif
+        # Set the region to the imported map
         g.region rast=elev -ap
         r.info elev
+        # Compute the slope of the imported map and mark it for export
         r.slope.aspect elevation=elev slope=slope_elev+GTiff
         r.info slope_elev
 
@@ -283,16 +290,4 @@ def main(script: str, version: bool, grass_command: tuple):
 
 if __name__ == '__main__':
     main()
-
-# if __name__ == '__main__':
-#     set_credentials()
-#
-#     if len(sys.argv) > 1:
-#         if sys.argv[1][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-#             send_poll_commands(commands=[sys.argv[1:],])
-#         else:
-#             execute_script()
-#             actinia_version()
-#     else:
-#         actinia_version()
 
