@@ -257,6 +257,13 @@ def main(script: str, version: bool, grass_command: tuple):
         r.slope.aspect elevation=elev slope=slope_elev+GTiff
         r.info slope_elev
 
+
+    Command line examples:
+
+        \b
+        ace g.list rast
+        ace g.region -p
+
     """
     set_credentials()
 
