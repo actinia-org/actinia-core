@@ -48,8 +48,8 @@ export ACTINIA_PASSWORD='gu3st!pa55w0rd'
 export ACTINIA_URL='https://actinia.mundialis.de/latest'
 """
 
-# Example script for actinia
-"""
+# Example script for actinia with import an export options
+import_export = """
 g.region res=1000 -p
 r.univar map=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif
 r.info elev
@@ -57,8 +57,8 @@ r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 """
 
-# Example script for actinia
-"""
+# Example script for actinia with export options
+export_script = """
 # Example script for actinia shell interface
 g.region rast=elevation -p
 r.univar map=elevation
@@ -108,16 +108,18 @@ def set_credentials():
     ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
 
 
-@click.command()
 def actinia_version() -> None:
         url = ACTINIA_URL + "/version"
         r = requests.get(url, auth=ACTINIA_AUTH)
         print(r.text)
 
 
-@click.command()
-@click.option('--script', "-s", help="Execute all commands in a script")
-def execute_script(script):
+def execute_script(script: str):
+    """Execute a script with GRASS GIS commands
+
+    Args:
+        script (str): The script path
+    """
 
     f = open(script, "r")
     lines = f.readlines()
@@ -227,14 +229,63 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
         raise
 
 
-if __name__ == '__main__':
+@click.command(context_settings=dict(ignore_unknown_options=True,))
+@click.option('--script', "-s", help="The script file from which all all commands will be executed"
+                                     " on the actinia server.")
+@click.option("--version", "-v", is_flag=True, help="Show the version of the server.")
+@click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
+def main(script: str, version: bool, grass_command: tuple):
+    """This tool allows the execution of single GRASS GIS commands or a list of GRASS GIS commands
+    on an actinia REST service.
+
+    It must be executed in an active GRASS GIS session and will use the current location
+    to access the actinia service. All commands will be executed in an ephemeral database,
+    hence generated output must be exported using augmented GRASS commands.
+
+    This tool takes a GRASS GIS command as argument or a list of commands
+    from an input script file.
+
+    GRASS GIS Commands can be augmented with actinia specific extensions. The
+    following commands from a script will import a raster layer from an internet
+    source as raster map *elev*, sets the computational region to the map and
+    computes the slope. Additional information about the raster layer will be provided:
+
+        \b
+        r.univar map=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif
+        g.region rast=elev -ap
+        r.info elev
+        r.slope.aspect elevation=elev slope=slope_elev+GTiff
+        r.info slope_elev
+
+    """
     set_credentials()
 
-    if len(sys.argv) > 1:
-        if sys.argv[1][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-            send_poll_commands(commands=[sys.argv[1:],])
-        else:
-            execute_script()
-    else:
+    if version is True:
         actinia_version()
+        return
+
+    if script:
+        execute_script(script=script)
+    else:
+        if len(sys.argv) > 1:
+            if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
+                send_poll_commands(commands=[sys.argv[1:],])
+        else:
+            actinia_version()
+
+
+if __name__ == '__main__':
+    main()
+
+# if __name__ == '__main__':
+#     set_credentials()
+#
+#     if len(sys.argv) > 1:
+#         if sys.argv[1][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
+#             send_poll_commands(commands=[sys.argv[1:],])
+#         else:
+#             execute_script()
+#             actinia_version()
+#     else:
+#         actinia_version()
 
