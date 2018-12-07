@@ -182,7 +182,7 @@ def send_poll_commands(commands: List[List[str]]) -> None:
 
     if r.status_code == 200:
 
-        print(r.text)
+        # print(r.text)
 
         for entry in data["process_log"]:
             if entry["stdout"]:
@@ -209,7 +209,7 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
     if "--json" not in command:
         command.append("--json")
 
-    print(command)
+    # print(command)
 
     proc = subprocess.Popen(args=command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
                             stdin=subprocess.PIPE)
@@ -217,7 +217,7 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
     stdout_buff = stdout_buff.decode()
     stderr_buff = stderr_buff.decode()
 
-    print(stdout_buff)
+    # print(stdout_buff)
 
     if proc.returncode != 0:
         raise Exception("Error while executing GRASS command: %s. \n"
