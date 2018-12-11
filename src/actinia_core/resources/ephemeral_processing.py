@@ -37,6 +37,7 @@ import uuid
 import requests
 from flask import jsonify, make_response, json
 
+from .common.process_object import Process
 from .common.grass_init import GrassInitializer
 from .common.messages_logger import MessageLogger
 from .common.redis_interface import enqueue_job
@@ -291,6 +292,8 @@ class EphemeralProcessing(object):
         # process lists that will be executed. This variable is
         # initiated in the setup method
         self.process_chain_list = []  # The list of all process chains that were processed
+        self.actinia_process_list = list() # A list of all processes that will be executed
+        self.actinia_process_dict = dict() # A list of all processes that will be executed
         self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
         # process chain finished
         self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
@@ -505,6 +508,10 @@ class EphemeralProcessing(object):
         # Check if the module description was correct and if the
         # module or executable is in the user white list.
         for process in process_list:
+            # Add the process to the internal list and dict
+            # to access it in the python udf environment
+            self._add_actinia_process(process)
+
             if process.exec_type == "grass" or process.exec_type == "exec":
                 if skip_permission_check is False:
                     if process.skip_permission_check is False:
@@ -881,6 +888,15 @@ class EphemeralProcessing(object):
         self.progress_steps += num
         self.progress["step"] = self.progress_steps
 
+    def _add_actinia_process(self, process: Process):
+        """Add an actinia process to the list and dictionary
+
+        Args:
+            process: The actinia process
+        """
+        self.actinia_process_dict[process.id] = process
+        self.actinia_process_list.append(process)
+
     def _update_num_of_steps(self, num):
         """Update the number of total steps
 
@@ -1186,10 +1202,10 @@ class EphemeralProcessing(object):
 
         """
         # Create the process chain
-        process_chain = self._create_temporary_grass_environment_and_process_list(
+        process_list = self._create_temporary_grass_environment_and_process_list(
             skip_permission_check=skip_permission_check)
         # Run all executables
-        self._execute_process_list(process_list=process_chain)
+        self._execute_process_list(process_list=process_list)
         # Parse the module sdtout outputs and create the results
         self._parse_module_outputs()
 
