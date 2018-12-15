@@ -19,12 +19,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #
-#######from graas_api.resources.common.config import Configuration
-
+#######
 """
 Tests: Configuration test case
 """
-from __future__ import print_function
 import unittest
 from actinia_core.resources.common.config import Configuration
 
