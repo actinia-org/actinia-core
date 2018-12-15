@@ -24,10 +24,7 @@
 """
 Tests: Message logger test case
 
-TODO: graas_api --> actinia_api
 """
-from graas_api.resources.common.config import Configuration
-from __future__ import print_function
 import unittest
 from actinia_core.resources.common.config import Configuration
 from actinia_core.resources.common.messages_logger import MessageLogger
