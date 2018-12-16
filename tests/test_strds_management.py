@@ -86,7 +86,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         start_time = json_loads(rv.data)["process_results"]["start_time"]
 
-        self.assertEqual(start_time, "1950-01-01 00:00:00")
+        self.assertEqual(start_time, "'1950-01-01 00:00:00'")
 
     #################### CREATE REMOVE ########################################
 
@@ -125,7 +125,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         start_time = json_loads(rv.data)["process_results"]["start_time"]
 
-        self.assertEqual(start_time, "None")
+        self.assertEquals(start_time, "'None'")
         # Delete the strds
         rv = self.server.delete(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds'%new_mapset,
                                 headers=self.admin_auth_header)
