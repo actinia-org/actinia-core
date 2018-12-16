@@ -24,6 +24,7 @@
 """
 Tests: STRDS test case
 """
+from pprint import pprint
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
@@ -68,7 +69,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
                                                "title": "A nice title",
                                                "description": "A nice description"}),
                               content_type="application/json")
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
@@ -77,34 +78,34 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "1"}),
                               content_type="application/json")
-        print(rv.data)
+        pprint(json_loads(rv.data))
         rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/raster_layers/test_layer_2'%new_mapset,
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "2"}),
                               content_type="application/json")
-        print(rv.data)
+        pprint(json_loads(rv.data))
         rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/raster_layers/test_layer_3'%new_mapset,
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "3"}),
                               content_type="application/json")
-        print(rv.data)
+        pprint(json_loads(rv.data))
 
-        raster_layers = [{"name": "test_layer_1", "start_time": "2000-01-01", "end_time": "2000-01-02"},
-                         {"name": "test_layer_2", "start_time": "2000-01-02", "end_time": "2000-01-03"},
-                         {"name": "test_layer_3", "start_time": "2000-01-03", "end_time": "2000-01-04"}]
+        raster_layers = [{"name": "test_layer_1", "start_time": "2000-01-01 00:00:00", "end_time": "2000-01-02 00:00:00"},
+                         {"name": "test_layer_2", "start_time": "2000-01-02 00:00:00", "end_time": "2000-01-03 00:00:00"},
+                         {"name": "test_layer_3", "start_time": "2000-01-03 00:00:00", "end_time": "2000-01-04 00:00:00"}]
 
         rv = self.server.put(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register/raster_layers"%new_mapset,
                              data=json_dumps(raster_layers),
                              content_type="application/json",
                              headers=self.admin_auth_header)
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Check strds
         rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register"%new_mapset,
                              headers=self.admin_auth_header)
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
@@ -122,14 +123,14 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
                                 data=json_dumps(raster_layers),
                                 content_type="application/json",
                                 headers=self.user_auth_header)
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # Check strds
         rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register"%new_mapset,
                              headers=self.user_auth_header)
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
@@ -143,7 +144,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Delete the strds
         rv = self.server.delete(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds_register'%new_mapset,
                                 headers=self.user_auth_header)
-        print(rv.data)
+        pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
