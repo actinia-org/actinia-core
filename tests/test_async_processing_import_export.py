@@ -55,7 +55,7 @@ process_chain_raster_import_export = {
                                {'export': {'format': 'GTiff', 'type': 'raster'},
                                 'param' : 'aspect',
                                 'value' : 'elev_ned_30m_aspect'}],
-                 'overwrite': True,
+                 'overwrite': False,
                  'verbose'  : False},
                 {'exe'   : '/bin/cat',
                  'id'    : 'cat_1',
