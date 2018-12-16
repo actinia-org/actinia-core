@@ -1,16 +1,23 @@
 # Introduction to ace - actinia command execution
 
-This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands on an actinia REST service (https://actinia.mundialis.de/).
+The `ace` tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands on an actinia REST service (https://actinia.mundialis.de/).
 
-It must be executed in an active GRASS GIS session and will use the current location settings to access the actinia service. All commands will be executed in an ephemeral database, hence generated output must be exported using augmented GRASS GIS commands.
-
-This tool takes a GRASS GIS command as argument or a list of commands from an input script file.
+The `ace` tool must be executed in an active GRASS GIS session and will use the current location settings to access the actinia service. All commands will be executed in an ephemeral database, hence generated output must be exported using augmented GRASS GIS commands. This tool takes a GRASS GIS command as argument or a list of commands from an input script file.
 
 GRASS GIS commands can be augmented with actinia specific extensions. The `+` operator can be specified for an input parameter to import a web located resource and to specify the export of an output parameter.
 
-## Example
+## Examples
 
-The following commands from a script will import a raster layer from an internet source as raster map `elev`, sets the computational region to the map and computes the slope. Additional information about the raster layer are requested with `r.info`:
+### Command line examples
+
+    ace g.list raster
+    ace g.region -p
+
+### Script examples
+
+Example 1:
+
+The following commands (to be stored in a script and executed with `ace`) will import a raster layer from an internet source as raster map `elev`, sets the computational region to the map and computes the slope. Additional information about the raster layer are requested with `r.info`:
 
     # grass77 ~/grassdata/nc_spm_08_grass7/user1/
     # set credentials and REST server URL
@@ -26,12 +33,7 @@ The following commands from a script will import a raster layer from an internet
     r.slope.aspect elevation=elev slope=slope_elev+GTiff
     r.info slope_elev
 
-Command line examples:
-
-    ace g.list raster
-    ace g.region -p
-
-Image segmentation:
+Example 2: Image segmentation
 
     # grass77 ~/grassdata/nc_spm_08_grass7/user1/
     # set credentials and REST server URL
