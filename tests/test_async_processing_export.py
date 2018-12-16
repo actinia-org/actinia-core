@@ -68,7 +68,7 @@ process_chain_long = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    },
    3:{
@@ -189,7 +189,7 @@ process_chain_short = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    }
 }
@@ -251,7 +251,7 @@ process_chain_short_large_region = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    }
 }
@@ -278,7 +278,7 @@ process_chain_error_1 = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    },
 }
@@ -304,7 +304,7 @@ process_chain_error_2 = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    },
 }
@@ -331,7 +331,7 @@ process_chain_error_3 = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    },
 }
@@ -358,7 +358,7 @@ process_chain_error_4 = {
             }
         },
         "flags":"a",
-        "overwrite":True,
+        "overwrite":False,
         "verbose":True
    },
 }
