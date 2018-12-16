@@ -53,6 +53,7 @@ class RasterInfoModel(Schema):
         'creator': {'type': 'string'},
         'database': {'type': 'string'},
         'datatype': {'type': 'string'},
+        'maptype': {'type': 'string'},
         'east': {'type': 'string'},
         'date': {'type': 'string'},
         'description': {'type': 'string'},
