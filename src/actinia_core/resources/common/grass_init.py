@@ -88,7 +88,8 @@ class GrassEnvironment(ProcessLogging):
         ProcessLogging.__init__(self)
         self.env = {"GISBASE":"", "GISRC":"", "LD_LIBRARY_PATH":"",
                     "GRASS_ADDON_PATH":"", "GRASS_VERSION":"", "PYTHONPATH":"",
-                    "GRASS_MESSAGE_FORMAT":"plain", "GRASS_SKIP_MAPSET_OWNER_CHECK":"1"}
+                    "GRASS_MESSAGE_FORMAT":"plain", "GRASS_SKIP_MAPSET_OWNER_CHECK":"1",
+                    "GRASS_TGIS_RAISE_ON_ERROR": "1"}
 
     def set_grass_environment(self, gisrc_path, grass_gis_base, grass_addon_path):
         """Set the grass environment variables
@@ -104,9 +105,10 @@ class GrassEnvironment(ProcessLogging):
         self.env["GISBASE"] = grass_gis_base
         self.env["GRASS_MESSAGE_FORMAT"] = "plain"
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
+        self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
         self.env["GISRC"] = os.path.join(gisrc_path, "gisrc")
         self.env["LD_LIBRARY_PATH"] = str(os.path.join(self.env["GISBASE"], "lib"))
-        self.env["GRASS_VERSION"] = "7.2.svn"
+        self.env["GRASS_VERSION"] = "7.7.svn"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
         if os.name != 'posix':
             self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"\
