@@ -82,7 +82,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
                     self.assertTrue(mime_type in ["image/jp2"])
 
-    def test_query_for_sentinel_scenes_single_old(self):
+    def otest_query_for_sentinel_scenes_single_old(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
                                        ["B12", "B08"])
@@ -92,7 +92,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.validate_result(result, ["B12", "B08"])
 
 
-    def test_query_for_sentinel_scenes_single_old_geojson(self):
+    def otest_query_for_sentinel_scenes_single_old_geojson(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
                                        ["B12", "B08"])
@@ -104,7 +104,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             geojson = aws.get_sentinel_tile_footprint(tile)
             print(geojson)
 
-    def test_query_for_sentinel_scenes_single_new(self):
+    def otest_query_for_sentinel_scenes_single_new(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",],
                                        ["B12", "B08"])
@@ -113,7 +113,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
-    def test_query_for_sentinel_scenes_single_new_safe(self):
+    def otest_query_for_sentinel_scenes_single_new_safe(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138.SAFE",],
                                        ["B12", "B08"])
@@ -122,7 +122,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
-    def test_query_for_sentinel_scenes_singler_eplacement_bug(self):
+    def otest_query_for_sentinel_scenes_singler_eplacement_bug(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001",],
                                        ["B12", "B08"])
@@ -131,7 +131,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
-    def test_query_for_sentinel_scenes_singler_eplacement_bug_2(self):
+    def otest_query_for_sentinel_scenes_singler_eplacement_bug_2(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030T235752_20161030T235752",],
                                        ["B12", "B08"])
@@ -142,7 +142,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
 
 
-    def test_query_for_sentinel_scenes_mutli_mixed(self):
+    def otest_query_for_sentinel_scenes_mutli_mixed(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
                                         "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",
@@ -155,7 +155,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931" in result[2]["product_id"])
         self.validate_result(result, ["B04", "B08"])
 
-    def test_query_for_sentinel_scenes_single_error(self):
+    def otest_query_for_sentinel_scenes_single_error(self):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
@@ -166,7 +166,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         except Exception as e:
             self.assertTrue(True, "An exception was raised for the correct reason: %s"%str(e))
 
-    def test_query_for_sentinel_scenes_multi_error(self):
+    def otest_query_for_sentinel_scenes_multi_error(self):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
@@ -179,7 +179,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         except Exception as e:
             self.assertTrue(True, "An exception was raised for the correct reason: %s"%str(e))
 
-    def test_query_for_sentinel_scenes_band_error(self):
+    def otest_query_for_sentinel_scenes_band_error(self):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
