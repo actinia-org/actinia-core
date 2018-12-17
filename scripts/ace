@@ -49,7 +49,7 @@ export ACTINIA_URL='https://actinia.mundialis.de/latest'
 """
 
 # Example script for actinia with import and export options
-# grass77 ~/grassdata/nc_spm_08_grass7/user1/
+# grass77 ~/grassdata/nc_spm_08/user1/
 import_export = """
 g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
 r.univar map=elev
@@ -59,7 +59,7 @@ r.info slope_elev
 """
 
 # Example script for actinia with export options
-# grass77 ~/grassdata/nc_spm_08_grass7/user1/
+# grass77 ~/grassdata/nc_spm_08/user1/
 export_script = """
 # Example script for actinia shell interface
 g.region raster=elevation -p
