@@ -169,7 +169,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    def otest_user_status_requests_2(self):
+    def test_user_status_requests_2(self):
         """Resource list with 2 finished, 1 terminated and 2 error resources
         """
 
@@ -282,7 +282,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    def otest_user_status_requests_3(self):
+    def test_user_status_requests_3(self):
         """Empty resource list test
         """
 
@@ -340,7 +340,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    def otest_time_termination(self):
+    def test_time_termination(self):
         """Test the time dependent termination of three running resources
         """
 
@@ -413,7 +413,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         self.assertTrue(terminated == 3)
 
-    def otest_user_termination(self):
+    def test_user_termination(self):
         """Test the termination of three running resources
         """
 
@@ -508,7 +508,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         self.assertTrue(terminated == 3)
 
-    def otest_admin_termination(self):
+    def test_admin_termination(self):
         """Test the termination of one running resources from admin user
         """
 
@@ -593,7 +593,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
 
         self.assertTrue(terminated == 1)
 
-    def otest_superadmin_termination(self):
+    def test_superadmin_termination(self):
         """Test the termination of one running resources from superadmin user
         """
 
