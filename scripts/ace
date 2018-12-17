@@ -25,6 +25,7 @@
 import argparse
 import requests
 import simplejson
+from pprint import pprint
 import time
 from multiprocessing import Process, Queue
 import sys
@@ -231,12 +232,67 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
         raise
 
 
+def list_user_jobs(type_):
+    """
+    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
+
+    Returns:
+
+    """
+    url = ACTINIA_URL + f"/resources/{ACTINIA_USER}"
+    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    for entry in data["resource_list"]:
+        if type_.lower() == "all":
+            print(entry["resource_id"], entry["status"], entry["datetime"])
+        else:
+            if type_.lower() == entry["status"]:
+                print(entry["resource_id"], entry["status"], entry["datetime"])
+
+
+def show_user_job_info(resource_id):
+    """
+    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
+
+    Returns:
+
+    """
+    url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
+    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    pprint(data)
+
+
+def kill_user_job(resource_id):
+    """
+    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
+
+    Returns:
+
+    """
+    url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
+    r = requests.delete(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    pprint(data)
+
+
 @click.command(context_settings=dict(ignore_unknown_options=True,))
-@click.option('--script', "-s", help="The script file from which all all commands will be executed"
-                                     " on the actinia server.")
+@click.option('--script', "-s", help="The script file from which all all commands will be executed "
+                                     "on the actinia server.")
 @click.option("--version", "-v", is_flag=True, help="Request the version of the server.")
+@click.option("--list-jobs", "-l", type=click.Choice(['all', 'accepted', 'running', 'terminated',
+                                                      'finished', 'error']),
+              nargs=1, help="List all jobs of the user.")
+@click.option("--info-job", "-i", nargs=1, help="Show information about a job.")
+@click.option("--kill-job", "-k", nargs=1, help="Kill a job.")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
-def main(script: str, version: bool, grass_command: tuple):
+def main(script: str, version: bool, list_jobs: str, info_job: str, kill_job: str, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
     on an actinia REST service.
 
@@ -278,7 +334,13 @@ def main(script: str, version: bool, grass_command: tuple):
         actinia_version()
         return
 
-    if script:
+    if list_jobs:
+        list_user_jobs(type_=list_jobs)
+    elif info_job:
+        show_user_job_info(resource_id=info_job)
+    elif kill_job:
+        kill_user_job(resource_id=kill_job)
+    elif script:
         execute_script(script=script)
     else:
         if len(sys.argv) > 1:
