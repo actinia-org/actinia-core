@@ -61,10 +61,14 @@ Example 2: Image segmentation
     export ACTINIA_PASSWORD='gu3st!pa55w0rd'
     export ACTINIA_URL='https://actinia.mundialis.de/latest'
     # Import the web resource and set the region to the imported map
-    g.region raster=ortho2010_20cm+https://apps.mundialis.de/workshops/osgeo_ireland2017/north_carolina/ortho2010_t792_subset_20cm.tif
-    # set comp. region to orthophoto (extent), but only at 1m resolution (just for speed reasons for this demo)
-    g.region raster=ortho2010_t792_subset_20cm.blue res=1 -p
+    # we apply a trick for the import of multi-band GeoTIFFs:
+    # install with: g.extension importer
+    importer raster=ortho2010+https://apps.mundialis.de/workshops/osgeo_ireland2017/north_carolina/ortho2010_t792_subset_20cm.tif
+    #r.info map=ortho2010.1
+    #r.info map=ortho2010.2
+    #r.info map=ortho2010.3
+    g.region raster=ortho2010.1 res=1 -p
     # Note: the RGB bands are organized as a group
-    i.segment group=ortho2010_t792_subset_20cm threshold=0.25 output=ortho2010_t792_subset_20cm_segment_25+GTiff goodness=ortho2010_t792_subset_20cm_seg_25_fit+GTiff
+    i.segment group=ortho2010 threshold=0.25 output=ortho2010_segment_25+GTiff goodness=ortho2010_seg_25_fit+GTiff
     # Finally vectorize with r.to.vect, export to Geopackage
-    r.to.vect input=ortho2010_t792_subset_20cm_segment_25 type=area output=ortho2010_t792_subset_20cm_segment_25+GPKG
+    r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+ESRI_Shapefile
