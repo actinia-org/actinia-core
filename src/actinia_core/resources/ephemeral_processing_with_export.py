@@ -284,7 +284,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         """
         # Export the layer
-        prefix = ".gml"
+        prefix = ""
         if format == "GML":
             prefix = ".gml"
         if format == "GeoJSON":
@@ -293,6 +293,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             prefix = ""
         if format == "SQLite":
             prefix = ".sqlite"
+        if format == "GPKG":
+            prefix = ".gpkg"
         if format == "CSV":
             prefix = ".csv"
 
