@@ -80,6 +80,8 @@ ACTINIA_USER='demouser'
 ACTINIA_PASSWORD='gu3st!pa55w0rd'
 ACTINIA_URL='https://actinia.mundialis.de/latest'
 ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
+LOCATION=None
+MAPSET=None
 
 PCHAIN = {
     "version": "1",
@@ -110,6 +112,15 @@ def set_credentials():
 
     ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
 
+
+def setup_location(location=None):
+
+    global LOCATION
+
+    if location is not None:
+        LOCATION = location
+    else:
+        LOCATION = grass.read_command("g.gisenv", get="LOCATION_NAME")
 
 def actinia_version() -> None:
         url = ACTINIA_URL + "/version"
@@ -152,11 +163,8 @@ def send_poll_commands(commands: List[List[str]]) -> None:
         if p_chain:
             PCHAIN["list"].append(p_chain)
 
-    # Read location and mapset
-    mapset = grass.read_command("g.mapset", "p").strip()
-    location = grass.read_command("g.gisenv", get="LOCATION_NAME")
 
-    url = ACTINIA_URL + "/locations/%s/processing_async_export"%location
+    url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
     r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -233,13 +241,6 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 
 
 def list_user_jobs(type_):
-    """
-    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
-    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
-
-    Returns:
-
-    """
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -253,13 +254,6 @@ def list_user_jobs(type_):
 
 
 def show_user_job_info(resource_id):
-    """
-    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
-    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
-
-    Returns:
-
-    """
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -268,13 +262,6 @@ def show_user_job_info(resource_id):
 
 
 def kill_user_job(resource_id):
-    """
-    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
-    flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
-
-    Returns:
-
-    """
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
     r = requests.delete(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -282,70 +269,208 @@ def kill_user_job(resource_id):
     pprint(data)
 
 
+def list_user_locations():
+
+    url = ACTINIA_URL + "/locations"
+    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    if "locations" in data:
+        pprint(data["locations"])
+    else:
+        pprint(data)
+
+
+def list_user_mapsets():
+
+    url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets"
+    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    if "process_results" in data:
+        pprint(data["process_results"])
+    else:
+        pprint(data)
+
+
+def list_maps_of_mapsets(mapset, map_type):
+
+    # Read location and mapset
+    # mapset = grass.read_command("g.mapset", "p").strip()
+
+    url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/{map_type}"
+    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    if "process_results" in data:
+        pprint(data["process_results"])
+    else:
+        pprint(data)
+
+
 @click.command(context_settings=dict(ignore_unknown_options=True,))
+@click.option("--version", "-v", is_flag=True, help="Request the version of the server.")
 @click.option('--script', "-s", help="The script file from which all all commands will be executed "
                                      "on the actinia server.")
-@click.option("--version", "-v", is_flag=True, help="Request the version of the server.")
 @click.option("--list-jobs", "-l", type=click.Choice(['all', 'accepted', 'running', 'terminated',
                                                       'finished', 'error']),
               nargs=1, help="List all jobs of the user.")
-@click.option("--info-job", "-i", nargs=1, help="Show information about a job.")
+@click.option("--info-job", "-j", nargs=1, help="Show information about a job.")
 @click.option("--kill-job", "-k", nargs=1, help="Kill a job.")
+@click.option("--list-locations", "-l", is_flag=True, help="List locations the user has access to.")
+@click.option("--list-mapsets", "-m", is_flag=True, help="List mapsets of the current or a provided location")
+@click.option("--list-raster", "-r", nargs=1, help="List raster maps of mapsets from the current or a provided location")
+@click.option("--list-vector", "-v", nargs=1, help="List vector maps of mapsets from the current or a provided location")
+@click.option("--list-strds", "-s", nargs=1, help="List strds of mapsets from the current or a provided location")
+@click.option("--location", "-o", nargs=1, help="Use this location for processing instead of the current one on "
+                                                "the actinia server")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
-def main(script: str, version: bool, list_jobs: str, info_job: str, kill_job: str, grass_command: tuple):
+def main(script: str, version: bool, list_jobs: str, info_job: str,
+         list_locations: bool, list_mapsets: bool, location: str,
+         list_raster: bool, list_vector: bool, list_strds: bool,
+         kill_job: str, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
-    on an actinia REST service.
+    on an actinia REST service. In addition it provides job management and the ability to
+    list locations, mapsets and map layer the user has access to.
 
-    It must be executed in an active GRASS GIS session and will use the current location
-    to access the actinia service. All commands will be executed in an ephemeral database,
+    This tool must be executed in an active GRASS GIS session and will use the current location
+    to access the actinia service. The current location can be overwritten by the *-o* option.
+    All commands will be executed in an ephemeral database,
     hence generated output must be exported using augmented GRASS commands.
 
-    This tool takes a GRASS GIS command as argument or a list of commands
-    from an input script file.
+    The user must setup the following environmental variables to specify the actinia
+    server and credentials:
+
+      \b
+      export ACTINIA_USER='user'
+      export ACTINIA_PASSWORD='password'
+      export ACTINIA_URL='https://actinia.mundialis.de/latest'
+
+    This tool takes a GRASS GIS command as argument. In addition there are options to:
+
+      \b
+      1. Execute a list of commands from an input script file.
+      2. Perform job management on the actinia server (list, info, kill)
+      3. Show the version of the actinia service
+      4. Show the locations and mapsets the user has access to
+      5. Show map layers of specific location/mapset
 
     GRASS GIS commands can be augmented with actinia specific extensions.
     The + operator can be specified for an input parameter
     to import a web located resource and to specify the export of an
     output parameter.
 
+    Single command example:
+
+        ace g.list rast
+
+    Single command example with location option:
+
+        ace -o nc_spm_08 g.list rast
+
     The following commands from a script will import a raster layer from an internet
     source as raster map *elev*, sets the computational region to the map and
     computes the slope. Additional information about the raster layer are requested with r.info:
 
-        # Import the web resource and set the region to the imported map
-        g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
-        # Compute univariate statistics
-        r.univar map=elev
-        r.info elev
-        # Compute the slope of the imported map and mark it for export
-        r.slope.aspect elevation=elev slope=slope_elev+GTiff
-        r.info slope_elev
+      \b
+      # Import the web resource and set the region to the imported map
+      g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+      # Compute univariate statistics
+      r.univar map=elev
+      r.info elev
+      # Compute the slope of the imported map and mark it for export
+      r.slope.aspect elevation=elev slope=slope_elev+GTiff
+      r.info slope_elev
 
+    Run the script commands.sh in the current location on the actinia server:
 
-    Command line examples:
+        ace -s commands.sh
 
-        ace g.list rast
-        ace g.region -p
+    Run the script commands.sh in the location *latlong* on the actinia server:
+
+        ace -l latlong -s commands.sh
+
+    List all running jobs of the current user
+
+        ace -j running
+
+    Get information about a specific job
+
+        ace -i resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
+
+    Kill a running jon
+
+        ace -k resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
+
+    List all loctions the user has access to:
+
+        ace -l
+
+    List all mapsets of the current location the user access to:
+
+        ace -m
+
+    List all mapsets of the location *nc_spm_08* the user access to:
+
+        ace -m -o nc_spm_08
+
+    List all raster maps in mapsets PERMANENT of the location *nc_spm_08*:
+
+        ace -o nc_spm_08 -r PERMANENT
+
+    List all vector maps in mapsets PERMANENT of the location *nc_spm_08*:
+
+        ace -o nc_spm_08 -v PERMANENT
+
+    List all strds in mapsets PERMANENT of the location *nc_spm_08*:
+
+        ace -o nc_spm_08 -s PERMANENT
 
     """
     set_credentials()
+    setup_location()
 
     if version is True:
         actinia_version()
         return
 
-    if list_jobs:
+    if location:
+        setup_location(location=location)
+        if script:
+            execute_script(script=script)
+        elif list_mapsets:
+            list_user_mapsets()
+        elif list_raster:
+            list_maps_of_mapsets(mapset=list_raster, map_type="raster_layers")
+        elif list_vector:
+            list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
+        elif list_strds:
+            list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+        else:
+            if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
+                send_poll_commands(commands=[list(grass_command),])
+    elif list_jobs:
         list_user_jobs(type_=list_jobs)
     elif info_job:
         show_user_job_info(resource_id=info_job)
     elif kill_job:
         kill_user_job(resource_id=kill_job)
+    elif list_locations:
+        list_user_locations()
+    elif list_raster:
+        list_maps_of_mapsets(mapset=list_raster, map_type="raster_layers")
+    elif list_vector:
+        list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
+    elif list_strds:
+        list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+    elif list_mapsets:
+        list_user_mapsets()
     elif script:
         execute_script(script=script)
     else:
         if len(sys.argv) > 1:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[sys.argv[1:],])
+                send_poll_commands(commands=[list(grass_command),])
         else:
             actinia_version()
 
