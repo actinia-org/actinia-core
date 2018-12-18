@@ -540,7 +540,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     if location:
         setup_location(location=location)
         if script:
-            execute_script(script=script)
+            execute_script(script=script, mapset=persistent)
         elif list_mapsets:
             list_user_mapsets()
         elif list_raster:
