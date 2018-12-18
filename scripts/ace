@@ -22,18 +22,15 @@
 #
 #######
 
-import argparse
 import requests
 import simplejson
-from pprint import pprint
 import time
-from multiprocessing import Process, Queue
 import sys
 import os
 import grass.script as grass
 import subprocess
 from pprint import pprint
-from typing import List, Tuple, Optional, Dict
+from typing import List, Optional
 import click
 
 __license__ = "GPLv3"
@@ -113,7 +110,13 @@ def set_credentials():
     ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
 
 
-def setup_location(location=None):
+def setup_location(location:str=None):
+    """Setup the location from argument or the current GRASS GIS location
+
+    Args:
+        location: The optional location to be set globally
+
+    """
 
     global LOCATION
 
@@ -122,10 +125,17 @@ def setup_location(location=None):
     else:
         LOCATION = grass.read_command("g.gisenv", get="LOCATION_NAME")
 
-def actinia_version() -> None:
-        url = ACTINIA_URL + "/version"
-        r = requests.get(url, auth=ACTINIA_AUTH)
-        print(r.text)
+
+def actinia_version():
+    """Returs the version of the actinia server
+
+    Returns:
+        The version of the actinia server
+
+    """
+    url = ACTINIA_URL + "/version"
+    r = requests.get(url, auth=ACTINIA_AUTH)
+    print(r.text)
 
 
 def execute_script(script: str):
@@ -240,7 +250,14 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
         raise
 
 
-def list_user_jobs(type_):
+def list_user_jobs(type_: str):
+    """List all jobs of the user of a all or a specific type
+
+    Args:
+        type_: The type of the job: all, accepted, running, terminated, finished, error
+
+    """
+
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -253,7 +270,14 @@ def list_user_jobs(type_):
                 print(entry["resource_id"], entry["status"], entry["datetime"])
 
 
-def show_user_job_info(resource_id):
+def show_user_job_info(resource_id: str):
+    """Show information about a specific actinia job
+
+    Args:
+        resource_id: The resource id of the job
+
+    """
+
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -261,7 +285,14 @@ def show_user_job_info(resource_id):
     pprint(data)
 
 
-def kill_user_job(resource_id):
+def kill_user_job(resource_id: str):
+    """Kill a running actinia job
+
+    Args:
+        resource_id: The resource id of the job
+
+    """
+
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
     r = requests.delete(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -270,6 +301,8 @@ def kill_user_job(resource_id):
 
 
 def list_user_locations():
+    """List all locations the user has access to
+    """
 
     url = ACTINIA_URL + "/locations"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
@@ -282,6 +315,8 @@ def list_user_locations():
 
 
 def list_user_mapsets():
+    """List all mapsets of a specific location
+    """
 
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets"
     r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
@@ -293,7 +328,14 @@ def list_user_mapsets():
         pprint(data)
 
 
-def list_maps_of_mapsets(mapset, map_type):
+def list_maps_of_mapsets(mapset: str, map_type: str):
+    """List specific map types of a specific location/mapset
+
+    Args:
+        mapset: The mapset to list the maps from
+        map_type: The map type: raster_layers, vector_layers, strds
+
+    """
 
     # Read location and mapset
     # mapset = grass.read_command("g.mapset", "p").strip()
@@ -327,7 +369,7 @@ def list_maps_of_mapsets(mapset, map_type):
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
 def main(script: str, version: bool, list_jobs: str, info_job: str,
          list_locations: bool, list_mapsets: bool, location: str,
-         list_raster: bool, list_vector: bool, list_strds: bool,
+         list_raster: str, list_vector: str, list_strds: str,
          kill_job: str, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
     on an actinia REST service. In addition it provides job management and the ability to
@@ -398,11 +440,11 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace -i resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
 
-    Kill a running jon
+    Kill a running job
 
         ace -k resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
 
-    List all loctions the user has access to:
+    List all locations the user has access to:
 
         ace -l
 
