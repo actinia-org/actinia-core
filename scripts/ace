@@ -137,11 +137,12 @@ def actinia_version():
     print(r.text)
 
 
-def execute_script(script: str):
+def execute_script(script: str, mapset: str=None):
     """Execute a script with GRASS GIS commands
 
     Args:
         script (str): The script path
+        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
     """
 
     f = open(script, "r")
@@ -156,23 +157,27 @@ def execute_script(script: str):
             tokens = line.split()
             commands.append(tokens)
 
-    send_poll_commands(commands=commands)
+    send_poll_commands(commands=commands, mapset=mapset)
 
 
-def send_poll_commands(commands: List[List[str]]) -> None:
+def send_poll_commands(commands: List[List[str]], mapset: str=None) -> None:
     """Create the actinia process chain, send it to the actinia server
     and poll for the result
 
     Args:
         commands: A list of GRASS commands from the command line or from a script
+        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
     """
-
     for command in commands:
         p_chain = create_actinia_process(command)
         if p_chain:
             PCHAIN["list"].append(p_chain)
 
-    url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
+    if mapset:
+        url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/processing_async"
+    else:
+        url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
+
     r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
@@ -280,7 +285,7 @@ def show_user_job_info(resource_id: str):
     """
 
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
-    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
     pprint(data)
@@ -295,7 +300,7 @@ def kill_user_job(resource_id: str):
     """
 
     url = ACTINIA_URL + f"/resources/{ACTINIA_USER}/{resource_id}"
-    r = requests.delete(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    r = requests.delete(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
     pprint(data)
@@ -306,7 +311,7 @@ def list_user_locations():
     """
 
     url = ACTINIA_URL + "/locations"
-    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
     if "locations" in data:
@@ -320,7 +325,7 @@ def list_user_mapsets():
     """
 
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets"
-    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
     if "process_results" in data:
@@ -342,13 +347,44 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
     # mapset = grass.read_command("g.mapset", "p").strip()
 
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/{map_type}"
-    r = requests.get(url, json=PCHAIN, auth=ACTINIA_AUTH)
+    r = requests.get(url, auth=ACTINIA_AUTH)
 
     data = simplejson.loads(r.text)
     if "process_results" in data:
         pprint(data["process_results"])
     else:
         pprint(data)
+
+
+def create_persistent_mapset(mapset: str):
+    """Creates a mapset in the user specific persistent database
+
+    Args:
+        mapset: The mapset to be created in the user specific persistent database
+
+    """
+
+    print(f"Try to create mapset {mapset}")
+    url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}"
+    r = requests.post(url, auth=ACTINIA_AUTH)
+    data = simplejson.loads(r.text)
+    pprint(data)
+
+
+def delete_persistent_mapset(mapset: str):
+    """Deletes a mapset from the user specific persistent database
+
+    Args:
+        mapset: The mapset of the user specific persistent database to delete
+
+    """
+
+    print(f"Try to delete mapset {mapset}")
+    url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}"
+    r = requests.delete(url, auth=ACTINIA_AUTH)
+    data = simplejson.loads(r.text)
+    pprint(data)
+
 
 
 @click.command(context_settings=dict(ignore_unknown_options=True, ))
@@ -367,11 +403,19 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
 @click.option("--list-vector", "-v", nargs=1,
               help="List vector maps of mapsets from the current or a provided location")
 @click.option("--list-strds", "-t", nargs=1, help="List strds of mapsets from the current or a provided location")
+@click.option("--create-mapset", "-c", nargs=1, help="Create a new mapset in the persistent database of the "
+                                                     "actinia server using the current or the provided location")
+@click.option("--delete-mapset", "-d", nargs=1, help="Delete an existing mapset from the  actinia server "
+                                                     "using the current or the provided location")
+@click.option("--persistent", "-p", nargs=1, help="Use a persistent database location/mapset for processing on the "
+                                                 "actinia server")
 @click.option("--location", "-o", nargs=1, help="Use this location for processing instead of the current one on "
                                                 "the actinia server")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
 def main(script: str, version: bool, list_jobs: str, info_job: str,
-         list_locations: bool, list_mapsets: bool, location: str,
+         list_locations: bool, list_mapsets: bool,
+         create_mapset: str, delete_mapset: str,
+         persistent: str, location: str,
          list_raster: str, list_vector: str, list_strds: str,
          kill_job: str, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
@@ -380,8 +424,10 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     This tool must be executed in an active GRASS GIS session and will use the current location
     to access the actinia service. The current location can be overwritten by the *-o* option.
-    All commands will be executed in an ephemeral database,
+    All commands will be executed per default in an ephemeral database,
     hence generated output must be exported using augmented GRASS commands.
+    The option --persistent MAPSET_NAME allows the execution of commands in the
+    persistent user database. It should be used with --location option.
 
     The user must setup the following environmental variables to specify the actinia
     server and credentials:
@@ -471,6 +517,18 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace -o nc_spm_08 -t PERMANENT
 
+    Create a new mapset in location nc_spm_08 in the persistent user database
+
+        ace -o nc_spm_08 -c test_mapset
+
+    Delete test_mapset mapset from location nc_spm_08 in the persistent user database
+
+        ace -o nc_spm_08 -c test_mapset
+
+    Run command g.list in the persistent user database in location nc_spm_08 mapset test_mapset
+
+        ace -o nc_spm_08 -p test_mapset g.list type=raster mapset=test_mapset
+
     """
     set_credentials()
     setup_location()
@@ -491,9 +549,13 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
             list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
         elif list_strds:
             list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+        elif create_mapset:
+            create_persistent_mapset(mapset=create_mapset)
+        elif delete_mapset:
+            delete_persistent_mapset(mapset=delete_mapset)
         else:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[list(grass_command), ])
+                send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
     elif list_jobs:
         list_user_jobs(type_=list_jobs)
     elif info_job:
@@ -510,12 +572,16 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
         list_maps_of_mapsets(mapset=list_strds, map_type="strds")
     elif list_mapsets:
         list_user_mapsets()
+    elif create_mapset:
+        create_persistent_mapset(mapset=create_mapset)
+    elif delete_mapset:
+        delete_persistent_mapset(mapset=delete_mapset)
     elif script:
-        execute_script(script=script)
+        execute_script(script=script, mapset=persistent)
     else:
         if len(sys.argv) > 1:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[list(grass_command), ])
+                send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
         else:
             actinia_version()
 
