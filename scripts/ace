@@ -34,11 +34,10 @@ from typing import List, Optional
 import click
 
 __license__ = "GPLv3"
-__author__     = "Soeren Gebbert"
-__copyright__  = "Copyright 2018, Soeren Gebbert"
+__author__ = "Soeren Gebbert"
+__copyright__ = "Copyright 2018, Soeren Gebbert"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
-
+__email__ = "soerengebbert@googlemail.com"
 
 """
 export ACTINIA_USER='demouser'
@@ -73,12 +72,12 @@ r.info neighbour_elev
 """
 
 # Default values
-ACTINIA_USER='demouser'
-ACTINIA_PASSWORD='gu3st!pa55w0rd'
-ACTINIA_URL='https://actinia.mundialis.de/latest'
-ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
-LOCATION=None
-MAPSET=None
+ACTINIA_USER = 'demouser'
+ACTINIA_PASSWORD = 'gu3st!pa55w0rd'
+ACTINIA_URL = 'https://actinia.mundialis.de/latest'
+ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
+LOCATION = None
+MAPSET = None
 
 PCHAIN = {
     "version": "1",
@@ -107,10 +106,10 @@ def set_credentials():
     if act_url is not None:
         ACTINIA_URL = act_url
 
-    ACTINIA_AUTH=(ACTINIA_USER, ACTINIA_PASSWORD)
+    ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
 
 
-def setup_location(location:str=None):
+def setup_location(location: str = None):
     """Setup the location from argument or the current GRASS GIS location
 
     Args:
@@ -173,7 +172,6 @@ def send_poll_commands(commands: List[List[str]]) -> None:
         if p_chain:
             PCHAIN["list"].append(p_chain)
 
-
     url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
     r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
 
@@ -192,6 +190,7 @@ def send_poll_commands(commands: List[List[str]]) -> None:
             print("Resource poll status:", data["status"])
             print(data["message"])
 
+            final_status = data["status"]
             if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
                 break
             time.sleep(1)
@@ -203,7 +202,9 @@ def send_poll_commands(commands: List[List[str]]) -> None:
 
     if r.status_code == 200:
 
-        # print(r.text)
+        if final_status == "terminated":
+            print(r.text)
+            return
 
         for entry in data["process_log"]:
             if entry["stdout"]:
@@ -242,7 +243,7 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 
     if proc.returncode != 0:
         raise Exception("Error while executing GRASS command: %s. \n"
-                        "\n%s\n%s\n"%(str(command), stdout_buff, stderr_buff))
+                        "\n%s\n%s\n" % (str(command), stdout_buff, stderr_buff))
     try:
         actinia_proc = simplejson.loads(stdout_buff)
         return actinia_proc
@@ -350,20 +351,22 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
         pprint(data)
 
 
-@click.command(context_settings=dict(ignore_unknown_options=True,))
-@click.option("--version", "-v", is_flag=True, help="Request the version of the server.")
+@click.command(context_settings=dict(ignore_unknown_options=True, ))
+@click.option("--version", is_flag=True, help="Request the version of the server.")
 @click.option('--script', "-s", help="The script file from which all all commands will be executed "
                                      "on the actinia server.")
-@click.option("--list-jobs", "-l", type=click.Choice(['all', 'accepted', 'running', 'terminated',
+@click.option("--list-jobs", "-j", type=click.Choice(['all', 'accepted', 'running', 'terminated',
                                                       'finished', 'error']),
               nargs=1, help="List all jobs of the user.")
-@click.option("--info-job", "-j", nargs=1, help="Show information about a job.")
+@click.option("--info-job", "-i", nargs=1, help="Show information about a job.")
 @click.option("--kill-job", "-k", nargs=1, help="Kill a job.")
 @click.option("--list-locations", "-l", is_flag=True, help="List locations the user has access to.")
 @click.option("--list-mapsets", "-m", is_flag=True, help="List mapsets of the current or a provided location")
-@click.option("--list-raster", "-r", nargs=1, help="List raster maps of mapsets from the current or a provided location")
-@click.option("--list-vector", "-v", nargs=1, help="List vector maps of mapsets from the current or a provided location")
-@click.option("--list-strds", "-s", nargs=1, help="List strds of mapsets from the current or a provided location")
+@click.option("--list-raster", "-r", nargs=1,
+              help="List raster maps of mapsets from the current or a provided location")
+@click.option("--list-vector", "-v", nargs=1,
+              help="List vector maps of mapsets from the current or a provided location")
+@click.option("--list-strds", "-t", nargs=1, help="List strds of mapsets from the current or a provided location")
 @click.option("--location", "-o", nargs=1, help="Use this location for processing instead of the current one on "
                                                 "the actinia server")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
@@ -430,7 +433,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     Run the script commands.sh in the location *latlong* on the actinia server:
 
-        ace -l latlong -s commands.sh
+        ace -o latlong -s commands.sh
 
     List all running jobs of the current user
 
@@ -466,7 +469,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     List all strds in mapsets PERMANENT of the location *nc_spm_08*:
 
-        ace -o nc_spm_08 -s PERMANENT
+        ace -o nc_spm_08 -t PERMANENT
 
     """
     set_credentials()
@@ -490,7 +493,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
             list_maps_of_mapsets(mapset=list_strds, map_type="strds")
         else:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[list(grass_command),])
+                send_poll_commands(commands=[list(grass_command), ])
     elif list_jobs:
         list_user_jobs(type_=list_jobs)
     elif info_job:
@@ -512,11 +515,10 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     else:
         if len(sys.argv) > 1:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                send_poll_commands(commands=[list(grass_command),])
+                send_poll_commands(commands=[list(grass_command), ])
         else:
             actinia_version()
 
 
 if __name__ == '__main__':
     main()
-
