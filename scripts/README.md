@@ -13,7 +13,7 @@ GRASS GIS commands can be augmented with actinia specific extensions.
 The `+` operator can be specified for an input parameter to import a web
 ocated resource and to specify the export of an output parameter.
 
-## Notes
+## Available data
 
 Importantly, the name of the local location and mapset must correspond to
 that on the actinia REST server.
@@ -33,6 +33,107 @@ Currently available datasets are (organized by projections):
     * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`)
     * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`)
 
+In order to list the locations the user has access to, run
+
+```bash
+# note: the actual response may differ
+ace --list-locations
+['latlong', 'nc_spm_08', 'utm_32n', 'eu_laea', 'latlong_wgs84', 'LL']
+```
+
+The following command lists mapsets of the current or a provided location:
+
+```bash
+# running ace in the "latlong" location:
+# note: the actual response may differ
+ace --list-mapsets
+['PERMANENT',
+ 'chelsa_climate',
+ 'etopo1',
+ 'globcover',
+ 'gmted2010',
+ 'loss_global_forest_cover_loss_2000_2015',
+ 'nightlight',
+ 'soil_hwsd_unused',
+ 'soil_taxnrwb',
+ 'srtmgl1_30m']
+```
+
+To list all raster maps available in the specified mapset belonging to the
+current or a provided location, run:
+
+```bash
+# running ace in the "latlong" location:
+# note: the actual response may differ
+ace --list-raster PERMANENT
+['dem_gmted', 'hwsd_stghws1a', 'lulc_globc']
+```
+
+To list all vector maps available in the specified mapset belonging to the
+current or a provided location, run:
+
+```bash
+# running ace in the "latlong" location:
+# note: the actual response may differ
+ace --list-vector PERMANENT
+['world_countries']
+```
+
+List all raster maps in a location/mapset different from the current session
+location:
+
+```bash
+# running ace in the "latlong" location but querying the nc_spm_08 location:
+ace --location nc_spm_08 --list-raster PERMANENT
+['aspect',
+ 'basin_50K',
+ 'boundary_county_500m',
+ 'cfactorbare_1m',
+ 'cfactorgrow_1m',
+ 'el_D782_6m',
+ 'el_D783_6m',
+ 'el_D792_6m',
+ 'el_D793_6m',
+ 'elev_lid792_1m',
+ 'elev_ned_30m',
+ ...
+ 'lsat7_2002_70',
+ 'lsat7_2002_80',
+ 'ncmask_500m',
+ 'ortho_2001_t792_1m',
+ 'roadsmajor',
+ 'slope',
+ 'soilsID',
+ 'soils_Kfactor',
+ 'streams_derived',
+ 'towns',
+ 'urban',
+ 'zipcodes',
+ 'zipcodes_dbl']
+```
+
+## Job management
+
+The `ace` tool can list jobs, choose from `all`, `accepted`, `running`,
+`terminated`, `finished`, `error`:
+
+```bash
+ace --list-jobs finished
+# note: the actual response may differ
+resource_id-7a94b416-6f19-40c0-96c2-e62ce133ff89 finished 2018-12-17 11:33:58.965602
+resource_id-87965ced-7242-43d2-b6da-5ded47b10702 finished 2018-12-18 08:45:29.959495
+resource_id-b633740f-e0c5-4549-a663-9d58f9499531 finished 2018-12-18 08:52:36.669777
+resource_id-0f9d6382-b8d2-4ff8-b41f-9b16e4d6bfe2 finished 2018-12-17 11:14:00.283710
+```
+
+## Available export formats
+
+At time the following export formats are currently supported:
+
+* raster: `GTiff`
+* vector: `ESRI_Shapefile`, `GeoJSON`, `GML`, `GPKG`, `PostgreSQL`, `SQLite`
+* table: `CSV`, `TXT`
+
 
 ## Examples
 
@@ -45,13 +146,15 @@ ace g.region -p
 
 ### Script examples
 
-Example 1:
+#### Example 1: computing slope and aspect and univariate statistics from an elevation model
 
 The following commands (to be stored in a script and executed with
 `ace`) will import a raster layer from an internet source as raster map
 `elev`, sets the computational region to the map and computes the
 slope. Additional information about the raster layer are requested with
-`r.info`:
+`r.info`.
+
+Store the following script as text file `ace_dtm_statistics.sh`:
 
 ```bash
 # grass77 ~/grassdata/nc_spm_08/user1/
@@ -69,7 +172,17 @@ r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 ```
 
-Example 2: Image segmentation
+Run the script saved in a text file as
+
+```bash
+ace -s /path/to/ace_dtm_statistics.sh
+```
+
+The results are provided as REST resources.
+
+#### Example 2: Orthophoto image segmentation with export
+
+Store the following script as text file `ace_segmentation.sh`:
 
 ```bash
 # grass77 ~/grassdata/nc_spm_08/user1/
@@ -87,6 +200,14 @@ importer raster=ortho2010+https://apps.mundialis.de/workshops/osgeo_ireland2017/
 g.region raster=ortho2010.1 res=1 -p
 # Note: the RGB bands are organized as a group
 i.segment group=ortho2010 threshold=0.25 output=ortho2010_segment_25+GTiff goodness=ortho2010_seg_25_fit+GTiff
-# Finally vectorize segments with r.to.vect and export as a SHAPE file
-r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+ESRI_Shapefile
+# Finally vectorize segments with r.to.vect and export as a Geopackage file
+r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+GPKG
 ```
+
+Run the script saved in a text file as
+
+```bash
+ace -s /path/to/ace_segmentation.sh
+```
+
+The results are provided as REST resources.
