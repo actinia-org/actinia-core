@@ -21,17 +21,19 @@ that on the actinia REST server.
 Currently available datasets are (organized by projections):
 
 * North Carolina sample dataset (NC State-Plane metric CRS, EPSG: 3358):
-    * base cartography (`nc_spm_08/PERMANENT`)
-    * Landsat subscenes (`nc_spm_08/landsat`)
+    * base cartography (`nc_spm_08/PERMANENT`; source: https://grassbook.org/datasets/datasets-3rd-edition/)
+    * Landsat subscenes (`nc_spm_08/landsat`; source: https://grass.osgeo.org/download/sample-data/)
 * Latitude-Longitude location (LatLong WGS84, EPSG:4326):
     * empty (`latlong_wgs84/PERMANENT/`)
-    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`)
-    * LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`)
+    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
+    * LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
     * LST tropical days asia 2017 (`latlong_wgs84/asia_tropical_2017/`)
     * LST temperature daily asia 2017, including min, max and avg (`latlong_wgs84/asia_lst_daily_2017/`)
 * Europe (EU LAEA CRS, EPSG:3035):
-    * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`)
-    * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`)
+    * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`; source: https://land.copernicus.eu/imagery-in-situ/eu-dem)
+    * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`; source: https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012)
+* World Mollweide (EPSG 54009):
+    * GHS_POP_GPW42015_GLOBE_R2015A_54009_250_v1_0 (`world_mollweide/pop_jrc`; source: https://ghsl.jrc.ec.europa.eu/ghs_pop.php)
 
 In order to list the locations the user has access to, run
 
@@ -112,10 +114,16 @@ ace --location nc_spm_08 --list-raster PERMANENT
  'zipcodes_dbl']
 ```
 
+## Acessing maps in a different mapset
+
+Simply use `@name_of_mapset`.
+
 ## Job management
 
 The `ace` tool can list jobs, choose from `all`, `accepted`, `running`,
-`terminated`, `finished`, `error`:
+`terminated`, `finished`, `error`.
+
+Show finished job(s):
 
 ```bash
 ace --list-jobs finished
@@ -124,6 +132,40 @@ resource_id-7a94b416-6f19-40c0-96c2-e62ce133ff89 finished 2018-12-17 11:33:58.96
 resource_id-87965ced-7242-43d2-b6da-5ded47b10702 finished 2018-12-18 08:45:29.959495
 resource_id-b633740f-e0c5-4549-a663-9d58f9499531 finished 2018-12-18 08:52:36.669777
 resource_id-0f9d6382-b8d2-4ff8-b41f-9b16e4d6bfe2 finished 2018-12-17 11:14:00.283710
+```
+
+Show running job(s):
+
+```bash
+ace --list-jobs running
+resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153 running 2018-12-18 21:58:04.107389
+```
+
+Show details about a specific job:
+
+```bash
+ace --info-job resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153
+{'accept_datetime': '2018-12-18 21:47:41.094534',
+ 'accept_timestamp': 1545169661.0945334,
+ 'api_info': {'endpoint': 'asyncephemeralexportresource',
+              'method': 'POST',
+              'path': '/api/v1/locations/latlong/processing_async_export',
+              'request_url': 'http://actinia.mundialis.de/api/v1/locations/latlong/processing_async_export'},
+ 'datetime': '2018-12-18 21:58:14.133485',
+ 'http_code': 200,
+ 'message': 'Running executable v.rast.stats with parameters '
+            "['map=canada_provinces', 'layer=1', 'raster=srtmgl ... "
+            "average,range,stddev,percentile', 'percentile=95'] for 631.702 "
+            'seconds',
+ 'process_chain_list': [],
+ 'progress': {'num_of_steps': 5, 'step': 5},
+ 'resource_id': 'resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153',
+ 'status': 'running',
+ 'time_delta': 633.0389630794525,
+ 'timestamp': 1545170294.1334834,
+ 'urls': {'resources': [],
+          'status': 'https://actinia.mundialis.de/api/v1/resources/markus/resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153'},
+ 'user_id': 'markus'}
 ```
 
 ## Available export formats
