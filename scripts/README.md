@@ -398,7 +398,7 @@ If the active GRASS GIS session has identical location/mapset settings, then an 
 can be used to avoid the persistent option in each single command call:
 
 ```bash
-alias acp="./ace --persistent `g.mapset -p`"
+alias acp="ace --persistent `g.mapset -p`"
 ```
 
 We assume that in the active GRASS GIS session the 
