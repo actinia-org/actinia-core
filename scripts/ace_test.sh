@@ -1,4 +1,4 @@
-#/bin/bash
+#!/usr/bin/env bash
 
 # This script contains commands that can be executed in a nc_spm_08 location
 # to the the ace command and its features
@@ -6,17 +6,17 @@
 # List all maps in the search path of the PERMANENT mapset of the current location in actinia server
 ./ace g.list rast
 # The same as above with explicit location setting
-./ace -o nc_spm_08 g.list rast
+./ace --location nc_spm_08 g.list rast
 # List all mapsets of the current location
-./ace -m
+./ace --list-mapsets
 # List all mapsets of location nc_spm_08
-./ace -o nc_spm_08 -m
+./ace --location nc_spm_08 --list-mapsets
 # List all raster layers in PERMANENT mapset of location nc_spm_08
-./ace -o nc_spm_08 -r PERMANENT
+./ace --location nc_spm_08 --list-raster PERMANENT
 # List all vector layers in PERMANENT mapset of location nc_spm_08
-./ace -o nc_spm_08 -v PERMANENT
+./ace --location nc_spm_08 --list-vector PERMANENT
 # List all strds layers in PERMANENT mapset of location nc_spm_08
-./ace -o nc_spm_08 -t PERMANENT
+./ace --location nc_spm_08 --list-strds PERMANENT
 
 # Create some commands with import and export options
 cat << EOF > /tmp/commands.sh
@@ -31,24 +31,24 @@ r.info slope_elev
 EOF
 
 # Run the commands in an ephemeral location/mapset based on the current location
-./ace -s /tmp/commands.sh
+./ace --scripts /tmp/commands.sh
 
 # Run the commands in an ephemeral location/mapset based in location nc_spm_08
-./ace -o nc_spm_08 -s /tmp/commands.sh
+./ace --location nc_spm_08 --script /tmp/commands.sh
 
 #####################
 # Persistent commands
 
 # Create a new mapset in the persistent user database
-./ace -o nc_spm_08 -c test_mapset
+./ace --location nc_spm_08 --create-mapset test_mapset
 # Run the commands in the new persistent mapset
-./ace -o nc_spm_08 -p test_mapset -s /tmp/commands.sh
+./ace --location nc_spm_08 --persistent test_mapset --script /tmp/commands.sh
 # Show all raster maps in test_mapset
-./ace -o nc_spm_08 -p test_mapset g.list type=raster mapset=test_mapset
+./ace --location nc_spm_08 --persistent test_mapset g.list type=raster mapset=test_mapset
 # Show information about raster map elev and slope_elev
-./ace -o nc_spm_08 -p test_mapset r.info elev@test_mapset
-./ace -o nc_spm_08 -p test_mapset r.info slope_elev@test_mapset
+./ace --location nc_spm_08 --persistent test_mapset r.info elev@test_mapset
+./ace --location nc_spm_08 --persistent test_mapset r.info slope_elev@test_mapset
 # Show all raster maps in test_mapset
-./ace -o nc_spm_08 -r test_mapset
+./ace --location nc_spm_08 --list-raster test_mapset
 # Delete the test_mapset
-./ace -o nc_spm_08 -d test_mapset
+./ace --location nc_spm_08 --delete-mapset test_mapset
