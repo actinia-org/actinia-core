@@ -137,14 +137,13 @@ def actinia_version():
     print(r.text)
 
 
-def execute_script(script: str, mapset: str=None):
+def execute_script(script: str, mapset: str = None):
     """Execute a script with GRASS GIS commands
 
     Args:
         script (str): The script path
         mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
     """
-
     f = open(script, "r")
     lines = f.readlines()
 
@@ -160,7 +159,7 @@ def execute_script(script: str, mapset: str=None):
     send_poll_commands(commands=commands, mapset=mapset)
 
 
-def send_poll_commands(commands: List[List[str]], mapset: str=None) -> None:
+def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
     """Create the actinia process chain, send it to the actinia server
     and poll for the result
 
@@ -386,31 +385,30 @@ def delete_persistent_mapset(mapset: str):
     pprint(data)
 
 
-
 @click.command(context_settings=dict(ignore_unknown_options=True, ))
 @click.option("--version", is_flag=True, help="Request the version of the server.")
-@click.option('--script', "-s", help="The script file from which all all commands will be executed "
-                                     "on the actinia server.")
-@click.option("--list-jobs", "-j", type=click.Choice(['all', 'accepted', 'running', 'terminated',
-                                                      'finished', 'error']),
+@click.option('--script', help="The script file from which all all commands will be executed "
+                               "on the actinia server.")
+@click.option("--list-jobs", type=click.Choice(['all', 'accepted', 'running', 'terminated',
+                                                'finished', 'error']),
               nargs=1, help="List all jobs of the user.")
-@click.option("--info-job", "-i", nargs=1, help="Show information about a job.")
-@click.option("--kill-job", "-k", nargs=1, help="Kill a job.")
-@click.option("--list-locations", "-l", is_flag=True, help="List locations the user has access to.")
-@click.option("--list-mapsets", "-m", is_flag=True, help="List mapsets of the current or a provided location")
-@click.option("--list-raster", "-r", nargs=1,
+@click.option("--info-job", nargs=1, help="Show information about a job.")
+@click.option("--kill-job", nargs=1, help="Kill a job.")
+@click.option("--list-locations", is_flag=True, help="List locations the user has access to.")
+@click.option("--list-mapsets", is_flag=True, help="List mapsets of the current or a provided location")
+@click.option("--list-raster", nargs=1,
               help="List raster maps of mapsets from the current or a provided location")
-@click.option("--list-vector", "-v", nargs=1,
+@click.option("--list-vector", nargs=1,
               help="List vector maps of mapsets from the current or a provided location")
-@click.option("--list-strds", "-t", nargs=1, help="List strds of mapsets from the current or a provided location")
-@click.option("--create-mapset", "-c", nargs=1, help="Create a new mapset in the persistent database of the "
-                                                     "actinia server using the current or the provided location")
-@click.option("--delete-mapset", "-d", nargs=1, help="Delete an existing mapset from the  actinia server "
-                                                     "using the current or the provided location")
-@click.option("--persistent", "-p", nargs=1, help="Use a persistent database location/mapset for processing on the "
-                                                 "actinia server")
-@click.option("--location", "-o", nargs=1, help="Use this location for processing instead of the current one on "
-                                                "the actinia server")
+@click.option("--list-strds", nargs=1, help="List strds of mapsets from the current or a provided location")
+@click.option("--create-mapset", nargs=1, help="Create a new mapset in the persistent database of the "
+                                               "actinia server using the current or the provided location")
+@click.option("--delete-mapset", nargs=1, help="Delete an existing mapset from the  actinia server "
+                                               "using the current or the provided location")
+@click.option("--persistent", nargs=1, help="Use a persistent database location/mapset for processing on the "
+                                            "actinia server")
+@click.option("--location", nargs=1, help="Use this location for processing instead of the current one on "
+                                          "the actinia server")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
 def main(script: str, version: bool, list_jobs: str, info_job: str,
          list_locations: bool, list_mapsets: bool,
@@ -554,6 +552,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
         elif delete_mapset:
             delete_persistent_mapset(mapset=delete_mapset)
         else:
+            print(location, "Persistent", persistent)
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
                 send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
     elif list_jobs:
@@ -581,6 +580,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     else:
         if len(sys.argv) > 1:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
+                print("Persistent", persistent)
                 send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
         else:
             actinia_version()
