@@ -1,17 +1,35 @@
 # Introduction to ace - actinia command execution
 
-The `ace` tool allows the execution of single GRASS GIS command or a list
-of GRASS GIS commands on an actinia REST service (https://actinia.mundialis.de/).
+The `ace` tool allows the execution of single GRASS GIS command 
+or a list of GRASS GIS commands on an actinia REST service (https://actinia.mundialis.de/).
+In addition it provides job management, the ability to
+list locations, mapsets and map layer the user has access to as
+well as the creation and deletion of mapsets.
 
-The `ace` tool must be executed in an active GRASS GIS session and will
-use the current location settings to access the actinia service. All
-commands will be executed in an ephemeral database, hence generated output
-must be exported using augmented GRASS GIS commands. This tool takes a
-GRASS GIS command as argument or a list of commands from an input script file.
+Th `ace` tool must be executed in an active GRASS GIS session and will use the current location
+of this session to access the actinia service. 
+The current location can be overwritten by the `--location LOCATION_NAME` option.
+All commands will be executed per default in an **ephemeral** database.
+Hence, generated output must be exported using augmented GRASS commands.
+
+The option `--persistent MAPSET_NAME` allows the execution of commands in the
+**persistent** user database. It can be used with `--location LOCATION_NAME`option.
+
+The user must setup the following environmental variables to specify the actinia
+server and credentials:
+
+```bash
+# set credentials and REST server URL
+export ACTINIA_USER='demouser'
+export ACTINIA_PASSWORD='gu3st!pa55w0rd'
+export ACTINIA_URL='https://actinia.mundialis.de/latest'
+```
 
 GRASS GIS commands can be augmented with actinia specific extensions.
-The `+` operator can be specified for an input parameter to import a web
-ocated resource and to specify the export of an output parameter.
+The `+` operator can be specified for an input parameter
+to import a web located resource and to specify the export of an
+output parameter.
+
 
 ## Available data
 
@@ -35,39 +53,39 @@ Currently available datasets are (organized by projections):
 * World Mollweide (EPSG 54009):
     * GHS_POP_GPW42015_GLOBE_R2015A_54009_250_v1_0 (`world_mollweide/pop_jrc`; source: https://ghsl.jrc.ec.europa.eu/ghs_pop.php)
 
+Not all data is available for the demo user.
+
+### List locations, mapsets and maps
+
 In order to list the locations the user has access to, run
 
 ```bash
-# note: the actual response may differ
 ace --list-locations
-['latlong', 'nc_spm_08', 'utm_32n', 'eu_laea', 'latlong_wgs84', 'LL']
+['latlong', 'nc_spm_08', 'utm_32n', 'latlong_wgs84']
 ```
 
-The following command lists mapsets of the current or a provided location:
+The following command lists mapsets of current location in the active GRASS GIS session (nc_spm_08):
 
 ```bash
-# running ace in the "latlong" location:
-# note: the actual response may differ
+# running ace in the "nc_spm_08" location:
 ace --list-mapsets
-['PERMANENT',
- 'chelsa_climate',
- 'etopo1',
- 'globcover',
- 'gmted2010',
- 'loss_global_forest_cover_loss_2000_2015',
- 'nightlight',
- 'soil_hwsd_unused',
- 'soil_taxnrwb',
- 'srtmgl1_30m']
+['PERMANENT', 'landsat']
 ```
 
-To list all raster maps available in the specified mapset belonging to the
-current or a provided location, run:
+All following commands can be executed in any active GRASS GIS location, since
+the location name at the actinia server is explicitly provided. 
+In case the location option is not provided, the active location will be used.
+The following command lists mapsets of the provided location **latlong**:
 
 ```bash
-# running ace in the "latlong" location:
-# note: the actual response may differ
-ace --list-raster PERMANENT
+ace --location latlong --list-mapsets
+['PERMANENT']
+```
+
+To list all raster maps available in the specified mapset belonging to the provided location **latlong**, run:
+
+```bash
+ace --location latlong --list-raster PERMANENT
 ['dem_gmted', 'hwsd_stghws1a', 'lulc_globc']
 ```
 
@@ -75,9 +93,7 @@ To list all vector maps available in the specified mapset belonging to the
 current or a provided location, run:
 
 ```bash
-# running ace in the "latlong" location:
-# note: the actual response may differ
-ace --list-vector PERMANENT
+ace --location latlong --list-vector PERMANENT
 ['world_countries']
 ```
 
@@ -85,7 +101,6 @@ List all raster maps in a location/mapset different from the current session
 location:
 
 ```bash
-# running ace in the "latlong" location but querying the nc_spm_08 location:
 ace --location nc_spm_08 --list-raster PERMANENT
 ['aspect',
  'basin_50K',
@@ -173,17 +188,109 @@ ace --info-job resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153
 At time the following export formats are currently supported:
 
 * raster: `GTiff`
-* vector: `ESRI_Shapefile`, `GeoJSON`, `GML`, `GPKG`, `PostgreSQL`, `SQLite`
+* vector: `ESRI_Shapefile`, `GeoJSON`, `GML`
 * table: `CSV`, `TXT`
 
+The vector formats will be extended in future versions of actina with geopackage and sqlite formats.
 
-## Examples
+## Examples for ephemeral processing
+
+Ephemeral processing is the default processing approach of actinia. Each single command 
+or all commands in a shell script, will be executed in an ephemeral mapset. This mapset will be removed
+after processing. The output of GRASS GIS modules can be marked for export, to store
+the computational result for download and further analysis.
 
 ### Command line examples
 
+Run the module `g.list` in the location defined by the active GRASS GIS session
+in an ephemeral mapset, that has only the PERMANENT mapset in its search path:
+
 ```bash
 ace g.list raster
+```
+
+```text
+Resource status accepted
+Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b
+Resource poll status: finished
+Processing successfully finished
+Resource status finished
+--------------------------------------------------------------------------
+aspect
+basin_50K
+boundary_county_500m
+cfactorbare_1m
+cfactorgrow_1m
+el_D782_6m
+el_D783_6m
+el_D792_6m
+el_D793_6m
+elev_lid792_1m
+elev_ned_30m
+elev_srtm_30m
+elev_state_500m
+elevation
+elevation_shade
+facility
+geology_30m
+lakes
+landclass96
+landcover_1m
+landuse96_28m
+lsat7_2002_10
+lsat7_2002_20
+lsat7_2002_30
+lsat7_2002_40
+lsat7_2002_50
+lsat7_2002_61
+lsat7_2002_62
+lsat7_2002_70
+lsat7_2002_80
+ncmask_500m
+ortho_2001_t792_1m
+roadsmajor
+slope
+soilsID
+soils_Kfactor
+streams_derived
+towns
+urban
+zipcodes
+zipcodes_dbl
+
+{'resources': [],
+ 'status': 'https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b'}
+```
+
+Run the module `g.region` in a new ephemeral location, to show
+
+```bash
 ace g.region -p
+```
+
+```text
+Resource status accepted
+Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973
+Resource poll status: finished
+Processing successfully finished
+Resource status finished
+--------------------------------------------------------------------------
+projection: 99 (Lambert Conformal Conic)
+zone:       0
+datum:      nad83
+ellipsoid:  a=6378137 es=0.006694380022900787
+north:      320000
+south:      10000
+west:       120000
+east:       935000
+nsres:      500
+ewres:      500
+rows:       620
+cols:       1630
+cells:      1010600
+
+{'resources': [],
+ 'status': 'https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973'}
 ```
 
 ### Script examples
@@ -200,16 +307,12 @@ Store the following script as text file `ace_dtm_statistics.sh`:
 
 ```bash
 # grass77 ~/grassdata/nc_spm_08/user1/
-# set credentials and REST server URL
-export ACTINIA_USER='demouser'
-export ACTINIA_PASSWORD='gu3st!pa55w0rd'
-export ACTINIA_URL='https://actinia.mundialis.de/latest'
 # Import the web resource and set the region to the imported map
 g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
 # Compute univariate statistics
 r.univar map=elev
 r.info elev
-# Compute the slope of the imported map and mark it for export
+# Compute the slope of the imported map and mark it for export as geotiff file
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 ```
@@ -217,7 +320,7 @@ r.info slope_elev
 Run the script saved in a text file as
 
 ```bash
-ace -s /path/to/ace_dtm_statistics.sh
+ace --script /path/to/ace_dtm_statistics.sh
 ```
 
 The results are provided as REST resources.
@@ -228,10 +331,6 @@ Store the following script as text file `ace_segmentation.sh`:
 
 ```bash
 # grass77 ~/grassdata/nc_spm_08/user1/
-# set credentials and REST server URL
-export ACTINIA_USER='demouser'
-export ACTINIA_PASSWORD='gu3st!pa55w0rd'
-export ACTINIA_URL='https://actinia.mundialis.de/latest'
 # Import the web resource and set the region to the imported map
 # we apply a trick for the import of multi-band GeoTIFFs:
 # install with: g.extension importer
@@ -242,14 +341,74 @@ importer raster=ortho2010+https://apps.mundialis.de/workshops/osgeo_ireland2017/
 g.region raster=ortho2010.1 res=1 -p
 # Note: the RGB bands are organized as a group
 i.segment group=ortho2010 threshold=0.25 output=ortho2010_segment_25+GTiff goodness=ortho2010_seg_25_fit+GTiff
-# Finally vectorize segments with r.to.vect and export as a Geopackage file
-r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+GPKG
+# Finally vectorize segments with r.to.vect and export as a GeoJSON file
+r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+GeoJSON
 ```
 
 Run the script saved in a text file as
 
 ```bash
-ace -s /path/to/ace_segmentation.sh
+ace --script /path/to/ace_segmentation.sh
 ```
 
 The results are provided as REST resources.
+
+
+## Examples for persistent processing
+
+GRASS GIS commands can be executed in a user specific persistent database.
+The user must create a mapset in an existing location. This mapsets can be accessed
+via `ace`. All processing results of commands run in this mapset, will be stored
+persistently. Be aware that the processing will be performed in an ephemeral database
+that will be moved to the persistent storage using the correct name after processing.
+
+To create a new mapset in the **nc_spm_08** location with the name **test_mapset**
+the following command must be executed
+
+```bash
+ace --location nc_spm_08 --create-mapset test_mapset
+```
+
+Run the commands from the statistic script in the new persistent mapset
+
+```bash
+ace --location nc_spm_08 --persistent test_mapset --script /path/to/ace_dtm_statistics.sh
+```
+
+Show all raster maps that have been created with the script in test_mapset
+
+```bash
+ace --location nc_spm_08 --persistent test_mapset g.list type=raster mapset=test_mapset
+```
+
+Show information about raster map elev and slope_elev
+
+```bash
+ace --location nc_spm_08 --persistent test_mapset r.info elev@test_mapset
+ace --location nc_spm_08 --persistent test_mapset r.info slope_elev@test_mapset
+```
+
+Delete the test_mapset
+
+```bash
+ace --location nc_spm_08 --delete-mapset test_mapset
+```
+
+If the active GRASS GIS session has identical location/mapset settings, then an alias
+can be used to avoid the persistent option in each single command call:
+
+```bash
+alias acp="./ace --persistent `g.mapset -p`"
+```
+
+We assume that in the active GRASS GIS session the 
+current location is **nc_spm_08** and the current mapset is **test_mapset**
+then the following commands from above can be executed in the following way:
+
+```bash
+ace --create-mapset test_mapset
+acp --script /path/to/ace_dtm_statistics.sh
+acp g.list type=raster mapset=test_mapset
+acp r.info elev@test_mapset
+acp r.info slope_elev@test_mapset
+```
