@@ -78,6 +78,7 @@ ACTINIA_URL = 'https://actinia.mundialis.de/latest'
 ACTINIA_AUTH = (ACTINIA_USER, ACTINIA_PASSWORD)
 LOCATION = None
 MAPSET = None
+DRY_RUN = False
 
 PCHAIN = {
     "version": "1",
@@ -135,124 +136,6 @@ def actinia_version():
     url = ACTINIA_URL + "/version"
     r = requests.get(url, auth=ACTINIA_AUTH)
     print(r.text)
-
-
-def execute_script(script: str, mapset: str = None):
-    """Execute a script with GRASS GIS commands
-
-    Args:
-        script (str): The script path
-        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
-    """
-    f = open(script, "r")
-    lines = f.readlines()
-
-    commands = list()
-
-    for line in lines:
-        line = line.strip()
-        # Get all lines that have no comments
-        if line and "#" not in line[:1]:
-            tokens = line.split()
-            commands.append(tokens)
-
-    send_poll_commands(commands=commands, mapset=mapset)
-
-
-def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
-    """Create the actinia process chain, send it to the actinia server
-    and poll for the result
-
-    Args:
-        commands: A list of GRASS commands from the command line or from a script
-        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
-    """
-    for command in commands:
-        p_chain = create_actinia_process(command)
-        if p_chain:
-            PCHAIN["list"].append(p_chain)
-
-    if mapset:
-        url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/processing_async"
-    else:
-        url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
-
-    r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
-
-    data = simplejson.loads(r.text)
-    print("Resource status", data["status"])
-
-    poll_url = data["urls"]["status"]
-
-    print("Polling:", poll_url)
-
-    while True:
-        r = requests.get(poll_url, auth=ACTINIA_AUTH)
-
-        try:
-            data = simplejson.loads(r.text)
-            print("Resource poll status:", data["status"])
-            print(data["message"])
-
-            final_status = data["status"]
-            if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
-                break
-            time.sleep(1)
-        except Exception as a:
-            raise
-
-    print("Resource status", data["status"])
-    print("--------------------------------------------------------------------------")
-
-    if r.status_code == 200:
-
-        if final_status == "terminated":
-            print(r.text)
-            return
-
-        for entry in data["process_log"]:
-            if entry["stdout"]:
-                print(entry["stdout"])
-            if entry["stderr"][0]:
-                pprint(entry["stderr"])
-        pprint(data["urls"])
-    else:
-        print(r.text)
-
-
-def create_actinia_process(command: List[str]) -> Optional[dict]:
-    """Create an actinia command dict, that can be put into a process chain
-
-    Args:
-        command: The GRASS GIS command as a list of strings
-
-    Returns:
-        The actinia process dictionary
-    """
-    if not command:
-        return None
-
-    if "--json" not in command:
-        command.append("--json")
-
-    # print(command)
-
-    proc = subprocess.Popen(args=command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                            stdin=subprocess.PIPE)
-    (stdout_buff, stderr_buff) = proc.communicate()
-    stdout_buff = stdout_buff.decode()
-    stderr_buff = stderr_buff.decode()
-
-    # print(stdout_buff)
-
-    if proc.returncode != 0:
-        raise Exception("Error while executing GRASS command: %s. \n"
-                        "\n%s\n%s\n" % (str(command), stdout_buff, stderr_buff))
-    try:
-        actinia_proc = simplejson.loads(stdout_buff)
-        return actinia_proc
-    except:
-        raise
 
 
 def list_user_jobs(type_: str):
@@ -385,6 +268,128 @@ def delete_persistent_mapset(mapset: str):
     pprint(data)
 
 
+def execute_script(script: str, mapset: str = None):
+    """Execute a script with GRASS GIS commands
+
+    Args:
+        script (str): The script path
+        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
+    """
+    f = open(script, "r")
+    lines = f.readlines()
+
+    commands = list()
+
+    for line in lines:
+        line = line.strip()
+        # Get all lines that have no comments
+        if line and "#" not in line[:1]:
+            tokens = line.split()
+            commands.append(tokens)
+
+    send_poll_commands(commands=commands, mapset=mapset)
+
+
+def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
+    """Create the actinia process chain, send it to the actinia server
+    and poll for the result
+
+    Args:
+        commands: A list of GRASS commands from the command line or from a script
+        mapset: If mapset is set, then the processing will be performed in the mapset of the persistent user database
+    """
+    for command in commands:
+        p_chain = create_actinia_process(command)
+        if p_chain:
+            PCHAIN["list"].append(p_chain)
+
+    if DRY_RUN is True:
+        print(simplejson.dumps(PCHAIN, sort_keys=False, indent=2 * ' '))
+        return
+
+    if mapset:
+        url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/processing_async"
+    else:
+        url = ACTINIA_URL + f"/locations/{LOCATION}/processing_async_export"
+
+    r = requests.post(url, json=PCHAIN, auth=ACTINIA_AUTH)
+
+    data = simplejson.loads(r.text)
+    print("Resource status", data["status"])
+
+    poll_url = data["urls"]["status"]
+
+    print("Polling:", poll_url)
+
+    while True:
+        r = requests.get(poll_url, auth=ACTINIA_AUTH)
+
+        try:
+            data = simplejson.loads(r.text)
+            print("Resource poll status:", data["status"])
+            print(data["message"])
+
+            final_status = data["status"]
+            if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
+                break
+            time.sleep(1)
+        except Exception as a:
+            raise
+
+    print("Resource status", data["status"])
+    print("--------------------------------------------------------------------------")
+
+    if r.status_code == 200:
+
+        if final_status == "terminated":
+            print(r.text)
+            return
+
+        for entry in data["process_log"]:
+            if entry["stdout"]:
+                print(entry["stdout"])
+            if entry["stderr"][0]:
+                pprint(entry["stderr"])
+        pprint(data["urls"])
+    else:
+        print(r.text)
+
+
+def create_actinia_process(command: List[str]) -> Optional[dict]:
+    """Create an actinia command dict, that can be put into a process chain
+
+    Args:
+        command: The GRASS GIS command as a list of strings
+
+    Returns:
+        The actinia process dictionary
+    """
+    if not command:
+        return None
+
+    if "--json" not in command:
+        command.append("--json")
+
+    # print(command)
+
+    proc = subprocess.Popen(args=command, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+                            stdin=subprocess.PIPE)
+    (stdout_buff, stderr_buff) = proc.communicate()
+    stdout_buff = stdout_buff.decode()
+    stderr_buff = stderr_buff.decode()
+
+    # print(stdout_buff)
+
+    if proc.returncode != 0:
+        raise Exception("Error while executing GRASS command: %s. \n"
+                        "\n%s\n%s\n" % (str(command), stdout_buff, stderr_buff))
+    try:
+        actinia_proc = simplejson.loads(stdout_buff)
+        return actinia_proc
+    except:
+        raise
+
+
 @click.command(context_settings=dict(ignore_unknown_options=True, ))
 @click.option("--version", is_flag=True, help="Request the version of the server.")
 @click.option('--script', help="The script file from which all all commands will be executed "
@@ -407,6 +412,8 @@ def delete_persistent_mapset(mapset: str):
                                                "using the current or the provided location")
 @click.option("--persistent", nargs=1, help="Use a persistent database location/mapset for processing on the "
                                             "actinia server")
+@click.option("--dry-run", is_flag=True, help="Just print the JSON request and do not send the "
+                                              "generated request to the server.")
 @click.option("--location", nargs=1, help="Use this location for processing instead of the current one on "
                                           "the actinia server")
 @click.argument('grass_command', nargs=-1, type=click.UNPROCESSED)
@@ -415,7 +422,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
          create_mapset: str, delete_mapset: str,
          persistent: str, location: str,
          list_raster: str, list_vector: str, list_strds: str,
-         kill_job: str, grass_command: tuple):
+         kill_job: str, dry_run: bool, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
     on an actinia REST service. In addition it provides job management and the ability to
     list locations, mapsets and map layer the user has access to.
@@ -531,6 +538,10 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     set_credentials()
     setup_location()
 
+    global DRY_RUN
+    if dry_run:
+        DRY_RUN = True
+
     if version is True:
         actinia_version()
         return
@@ -552,7 +563,6 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
         elif delete_mapset:
             delete_persistent_mapset(mapset=delete_mapset)
         else:
-            print(location, "Persistent", persistent)
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
                 send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
     elif list_jobs:
@@ -580,7 +590,6 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     else:
         if len(sys.argv) > 1:
             if grass_command[0][0:2] in ["r.", "v.", "i.", "t.", "g.", "r3."]:
-                print("Persistent", persistent)
                 send_poll_commands(commands=[list(grass_command), ], mapset=persistent)
         else:
             actinia_version()
