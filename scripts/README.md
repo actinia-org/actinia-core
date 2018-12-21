@@ -102,6 +102,7 @@ location:
 
 ```bash
 ace --location nc_spm_08 --list-raster PERMANENT
+
 ['aspect',
  'basin_50K',
  'boundary_county_500m',
@@ -138,11 +139,11 @@ Simply use `@name_of_mapset`.
 The `ace` tool can list jobs, choose from `all`, `accepted`, `running`,
 `terminated`, `finished`, `error`.
 
-Show finished job(s):
+Show finished job(s) (note: the actual response may differ):
 
 ```bash
 ace --list-jobs finished
-# note: the actual response may differ
+
 resource_id-7a94b416-6f19-40c0-96c2-e62ce133ff89 finished 2018-12-17 11:33:58.965602
 resource_id-87965ced-7242-43d2-b6da-5ded47b10702 finished 2018-12-18 08:45:29.959495
 resource_id-b633740f-e0c5-4549-a663-9d58f9499531 finished 2018-12-18 08:52:36.669777
@@ -160,6 +161,7 @@ Show details about a specific job:
 
 ```bash
 ace --info-job resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153
+
 {'accept_datetime': '2018-12-18 21:47:41.094534',
  'accept_timestamp': 1545169661.0945334,
  'api_info': {'endpoint': 'asyncephemeralexportresource',
@@ -207,9 +209,7 @@ in an ephemeral mapset, that has only the PERMANENT mapset in its search path:
 
 ```bash
 ace g.list raster
-```
 
-```text
 Resource status accepted
 Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b
 Resource poll status: finished
@@ -262,13 +262,11 @@ zipcodes_dbl
  'status': 'https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b'}
 ```
 
-Run the module `g.region` in a new ephemeral location, to show
+Run the module `g.region` in a new ephemeral location, to show the default region of a temporary mapset:
 
 ```bash
 ace g.region -p
-```
 
-```text
 Resource status accepted
 Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973
 Resource poll status: finished
@@ -316,18 +314,82 @@ r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 ```
-
-Run the script saved in a text file as
+Save the script in the text file to `/tmp/ace_dtm_statistics.sh`
+and run the saved script as
 
 ```bash
-ace --script /path/to/ace_dtm_statistics.sh
+ace --script /tmp/ace_dtm_statistics.sh
 ```
 
 The results are provided as REST resources.
 
+To generate the actinia process chain JSON request simply add the --dry-run flag
+
+```bash
+ace --dry-run --script /tmp/ace_dtm_statistics.sh
+```
+The output should look like this:
+```json
+{
+  "version": "1",
+  "list": [
+    {
+      "module": "g.region",
+      "id": "g.region_1804289383",
+      "flags": "pa",
+      "inputs": [
+        {
+          "import_descr": {
+            "source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
+            "type": "raster"
+          },
+          "param": "raster", "value": "elev"
+        }
+      ]
+    },
+    {
+      "module": "r.univar",
+      "id": "r.univar_1804289383",
+      "inputs": [
+        {"param": "map", "value": "elev"},
+        {"param": "percentile", "value": "90"},
+        {"param": "separator", "value": "pipe"}
+      ]
+    },
+    {
+      "module": "r.info",
+      "id": "r.info_1804289383",
+      "inputs": [{"param": "map", "value": "elev"}]
+    },
+    {
+      "module": "r.slope.aspect",
+      "id": "r.slope.aspect_1804289383",
+      "inputs": [
+        {"param": "elevation", "value": "elev"},
+        {"param": "format", "value": "degrees"},
+        {"param": "precision", "value": "FCELL"},
+        {"param": "zscale", "value": "1.0"},
+        {"param": "min_slope", "value": "0.0"}
+      ],
+      "outputs": [
+        {
+          "export": {"format": "GTiff", "type": "raster"},
+          "param": "slope", "value": "slope_elev"
+        }
+      ]
+    },
+    {
+      "module": "r.info",
+      "id": "r.info_1804289383",
+      "inputs": [{"param": "map", "value": "slope_elev"}]
+    }
+  ]
+}
+```
+
 #### Example 2: Orthophoto image segmentation with export
 
-Store the following script as text file `ace_segmentation.sh`:
+Store the following script as text file `/tmp/ace_segmentation.sh`:
 
 ```bash
 # grass77 ~/grassdata/nc_spm_08/user1/
@@ -335,9 +397,12 @@ Store the following script as text file `ace_segmentation.sh`:
 # we apply a trick for the import of multi-band GeoTIFFs:
 # install with: g.extension importer
 importer raster=ortho2010+https://apps.mundialis.de/workshops/osgeo_ireland2017/north_carolina/ortho2010_t792_subset_20cm.tif
-#r.info map=ortho2010.1
-#r.info map=ortho2010.2
-#r.info map=ortho2010.3
+# The importer has created three new raster maps, one for each band in the geotiff file
+# stored them in an image group
+r.info map=ortho2010.1
+r.info map=ortho2010.2
+r.info map=ortho2010.3
+# Set the region and resolution
 g.region raster=ortho2010.1 res=1 -p
 # Note: the RGB bands are organized as a group
 i.segment group=ortho2010 threshold=0.25 output=ortho2010_segment_25+GTiff goodness=ortho2010_seg_25_fit+GTiff
@@ -348,7 +413,7 @@ r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+GeoJS
 Run the script saved in a text file as
 
 ```bash
-ace --script /path/to/ace_segmentation.sh
+ace --script /tmp/ace_segmentation.sh
 ```
 
 The results are provided as REST resources.
@@ -402,8 +467,8 @@ alias acp="ace --persistent `g.mapset -p`"
 ```
 
 We assume that in the active GRASS GIS session the 
-current location is **nc_spm_08** and the current mapset is **test_mapset**
-then the following commands from above can be executed in the following way:
+current location is **nc_spm_08** and the current mapset is **test_mapset**.
+Then the commands from above can be executed in the following way:
 
 ```bash
 ace --create-mapset test_mapset
