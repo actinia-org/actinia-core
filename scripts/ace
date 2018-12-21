@@ -268,6 +268,32 @@ def delete_persistent_mapset(mapset: str):
     pprint(data)
 
 
+def show_rendered_map(map_name: str, map_type: str):
+    """Show a rendered map with the size of 800x600 pixel
+
+    Args:
+        map_name: The name of the raster map with optional mapset (name@mapset)
+    """
+
+    if "@" in map_name:
+        map_name, mapset = map_name.split("@")
+    else:
+        mapset = grass.read_command("g.mapset", "p").strip()
+
+    print(f"Try to render {map_type} map {map_name} of mapset {mapset}")
+    url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/{map_type}/{map_name}/render?width=800&height=600"
+    r = requests.get(url, auth=ACTINIA_AUTH)
+    if r.status_code != 200:
+        pprint(r.text)
+    else:
+        from PIL import Image
+        import io
+
+        fp = io.BytesIO(r.content)
+        image = Image.open(fp)
+        image.show()
+
+
 def execute_script(script: str, mapset: str = None):
     """Execute a script with GRASS GIS commands
 
@@ -336,7 +362,6 @@ def send_poll_commands(commands: List[List[str]], mapset: str = None) -> None:
         except Exception as a:
             raise
 
-    print("Resource status", data["status"])
     print("--------------------------------------------------------------------------")
 
     if r.status_code == 200:
@@ -394,8 +419,7 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 @click.option("--version", is_flag=True, help="Request the version of the server.")
 @click.option('--script', help="The script file from which all all commands will be executed "
                                "on the actinia server.")
-@click.option("--list-jobs", type=click.Choice(['all', 'accepted', 'running', 'terminated',
-                                                'finished', 'error']),
+@click.option("--list-jobs", type=click.Choice(['all', 'accepted', 'running', 'terminated', 'finished', 'error']),
               nargs=1, help="List all jobs of the user.")
 @click.option("--info-job", nargs=1, help="Show information about a job.")
 @click.option("--kill-job", nargs=1, help="Kill a job.")
@@ -406,6 +430,12 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 @click.option("--list-vector", nargs=1,
               help="List vector maps of mapsets from the current or a provided location")
 @click.option("--list-strds", nargs=1, help="List strds of mapsets from the current or a provided location")
+@click.option("--render-raster", nargs=1,
+              help="Show a rendered image from a specific raster map")
+@click.option("--render-vector", nargs=1,
+              help="Show a rendered image from a specific vector map")
+@click.option("--render-strds", nargs=1,
+              help="Show a rendered image from a specific strds")
 @click.option("--create-mapset", nargs=1, help="Create a new mapset in the persistent database of the "
                                                "actinia server using the current or the provided location")
 @click.option("--delete-mapset", nargs=1, help="Delete an existing mapset from the  actinia server "
@@ -422,6 +452,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
          create_mapset: str, delete_mapset: str,
          persistent: str, location: str,
          list_raster: str, list_vector: str, list_strds: str,
+         render_raster: str, render_vector: str, render_strds: str,
          kill_job: str, dry_run: bool, grass_command: tuple):
     """This tool allows the execution of single GRASS GIS command or a list of GRASS GIS commands
     on an actinia REST service. In addition it provides job management and the ability to
@@ -462,7 +493,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     Single command example with location option:
 
-        ace -o nc_spm_08 g.list rast
+        ace --location nc_spm_08 g.list rast
 
     The following commands from a script will import a raster layer from an internet
     source as raster map *elev*, sets the computational region to the map and
@@ -480,59 +511,59 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     Run the script commands.sh in the current location on the actinia server:
 
-        ace -s commands.sh
+        ace --script commands.sh
 
     Run the script commands.sh in the location *latlong* on the actinia server:
 
-        ace -o latlong -s commands.sh
+        ace --location latlong --script commands.sh
 
     List all running jobs of the current user
 
-        ace -j running
+        ace --list-jobs running
 
     Get information about a specific job
 
-        ace -i resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
+        ace --info-job resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
 
     Kill a running job
 
-        ace -k resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
+        ace --kill-job resource_id-3ce07606-cc77-4188-942e-5a5fbc8f1091
 
     List all locations the user has access to:
 
-        ace -l
+        ace --list-locations
 
     List all mapsets of the current location the user access to:
 
-        ace -m
+        ace --list-mapsets
 
     List all mapsets of the location *nc_spm_08* the user access to:
 
-        ace -m -o nc_spm_08
+        ace --list-mapsets --location nc_spm_08
 
     List all raster maps in mapsets PERMANENT of the location *nc_spm_08*:
 
-        ace -o nc_spm_08 -r PERMANENT
+        ace --location nc_spm_08 --list-raster PERMANENT
 
     List all vector maps in mapsets PERMANENT of the location *nc_spm_08*:
 
-        ace -o nc_spm_08 -v PERMANENT
+        ace --location nc_spm_08 --list-vector PERMANENT
 
     List all strds in mapsets PERMANENT of the location *nc_spm_08*:
 
-        ace -o nc_spm_08 -t PERMANENT
+        ace --location nc_spm_08 --list-strds PERMANENT
 
     Create a new mapset in location nc_spm_08 in the persistent user database
 
-        ace -o nc_spm_08 -c test_mapset
+        ace --location nc_spm_08 --create-mapset test_mapset
 
     Delete test_mapset mapset from location nc_spm_08 in the persistent user database
 
-        ace -o nc_spm_08 -c test_mapset
+        ace --location nc_spm_08 --delete-mapset test_mapset
 
     Run command g.list in the persistent user database in location nc_spm_08 mapset test_mapset
 
-        ace -o nc_spm_08 -p test_mapset g.list type=raster mapset=test_mapset
+        ace --location nc_spm_08 --persistent test_mapset g.list type=raster mapset=test_mapset
 
     """
     set_credentials()
@@ -558,6 +589,12 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
             list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
         elif list_strds:
             list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+        elif render_raster:
+            show_rendered_map(map_name=render_raster, map_type="raster_layers")
+        elif render_vector:
+            show_rendered_map(map_name=render_vector, map_type="vector_layers")
+        elif render_strds:
+            show_rendered_map(map_name=render_strds, map_type="strds")
         elif create_mapset:
             create_persistent_mapset(mapset=create_mapset)
         elif delete_mapset:
@@ -579,6 +616,12 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
         list_maps_of_mapsets(mapset=list_vector, map_type="vector_layers")
     elif list_strds:
         list_maps_of_mapsets(mapset=list_strds, map_type="strds")
+    elif render_raster:
+        show_rendered_map(map_name=render_raster, map_type="raster_layers")
+    elif render_vector:
+        show_rendered_map(map_name=render_vector, map_type="vector_layers")
+    elif render_strds:
+        show_rendered_map(map_name=render_strds, map_type="strds")
     elif list_mapsets:
         list_user_mapsets()
     elif create_mapset:
