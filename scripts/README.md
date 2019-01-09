@@ -193,7 +193,19 @@ At time the following export formats are currently supported:
 * vector: `ESRI_Shapefile`, `GeoJSON`, `GML`
 * table: `CSV`, `TXT`
 
-The vector formats will be extended in future versions of actina with geopackage and sqlite formats.
+The vector formats will be extended in future versions of actina with Geopackage and SQLite formats.
+
+## Displaying a map - map rendering
+
+It is very easy (and fast) to render a map:
+
+```
+# check amount of pixels, just FYI
+ace --location latlong r.info globcover@globcover
+ace --location latlong --render-raster globcover@globcover
+```
+
+![ESA Globcover map shown by actinia](esa_globcover_rendered_by_ace.png  "ESA Globcover map shown by actinia")
 
 ## Examples for ephemeral processing
 
