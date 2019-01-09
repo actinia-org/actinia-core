@@ -246,7 +246,7 @@ def create_persistent_mapset(mapset: str):
 
     """
 
-    print(f"Try to create mapset {mapset}")
+    print(f"Trying to create mapset {mapset}")
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}"
     r = requests.post(url, auth=ACTINIA_AUTH)
     data = simplejson.loads(r.text)
@@ -261,7 +261,7 @@ def delete_persistent_mapset(mapset: str):
 
     """
 
-    print(f"Try to delete mapset {mapset}")
+    print(f"Trying to delete mapset {mapset}")
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}"
     r = requests.delete(url, auth=ACTINIA_AUTH)
     data = simplejson.loads(r.text)
@@ -280,7 +280,7 @@ def show_rendered_map(map_name: str, map_type: str):
     else:
         mapset = grass.read_command("g.mapset", "p").strip()
 
-    print(f"Try to render {map_type} map {map_name} of mapset {mapset}")
+    print(f"Trying to render {map_type} map {map_name} of mapset {mapset}")
     url = ACTINIA_URL + f"/locations/{LOCATION}/mapsets/{mapset}/{map_type}/{map_name}/render?width=800&height=600"
     r = requests.get(url, auth=ACTINIA_AUTH)
     if r.status_code != 200:
