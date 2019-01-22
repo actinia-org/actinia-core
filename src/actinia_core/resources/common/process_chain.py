@@ -35,6 +35,7 @@ from .config import global_config
 from .sentinel_processing_library import Sentinel2Processing
 from .landsat_processing_library import LandsatProcessing
 from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
+from requests.auth import HTTPBasicAuth
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -555,6 +556,7 @@ class ProcessChainConverter(object):
         self.import_descr_list = []
         self.webhook_finished = None
         self.webhook_update = None
+        self.webhook_auth = None
 
     def process_chain_to_process_list(self, process_chain):
 
@@ -598,7 +600,11 @@ class ProcessChainConverter(object):
             if "finished" in process_chain["webhooks"]:
                 self.webhook_finished = process_chain["webhooks"]["finished"]
                 # Check if thr URL exists by investigating the HTTP header
-                resp = requests.head(self.webhook_finished)
+                if "auth" in process_chain["webhooks"]:
+                    self.webhook_auth = process_chain["webhooks"]["auth"]
+                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                else:
+                    resp = requests.head(self.webhook_finished)
                 if resp.status_code != 200:
                     raise AsyncProcessError("The finished webhook URL %s can not be accessed." % self.webhook_finished)
             else:
@@ -607,7 +613,11 @@ class ProcessChainConverter(object):
             if "update" in process_chain["webhooks"]:
                 self.webhook_update = process_chain["webhooks"]["update"]
                 # Check if thr URL exists by investigating the HTTP header
-                resp = requests.head(self.webhook_update)
+                if "auth" in process_chain["webhooks"]:
+                    self.webhook_auth = process_chain["webhooks"]["auth"]
+                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                else:
+                    resp = requests.head(self.webhook_update)
                 if resp.status_code != 200:
                     raise AsyncProcessError("The update webhook URL %s can not be accessed." % self.webhook_update)
 
