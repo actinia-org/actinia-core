@@ -36,6 +36,7 @@ import time
 import uuid
 import requests
 from flask import jsonify, make_response, json
+from requests.auth import HTTPBasicAuth
 
 from .common.process_object import Process
 from .common.grass_init import GrassInitializer
@@ -297,6 +298,7 @@ class EphemeralProcessing(object):
         self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
         # process chain finished
         self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
+        self.webhook_auth = None # The authentification for the webhook (base 64 decoded "username:password")
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -440,13 +442,19 @@ class EphemeralProcessing(object):
             if final is True and self.webhook_finished is not None:
                 self.message_logger.info("Send POST request to finished webhook url: %s"%self.webhook_finished)
                 http_code, response_model = pickle.loads(document)
-                r = requests.post(self.webhook_finished, json=json.dumps(response_model))
+                if self.webhook_auth:
+                    r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                else:
+                    r = requests.post(self.webhook_finished, json=json.dumps(response_model))
                 if r.status_code != 200:
                     raise AsyncProcessError("Unable to access finished webhook URL %s"%self.webhook_finished)
             elif final is False and self.webhook_update is not None:
                 self.message_logger.info("Send POST request to update webhook url: %s"%self.webhook_update)
                 http_code, response_model = pickle.loads(document)
-                r = requests.post(self.webhook_update, json=json.dumps(response_model))
+                if self.webhook_auth:
+                    r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                else:
+                    r = requests.post(self.webhook_update, json=json.dumps(response_model))
                 if r.status_code != 200:
                     raise AsyncProcessError("Unable to access the update webhook URL %s"%self.webhook_update)
         except Exception as e:
@@ -495,6 +503,8 @@ class EphemeralProcessing(object):
             self.webhook_finished = self.proc_chain_converter.webhook_finished
         if hasattr(self.proc_chain_converter,'webhook_update') and self.proc_chain_converter.webhook_update is not None:
             self.webhook_update = self.proc_chain_converter.webhook_update
+        if hasattr(self.proc_chain_converter,'webhook_auth') and self.proc_chain_converter.webhook_auth is not None:
+            self.webhook_auth = self.proc_chain_converter.webhook_auth
 
         # Check for empty process chain
         if len(process_list) == 0 and len(self.resource_export_list) == 0:
