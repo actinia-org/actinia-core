@@ -238,6 +238,37 @@ def list_maps_of_mapsets(mapset: str, map_type: str):
         pprint(data)
 
 
+def create_persistent_location(location: str, epsg_code: str) -> None:
+    """Creates a location in the user specific persistent database
+
+    Args:
+        location: The location to be created in the user specific persistent database
+        epsg_code: The EPSG code that should be used to create the location
+
+    """
+
+    print(f"Trying to create location {location}")
+    url = ACTINIA_URL + f"/locations/{location}"
+    r = requests.post(url, auth=ACTINIA_AUTH, json={"epsg": epsg_code})
+    data = simplejson.loads(r.text)
+    pprint(data)
+
+
+def delete_persistent_location(location: str) -> None:
+    """Delete a location from the user specific persistent database
+
+    Args:
+        location: The location to be deleted from the user specific persistent database
+
+    """
+
+    print(f"Trying to delete location {location}")
+    url = ACTINIA_URL + f"/locations/{location}"
+    r = requests.delete(url, auth=ACTINIA_AUTH)
+    data = simplejson.loads(r.text)
+    pprint(data)
+
+
 def create_persistent_mapset(mapset: str):
     """Creates a mapset in the user specific persistent database
 
@@ -440,6 +471,10 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
                                                "actinia server using the current or the provided location")
 @click.option("--delete-mapset", nargs=1, help="Delete an existing mapset from the  actinia server "
                                                "using the current or the provided location")
+@click.option("--create-location", nargs=2, help="Create a new location in the persistent database of the "
+                                                 "actinia server using the provided EPSG code, "
+                                                 "e.g.: --create-location latlon 4326")
+@click.option("--delete-location", nargs=1, help="Delete an existing location from the  actinia server")
 @click.option("--persistent", nargs=1, help="Use a persistent database location/mapset for processing on the "
                                             "actinia server")
 @click.option("--dry-run", is_flag=True, help="Just print the JSON request and do not send the "
@@ -450,6 +485,7 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
 def main(script: str, version: bool, list_jobs: str, info_job: str,
          list_locations: bool, list_mapsets: bool,
          create_mapset: str, delete_mapset: str,
+         create_location: List[str], delete_location: str,
          persistent: str, location: str,
          list_raster: str, list_vector: str, list_strds: str,
          render_raster: str, render_vector: str, render_strds: str,
@@ -459,7 +495,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
     list locations, mapsets and map layer the user has access to.
 
     This tool must be executed in an active GRASS GIS session and will use the current location
-    to access the actinia service. The current location can be overwritten by the *-o* option.
+    to access the actinia service. The current location can be overwritten by the *--location* option.
     All commands will be executed per default in an ephemeral database,
     hence generated output must be exported using augmented GRASS commands.
     The option --persistent MAPSET_NAME allows the execution of commands in the
@@ -481,6 +517,8 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
       3. Show the version of the actinia service
       4. Show the locations and mapsets the user has access to
       5. Show map layers of specific location/mapset
+      6. Create new persistent user specic locations
+      7. Create new persistent user specic mapsets
 
     GRASS GIS commands can be augmented with actinia specific extensions.
     The + operator can be specified for an input parameter
@@ -553,6 +591,14 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace --location nc_spm_08 --list-strds PERMANENT
 
+    Create a new location test_location in the persistent user database
+
+        ace --create-location test_location 4326
+
+    Delete test_location from the persistent user database
+
+        ace --delete-location test_location
+
     Create a new mapset in location nc_spm_08 in the persistent user database
 
         ace --location nc_spm_08 --create-mapset test_mapset
@@ -575,6 +621,14 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     if version is True:
         actinia_version()
+        return
+
+    if create_location:
+        create_persistent_location(create_location[0], create_location[1])
+        return
+
+    if delete_location:
+        delete_persistent_location(delete_location)
         return
 
     if location:
