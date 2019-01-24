@@ -489,3 +489,27 @@ acp g.list type=raster mapset=test_mapset
 acp r.info elev@test_mapset
 acp r.info slope_elev@test_mapset
 ```
+
+
+## Super admin tasks
+
+### Creation of new locations
+
+```bash
+# create new location
+ace --create-location latlon 4326
+# create new mapset within location
+ace --location latlon --create-mapset user1
+```
+
+### Installing of GRASS GIS addons (extensions)
+
+```bash
+# list existing addons, see also
+# https://grass.osgeo.org/grass7/manuals/addons/
+ace --location latlon g.extension -l
+
+# install machine learning addon r.learn.ml
+ace --location latlon g.extension r.learn.ml
+```
+
