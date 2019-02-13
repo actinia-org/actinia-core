@@ -4,9 +4,10 @@
 #
 # MODULE:       Actinia exporter
 # AUTHOR(S):    Soeren Gebbert
-#               
+#
 # PURPOSE:      Facilitates creation of raster MASK
-# COPYRIGHT:    (C) 2018-2018 by the GRASS Development Team
+#
+# COPYRIGHT:    (C) 2018 by  Sören Gebbert and mundialis GmbH & Co. KG
 #
 #               This program is free software under the GNU General Public
 #               License (>=v3). Read the file COPYING that comes with GRASS

@@ -1,6 +1,6 @@
 # Introduction to ace - actinia command execution
 
-The `ace` tool allows the execution of single GRASS GIS command 
+The `ace` tool allows the execution of a single GRASS GIS command
 or a list of GRASS GIS commands on an actinia REST service (https://actinia.mundialis.de/).
 In addition it provides job management, the ability to
 list locations, mapsets and map layer the user has access to as
@@ -512,4 +512,3 @@ ace --location latlon g.extension -l
 # install machine learning addon r.learn.ml
 ace --location latlon g.extension r.learn.ml
 ```
-

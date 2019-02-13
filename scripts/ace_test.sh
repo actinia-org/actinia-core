@@ -1,7 +1,22 @@
 #!/usr/bin/env bash
 
-# This script contains commands that can be executed in a nc_spm_08 location
-# to the the ace command and its features
+############################################################################
+#
+# MODULE:       ace test script
+# AUTHOR(S):    Soeren Gebbert
+#
+# PURPOSE:      This script contains commands that can be executed in a nc_spm_08 location
+#               to the the ace command and its features
+#
+# COPYRIGHT:    (C) 2018 by  Sören Gebbert and mundialis GmbH & Co. KG
+#
+#               This program is free software under the GNU General Public
+#               License (>=v3). Read the file COPYING that comes with GRASS
+#               for details.
+#
+#############################################################################
+
+
 
 # List all maps in the search path of the PERMANENT mapset of the current location in actinia server
 ./ace g.list rast

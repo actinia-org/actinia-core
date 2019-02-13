@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2018 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -469,12 +469,12 @@ def create_actinia_process(command: List[str]) -> Optional[dict]:
               help="Show a rendered image from a specific strds")
 @click.option("--create-mapset", nargs=1, help="Create a new mapset in the persistent database of the "
                                                "actinia server using the current or the provided location")
-@click.option("--delete-mapset", nargs=1, help="Delete an existing mapset from the  actinia server "
+@click.option("--delete-mapset", nargs=1, help="Delete an existing mapset from the actinia server "
                                                "using the current or the provided location")
 @click.option("--create-location", nargs=2, help="Create a new location in the persistent database of the "
                                                  "actinia server using the provided EPSG code, "
                                                  "e.g.: --create-location latlon 4326")
-@click.option("--delete-location", nargs=1, help="Delete an existing location from the  actinia server")
+@click.option("--delete-location", nargs=1, help="Delete an existing location from the actinia server")
 @click.option("--persistent", nargs=1, help="Use a persistent database location/mapset for processing on the "
                                             "actinia server")
 @click.option("--dry-run", is_flag=True, help="Just print the JSON request and do not send the "
@@ -517,8 +517,8 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
       3. Show the version of the actinia service
       4. Show the locations and mapsets the user has access to
       5. Show map layers of specific location/mapset
-      6. Create new persistent user specic locations
-      7. Create new persistent user specic mapsets
+      6. Create new persistent user specific locations
+      7. Create new persistent user specific mapsets
 
     GRASS GIS commands can be augmented with actinia specific extensions.
     The + operator can be specified for an input parameter
