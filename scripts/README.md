@@ -8,12 +8,25 @@ well as the creation and deletion of mapsets.
 
 Th `ace` tool must be executed in an active GRASS GIS session and will use the current location
 of this session to access the actinia service. 
-The current location can be overwritten by the `--location LOCATION_NAME` option.
+
+The current location setting can be overridden by the `--location LOCATION_NAME` option.
 All commands will be executed per default in an **ephemeral** database.
 Hence, generated output must be exported using augmented GRASS commands.
 
 The option `--persistent MAPSET_NAME` allows the execution of commands in the
 **persistent** user database. It can be used with `--location LOCATION_NAME`option.
+
+## Requirements and setup
+
+### Needed Python libraries
+
+In case not yet present on the system, the following Python libraries are needed:
+
+```bash
+pip3 install requests simplejson click
+```
+
+### Authentication settings
 
 The user must setup the following environmental variables to specify the actinia
 server and credentials:
@@ -25,11 +38,14 @@ export ACTINIA_PASSWORD='gu3st!pa55w0rd'
 export ACTINIA_URL='https://actinia.mundialis.de/latest'
 ```
 
+## Notes on the usage of external data sources
+
 GRASS GIS commands can be augmented with actinia specific extensions.
 The `+` operator can be specified for an input parameter
 to import a web located resource and to specify the export of an
 output parameter.
 
+See *Example 1* and other examples below.
 
 ## Available data
 
