@@ -201,6 +201,54 @@ ace --info-job resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153
  'user_id': 'markus'}
 ```
 
+## Inspecting the REST call prior to submission
+
+To generate the actinia process chain JSON request simply add the --dry-run flag:
+
+```bash
+ace --dry-run r.slope.aspect elevation=elevation slope=myslope
+```
+which will deliver the output:
+```json
+{
+  "version": "1",
+  "list": [
+    {
+      "module": "r.slope.aspect",
+      "id": "r.slope.aspect_1804289383",
+      "inputs": [
+        {
+          "param": "elevation",
+          "value": "elevation"
+        },
+        {
+          "param": "format",
+          "value": "degrees"
+        },
+        {
+          "param": "precision",
+          "value": "FCELL"
+        },
+        {
+          "param": "zscale",
+          "value": "1.0"
+        },
+        {
+          "param": "min_slope",
+          "value": "0.0"
+        }
+      ],
+      "outputs": [
+        {
+          "param": "slope",
+          "value": "myslope"
+        }
+      ]
+    }
+  ]
+}
+```
+
 ## Available export formats
 
 At time the following export formats are currently supported:
