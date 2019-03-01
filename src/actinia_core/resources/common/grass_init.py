@@ -419,16 +419,11 @@ class GrassInitializer(ProcessLogging):
         self.mapset_name = mapset_name
         self.grass_addon_path = grass_addon_path
         self.has_temp_region = False
-        self.grass_venv_path = config.GRASS_VENV
 
     def initialize(self):
         """
         Initialize the GRASS environment to run GRASS commands
         """
-        # Create the GRASS GIS Python2 environment
-        with open(self.grass_venv_path) as f:
-            code = compile(f.read(), self.grass_venv_path, 'exec')
-            exec(code, dict(__file__=self.grass_venv_path))
 
         self.gisrc_path = tempfile.mkdtemp()
 
