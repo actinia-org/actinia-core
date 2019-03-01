@@ -8,13 +8,16 @@ Flask-RESTful==0.3.6
 flask-restful-swagger-2
 Flask-Cors==3.0.3
 fluent-logger==0.9.2
+geopandas
 google-cloud==0.32.0
 gunicorn==19.9.0
 numpy==1.15.4
+pandas
 passlib==1.7.1
 ply==3.11
 python-magic==0.4.15
 scikit-learn
+Shapely
 Sphinx==1.7.1
 redis==2.10.6
 requests==2.18.4
@@ -22,3 +25,4 @@ rq==0.10.0
 http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
 torchvision
 uWSGI==2.0.17
+wheel
