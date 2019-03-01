@@ -1,7 +1,0 @@
-# The requirements for GRASS GIS Python3 environment
-numpy==1.15.4
-ply==3.11
-http://download.pytorch.org/whl/cpu/torch-0.4.1-cp36-cp36m-linux_x86_64.whl
-torchvision
-scikit-learn
-
