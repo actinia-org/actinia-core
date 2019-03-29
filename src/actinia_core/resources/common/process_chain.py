@@ -289,7 +289,9 @@ class GrassModule(Schema):
         'verbose': {'type': 'boolean',
                     'description': 'Set True to activate verbosity output of the module.'},
         'superquiet': {'type': 'boolean',
-                       'description': 'Set True to silence the output of the module.'}
+                       'description': 'Set True to silence the output of the module.'},
+        'interface-description': {'type': 'boolean',
+                    'description': 'Set True to print interface description and exit.'}
     }
     required = ['id', 'module']
     description = 'The definition of a single GRASS GIS module and its inputs, outputs and flags. This ' \
