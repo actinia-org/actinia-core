@@ -867,6 +867,22 @@ class ProcessChainConverter(object):
 
         module_name = module_descr["module"]
 
+        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+            params.append("--interface-description")
+
+        if module_name != "importer" and module_name != "exporter":
+            p = Process(exec_type="grass",
+                        executable=module_name,
+                        executable_params=params,
+                        stdin_source=stdin_func,
+                        id=id)
+
+            self.process_dict[id] = p
+
+            return p
+
+        return None
+
         if "inputs" in module_descr:
 
             if isinstance(module_descr["inputs"], list) is False:
