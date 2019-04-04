@@ -55,8 +55,12 @@ create_endpoints()
 #    return response
 
 # Connect the redis interfaces
-connect(global_config.REDIS_SERVER_URL,
-        global_config.REDIS_SERVER_PORT)
+redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
+if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+    redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+
+connect(*redis_args)
+del redis_args
 
 # Create the process queue
 create_process_queue(global_config)

@@ -57,8 +57,13 @@ class ResourceManagerBase(Resource):
         # Configuration
         Resource.__init__(self)
 
-        self.resource_logger = ResourceLogger(host=global_config.REDIS_SERVER_URL,
-                                              port=global_config.REDIS_SERVER_PORT)
+        kwargs = dict()
+        kwargs['host'] = global_config.REDIS_SERVER_URL
+        kwargs['port'] = global_config.REDIS_SERVER_PORT
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            kwargs['password'] = global_config.REDIS_SERVER_PW
+        self.resource_logger = ResourceLogger(**kwargs)
+        del kwargs
 
         # Store the user id, user group and all credentials of the current user
 

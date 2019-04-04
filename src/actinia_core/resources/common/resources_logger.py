@@ -48,11 +48,15 @@ class ResourceLogger(RedisFluentLoggerBase):
     """Write, update, receive and delete entries in the resource database
     """
 
-    def __init__(self, host, port, config=None, user_id=None, fluent_sender=None):
+    def __init__(self, host, port, password=None, config=None, user_id=None, fluent_sender=None):
         RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
         # Connect to a redis database
         self.db = RedisResourceInterface()
-        self.db.connect(host, port)
+        redis_args = (host, port)
+        if password is not None:
+            redis_args = (*redis_args, password)
+        self.db.connect(*redis_args)
+        del redis_args
 
     @staticmethod
     def _generate_db_resource_id(user_id, resource_id):

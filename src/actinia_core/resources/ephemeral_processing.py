@@ -581,14 +581,19 @@ class EphemeralProcessing(object):
             fluent_sender = sender.FluentSender('actinia_core_logger',
                                                 host=self.config.LOG_FLUENT_HOST,
                                                 port=self.config.LOG_FLUENT_PORT)
+        kwargs = dict()
+        kwargs['host'] = self.config.REDIS_SERVER_URL
+        kwargs['port'] = self.config.REDIS_SERVER_PORT
+        if self.config.REDIS_SERVER_PW and self.config.REDIS_SERVER_PW is not None:
+            kwargs['password'] = self.config.REDIS_SERVER_PW
+        self.resource_logger = ResourceLogger(**kwargs,
+                                              fluent_sender=fluent_sender)
 
-        self.resource_logger = ResourceLogger(host=self.config.REDIS_SERVER_URL,
-                                              port=self.config.REDIS_SERVER_PORT, fluent_sender=fluent_sender)
         self.message_logger = MessageLogger(config=self.config, user_id=self.user_id, fluent_sender=fluent_sender)
 
         self.lock_interface = RedisLockingInterface()
-        self.lock_interface.connect(host=self.config.REDIS_SERVER_URL,
-                                    port=self.config.REDIS_SERVER_PORT)
+        self.lock_interface.connect(**kwargs)
+        del kwargs
         self.process_time_limit = int(self.user_credentials["permissions"]["process_time_limit"])
 
         # Check and create all required paths to global, user and temporary locations

@@ -161,8 +161,11 @@ class ActiniaTestCaseBase(unittest.TestCase):
             #                                  global_config.NUMBER_OF_WORKERS)
 
         # Start the redis interface
-        redis_interface.connect(global_config.REDIS_SERVER_URL,
-                                global_config.REDIS_SERVER_PORT)
+        redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+
+        redis_interface.connect(*redis_args)
 
         # Process queue
         create_process_queue(config=global_config)

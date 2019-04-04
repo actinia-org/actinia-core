@@ -54,8 +54,13 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.user_id = "soeren"
         self.resource_id = uuid.uuid1()
         self.document = pickle.dumps({"Status":"running", "URL":"/bla/bla"})
-        self.log = ResourceLogger(global_config.REDIS_SERVER_URL,
-                                  global_config.REDIS_SERVER_PORT)
+
+        redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
+        if global_config.REDIS_SERVER_PW is not None:
+            redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+        self.log = ResourceLogger(*redis_args)
+        del redis_args
+
 
     def tearDown(self):
         self.app_context.pop()
