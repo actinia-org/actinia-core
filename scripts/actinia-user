@@ -35,8 +35,8 @@ import pprint
 import sys
 
 __license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016-2019, Soen Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
@@ -132,7 +132,7 @@ def set_user_credentials(user, args, method):
 def main():
     """User management
     """
-    parser = argparse.ArgumentParser(description='Manage GRaaS users in the Redis database.',
+    parser = argparse.ArgumentParser(description='Manage actinia users in the Redis database.',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("action", type=str, default="create",
