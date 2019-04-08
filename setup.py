@@ -50,6 +50,7 @@ def setup_package():
           use_pyscaffold=True,
           scripts=['scripts/actinia-user',
                    'scripts/actinia-bench',
+                   'scripts/actinia-algebra',
                    'scripts/rq_custom_worker',
                    'scripts/rq_starter',
                    'scripts/webhook-server',
