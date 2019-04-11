@@ -388,9 +388,15 @@ def start_process_queue_manager(config, queue, use_logger):
     except:
         pass
     # We need the resource logger to send updates to the resource database
-    resource_logger = ResourceLogger(host=config.REDIS_SERVER_URL,
-                                     port=config.REDIS_SERVER_PORT,
+    kwargs = dict()
+    kwargs['host'] = config.REDIS_SERVER_URL
+    kwargs['port'] = config.REDIS_SERVER_PORT
+    if config.REDIS_SERVER_PW and config.REDIS_SERVER_PW is not None:
+        kwargs['password'] = config.REDIS_SERVER_PW
+    resource_logger = ResourceLogger(**kwargs,
                                      fluent_sender=fluent_sender)
+    del kwargs
+
     count = 0
     try:
         while True:

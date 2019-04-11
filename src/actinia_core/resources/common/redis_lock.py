@@ -89,15 +89,22 @@ class RedisLockingInterface(object):
         self.call_extend_resource_lock = None
         self.call_unlock_resource = None
 
-    def connect(self, host, port):
+    def connect(self, host, port, password=None):
         """Connect to a specific redis server
 
         Args:
             host (str): The host name or IP address
             port (int): The port
+            password (str): The password
 
         """
-        self.connection_pool = redis.ConnectionPool(host=host, port=port)
+        kwargs = dict()
+        kwargs['host'] = host
+        kwargs['port'] = port
+        if password and password is not None:
+            kwargs['password'] = password
+        self.connection_pool = redis.ConnectionPool(**kwargs)
+        del kwargs
         self.redis_server = redis.StrictRedis(connection_pool=self.connection_pool)
 
         # Register the resource lock scripts in Redis

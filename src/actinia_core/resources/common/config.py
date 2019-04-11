@@ -107,6 +107,7 @@ class Configuration(object):
         # REDIS
         self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
         self.REDIS_SERVER_PORT = 6379             # The port of the redis server
+        self.REDIS_SERVER_PW = None             # The password of the redis server
         self.REDIS_RESOURCE_EXPIRE_TIME = 864000  # Default expire time is 10 days for resource logs,
         #                                           that are used for calculating the price of resource usage
         self.REDIS_QUEUE_SERVER_URL = "127.0.0.1" # The hostname of the redis work queue server
@@ -200,6 +201,7 @@ class Configuration(object):
         config.add_section('REDIS')
         config.set('REDIS', 'REDIS_SERVER_URL', self.REDIS_SERVER_URL)
         config.set('REDIS', 'REDIS_SERVER_PORT', str(self.REDIS_SERVER_PORT))
+        config.set('REDIS', 'REDIS_SERVER_PW', str(self.REDIS_SERVER_PW))
         config.set('REDIS', 'REDIS_RESOURCE_EXPIRE_TIME', str(self.REDIS_RESOURCE_EXPIRE_TIME))
         config.set('REDIS', 'REDIS_QUEUE_SERVER_URL', self.REDIS_QUEUE_SERVER_URL)
         config.set('REDIS', 'REDIS_QUEUE_SERVER_PORT', str(self.REDIS_QUEUE_SERVER_PORT))
@@ -304,6 +306,8 @@ class Configuration(object):
                     self.REDIS_SERVER_URL = config.get("REDIS", "REDIS_SERVER_URL")
                 if config.has_option("REDIS", "REDIS_SERVER_PORT"):
                     self.REDIS_SERVER_PORT = config.getint("REDIS", "REDIS_SERVER_PORT")
+                if config.has_option("REDIS", "REDIS_SERVER_PW"):
+                    self.REDIS_SERVER_PW = config.get("REDIS", "REDIS_SERVER_PW")
                 if config.has_option("REDIS", "REDIS_RESOURCE_EXPIRE_TIME"):
                     self.REDIS_RESOURCE_EXPIRE_TIME = config.getint("REDIS", "REDIS_RESOURCE_EXPIRE_TIME")
                 if config.has_option("REDIS", "REDIS_QUEUE_SERVER_URL"):
