@@ -28,30 +28,25 @@ Module management
 * List all modules
 
 """
+import os
 import shutil
 import json
 from flask import jsonify, make_response
-from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 from flask_restful_swagger_2 import Schema
 import pickle
+import uuid
+# from flask_restful_swagger_2 import Resource
 
-from actinia_core.resources.location_management import LocationManagementResourceAdmin, create_location
 from actinia_core.resources.ephemeral_processing import EphemeralProcessing
 from actinia_core.resources.resource_base import ResourceBase
 from actinia_core.resources.common.app import auth
-from actinia_core.resources.common.logging_interface import log_api_call
-from actinia_core.resources.common.redis_interface import enqueue_job, start_job
-from actinia_core.resources.common.exceptions import AsyncProcessError
-from actinia_core.resources.user_auth import check_user_permissions
-from actinia_core.resources.user_auth import very_admin_role
-from actinia_core.resources.common.response_models import ProcessingResponseModel, \
-    StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    MapsetInfoModel, RegionModel, ProcessingErrorResponseModel
-
+from actinia_core.resources.common.redis_interface import start_job
+from actinia_core.resources.common.response_models import StringListProcessingResultResponseModel,  \
+    ProcessingErrorResponseModel
 from actinia_core.resources.common.config import global_config
 
-__license__    = "GPLv3"
+__license__ = "GPLv3"
 __author__ = "Anika Bettge"
 __copyright__ = "Copyright 2019, mundialis"
 __maintainer__ = "Anika Bettge"
@@ -129,7 +124,7 @@ class ListModules(ResourceBase):
             '200': {
                 'description': 'This response returns a list of module names and the log '
                                'of the process chain that was used to create the response.',
-                'schema': StringListProcessingResultResponseModel
+                'schema': ModuleListResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
@@ -140,50 +135,69 @@ class ListModules(ResourceBase):
     })
     def get(self):
         """Get a list of all modules.
+
+        * not using enqueue_job to get always a response
+        * the function creates a new location and delete it in the end,
+            cause not all users can access a location
+
         """
-        # not using enqueue_job to get always a response
-        import subprocess
-        import os
 
-        grass_module = "g.search.modules"
-        grass_module_path = os.path.join(global_config.GRASS_GIS_START_SCRIPT, "bin", grass_module)
-        if os.path.isfile(grass_module_path) is not True:
-            grass_module_path = os.path.join(global_config.GRASS_GIS_START_SCRIPT, "scripts", grass_module)
+        # check if location exists
+        location_name = 'location_for_listing_modules_' + str(uuid.uuid4())
+        location = os.path.join(global_config.GRASS_DATABASE, location_name) # '/actinia_core/grassdb/location_for_listing_modules'
+        # Check the location path
+        if os.path.isdir(location):
+            return self.get_error_response(message="Unable to create location. "
+                                                   "Location <%s> exists in global database." % location_name)
+        # Check also for the user database
+        location = os.path.join(self.grass_user_data_base, self.user_group, location_name) # '/actinia_core/userdata/superadmin/location_for_listing_modules'
+        # Check the location path
+        if os.path.isdir(location):
+            return self.get_error_response(message="Unable to create location. "
+                                                   "Location <%s> exists in user database." % location_name)
 
-        # # create location
-        location_name = 'utm32n' #'location_for_listing_modules'
-        # location_manager = LocationManagementResourceAdmin()
-        # # location_manager.post("list_modules")
-        # location = os.path.join(location_manager.grass_data_base, location_name)
-        # # Check the location path
-        # if os.path.isdir(location):
-        #     return self.get_error_response(message="Unable to create location. "
-        #                                            "Location <%s> exists in global database." % location_name)
-        # # Check also for the user database
-        # location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
-        # # Check the location path
-        # if os.path.isdir(location):
-        #     return self.get_error_response(message="Unable to create location. "
-        #                                            "Location <%s> exists in user database." % location_name)
+        # create new location cause not each user can access a location
+        if not os.path.isdir(os.path.join(self.grass_user_data_base, self.user_group)):
+            os.mkdir(os.path.join(self.grass_user_data_base, self.user_group))
+        os.mkdir(location)
+        mapset = os.path.join(location, 'PERMANENT')
+        os.mkdir(mapset)
+        with open(os.path.join(mapset, 'DEFAULT_WIND'), 'w') as out:
+            out.write("proj:       3\nzone:       0\nnorth:      1N\n"
+                + "south:      0\neast:       1E\nwest:       0\ncols:       1"
+                + "\nrows:       1\ne-w resol:  1\nn-s resol:  1\ntop:        "
+                + "1.000000000000000\nbottom:     0.000000000000000\ncols3:   "
+                + "   1\nrows3:      1\ndepths:     1\ne-w resol3: 1\nn-s reso"
+                + "l3: 1\nt-b resol:  1")
+        with open(os.path.join(mapset, 'MYNAME'), 'w') as out:
+            out.write("")
+        with open(os.path.join(mapset, 'PROJ_EPSG'), 'w') as out:
+            out.write("epsg: 4326")
+        with open(os.path.join(mapset, 'PROJ_INFO'), 'w') as out:
+            out.write("name: WGS 84\ndatum: wgs84\nellps: wgs84\nproj: ll\n"
+                + "no_defs: defined\ntowgs84: 0.000,0.000,0.000")
+        with open(os.path.join(mapset, 'PROJ_UNITS'), 'w') as out:
+            out.write("unit: degree\nunits: degrees\nmeters: 1.0")
+        with open(os.path.join(mapset, 'WIND'), 'w') as out:
+            out.write("proj:       3\nzone:       0\nnorth:      1N\n"
+                + "south:      0\neast:       1E\nwest:       0\ncols:       1"
+                + "\nrows:       1\ne-w resol:  1\nn-s resol:  1\ntop:        "
+                + "1.000000000000000\nbottom:     0.000000000000000\ncols3:   "
+                + "   1\nrows3:      1\ndepths:     1\ne-w resol3: 1\nn-s reso"
+                + "l3: 1\nt-b resol:  1")
+
+        self.user_credentials["permissions"]['accessible_datasets'][location_name] = ['PERMANENT']
 
         rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name, #"list_modules",# 'utm32n', # TODO
+                              location_name=location_name,
                               mapset_name="PERMANENT")
-        # if rdc:
-        #     start_job(self.job_timeout, create_location, rdc)
-        # # else:
-        # #     raise AsyncProcessError("Unable to create location <%s>" % new_location)
-
-
         if rdc:
             start_job(self.job_timeout, list_modules, rdc)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
 
-        # import pdb; pdb.set_trace()
-        j_data = json.loads(response_model['process_results'])
-
+        j_data = json.loads(response_model['process_log'][-1]['stdout'])
 
         module_list = []
         for data in j_data:
@@ -192,6 +206,15 @@ class ListModules(ResourceBase):
             name = data['name']
             module_response = (ModuleResponseModel(id=name, description=description, categories=keywords.split(',')))
             module_list.append(module_response)
+
+        # remove location
+        location = os.path.join(global_config.GRASS_DATABASE, location_name)
+        if os.path.isdir(location):
+            shutil.rmtree(location)
+        location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
+        if os.path.isdir(location):
+            shutil.rmtree(location)
+        del self.user_credentials["permissions"]['accessible_datasets'][location_name]
 
         return make_response(jsonify(ModuleListResponseModel(status="success", processes=module_list)), 200)
 
