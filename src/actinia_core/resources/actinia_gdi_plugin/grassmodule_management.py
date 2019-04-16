@@ -40,7 +40,6 @@ import uuid
 
 from actinia_core.resources.ephemeral_processing import EphemeralProcessing
 from actinia_core.resources.resource_base import ResourceBase
-from actinia_core.resources.common.app import auth
 from actinia_core.resources.common.redis_interface import start_job
 from actinia_core.resources.common.response_models import StringListProcessingResultResponseModel,  \
     ProcessingErrorResponseModel
