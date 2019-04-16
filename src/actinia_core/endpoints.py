@@ -66,6 +66,8 @@ from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
 from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
 
+from .resources.actinia_gdi_plugin.grassmodule_management import ListModules
+
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -161,6 +163,8 @@ def create_core_endpoints():
     flask_api.add_resource(SyncDownloadCacheResource, '/download_cache')
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')
 
+    # actinia-gdi plugin
+    flask_api.add_resource(ListModules, '/modules')
 
 def check_import_plugins():
     import_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
@@ -178,10 +182,3 @@ def create_endpoints():
     except:
         e_type, e_value, e_tb = sys.exc_info()
         pprint(dict(message=str(e_value), traceback=str(traceback.format_tb(e_tb)), type=str(e_type)))
-
-
-
-
-
-
-
