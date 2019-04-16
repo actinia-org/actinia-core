@@ -41,7 +41,7 @@ import uuid
 from actinia_core.resources.ephemeral_processing import EphemeralProcessing
 from actinia_core.resources.resource_base import ResourceBase
 from actinia_core.resources.common.redis_interface import start_job
-from actinia_core.resources.common.response_models import StringListProcessingResultResponseModel,  \
+from actinia_core.resources.common.response_models import StringListProcessingResultResponseModel, \
     ProcessingErrorResponseModel
 from actinia_core.resources.common.config import global_config
 
@@ -185,7 +185,7 @@ class ListModules(ResourceBase):
                 + "   1\nrows3:      1\ndepths:     1\ne-w resol3: 1\nn-s reso"
                 + "l3: 1\nt-b resol:  1")
 
-        self.user_credentials["permissions"]['accessible_datasets'][location_name] = ['PERMANENT']
+        # self.user_credentials["permissions"]['accessible_datasets'][location_name] = ['PERMANENT']
 
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -213,7 +213,7 @@ class ListModules(ResourceBase):
         location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
         if os.path.isdir(location):
             shutil.rmtree(location)
-        del self.user_credentials["permissions"]['accessible_datasets'][location_name]
+        # del self.user_credentials["permissions"]['accessible_datasets'][location_name]
 
         return make_response(jsonify(ModuleListResponseModel(status="success", processes=module_list)), 200)
 
@@ -231,8 +231,8 @@ class EphemeralModuleLister(EphemeralProcessing):
         EphemeralProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
-    def _execute(self):
-
+    def _execute(self, skip_permission_check=True):
+    
         self._setup()
 
         # Create the temporary database and link all available mapsets into is
