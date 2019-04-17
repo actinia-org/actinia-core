@@ -73,7 +73,7 @@ class ModuleResponseModel(Schema):
         'categories': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'A list of categories.'
+            'description': 'A list of categories. GRASS GIS addons have the category "grass-module" and the actinia core modules are identified with "actinia-module"'
         }
     }
     example = {
@@ -203,7 +203,9 @@ class ListModules(ResourceBase):
             description = data['attributes']['description']
             keywords = data['attributes']['keywords']
             name = data['name']
-            module_response = (ModuleResponseModel(id=name, description=description, categories=keywords.split(',')))
+            categories = (keywords.split(','))
+            categories.append("grass-module")
+            module_response = (ModuleResponseModel(id=name, description=description, categories=sorted(categories)))
             module_list.append(module_response)
 
         # remove location
@@ -232,7 +234,7 @@ class EphemeralModuleLister(EphemeralProcessing):
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self, skip_permission_check=True):
-    
+
         self._setup()
 
         # Create the temporary database and link all available mapsets into is
