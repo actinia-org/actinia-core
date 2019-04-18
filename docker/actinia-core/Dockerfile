@@ -74,7 +74,7 @@ RUN grass --tmp-location EPSG:25832 --exec g.extension -s extension=d.rast.multi
 
 # TODO: is there a better workaround to install addons?
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-RUN grass --tmp-location EPSG:4326 --exec g.extension extension=i.cutlines && \
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
     grass --tmp-location EPSG:25832 --exec g.extension -s extension=v.out.png && \
     grass --tmp-location -c EPSG:25832 --exec g.extension -s extension=v.centerpoint
 RUN update-alternatives --remove python /usr/bin/python3
