@@ -40,3 +40,13 @@ docs/api/*
 docs/_build/*
 cover/*
 MANIFEST
+
+# docker
+docker/redis_data/dump.rdb
+!docker/actinia-core/actinia.cfg
+docker/build
+docker/actinia-core-data/grassdb
+docker/actinia-core-data/resources
+docker/actinia-core-data/userdata
+docker/actinia-core-data/workspace
+docker/actinia-core/snap/esa-snap_all_unix_6_0.sh
