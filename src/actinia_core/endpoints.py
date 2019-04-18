@@ -66,7 +66,8 @@ from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
 from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
 
-from .resources.actinia_gdi_plugin.grassmodule_management import ListModules
+from actinia_core.resources.actinia_gdi_plugin.grassmodule_management import ListModules
+from actinia_core.resources.actinia_gdi_plugin.gdi_ephemeral_processing_with_export import GdiAsyncEphemeralExportResource
 
 
 __license__ = "GPLv3"
@@ -165,6 +166,8 @@ def create_core_endpoints():
 
     # actinia-gdi plugin
     flask_api.add_resource(ListModules, '/modules')
+    flask_api.add_resource(GdiAsyncEphemeralExportResource,
+                           '/locations/<string:location_name>/gdi_processing_async_export')
 
 def check_import_plugins():
     import_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
