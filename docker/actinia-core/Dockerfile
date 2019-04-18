@@ -83,14 +83,6 @@ RUN update-alternatives --remove python /usr/bin/python3
 WORKDIR /root/.grass7/addons/scripts
 RUN find -type f | xargs sed -zi 's,#!/usr/bin/env python\n,#!/usr/bin/env python3\n,'
 
-# Install actinia-core
-WORKDIR /src
-ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/tags/$SOURCE_GIT_TAG version.json
-RUN git clone -b ${SOURCE_GIT_TAG} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
-
-WORKDIR /src/actinia_core
-RUN pip3 install -r requirements.txt && python3 setup.py install
-
 # install SNAPPY
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
@@ -98,6 +90,14 @@ RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 COPY snap /src/snap
 RUN sh /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
+
+# Install actinia-core
+WORKDIR /src
+ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/tags/$SOURCE_GIT_TAG version.json
+RUN git clone -b ${SOURCE_GIT_TAG} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
+
+WORKDIR /src/actinia_core
+RUN pip3 install -r requirements.txt && python3 setup.py install
 
 # Reduce the image size
 RUN apt-get autoremove -y

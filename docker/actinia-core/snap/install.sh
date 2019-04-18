@@ -8,6 +8,7 @@ export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
 # install module 'jpy' (A bi-directional Python-Java bridge)
 git clone https://github.com/bcdev/jpy.git /src/snap/jpy
+pip3 install wheel
 (cd /src/snap/jpy && python3 setup.py bdist_wheel)
 # hack because ./snappy-conf will create this dir but also needs *.whl files...
 mkdir -p /root/.snap/snap-python/snappy
