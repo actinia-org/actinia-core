@@ -90,8 +90,14 @@ class ResourceBase(Resource):
         self.orig_time = time.time()
         self.orig_datetime = str(datetime.now())
 
-        self.resource_logger = ResourceLogger(host=global_config.REDIS_SERVER_URL,
-                                              port=global_config.REDIS_SERVER_PORT)
+        kwargs = dict()
+        kwargs['host'] = global_config.REDIS_SERVER_URL
+        kwargs['port'] = global_config.REDIS_SERVER_PORT
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            kwargs['password'] = global_config.REDIS_SERVER_PW
+        self.resource_logger = ResourceLogger(**kwargs)
+        del kwargs
+
         self.message_logger = MessageLogger()
 
         self.grass_data_base = global_config.GRASS_DATABASE

@@ -135,7 +135,7 @@ def enqueue_job_old(timeout, func, *args):
     return current_queue
 
 
-def connect(host, port):
+def connect(host, port, pw=None):
     """Connect all required redis interfaces that should be used
        in the main server process.
 
@@ -145,10 +145,11 @@ def connect(host, port):
     Args:
         host (str): The hostname of the redis server
         port (str): The port of the redis server
+        pw (str): The password of the redis server
 
     """
-    redis_user_interface.connect(host, port)
-    redis_api_log_interface.connect(host, port)
+    redis_user_interface.connect(host, port, pw)
+    redis_api_log_interface.connect(host, port, pw)
 
 
 def disconnect():

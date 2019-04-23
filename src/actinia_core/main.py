@@ -41,6 +41,8 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
+if os.environ.get('DEFAULT_CONFIG_PATH'):
+    DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
 if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG_PATH):
     global_config.read(DEFAULT_CONFIG_PATH)
 
@@ -55,8 +57,12 @@ create_endpoints()
 #    return response
 
 # Connect the redis interfaces
-connect(global_config.REDIS_SERVER_URL,
-        global_config.REDIS_SERVER_PORT)
+redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
+if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+    redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+
+connect(*redis_args)
+del redis_args
 
 # Create the process queue
 create_process_queue(global_config)

@@ -103,8 +103,11 @@ class CommonTestCaseBase(unittest.TestCase):
             global_config.REDIS_SERVER_URL = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
 
-        redis_interface.connect(global_config.REDIS_SERVER_URL,
-                                global_config.REDIS_SERVER_PORT)
+        args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            args = (*args, global_config.REDIS_SERVER_PW)
+
+        redis_interface.connect(*args)
 
     @classmethod
     def tearDownClass(cls):
@@ -117,4 +120,3 @@ class CommonTestCaseBase(unittest.TestCase):
 
     def tearDown(self):
         self.app_context.pop()
-

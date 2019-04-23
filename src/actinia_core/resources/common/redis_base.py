@@ -43,16 +43,27 @@ class RedisBaseInterface(object):
         self.connection_pool = None
         self.redis_server = None
 
-    def connect(self, host="localhost", port=6379):
+    def connect(self, host="localhost", port=6379, password=None):
         """Connect to a specific redis server
 
         Args:
             host (str): The host name or IP address
             port (int): The port
+            password (str): The password
 
         """
-        self.connection_pool = redis.ConnectionPool(host=host, port=port)
+        kwargs = dict()
+        kwargs['host'] = host
+        kwargs['port'] = port
+        if password and password is not None:
+            kwargs['password'] = password
+        self.connection_pool = redis.ConnectionPool(**kwargs)
+        del kwargs
         self.redis_server = redis.StrictRedis(connection_pool=self.connection_pool)
+        try:
+            self.redis_server.ping()
+        except redis.exceptions.ResponseError as e:
+            print('ERROR: Could not connect to redis with ' + host, port, password, str(e))
 
     def disconnect(self):
         self.connection_pool.disconnect()

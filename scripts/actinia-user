@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2018 Soeren Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,8 +35,8 @@ import pprint
 import sys
 
 __license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__     = "Soeren Gebbert"
+__copyright__  = "Copyright 2016-2019, Soen Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
@@ -69,7 +69,7 @@ def set_user_credentials(user, args, method):
     """Set the user credentials
 
     Args:
-        user (graas_api.resources.common.user.ActiniaUser()): The user object
+        user (actinia.resources.common.user.ActiniaUser()): The user object
         args: The command line arguments
         method (str): "create", "update", "update_add",
                       "update_rm", "update_rm_location"
@@ -132,7 +132,7 @@ def set_user_credentials(user, args, method):
 def main():
     """User management
     """
-    parser = argparse.ArgumentParser(description='Manage GRaaS users in the Redis database.',
+    parser = argparse.ArgumentParser(description='Manage actinia users in the Redis database.',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
     parser.add_argument("action", type=str, default="create",
@@ -150,9 +150,11 @@ def main():
                              " * pwcheck: Check the password of the user"
                         )
     parser.add_argument("-s", "--server", type=str, required=False,
-                        help="The host name of the redis server, default is the value from the GRaaS config file")
+                        help="The host name of the redis server, default is the value from the actinia config file")
     parser.add_argument("-p", "--port", type=int, required=False,
-                        help="The port of the redis server, default is the value from the GRaaS config file")
+                        help="The port of the redis server, default is the value from the actinia config file")
+    parser.add_argument("-a", "--redis_password", type=str, required=False,
+                        help="The password of the redis server, default is the value from the actinia config file or None")
     parser.add_argument("-u", "--user_id", type=str, required=False,
                         help="The user name")
     parser.add_argument("-g", "--user_group", type=str, required=False,
@@ -183,13 +185,18 @@ def main():
 
     server = conf.REDIS_SERVER_URL
     port = conf.REDIS_SERVER_PORT
+    if conf.REDIS_SERVER_PW:
+        redis_password = conf.REDIS_SERVER_PW
+    else:
+        redis_password = None
 
     if args.server:
         server = args.server
     if args.port:
         port = args.port
-
-    redis_user_interface.connect(host=server, port=port)
+    if args.redis_password:
+        redis_password = args.redis_password
+    redis_user_interface.connect(host=server, port=port, password=redis_password)
 
     ######################### CREATE ############################
     if args.action == "create":
