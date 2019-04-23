@@ -110,6 +110,7 @@ class GrassEnvironment(ProcessLogging):
         self.env["LD_LIBRARY_PATH"] = str(os.path.join(self.env["GISBASE"], "lib"))
         self.env["GRASS_VERSION"] = "7.7.svn"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
+        self.env["GRASS_ADDON_BASE"] = grass_addon_path
         if os.name != 'posix':
             self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"\
                                    + os.path.join(self.env["GISBASE"], "scripts") + ";"\
