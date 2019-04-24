@@ -869,19 +869,6 @@ class ProcessChainConverter(object):
 
         module_name = module_descr["module"]
 
-        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
-            params.append("--interface-description")
-            if module_name != "importer" and module_name != "exporter":
-                p = Process(exec_type="grass",
-                            executable=module_name,
-                            executable_params=params,
-                            stdin_source=stdin_func,
-                            id=id)
-
-                self.process_dict[id] = p
-
-            return p
-
         if "inputs" in module_descr:
 
             if isinstance(module_descr["inputs"], list) is False:
@@ -1003,6 +990,9 @@ class ProcessChainConverter(object):
 
         if "verbose" in module_descr and module_descr["verbose"] is True:
             params.append("--v")
+
+        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+            params.append("--interface-description")
 
         # Check for un-allowed characters in the parameter list
         for entry in params:
@@ -1214,18 +1204,6 @@ class ProcessChainConverter(object):
 
         module_name = module_descr["module"]
 
-        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
-            parameters.append("--interface-description")
-            p = Process(exec_type="grass",
-                        executable=module_name,
-                        executable_params=parameters,
-                        stdin_source=stdin_func,
-                        id=id)
-
-            self.process_dict[id] = p
-
-        return p
-
         if "inputs" in module_descr:
             for key in module_descr["inputs"]:
 
@@ -1311,6 +1289,9 @@ class ProcessChainConverter(object):
 
         if "verbose" in module_descr and module_descr["verbose"] is True:
             parameters.append("--v")
+
+        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+            parameters.append("--interface-description")
 
         # Check for un-allowed characters in the parameter list
         for entry in parameters:
