@@ -1213,6 +1213,19 @@ class ProcessChainConverter(object):
             raise AsyncProcessError("Missing module name in module description of id %s" % str(id))
 
         module_name = module_descr["module"]
+
+        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+            parameters.append("--interface-description")
+            p = Process(exec_type="grass",
+                        executable=module_name,
+                        executable_params=parameters,
+                        stdin_source=stdin_func,
+                        id=id)
+
+            self.process_dict[id] = p
+
+        return p
+
         if "inputs" in module_descr:
             for key in module_descr["inputs"]:
 
