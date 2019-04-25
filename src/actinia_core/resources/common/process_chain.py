@@ -289,7 +289,9 @@ class GrassModule(Schema):
         'verbose': {'type': 'boolean',
                     'description': 'Set True to activate verbosity output of the module.'},
         'superquiet': {'type': 'boolean',
-                       'description': 'Set True to silence the output of the module.'}
+                       'description': 'Set True to silence the output of the module.'},
+        'interface-description': {'type': 'boolean',
+                    'description': 'Set True to print interface description and exit.'}
     }
     required = ['id', 'module']
     description = 'The definition of a single GRASS GIS module and its inputs, outputs and flags. This ' \
@@ -989,6 +991,9 @@ class ProcessChainConverter(object):
         if "verbose" in module_descr and module_descr["verbose"] is True:
             params.append("--v")
 
+        if "interface-description" in module_descr and module_descr["interface-description"] is True:
+            params.append("--interface-description")
+
         # Check for un-allowed characters in the parameter list
         for entry in params:
             if "&" in entry:
@@ -1198,6 +1203,7 @@ class ProcessChainConverter(object):
             raise AsyncProcessError("Missing module name in module description of id %s" % str(id))
 
         module_name = module_descr["module"]
+
         if "inputs" in module_descr:
             for key in module_descr["inputs"]:
 
@@ -1283,6 +1289,9 @@ class ProcessChainConverter(object):
 
         if "verbose" in module_descr and module_descr["verbose"] is True:
             parameters.append("--v")
+
+        if "interface-description" in module_descr and module_descr["interface-description"] is True:
+            parameters.append("--interface-description")
 
         # Check for un-allowed characters in the parameter list
         for entry in parameters:
