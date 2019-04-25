@@ -991,7 +991,7 @@ class ProcessChainConverter(object):
         if "verbose" in module_descr and module_descr["verbose"] is True:
             params.append("--v")
 
-        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+        if "interface-description" in module_descr and module_descr["interface-description"] is True:
             params.append("--interface-description")
 
         # Check for un-allowed characters in the parameter list
@@ -1290,7 +1290,7 @@ class ProcessChainConverter(object):
         if "verbose" in module_descr and module_descr["verbose"] is True:
             parameters.append("--v")
 
-        if "interface-description" in module_descr and module_descr["interface-description"] == "True":
+        if "interface-description" in module_descr and module_descr["interface-description"] is True:
             parameters.append("--interface-description")
 
         # Check for un-allowed characters in the parameter list
