@@ -35,7 +35,10 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-DEFAULT_CONFIG_PATH = "/etc/default/actinia"
+if os.environ.get('DEFAULT_CONFIG_PATH'):
+    DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
+else:
+    DEFAULT_CONFIG_PATH = "/etc/default/actinia"
 
 # Generate from GRASS_module_white_list.txt
 white_list = [
