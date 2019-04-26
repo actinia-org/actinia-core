@@ -1,0 +1,35 @@
+version: "3"
+services:
+
+  actinia-core:
+    build:
+      context: actinia-core-dev/
+    volumes:
+      - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
+      - ./actinia-core-data/pgpass:/mnt/pgpass:Z
+      - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
+      - ./actinia-core-data/userdata:/actinia_core/userdata"
+      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db"
+      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp"
+      - ./actinia-core-data/resources:/actinia_core/resources"
+    ports:
+      - "8088:8088"
+    depends_on:
+      - redis
+
+  redis:
+    image: redis:5.0.4-alpine
+    volumes:
+      - ./redis_data:/data
+    environment:
+      - REDIS_PASS_FILE=/data/config/.redis
+    command: [
+      "sh", "-c",
+      '
+      docker-entrypoint.sh
+      "/data/config/redis.conf"
+      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      '
+    ]
+    ports:
+        - "6379:6379"
