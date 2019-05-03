@@ -24,7 +24,7 @@ see [here](https://github.com/mundialis/actinia_core/tree/master/scripts).
 
 ## Installation
 
-TBD.
+Please see the `docker/` subfolder for details.
 
 
 ## Examples
