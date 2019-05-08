@@ -23,6 +23,9 @@ To build and deploy actinia, run
 
 ```
 docker-compose build
+
+# Note: adding -d starts the containers in the background and leaves them
+#       running; without docker-compose will show the logging in the terminal:
 docker-compose up
 ```
 
