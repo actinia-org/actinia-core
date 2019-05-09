@@ -20,13 +20,11 @@ mkdir -p /tmp/:/root/.grass7
 cp /root/.grass7/dblogin /tmp/:/root/.grass7/
 
 # Create default location in mounted (!) directory
-export GISBASE="/usr/local/grass77/"
 grass -text -e -c 'EPSG:25832' /actinia_core/grassdb/utm32n
 grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong
 # TODO: use this location for tests and integrate sample data, see README
 # created here, because set in sample config as default location
 grass -text -e -c 'EPSG:3358' /actinia_core/grassdb/nc_spm_08
-export GISBASE=""
 
 actinia-user create -u actinia-gdi -w actinia-gdi -r superadmin -g superadmin -c 100000000000 -n 1000 -t 31536000
 actinia-user update -u actinia-gdi -w actinia-gdi
