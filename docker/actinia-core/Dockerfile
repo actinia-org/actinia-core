@@ -6,7 +6,10 @@ LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de
 ARG SOURCE_GIT_URL=https://github.com
 ARG SOURCE_GIT_REMOTE=mundialis
 ARG SOURCE_GIT_REPO=actinia_core
-ARG SOURCE_GIT_TAG=stable
+# can be "tags" (for tag) or "heads" (for) branch
+ARG SOURCE_GIT_TYPE=heads
+# can be a tag name or branch name
+ARG SOURCE_GIT_REF=master
 
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
@@ -93,8 +96,9 @@ RUN update-alternatives --remove python /usr/bin/python3
 
 # Install actinia-core
 WORKDIR /src
-ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/tags/$SOURCE_GIT_TAG version.json
-RUN git clone -b ${SOURCE_GIT_TAG} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
+
+ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/$SOURCE_GIT_TYPE/$SOURCE_GIT_REF version.json
+RUN git clone -b ${SOURCE_GIT_REF} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
 
 WORKDIR /src/actinia_core
 RUN pip3 install -r requirements.txt && python3 setup.py install
