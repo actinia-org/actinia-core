@@ -243,7 +243,7 @@ class GrassWindFile(ProcessLogging):
         self.__write()
 
         try:
-            wind =open(self.__windFile,'w')
+            wind = open(self.__windFile,'w')
             wind.write("""proj:       0\n""")
             wind.write("""zone:       0\n""")
             wind.write("""north:      100\n""")
