@@ -62,6 +62,7 @@ RUN mkdir -p /actinia_core/grassdb && \
 RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
 RUN ln -s `grass --config path` /usr/local/grass7
+RUN grass --config svn_revision build
 
 # Install actinia-core plugins
 RUN git config --global http.sslVerify false
