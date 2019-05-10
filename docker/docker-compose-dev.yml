@@ -16,6 +16,8 @@ services:
       - "8088:8088"
     depends_on:
       - redis
+    cap_add:
+      - SYS_PTRACE
 
   redis:
     image: redis:5.0.4-alpine
