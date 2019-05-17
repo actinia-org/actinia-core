@@ -31,6 +31,8 @@ docker-compose up
 
 This will keep logging in the terminal foreground.
 
+__See below for production deployment__.
+
 # Notes on actinia_core development and testing GRASS GIS inside a container
 
 For actinia_core development, run and enter the running container (in a separate terminal):
@@ -41,8 +43,6 @@ docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/
 
 Inside the container, you can run GRASS GIS with:
 ```
-export GISBASE="/usr/local/grass77/"
-
 # Download GRASS GIS test data and put it into a directory
 cd /actinia_core/grassdb
 wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz && \
@@ -85,6 +85,29 @@ curl -u actinia-gdi:actinia-gdi 'http://127.0.0.1:8088/api/v1/locations'
 # from another server (update IP to that of the actinia server), e.g.:
 curl -u actinia-gdi:actinia-gdi 'http://10.133.7.128:8088/api/v1/locations'
 ```
+
+# Production deployment
+
+To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. To start the server, run:
+
+```
+docker-compose -f docker-compose-prod.yml build
+docker-compose -f docker-compose-prod.yml up -d
+```
+Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnarability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the build-in actinia-user cli. __Please change below username (-u) and password (-w)__:
+```
+# list help about the cli tool:
+docker-compose -f docker-compose-prod.yml exec actinia-core \
+    actinia-user --help
+
+# create a user and grant permissions to mapsets:
+docker-compose -f docker-compose-prod.yml exec actinia-core \
+    actinia-user create -u actinia-core -w actinia-core -r user -g user -c 100000000 -n 1000 -t 6000
+docker-compose -f docker-compose-prod.yml exec actinia-core \
+    actinia-user update -u actinia-core -d nc_spm_08/PERMANENT
+```
+Read more about user roles here: https://actinia.mundialis.de/tutorial/actinia_concepts.html#user-user-roles-and-user-groups
+
 
 # Cloud deployment with multiple actinia_core instances
 
