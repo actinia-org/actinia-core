@@ -132,7 +132,7 @@ class GrassEnvironment(ProcessLogging):
             try:
                 self.env[key] = os.getenv(key, self.env[key])
             except Exception as e:
-                raise GrassInitError("Error setting grass environmental variables. Exception: %s"%str(e))
+                raise GrassInitError("Error getting grass environmental variables. Exception: %s"%str(e))
 
     def set(self):
         for key in self.env:
