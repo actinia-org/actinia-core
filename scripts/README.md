@@ -58,18 +58,18 @@ Currently available datasets are (organized by projections):
     * base cartography (`nc_spm_08/PERMANENT`; source: https://grassbook.org/datasets/datasets-3rd-edition/)
     * Landsat subscenes (`nc_spm_08/landsat`; source: https://grass.osgeo.org/download/sample-data/)
 * Latitude-Longitude location (LatLong WGS84, EPSG:4326):
-    * empty (`latlong_wgs84/PERMANENT/`)
-    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
-    * LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
-    * LST tropical days asia 2017 (`latlong_wgs84/asia_tropical_2017/`)
-    * LST temperature daily asia 2017, including min, max and avg (`latlong_wgs84/asia_lst_daily_2017/`)
+    * empty (`latlong/PERMANENT/`)
+    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
+    * LST growing degree days asia 2017 (`latlong/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
+    * LST tropical days asia 2017 (`latlong/asia_tropical_2017/`)
+    * LST temperature daily asia 2017, including min, max and avg (`latlong/asia_lst_daily_2017/`)
 * Europe (EU LAEA CRS, EPSG:3035):
     * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`; source: https://land.copernicus.eu/imagery-in-situ/eu-dem)
     * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`; source: https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012)
 * World Mollweide (EPSG 54009):
     * GHS_POP_GPW42015_GLOBE_R2015A_54009_250_v1_0 (`world_mollweide/pop_jrc`; source: https://ghsl.jrc.ec.europa.eu/ghs_pop.php)
 
-Not all data is available for the demo user.
+Note that only selected datasets are available to the demo user (access is managed on a per-user base).
 
 ### List locations, mapsets and maps
 
@@ -77,7 +77,7 @@ In order to list the locations the user has access to, run
 
 ```bash
 ace --list-locations
-['latlong', 'nc_spm_08', 'utm_32n', 'latlong_wgs84']
+['latlong', 'nc_spm_08', 'utm_32n', 'latlong']
 ```
 
 The following command lists mapsets of current location in the active GRASS GIS session (nc_spm_08):
