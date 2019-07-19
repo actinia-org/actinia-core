@@ -45,6 +45,7 @@ MANIFEST
 docker/redis_data/dump.rdb
 !docker/actinia-core/actinia.cfg
 !docker/actinia-core-dev/actinia.cfg
+!docker/actinia-core-prod/actinia.cfg
 docker/build
 docker/actinia-core-data/grassdb
 docker/actinia-core-data/resources

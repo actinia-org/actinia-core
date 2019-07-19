@@ -3,22 +3,15 @@ services:
 
   actinia-core:
     build:
-      context: actinia-core/
-      args:
-        - SOURCE_GIT_URL=https://github.com
-        - SOURCE_GIT_REMOTE=mundialis
-        - SOURCE_GIT_REPO=actinia_core
-        - SOURCE_GIT_TYPE=heads
-        - SOURCE_GIT_REF=master
-    image: actinia-core:latest
+      context: actinia-core-prod/
     volumes:
       - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
       - ./actinia-core-data/pgpass:/mnt/pgpass:Z
       - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
-      - ./actinia-core-data/userdata:/actinia_core/userdata
-      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
-      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
-      - ./actinia-core-data/resources:/actinia_core/resources
+      - ./actinia-core-data/userdata:/actinia_core/userdata:Z
+      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db:Z
+      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp:Z
+      - ./actinia-core-data/resources:/actinia_core/resources:Z
     ports:
       - "8088:8088"
     depends_on:
@@ -38,5 +31,3 @@ services:
       --requirepass "$$(cat $$REDIS_PASS_FILE)"
       '
     ]
-    ports:
-        - "6379:6379"

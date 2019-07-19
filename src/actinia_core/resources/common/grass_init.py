@@ -110,6 +110,7 @@ class GrassEnvironment(ProcessLogging):
         self.env["LD_LIBRARY_PATH"] = str(os.path.join(self.env["GISBASE"], "lib"))
         self.env["GRASS_VERSION"] = "7.7.svn"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
+        self.env["GRASS_ADDON_BASE"] = grass_addon_path
         if os.name != 'posix':
             self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"\
                                    + os.path.join(self.env["GISBASE"], "scripts") + ";"\
@@ -131,7 +132,7 @@ class GrassEnvironment(ProcessLogging):
             try:
                 self.env[key] = os.getenv(key, self.env[key])
             except Exception as e:
-                raise GrassInitError("Error setting grass environmental variables. Exception: %s"%str(e))
+                raise GrassInitError("Error getting grass environmental variables. Exception: %s"%str(e))
 
     def set(self):
         for key in self.env:
@@ -242,7 +243,7 @@ class GrassWindFile(ProcessLogging):
         self.__write()
 
         try:
-            wind =open(self.__windFile,'w')
+            wind = open(self.__windFile,'w')
             wind.write("""proj:       0\n""")
             wind.write("""zone:       0\n""")
             wind.write("""north:      100\n""")
