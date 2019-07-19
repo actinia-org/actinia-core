@@ -3,11 +3,17 @@ To run actinia, run
 ```
 docker-compose build
 docker-compose up
+
+# or DEV setup
+docker-compose -f docker-compose-dev.yml build
+docker-compose -f docker-compose-dev.yml up
 ```
 
 For actinia-core development, run and enter the running container.
 ```
 docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
+
+docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
 ```
 
 Inside the container, you can run GRASS with:
