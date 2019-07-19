@@ -8,18 +8,11 @@ services:
       - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
       - ./actinia-core-data/pgpass:/mnt/pgpass:Z
       - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
-<<<<<<< HEAD
       - ./actinia-core-data/userdata:/actinia_core/userdata"
       - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db"
       - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp"
       - ./actinia-core-data/resources:/actinia_core/resources"
       - ../scripts:/src/actinia_core/scripts
-=======
-      - ./actinia-core-data/userdata:/actinia_core/userdata
-      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
-      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
-      - ./actinia-core-data/resources:/actinia_core/resources
->>>>>>> 63820b5903a7092db1ff6638f4158272b818f2bb
     ports:
       - "8088:8088"
     depends_on:
