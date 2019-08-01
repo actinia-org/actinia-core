@@ -2,9 +2,9 @@ Installation
 ============
 
 A local installation requires a full GRASS GIS installation. Make sure all
-requirements are fulfilled to compile GRASS GIS from the svn repository.
+requirements are fulfilled to compile GRASS GIS from the git repository.
 
-First install Proj4 and GRASS GIS by downloading the latest svn version and compile it.
+First install Proj4 and GRASS GIS by downloading the latest git version and compile it.
 
 1. Install the latest projection library.
 
@@ -18,9 +18,9 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 
         cd proj-4.9.3/nad
 
-        wget http://download.osgeo.org/proj/proj-datumgrid-1.6.zip
+        wget http://download.osgeo.org/proj/proj-datumgrid-1.8.zip
 
-        unzip proj-datumgrid-1.6.zip
+        unzip proj-datumgrid-1.8.zip
 
         cd ..
 
@@ -35,13 +35,11 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 
         cd /tmp
 
-        wget https://grass.osgeo.org/grass75/source/snapshot/grass-7.5.svn_src_snapshot_2018_03_10.tar.gz
-        tar xzvf grass-7.5.svn_src_snapshot_2018_03_10.tar.gz
-        mv grass-7.5.svn_src_snapshot_2018_03_10 grass_trunk
+        wget https://grass.osgeo.org/grass76/source/snapshot/grass-7.6.git_src_snapshot_2019_07_27.tar.gz
+        tar xzvf grass-7.6.git_src_snapshot_2019_07_27.tar.gz
+        mv grass-7.6.git_src_snapshot_2019_07_27 grass_master
 
-        cd grass_trunk
-        svn cleanup
-        svn up
+        cd grass_master
 
         export INTEL="-march=native -std=gnu99 -fexceptions -fstack-protector -m64"
         export MYCFLAGS="-Wall -ggdb -fno-fast-math -fno-common $INTEL $MYGCC"
@@ -140,7 +138,7 @@ First install Proj4 and GRASS GIS by downloading the latest svn version and comp
 
     ..
 
-5. GRASS GIS requires a Python2 environment for running, so we create one.
+5. GRASS GIS 7.6 requires a Python2 environment for running, so we create one.
    This environment must be specified in the actinia config file:
 
     .. code-block:: bash

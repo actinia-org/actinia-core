@@ -13,7 +13,7 @@ in a single call using a self describing url.
 
    .. code-block:: bash
 
-      curl ${AUTH} -X POST -i "${HOST}:${PORT}/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+      curl ${AUTH} -X POST -i "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 
    ..
 
@@ -29,7 +29,7 @@ processing status and eventually the processing result.
             "endpoint": "asyncephemerallandsatprocessingresource",
             "method": "POST",
             "path": "/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
-            "request_url": "http://localhost:8080/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+            "request_url": "http://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
           },
           "datetime": "2018-05-30 10:52:19.545774",
           "http_code": 200,
@@ -42,7 +42,7 @@ processing status and eventually the processing result.
           "timestamp": 1527677539.5457737,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
           },
           "user_id": "superadmin"
         }
@@ -54,7 +54,7 @@ for different NDVI API calls.
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "http://localhost:8080/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+      curl ${AUTH} -X GET -i "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
 
    ..
 
@@ -322,7 +322,7 @@ the created NDVI GeoTiff file as well as univariate statistics of the computed N
             {
               "executable": "python2",
               "parameter": [
-                "/usr/local/bin/grass75",
+                "/usr/local/bin/grass76",
                 "-e",
                 "-c",
                 "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B1.TIF",
@@ -650,10 +650,10 @@ the created NDVI GeoTiff file as well as univariate statistics of the computed N
           "timestamp": 1527679378.31516,
           "urls": {
             "resources": [
-              "http://localhost:8080/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
-              "http://localhost:8080/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
+              "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
+              "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
             ],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
           },
           "user_id": "superadmin"
         }
@@ -685,9 +685,9 @@ The statistical analysis of the resulting NDVI raster map layer is available in 
 The following links can be found in the **urls** section of the JSON response that point
 to the created resources:
 
-      http://localhost:8080/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png
+      http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png
 
-      http://localhost:8080/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff
+      http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff
 
 The preview image should look like this:
 

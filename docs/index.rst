@@ -12,7 +12,7 @@ The REST interface allows to access, manage and manipulate the GRASS GIS
 database via HTTP GET,PUT,POST and DELETE requests and to process raster, vector and
 time series data located in a persistent GRASS GIS database.
 **Actinia** allows the processing of cloud based data, for example all Landsat 4-8 scenes as well as all
-Sentinel2A scenes in an ephemeral databases. The computational results of ephemeral processing
+Sentinel-2 scenes in an ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
 The full API documentation is available here: https://actinia.mundialis.de/api_docs/
@@ -26,7 +26,7 @@ The full API documentation is available here: https://actinia.mundialis.de/api_d
    Actinia database access <tutorial_data_access>
    Time-series sampling <tutorial_strds_sampling>
    Landsat NDVI computation <tutorial_landsat_ndvi>
-   Sentinel2A NDVI computation <tutorial_sentinel2a_ndvi>
+   Sentinel-2A NDVI computation <tutorial_Sentinel-2A_ndvi>
    User defined processing <tutorial_process_chain>
    License <license>
    Authors <authors>
