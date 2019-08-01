@@ -2,7 +2,8 @@ Tutorial
 ========
 
 In the following tutorial we will access the persistent database analysing
-raster and raster-time-series data. We will use the import and export features of actinia-specific process chains to process Sentinel2A scenes with several GRASS GIS modules and
+raster and raster-time-series data. We will use the import and export features of
+actinia-specific process chains to process Sentinel-2A scenes with several GRASS GIS modules and
 export the result as GeoTiff files.
 
 The following examples shows the REST service access using the command line tool **curl** [#curl]_.
@@ -26,9 +27,8 @@ address:
 
     .. code-block:: bash
 
-        export PORT=443
-        export HOST=https://actinia.mundialis.de/api/latest
-        export AUTH='-u superadmin:abcdefgh'
+        export ACTINIA_URL=https://actinia.mundialis.de/latest
+        export AUTH='-u demouser:gu3st!pa55w0rd'
 
     ..
 
@@ -39,7 +39,7 @@ The following API call lists all available locations in the Actinia persistent d
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations"
 
 The output should look similar to this:
 
@@ -47,8 +47,7 @@ The output should look similar to this:
 
         {
           "locations": [
-            "ECAD",
-            "LL",
+            "latlong",
             "nc_spm_08"
           ],
           "status": "success"
@@ -61,7 +60,7 @@ To show the region settings and the projection of the GRASS GIS standard locatio
 
    .. code-block:: bash
 
-        curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/nc_spm_08/info"
+        curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/info"
 
    ..
 
@@ -76,15 +75,15 @@ information as well as the processing time are available in the response:
    .. code-block:: json
 
         {
-          "accept_datetime": "2018-05-30 09:08:03.677587",
-          "accept_timestamp": 1527671283.6775846,
+          "accept_datetime": "2019-08-01 20:30:05.717499",
+          "accept_timestamp": 1564691405.7174985,
           "api_info": {
             "endpoint": "locationmanagementresourceuser",
             "method": "GET",
             "path": "/api/v1/locations/nc_spm_08/info",
-            "request_url": "http://localhost:8080/api/v1/locations/nc_spm_08/info"
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/info"
           },
-          "datetime": "2018-05-30 09:08:03.985445",
+          "datetime": "2019-08-01 20:30:05.881138",
           "http_code": 200,
           "message": "Processing successfully finished",
           "process_chain_list": [
@@ -106,11 +105,11 @@ information as well as the processing time are available in the response:
                 "-ug3"
               ],
               "return_code": 0,
-              "run_time": 0.20779657363891602,
+              "run_time": 0.05028104782104492,
               "stderr": [
                 ""
               ],
-              "stdout": "..."
+              "stdout": "projection=99\nzone=0\nn=221230\ns=219580\nw=637740\ne=639530\nt=1\nb=0\nnsres=1650\nnsres3=10\newres=1790\newres3=10\ntbres=1\nrows=1\nrows3=165\ncols=1\ncols3=179\ndepths=1\ncells=1\ncells3=29535\n"
             },
             {
               "executable": "g.proj",
@@ -118,30 +117,30 @@ information as well as the processing time are available in the response:
                 "-fw"
               ],
               "return_code": 0,
-              "run_time": 0.0503382682800293,
+              "run_time": 0.05027127265930176,
               "stderr": [
                 ""
               ],
-              "stdout": "..."
+              "stdout": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n"
             }
           ],
           "process_results": {
             "projection": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n",
             "region": {
               "b": 0.0,
-              "cells": 29535,
+              "cells": 1,
               "cells3": 29535,
-              "cols": 179,
+              "cols": 1,
               "cols3": 179,
               "depths": 1,
               "e": 639530.0,
-              "ewres": 10.0,
+              "ewres": 1790.0,
               "ewres3": 10.0,
               "n": 221230.0,
-              "nsres": 10.0,
+              "nsres": 1650.0,
               "nsres3": 10.0,
               "projection": 99,
-              "rows": 165,
+              "rows": 1,
               "rows3": 165,
               "s": 219580.0,
               "t": 1.0,
@@ -154,15 +153,15 @@ information as well as the processing time are available in the response:
             "num_of_steps": 2,
             "step": 2
           },
-          "resource_id": "resource_id-b6eb8043-5dfc-4efd-ba0d-cb73020fbbc5",
+          "resource_id": "resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594",
           "status": "finished",
-          "time_delta": 0.30788373947143555,
-          "timestamp": 1527671283.9854295,
+          "time_delta": 0.16365694999694824,
+          "timestamp": 1564691405.8811285,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-b6eb8043-5dfc-4efd-ba0d-cb73020fbbc5"
+            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -171,7 +170,7 @@ To list all mapsets located in the location *nc_spm_08* the following API call i
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/nc_spm_08/mapsets"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/mapsets"
 
    ..
 
@@ -180,15 +179,15 @@ The response of this synchronous call lists all mapsets of the location in the *
    .. code-block:: json
 
         {
-          "accept_datetime": "2018-05-30 09:09:45.374612",
-          "accept_timestamp": 1527671385.374611,
+          "accept_datetime": "2019-08-01 20:31:11.325953",
+          "accept_timestamp": 1564691471.325952,
           "api_info": {
             "endpoint": "listmapsetsresource",
             "method": "GET",
             "path": "/api/v1/locations/nc_spm_08/mapsets",
-            "request_url": "http://localhost:8080/api/v1/locations/nc_spm_08/mapsets"
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/mapsets"
           },
-          "datetime": "2018-05-30 09:09:45.475211",
+          "datetime": "2019-08-01 20:31:11.430294",
           "http_code": 200,
           "message": "Processing successfully finished",
           "process_chain_list": [
@@ -210,32 +209,32 @@ The response of this synchronous call lists all mapsets of the location in the *
                 "-l"
               ],
               "return_code": 0,
-              "run_time": 0.05033111572265625,
+              "run_time": 0.05030035972595215,
               "stderr": [
                 "Available mapsets:",
                 ""
               ],
-              "stdout": "PERMANENT\nlandsat\ntest\ntest_mapset\nuser1\n"
+              "stdout": "PERMANENT\nlandsat\nnew_user_mapset\n"
             }
           ],
           "process_results": [
             "PERMANENT",
             "landsat",
-            "user1"
+            "new_user_mapset"
           ],
           "progress": {
             "num_of_steps": 1,
             "step": 1
           },
-          "resource_id": "resource_id-af3f1e53-7ffb-4fe8-8482-56cbb6533e86",
+          "resource_id": "resource_id-8365e42b-8111-4026-abb0-df86677ff3b9",
           "status": "finished",
-          "time_delta": 0.10063052177429199,
-          "timestamp": 1527671385.4751928,
+          "time_delta": 0.10437250137329102,
+          "timestamp": 1564691471.4302812,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-af3f1e53-7ffb-4fe8-8482-56cbb6533e86"
+            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -244,7 +243,7 @@ Using the following API call will show all information about the mapset *PERMANE
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/mapsets/PERMANENT/info"
 
 The response shows the region of the mapset and the projection of the location in the *process_results*
 section:
@@ -252,15 +251,15 @@ section:
    .. code-block:: json
 
         {
-          "accept_datetime": "2018-05-30 09:10:45.829632",
-          "accept_timestamp": 1527671445.8296297,
+          "accept_datetime": "2019-08-01 20:31:51.665042",
+          "accept_timestamp": 1564691511.6650407,
           "api_info": {
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info",
-            "request_url": "http://localhost:8080/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info"
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info"
           },
-          "datetime": "2018-05-30 09:10:45.995266",
+          "datetime": "2019-08-01 20:31:51.810266",
           "http_code": 200,
           "message": "Processing successfully finished",
           "process_chain_list": [
@@ -282,11 +281,11 @@ section:
                 "-ug3"
               ],
               "return_code": 0,
-              "run_time": 0.051815032958984375,
+              "run_time": 0.05028796195983887,
               "stderr": [
                 ""
               ],
-              "stdout": "..."
+              "stdout": "projection=99\nzone=0\nn=221230\ns=219580\nw=637740\ne=639530\nt=1\nb=0\nnsres=1650\nnsres3=10\newres=1790\newres3=10\ntbres=1\nrows=1\nrows3=165\ncols=1\ncols3=179\ndepths=1\ncells=1\ncells3=29535\n"
             },
             {
               "executable": "g.proj",
@@ -294,30 +293,30 @@ section:
                 "-fw"
               ],
               "return_code": 0,
-              "run_time": 0.05034303665161133,
+              "run_time": 0.05027055740356445,
               "stderr": [
                 ""
               ],
-              "stdout": "..."
+              "stdout": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n"
             }
           ],
           "process_results": {
             "projection": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n",
             "region": {
               "b": 0.0,
-              "cells": 29535,
+              "cells": 1,
               "cells3": 29535,
-              "cols": 179,
+              "cols": 1,
               "cols3": 179,
               "depths": 1,
               "e": 639530.0,
-              "ewres": 10.0,
+              "ewres": 1790.0,
               "ewres3": 10.0,
               "n": 221230.0,
-              "nsres": 10.0,
+              "nsres": 1650.0,
               "nsres3": 10.0,
               "projection": 99,
-              "rows": 165,
+              "rows": 1,
               "rows3": 165,
               "s": 219580.0,
               "t": 1.0,
@@ -330,15 +329,15 @@ section:
             "num_of_steps": 2,
             "step": 2
           },
-          "resource_id": "resource_id-a27bc261-472b-4019-ab1e-2f687167b0f3",
+          "resource_id": "resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a",
           "status": "finished",
-          "time_delta": 0.1656651496887207,
-          "timestamp": 1527671445.9952455,
+          "time_delta": 0.14524579048156738,
+          "timestamp": 1564691511.8102555,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-a27bc261-472b-4019-ab1e-2f687167b0f3"
+            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -351,7 +350,7 @@ for 60 years. We list all raster layers of the location ECAD in mapset *PERMANEN
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers"
 
 The response lists all raster layers of the mapset in the *process_results* section:
 
@@ -363,8 +362,8 @@ The response lists all raster layers of the mapset in the *process_results* sect
           "api_info": {
             "endpoint": "rasterlayersresource",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers"
+            "path": "/v1/locations/ECAD/mapsets/PERMANENT/raster_layers",
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers"
           },
           "datetime": "2018-05-30 09:13:51.745702",
           "http_code": 200,
@@ -417,9 +416,9 @@ The response lists all raster layers of the mapset in the *process_results* sect
           "timestamp": 1527671631.745685,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-114c7229-da85-4866-a33e-38172835e05f"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-114c7229-da85-4866-a33e-38172835e05f"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -428,7 +427,7 @@ Show info about the raster layer *temperature_mean_yearly_celsius_60*:
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
 
 The response lists information about the raster layer *temperature_mean_yearly_celsius_60*
 in the *process_results* section:
@@ -441,8 +440,8 @@ in the *process_results* section:
           "api_info": {
             "endpoint": "rasterlayerresource",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+            "path": "/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
           },
           "datetime": "2018-05-30 09:17:15.437797",
           "http_code": 200,
@@ -512,9 +511,9 @@ in the *process_results* section:
           "timestamp": 1527671835.4377818,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
 
@@ -537,7 +536,7 @@ We list all strds with the following API call:
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}//api/v1/locations/ECAD/mapsets/PERMANENT/strds"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/v1/locations/ECAD/mapsets/PERMANENT/strds"
 
 We receive two strds in the *process_results* section of the JSON response:
 
@@ -549,8 +548,8 @@ We receive two strds in the *process_results* section of the JSON response:
           "api_info": {
             "endpoint": "syncstrdslisterresource",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/strds",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/strds"
+            "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds",
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds"
           },
           "datetime": "2018-05-30 09:18:17.351918",
           "http_code": 200,
@@ -599,9 +598,9 @@ We receive two strds in the *process_results* section of the JSON response:
           "timestamp": 1527671897.3519022,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -610,7 +609,7 @@ Use the following API call to receive information about the strds *temperature_m
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
 
 All relevant information about strds *temperature_mean_1950_2013_yearly_celsius* is located in
 the *process_results* section of the JSON response:
@@ -623,8 +622,8 @@ the *process_results* section of the JSON response:
           "api_info": {
             "endpoint": "strdsmanagementresource",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+            "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
           },
           "datetime": "2018-05-30 09:19:25.519419",
           "http_code": 200,
@@ -698,9 +697,9 @@ the *process_results* section of the JSON response:
           "timestamp": 1527671965.519405,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
@@ -709,7 +708,7 @@ List all raster layers that are registered in the strds *temperature_mean_1950_2
 
    .. code-block:: bash
 
-      curl ${AUTH} -X GET -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+      curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
 
 A list of about 60 raster layers with minimum, maximum values, time-stamps and spatial extent will be located in the
 *process_results* section of the JSON response:
@@ -722,8 +721,8 @@ A list of about 60 raster layers with minimum, maximum values, time-stamps and s
           "api_info": {
             "endpoint": "strdsrastermanagement",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+            "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
           },
           "datetime": "2018-05-30 09:20:31.197637",
           "http_code": 200,
@@ -805,9 +804,9 @@ A list of about 60 raster layers with minimum, maximum values, time-stamps and s
           "timestamp": 1527672031.1976202,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
           },
-          "user_id": "superadmin"
+          "user_id": "demouser"
         }
 
    ..
