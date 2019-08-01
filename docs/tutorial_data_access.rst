@@ -28,7 +28,7 @@ address:
     .. code-block:: bash
 
         export ACTINIA_URL=https://actinia.mundialis.de/latest
-        export AUTH='-u demouser:gu3st!pa55w0rd'
+        export AUTH='-u superadmin:abcdefgh'
 
     ..
 
@@ -159,9 +159,9 @@ information as well as the processing time are available in the response:
           "timestamp": 1564691405.8811285,
           "urls": {
             "resources": [],
-            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -232,9 +232,9 @@ The response of this synchronous call lists all mapsets of the location in the *
           "timestamp": 1564691471.4302812,
           "urls": {
             "resources": [],
-            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -335,9 +335,9 @@ section:
           "timestamp": 1564691511.8102555,
           "urls": {
             "resources": [],
-            "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -418,7 +418,7 @@ The response lists all raster layers of the mapset in the *process_results* sect
             "resources": [],
             "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-114c7229-da85-4866-a33e-38172835e05f"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -513,7 +513,7 @@ in the *process_results* section:
             "resources": [],
             "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
 
@@ -600,7 +600,7 @@ We receive two strds in the *process_results* section of the JSON response:
             "resources": [],
             "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -699,7 +699,7 @@ the *process_results* section of the JSON response:
             "resources": [],
             "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
@@ -806,7 +806,7 @@ A list of about 60 raster layers with minimum, maximum values, time-stamps and s
             "resources": [],
             "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
           },
-          "user_id": "demouser"
+          "user_id": "superadmin"
         }
 
    ..
