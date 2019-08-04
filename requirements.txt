@@ -10,6 +10,8 @@ Flask-Cors==3.0.3
 fluent-logger==0.9.2
 geopandas
 google-cloud==0.32.0
+google-cloud-bigquery==0.28.0
+google-cloud-storage==1.6.0
 gunicorn==19.9.0
 numpy==1.15.4
 pandas
