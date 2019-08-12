@@ -35,13 +35,13 @@ First install Proj4 and GRASS GIS by downloading the latest git version and comp
 
         cd /tmp
 
-        wget https://grass.osgeo.org/grass76/source/snapshot/grass-7.6.git_src_snapshot_2019_07_27.tar.gz
-        tar xzvf grass-7.6.git_src_snapshot_2019_07_27.tar.gz
-        mv grass-7.6.git_src_snapshot_2019_07_27 grass_master
+        wget https://grass.osgeo.org/grass78/source/snapshot/grass-7.8.git_src_snapshot_latest.tar.gz
+        tar xzvf grass-7.8.git_src_snapshot_latest.tar.gz
+        mv grass-7.8.git_src_snapshot_????_??_?? grass_master
 
         cd grass_master
 
-        export INTEL="-march=native -std=gnu99 -fexceptions -fstack-protector -m64"
+        export INTEL="-std=gnu99 -fexceptions -fstack-protector -m64"
         export MYCFLAGS="-Wall -ggdb -fno-fast-math -fno-common $INTEL $MYGCC"
         export MYLDFLAGS="-Wl,--no-undefined"
         export LD_LIBRARY_PATH="/usr/local/lib"
@@ -138,7 +138,7 @@ First install Proj4 and GRASS GIS by downloading the latest git version and comp
 
     ..
 
-5. GRASS GIS 7.6 requires a Python2 environment for running, so we create one.
+5. GRASS GIS 7.8 requires a Python 3 environment for running, so we create one (not needed if only Python 3 is present on the machine).
    This environment must be specified in the actinia config file:
 
     .. code-block:: bash

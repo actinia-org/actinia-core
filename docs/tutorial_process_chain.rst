@@ -107,13 +107,13 @@ Then slope and aspect are computed with *r.slope.aspect* and specified for expor
 
 .. rubric:: Footnotes
 
-.. [#grassmodulelist] https://grass.osgeo.org/grass76/manuals/index.html
+.. [#grassmodulelist] https://grass.osgeo.org/grass78/manuals/index.html
 .. [#grassmodule] https://actinia.mundialis.de/api_docs/#/definitions/GrassModule
 .. [#inputs] https://actinia.mundialis.de/api_docs/#/definitions/InputParameter
 .. [#outputs] https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter
-.. [#rlopeaspect] https://grass.osgeo.org/grass76/manuals/r.slope.aspect.html
-.. [#mapset] https://grass.osgeo.org/grass76/manuals/grass_database.html
-.. [#gregion] https://grass.osgeo.org/grass76/manuals/g.region.html
+.. [#rlopeaspect] https://grass.osgeo.org/grass78/manuals/r.slope.aspect.html
+.. [#mapset] https://grass.osgeo.org/grass78/manuals/grass_database.html
+.. [#gregion] https://grass.osgeo.org/grass78/manuals/g.region.html
 
 
 **Output parsing**

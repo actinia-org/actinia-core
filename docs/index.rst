@@ -26,7 +26,7 @@ The full API documentation is available here: https://actinia.mundialis.de/api_d
    Actinia database access <tutorial_data_access>
    Time-series sampling <tutorial_strds_sampling>
    Landsat NDVI computation <tutorial_landsat_ndvi>
-   Sentinel-2A NDVI computation <tutorial_Sentinel-2A_ndvi>
+   Sentinel-2A NDVI computation <tutorial_sentinel2a_ndvi>
    User defined processing <tutorial_process_chain>
    License <license>
    Authors <authors>

@@ -320,9 +320,9 @@ the created NDVI GeoTiff file as well as univariate statistics of the computed N
               "stdout": ""
             },
             {
-              "executable": "python2",
+              "executable": "python3",
               "parameter": [
-                "/usr/local/bin/grass76",
+                "/usr/local/bin/grass78",
                 "-e",
                 "-c",
                 "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B1.TIF",
