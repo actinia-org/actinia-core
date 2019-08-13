@@ -17,7 +17,7 @@ at three different coordinates.
                        ["b", "9.9681980","51.666166"],
                        ["c", "24.859647","52.699099"]]}'
 
-      curl ${AUTH} -X POST -i "${HOST}:${PORT}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" \
+      curl ${AUTH} -X POST -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" \
            -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
 
 The result of the sampling is a list of time stamped values, that are located in the
@@ -32,7 +32,7 @@ The result of the sampling is a list of time stamped values, that are located in
             "endpoint": "syncephemeralstrdssamplingresource",
             "method": "POST",
             "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
-            "request_url": "http://localhost:8080/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
+            "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
           },
           "datetime": "2018-05-30 10:33:24.503297",
           "http_code": 200,
@@ -152,7 +152,7 @@ The result of the sampling is a list of time stamped values, that are located in
           "timestamp": 1527676404.5032735,
           "urls": {
             "resources": [],
-            "status": "http://localhost:8080/api/v1/resources/superadmin/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
+            "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
           },
           "user_id": "superadmin"
         }
