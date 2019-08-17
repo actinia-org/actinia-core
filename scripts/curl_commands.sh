@@ -45,9 +45,9 @@ curl ${AUTH} -d "pattern=*lsat*" \
 # Get the information about the elevation
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
 
-# Render an image of the elevation raster layer  (TODO: how to visualize?)
+# Render an image of the elevation raster layer
 curl ${AUTH} -d "n=228500&s=215000&w=630000&e=645000&ewres=50&nsres=50" \
-    -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > /dev/null
+    -X GET ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > elevation_NC.png
 
 # Get the interface description of r.slope.aspect (TODO: failing)
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/modules/r.slope.aspect
