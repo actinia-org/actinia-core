@@ -75,38 +75,61 @@ curl ${AUTH} -X GET -i "${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/
 ###############################################################################
 
 PROCESS_CHAIN='{
-   "1":{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"0.5"
+  "version": "1",
+  "list": [
+    {
+      "module": "g.region",
+      "id": "g.region_1804289383",
+      "flags": "p",
+      "inputs": [
+        {
+          "param": "raster",
+          "value": "elevation@PERMANENT"
         },
-        "flags":"p",
-        "verbose":"True"
-   },
-   "2":{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
+        {
+          "param": "res",
+          "value": "10"
+        }
+      ]
+    },
+    {
+      "module": "r.slope.aspect",
+      "id": "r.slope.aspect_1804289383",
+      "flags": "a",
+      "inputs": [
+        {
+          "param": "elevation",
+          "value": "elevation@PERMANENT"
         },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect"
-            },
-            "slope":{
-                "name":"my_slope",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
-            }
+        {
+          "param": "format",
+          "value": "degrees"
         },
-        "flags":"a",
-        "overwrite":"True",
-        "verbose":"True"
-   }
+        {
+          "param": "precision",
+          "value": "FCELL"
+        },
+        {
+          "param": "zscale",
+          "value": "1.0"
+        },
+        {
+          "param": "min_slope",
+          "value": "0.0"
+        }
+      ],
+      "outputs": [
+        {
+          "param": "slope",
+          "value": "my_slope"
+        },
+        {
+          "param": "aspect",
+          "value": "my_aspect"
+        }
+      ]
+    }
+  ]
 }
 '
 
@@ -118,63 +141,110 @@ curl ${AUTH} -H "Content-Type: application/json" -X POST \
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/processing_async_export
 
-# Get status
-curl ${AUTH} -X GET -i
-# Get the resource
-curl ${AUTH} -X GET -i
+# Get status (add resource URL)
+# curl ${AUTH} -X GET -i
+# Get the resource (add resource URL)
+# curl ${AUTH} -X GET -i
 
 PROCESS_CHAIN_LONG='{
-   "1":{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"4"
+  "version": "1",
+  "list": [
+    {
+      "module": "g.region",
+      "id": "g.region_1804289383",
+      "flags": "p",
+      "inputs": [
+        {
+          "param": "raster",
+          "value": "elevation@PERMANENT"
         },
-        "flags":"p",
-        "verbose":"True"
-   },
-   "2":{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
-        },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect"
-            },
-            "slope":{
-                "name":"my_slope"
-            }
-        },
-        "flags":"a",
-        "overwrite":"True",
-        "verbose":"True"
-   },
-   "3":{
-        "module":"r.watershed",
-        "inputs":{
-            "elevation":"elevation@PERMANENT"
-        },
-        "outputs":{
-            "accumulation":{
-                "name":"my_accumulation"
-            }
+        {
+          "param": "res",
+          "value": "4"
         }
-   },
-   "4":{
-        "module":"r.info",
-        "inputs":{
-            "map":"my_aspect"
+      ]
+    },
+    {
+      "module": "r.slope.aspect",
+      "id": "r.slope.aspect_1804289383",
+      "flags": "a",
+      "inputs": [
+        {
+          "param": "elevation",
+          "value": "elevation@PERMANENT"
         },
-        "flags":"gr",
-        "verbose":"True"
-   }
+        {
+          "param": "format",
+          "value": "degrees"
+        },
+        {
+          "param": "precision",
+          "value": "FCELL"
+        },
+        {
+          "param": "zscale",
+          "value": "1.0"
+        },
+        {
+          "param": "min_slope",
+          "value": "0.0"
+        }
+      ],
+      "outputs": [
+        {
+          "param": "slope",
+          "value": "my_slope"
+        },
+        {
+          "param": "aspect",
+          "value": "my_aspect"
+        }
+      ]
+    },
+    {
+      "module": "r.watershed",
+      "id": "r.watershed_1804289383",
+      "inputs": [
+        {
+          "param": "elevation",
+          "value": "elevation@PERMANENT"
+        },
+        {
+          "param": "convergence",
+          "value": "5"
+        },
+        {
+          "param": "memory",
+          "value": "300"
+        }
+      ],
+      "outputs": [
+        {
+          "param": "accumulation",
+          "value": "my_accumulation"
+        }
+      ]
+    },
+    {
+      "module": "r.info",
+      "id": "r.info_1804289383",
+      "flags": "gr",
+      "inputs": [
+        {
+          "param": "map",
+          "value": "my_aspect"
+        }
+      ]
+    }
+  ]
 }
 '
 
-# Start the module r.slope.aspect
+# Validation of process chain (using sync call)
+curl ${AUTH} -H "Content-Type: application/json" -X POST \
+    -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/process_chain_validation_sync
+
+# Start the module r.slope.aspect (using async call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/processing_async
 
@@ -185,7 +255,7 @@ curl ${AUTH} -H "Content-Type: application/json" -X POST \
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers
 
 # Info about my_accumulation
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation/info
+curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation
 
 # Remove the new mapset
 curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset
@@ -242,7 +312,7 @@ curl ${AUTH} -X GET -i ${actinia}/locations/nc_spm_08/mapsets
 for i in ${LIST} ; do
     echo "Run ${i}"
     curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers
-    curl ${AUTH} -X GET -i ${actinia}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers/my_accumulation/info
+    curl ${AUTH} -X GET -i ${actinia}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers/my_accumulation
     curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}
 done
 
