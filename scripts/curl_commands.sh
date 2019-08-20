@@ -38,9 +38,8 @@ curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets
 # Get a list of all raster layers in the PERMANENT location
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
 
-# Get a list of all raster layer using a g.list pattern  (TODO: failing)
-curl ${AUTH} -d "pattern=*lsat*" \
-    -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
+# Get a list of all raster layer using a g.list pattern
+curl ${AUTH} -X GET -i "${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*"
 
 # Get the information about the elevation
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
@@ -48,19 +47,6 @@ curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/r
 # Render an image of the elevation raster layer
 curl ${AUTH} -d "n=228500&s=215000&w=630000&e=645000&ewres=50&nsres=50" \
     -X GET ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > elevation_NC.png
-
-# Get the interface description of r.slope.aspect (TODO: failing)
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/modules/r.slope.aspect
-
-# Run g.region in the new mapset to set the extent and resolution for computation (TODO: failing)
-curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d '{"inputs":{"raster":"elevation@PERMANENT"}, "flags":"g"}' \
-    ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary/modules/g.region
-
-# Start the module r.slope.aspect
-curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d '{"inputs":{"elevation":"elevation@PERMANENT"},"outputs":{"slope":"my_slope", "aspect":"my_aspect"}}' \
-    ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary/modules/r.slope.aspect
 
 # Get information about the new created raster layer
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary/raster_layers/my_slope
@@ -124,7 +110,11 @@ PROCESS_CHAIN='{
 }
 '
 
-# Start the module r.slope.aspect
+# Validation of process chain (using sync call)
+curl ${AUTH} -H "Content-Type: application/json" -X POST \
+    -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/process_chain_validation_sync
+
+# Start the module r.slope.aspect (using async call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/processing_async_export
 
@@ -188,8 +178,8 @@ PROCESS_CHAIN_LONG='{
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/processing_async
 
-# Get status
-curl ${AUTH} -X GET -i
+# Get status (add resource URL)
+# curl ${AUTH} -X GET -i
 
 # List all raster layer in the new mapset
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers
@@ -273,7 +263,7 @@ JSON='{"bands":["B04", "B08"],
 "S2B_MSIL1C_20170711T102029_N0205_R065_T32UPC_20170711T102309",
 "S2A_MSIL1C_20170706T102021_N0205_R065_T32UPC_20170706T102301"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/LL/mapsets/Sentinel2A/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/Sentinel2A/sentinel2_import
 
 
 JSON='{"bands": ["B04", "B08"],
@@ -308,7 +298,7 @@ JSON='{"bands":["B04", "B08"],
 "S2A_MSIL1C_20170621T110651_N0205_R137_T30SUJ_20170621T111222",
 "S2A_MSIL1C_20170412T110621_N0204_R137_T30SUJ_20170412T111708"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset/sentinel2_import
 
 
 JSON='{
@@ -337,7 +327,7 @@ JSON='{
  "version": "1"
 }'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_sync
 
 
 JSON='{
@@ -368,7 +358,7 @@ JSON='{
 '
 
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/LL/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
 
 
 JSON='{"list": [{
@@ -415,4 +405,4 @@ JSON='{"list": [{
     "version": "1"}
 '
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/LL/process_chain_validation_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/process_chain_validation_sync
