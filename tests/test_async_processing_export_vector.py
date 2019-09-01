@@ -175,7 +175,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
 
     def test_vector_buffer(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_buffer),
                               content_type="application/json")
@@ -197,7 +197,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             out_file.close()
 
     def test_vector_clean(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_clean),
                               content_type="application/json")

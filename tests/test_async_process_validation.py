@@ -315,7 +315,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 6)
 
     def test_async_processing_new_ndvi(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -326,7 +326,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 29)
 
     def test_async_processing_new_ndvi_export_landsat(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi_landsat),
                               content_type="application/json")
@@ -336,7 +336,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 26)
 
     def test_async_processing_landsat(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_landsat),
                               content_type="application/json")
