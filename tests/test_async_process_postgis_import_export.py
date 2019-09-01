@@ -72,7 +72,7 @@ class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
         process_chain_postgis["list"][1]["outputs"][0]["export"]["output_layer"] = "poly_%i"%randint(0, 1000000000)
 
     def test_1_async_processing_postgis_validation(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/process_chain_validation_async',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_postgis),
                               content_type="application/json")
@@ -85,7 +85,7 @@ class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
         # Don't overwrite an existing layer
         self.gen_output_layer_name()
 
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_postgis),
                               content_type="application/json")

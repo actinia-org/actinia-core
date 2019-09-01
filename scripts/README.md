@@ -58,11 +58,11 @@ Currently available datasets are (organized by projections):
     * base cartography (`nc_spm_08/PERMANENT`; source: https://grassbook.org/datasets/datasets-3rd-edition/)
     * Landsat subscenes (`nc_spm_08/landsat`; source: https://grass.osgeo.org/download/sample-data/)
 * Latitude-Longitude location (LatLong WGS84, EPSG:4326):
-    * empty (`latlong/PERMANENT/`)
-    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
-    * LST growing degree days asia 2017 (`latlong/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
-    * LST tropical days asia 2017 (`latlong/asia_tropical_2017/`)
-    * LST temperature daily asia 2017, including min, max and avg (`latlong/asia_lst_daily_2017/`)
+    * empty (`latlong_wgs84/PERMANENT/`)
+    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
+    * LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
+    * LST tropical days asia 2017 (`latlong_wgs84/asia_tropical_2017/`)
+    * LST temperature daily asia 2017, including min, max and avg (`latlong_wgs84/asia_lst_daily_2017/`)
 * Europe (EU LAEA CRS, EPSG:3035):
     * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`; source: https://land.copernicus.eu/imagery-in-situ/eu-dem)
     * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`; source: https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012)
@@ -182,8 +182,8 @@ ace --info-job resource_id-30fff8d6-5294-4f03-a2f9-fd7c857bf153
  'accept_timestamp': 1545169661.0945334,
  'api_info': {'endpoint': 'asyncephemeralexportresource',
               'method': 'POST',
-              'path': '/api/v1/locations/latlong/processing_async_export',
-              'request_url': 'http://actinia.mundialis.de/api/v1/locations/latlong/processing_async_export'},
+              'path': '/api/v1/locations/latlong_wgs84/processing_async_export',
+              'request_url': 'http://actinia.mundialis.de/api/v1/locations/latlong_wgs84/processing_async_export'},
  'datetime': '2018-12-18 21:58:14.133485',
  'http_code': 200,
  'message': 'Running executable v.rast.stats with parameters '

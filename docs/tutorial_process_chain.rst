@@ -702,7 +702,7 @@ Run the process chain asynchronously:
                ],
       "version": "1"}'
 
-      curl ${AUTH} -X POST -i "${HOST}:${PORT}/locations/LL/processing_async_export" \
+      curl ${AUTH} -X POST -i "${HOST}:${PORT}/locations/latlong_wgs84/processing_async_export" \
            -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
 
 The response requires the polling of the status URL, since the API call works asynchronously:
@@ -715,8 +715,8 @@ The response requires the polling of the status URL, since the API call works as
           "api_info": {
             "endpoint": "asyncephemeralexportresource",
             "method": "POST",
-            "path": "/locations/LL/processing_async_export",
-            "request_url": "http://localhost:5000/locations/LL/processing_async_export"
+            "path": "/locations/latlong_wgs84/processing_async_export",
+            "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
           },
           "datetime": "2018-05-02 21:05:34.873754",
           "http_code": 200,
@@ -751,8 +751,8 @@ The finished response should look like this:
           "api_info": {
             "endpoint": "asyncephemeralexportresource",
             "method": "POST",
-            "path": "/locations/LL/processing_async_export",
-            "request_url": "http://localhost:5000/locations/LL/processing_async_export"
+            "path": "/locations/latlong_wgs84/processing_async_export",
+            "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
           },
           "datetime": "2018-05-02 21:09:39.823857",
           "http_code": 200,

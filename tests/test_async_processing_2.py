@@ -286,7 +286,7 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -295,7 +295,7 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi_export(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi),
                               content_type="application/json")
@@ -304,7 +304,7 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
                                        http_status=200, status="finished")
 
     def test_async_processing_new_ndvi_export_landsat(self):
-        rv = self.server.post(URL_PREFIX + '/locations/LL/processing_async_export',
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_ndvi_landsat),
                               content_type="application/json")

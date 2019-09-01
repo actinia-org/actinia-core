@@ -15,13 +15,13 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations
 
 # Create a new location based on an EPSG code
-# curl -d "epsg=4326" -X POST -i ${actinia}/locations/LL_new # BUG
+# curl -d "epsg=4326" -X POST -i ${actinia}/locations/latlong_wgs84_new # BUG
 
 # Check if the location is listed
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations
 
 # Delete the new location
-# curl -X DELETE -i ${actinia}/locations/LL_new # BUG
+# curl -X DELETE -i ${actinia}/locations/latlong_wgs84_new # BUG
 
 # Get information of the NC location
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/info

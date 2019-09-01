@@ -57,17 +57,17 @@ Examples:
 
         curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H  "authorization: Basic ..."
 
-- List all mapsets in the location LL:
+- List all mapsets in the location latlong_wgs84:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets" -H  "authorization: Basic ..."
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets" -H  "authorization: Basic ..."
 
-- List all space-time raster datasets (STRDS) in location LL and mapset Sentinel_timeseries:
+- List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds" -H  "authorization: Basic ..."
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds" -H  "authorization: Basic ..."
 
 - List all raster map layers of the STRDS:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H  "authorization: Basic ..."
+        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H  "authorization: Basic ..."
 
 **Landsat and Sentinel2A NDVI computation**
 
