@@ -6,7 +6,7 @@ In addition it provides job management, the ability to
 list locations, mapsets and map layer the user has access to as
 well as the creation and deletion of mapsets.
 
-Th `ace` tool must be executed in an active GRASS GIS session and will use the current location
+The `ace` tool must be executed in an active GRASS GIS session and will use the current location
 of this session to access the actinia service. 
 
 The current location setting can be overridden by the `--location LOCATION_NAME` option.
@@ -26,6 +26,16 @@ In case not yet present on the system, the following Python libraries are needed
 * Windows users (OSGeo4W, Advanced installation, search window):
     * three Python packages: python3-click, python3-requests, python3-simplejson
 
+### Installation of ace tools
+
+# importer installation
+g.extension url=https://github.com/mundialis/importer extension=importer
+
+# exporter installation
+g.extension url=https://github.com/mundialis/exporter extension=exporter 
+
+# ace installation
+g.extension url=https://github.com/mundialis/ace extension=ace
 
 ### Authentication settings
 
