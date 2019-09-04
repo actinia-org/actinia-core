@@ -221,7 +221,7 @@ To generate the actinia process chain JSON request simply add the --dry-run flag
 
 ```bash
 # example: compute slope from an elevation map
-ace --dry-run r.slope.aspect elevation=elevation slope=myslope
+ace --dry-run --location nc_spm_08 r.slope.aspect elevation=elevation slope=myslope
 ```
 which will deliver the output:
 ```json
@@ -299,7 +299,7 @@ Running the module `g.list` in the location defined by the active GRASS GIS sess
 in an ephemeral mapset, that has only the PERMANENT mapset in its search path:
 
 ```bash
-ace g.list raster
+ace --location nc_spm_08 g.list raster
 
 Resource status accepted
 Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b
@@ -356,7 +356,7 @@ zipcodes_dbl
 Running the module `g.region` in a new ephemeral location, to show the default region of a temporary mapset:
 
 ```bash
-ace g.region -p
+ace --location nc_spm_08 g.region -p
 
 Resource status accepted
 Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973
@@ -405,19 +405,13 @@ r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 ```
-Save the script in the text file e.g. to `/tmp/ace_dtm_statistics.sh`
-and run the saved script as
+Save the script in a text file, e.g. `/tmp/ace_dtm_statistics.sh`.
+
+Just for inspection, to generate the actinia process chain JSON request
+add the --dry-run flag:
 
 ```bash
-ace --script /tmp/ace_dtm_statistics.sh
-```
-
-The results are provided as REST resources.
-
-To generate the actinia process chain JSON request simply add the --dry-run flag
-
-```bash
-ace --dry-run --script /tmp/ace_dtm_statistics.sh
+ace --dry-run --location nc_spm_08 --script /tmp/ace_dtm_statistics.sh
 ```
 The output should look like this:
 ```json
@@ -478,6 +472,18 @@ The output should look like this:
 }
 ```
 
+To eventually execute the saved script on the actinia server
+(it will internally convert the script to JSON and send this as
+a payload to the server), run:
+
+```bash
+ace --location nc_spm_08 --script /tmp/ace_dtm_statistics.sh
+```
+
+The resulting data are provided as REST resources for download.
+
+
+
 #### Example 2: Orthophoto image segmentation with export
 
 Store the following script as text file `/tmp/ace_segmentation.sh`:
@@ -504,7 +510,7 @@ r.to.vect input=ortho2010_segment_25 type=area output=ortho2010_segment_25+GeoJS
 Run the script saved in a text file as
 
 ```bash
-ace --script /tmp/ace_segmentation.sh
+ace --location nc_spm_08 --script /tmp/ace_segmentation.sh
 ```
 
 The results are provided as REST resources.
@@ -563,10 +569,10 @@ Then the commands from above can be executed in the following way:
 
 ```bash
 ace --create-mapset test_mapset
-acp --script /path/to/ace_dtm_statistics.sh
-acp g.list type=raster mapset=test_mapset
-acp r.info elev@test_mapset
-acp r.info slope_elev@test_mapset
+acp --location nc_spm_08 --script /path/to/ace_dtm_statistics.sh
+acp --location nc_spm_08 g.list type=raster mapset=test_mapset
+acp --location nc_spm_08 r.info elev@test_mapset
+acp --location nc_spm_08 r.info slope_elev@test_mapset
 ```
 
 
