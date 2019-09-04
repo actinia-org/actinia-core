@@ -186,8 +186,6 @@ Show details about a specific job:
 
 ```bash
 ace --info-job resource_id-b1cf32e3-bf07-4b57-858e-5d6a9767dd63
-```
-```json
 {'accept_datetime': '2019-09-03 00:50:11.725229',
  'accept_timestamp': 1567471811.7252264,
  'api_info': {'endpoint': 'rasterlayersresource',
