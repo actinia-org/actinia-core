@@ -96,7 +96,7 @@ The following command lists mapsets of current location in the active GRASS GIS 
 
 ```bash
 # running ace in the "nc_spm_08" location:
-ace --list-mapsets
+ace --location nc_spm_08 --list-mapsets
 ['PERMANENT', 'landsat', 'modis_lst']
 ```
 
@@ -106,14 +106,14 @@ In case the location option is not provided, the active location will be used.
 The following command lists mapsets of the provided location **latlong**:
 
 ```bash
-ace --location latlong --list-mapsets
+ace --location latlong_wgs84 --list-mapsets
 ['PERMANENT']
 ```
 
 but only if the actinia user is enabled; otherwise the following message appears:
 
 ```bash
-ace --location latlong --list-mapsets
+ace --location latlong_wgs84 --list-mapsets
 {'message': "{'Status': 'error', 'Messages': 'Unauthorized access to location "
             "<latlong>'}"}
 ```
