@@ -549,11 +549,11 @@ class CategoricalStatisticsResultModel(Schema):
 
 
 class RegionModel(Schema):
-    """Output og GRASS module g.region -gu3
+    """Output of GRASS GIS module g.region -gu3
 
     It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
 
-    GRASS 7.3.svn (LL):~ > g.region -gu3
+    GRASS 7.8.dev (latlong_wgs84):~ > g.region -gu3
     projection=3
     zone=0
     n=80

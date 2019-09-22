@@ -176,7 +176,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                              "landsat",
                                              "test_mapset"],
                                "ECAD": ["PERMANENT"],
-                               "LL": ["PERMANENT"]}
+                               "latlong_wgs84": ["PERMANENT"]}
 
         ################### Create users ###################
 

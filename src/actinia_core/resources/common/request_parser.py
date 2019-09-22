@@ -89,7 +89,7 @@ def extract_glist_parameters(args):
 # Create a grass EPSG code parser
 start_script_parser = reqparse.RequestParser()
 start_script_parser.add_argument('epsg', required=True, location='args',
-                                 type=int, help='A EPSG code as interger must be provided')
+                                 type=int, help='A EPSG code as integer must be provided')
 
 
 def extract_start_script_parameters(args):
@@ -97,11 +97,11 @@ def extract_start_script_parameters(args):
     that were created with the start_script_parser.
 
     Args:
-        args (dict): The argument dictionary with grass71 options
+        args (dict): The argument dictionary with grass78 options
 
     Returns:
          list:
-         A List of grass71 parameter
+         A List of grass78 parameter
     """
     options = []
     if "epsg" in args:
