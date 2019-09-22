@@ -67,7 +67,7 @@ class ActiniaUser(object):
                                                       "user1",
                                                       "landsat"],
                                       "ECAD":["PERMANENT"],
-                                      "LL":["PERMANENT"]},
+                                      "latlong_wgs84":["PERMANENT"]},
                  accessible_modules=global_config.MODULE_WHITE_LIST,
                  cell_limit = global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,

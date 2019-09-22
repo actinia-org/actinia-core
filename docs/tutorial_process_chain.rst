@@ -612,7 +612,7 @@ Sentinel-2A NDVI process chain
 We create a process chain that computes the NDVI
 from a Sentinel-2A scene based on the bands 8 and 4
 with the GRASS GIS module r.mapcalc.
-We use the latitude/longitude location **LL** as processing environment.
+We use the latitude/longitude location **latlong_wgs84** as processing environment.
 and the computational region of sentinel band B04
 for the NDVI processing. Then we calculate univariate statistics for the Sentinel-2A scene.
 The computed NDVI raster layer will be exported as geotiff file that can be accessed via an URL.

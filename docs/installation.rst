@@ -116,6 +116,7 @@ First install Proj4 and GRASS GIS by downloading the latest git version and comp
         wget https://storage.googleapis.com/datentransfer/LL.tar.gz
         tar xzvf LL.tar.gz
         rm -f LL.tar.gz
+        mv LL latlong_wgs84
 
     ..
 

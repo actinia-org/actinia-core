@@ -76,4 +76,4 @@ The results of the asynchronous computations are available as GeoTIFF file in a 
 .. [#post] https://www.getpostman.com/apps
 .. [#http] https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
 .. [#method] https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
-.. [#grassloc] https://grass.osgeo.org/grass72/manuals/helptext.html#2.-background:-grass-gis-location-structure
+.. [#grassloc] https://grass.osgeo.org/grass78/manuals/helptext.html#2.-background:-grass-gis-location-structure

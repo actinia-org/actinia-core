@@ -66,12 +66,12 @@ class LocationListResponseModel(Schema):
             'description': 'The list of locations in the GRASS database'
         }
     }
-    example = {"locations": ["nc_spm_08" "LL", "ECAD"], "status": "success"}
+    example = {"locations": ["nc_spm_08" "latlong_wgs84", "ECAD"], "status": "success"}
     required = ["status", "locations"]
 
 
 class ListLocationsResource(ResourceBase):
-    """This resource represents grass database directory
+    """This resource represents GRASS GIS database directory
     that contains locations.
     """
 
