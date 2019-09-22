@@ -35,13 +35,13 @@ from .process_object import Process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 # Mimetypes supported for download
 SUPPORTED_MIMETYPES = ["application/zip", "image/tiff", "application/gml", "text/xml",
-                       "application/xml", "text/plain", "text/x-python"]
+                       "application/x-sqlite3", "application/xml", "text/plain", "text/x-python"]
 # Suffixes supported in zip files
 SUPPORTED_SUFFIXES = [".tif", ".tiff", ".xml", ".gml", ".shp", ".dbf", ".shx", ".atx", ".sbx",
                       ".qix", ".aih", ".prj", ".cpg", ".json"]
