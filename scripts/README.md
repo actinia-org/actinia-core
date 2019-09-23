@@ -28,14 +28,21 @@ In case not yet present on the system, the following Python libraries are needed
 
 ### Installation of ace tools
 
+To be run in a GRASS GIS session:
+
+```bash
 # importer installation
 g.extension url=https://github.com/mundialis/importer extension=importer
 
 # exporter installation
 g.extension url=https://github.com/mundialis/exporter extension=exporter 
 
-# ace installation
-g.extension url=https://github.com/mundialis/ace extension=ace
+# ace installation (g.extension support forthcoming)
+mkdir -p $HOME/bin/
+cd $HOME/bin/
+wget https://raw.githubusercontent.com/mundialis/actinia_core/master/scripts/ace
+chmod a+x ace
+```
 
 ### Authentication settings
 
