@@ -76,3 +76,12 @@ curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSI
 ```
 
 The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
+
+### List of available endpoints
+
+To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v1/swagger.json); or, to list the available endpoints on command line, run
+
+```bash
+# sudo npm install -g json
+curl -X GET https://actinia.mundialis.de/api/v1/swagger.json | json paths | json -ka
+```
