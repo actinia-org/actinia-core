@@ -38,7 +38,7 @@ __See below for production deployment__.
 For actinia_core development, run and enter the running container (in a separate terminal):
 ```
 cd $HOME/repos/actinia_core/docker/
-docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia_core
+docker-compose run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
 ```
 
 Inside the container, you can run GRASS GIS with:
@@ -66,7 +66,7 @@ python3 setup.py install
 bash /src/start-dev.sh
 
 # python3 -m actinia_core.main
-gunicorn -b 0.0.0.0:8088 -w 1 actinia_core.main:flask_app
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 
 ```
 If you have problems with cache, run
