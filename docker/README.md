@@ -113,14 +113,31 @@ docker-compose -f docker-compose-prod.yml exec actinia-core \
 ```
 Read more about user roles here: https://actinia.mundialis.de/tutorial/actinia_concepts.html#user-user-roles-and-user-groups
 
+# Testing the actinia server
+
+After deployment, you should be able to access the endpoints.
+
+Examples:
+
+* https://actinia.mundialis.de/latest/version
+* https://actinia.mundialis.de/latest/health_check
+* requires authorization (actinia user):
+    * https://actinia.mundialis.de/api/v1/locations
 
 # Cloud deployment with multiple actinia_core instances
 
-For cloud deployment, you can use the `deploy_swarm.sh` script as a starting point.
+For cloud deployment, you can use the `docker-swarm.sh` script as a starting point.
 
+Shutdown current actinia swarm:
+```
+docker stack rm actinia_swarm
+docker swarm leave --force
+```
+Start new actinia swarm:
 ```
 bash docker-swarm.sh
 ```
+See the scripts for hints.
 
 # Building the API documentation
 

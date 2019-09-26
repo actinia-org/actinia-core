@@ -35,7 +35,7 @@ from actinia_core.resources.common.app import flask_app
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -64,8 +64,8 @@ def setup_environment():
     # GRASS
 
     # Setup the test environment
-    global_config.GRASS_GIS_BASE="/usr/local/grass-7.5.svn"
-    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass75"
+    global_config.GRASS_GIS_BASE="/usr/local/grass-7.8.dev"
+    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass78"
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
     # global_config.GRASS_DATABASE = "%s/graas/grass_test_db" % home
 

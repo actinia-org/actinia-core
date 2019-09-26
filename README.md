@@ -43,22 +43,22 @@ Please see the `docker/` subfolder for details.
 curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H "authorization: Basic …"
 ```
 
-* List all mapsets in the location LL:
+* List all mapsets in the location latlong_wgs84:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets" -H "authorization: Basic …"
+curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets" -H "authorization: Basic …"
 ```
 
-* List all space-time raster datasets (STRDS) in location LL and mapset Sentinel_timeseries:
+* List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds" -H "authorization: Basic …"
+curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds" -H "authorization: Basic …"
 ```
 
 * List all raster map layers of the STRDS:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/LL/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H "authorization: Basic …"
+curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H "authorization: Basic …"
 ```
 
 ### Landsat and Sentinel-2 NDVI computation
@@ -76,3 +76,12 @@ curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSI
 ```
 
 The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
+
+### List of available endpoints
+
+To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v1/swagger.json); or, to list the available endpoints on command line, run
+
+```bash
+# sudo npm install -g json
+curl -X GET https://actinia.mundialis.de/api/v1/swagger.json | json paths | json -ka
+```

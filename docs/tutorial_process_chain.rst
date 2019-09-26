@@ -107,13 +107,13 @@ Then slope and aspect are computed with *r.slope.aspect* and specified for expor
 
 .. rubric:: Footnotes
 
-.. [#grassmodulelist] https://grass.osgeo.org/grass74/manuals/index.html
+.. [#grassmodulelist] https://grass.osgeo.org/grass78/manuals/index.html
 .. [#grassmodule] https://actinia.mundialis.de/api_docs/#/definitions/GrassModule
 .. [#inputs] https://actinia.mundialis.de/api_docs/#/definitions/InputParameter
 .. [#outputs] https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter
-.. [#rlopeaspect] https://grass.osgeo.org/grass74/manuals/r.slope.aspect.html
-.. [#mapset] https://grass.osgeo.org/grass74/manuals/grass_database.html
-.. [#gregion] https://grass.osgeo.org/grass74/manuals/g.region.html
+.. [#rlopeaspect] https://grass.osgeo.org/grass78/manuals/r.slope.aspect.html
+.. [#mapset] https://grass.osgeo.org/grass78/manuals/grass_database.html
+.. [#gregion] https://grass.osgeo.org/grass78/manuals/g.region.html
 
 
 **Output parsing**
@@ -606,20 +606,20 @@ The result of the process chain evaluation is the following JSON response:
 The result of the stdout output parsing for each module is located in the "process_results" section
 of the json response.
 
-Sentinel2A NDVI process chain
+Sentinel-2A NDVI process chain
 -----------------------------
 
 We create a process chain that computes the NDVI
-from a Sentinel2A scene based on the bands 8 and 4
+from a Sentinel-2A scene based on the bands 8 and 4
 with the GRASS GIS module r.mapcalc.
-We use the latitude/longitude location **LL** as processing environment.
+We use the latitude/longitude location **latlong_wgs84** as processing environment.
 and the computational region of sentinel band B04
-for the NDVI processing. Then we calculate univariate statistics for the Sentinel2A scene.
+for the NDVI processing. Then we calculate univariate statistics for the Sentinel-2A scene.
 The computed NDVI raster layer will be exported as geotiff file that can be accessed via an URL.
 
 The following JSON code has 6 process definitions:
 
-   1. Import of two bands (B04 and B08) of the Sentinel2A scene *S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749*
+   1. Import of two bands (B04 and B08) of the Sentinel-2A scene *S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749*
    2. Set the computational region to imported raster layer B04
    3. Use r.mapcalc to compute the NDVI
    4. Use r.univar to compute univariate statistics of the computed NDVI raster layer
@@ -702,7 +702,7 @@ Run the process chain asynchronously:
                ],
       "version": "1"}'
 
-      curl ${AUTH} -X POST -i "${HOST}:${PORT}/locations/LL/processing_async_export" \
+      curl ${AUTH} -X POST -i "${HOST}:${PORT}/locations/latlong_wgs84/processing_async_export" \
            -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
 
 The response requires the polling of the status URL, since the API call works asynchronously:
@@ -715,8 +715,8 @@ The response requires the polling of the status URL, since the API call works as
           "api_info": {
             "endpoint": "asyncephemeralexportresource",
             "method": "POST",
-            "path": "/locations/LL/processing_async_export",
-            "request_url": "http://localhost:5000/locations/LL/processing_async_export"
+            "path": "/locations/latlong_wgs84/processing_async_export",
+            "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
           },
           "datetime": "2018-05-02 21:05:34.873754",
           "http_code": 200,
@@ -735,7 +735,7 @@ The response requires the polling of the status URL, since the API call works as
         }
 
 
-Poll the status of the Sentinel2A NDVI job and view the result of the computation:
+Poll the status of the Sentinel-2A NDVI job and view the result of the computation:
 
    .. code-block:: bash
 
@@ -751,8 +751,8 @@ The finished response should look like this:
           "api_info": {
             "endpoint": "asyncephemeralexportresource",
             "method": "POST",
-            "path": "/locations/LL/processing_async_export",
-            "request_url": "http://localhost:5000/locations/LL/processing_async_export"
+            "path": "/locations/latlong_wgs84/processing_async_export",
+            "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
           },
           "datetime": "2018-05-02 21:09:39.823857",
           "http_code": 200,

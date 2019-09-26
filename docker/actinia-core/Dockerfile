@@ -62,7 +62,8 @@ RUN mkdir -p /actinia_core/grassdb && \
 RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
 RUN ln -s `grass --config path` /usr/local/grass7
-RUN grass --config svn_revision build
+# show installed version
+RUN grass --tmp-location EPSG:4326 --exec g.version -rge
 
 # Install actinia-core plugins
 RUN git config --global http.sslVerify false
@@ -74,16 +75,14 @@ RUN pip3 install -r requirements.txt && python3 setup.py install
 WORKDIR /src
 # Install the d.rast.multi module to render several maps at once
 RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-RUN grass --tmp-location EPSG:25832 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
 
-# TODO: is there a better workaround to install addons?
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+# install some GRASS GIS addons
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:25832 --exec g.extension -s extension=v.out.png && \
-    grass --tmp-location -c EPSG:25832 --exec g.extension -s extension=v.centerpoint
-RUN update-alternatives --remove python /usr/bin/python3
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.out.png && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
 
-# Fixup python shebangs - TODO: will be resolved in future by grass-core
+# Set python shebangs to python3, just to be sure
 WORKDIR /root/.grass7/addons/scripts
 RUN find -type f | xargs sed -zi 's,#!/usr/bin/env python\n,#!/usr/bin/env python3\n,'
 
