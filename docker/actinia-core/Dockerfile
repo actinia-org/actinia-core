@@ -34,6 +34,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3 \
     python3-dateutil \
     python3-dev \
+    python3-gdal \
     python3-magic \
     python3-pip \
     python3-ply \
@@ -82,10 +83,6 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines &&
     grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.out.png && \
     grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
 
-# Set python shebangs to python3, just to be sure
-WORKDIR /root/.grass7/addons/scripts
-RUN find -type f | xargs sed -zi 's,#!/usr/bin/env python\n,#!/usr/bin/env python3\n,'
-
 # install SNAPPY
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
@@ -96,7 +93,6 @@ RUN update-alternatives --remove python /usr/bin/python3
 
 # Install actinia-core
 WORKDIR /src
-
 ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/$SOURCE_GIT_TYPE/$SOURCE_GIT_REF version.json
 RUN git clone -b ${SOURCE_GIT_REF} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
 
