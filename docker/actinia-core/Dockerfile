@@ -70,7 +70,8 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge
 RUN git config --global http.sslVerify false
 RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
 WORKDIR /src/actinia_statistic_plugin
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install -r requirements.txt && python3 setup.py install \
+    && python3 setup.py test
 
 # Install GRASS GIS addons
 WORKDIR /src
@@ -97,7 +98,8 @@ ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/$S
 RUN git clone -b ${SOURCE_GIT_REF} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
 
 WORKDIR /src/actinia_core
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install -r requirements.txt && python3 setup.py install \ 
+    && python3 setup.py test
 
 # Reduce the image size
 RUN apt-get autoremove -y
