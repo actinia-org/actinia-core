@@ -98,8 +98,7 @@ RUN pip3 install -r requirements.txt && python3 setup.py install
 
 # Install actinia-core plugins
 RUN git config --global http.sslVerify false
-# RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
-COPY actinia_statistic_plugin /src/actinia_statistic_plugin
+RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
 WORKDIR /src/actinia_statistic_plugin
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests
