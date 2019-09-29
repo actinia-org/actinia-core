@@ -110,7 +110,7 @@ ace --location nc_spm_08 --list-mapsets
 All following commands can be executed in any active GRASS GIS location, since
 the location name at the actinia server is explicitly provided. 
 In case the location option is not provided, the active location will be used.
-The following command lists mapsets of the provided location **latlong**:
+The following command lists mapsets of the provided location **latlong_wgs84**:
 
 ```bash
 ace --location latlong_wgs84 --list-mapsets
@@ -122,7 +122,7 @@ but only if the actinia user is enabled; otherwise the following message appears
 ```bash
 ace --location latlong_wgs84 --list-mapsets
 {'message': "{'Status': 'error', 'Messages': 'Unauthorized access to location "
-            "<latlong>'}"}
+            "<latlong_wgs84>'}"}
 ```
 
 To list all raster maps available in the specified mapset belonging to the provided location **nc_spm_08**, run:

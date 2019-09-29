@@ -47,7 +47,7 @@ The output should look similar to this:
 
         {
           "locations": [
-            "latlong",
+            "latlong_wgs84",
             "nc_spm_08"
           ],
           "status": "success"
