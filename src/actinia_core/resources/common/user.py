@@ -72,7 +72,7 @@ class ActiniaUser(object):
                  cell_limit = global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,
                  process_time_limit=global_config.PROCESS_TIME_LIMT):
-        """Consrtuctor
+        """Constructor
 
         Initialize and create a user object. To commit a new user to the database, set all required permissions
         and call the commit() function.
@@ -657,7 +657,7 @@ class ActiniaUser(object):
                                                       "user1",
                                                       "landsat"],
                                          "ECAD":["PERMANENT"],
-                                         "LL":["PERMANENT"]},
+                                         "latlong_wgs84":["PERMANENT"]},
                     accessible_modules=global_config.MODULE_WHITE_LIST,
                     cell_limit = global_config.MAX_CELL_LIMIT,
                     process_num_limit=global_config.PROCESS_NUM_LIMIT,
