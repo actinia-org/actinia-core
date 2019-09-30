@@ -76,7 +76,7 @@ def kill_all_workers():
 def main():
 
     parser = argparse.ArgumentParser(description='Start all Actinia Core custom worker listening to a specific queue'
-                                                 'that are specified in the GRaaS configuration file '
+                                                 'that are specified in the actinia configuration file '
                                                  'or in a configuration file specified as an optional path.')
 
     parser.add_argument("-c", "--config", type=str, required=False,

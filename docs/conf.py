@@ -150,7 +150,7 @@ html_theme = "sphinxdoc"
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
 try:
-    from graas_api import __version__ as version
+    from actinia_api import __version__ as version
 except ImportError:
     pass
 else:

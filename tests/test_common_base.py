@@ -40,18 +40,18 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 redis_pid = None
-custom_graas_cfg = False
+custom_actinia_cfg = False
 
-# Set this variable to use a graas config file in a docker container
-if "GRAAS_CUSTOM_TEST_CFG" in os.environ:
-    custom_graas_cfg = str(os.environ["GRAAS_CUSTOM_TEST_CFG"])
+# Set this variable to use a actinia config file in a docker container
+if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
+    custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
 
 
 def setup_environment():
 
     # If docker config
-    if custom_graas_cfg is not False:
-        global_config.read(custom_graas_cfg)
+    if custom_actinia_cfg is not False:
+        global_config.read(custom_actinia_cfg)
         return
 
     global redis_pid
@@ -64,10 +64,10 @@ def setup_environment():
     # GRASS
 
     # Setup the test environment
-    global_config.GRASS_GIS_BASE="/usr/local/grass-7.8.dev"
-    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass78"
+    global_config.GRASS_GIS_BASE="/usr/local/grass79/"
+    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass79"
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
-    # global_config.GRASS_DATABASE = "%s/graas/grass_test_db" % home
+    # global_config.GRASS_DATABASE = "%s/actinia/grass_test_db" % home
 
     # Start the redis server for user and logging management
     redis_pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server",
@@ -79,7 +79,7 @@ def setup_environment():
 def stop_redis():
     global redis_pid
     # Kill th redis server
-    if custom_graas_cfg is not False:
+    if custom_actinia_cfg is not False:
         return
     os.kill(redis_pid, signal.SIGTERM)
 
@@ -96,8 +96,8 @@ class CommonTestCaseBase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
 
-        if custom_graas_cfg is not False:
-            global_config.read(custom_graas_cfg)
+        if custom_actinia_cfg is not False:
+            global_config.read(custom_actinia_cfg)
             print(global_config)
         else:
             global_config.REDIS_SERVER_URL = "localhost"

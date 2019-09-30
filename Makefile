@@ -1,22 +1,22 @@
 # Makefile to run setup.py
 
 clean:
-	python setup.py clean
+	python3 setup.py clean
 
 docs:
-	python setup.py docs
+	python3 setup.py docs
 
 build:
-	python setup.py build
+	python3 setup.py build
 
 install:
-	python setup.py install
+	python3 setup.py install
 
 bdist:
-	python setup.py bdist
+	python3 setup.py bdist
 
 dist:
-	python setup.py dist
+	python3 setup.py dist
 
 test:
-	python setup.py test
+	python3 setup.py test
