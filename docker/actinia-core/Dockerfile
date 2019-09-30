@@ -90,6 +90,9 @@ WORKDIR /src
 ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/$SOURCE_GIT_TYPE/$SOURCE_GIT_REF version.json
 RUN git clone -b ${SOURCE_GIT_REF} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
 
+# set link to match actinia default config (needed for tests)
+RUN ln -s /actinia_core /root/actinia
+
 WORKDIR /src/actinia_core
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests
