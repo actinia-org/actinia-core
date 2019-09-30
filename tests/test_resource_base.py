@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2019 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ from actinia_core.endpoints import create_endpoints
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -59,14 +59,15 @@ def setup_environment():
     # Set the port to the test redis server
     global_config.REDIS_SERVER_SERVER = "localhost"
     global_config.REDIS_SERVER_PORT = 7000
+    # Set the path to redis WORKER_LOGFILE
+    global_config.WORKER_LOGFILE = "/var/log/redis/redis"
 
     # home = os.getenv("HOME")
 
-    # GRASS
-
+    # GRASS GIS
     # Setup the test environment
-    global_config.GRASS_GIS_BASE="/usr/local/grass-7.8.dev"
-    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass78"
+    global_config.GRASS_GIS_BASE="/usr/local/grass79/"
+    global_config.GRASS_GIS_START_SCRIPT="/usr/local/bin/grass79"
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
     # global_config.GRASS_DATABASE = "%s/graas/grass_test_db" % home
     global_config.GRASS_TMP_DATABASE = "/tmp"
