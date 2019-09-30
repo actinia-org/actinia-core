@@ -60,7 +60,7 @@ def setup_environment():
     global_config.REDIS_SERVER_SERVER = "localhost"
     global_config.REDIS_SERVER_PORT = 7000
     # Set the path to redis WORKER_LOGFILE
-    global_config.WORKER_LOGFILE = "/var/log/redis/redis"
+    # global_config.WORKER_LOGFILE = "/var/log/redis/redis"
 
     # home = os.getenv("HOME")
 
