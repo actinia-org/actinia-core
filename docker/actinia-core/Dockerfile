@@ -26,7 +26,6 @@ RUN apt-get update && apt-get upgrade -y && \
     bzip2 \
     curl \
     git \
-    language-pack-en-base \
     libcurl4-gnutls-dev \
     libpython3-all-dev \
     moreutils \
