@@ -601,9 +601,9 @@ acp --location nc_spm_08 r.info slope_elev@test_mapset
 
 ```bash
 # create new location
-ace --create-location latlon 4326
+ace --create-location mylatlon 4326
 # create new mapset within location
-ace --location latlon --create-mapset user1
+ace --location mylatlon --create-mapset user1
 ```
 
 ### Installing of GRASS GIS addons (extensions)
@@ -611,9 +611,9 @@ ace --location latlon --create-mapset user1
 ```bash
 # list existing addons, see also
 # https://grass.osgeo.org/grass7/manuals/addons/
-ace --location latlon g.extension -l
+ace --location latlong_wgs84 g.extension -l
 
 # install machine learning addon r.learn.ml
-ace --location latlon g.extension r.learn.ml
+ace --location latlong_wgs84 g.extension r.learn.ml
 ```
 
