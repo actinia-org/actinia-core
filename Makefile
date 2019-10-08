@@ -19,4 +19,17 @@ dist:
 	python3 setup.py dist
 
 test:
+	make start
 	python3 setup.py test
+	make stop
+
+start: server.PID
+
+server.PID:
+	{ echo "webhook-server" & echo $$! > $@; }
+	sleep 3
+
+stop: server.PID
+	kill `cat $<` && rm $<
+
+.PHONY: start stop
