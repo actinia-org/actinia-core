@@ -68,3 +68,13 @@ class RedisFluentLoggerBase(object):
         if has_fluent:
             cur_time = int(time.time())
             self.fluent_sender.emit_with_time(tag, timestamp=cur_time, data=data)
+
+        # TODO WIP: look up in config if stdout log should be enabled
+        # TODO WIP: create common stdout logger and use here
+        # TODO WIP: extract stdout logger from here (misleading if stdout
+        #           logger is used in fluentd_logger module)
+        import sys
+        if 'RESOURCE_LOG' not in tag:
+            sys.stderr.write(tag + " " + str(cur_time) + " " + str(data) + "\n")
+        else:
+            sys.stderr.write(tag + " " + str(cur_time) + "\n")

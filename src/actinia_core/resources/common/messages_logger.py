@@ -83,9 +83,10 @@ class MessageLogger(RedisFluentLoggerBase):
                                                                 str(e)))
                 message = self._prepare_message(log_level, message)
                 sys.stderr.write(message)
-        else:
-            message = self._prepare_message(log_level, message)
-            sys.stderr.write(message)
+        # TODO WIP: look up in config if stdout log should be enabled
+        # else:
+        message = self._prepare_message(log_level, message)
+        sys.stderr.write(message)
         return message
 
     def debug(self, debug_message):

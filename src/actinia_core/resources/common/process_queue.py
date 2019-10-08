@@ -259,7 +259,7 @@ class StreamToLogger(object):
 
     def write(self, buf):
       for line in buf.rstrip().splitlines():
-         self.logger.log(self.log_level, line.rstrip())
+        self.logger.log(self.log_level, line.rstrip())
 
     def flush(self):
         pass
@@ -299,6 +299,17 @@ def create_logger(config, name):
         fh_formatter = handler.FluentRecordFormatter(custom_format)
         fh.setFormatter(fh_formatter)
         logger.addHandler(fh)
+
+    # TODO WIP: look up in config if stdout log should be enabled
+    # TODO WIP: create common stdout logger and use here
+    from colorlog import ColoredFormatter
+    custom_format = ColoredFormatter(
+      '%(log_color)s[%(asctime)s] %(levelname)-10s: %(name)s.%(module)-10s -'
+      '%(message)s [in %(pathname)s:%(lineno)d]%(reset)s'
+    )
+    stdouthandler = logging.StreamHandler()
+    stdouthandler.setFormatter(custom_format)
+    logger.addHandler(stdouthandler)
 
     # Add the log message handler to the logger
     log_file_name = '%s.log' % (config.WORKER_LOGFILE)
