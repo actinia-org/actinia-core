@@ -1172,27 +1172,6 @@ class UserListResponseModel(Schema):
     example = {"status": "success","user_list": ["actinia-gdi"]}
 
 
-
-class UserListResponseModel(Schema):
-    """Response schema that is used to list all users.
-
-    """
-    type = 'object'
-    properties = {
-        'status': {
-            'type': 'string',
-            'description': 'The status of the request'
-        },
-        'user_list': {
-            'type': 'array',
-            'items': {'type': 'string'},
-            'description': 'The names of all users'
-        }
-    }
-    required = ["status", "user_list"]
-    example = {"status": "success","user_list": ["actinia-gdi"]}
-
-
 class UserInfoResponseModel(Schema):
     """Response schema that is used to show information about a user.
 
@@ -1208,7 +1187,7 @@ class UserInfoResponseModel(Schema):
             'properties': {
                 'cell_limit': {
                     'type': 'string',
-                    'description': 'The limit of number of cells the user is allowed to process'
+                    'description': 'The limit of number of raster cells the user is allowed to process'
                 },
                 'process_num_limit': {
                     'type': 'string',
@@ -1221,12 +1200,12 @@ class UserInfoResponseModel(Schema):
                 'accessible_datasets': {
                     'type': 'object',
                     'properties': {},
-                    'description': 'The persistent GRASS databases the user is allowed to use. Contains one object for each location name with an array of strings containing all allowed mapset names. See example for more information.'
+                    'description': 'The persistent GRASS GIS databases the user is allowed to use. Contains one object for each location name with an array of strings containing all allowed mapset names. See example for more information.'
                 },
                 'accessible_modules': {
                     'type': 'array',
                     'items': {'type': 'string'},
-                    'description': 'The GRASS modules the user is allowed to use'
+                    'description': 'The GRASS GIS modules the user is allowed to use'
                 }
             },
             'description': 'The names of all users'
