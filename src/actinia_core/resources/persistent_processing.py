@@ -29,6 +29,7 @@ import pickle
 import os
 import shutil
 import subprocess
+from copy import deepcopy
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 
@@ -79,24 +80,19 @@ in an ephemeral database and then merged or copied into the persistent user data
 """
 
 
-class AsyncPersistentResource(ResourceBase):
-
-    def __init__(self):
-        ResourceBase.__init__(self)
-
-    @swagger.doc({
-        'tags': ['Processing'],
-        'description': DESCR,
-        'consumes':['application/json'],
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
+SCHEMA_DOC={
+    'tags': ['Processing'],
+    'description': DESCR,
+    'consumes':['application/json'],
+    'parameters': [
+        {
+            'name': 'location_name',
+            'description': 'The location name',
+            'required': True,
+            'in': 'path',
+            'type': 'string',
+            'default': 'nc_spm_08'
+        },
         {
             'name': 'mapset_name',
             'description': 'The name of an existing mapset or a new mapset that should be created',
@@ -104,26 +100,34 @@ class AsyncPersistentResource(ResourceBase):
             'in': 'path',
             'type': 'string'
         },
-            {
-                'name': 'process_chain',
-                'description': 'The process chain that should be executed',
-                'required': True,
-                'in': 'body',
-                'schema': ProcessChainModel
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The result of the process chain execution',
-                'schema':ProcessingResponseModel
-            },
-            '400': {
-                'description':'The error message and a detailed log why process chain execution '
-                              'did not succeeded',
-                'schema':ProcessingResponseModel
-            }
+        {
+            'name': 'process_chain',
+            'description': 'The process chain that should be executed',
+            'required': True,
+            'in': 'body',
+            'schema': ProcessChainModel
         }
-     })
+    ],
+    'responses': {
+        '200': {
+            'description': 'The result of the process chain execution',
+            'schema':ProcessingResponseModel
+        },
+        '400': {
+            'description':'The error message and a detailed log why process chain execution '
+                          'did not succeed',
+            'schema':ProcessingResponseModel
+        }
+    }
+}
+
+
+class AsyncPersistentResource(ResourceBase):
+
+    def __init__(self):
+        ResourceBase.__init__(self)
+
+    @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name, mapset_name):
         """Execute a user defined process chain that creates a new mapset or runs in an existing one.
 
