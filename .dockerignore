@@ -1,0 +1,13 @@
+docker
+!docker/actinia-core/snap
+!docker/actinia-core/actinia.cfg
+!docker/actinia-core/start.sh
+!docker/actinia-core/start-dev.sh
+.gitignore
+.github
+.travis
+.travis.yml
+.eggs
+.pytest_cache
+build
+dist
