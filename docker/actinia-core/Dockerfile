@@ -3,14 +3,6 @@ FROM mundialis/grass-py3-pdal
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
 
-ARG SOURCE_GIT_URL=https://github.com
-ARG SOURCE_GIT_REMOTE=mundialis
-ARG SOURCE_GIT_REPO=actinia_core
-# can be "tags" (for tag) or "heads" (for) branch
-ARG SOURCE_GIT_TYPE=heads
-# can be a tag name or branch name
-ARG SOURCE_GIT_REF=master
-
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 
@@ -81,14 +73,13 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines &&
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-COPY snap /src/snap
+COPY docker/actinia-core/snap /src/snap
 RUN sh /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
 
 # Install actinia-core
-WORKDIR /src
-ADD https://api.github.com/repos/$SOURCE_GIT_REMOTE/$SOURCE_GIT_REPO/git/refs/$SOURCE_GIT_TYPE/$SOURCE_GIT_REF version.json
-RUN git clone -b ${SOURCE_GIT_REF} --single-branch ${SOURCE_GIT_URL}/${SOURCE_GIT_REMOTE}/${SOURCE_GIT_REPO}.git actinia_core
+
+COPY . /src/actinia_core
 
 # set link to match actinia default config (needed for tests)
 RUN ln -s /actinia_core /root/actinia
@@ -117,9 +108,9 @@ WORKDIR /grassdb
 VOLUME /grassdb
 
 # Copy actinia config file and start scripts
-COPY actinia.cfg /etc/default/actinia
-COPY start.sh /src/start.sh
-COPY start-dev.sh /src/start-dev.sh
+COPY docker/actinia-core/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core/start.sh /src/start.sh
+COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
 
 ENTRYPOINT ["/bin/bash"]
 CMD ["/src/start.sh"]
