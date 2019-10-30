@@ -1,0 +1,139 @@
+FROM mundialis/grass-py3-pdal:stable-alpine
+
+LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
+LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+
+# PACKAGES VERSIONS
+ARG PYTHON_VERSION=3
+ENV GDAL_CACHEMAX=2000
+ENV GRASS_COMPRESSOR=ZSTD
+
+USER root
+
+ENV BUILD_PACKAGES="\
+      gcc \
+      gdal \
+      gdal-dev \
+      geos \
+      geos-dev \
+      git \
+      libc-dev \
+      make \
+      postgresql \
+      postgresql-dev \
+      subversion \
+      maven \
+      openjdk8"
+
+ENV PACKAGES="\
+      gdal \
+      geos \
+      postgresql \
+      python3-dev"
+
+WORKDIR /src
+
+ENV PYTHONBIN=python$PYTHON_VERSION
+
+RUN echo "Install Python";\
+    apk add --no-cache $PYTHONBIN && \
+#    $PYTHONBIN -m ensurepip && \
+#    rm -r /usr/lib/python*/ensurepip && \
+    pip$PYTHON_VERSION install --upgrade pip setuptools && \
+    if [ ! -e /usr/bin/pip ]; then ln -s pip$PYTHON_VERSION /usr/bin/pip ; fi && \
+    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/$PYTHONBIN /usr/bin/python; fi && \
+    rm -r /root/.cache
+
+# Install minimalistic dependencies and tools
+RUN echo "Install minimalistic dependencies and tools";\
+    apk update; \
+    apk add --no-cache \
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+            $PACKAGES; \
+    # Add packages just for the GRASS addon install process
+    apk add --no-cache \
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+            --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
+            --virtual .build-deps $BUILD_PACKAGES; \
+    #
+    echo "Install step done"
+
+ENV LC_ALL "en_US.UTF-8"
+ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
+
+# Create the database directories
+RUN mkdir -p /actinia_core/grassdb && \
+    mkdir -p /actinia_core/resources && \
+    mkdir -p /actinia_core/workspace/tmp && \
+    mkdir -p /actinia_core/workspace/temp_db && \
+    mkdir -p /actinia_core/workspace/actinia && \
+    mkdir -p /actinia_core/workspace/download_cache && \
+    mkdir -p /actinia_core/userdata
+
+# Create generic GRASS GIS binary name regardless of version number
+RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
+# Create a generic link to GRASS GIS libs (simplifies actinia configuration)
+RUN ln -s `grass --config path` /usr/local/grass7
+# show installed version
+RUN grass --tmp-location EPSG:4326 --exec g.version -rge
+
+# Install GRASS GIS addons
+WORKDIR /src
+# Install the d.rast.multi module to render several maps at once
+RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
+
+# install some GRASS GIS addons
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.out.png && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
+
+## install SNAPPY
+#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
+#ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+#COPY docker/actinia-core/snap /src/snap
+#RUN sh /src/snap/install.sh
+
+# Install actinia-core
+
+COPY . /src/actinia_core
+
+# set link to match actinia default config (needed for tests)
+RUN ln -s /actinia_core /root/actinia
+
+WORKDIR /src/actinia_core
+RUN pip3 install -r requirements.txt && python3 setup.py install
+## TODO: fix tests
+#\
+#    && python3 setup.py test
+
+# Install actinia-core plugins
+RUN git config --global http.sslVerify false
+RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
+WORKDIR /src/actinia_statistic_plugin
+RUN pip3 install -r requirements.txt && python3 setup.py install
+## TODO: fix tests
+#\
+#    && python3 setup.py test
+
+# Reduce the image size
+RUN apt-get autoremove -y
+RUN apt-get clean -y
+
+# Data directory
+WORKDIR /grassdb
+VOLUME /grassdb
+
+# Copy actinia config file and start scripts
+COPY docker/actinia-core/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core/start.sh /src/start.sh
+COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
+
+ENTRYPOINT ["/bin/bash"]
+CMD ["/src/start.sh"]
+
+ENV GISBASE ""
+
+EXPOSE 8088
+EXPOSE 9191
