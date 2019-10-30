@@ -1,4 +1,4 @@
-FROM mundialis/grass-py3-pdal
+FROM mundialis/grass-py3-pdal:stable-ubuntu
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
