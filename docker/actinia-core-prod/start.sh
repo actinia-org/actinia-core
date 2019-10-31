@@ -14,7 +14,9 @@ grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
 # created here, because set in sample config as default location
 grass -text -e -c 'EPSG:3358' /actinia_core/grassdb/nc_spm_08
 
-gunicorn -b 0.0.0.0:8088 -w 1 actinia_core.main:flask_app
+# optimized gunicorn settings (http://docs.gunicorn.org/en/stable/design.html) # recommended num of workers is (2 x $num_cores) + 1, here minimum is assumed.
+# If deployed with 8 replicas, each will run with 3 workers.
+gunicorn -b 0.0.0.0:8088 -w 3 --access-logfile=- -k gthread actinia_core.main:flask_app
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start actinia_core/main.py: $status"

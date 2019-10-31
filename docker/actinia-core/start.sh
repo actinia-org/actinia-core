@@ -34,7 +34,9 @@ if [ $status -ne 0 ]; then
   exit $status
 fi
 
-gunicorn -b 0.0.0.0:8088 -w 1 actinia_core.main:flask_app
+# optimized gunicorn settings (http://docs.gunicorn.org/en/stable/design.html) # run only 1 worker for debugging reasons. This is overwritten for production
+# deployment.
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 status=$?
 if [ $status -ne 0 ]; then
   echo "Failed to start actinia_core/main.py: $status"
