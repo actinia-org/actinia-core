@@ -551,9 +551,9 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace --script commands.sh
 
-    Run the script commands.sh in the location *latlong* on the actinia server:
+    Run the script commands.sh in the location *switching* on the actinia server:
 
-        ace --location latlong --script commands.sh
+        ace --location latlong_wgs84 --script commands.sh
 
     List all running jobs of the current user
 

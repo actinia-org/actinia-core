@@ -1150,3 +1150,103 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         return pickle.dumps([http_code, resp_dict])
     else:
         return jsonify(resp_dict)
+
+
+class UserListResponseModel(Schema):
+    """Response schema that is used to list all users.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the request'
+        },
+        'user_list': {
+            'type': 'array',
+            'items': {'type': 'string'},
+            'description': 'The names of all users'
+        }
+    }
+    required = ["status", "user_list"]
+    example = {"status": "success","user_list": ["actinia-gdi"]}
+
+
+class UserInfoResponseModel(Schema):
+    """Response schema that is used to show information about a user.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the request'
+        },
+        'permissions': {
+            'type': 'object',
+            'properties': {
+                'cell_limit': {
+                    'type': 'string',
+                    'description': 'The limit of number of raster cells the user is allowed to process'
+                },
+                'process_num_limit': {
+                    'type': 'string',
+                    'description': 'The limit of number of processes the user is allowed to integrate into one process chain'
+                },
+                'process_time_limit': {
+                    'type': 'string',
+                    'description': 'The time a process must not exceed'
+                },
+                'accessible_datasets': {
+                    'type': 'object',
+                    'properties': {},
+                    'description': 'The persistent GRASS GIS databases the user is allowed to use. Contains one object for each location name with an array of strings containing all allowed mapset names. See example for more information.'
+                },
+                'accessible_modules': {
+                    'type': 'array',
+                    'items': {'type': 'string'},
+                    'description': 'The GRASS GIS modules the user is allowed to use'
+                }
+            },
+            'description': 'The names of all users'
+        },
+        'user_id': {
+            'type': 'string',
+            'description': 'The identifier of the user'
+        },
+        'user_role': {
+            'type': 'string',
+            'description': 'The role of the user'
+        },
+        'user_group': {
+            'type': 'string',
+            'description': 'The group of the user'
+        }
+    }
+    required = ["status"]
+    example = {
+        "Permissions": {
+            "accessible_datasets": {
+                "nc_spm_08": [
+                    "PERMANENT",
+                    "user1",
+                    "landsat"
+                ]
+            },
+            "accessible_modules": [
+                "r.blend",
+                "r.buffer",
+                "...",
+                "t.rast.univar",
+                "importer",
+                "exporter"
+            ],
+            "cell_limit": 100000000000,
+            "process_num_limit": 1000,
+            "process_time_limit": 31536000
+            },
+        "Status": "success",
+        "User group": "superadmin",
+        "User id": "actinia-gdi",
+        "User role": "superadmin"
+    }

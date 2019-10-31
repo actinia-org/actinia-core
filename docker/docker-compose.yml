@@ -3,7 +3,8 @@ services:
 
   actinia-core:
     build:
-      context: actinia-core/
+      context: ./..
+      dockerfile: docker/actinia-core/Dockerfile
       args:
         - SOURCE_GIT_URL=https://github.com
         - SOURCE_GIT_REMOTE=mundialis

@@ -69,6 +69,69 @@ The following user-roles are supported:
         - Has access to persistent databases that were granted by a superadmin
 
 
+Overview table:
+
++------------+------------+------------+-----------+------------+-------------+
+| task       | superadmin | admin      | user      | guest      | notes       |
+|            |            |            |           |            |             |
++============+============+============+===========+============+=============+
+| amount     | y          | y          | limited,  | limited,   | -           |
+| raster     |            |            | selected  | selected   |             |
+| cells is   |            |            | via redis | via redis  |             |
+| unlimited  |            |            |           |            |             |
++------------+------------+------------+-----------+------------+-------------+
+| database   | y          | only to    | limited,  | limited,   | -           |
+| access is  |            | persistent | defined   | defined    |             |
+| unlimited  |            | databases  | in redis  | in redis   |             |
+|            |            | that were  |           |            |             |
+|            |            | granted    |           |            |             |
+|            |            | by a       |           |            |             |
+|            |            | superadmin |           |            |             |
++------------+------------+------------+-----------+------------+-------------+
+| location/  | y          | y          | can       | has        | -           |
+| mapset     |            |            | create    | access to  |             |
+| access is  |            |            | create,   | persistent |             |
+| unlimited  |            |            | modify    | databases  |             |
+|            |            |            | and       | that were  |             |
+|            |            |            | delete    | granted    |             |
+|            |            |            | mapsets   | by         |             |
+|            |            |            | in user   | a          |             |
+|            |            |            | specific  | superadmin,|             |
+|            |            |            | databases | defined    |             |
+|            |            |            | ,         | in redis   |             |
+|            |            |            | defined   |            |             |
+|            |            |            | in redis  |            |             |
++------------+------------+------------+-----------+------------+-------------+
+| module     | y          | y          | can run   | has very   | -           |
+| access is  |            |            | computati | limited    |             |
+| unlimited  |            |            | onal      | access to  |             |
+|            |            |            | tasks in  | API calls  |             |
+|            |            |            | ephemeral |            |             |
+|            |            |            | and user  |            |             |
+|            |            |            | specific  |            |             |
+|            |            |            | databases |            |             |
++------------+------------+------------+-----------+------------+-------------+
+| get,       | y          | users      | n         | n          | Only        |
+| create,    |            | with the   |           |            | normal      |
+| delete a   |            | maximum    |           |            | users       |
+| single     |            | user-role  |           |            | (role=user) |
+| user       |            | user of    |           |            | can be      |
+|            |            | the same   |           |            | created     |
+|            |            | user       |           |            |             |
+|            |            | group      |           |            |             |
++------------+------------+------------+-----------+------------+-------------+
+
+In the file actinia.cfg, limits and more can be defined:
+
+.. code:: bash
+
+   [LIMITS]
+   max_cell_limit = 2000000
+   process_time_limt = 60
+   process_num_limit = 20
+   number_of_workers = 3
+
+
 The Actinia databases
 ---------------------
 

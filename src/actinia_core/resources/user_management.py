@@ -32,10 +32,13 @@ TODO: Implement POST full permission creation
 
 from flask import jsonify, make_response, g
 from flask_restful import reqparse
+from flask_restful_swagger_2 import swagger
 from .base_login import LoginBase
 from .common.user import ActiniaUser
 from .common.app import auth
 from .common.logging_interface import log_api_call
+from .common.response_models import UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
+
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -51,6 +54,17 @@ class UserListResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
+    @swagger.doc({
+        'tags': ['User Management'],
+        'description': 'Get a list of all users. '
+                       'Minimum required user role: admin.',
+        'responses': {
+            '200': {
+                'description': 'This response returns a list of user names.',
+                'schema': UserListResponseModel
+            }
+        }
+    })
     def get(self):
         """List all users in the database
 
@@ -60,22 +74,15 @@ class UserListResource(LoginBase):
         Returns:
             flask.Response: A HTTP response with
                             JSON payload containing a list of users
-
-            A HTTP status 200 response JSON content::
-
-                {
-                  "Status": "success",
-                  "User list": [
-                    "soeren"
-                  ]
-                }
-
         """
         user = ActiniaUser(None)
         user_list = user.list_all_users()
 
-        return make_response(jsonify({"Status":"success",
-                                      "User list":user_list}))
+        return make_response(jsonify(UserListResponseModel(
+            status="success",
+            user_list=user_list
+        )), 200)
+
 
 class UserManagementResource(LoginBase):
     """Get, Create and Delete a single user
@@ -90,6 +97,32 @@ class UserManagementResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
+    @swagger.doc({
+        'tags': ['User Management'],
+        'description': 'Get information about the group, role and permissions '
+                       'of a certain user. '
+                       'Minimum required user role: admin.',
+        'parameters': [
+            {
+                'name': 'user',
+                'description': 'The unique name of the user',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'This response returns information about a '
+                               'certain user.',
+                'schema': UserInfoResponseModel
+            },
+            '400': {
+                'description': 'The error message',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
     def get(self, user_id):
         """Return the credentials of a single user
 
@@ -103,55 +136,63 @@ class UserManagementResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing the credentials
                             of the user
-
-            A HTTP status 200 response JSON content::
-
-                {
-                  "Permissions": {
-                    "accessible_datasets": {
-                      "nc_spm_08": [
-                        "PERMANENT",
-                        "user1",
-                        "landsat"
-                      ]
-                    },
-                    "accessible_modules": [
-                      "r.blend",
-                       ...
-                      "g.findfile",
-                      "g.gisenv"
-                    ],
-                    "cell_limit": 100000000,
-                    "process_num_limit": 5,
-                    "process_time_limit": 60
-                  },
-                  "Status": "success",
-                  "User id": "soeren",
-                  "User role": "admin"
-                }
-
-            A HTTP status 400 response JSON content::
-
-                {
-                  "Messages": "User <unknown_user_name> does not exist",
-                  "Status": "error"
-                }
-
         """
         user = ActiniaUser(user_id)
 
         if user.exists() is False:
-            return make_response(jsonify({"Status":"error",
-                                          "Messages":"User <%s> does not exist"%user_id}), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="User <%s> does not exist"%user_id
+            )), 400)
 
         credentials = user.get_credentials()
 
-        return make_response(jsonify({"Status":"success",
-                                      "User id":credentials["user_id"],
-                                      "User role":credentials["user_role"],
-                                      "User group":credentials["user_group"],
-                                      "Permissions":credentials["permissions"]}))
+        return make_response(jsonify(UserInfoResponseModel(
+            status="success",
+            permissions=credentials["permissions"],
+            user_id=credentials["user_id"],
+            user_role=credentials["user_role"],
+            user_group=credentials["user_group"]
+        )), 200)
 
+    @swagger.doc({
+        'tags': ['User Management'],
+        'description': 'Creates a new user in the database. '
+                       'Minimum required user role: admin.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique name of the user',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'password',
+                'description': 'The password of the new user',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'group',
+                'description': 'The group of the new user',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'This response returns the status of user creation.',
+                'schema': SimpleResponseModel
+            },
+            '400': {
+                'description': 'The error message',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
     def post(self, user_id):
         """Create a user in the database
 
@@ -165,21 +206,6 @@ class UserManagementResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing
                             the status and messages
-
-            A HTTP status 200 response JSON content::
-
-                {
-                  "Messages:": "User thomas created",
-                  "Status": "success"
-                }
-
-            A HTTP status 400 response JSON content::
-
-                {
-                  "Messages": "Unable to create user thomas",
-                  "Status": "error"
-                }
-
         """
         # Password parser
         password_parser = reqparse.RequestParser()
@@ -196,12 +222,40 @@ class UserManagementResource(LoginBase):
 
         if user is not None:
             if user.exists() is True:
-                return make_response(jsonify({"Status":"success",
-                                              "Messages:":"User %s created"%user_id}), 201)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="success",
+                    message="User %s created"%user_id
+                )), 201)
 
-        return make_response(jsonify({"Status":"error",
-                                      "Messages":"Unable to create user %s"%user_id}), 400)
+        return make_response(jsonify(SimpleResponseModel(
+            status="error",
+            message="Unable to create user %s"%user_id
+        )), 400)
 
+    @swagger.doc({
+        'tags': ['User Management'],
+        'description': 'Deletes a user. '
+                       'Minimum required user role: admin.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique name of the user',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'This response returns the status of user deletion.',
+                'schema': SimpleResponseModel
+            },
+            '400': {
+                'description': 'The error message',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
     def delete(self, user_id):
         """Delete a specific user
 
@@ -215,31 +269,22 @@ class UserManagementResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing
                             the status and messages
-
-            A HTTP status 200 response JSON content::
-
-                {
-                  "Messages": "User thomas deleted",
-                  "Status": "success"
-                }
-
-            A HTTP status 400 response JSON content::
-
-                {
-                  "Messages": "Unable to delete user thomas. User does not exist.",
-                  "Status": "error"
-                }
-
         """
         user = ActiniaUser(user_id)
 
         if user.exists() is False:
-            return make_response(jsonify({"Status":"error",
-                                          "Messages":"Unable to delete user %s. User does not exist."%user_id}), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Unable to delete user %s. User does not exist."%user_id
+            )), 400)
 
         if user.delete() is True:
-            return make_response(jsonify({"Status":"success",
-                                          "Messages":"User %s deleted"%user_id}))
+            return make_response(jsonify(SimpleResponseModel(
+                status="success",
+                message="User %s deleted"%user_id
+            )), 200)
 
-        return make_response(jsonify({"Status":"error",
-                                      "Messages":"Unable to delete user %s"%user_id}), 400)
+        return make_response(jsonify(SimpleResponseModel(
+            status="error",
+            message="Unable to delete user %s"%user_id
+        )), 400)

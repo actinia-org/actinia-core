@@ -15,7 +15,7 @@ mkdir -p /root/.snap/snap-python/snappy
 cp /src/snap/jpy/dist/*.whl "/root/.snap/snap-python/snappy"
 
 # install and update snap
-wget -O /src/snap/esa-snap_all_unix_6_0.sh \
+wget -q -O /src/snap/esa-snap_all_unix_6_0.sh \
   "http://step.esa.int/downloads/6.0/installers/esa-snap_all_unix_6_0.sh"
 sh /src/snap/esa-snap_all_unix_6_0.sh -q -varfile /src/snap/response.varfile
 /usr/local/snap/bin/snap --nosplash --nogui --modules --update-all

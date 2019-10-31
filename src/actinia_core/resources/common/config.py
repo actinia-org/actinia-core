@@ -84,12 +84,12 @@ class Configuration(object):
         self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home  # The directory to store temporary GRASS databases
         self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home  # Directory to store exported resources
         self.GRASS_RESOURCE_QUOTA = 100  # The size quota of the resource storage in Gigibit
-        self.GRASS_GIS_BASE = "/usr/local/grass-7.8.dev"  # Installation directory of GRASS
+        self.GRASS_GIS_BASE = "/usr/local/grass78/"  # Installation directory of GRASS
         self.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass78"
         self.GRASS_ADDON_PATH = "%s/.grass7/addons/" % home
         self.GRASS_MODULES_XML_PATH = os.path.join(self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
         self.GRASS_VENV = "%s/src/actinia/grass_venv/bin/activate_this.py" % home  # The path to the activation
-        #                                                                          script of the python2 venv
+        #                                                                          script of the python2 venv (old)
 
         # DEFAULT LIMITS when a user is created
         self.MAX_CELL_LIMIT = 1000 * 1000 * 1000  # Maximum number of cells that are allowed to process
