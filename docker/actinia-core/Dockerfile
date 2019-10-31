@@ -85,6 +85,13 @@ COPY . /src/actinia_core
 RUN ln -s /actinia_core /root/actinia
 
 WORKDIR /src/actinia_core
+# necessary to be even with git for clean version
+RUN git checkout .
+# update build tools
+RUN python3 -m pip install --user --upgrade setuptools wheel
+# create build
+RUN python3 setup.py sdist bdist_wheel
+# install
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests
 #\
