@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2019 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,10 +55,10 @@ class ActiniaRequests(object):
     by adding data and mimetype.
     """
     # The default server is the localhost
-    graas_server = "http://127.0.0.1:5000"
+    actinia_server = "http://127.0.0.1:5000"
     # Check for an environmental variable to set the hostname http://IP:PORT
-    if "GRAAS_SERVER" in os.environ:
-        graas_server = str(os.environ["GRAAS_SERVER"])
+    if "ACTINIA_SERVER" in os.environ:
+        actinia_server = str(os.environ["ACTINIA_SERVER"])
 
     def _make_flask_response(self, resp):
         """Take care of the mimetype to avoid r.text to take forever to parse
@@ -85,7 +85,7 @@ class ActiniaRequests(object):
             del kargs["content_type"]
 
         if "http" not in url:
-            server_url = self.graas_server + url
+            server_url = self.actinia_server + url
         else:
             server_url = url
 
@@ -119,7 +119,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
     """Base class for GRASS GIS REST API tests
     """
     server_test = False
-    custom_graas_cfg = False
+    custom_actinia_cfg = False
     guest = None
     user = None
     admin = None
@@ -127,16 +127,16 @@ class ActiniaTestCaseBase(unittest.TestCase):
     auth_header = {}
     users_list = []
 
-    if "GRAAS_SERVER_TEST" in os.environ:
-        server_test = bool(os.environ["GRAAS_SERVER_TEST"])
+    if "ACTINIA_SERVER_TEST" in os.environ:
+        server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
 
-    if "GRAAS_CUSTOM_TEST_CFG" in os.environ:
-        custom_graas_cfg = str(os.environ["GRAAS_CUSTOM_TEST_CFG"])
+    if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
+        custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
 
     @classmethod
     def setUpClass(cls):
 
-        if cls.server_test is False and cls.custom_graas_cfg is False:
+        if cls.server_test is False and cls.custom_actinia_cfg is False:
             global_config.REDIS_SERVER_SERVER = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
             global_config.GRASS_RESOURCE_DIR = "/tmp"
@@ -150,10 +150,10 @@ class ActiniaTestCaseBase(unittest.TestCase):
             #                                  global_config.NUMBER_OF_WORKERS)
 
 
-        # If the custom_graas_cfg variable is set, then the graas config file will be read
+        # If the custom_actinia_cfg variable is set, then the actinia config file will be read
         # to configure Redis queue
-        if cls.server_test is False and cls.custom_graas_cfg is not False:
-            global_config.read(cls.custom_graas_cfg)
+        if cls.server_test is False and cls.custom_actinia_cfg is not False:
+            global_config.read(cls.custom_actinia_cfg)
 
             # Create the job queue
             # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
@@ -255,7 +255,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         The response will be checked if the resource was accepted. Hence it must always be HTTP 200 status.
 
         The status URL from the response is then polled until status: finished, error or terminated.
-        The result of the poll can be checked against its HTTP status and its GRaaS status message.
+        The result of the poll can be checked against its HTTP status and its actinia status message.
 
         Args:
             response: The accept response

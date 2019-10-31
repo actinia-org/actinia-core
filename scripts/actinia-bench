@@ -238,7 +238,7 @@ SENTINEL_NDVI={
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Run a simple benchmark on a GRaaS Service '\
+    parser = argparse.ArgumentParser(description='Run a simple benchmark on a actinia Service '\
                                                  'based on the north carolina dataset. '\
                                                  'Example: actinia-bench -s http://127.0.0.1:80 -u soeren -p 12345678 -r 8 -t long',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -247,7 +247,7 @@ def main():
                         type=str,
                         default="http://127.0.0.1:8080/api/v1",
                         required=False,
-                        help="The hostname:port of the GRaaS server")
+                        help="The hostname:port of the actinia server")
 
     parser.add_argument("-u", "--user_id",
                         default="superadmin",
@@ -339,12 +339,12 @@ def main():
 
 
 def start_query_processing_async_export(base_url, auth, q, id, type, polling):
-    """Start an asynchronous GRaaS process and poll until its finished
+    """Start an asynchronous actinia process and poll until its finished
 
     This function is the argument for multiprocessing.Process
 
     Args:
-        base_url (str): The base URL of the GRaaS Server
+        base_url (str): The base URL of the actinia Server
         auth (tuple): Username and password as tuple
         q (multiprocessing.Queue): The queue to store the processing time in
         id (int): The id of the request
