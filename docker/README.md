@@ -41,9 +41,9 @@ __See below for production deployment__.
 
 For actinia_core development, run and enter the running container (in a separate terminal):
 ```
-docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
+docker-compose run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
 
-docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core```
+docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
 ```
 
 Inside the container, you can run GRASS GIS with:
