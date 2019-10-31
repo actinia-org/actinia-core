@@ -118,8 +118,11 @@ RUN pip3 install -r requirements.txt && python3 setup.py install
 #    && python3 setup.py test
 
 # Reduce the image size
-RUN apt-get autoremove -y
-RUN apt-get clean -y
+RUN rm -rf /src/*; \
+    # remove build dependencies and any leftover apk cache
+    apk del --no-cache --purge .build-deps; \
+    rm -rf /var/cache/apk/*; \
+    rm -rf /root/.cache
 
 # Data directory
 WORKDIR /grassdb
