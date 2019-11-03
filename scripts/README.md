@@ -414,7 +414,7 @@ Store the following script as text file `ace_dtm_statistics.sh`:
 ```bash
 # grass78 ~/grassdata/nc_spm_08/user1/
 # Import the web resource `elev_ned_30m.tif` and set the region to the imported map
-g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
 # Compute univariate statistics
 r.univar map=elev
 r.info elev
@@ -510,7 +510,7 @@ Store the following script as text file `/tmp/ace_segmentation.sh`:
 # Import the web resource and set the region to the imported map
 # we apply a trick for the import of multi-band GeoTIFFs:
 # install with: g.extension importer
-importer raster=ortho2010+https://apps.mundialis.de/workshops/osgeo_ireland2017/north_carolina/ortho2010_t792_subset_20cm.tif
+importer raster=ortho2010@https://apps.mundialis.de/workshops/osgeo_ireland2017/north_carolina/ortho2010_t792_subset_20cm.tif
 # The importer has created three new raster maps, one for each band in the geotiff file
 # stored them in an image group
 r.info map=ortho2010.1

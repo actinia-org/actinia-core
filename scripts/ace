@@ -48,7 +48,7 @@ export ACTINIA_URL='https://actinia.mundialis.de/latest'
 # Example script for actinia with import and export options
 # grass78 ~/grassdata/nc_spm_08/user1/
 import_export = """
-g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
 r.univar map=elev
 r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
@@ -539,7 +539,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
       \b
       # Import the web resource and set the region to the imported map
-      g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+      g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
       # Compute univariate statistics
       r.univar map=elev
       r.info elev
