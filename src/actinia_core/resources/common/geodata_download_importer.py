@@ -22,7 +22,7 @@
 #######
 
 """
-Sentinel-2A processing commands
+Geodata processing commands
 """
 import os
 import requests
@@ -53,7 +53,7 @@ class GeoDataDownloadImportSupport(object):
 
     def __init__(self, config, temp_file_path, download_cache,
                  send_resource_update, message_logger, url_list):
-        """ A collection of functions to generate Landsat4-8 scene related import and processing
+        """ A collection of functions to generate geodata related import and processing
         commands. Each function returns a process chain that can be executed
         by the async processing classes.
 
