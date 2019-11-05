@@ -29,6 +29,7 @@ import sys
 import os
 import grass.script as grass
 import subprocess
+import shlex
 from pprint import pprint
 from typing import List, Optional
 import click
@@ -341,7 +342,7 @@ def execute_script(script: str, mapset: str = None):
         line = line.strip()
         # Get all lines that have no comments
         if line and "#" not in line[:1]:
-            tokens = line.split()
+            tokens = shlex.split(line)
             commands.append(tokens)
 
     send_poll_commands(commands=commands, mapset=mapset)
