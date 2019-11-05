@@ -528,11 +528,11 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     Single command example:
 
-        ace g.list rast
+        ace g.list raster
 
     Single command example with location option:
 
-        ace --location nc_spm_08 g.list rast
+        ace --location nc_spm_08 g.list raster
 
     The following commands from a script will import a raster layer from an internet
     source as raster map *elev*, sets the computational region to the map and
@@ -552,7 +552,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace --script commands.sh
 
-    Run the script commands.sh in the location *switching* on the actinia server:
+    Run the script commands.sh in the location *latlong_wgs84* on the actinia server:
 
         ace --location latlong_wgs84 --script commands.sh
 
