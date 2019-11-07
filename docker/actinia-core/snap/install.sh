@@ -3,6 +3,9 @@
 # https://senbox.atlassian.net/wiki/spaces/SNAP/pages/30539778/Install+SNAP+on+the+command+line
 # https://senbox.atlassian.net/wiki/spaces/SNAP/pages/30539785/Update+SNAP+from+the+command+line
 
+# http://step.esa.int/main/download/snap-download/
+SNAPVER=7
+
 # set JAVA_HOME (done in Docker as well)
 export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
 
@@ -15,9 +18,9 @@ mkdir -p /root/.snap/snap-python/snappy
 cp /src/snap/jpy/dist/*.whl "/root/.snap/snap-python/snappy"
 
 # install and update snap
-wget -q -O /src/snap/esa-snap_all_unix_6_0.sh \
-  "http://step.esa.int/downloads/6.0/installers/esa-snap_all_unix_6_0.sh"
-sh /src/snap/esa-snap_all_unix_6_0.sh -q -varfile /src/snap/response.varfile
+wget -q -O /src/snap/esa-snap_all_unix_${SNAPVER}_0.sh \
+  "http://step.esa.int/downloads/${SNAPVER}.0/installers/esa-snap_all_unix_${SNAPVER}_0.sh"
+sh /src/snap/esa-snap_all_unix_${SNAPVER}_0.sh -q -varfile /src/snap/response.varfile
 /usr/local/snap/bin/snap --nosplash --nogui --modules --update-all
 
 # create snappy and python binding with snappy
