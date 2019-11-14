@@ -64,12 +64,9 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge
 WORKDIR /src
 # Install the d.rast.multi module to render several maps at once
 RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
 
-# install some GRASS GIS addons
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
+COPY docker/actinia-core/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < rass_addons_list.txt
 
 # install SNAPPY
 RUN apt-get install default-jdk maven -y
