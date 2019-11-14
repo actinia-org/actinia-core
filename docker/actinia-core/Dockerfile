@@ -25,7 +25,6 @@ RUN apt-get update && apt-get upgrade -y && \
     python3 \
     python3-dateutil \
     python3-dev \
-    python3-gdal \
     python3-magic \
     python3-pip \
     python3-ply \
@@ -38,6 +37,9 @@ RUN apt-get update && apt-get upgrade -y && \
     zip \
     && apt-get autoremove -y \
     && apt-get clean -y
+
+# wrongly linked against gdal 2.2.2; using pygdal 2.2.3.3 in requirements
+#    python3-gdal \
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
@@ -78,7 +80,6 @@ RUN bash /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
 
 # Install actinia-core
-
 COPY . /src/actinia_core
 
 # set link to match actinia default config (needed for tests)
@@ -91,8 +92,9 @@ RUN git checkout .
 RUN python3 -m pip install --user --upgrade setuptools wheel
 # create build
 RUN python3 setup.py sdist bdist_wheel
-# install (Cython must be installed before requirements.txt)
-RUN pip3 install Cython cython-setuptools setuptools_cython
+
+## install (Cython must be installed before requirements.txt)
+#RUN pip3 install Cython cython-setuptools setuptools_cython
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests
 #\
