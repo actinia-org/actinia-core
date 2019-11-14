@@ -22,7 +22,6 @@ RUN apt-get update && apt-get upgrade -y && \
     libcurl4-gnutls-dev \
     libpython3-all-dev \
     moreutils \
-    subversion \
     python3 \
     python3-dateutil \
     python3-dev \
@@ -32,6 +31,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-ply \
     redis-server \
     redis-tools \
+    subversion \
     unzip \
     vim \
     wget \
@@ -74,7 +74,7 @@ RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 COPY docker/actinia-core/snap /src/snap
-RUN sh /src/snap/install.sh
+RUN bash /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
 
 # Install actinia-core
@@ -91,7 +91,8 @@ RUN git checkout .
 RUN python3 -m pip install --user --upgrade setuptools wheel
 # create build
 RUN python3 setup.py sdist bdist_wheel
-# install
+# install (Cython must be installed before requirements.txt)
+RUN pip3 install Cython cython-setuptools setuptools_cython
 RUN pip3 install -r requirements.txt && python3 setup.py install
 ## TODO: fix tests
 #\
@@ -109,6 +110,7 @@ RUN pip3 install -r requirements.txt && python3 setup.py install
 # Reduce the image size
 RUN apt-get autoremove -y
 RUN apt-get clean -y
+RUN rm -rf /src/snap
 
 # Data directory
 WORKDIR /grassdb

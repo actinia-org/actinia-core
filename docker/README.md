@@ -22,7 +22,7 @@ In this directory are the needed docker-compose scripts available.
 To build and deploy actinia, run
 
 ```
-docker-compose build
+docker-compose build --pull
 
 # Note: adding -d starts the containers in the background and leaves them
 #       running; without docker-compose will show the logging in the terminal:
