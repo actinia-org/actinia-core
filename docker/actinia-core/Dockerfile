@@ -68,7 +68,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi 
 
 # install some GRASS GIS addons
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.out.png && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld && \
     grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
 
 # install SNAPPY
