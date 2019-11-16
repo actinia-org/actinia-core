@@ -72,6 +72,8 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines &&
     grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
 
 # install SNAPPY
+# SNAP wants the current folder '.' included in LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
