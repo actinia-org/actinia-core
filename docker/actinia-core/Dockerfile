@@ -66,7 +66,7 @@ WORKDIR /src
 RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
 
 COPY docker/actinia-core/grass_addons_list.csv
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < rass_addons_list.txt
+RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < grass_addons_list.txt
 
 # install SNAPPY
 RUN apt-get install default-jdk maven -y
