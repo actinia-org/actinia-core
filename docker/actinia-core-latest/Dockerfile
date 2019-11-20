@@ -1,6 +1,6 @@
-FROM mundialis/grass-py3-pdal:stable-ubuntu
+FROM mundialis/grass-py3-pdal:latest-ubuntu
 
-# based on GRASS GIS releasebranch_7_8 (grass78)
+# based on GRASS GIS master (grass79)
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"

@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:latest
+FROM mundialis/actinia-core:0.99
 
 # Copy actinia config file and start scripts
 COPY actinia.cfg /etc/default/actinia
