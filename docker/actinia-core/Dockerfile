@@ -124,6 +124,9 @@ COPY docker/actinia-core/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core/start.sh /src/start.sh
 COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
 
+# Set actinia config file for testing
+ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+
 ENTRYPOINT ["/bin/bash"]
 CMD ["/src/start.sh"]
 
