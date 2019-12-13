@@ -245,8 +245,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         output_path = os.path.join(self.temp_file_path, file_name)
 
         module_name = "r.out.gdal"
-        args = ["-fm", "input=%s"%raster_name, "format=%s"%format,
-                "createopt=COMPRESS=LZW", "output=%s"%output_path]
+        args = ["-fmt", "input=%s"%raster_name, "format=%s"%format,
+                "createopt=COMPRESS=LZW,TILED=YES", "overviews=5", "output=%s"%output_path]
 
         if additional_options:
             args.extend(additional_options)

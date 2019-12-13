@@ -39,7 +39,7 @@ class ConfigurationTestCase(unittest.TestCase):
     of a user entry in a Redis database
     """
 
-    file_name = "/tmp/graas_test.cfg"
+    file_name = "/tmp/actinia_test.cfg"
 
     def test_change_loglevel(self):
 

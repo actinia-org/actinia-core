@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2019 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -171,10 +171,11 @@ class PersistentSTRDSLister(PersistentProcessing):
 class STRDSInfoModel(Schema):
     """Schema that contains space-time raster dataset (STRDS) information
     """
-    description = "Information abou a spcefic space-time raster dataset (STRDS)"
+    description = "Information about a specific space-time raster dataset (STRDS)"
     type = 'object'
     properties = {
-        'aggregation_type': {'type': 'string'},
+        "aggregation_type": {'type': 'string'},
+        "band_reference": {'type': 'string'},
         "bottom": {'type': 'string'},
         "creation_time": {'type': 'string'},
         "creator": {'type': 'string'},
@@ -193,6 +194,7 @@ class STRDSInfoModel(Schema):
         "modification_time": {'type': 'string'},
         "name": {'type': 'string'},
         "north": {'type': 'string'},
+        "number_of_bands": {'type': 'string'},
         "nsres_max": {'type': 'string'},
         "nsres_min": {'type': 'string'},
         "number_of_maps": {'type': 'string'},
@@ -206,6 +208,7 @@ class STRDSInfoModel(Schema):
     }
     example = {
         "aggregation_type": "None",
+        "band_reference": "None",
         "bottom": "0.0",
         "creation_time": "2016-08-11 16:44:29.756411",
         "creator": "soeren",
@@ -226,6 +229,7 @@ class STRDSInfoModel(Schema):
         "north": "75.5",
         "nsres_max": "0.25",
         "nsres_min": "0.25",
+        "number_of_bands": "None",
         "number_of_maps": "762",
         "raster_register": "raster_map_register_934719ed2b4841818386a6f9c5f11b09",
         "semantic_type": "mean",
@@ -286,6 +290,7 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
         ],
         "process_results": {
             "aggregation_type": "None",
+            "band_reference": "None",
             "bottom": "0.0",
             "creation_time": "2017-12-29 15:58:40.020820",
             "creator": "soeren",
@@ -306,6 +311,7 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
             "north": "75.5",
             "nsres_max": "0.25",
             "nsres_min": "0.25",
+            "number_of_bands": "None",
             "number_of_maps": "63",
             "raster_register": "raster_map_register_87e1edbaf2da4a27a03da04fa9f3a7f1",
             "semantic_type": "mean",

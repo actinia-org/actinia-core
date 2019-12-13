@@ -6,9 +6,9 @@ https://hub.docker.com/r/mundialis/actinia-core
 
 ## Background info
 
-This docker image is based on https://hub.docker.com/r/mundialis/grass-py3-pdal which provides GRASS GIS 7.8 (release branch, grass78) with python3 and PDAL support.
+This docker image is based on https://hub.docker.com/r/mundialis/grass-py3-pdal:stable-ubuntu which provides GRASS GIS 7.8 (release branch, grass78) with Python3 and PDAL support.
 
-The Dockerfile contained in this folder is used to build to dockerhub.
+The Dockerfile contained in this folder is used to build on Dockerhub.
 If you want to build manually...
 ## mind the build context!
 
@@ -24,13 +24,13 @@ __Build the docker with__:
 ```bash
 $ docker build \
          --file docker/actinia-core/Dockerfile \
-         --tag actinia-core:latest .
+         --tag actinia-core:stable .
 ```
 
 View the images available using `sudo docker images` and open a bash terminal with:
 
 ```bash
-$ docker run -it --entrypoint=/bin/bash actinia-core:latest
+$ docker run -it --entrypoint=/bin/bash actinia-core:stable
 root@c5e3b72ad8ba:/grassdb#
 ```
 
@@ -48,6 +48,6 @@ $ docker build \
         --file docker/actinia-core/Dockerfile \
         --tag actinia-core:stable .
 
-$ docker run -it --entrypoint=/bin/bash actinia-core:latest
+$ docker run -it --entrypoint=/bin/bash actinia-core:stable
 root@c5e3b72ad8ba:/grassdb#
 ```

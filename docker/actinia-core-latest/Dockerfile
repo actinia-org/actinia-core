@@ -1,6 +1,6 @@
-FROM mundialis/grass-py3-pdal:stable-ubuntu
+FROM mundialis/grass-py3-pdal:latest-ubuntu
 
-# based on GRASS GIS releasebranch_7_8 (grass78)
+# based on GRASS GIS master (grass79)
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -66,9 +66,12 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge
 WORKDIR /src
 # Install the d.rast.multi module to render several maps at once
 RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
 
-COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
+# install some GRASS GIS addons
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld && \
+    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
 
 # install SNAPPY
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH

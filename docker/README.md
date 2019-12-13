@@ -22,7 +22,7 @@ In this directory are the needed docker-compose scripts available.
 To build and deploy actinia, run
 
 ```
-docker-compose build
+docker-compose build --pull
 
 # Note: adding -d starts the containers in the background and leaves them
 #       running; without docker-compose will show the logging in the terminal:
@@ -41,9 +41,9 @@ __See below for production deployment__.
 
 For actinia_core development, run and enter the running container (in a separate terminal):
 ```
-docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
+docker-compose run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
 
-docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
+docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
 ```
 
 Inside the container, you can run GRASS GIS with:
@@ -71,7 +71,7 @@ python3 setup.py install
 bash /src/start-dev.sh
 
 # python3 -m actinia_core.main
-gunicorn -b 0.0.0.0:8088 -w 1 actinia_core.main:flask_app
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 
 ```
 If you have problems with cache, run

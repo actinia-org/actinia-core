@@ -29,6 +29,7 @@ import sys
 import os
 import grass.script as grass
 import subprocess
+import shlex
 from pprint import pprint
 from typing import List, Optional
 import click
@@ -48,7 +49,7 @@ export ACTINIA_URL='https://actinia.mundialis.de/latest'
 # Example script for actinia with import and export options
 # grass78 ~/grassdata/nc_spm_08/user1/
 import_export = """
-g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -p
 r.univar map=elev
 r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
@@ -341,7 +342,7 @@ def execute_script(script: str, mapset: str = None):
         line = line.strip()
         # Get all lines that have no comments
         if line and "#" not in line[:1]:
-            tokens = line.split()
+            tokens = shlex.split(line)
             commands.append(tokens)
 
     send_poll_commands(commands=commands, mapset=mapset)
@@ -527,11 +528,11 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
     Single command example:
 
-        ace g.list rast
+        ace g.list raster
 
     Single command example with location option:
 
-        ace --location nc_spm_08 g.list rast
+        ace --location nc_spm_08 g.list raster
 
     The following commands from a script will import a raster layer from an internet
     source as raster map *elev*, sets the computational region to the map and
@@ -539,7 +540,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
       \b
       # Import the web resource and set the region to the imported map
-      g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+      g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
       # Compute univariate statistics
       r.univar map=elev
       r.info elev
@@ -551,7 +552,7 @@ def main(script: str, version: bool, list_jobs: str, info_job: str,
 
         ace --script commands.sh
 
-    Run the script commands.sh in the location *switching* on the actinia server:
+    Run the script commands.sh in the location *latlong_wgs84* on the actinia server:
 
         ace --location latlong_wgs84 --script commands.sh
 

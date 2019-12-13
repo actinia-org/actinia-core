@@ -36,7 +36,7 @@ ${ace} --location nc_spm_08 --list-strds PERMANENT
 # Create some commands with import and export options
 cat << EOF > /tmp/commands.sh
 # Import the web resource and set the region to the imported map
-g.region raster=elev+https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
+g.region raster=elev@https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif -ap
 # Compute univariate statistics
 r.univar map=elev
 r.info elev
