@@ -1,66 +1,121 @@
-FROM mundialis/grass-py3-pdal:stable-alpine
+FROM mundialis/grass-py3-pdal:stable-alpine as grass
+FROM alpine:edge
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
 
-# PACKAGES VERSIONS
-ARG PYTHON_VERSION=3
+ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
+ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 
 USER root
 
 ENV BUILD_PACKAGES="\
-      gcc \
-      gdal \
-      gdal-dev \
-      geos \
-      geos-dev \
-      git \
-      libc-dev \
-      make \
-      postgresql \
-      postgresql-dev \
-      subversion \
-      maven \
-      openjdk8"
+    gcc \
+    geos-dev \
+    gdal-dev \
+    git \
+    jpeg-dev \
+    libc-dev \
+    linux-headers \
+    make \
+    postgresql-dev \
+    python3-dev \
+    subversion \
+    zlib-dev \
+    "
 
 ENV PACKAGES="\
-      gdal \
-      geos \
-      postgresql \
-      python3-dev"
+    cairo \
+    gdal \
+    # geos \
+    libmagic \
+    # postgresql \
+    proj-datumgrid \
+    proj-util \
+    python3 \
+    py3-scipy \
+    py3-gdal \
+    vim \
+    zstd \
+    zstd-libs \
+    "
 
-WORKDIR /src
+ENV ALPINE_TESTING_PACKAGES="\
+    pdal \
+    "
 
-ENV PYTHONBIN=python$PYTHON_VERSION
-
-RUN echo "Install Python";\
-    apk add --no-cache $PYTHONBIN && \
-#    $PYTHONBIN -m ensurepip && \
-#    rm -r /usr/lib/python*/ensurepip && \
-    pip$PYTHON_VERSION install --upgrade pip setuptools && \
-    if [ ! -e /usr/bin/pip ]; then ln -s pip$PYTHON_VERSION /usr/bin/pip ; fi && \
-    if [[ ! -e /usr/bin/python ]]; then ln -sf /usr/bin/$PYTHONBIN /usr/bin/python; fi && \
-    rm -r /root/.cache
-
-# Install minimalistic dependencies and tools
 RUN echo "Install minimalistic dependencies and tools";\
     apk update; \
+    apk add --no-cache $PACKAGES; \
     apk add --no-cache \
-            --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-            --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-            $PACKAGES; \
-    # Add packages just for the GRASS addon install process
-    apk add --no-cache \
-            --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-            --repository http://dl-cdn.alpinelinux.org/alpine/edge/main \
-            --virtual .build-deps $BUILD_PACKAGES; \
-    #
+      --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+      $ALPINE_TESTING_PACKAGES; \
+    apk add --no-cache --virtual .build-deps $BUILD_PACKAGES; \
     echo "Install step done"
 
-ENV LC_ALL "en_US.UTF-8"
-ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
+
+# GRASS GIS related setup
+COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
+COPY --from=grass /usr/local/grass* /usr/local/grass
+
+RUN pip3 install --upgrade pip
+RUN pip3 install six grass-session
+
+RUN ln -s /usr/local/grass /usr/local/grass7
+RUN ln -s /usr/local/grass `grass --config path`
+
+RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+    pdal --version && \
+    python3 --version
+
+
+# Install GRASS GIS addons
+RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
+COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
+
+
+# Install actinia-core
+COPY . /src/actinia_core
+WORKDIR /src/actinia_core
+RUN git checkout .
+RUN ln -s /actinia_core /root/actinia
+# # update build tools for creating wheel
+RUN pip3 install -r requirements-alpine.txt && python3 setup.py install
+# RUN python3 -m pip install --user --upgrade setuptools wheel
+RUN python3 setup.py sdist bdist_wheel
+
+
+# Install actinia-core plugins
+RUN git config --global http.sslVerify false
+
+# Install statistics plugin
+RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
+WORKDIR /src/actinia_statistic_plugin
+RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN python3 setup.py sdist bdist_wheel
+
+# Install satellite plugin
+RUN git clone https://github.com/mundialis/actinia_satellite_plugin.git /src/actinia_satellite_plugin
+WORKDIR /src/actinia_satellite_plugin
+RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN python3 setup.py sdist bdist_wheel
+
+# Install actinia-gdi plugin
+RUN git clone https://github.com/mundialis/actinia-gdi.git /src/actinia-gdi
+WORKDIR /src/actinia-gdi
+RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN python3 setup.py sdist bdist_wheel
+
+
+# Copy actinia config file and start scripts + set needed envs
+COPY docker/actinia-core/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core/start.sh /src/start.sh
+COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
+ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+ENV GISBASE ""
 
 # Create the database directories
 RUN mkdir -p /actinia_core/grassdb && \
@@ -71,72 +126,10 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/workspace/download_cache && \
     mkdir -p /actinia_core/userdata
 
-# Create generic GRASS GIS binary name regardless of version number
-RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
-# Create a generic link to GRASS GIS libs (simplifies actinia configuration)
-RUN ln -s `grass --config path` /usr/local/grass7
-# show installed version
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge
-
-# Install GRASS GIS addons
-WORKDIR /src
-# Install the d.rast.multi module to render several maps at once
-RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
-
-# install some GRASS GIS addons
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.out.png && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
-
-## install SNAPPY
-#ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk
-#ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
-#COPY docker/actinia-core/snap /src/snap
-#RUN sh /src/snap/install.sh
-
-# Install actinia-core
-
-COPY . /src/actinia_core
-
-# set link to match actinia default config (needed for tests)
-RUN ln -s /actinia_core /root/actinia
-
-WORKDIR /src/actinia_core
-RUN pip3 install -r requirements.txt && python3 setup.py install
-## TODO: fix tests
-#\
-#    && python3 setup.py test
-
-# Install actinia-core plugins
-RUN git config --global http.sslVerify false
-RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
-WORKDIR /src/actinia_statistic_plugin
-RUN pip3 install -r requirements.txt && python3 setup.py install
-## TODO: fix tests
-#\
-#    && python3 setup.py test
-
-# Reduce the image size
-RUN rm -rf /src/*; \
-    # remove build dependencies and any leftover apk cache
-    apk del --no-cache --purge .build-deps; \
-    rm -rf /var/cache/apk/*; \
-    rm -rf /root/.cache
-
-# Data directory
-WORKDIR /grassdb
 VOLUME /grassdb
 
-# Copy actinia config file and start scripts
-COPY docker/actinia-core/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core/start.sh /src/start.sh
-COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
-
-ENTRYPOINT ["/bin/bash"]
+ENTRYPOINT ["/bin/sh"]
 CMD ["/src/start.sh"]
-
-ENV GISBASE ""
 
 EXPOSE 8088
 EXPOSE 9191

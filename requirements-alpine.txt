@@ -1,0 +1,53 @@
+# Python3 requirements for actinia core and GRASS GIS
+
+boto3>=1.6.6
+docutils>=0.14
+Flask>=0.12.3
+Flask-HTTPAuth>=3.2.3
+Flask-RESTful>=0.3.6
+flask-restful-swagger-2
+Flask-Cors>=3.0.3
+fluent-logger>=0.9.4
+# geopandas
+google-cloud>=0.32.0
+google-cloud-bigquery>=0.28.0
+google-cloud-storage>=1.6.0
+gunicorn>=19.9.0
+numpy>=1.15.4
+# pandas
+passlib>=1.7.1
+ply>=3.11
+#pyproj>=1.9.6
+python-magic>=0.4.15
+Shapely
+Sphinx>=1.7.1
+redis>=2.10.6
+requests>=2.20.0
+rq>=0.10.0
+setuptools
+uWSGI>=2.0.17
+wheel
+
+# instead install packages py3-gdal py3-scipy
+# pygdal>=2.2.3.3
+# scipy>=0.17.0 (dependency)
+
+# not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
+# torch
+# torchvision
+
+# currently broken
+# scikit-learn
+
+# TODO: test because of major updates:
+# Flask-1.1.1
+# google_cloud_bigquery-1.23.0
+# Sphinx-2.2.2
+# redis-3.3.11
+# rq-1.1.0
+
+
+# apk add py3-numpy-dev (1.17.4-r1) (for pandas)
+# apk add build-base (for pandas)
+
+# apk add py3-proj
