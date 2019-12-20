@@ -1,4 +1,4 @@
-FROM mundialis/grass-py3-pdal:stable-ubuntu
+FROM mundialis/grass-py3-pdal:stable-ubuntu19
 
 # based on GRASS GIS releasebranch_7_8 (grass78)
 
