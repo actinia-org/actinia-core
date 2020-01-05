@@ -1,4 +1,4 @@
-FROM mundialis/grass-py3-pdal:latest-ubuntu
+FROM mundialis/grass-py3-pdal:latest-ubuntu19
 
 # based on GRASS GIS master (grass79)
 
@@ -57,8 +57,10 @@ RUN mkdir -p /actinia_core/grassdb && \
 RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
 RUN ln -s `grass --config path` /usr/local/grass7
-# show installed version
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge
+# show installed versions
+RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+    pdal --version && \
+    python3 --version
 
 # Install GRASS GIS addons
 WORKDIR /src
