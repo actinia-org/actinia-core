@@ -1,3 +1,17 @@
+# Version matrix
+
+| docker image  | actinia-core                             | actinia-core-latest                    | actinia-core-dev       | actinia-core-prod           |
+|---------------|------------------------------------------|----------------------------------------|------------------------|-----------------------------|
+| base image    | mundialis/grass-py3-pdal:stable-ubuntu19 | mundialis/grass-py3-pdal:latest-ubuntu | mundialis/actinia-core | mundialis/actinia-core:0.99 |
+| Linux version | Ubuntu 19.01                             | Ubuntu 18:04                           |                        |                             |
+| GRASS GIS     | 7.8.x                                    | 7.9.x                                  | ?                      | ?                           |
+| GDAL          | 2.2.3.3                                  | 2.4.2                                  |                        |                             |
+| PROJ          | 4.9.3                                    | 5.2.0                                  |                        |                             |
+| PDAL          | 1.8.0                                    | 1.9.0                                  |                        |                             |
+
+Last update: 5 Jan 2020
+ 
+
 # Requirements
 
  * docker
