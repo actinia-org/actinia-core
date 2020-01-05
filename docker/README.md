@@ -8,9 +8,9 @@
 | GDAL          | 2.2.3.3                                  | 2.4.2                                    |                        |                             |
 | PROJ          | 4.9.3                                    | 5.2.0                                    |                        |                             |
 | PDAL          | 1.8.0                                    | 1.9.1                                    |                        |                             |
+| Python        | 3.6.9                                    | 3.7                                      |                        |                             |
 
 Latest update: 5 Jan 2020
- 
 
 # Requirements
 
