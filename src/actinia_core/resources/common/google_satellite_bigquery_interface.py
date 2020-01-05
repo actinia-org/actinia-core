@@ -85,7 +85,7 @@ class GoogleSatelliteBigQueryInterface(object):
         os.environ["GOOGLE_CLOUD_PROJECT"] = self.config.GOOGLE_CLOUD_PROJECT
 
         self.sentinel_bands = ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
-                                         "B08", "B8A", "B09" "B10", "B11", "B12"]
+                                         "B08", "B8A", "B09", "B10", "B11", "B12"]
 
         self.landsat_scene_bands = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
                                     "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
