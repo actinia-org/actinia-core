@@ -64,15 +64,12 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge
 WORKDIR /src
 # Install the d.rast.multi module to render several maps at once
 RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
 
 # Install selected GRASS GIS project addons. Do with -s, so it can be used globally
 # https://grass.osgeo.org/grass79/manuals/g.extension.html
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.mapcalc.tiled && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
+COPY docker/actinia-core-latest/grass_addons_list.csv /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
 # install SNAPPY
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
