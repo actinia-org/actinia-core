@@ -1,6 +1,7 @@
 docker
 !docker/actinia-core/snap
 !docker/actinia-core/grass_addons_list.csv
+!docker/actinia-core-latest/grass_addons_list.csv
 !docker/actinia-core/actinia.cfg
 !docker/actinia-core/start.sh
 !docker/actinia-core/start-dev.sh
