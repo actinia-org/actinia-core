@@ -65,7 +65,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 # Install selected GRASS GIS addons. Done with -s, so it can be used globally
 # https://grass.osgeo.org/grass79/manuals/g.extension.html
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
-WORKDIR /src/actinia_core
+WORKDIR /src
 COPY docker/actinia-core-latest/grass_addons_list.csv /src/grass_addons_list.csv
 RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
