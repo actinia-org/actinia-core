@@ -27,6 +27,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3 \
     python3-dateutil \
     python3-dev \
+    python3-gdal \
     python3-magic \
     python3-pip \
     python3-ply \
@@ -39,9 +40,6 @@ RUN apt-get update && apt-get upgrade -y && \
     zip \
     && apt-get autoremove -y \
     && apt-get clean -y
-
-# wrongly linked against gdal 2.2.2; using pygdal 2.2.3.3 in requirements
-#    python3-gdal \
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
@@ -64,14 +62,10 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# Install GRASS GIS addons
-WORKDIR /src
-# Install the d.rast.multi module to render several maps at once
-RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-
-# Install selected GRASS GIS project addons. Do with -s, so it can be used globally
+# Install selected GRASS GIS addons. Done with -s, so it can be used globally
 # https://grass.osgeo.org/grass79/manuals/g.extension.html
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
+WORKDIR /src
 COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
 RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
@@ -101,7 +95,7 @@ RUN python3 setup.py sdist bdist_wheel
 
 ## install (Cython must be installed before requirements.txt)
 #RUN pip3 install Cython cython-setuptools setuptools_cython
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install -r requirements_ubuntu19.txt && python3 setup.py install
 ## TODO: fix tests
 #\
 #    && python3 setup.py test
