@@ -120,7 +120,7 @@ class InputParameter(IOParameterBase):
                 'type': 'string',
                 'description': 'The band of the sentinel2 scene that should be imported',
                 'enum': ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
-                         "B08", "B8A", "B09" "B10", "B11", "B12"]
+                         "B08", "B8A", "B09", "B10", "B11", "B12"]
             },
             'landsat_atcor': {
                 'type': 'string',

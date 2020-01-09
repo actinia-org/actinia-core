@@ -1,4 +1,4 @@
-FROM mundialis/grass-py3-pdal:latest-ubuntu
+FROM mundialis/grass-py3-pdal:latest-ubuntu19
 
 # based on GRASS GIS master (grass79)
 
@@ -27,6 +27,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3 \
     python3-dateutil \
     python3-dev \
+    python3-gdal \
     python3-magic \
     python3-pip \
     python3-ply \
@@ -39,9 +40,6 @@ RUN apt-get update && apt-get upgrade -y && \
     zip \
     && apt-get autoremove -y \
     && apt-get clean -y
-
-# wrongly linked against gdal 2.2.2; using pygdal 2.2.3.3 in requirements
-#    python3-gdal \
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
@@ -59,19 +57,17 @@ RUN mkdir -p /actinia_core/grassdb && \
 RUN ln -sf `find /usr/local/bin -name "grass??" | sort | tail -n 1` /usr/local/bin/grass
 # Create a generic link to GRASS GIS libs (simplifies actinia configuration)
 RUN ln -s `grass --config path` /usr/local/grass7
-# show installed version
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge
+# show installed versions
+RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+    pdal --version && \
+    python3 --version
 
-# Install GRASS GIS addons
+# Install selected GRASS GIS addons. Done with -s, so it can be used globally
+# https://grass.osgeo.org/grass79/manuals/g.extension.html
+# -s uses $GISBASE instead of $GRASS_ADDON_BASE
 WORKDIR /src
-# Install the d.rast.multi module to render several maps at once
-RUN git clone https://huhabla@bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=d.rast.multi url=/src/d.rast.multi
-
-# install some GRASS GIS addons
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=i.cutlines && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld && \
-    grass --tmp-location EPSG:4326 --exec g.extension -s extension=v.centerpoint
+COPY docker/actinia-core-latest/grass_addons_list.csv /src/grass_addons_list.csv
+RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
 # install SNAPPY
 # SNAP wants the current folder '.' included in LD_LIBRARY_PATH
@@ -79,7 +75,7 @@ ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-COPY docker/actinia-core/snap /src/snap
+COPY docker/actinia-core-latest/snap /src/snap
 RUN bash /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
 
@@ -99,12 +95,13 @@ RUN python3 setup.py sdist bdist_wheel
 
 ## install (Cython must be installed before requirements.txt)
 #RUN pip3 install Cython cython-setuptools setuptools_cython
-RUN pip3 install -r requirements.txt && python3 setup.py install
+RUN pip3 install -r requirements_ubuntu19.txt && python3 setup.py install
 ## TODO: fix tests
 #\
 #    && python3 setup.py test
 
 # Install actinia-core plugins
+WORKDIR /src
 RUN git config --global http.sslVerify false
 RUN git clone https://github.com/mundialis/actinia_statistic_plugin.git /src/actinia_statistic_plugin
 WORKDIR /src/actinia_statistic_plugin
@@ -123,9 +120,9 @@ WORKDIR /grassdb
 VOLUME /grassdb
 
 # Copy actinia config file and start scripts
-COPY docker/actinia-core/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core/start.sh /src/start.sh
-COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
+COPY docker/actinia-core-latest/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core-latest/start.sh /src/start.sh
+COPY docker/actinia-core-latest/start-dev.sh /src/start-dev.sh
 
 # Set actinia config file for testing
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia

@@ -1,9 +1,16 @@
 docker
 !docker/actinia-core/snap
-!docker/actinia-core/grass_addons_list.csv
 !docker/actinia-core/actinia.cfg
+!docker/actinia-core/grass_addons_list.csv
 !docker/actinia-core/start.sh
 !docker/actinia-core/start-dev.sh
+!docker/actinia-core-latest/snap
+!docker/actinia-core-latest/actinia.cfg
+!docker/actinia-core-latest/grass_addons_list.csv
+!docker/actinia-core-dev/actinia.cfg
+!docker/actinia-core-prod/actinia.cfg
+!docker/actinia-core-latest/start.sh
+!docker/actinia-core-latest/start-dev.sh
 .github
 .travis
 .travis.yml
