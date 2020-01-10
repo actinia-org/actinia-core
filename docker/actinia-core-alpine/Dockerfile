@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:latest as snap
-FROM alpine:edge as preparation
+FROM alpine:edge as common
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -12,35 +12,7 @@ ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 
 USER root
 
-RUN apk update && apk add gcc geos-dev git linux-headers musl-dev python3-dev
-RUN pip3 install --upgrade pip pep517 wheel
-
-
-FROM preparation as actinia_core_build
-COPY . /src/actinia_core
-WORKDIR /src/actinia_core
-RUN git checkout .
-COPY requirements-alpine.txt /src/requirements-alpine.txt
-RUN python3 setup.py sdist bdist_wheel -d /build && \
-    pip3 wheel -r requirements-alpine.txt -w /build
-# RUN python3 -m pep517.build --out-dir /build . && \
-
-
-FROM preparation
-
 ENV BUILD_PACKAGES="\
-    # jpeg-dev \
-    # libc-dev \
-    # sqlite-dev \
-    # zlib-dev \
-    "
-
-ENV ALPINE_TESTING_PACKAGES="\
-    pdal \
-    "
-
-# BLOCK 0 (above in build image)
-ENV ACTINIA_CORE_BUILD_PACKAGES="\
     gcc \
     geos-dev \
     git \
@@ -48,23 +20,71 @@ ENV ACTINIA_CORE_BUILD_PACKAGES="\
     musl-dev \
     python3-dev \
     "
+ENV REQUIREMENTS_WHEEL_PACKAGES="\
+    cython \
+    py3-gdal \
+    py3-scipy \
+    # following for geopandas
+    build-base \
+    gdal-dev \
+    musl-dev \
+    proj-dev \
+    proj-util \
+    python3-dev \
+    py3-numpy-dev \
+    "
 
-# BLOCK 1
+RUN apk update && apk add $BUILD_PACKAGES $REQUIREMENTS_WHEEL_PACKAGES
+RUN pip3 install --upgrade pip pep517 wheel
+
+
+FROM common as build
+
+COPY . /src/actinia_core
+
+WORKDIR /src/actinia_core
+RUN git checkout .
+COPY requirements-alpine.txt requirements-alpine.txt
+# scipy installs but wheel building fails. Helping packages were
+# RUN add openblas openblas-dev lapack lapack-dev gfortran
+RUN sed -i 's+scikit-learn+#scikit-learn+g' requirements-alpine.txt
+RUN python3 setup.py sdist bdist_wheel -d /build && \
+    pip3 wheel -r requirements-alpine.txt -w /build
+# RUN python3 -m pep517.build --out-dir /build . && \
+
+
+FROM common as actinia
+
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
     openjdk8 \
     "
 
-# BLOCK 2
+# Keep basic packages for simple debugging
+ENV GRASS_RUNTIME_BASIC_PACKAGES="gdal python3 zstd-libs"
+ENV GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES="pdal"
 ENV GRASS_RUNTIME_PACKAGES="\
-    gdal-dev \
-    proj-dev \
+    cairo \
+    fftw \
+    flex \
+    gdal \
+    geos \
+    libpng \
+    openjpeg \
+    postgresql \
+    proj-datumgrid \
+    proj-util \
     python3 \
+    py3-dateutil \
+    py3-numpy \
+    py3-pillow \
+    py3-ply \
+    py3-six \
+    sqlite \
+    sqlite-libs \
     zstd-libs \
     "
-
-# BLOCK 3
-ENV GRASS_ADDONS_SETUP_PACKAGES="\
+ENV GRASS_ADDONS_BUILD_PACKAGES="\
     build-base \
     cairo \
     fftw-dev \
@@ -77,55 +97,33 @@ ENV GRASS_ADDONS_SETUP_PACKAGES="\
     subversion \
     "
 
-# BLOCK 4
 ENV ACTINIA_PLUGIN_INSTALL_PACKAGES="\
     curl \
     jq \
     python3-dev \
     "
 
-# BLOCK 5
-ENV ACTINIA_REQUIREMENTS_INSTALL_PACKAGES="\
-    cython \
-    py3-gdal \
-    py3-scipy \
-    "
-
-# BLOCK 6
-ENV RUNTIME_PACKAGES="\
-    # gdal \
-    # libmagic \
-    # proj-datumgrid \
-    proj-util \
-    vim \
-    # zstd \
-    "
-
-RUN echo "Install minimalistic dependencies and tools";\
-    apk update; \
+RUN apk update; \
     apk add --no-cache \
-      --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-      $ALPINE_TESTING_PACKAGES; \
+        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+        $GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES; \
     apk add --no-cache \
         $SNAPPY_RUNTIME_PACKAGES \
         $GRASS_RUNTIME_PACKAGES \
-        $GRASS_ADDONS_SETUP_PACKAGES \
-        $ACTINIA_PLUGIN_INSTALL_PACKAGES \
-        $ACTINIA_REQUIREMENTS_INSTALL_PACKAGES \
-        $RUNTIME_PACKAGES; \
-    # apk add --no-cache --virtual .build-deps $BUILD_PACKAGES; \
-    echo "Install step done"
+        $GRASS_ADDONS_BUILD_PACKAGES \
+        $ACTINIA_PLUGIN_INSTALL_PACKAGES
 
-# BLOCK 1 - ESA SNAP related setup
+# ESA SNAP SETUP
 ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 COPY --from=snap /root/.snap /root/.snap
 COPY --from=snap /usr/local/snap /usr/local/snap
 RUN (cd /root/.snap/snap-python/snappy && python3 setup.py install)
 RUN /usr/bin/python3 -c 'from snappy import ProductIO'
+RUN /usr/bin/python3 /root/.snap/about.py
 
-# BLOCK 2 - GRASS GIS related setup
+# GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
-COPY --from=grass /usr/local/grass* /usr/local/grass
+COPY --from=grass /usr/local/grass* /usr/local/grass/
 RUN pip3 install --upgrade pip six grass-session
 RUN ln -s /usr/local/grass /usr/local/grass7
 RUN ln -s /usr/local/grass `grass --config path`
@@ -133,17 +131,18 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# BLOCK 3 - Install GRASS GIS addons
+# GRASS GIS addons BUILD
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
 COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
+# TODO: Installation of some addons is currently broken. To fix all addons,
+# either dirty hack with sed or new patch is necessary
+# COPY docker/actinia-core-alpine/patch.sh /build/patch.sh
+# RUN sh /build/patch.sh
 RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
-# broken:
-# i.cutlines,
-# r.learn.ml,
-# v.strds.stats,
-# t.rast.sample,https://github.com/mundialis/t.rast.sample
 
-# BLOCK 4 - Get actinia-core plugins
+# actinia-core and plugins BUILD
+# Currently, ADD always breaks cache, as "download_count" increases every time
+# ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
 # Get statistics plugin
 RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest > resp.json && \
@@ -154,15 +153,17 @@ RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/release
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Get actinia-gdi plugin
-RUN curl https://api.github.com/repos/mmacata/actinia-gdi/releases/latest > resp.json && \
+RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/latest > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Install actinia-core plugins
-COPY --from=actinia_core_build /build/*.whl /build/
+# Install actinia-core and plugins
+COPY --from=build /build/*.whl /build/
 RUN pip3 install /build/*
+# See in build stage why we need this here
+RUN pip3 install scikit-learn
 
-# BLOCK 6 - Install actinia_core requirements
-# Duplicate as they are wheels in /build folder, but requirements are necessary.
+# Duplicate install actinia_core requirements. They are already wheels in
+# /build folder, keep to check match of required packages
 COPY requirements-alpine.txt /src/requirements-alpine.txt
 RUN pip3 install -r /src/requirements-alpine.txt
 

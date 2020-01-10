@@ -13,14 +13,10 @@ google-cloud>=0.32.0
 google-cloud-bigquery>=0.28.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
-numpy>=1.15.4
-pandas
 passlib>=1.7.1
 ply>=3.11
-pyproj>=1.9.6
 python-magic>=0.4.15
 scikit-learn
-Shapely
 Sphinx>=1.7.1
 redis>=2.10.6
 requests>=2.20.0
@@ -32,6 +28,13 @@ wheel
 # not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
 # torch
 # torchvision
+
+# geopandas installs the following packages. Outcommented to save build time,
+# we rely on geopandas. (numpy, pandas, pyproj, Shapely)
+# numpy>=1.15.4
+# pandas
+# pyproj>=1.9.6
+# Shapely
 
 # TODO: test because of major updates:
 # Flask-1.1.1 #https://dormousehole.readthedocs.io/en/stable/CHANGES.html
