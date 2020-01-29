@@ -4,7 +4,7 @@ A related docker image created and available for download from here:
 
 https://hub.docker.com/r/mundialis/actinia-core
 
-First it creates to images with packages and dependencies, from them the final image is created:
+First it creates a build image and a runtime image with packages and dependencies, from them the final image is created:
 
 __Build with__:
 

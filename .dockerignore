@@ -11,6 +11,9 @@ docker
 !docker/actinia-core-prod/actinia.cfg
 !docker/actinia-core-latest/start.sh
 !docker/actinia-core-latest/start-dev.sh
+!docker/actinia-core-alpine/actinia.cfg
+!docker/actinia-core-alpine/start.sh
+!docker/actinia-core-alpine/start-dev.sh
 .github
 .travis
 .travis.yml

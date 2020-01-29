@@ -54,6 +54,10 @@ COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
 # either dirty hack with sed or new patch is necessary
 # COPY docker/actinia-core-alpine/patch.sh /build/patch.sh
 # RUN sh /build/patch.sh
+RUN apk add curl
+RUN curl -L https://github.com/mmacata/alpine-python381-patch/releases/download/0.0.0/python3-3.8.1-r1.apk > /src/python3-3.8.1-r1.apk
+RUN apk add --allow-untrusted /src/python3-3.8.1-r1.apk
+
 RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
 # actinia-core and plugins BUILD
@@ -74,6 +78,7 @@ RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/latest > re
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
 COPY --from=build /build/*.whl /build/
+RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
 RUN pip3 install scikit-learn
@@ -84,9 +89,9 @@ COPY requirements-alpine.txt /src/requirements-alpine.txt
 RUN pip3 install -r /src/requirements-alpine.txt
 
 # Copy actinia config file and start scripts + set needed envs
-COPY docker/actinia-core/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core/start.sh /src/start.sh
-COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
+COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core-alpine/start.sh /src/start.sh
+COPY docker/actinia-core-alpine/start-dev.sh /src/start-dev.sh
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
 ENV GISBASE ""
 
@@ -101,6 +106,7 @@ RUN mkdir -p /actinia_core/grassdb && \
     ln -s /actinia_core /root/actinia
 
 VOLUME /grassdb
+WORKDIR /src/actinia_core
 
 ENTRYPOINT ["/bin/sh"]
 CMD ["/src/start.sh"]
