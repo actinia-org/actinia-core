@@ -1,5 +1,5 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
-FROM mundialis/esa-snap:latest as snap
+FROM mundialis/esa-snap:7.0 as snap
 FROM mundialis/actinia-core:alpine-build-pkgs as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
