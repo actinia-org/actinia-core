@@ -56,10 +56,14 @@ __See below for production deployment__.
 
 For actinia_core development, run and enter the running container (in a separate terminal):
 ```
-docker-compose run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
+docker-compose run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia_core:/src/actinia_core actinia-core
 
-docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
+docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia/actinia_core:/src/actinia_core actinia-core
+
+# To avoid cache problems, remove the packaged actinia_core
+pip3 uninstall actinia_core
 ```
+Mind the git checkout during build time - even though actinia_core is copied from local sources to the Dockerfile, a git checkout will overwrite changes. During development it is necessary to mount the whole sourcecode.
 
 Inside the container, you can run GRASS GIS with:
 ```

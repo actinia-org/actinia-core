@@ -1,0 +1,64 @@
+#FROM mundialis/actinia-core:alpine-build-pkgs
+FROM actinia-core:alpine-build-pkgs
+
+ENV SNAPPY_RUNTIME_PACKAGES="\
+    python3 \
+    openjdk8 \
+    "
+
+# Keep basic packages for simple debugging
+ENV GRASS_RUNTIME_BASIC_PACKAGES="gdal python3 zstd-libs"
+ENV GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES="pdal"
+ENV GRASS_RUNTIME_PACKAGES="\
+    cairo \
+    fftw \
+    flex \
+    gdal \
+    geos \
+    libpng \
+    openjpeg \
+    postgresql \
+    proj-datumgrid \
+    proj-util \
+    python3 \
+    py3-dateutil \
+    py3-numpy \
+    py3-pillow \
+    py3-ply \
+    py3-six \
+    sqlite \
+    sqlite-libs \
+    zstd-libs \
+    "
+ENV GRASS_ADDONS_BUILD_PACKAGES="\
+    build-base \
+    cairo \
+    fftw-dev \
+    gcc \
+    geos-dev \
+    git \
+    make \
+    postgresql-dev \
+    py3-numpy-dev \
+    subversion \
+    "
+
+ENV ACTINIA_PLUGIN_INSTALL_PACKAGES="\
+    curl \
+    jq \
+    python3-dev \
+    "
+
+RUN apk update; \
+    apk add --no-cache \
+        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
+        $GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES; \
+    apk add --no-cache \
+        $SNAPPY_RUNTIME_PACKAGES \
+        $GRASS_RUNTIME_PACKAGES \
+        $GRASS_ADDONS_BUILD_PACKAGES \
+        $ACTINIA_PLUGIN_INSTALL_PACKAGES
+
+# Duplicated in final images, only here to safe time
+COPY requirements-alpine.txt /src/requirements-alpine.txt
+RUN pip3 install -r /src/requirements-alpine.txt
