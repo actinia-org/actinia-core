@@ -59,16 +59,16 @@ RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=
 # Currently, ADD always breaks cache, as "download_count" increases every time
 # ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
-# Get statistics plugin
-RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest > resp.json && \
+# Get statistics plugin (22648768 = 0.0.1)
+RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/22648768 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get satellite plugin
-RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/latest > resp.json && \
+# Get satellite plugin (22686533 = 0.0.1)
+RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/22686533 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-gdi plugin
-RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/latest > resp.json && \
+# Get actinia-gdi plugin (23445806 = 0.1.5)
+RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/23445806 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins

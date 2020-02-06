@@ -42,6 +42,7 @@ cover/*
 MANIFEST
 
 # docker
+dev
 docker/redis_data/dump.rdb
 !docker/actinia-core/actinia.cfg
 !docker/actinia-core-latest/actinia.cfg
