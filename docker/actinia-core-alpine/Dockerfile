@@ -47,7 +47,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 
 # GRASS GIS addons BUILD
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
-COPY docker/actinia-core/grass_addons_list.csv /src/grass_addons_list.csv
+COPY docker/grass_addons_list.csv /src/grass_addons_list.csv
 # TODO: remove patch when python 3.8.2 is here
 RUN apk add curl
 RUN curl -L https://github.com/mmacata/alpine-python381-patch/releases/download/0.0.0/python3-3.8.1-r1.apk > /src/python3-3.8.1-r1.apk
