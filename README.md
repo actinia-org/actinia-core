@@ -40,25 +40,25 @@ Please see the `docker/` subfolder for details.
 * List all locations that are available in the actinia persistent database:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v1/locations"
 ```
 
 * List all mapsets in the location latlong_wgs84:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets"
 ```
 
 * List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds"
 ```
 
 * List all raster map layers of the STRDS:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds/ndvi_16_5600m/raster_layers"
 ```
 
 ### Landsat and Sentinel-2 NDVI computation
@@ -66,13 +66,13 @@ curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets
 * Compute the NDVI of the top of athmosphere (TOAR) corrected Landsat4 scene LC80440342016259LGN00:
 
 ```bash
-curl -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 ```
 
 * NDVI computation of Sentinel-2A scene S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
 
 ```bash
-curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" -H "authorization: Basic …"
+curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
 ```
 
 The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
@@ -83,5 +83,5 @@ To see a simple **list of endpoints** (and more), consult the "paths" section in
 
 ```bash
 # sudo npm install -g json
-curl -X GET https://actinia.mundialis.de/api/v1/swagger.json | json paths | json -ka
+curl -u 'demouser:gu3st!pa55w0rd' -X GET https://actinia.mundialis.de/api/v1/swagger.json | json paths | json -ka
 ```

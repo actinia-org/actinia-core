@@ -51,7 +51,7 @@ class AWSSentinel2AInterface(object):
         self.config = config
 
         self.sentinel_bands = ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
-                               "B08", "B8A", "B09" "B10", "B11", "B12"]
+                               "B08", "B8A", "B09", "B10", "B11", "B12"]
 
 
     def get_sentinel_urls(self, product_ids, bands=["B04", "B08"]):

@@ -1,3 +1,18 @@
+# actinia version matrix
+
+| docker image  | actinia-core                             | actinia-core-latest                      | actinia-core-dev       | actinia-core-prod           |
+|---------------|------------------------------------------|------------------------------------------|------------------------|-----------------------------|
+| base image    | mundialis/grass-py3-pdal:stable-ubuntu19 | mundialis/grass-py3-pdal:latest-ubuntu19 | mundialis/actinia-core | mundialis/actinia-core:0.99 |
+| [dockerhub tag](https://hub.docker.com/repository/docker/mundialis/actinia-core/tags) | mundialis/actinia:stable | mundialis/actinia:latest |      |       |
+| Linux version | Ubuntu 19.10                             | Ubuntu 19.10                             |                        |                             |
+| GRASS GIS     | 7.8.x                                    | 7.9.x                                    | ?                      | ?                           |
+| GDAL          | 2.4.2                                    | 2.4.2                                    |                        |                             |
+| PROJ          | 5.2.0                                    | 5.2.0                                    |                        |                             |
+| PDAL          | 1.9.1                                    | 1.9.1                                    |                        |                             |
+| Python        | 3.7.5                                    | 3.7.5                                    |                        |                             |
+
+Latest update: 7 Jan 2020
+
 # Requirements
 
  * docker
@@ -22,7 +37,7 @@ In this directory are the needed docker-compose scripts available.
 To build and deploy actinia, run
 
 ```
-docker-compose build
+docker-compose build --pull
 
 # Note: adding -d starts the containers in the background and leaves them
 #       running; without docker-compose will show the logging in the terminal:
@@ -41,10 +56,14 @@ __See below for production deployment__.
 
 For actinia_core development, run and enter the running container (in a separate terminal):
 ```
-docker-compose run --rm --entrypoint /bin/bash -v $HOME/repos/actinia_core/src:/src/actinia_core/src actinia-core
+docker-compose run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia_core:/src/actinia_core actinia-core
 
-docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
+docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia/actinia_core:/src/actinia_core actinia-core
+
+# To avoid cache problems, remove the packaged actinia_core
+pip3 uninstall actinia_core
 ```
+Mind the git checkout during build time - even though actinia_core is copied from local sources to the Dockerfile, a git checkout will overwrite changes. During development it is necessary to mount the whole sourcecode.
 
 Inside the container, you can run GRASS GIS with:
 ```
@@ -71,7 +90,7 @@ python3 setup.py install
 bash /src/start-dev.sh
 
 # python3 -m actinia_core.main
-gunicorn -b 0.0.0.0:8088 -w 1 actinia_core.main:flask_app
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 
 ```
 If you have problems with cache, run

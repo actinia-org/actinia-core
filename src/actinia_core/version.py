@@ -35,6 +35,7 @@ __email__ = "soerengebbert@googlemail.com"
 from flask import make_response, jsonify
 from .resources.common.app import flask_app, API_VERSION, URL_PREFIX
 from .resources.common.config import global_config
+from . import __version__
 
 # Return the version of Actinia Core as REST API call
 @flask_app.route(URL_PREFIX + '/version')
@@ -44,5 +45,10 @@ def version():
     Returns: Response
 
     """
-    info = {"version":API_VERSION, "plugins":",".join(global_config.PLUGINS)}
+    info = {"version":__version__, "plugins":",".join(global_config.PLUGINS)}
+
+    if 'actinia_gdi' in global_config.PLUGINS:
+        from actinia_gdi import __version__ as actinia_gdi_version
+        info['plugin_versions'] = {'actinia_gdi': actinia_gdi_version}
+
     return make_response(jsonify(info), 200)

@@ -3,13 +3,8 @@ services:
 
   actinia-core:
     build:
-      context: actinia-core/
-      args:
-        - SOURCE_GIT_URL=https://github.com
-        - SOURCE_GIT_REMOTE=mundialis
-        - SOURCE_GIT_REPO=actinia_core
-        - SOURCE_GIT_TYPE=heads
-        - SOURCE_GIT_REF=master
+      context: ./..
+      dockerfile: docker/actinia-core/Dockerfile
     image: actinia-core:latest
     volumes:
       - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z

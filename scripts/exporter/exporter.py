@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-#
+
 ############################################################################
 #
 # MODULE:       Actinia exporter
+#
 # AUTHOR(S):    Soeren Gebbert
 #
 # PURPOSE:      Facilitates creation of raster MASK
 #
-# COPYRIGHT:    (C) 2018 by  Sören Gebbert and mundialis GmbH & Co. KG
+# COPYRIGHT:    (C) 2018-2019 by Sören Gebbert and mundialis GmbH & Co. KG
 #
 #               This program is free software under the GNU General Public
 #               License (>=v3). Read the file COPYING that comes with GRASS
@@ -16,10 +17,11 @@
 #############################################################################
 
 #%module
-#% description: Actinia exporter module
+#% description: Actinia exporter module supporting raster and vector data.
+#% keyword: actinia
+#% keyword: export
 #% keyword: raster
 #% keyword: vector
-#% keyword: actinia
 #% overwrite: no
 #%end
 #%option G_OPT_R_OUTPUT
@@ -30,7 +32,7 @@
 #%end
 #%option G_OPT_V_OUTPUT
 #% key: vector
-#% label: Name of vector map to be exported in actinia
+#% label: Name of vector map to be exported by actinia
 #% required: NO
 #% guisection: Vector
 #%end

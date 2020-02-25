@@ -15,13 +15,18 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations
 
 # Create a new location based on an EPSG code
-# curl -d "epsg=4326" -X POST -i ${actinia}/locations/latlong_wgs84_new # BUG
+echo '{
+  "epsg": "4326"
+}' > /tmp/pc_location_epsg4326.json
+
+curl ${AUTH} -H "Content-Type: application/json" -X POST "${actinia}/api/v1/locations/latlong_wgs84_new" -d @/tmp/pc_location_epsg4326.json
 
 # Check if the location is listed
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations
+curl ${AUTH} -X GET ${actinia}/api/v1/locations
 
 # Delete the new location
-# curl -X DELETE -i ${actinia}/locations/latlong_wgs84_new # BUG
+curl ${AUTH} -X DELETE ${actinia}/api/v1/locations/latlong_wgs84_new
+rm -f /tmp/pc_location_epsg4326.json
 
 # Get information of the NC location
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/info
