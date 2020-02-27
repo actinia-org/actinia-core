@@ -60,8 +60,10 @@ docker-compose run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/acti
 
 docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia/actinia_core:/src/actinia_core actinia-core
 
+docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
+
 # To avoid cache problems, remove the packaged actinia_core
-pip3 uninstall actinia_core
+pip3 uninstall actinia_core -y
 ```
 Mind the git checkout during build time - even though actinia_core is copied from local sources to the Dockerfile, a git checkout will overwrite changes. During development it is necessary to mount the whole sourcecode.
 
@@ -87,7 +89,7 @@ Alternatively, run the actinia_core server with your mounted source code inside 
 cd /src/actinia_core
 python3 setup.py install
 
-bash /src/start-dev.sh
+sh /src/start-dev.sh
 
 # python3 -m actinia_core.main
 gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
