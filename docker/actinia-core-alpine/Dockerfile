@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
-FROM mundialis/esa-snap:7.0 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs as build
+FROM mundialis/esa-snap:7.0v1 as snap
+FROM mundialis/actinia-core:alpine-build-pkgs_v2 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -18,7 +18,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs as actinia
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v2 as actinia
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -48,10 +48,6 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
 # GRASS GIS addons BUILD
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
 COPY docker/grass_addons_list.csv /src/grass_addons_list.csv
-# TODO: remove patch when python 3.8.2 is here
-RUN apk add curl
-RUN curl -L https://github.com/mmacata/alpine-python381-patch/releases/download/0.0.0/python3-3.8.1-r1.apk > /src/python3-3.8.1-r1.apk
-RUN apk add --allow-untrusted /src/python3-3.8.1-r1.apk
 
 RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
 
