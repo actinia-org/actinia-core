@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.11
 
 ENV BUILD_PACKAGES="\
     gcc \
@@ -23,4 +23,5 @@ ENV REQUIREMENTS_WHEEL_PACKAGES="\
     "
 
 RUN apk update && apk add $BUILD_PACKAGES $REQUIREMENTS_WHEEL_PACKAGES
+RUN python3 -m ensurepip && pip3 install --upgrade pip
 RUN pip3 install --upgrade pip pep517 wheel
