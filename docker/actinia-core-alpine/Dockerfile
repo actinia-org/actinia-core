@@ -46,6 +46,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     python3 --version
 
 # GRASS GIS addons BUILD
+# git clone various openEO plugins (local checkout due to non-standard repo structure)
 RUN git clone https://github.com/mundialis/openeo-addons.git /src/openeo-addons
 COPY docker/grass_addons_list.csv /src/grass_addons_list.csv
 
