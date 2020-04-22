@@ -212,17 +212,17 @@ class Sentinel2Processing(object):
             try:
                 self.query_result = self.query_interface.get_sentinel_urls([self.product_id,], self.bands)
             except Exception as e:
-                raise AsyncProcessError("Error in querying Sentinel 2A product <%s> "
-                                        "in AWS Sentinel 2A database. "
+                raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
+                                        "in AWS Sentinel-2 database. "
                                         "Error: %s"%(self.product_id, str(e)))
 
             if not self.query_result:
-                raise AsyncProcessError("Unable to find Sentinel 2A product <%s> "
-                                        "in AWS Sentinel 2A database"%self.product_id)
+                raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
+                                        "in AWS Sentinel-2 database"%self.product_id)
 
         if self.product_id not in self.query_result:
-            raise AsyncProcessError("Unable to find Sentinel 2A product <%s> "
-                                    "in AWS Sentinel 2A database"%self.product_id)
+            raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
+                                    "in AWS Sentinel-2 database"%self.product_id)
 
         # Switch into the tempfile directory
         os.chdir(self.temp_file_path)

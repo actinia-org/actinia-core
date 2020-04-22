@@ -11,7 +11,7 @@ Sentinel-2A scenes in an ephemeral databases. The computational results of ephem
 are available via object storage as GeoTIFF files.
 
 The actinia service consists of the *actinia core* that provides the basic but sophisticated processing service
-and *actinia plugins* that provide problem specific services like Sentinel 2A and Landsat NDVI computation,
+and *actinia plugins* that provide problem specific services like Sentinel-2 and Landsat NDVI computation,
 spatio-temporal statistical analysis and many more.
 
 To use actinia the user must have an understanding of the GRASS GIS concept [#grassloc]_

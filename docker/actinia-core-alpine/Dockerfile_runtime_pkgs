@@ -1,14 +1,26 @@
-#FROM mundialis/actinia-core:alpine-build-pkgs
-FROM actinia-core:alpine-build-pkgs
+FROM mundialis/docker-pdal:1.8.0 as pdal
+FROM mundialis/actinia-core:alpine-build-pkgs_v2
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
-    openjdk8 \
+    # openjdk8 \
+    "
+
+ENV PDAL_RUNTIME_PACKAGES="\
+    curl \
+    jsoncpp \
+    libexecinfo \
+    libunwind \
+    gdal \
+    geos \
+    libxml2 \
+    postgresql \
+    python3 \
+    py3-numpy sqlite \
     "
 
 # Keep basic packages for simple debugging
 ENV GRASS_RUNTIME_BASIC_PACKAGES="gdal python3 zstd-libs"
-ENV GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES="pdal"
 ENV GRASS_RUNTIME_PACKAGES="\
     cairo \
     fftw \
@@ -51,13 +63,31 @@ ENV ACTINIA_PLUGIN_INSTALL_PACKAGES="\
 
 RUN apk update; \
     apk add --no-cache \
-        --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing \
-        $GRASS_RUNTIME_ALPINE_TESTING_REPO_PACKAGES; \
-    apk add --no-cache \
         $SNAPPY_RUNTIME_PACKAGES \
+        $PDAL_RUNTIME_PACKAGES \
         $GRASS_RUNTIME_PACKAGES \
         $GRASS_ADDONS_BUILD_PACKAGES \
         $ACTINIA_PLUGIN_INSTALL_PACKAGES
+
+COPY --from=pdal /usr/bin/pdal* /usr/bin/
+COPY --from=pdal /usr/lib/pdal /usr/lib/pdal
+COPY --from=pdal /usr/lib/libpdal* /usr/lib/
+COPY --from=pdal /usr/lib/pkgconfig/pdal.pc /usr/lib/pkgconfig/pdal.pc
+COPY --from=pdal /usr/include/pdal /usr/include/pdal
+COPY --from=pdal /usr/local/lib/liblaszip* /usr/local/lib/
+COPY --from=pdal /usr/local/include/laszip /usr/local/include/laszip
+
+ARG OPENJDK_VERSION=8.232.09-r0
+ARG OPENJDK_PKGS_URL=https://github.com/mmacata/alpine-openjdk8/releases/download/$OPENJDK_VERSION
+RUN curl -L $OPENJDK_PKGS_URL/openjdk8-$OPENJDK_VERSION.apk > openjdk8-$OPENJDK_VERSION.apk
+RUN curl -L $OPENJDK_PKGS_URL/openjdk8-jre-$OPENJDK_VERSION.apk > openjdk8-jre-$OPENJDK_VERSION.apk
+RUN curl -L $OPENJDK_PKGS_URL/openjdk8-jre-base-$OPENJDK_VERSION.apk > openjdk8-jre-base-$OPENJDK_VERSION.apk
+RUN curl -L $OPENJDK_PKGS_URL/openjdk8-jre-lib-$OPENJDK_VERSION.apk > openjdk8-jre-lib-$OPENJDK_VERSION.apk
+RUN apk add --allow-untrusted \
+    openjdk8-jre-lib-$OPENJDK_VERSION.apk \
+    openjdk8-$OPENJDK_VERSION.apk \
+    openjdk8-jre-base-$OPENJDK_VERSION.apk \
+    openjdk8-jre-$OPENJDK_VERSION.apk
 
 # Duplicated in final images, only here to safe time
 COPY requirements-alpine.txt /src/requirements-alpine.txt

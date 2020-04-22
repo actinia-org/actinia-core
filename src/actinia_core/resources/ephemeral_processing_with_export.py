@@ -244,6 +244,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         # Save the file in the temporary directory of the temporary gisdb
         output_path = os.path.join(self.temp_file_path, file_name)
 
+        # generate overviews with compression:
+        os.environ['COMPRESS_OVERVIEW'] = "LZW"
         module_name = "r.out.gdal"
         args = ["-fmt", "input=%s"%raster_name, "format=%s"%format,
                 "createopt=COMPRESS=LZW,TILED=YES", "overviews=5", "output=%s"%output_path]

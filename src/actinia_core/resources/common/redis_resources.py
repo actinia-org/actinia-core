@@ -139,7 +139,7 @@ class RedisResourceInterface(RedisBaseInterface):
 
         """
         return self.redis_server.setex(self.resource_id_termination_prefix + resource_id,
-                                       expiration, True)
+                                       expiration, 1)
 
     def get(self, resource_id):
         """Get the resource entry if exists

@@ -459,7 +459,7 @@ class GoogleSatelliteBigQueryInterface(object):
 
             for band in bands:
                 if band not in self.sentinel_bands:
-                    raise Exception("Unknown sentinel 2A band name <%s>"%band)
+                    raise Exception("Unknown Sentinel-2 band name <%s>"%band)
 
             # Select specific columns from the sentinel table
             query = "SELECT granule_id,product_id,sensing_Time,datatake_identifier,base_url " \
@@ -505,7 +505,7 @@ class GoogleSatelliteBigQueryInterface(object):
 
         except Exception as e:
             raise GoogleCloudAPIError("An error occurred while fetching "
-                                      "Sentinel 2A download URL's. Error message: %s"%str(e))
+                                      "Sentinel-2 download URL's. Error message: %s"%str(e))
 
     def _generate_sentinel2_footprint(self, base_url):
         """Download the sentinel XML metadata and parse it for the footpring
