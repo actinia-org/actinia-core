@@ -125,6 +125,9 @@ class ApiLogger(RedisFluentLoggerBase):
         try:
             # Convert time stamp
             entry["time_stamp"] = str(entry["time_stamp"])
+            # TODO: decide from config which interface to use
+            from .logging_interface import log
+            log.info(entry)
             self.send_to_fluent("API_LOG", entry)
         except Exception as e:
             sys.stderr.write("ApiLogger ERROR: Unable to connect to fluentd "

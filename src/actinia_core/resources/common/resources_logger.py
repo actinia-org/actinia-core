@@ -84,6 +84,14 @@ class ResourceLogger(RedisFluentLoggerBase):
         data = ""
         try:
             http_code, data = pickle.loads(document)
+            # TODO: decide from config which interface to use
+            from .logging_interface import log
+            if data['status'] == 'error':
+                log.error(data)
+            elif data['status'] == 'terminated':
+                log.warning(data)
+            else:
+                log.info(data)
             self.send_to_fluent("RESOURCE_LOG", data)
         except Exception as e:
             sys.stderr.write("ResourceLogger ERROR: Unable to connect to fluentd server "

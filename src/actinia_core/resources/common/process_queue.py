@@ -45,6 +45,8 @@ import platform
 import sys
 import atexit
 from .resources_logger import ResourceLogger
+from .logging_interface import log
+
 
 has_fluent = False
 
@@ -258,8 +260,9 @@ class StreamToLogger(object):
       self.linebuf = ''
 
     def write(self, buf):
-      for line in buf.rstrip().splitlines():
-        self.logger.log(self.log_level, line.rstrip())
+        for line in buf.rstrip().splitlines():
+          print('ugly')
+          self.logger.log(self.log_level, line.rstrip())
 
     def flush(self):
         pass
@@ -434,7 +437,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 # Enqueue a new process
                 elif len(data) == 3:
                     func, timeout, args = data
-                    print("Enqueue process: ", args[0].api_info)
+                    log.info("Enqueue process: %s", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
                                               timeout=timeout,
                                               resource_logger=resource_logger,
@@ -445,7 +448,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 if len(waiting_processes) > 0:
                     enqproc = waiting_processes.pop()
                     running_procs.add(enqproc)
-                    print("Run process: ", enqproc.api_info)
+                    log.info("Run process: %s", enqproc.api_info)
                     enqproc.start()
 
             # Purge processes that are finished or exceeded their timeout each 40th loop

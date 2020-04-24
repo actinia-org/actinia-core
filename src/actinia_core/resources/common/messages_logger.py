@@ -28,6 +28,7 @@ Log messages as debug, info, warning and error
 import time
 import sys
 import platform
+from .logging_interface import log
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 try:
@@ -83,10 +84,22 @@ class MessageLogger(RedisFluentLoggerBase):
                                                                 str(e)))
                 message = self._prepare_message(log_level, message)
                 sys.stderr.write(message)
-        # TODO WIP: look up in config if stdout log should be enabled
+
+        # TODO: decide from config which interface to use + make below nice
         # else:
-        message = self._prepare_message(log_level, message)
-        sys.stderr.write(message)
+        message = ("%s\thost=%s\tuser_id=%s\tmessage:\t%s\n"
+                   % (time.ctime(), platform.node(), self.user_id, message))
+
+        if log_level == 'ERROR':
+            log.error(message)
+        elif log_level == 'WARNING':
+            log.warning(message)
+        elif log_level == 'INFO':
+            log.info(message)
+        else:
+            log.debug(message)
+
+        # TODO: is this return value used anywhere?
         return message
 
     def debug(self, debug_message):
