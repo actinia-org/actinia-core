@@ -29,8 +29,6 @@ import logging
 
 from colorlog import ColoredFormatter
 
-from .api_logger import ApiLogger, log_api_call
-from .resources_logger import ResourceLogger
 from .config import global_config
 
 

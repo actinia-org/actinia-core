@@ -38,7 +38,7 @@ from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
 from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
 from .common.app import auth

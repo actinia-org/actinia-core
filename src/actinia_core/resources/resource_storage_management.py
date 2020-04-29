@@ -41,7 +41,7 @@ from .common.response_models import StorageResponseModel, StorageModel, Processi
     ProcessingErrorResponseModel
 
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
 

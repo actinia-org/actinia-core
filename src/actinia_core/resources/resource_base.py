@@ -35,7 +35,7 @@ from flask_restful_swagger_2 import Resource
 from .common.app import auth
 from .common.app import flask_api
 from .common.config import global_config
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.messages_logger import MessageLogger
 from .common.resources_logger import ResourceLogger
 from .common.resource_data_container import ResourceDataContainer

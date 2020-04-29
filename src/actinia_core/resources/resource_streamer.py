@@ -30,7 +30,7 @@ from flask import send_from_directory
 import os
 from .common.config import global_config
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 
 
 __license__ = "GPLv3"

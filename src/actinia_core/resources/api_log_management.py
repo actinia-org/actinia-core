@@ -33,7 +33,7 @@ from flask_restful_swagger_2 import Schema
 
 from .common.app import auth
 from .common.api_logger import ApiLogger
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.response_models import SimpleResponseModel
 from .user_auth import check_user_permissions
 
