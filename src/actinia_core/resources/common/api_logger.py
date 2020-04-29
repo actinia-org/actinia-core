@@ -42,10 +42,8 @@ except:
     has_fluent = False
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 
 def log_api_call(f):
@@ -122,21 +120,9 @@ class ApiLogger(RedisFluentLoggerBase):
 
         redis_return = bool(self.db.add(user_id, pentry))
 
-        try:
-            # Convert time stamp
-            entry["time_stamp"] = str(entry["time_stamp"])
-            # TODO: decide from config which interface to use
-            from .logging_interface import log
-            log.info(entry)
-            self.send_to_fluent("API_LOG", entry)
-        except Exception as e:
-            sys.stderr.write("ApiLogger ERROR: Unable to connect to fluentd "
-                             "server host %s port %i error: %s" % (self.host,
-                                                                   self.port,
-                                                                   str(e)))
-            raise
-        finally:
-            return redis_return
+        entry["time_stamp"] = str(entry["time_stamp"])
+        self.send_to_logger("API_LOG", entry)
+        return redis_return
 
     def list(self, user_id, start, end):
         """

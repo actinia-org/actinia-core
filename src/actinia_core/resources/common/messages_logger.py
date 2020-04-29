@@ -28,22 +28,11 @@ Log messages as debug, info, warning and error
 import time
 import sys
 import platform
-from .logging_interface import log
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
-try:
-    from fluent import sender
-    from fluent import event
-
-    has_fluent = True
-except:
-    has_fluent = False
-
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 
 class MessageLogger(RedisFluentLoggerBase):
@@ -51,53 +40,19 @@ class MessageLogger(RedisFluentLoggerBase):
     """
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id,
+                                       fluent_sender=fluent_sender)
 
-        if has_fluent is False:
-            self.interface = "stderr"
-
-    def _prepare_message(self, log_level, message):
+    def _log_message(self, log_level, message):
 
         node = platform.node()
         ctime = time.ctime()
 
-        return "## %s ## %s\thost=%s\tuser_id=%s\tmessage:\t%s\n" % (log_level, ctime, node, self.user_id, message)
+        log_dict = {"node": node, "ctime": ctime, "user_id": self.user_id,
+                    "log_level": log_level, "status": "message",
+                    "message": message}
 
-    def _log_message(self, log_level, message):
-
-        if self.interface == "fluentd":
-
-            try:
-                node = platform.node()
-                ctime = time.ctime()
-
-                self.send_to_fluent(log_level, {"node": node,
-                                                "ctime": ctime,
-                                                "user_id": self.user_id,
-                                                "log_level": log_level,
-                                                "status": "message",
-                                                "message": message})
-            except Exception as e:
-                sys.stderr.write("MessageLogger ERROR: Unable to connect to fluentd server "
-                                 "host %s port %i error: %s" % (self.host,
-                                                                self.port,
-                                                                str(e)))
-                message = self._prepare_message(log_level, message)
-                sys.stderr.write(message)
-
-        # TODO: decide from config which interface to use + make below nice
-        # else:
-        message = ("%s\thost=%s\tuser_id=%s\tmessage:\t%s\n"
-                   % (time.ctime(), platform.node(), self.user_id, message))
-
-        if log_level == 'ERROR':
-            log.error(message)
-        elif log_level == 'WARNING':
-            log.warning(message)
-        elif log_level == 'INFO':
-            log.info(message)
-        else:
-            log.debug(message)
+        self.send_to_logger(log_level, log_dict)
 
         # TODO: is this return value used anywhere?
         return message

@@ -26,6 +26,8 @@ Base class for logger that use fluentd for logging and resource storage
 """
 import time
 from .config import global_config
+from .logging_interface import log
+
 
 try:
     from fluent import sender
@@ -35,10 +37,8 @@ except:
     has_fluent = False
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 
 class RedisFluentLoggerBase(object):
@@ -61,13 +61,19 @@ class RedisFluentLoggerBase(object):
 
         # The fluentd sender
         if fluent_sender is None and has_fluent:
-            self.fluent_sender = sender.FluentSender('actinia_logger', host=self.host, port=self.port)
+            self.fluent_sender = sender.FluentSender('actinia_logger',
+                                                     host=self.host,
+                                                     port=self.port)
 
-    def send_to_fluent(self, tag, data):
+    def _send_to_fluent(self, tag, data):
 
-        if has_fluent:
+        try:
             cur_time = int(time.time())
             self.fluent_sender.emit_with_time(tag, timestamp=cur_time, data=data)
+        except Exception as e:
+            log.error("%s is unable to connect to fluentd server host %s "
+                      + "port %i Error: %s, Content %s" %
+                      (tag, self.host, self.port, str(e), str(data)))
 
         # keep this until sure that all logs are fetched if stdout log is set
         # tags = ['RESOURCE_LOG', 'API_LOG', 'INFO', 'DEBUG']
@@ -76,3 +82,35 @@ class RedisFluentLoggerBase(object):
                 and 'INFO' not in tag and 'DEBUG' not in tag):
             print("WARNING: Some output might not be redirected to STDOUT:"
                   + " %s %s %s", tag, str(cur_time), str(data))
+
+    def _send_to_stdout(self, tag, data):
+
+
+        if tag == "RESOURCE_LOG" and 'status' in data:
+            if data['status'] == 'error':
+                log.error(data)
+            elif data['status'] == 'terminated':
+                log.warning(data)
+            else:
+                log.info(data)
+
+        elif tag == "API_LOG":
+            log.info(data)
+
+        # MESSAGES_LOGGER
+        elif tag == 'ERROR':
+            log.error(data)
+        elif tag == 'WARNING':
+            log.warning(data)
+        elif tag == 'INFO':
+            log.info(data)
+        else:
+            log.debug(data)
+
+    def send_to_logger(self, tag, data):
+
+        # TODO: decide from config which interface to use
+        if has_fluent:
+            self._send_to_fluent(tag, data)
+
+        self._send_to_stdout(tag, data)
