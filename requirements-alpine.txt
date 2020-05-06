@@ -15,6 +15,7 @@ google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
 passlib>=1.7.1
 ply>=3.11
+python-json-logger
 python-magic>=0.4.15
 scikit-learn
 Sphinx>=1.7.1
@@ -24,6 +25,8 @@ rq>=0.10.0
 setuptools
 uWSGI>=2.0.17
 wheel
+
+
 
 # not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
 # torch

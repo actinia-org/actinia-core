@@ -113,7 +113,8 @@ class ApiLogger(RedisFluentLoggerBase):
                  "api_info": api_info,
                  "request_str": str(http_request),
                  "user_id": user_id,
-                 "status": "api_call"}
+                 "status": "api_call",
+                 "logger": "api_logger"}
 
         # Serialize the entry
         pentry = pickle.dumps(entry)

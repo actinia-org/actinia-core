@@ -22,7 +22,7 @@
 #######
 
 """
-Base class for logger that use fluentd for logging and resource storage
+Base class for logger that use fluentd/stdout for logging and resource storage
 """
 import time
 from .config import global_config
@@ -77,14 +77,12 @@ class RedisFluentLoggerBase(object):
 
         # keep this until sure that all logs are fetched if stdout log is set
         # tags = ['RESOURCE_LOG', 'API_LOG', 'INFO', 'DEBUG']
-        # if any(certain_tag not in tag for certain_tag in tags):
         if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag
                 and 'INFO' not in tag and 'DEBUG' not in tag):
             print("WARNING: Some output might not be redirected to STDOUT:"
                   + " %s %s %s", tag, str(cur_time), str(data))
 
-    def _send_to_stdout(self, tag, data):
-
+    def _send_to_logger(self, tag, data):
 
         if tag == "RESOURCE_LOG" and 'status' in data:
             if data['status'] == 'error':
@@ -109,8 +107,8 @@ class RedisFluentLoggerBase(object):
 
     def send_to_logger(self, tag, data):
 
-        # TODO: decide from config which interface to use
-        if has_fluent:
+        if global_config.LOG_INTERFACE == "fluentd":
             self._send_to_fluent(tag, data)
 
-        self._send_to_stdout(tag, data)
+        # always send to logger as file logger (and stdout) is included here
+        self._send_to_logger(tag, data)

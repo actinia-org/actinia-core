@@ -48,9 +48,11 @@ class MessageLogger(RedisFluentLoggerBase):
         node = platform.node()
         ctime = time.ctime()
 
-        log_dict = {"node": node, "ctime": ctime, "user_id": self.user_id,
-                    "log_level": log_level, "status": "message",
-                    "message": message}
+        log_dict = {
+            "node": node, "ctime": ctime, "user_id": self.user_id,
+            "log_level": log_level, "status": "message",
+            "message": message, "logger": "messages_logger"
+        }
 
         self.send_to_logger(log_level, log_dict)
 

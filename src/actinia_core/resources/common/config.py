@@ -120,7 +120,7 @@ class Configuration(object):
         #                                       it will be extended by a numerical suffix
         #                                       that represents the worker id/number
         #                                       database to re-queue it, usually this is not necessary
-        self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker" % home  # The base name of the redis worker queue logfile,
+        self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home  # The base name of the redis worker queue logfile,
         #                                                                 it will be extended by a numerical suffix
         #                                                                 that represents the worker id/number
         # MISC
@@ -131,7 +131,10 @@ class Configuration(object):
 
         # Logging
         self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
-        self.LOG_INTERFACE = "fluentd"      # The logging interface to use: "stderr" or "fluentd"
+        self.LOG_INTERFACE = "stdout"       # The logging interface to use: "stdout" or "fluentd" (file will always be used)
+        self.LOG_STDOUT_FORMAT = "colored"  # The logformat to use for stdout: "colored" or "json"
+        self.LOG_FILE_FORMAT = "colored"    # The logformat to use in file: "colored" or "json"
+        self.LOG_STDERR_FORMAT = "plain"    # The logformat for the stderr logger: "plain" or "default", default will use STDOUT / FILE format
         self.LOG_FLUENT_HOST = "127.0.0.1"  # The Fluentd host used for fluent logging
         self.LOG_FLUENT_PORT = 24224        # The Fluentd host used for fluent logging
 
@@ -220,6 +223,9 @@ class Configuration(object):
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
+        config.set('LOGGING', 'LOG_STDOUT_FORMAT', self.LOG_STDOUT_FORMAT)
+        config.set('LOGGING', 'LOG_FILE_FORMAT', self.LOG_FILE_FORMAT)
+        config.set('LOGGING', 'LOG_STDERR_FORMAT', self.LOG_STDERR_FORMAT)
         config.set('LOGGING', 'LOG_FLUENT_HOST', str(self.LOG_FLUENT_HOST))
         config.set('LOGGING', 'LOG_FLUENT_PORT', str(self.LOG_FLUENT_PORT))
         config.set('LOGGING', 'LOG_LEVEL', str(self.LOG_LEVEL))
@@ -339,6 +345,12 @@ class Configuration(object):
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):
                     self.LOG_INTERFACE = config.get("LOGGING", "LOG_INTERFACE")
+                if config.has_option("LOGGING", "LOG_STDOUT_FORMAT"):
+                    self.LOG_STDOUT_FORMAT = config.get("LOGGING", "LOG_STDOUT_FORMAT")
+                if config.has_option("LOGGING", "LOG_FILE_FORMAT"):
+                    self.LOG_FILE_FORMAT = config.get("LOGGING", "LOG_FILE_FORMAT")
+                if config.has_option("LOGGING", "LOG_STDERR_FORMAT"):
+                    self.LOG_STDERR_FORMAT = config.get("LOGGING", "LOG_STDERR_FORMAT")
                 if config.has_option("LOGGING", "LOG_FLUENT_HOST"):
                     self.LOG_FLUENT_HOST = config.get("LOGGING", "LOG_FLUENT_HOST")
                 if config.has_option("LOGGING", "LOG_FLUENT_PORT"):

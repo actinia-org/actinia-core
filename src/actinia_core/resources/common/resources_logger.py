@@ -71,6 +71,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         db_resource_id = self._generate_db_resource_id(user_id, resource_id)
         redis_return = bool(self.db.set(db_resource_id, document, expiration))
         http_code, data = pickle.loads(document)
+        data["logger"] = 'resources_logger'
         self.send_to_logger("RESOURCE_LOG", data)
         return redis_return
 
