@@ -25,16 +25,14 @@
 Base class for logger that use fluentd/stdout for logging and resource storage
 """
 import time
+import logging
+
 from .config import global_config
 from .logging_interface import log
 
-
-try:
+if global_config.LOG_INTERFACE == "fluentd":
     from fluent import sender
-    from fluent import event
-    has_fluent = True
-except:
-    has_fluent = False
+
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
@@ -60,7 +58,7 @@ class RedisFluentLoggerBase(object):
         self.fluent_sender = fluent_sender
 
         # The fluentd sender
-        if fluent_sender is None and has_fluent:
+        if fluent_sender is None and global_config.LOG_INTERFACE == "fluentd":
             self.fluent_sender = sender.FluentSender('actinia_logger',
                                                      host=self.host,
                                                      port=self.port)
@@ -82,7 +80,7 @@ class RedisFluentLoggerBase(object):
             print("WARNING: Some output might not be redirected to STDOUT:"
                   + " %s %s %s", tag, str(cur_time), str(data))
 
-    def _send_to_logger(self, tag, data):
+    def _send_to_logging_interface(self, tag, data):
 
         if tag == "RESOURCE_LOG" and 'status' in data:
             if data['status'] == 'error':
@@ -96,14 +94,13 @@ class RedisFluentLoggerBase(object):
             log.info(data)
 
         # MESSAGES_LOGGER
-        elif tag == 'ERROR':
-            log.error(data)
-        elif tag == 'WARNING':
-            log.warning(data)
-        elif tag == 'INFO':
-            log.info(data)
         else:
-            log.debug(data)
+            try:
+                log.log(getattr(logging, tag), data)
+            except AttributeError as e:
+                log.debug('Unknown log tag for logging: %s', tag)
+                log.info(data)
+
 
     def send_to_logger(self, tag, data):
 
@@ -111,4 +108,4 @@ class RedisFluentLoggerBase(object):
             self._send_to_fluent(tag, data)
 
         # always send to logger as file logger (and stdout) is included here
-        self._send_to_logger(tag, data)
+        self._send_to_logging_interface(tag, data)

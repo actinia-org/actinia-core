@@ -70,7 +70,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/25559351 > 
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
 COPY --from=build /build/*.whl /build/
-RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
+# the problem with getting broken 20.0.1 seems to be overcome, the outcommenting
+# RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
 RUN pip3 install scikit-learn
