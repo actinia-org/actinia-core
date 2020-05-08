@@ -17,6 +17,9 @@ services:
       - "8088:8088"
     depends_on:
       - redis
+      # - fluentd
+      # - elasticsearch
+      # - kibana
     cap_add:
       - SYS_PTRACE
 
@@ -36,3 +39,21 @@ services:
     ]
     ports:
         - "6379:6379"
+
+
+  # fluentd:
+  #   build:
+  #     context: fluentd
+  #   image: fluentd
+  #   expose:
+  #     - 24224
+  #
+  # elasticsearch:
+  #   image:  elasticsearch:7.4.0
+  #   environment:
+  #   - discovery.type=single-node
+  #
+  # kibana:
+  #   image: kibana:7.4.0
+  #   ports:
+  #     - "5601:5601"

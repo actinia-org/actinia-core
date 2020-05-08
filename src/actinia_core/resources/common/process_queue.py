@@ -311,6 +311,8 @@ def start_process_queue_manager(config, queue, use_logger):
     kwargs['port'] = config.REDIS_SERVER_PORT
     if config.REDIS_SERVER_PW and config.REDIS_SERVER_PW is not None:
         kwargs['password'] = config.REDIS_SERVER_PW
+    # Seems to log only on rare occasions: when a job waits too long in the
+    # queue and terminates itself.
     resource_logger = ResourceLogger(**kwargs,
                                      fluent_sender=fluent_sender)
     del kwargs

@@ -35,6 +35,10 @@ from pythonjsonlogger import jsonlogger
 
 from .config import global_config
 
+# unfortunately, the config is read twice because of the read call here but it
+# is needed to load the correct interface and log level at this time
+global_config.read()
+
 if global_config.LOG_INTERFACE == "fluentd":
     from fluent import handler
 
@@ -42,11 +46,6 @@ if global_config.LOG_INTERFACE == "fluentd":
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
-
-
-# unfortunately, the config is read twice because of the read call here but it
-# is needed to load the correct log level at this time
-global_config.read()
 
 
 class BasicLogger(object):
@@ -227,7 +226,7 @@ class StreamToLogger(object):
                 print(line.rstrip())
             else:
                 # In case this is a stacktrace, it is logged line by line, each
-                # wrapped in the log formatter. It is hardly readable and
+                # wrapped by the log formatter. It is hardly readable and
                 # context can get lost (but needed by e.g. kibana).
                 self.logger.log(logging.CRITICAL, line.rstrip())
                 if global_config.LOG_STDERR_FORMAT == 'plain':
