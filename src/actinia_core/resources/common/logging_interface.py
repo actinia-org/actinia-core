@@ -30,7 +30,6 @@ import sys
 import platform
 from datetime import datetime
 
-from colorlog import ColoredFormatter
 from pythonjsonlogger import jsonlogger
 
 from .config import global_config
@@ -38,6 +37,9 @@ from .config import global_config
 # unfortunately, the config is read twice because of the read call here but it
 # is needed to load the correct interface and log level at this time
 global_config.read()
+
+if "colored" in [global_config.LOG_STDOUT_FORMAT, global_config.LOG_FILE_FORMAT]:
+    from colorlog import ColoredFormatter
 
 if global_config.LOG_INTERFACE == "fluentd":
     from fluent import handler

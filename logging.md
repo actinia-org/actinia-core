@@ -355,5 +355,5 @@ an integer is required (got type NoneType)
 
 ## Fluentd Logging Infos
 * Configure in actinia.cfg the connection to fluentd
-* Have a elasticsearch and kibana instance ready
+* Have an elasticsearch and kibana instance ready
 * Start all components and set kibana to look at fluentd-* pattern
