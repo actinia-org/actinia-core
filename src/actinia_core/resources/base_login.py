@@ -27,7 +27,7 @@ Base class for user management resources
 
 from flask_restful import Resource
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.messages_logger import MessageLogger
 from .user_auth import very_admin_role
 

@@ -36,7 +36,7 @@ from flask_restful_swagger_2 import swagger
 from .base_login import LoginBase
 from .common.user import ActiniaUser
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.response_models import UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
 
 

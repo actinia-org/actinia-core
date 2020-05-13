@@ -34,7 +34,7 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.process_chain import ProcessChainModel
 
 __license__ = "GPLv3"

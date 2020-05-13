@@ -41,10 +41,11 @@ from threading import Thread, Lock
 import multiprocessing as mp
 import logging
 import logging.handlers
-import platform
 import sys
 import atexit
 from .resources_logger import ResourceLogger
+from .logging_interface import log
+
 
 has_fluent = False
 
@@ -58,10 +59,8 @@ except:
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 process_queue = Queue()
 process_queue_manager = None
@@ -248,83 +247,6 @@ class EnqueuedProcess(object):
                                         expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
 
 
-class StreamToLogger(object):
-    """Simple logger to redirect sys.stdout and sys.stderr
-    Code stolen from: https://www.electricmonk.nl/log/2011/08/14/redirect-stdout-and-stderr-to-a-logger-in-python/
-    """
-    def __init__(self, logger, log_level=logging.INFO):
-      self.logger = logger
-      self.log_level = log_level
-      self.linebuf = ''
-
-    def write(self, buf):
-      for line in buf.rstrip().splitlines():
-         self.logger.log(self.log_level, line.rstrip())
-
-    def flush(self):
-        pass
-
-
-def create_logger(config, name):
-    """Create the multiprocessing logger
-
-    It will log stderr from all running processes
-    into a single worker logfile and to the fluentd server
-
-    Args:
-        config: The global config
-        name: The name of the logger
-
-    Returns: The logger
-    """
-
-    # Create the logger for stdout and stderr logging
-    # logger = mp.get_logger()
-    logger = logging.getLogger(name=name)
-    logger.setLevel(logging.INFO)
-
-    node = platform.node()
-
-    if config.LOG_INTERFACE == "fluentd" and has_fluent is True:
-        custom_format = {
-            'host': '%(hostname)s',
-            'where': '%(module)s.%(funcName)s',
-            'status': '%(levelname)s',
-            'stack_trace': '%(exc_text)s'
-        }
-
-        fh = handler.FluentHandler('%s::actinia.worker' % node,
-                                   host=config.LOG_FLUENT_HOST,
-                                   port=config.LOG_FLUENT_PORT)
-        fh_formatter = handler.FluentRecordFormatter(custom_format)
-        fh.setFormatter(fh_formatter)
-        logger.addHandler(fh)
-
-    # Add the log message handler to the logger
-    log_file_name = '%s.log' % (config.WORKER_LOGFILE)
-    lh = logging.handlers.RotatingFileHandler(log_file_name,
-                                              maxBytes=2000000,
-                                              backupCount=5)
-    logger.addHandler(lh)
-    logger.info("Logger %s created"%name)
-
-    return logger
-
-
-def create_stderr_logger(config):
-    """Create a logger that catch all stderr that is emitted by the
-    worker processes
-
-    Args:
-        config: The global config
-    """
-
-    stderr_logger = create_logger(config=config, name='stderr_logger')
-    sl2 = StreamToLogger(stderr_logger, logging.ERROR)
-    sys.stderr = sl2
-    return
-
-
 def queue_watcher(queue, data_set, lock):
     """This function runs in a separate thread to check the queue
 
@@ -371,10 +293,6 @@ def start_process_queue_manager(config, queue, use_logger):
     queue_thread = Thread(target=queue_watcher, args=(queue, data_set, lock))
     queue_thread.start()
 
-    # Create the logger if required
-    if use_logger is True:
-        create_stderr_logger(config=config)
-
     running_procs = set()
     waiting_processes = set()
 
@@ -393,6 +311,8 @@ def start_process_queue_manager(config, queue, use_logger):
     kwargs['port'] = config.REDIS_SERVER_PORT
     if config.REDIS_SERVER_PW and config.REDIS_SERVER_PW is not None:
         kwargs['password'] = config.REDIS_SERVER_PW
+    # Seems to log only on rare occasions: when a job waits too long in the
+    # queue and terminates itself.
     resource_logger = ResourceLogger(**kwargs,
                                      fluent_sender=fluent_sender)
     del kwargs
@@ -423,7 +343,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 # Enqueue a new process
                 elif len(data) == 3:
                     func, timeout, args = data
-                    print("Enqueue process: ", args[0].api_info)
+                    log.info("Enqueue process: %s", args[0].api_info)
                     enqproc = EnqueuedProcess(func=func,
                                               timeout=timeout,
                                               resource_logger=resource_logger,
@@ -434,7 +354,7 @@ def start_process_queue_manager(config, queue, use_logger):
                 if len(waiting_processes) > 0:
                     enqproc = waiting_processes.pop()
                     running_procs.add(enqproc)
-                    print("Run process: ", enqproc.api_info)
+                    log.info("Run process: %s", enqproc.api_info)
                     enqproc.start()
 
             # Purge processes that are finished or exceeded their timeout each 40th loop

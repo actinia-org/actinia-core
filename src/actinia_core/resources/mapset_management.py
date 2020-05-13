@@ -37,7 +37,7 @@ import pickle
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from .common.app import auth
-from .common.logging_interface import log_api_call
+from .common.api_logger import log_api_call
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions

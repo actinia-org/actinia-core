@@ -56,12 +56,12 @@ RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=
 # Currently, ADD always breaks cache, as "download_count" increases every time
 # ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
-# Get statistics plugin (22648768 = 0.0.1)
-RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/22648768 > resp.json && \
+# Get statistics plugin (26188052 = 0.0.2)
+RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/26188052 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get satellite plugin (22686533 = 0.0.1)
-RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/22686533 > resp.json && \
+# Get satellite plugin (26187974 = 0.0.2)
+RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Get actinia-gdi plugin (25559351 = 0.1.7)
@@ -70,7 +70,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/25559351 > 
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
 COPY --from=build /build/*.whl /build/
-RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
+# the problem with getting broken 20.0.1 seems to be overcome, the outcommenting
+# RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
 RUN pip3 install scikit-learn

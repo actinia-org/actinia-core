@@ -34,8 +34,8 @@ from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
 from .common.app import auth
 from .common.config import global_config
-from .common.logging_interface import ResourceLogger
-from .common.logging_interface import log_api_call
+from .common.resources_logger import ResourceLogger
+from .common.api_logger import log_api_call
 from .common.user import ActiniaUser
 from .common.response_models import ProcessingResponseModel, SimpleResponseModel,\
     ProcessingResponseListModel

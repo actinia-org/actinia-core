@@ -29,19 +29,9 @@ import pickle
 from .redis_resources import RedisResourceInterface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
-try:
-    from fluent import sender
-    from fluent import event
-
-    has_fluent = True
-except:
-    has_fluent = False
-
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 
 class ResourceLogger(RedisFluentLoggerBase):
@@ -80,21 +70,10 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         db_resource_id = self._generate_db_resource_id(user_id, resource_id)
         redis_return = bool(self.db.set(db_resource_id, document, expiration))
-        log_entry = "empty"
-        data = ""
-        try:
-            http_code, data = pickle.loads(document)
-            self.send_to_fluent("RESOURCE_LOG", data)
-        except Exception as e:
-            sys.stderr.write("ResourceLogger ERROR: Unable to connect to fluentd server "
-                             "host %s port %i error: %s Logentry: %s\n\n Content: %s" % (self.host,
-                                                                                         self.port,
-                                                                                         str(e),
-                                                                                         str(log_entry),
-                                                                                         str(data)))
-            raise
-        finally:
-            return redis_return
+        http_code, data = pickle.loads(document)
+        data["logger"] = 'resources_logger'
+        self.send_to_logger("RESOURCE_LOG", data)
+        return redis_return
 
     def commit_termination(self, user_id, resource_id, expiration=3600):
         """Commit a resource entry to the database that requires the termination of the resource,
