@@ -64,8 +64,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/release
 RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-gdi plugin (25559351 = 0.1.7)
-RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/25559351 > resp.json && \
+# Get actinia-gdi plugin (26705966 = 0.1.8)
+RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/26705966 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
