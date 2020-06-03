@@ -17,7 +17,7 @@ numpy>=1.15.4
 pandas
 passlib>=1.7.1
 ply>=3.11
-pyproj==1.9.6
+pyproj>=2.2.0
 python-json-logger
 python-magic>=0.4.15
 scikit-learn
