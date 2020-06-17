@@ -1,5 +1,5 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
-FROM mundialis/esa-snap:s1tbx-7.0v1 as snap
+FROM mundialis/esa-snap:s1tbx-7.0v2 as snap
 FROM mundialis/actinia-core:alpine-build-pkgs_v2 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
@@ -74,7 +74,7 @@ COPY --from=build /build/*.whl /build/
 # RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
-RUN pip3 install scikit-learn
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
 
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages

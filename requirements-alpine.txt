@@ -13,12 +13,14 @@ google-cloud>=0.32.0
 google-cloud-bigquery>=0.28.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
+joblib==0.15.1
 passlib>=1.7.1
 ply>=3.11
 python-json-logger
 python-magic>=0.4.15
-scikit-learn
+# scikit-learn
 Sphinx>=1.7.1
+threadpoolctl==2.1.0
 redis>=2.10.6
 requests>=2.20.0
 rq>=0.10.0
@@ -43,3 +45,5 @@ wheel
 # Sphinx-2.2.2
 # redis-3.3.11
 # rq-1.1.0
+
+# TODO: remove threadpoolctl and if not needed anymore for scikit-learn
