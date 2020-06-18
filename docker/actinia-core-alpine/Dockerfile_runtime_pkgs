@@ -1,5 +1,5 @@
-FROM mundialis/docker-pdal:1.8.0 as pdal
-FROM mundialis/actinia-core:alpine-build-pkgs_v2
+FROM mundialis/docker-pdal:2.1.0 as pdal
+FROM mundialis/actinia-core:alpine-build-pkgs_v3
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
@@ -70,7 +70,6 @@ RUN apk update; \
         $ACTINIA_PLUGIN_INSTALL_PACKAGES
 
 COPY --from=pdal /usr/bin/pdal* /usr/bin/
-COPY --from=pdal /usr/lib/pdal /usr/lib/pdal
 COPY --from=pdal /usr/lib/libpdal* /usr/lib/
 COPY --from=pdal /usr/lib/pkgconfig/pdal.pc /usr/lib/pkgconfig/pdal.pc
 COPY --from=pdal /usr/include/pdal /usr/include/pdal

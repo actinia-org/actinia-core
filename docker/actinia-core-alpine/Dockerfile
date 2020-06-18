@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
-FROM mundialis/esa-snap:s1tbx-7.0v1 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v2 as build
+FROM mundialis/esa-snap:s1tbx-7.0v2 as snap
+FROM mundialis/actinia-core:alpine-build-pkgs_v3 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -18,7 +18,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v2 as actinia
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v3 as actinia
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -74,7 +74,8 @@ COPY --from=build /build/*.whl /build/
 # RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
-RUN pip3 install scikit-learn
+# TODO: replace edge testing packages as soon as possible.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
 
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages
