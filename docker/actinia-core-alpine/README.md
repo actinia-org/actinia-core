@@ -10,20 +10,23 @@ __Build with__:
 
 ```bash
 $ docker build \
+        --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile_build_pkgs \
         --tag actinia-core:alpine-build-pkgs .
-$ docker tag actinia-core:alpine-build-pkgs mundialis/actinia-core:alpine-build-pkgs_v2
-$ docker push mundialis/actinia-core:alpine-build-pkgs_v2
+$ docker tag actinia-core:alpine-build-pkgs mundialis/actinia-core:alpine-build-pkgs_v3
+$ docker push mundialis/actinia-core:alpine-build-pkgs_v3
 
 $ docker build \
+        --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile_runtime_pkgs \
         --tag actinia-core:alpine-runtime-pkgs .
-$ docker tag actinia-core:alpine-runtime-pkgs mundialis/actinia-core:alpine-runtime-pkgs_v2
-$ docker push mundialis/actinia-core:alpine-runtime-pkgs_v2
+$ docker tag actinia-core:alpine-runtime-pkgs mundialis/actinia-core:alpine-runtime-pkgs_v3
+$ docker push mundialis/actinia-core:alpine-runtime-pkgs_v3
 
 $ docker build \
+        --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile \
         --tag actinia-core:g78-stable-alpine .
