@@ -74,6 +74,7 @@ COPY --from=build /build/*.whl /build/
 # RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 # See in build stage why we need this here
+# TODO: replace edge testing packages as soon as possible.
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
 
 # Duplicate install actinia_core requirements. They are already wheels in
