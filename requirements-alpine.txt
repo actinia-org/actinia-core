@@ -16,6 +16,7 @@ gunicorn>=19.9.0
 joblib==0.15.1
 passlib>=1.7.1
 ply>=3.11
+psutil==5.7.0
 python-json-logger
 python-magic>=0.4.15
 # scikit-learn
