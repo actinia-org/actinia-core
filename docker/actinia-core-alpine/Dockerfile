@@ -73,14 +73,17 @@ COPY --from=build /build/*.whl /build/
 # the problem with getting broken 20.0.1 seems to be overcome, the outcommenting
 # RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
-# See in build stage why we need this here
-# TODO: replace edge testing packages as soon as possible.
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
 
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages
 COPY requirements-alpine.txt /src/requirements-alpine.txt
 RUN pip3 install -r /src/requirements-alpine.txt
+
+# See in build stage why we need this here
+# TODO: replace edge community packages as soon as possible.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-joblib
+# TODO: replace edge testing packages as soon as possible.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
 
 # Copy actinia config file and start scripts + set needed envs
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
