@@ -48,3 +48,4 @@ wheel
 # rq-1.1.0
 
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
+# google-cloud-bigquery needs libffi-dev
