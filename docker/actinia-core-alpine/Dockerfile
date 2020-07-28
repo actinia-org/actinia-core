@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:s1tbx-7.0v2 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v3 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v4 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -18,7 +18,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v3 as actinia
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v4 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -79,17 +79,10 @@ RUN pip3 install /build/*
 COPY requirements-alpine.txt /src/requirements-alpine.txt
 RUN pip3 install -r /src/requirements-alpine.txt
 
-# See in build stage why we need this here
-# TODO: replace edge community packages as soon as possible.
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-joblib
-# TODO: replace edge testing packages as soon as possible.
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
-
 # Copy actinia config file and start scripts + set needed envs
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-alpine/start.sh /src/start.sh
 COPY docker/actinia-core-alpine/start-dev.sh /src/start-dev.sh
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
 ENV GISBASE ""
 
 # Create the database directories
@@ -101,6 +94,25 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/workspace/download_cache && \
     mkdir -p /actinia_core/userdata && \
     ln -s /actinia_core /root/actinia
+
+
+# tests
+FROM actinia_installation as actinia_test
+
+WORKDIR /src/actinia_core
+COPY --from=build /src/actinia_core /src/actinia_core
+COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
+ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+# TODO remove if all tests are running
+RUN rm -rf tests
+COPY tests_running tests
+
+RUN pip3 install iniconfig
+RUN make test
+
+
+# final image
+FROM actinia_installation as actinia
 
 VOLUME /grassdb
 WORKDIR /src/actinia_core
