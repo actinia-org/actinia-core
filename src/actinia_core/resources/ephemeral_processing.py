@@ -443,7 +443,8 @@ class EphemeralProcessing(object):
                 self.message_logger.info("Send POST request to finished webhook url: %s"%self.webhook_finished)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
-                    r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                    # username is expected to be without colon (':')
+                    r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     r = requests.post(self.webhook_finished, json=json.dumps(response_model))
                 if r.status_code != 200:
@@ -452,7 +453,8 @@ class EphemeralProcessing(object):
                 self.message_logger.info("Send POST request to update webhook url: %s"%self.webhook_update)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
-                    r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                    # username is expected to be without colon (':')
+                    r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     r = requests.post(self.webhook_update, json=json.dumps(response_model))
                 if r.status_code != 200:
