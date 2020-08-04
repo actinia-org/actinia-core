@@ -1,5 +1,5 @@
 FROM mundialis/docker-pdal:2.1.0 as pdal
-FROM mundialis/actinia-core:alpine-build-pkgs_v3
+FROM mundialis/actinia-core:alpine-build-pkgs_v4
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
@@ -61,13 +61,18 @@ ENV ACTINIA_PLUGIN_INSTALL_PACKAGES="\
     python3-dev \
     "
 
+ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
+    libffi-dev \
+    "
+
 RUN apk update; \
     apk add --no-cache \
         $SNAPPY_RUNTIME_PACKAGES \
         $PDAL_RUNTIME_PACKAGES \
         $GRASS_RUNTIME_PACKAGES \
         $GRASS_ADDONS_BUILD_PACKAGES \
-        $ACTINIA_PLUGIN_INSTALL_PACKAGES
+        $ACTINIA_PLUGIN_INSTALL_PACKAGES \
+        $GOOGLE_CLOUD_BIGQUERY_PACKAGES
 
 COPY --from=pdal /usr/bin/pdal* /usr/bin/
 COPY --from=pdal /usr/lib/libpdal* /usr/lib/
@@ -91,3 +96,9 @@ RUN apk add --allow-untrusted \
 # Duplicated in final images, only here to safe time
 COPY requirements-alpine.txt /src/requirements-alpine.txt
 RUN pip3 install -r /src/requirements-alpine.txt
+
+# See in build stage why we need this here
+# TODO: replace edge community packages as soon as possible.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-joblib
+# TODO: replace edge testing packages as soon as possible.
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn

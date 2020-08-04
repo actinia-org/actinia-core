@@ -10,6 +10,9 @@
 export actinia="https://actinia.mundialis.de"
 export AUTH='-u demouser:gu3st!pa55w0rd'
 
+# check actinia version
+# https://actinia.mundialis.de/api/v1/version | https://actinia.mundialis.de/latest/version
+
 #####
 # Show all locations in the GRASS database
 curl ${AUTH} -X GET -i ${actinia}/api/v1/locations

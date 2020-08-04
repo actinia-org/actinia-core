@@ -53,7 +53,7 @@ class ConfigurationTestCase(unittest.TestCase):
         c.LOG_LEVEL = 4
         c.read(self.file_name)
 
-        self.assertEquals(c.LOG_LEVEL, 1)
+        self.assertEqual(c.LOG_LEVEL, 1)
 
         print(c)
 
