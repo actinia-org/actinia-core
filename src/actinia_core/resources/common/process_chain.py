@@ -604,7 +604,8 @@ class ProcessChainConverter(object):
                 # Check if thr URL exists by investigating the HTTP header
                 if "auth" in process_chain["webhooks"]:
                     self.webhook_auth = process_chain["webhooks"]["auth"]
-                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                    # username is expected to be without colon (':')
+                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     resp = requests.head(self.webhook_finished)
                 if resp.status_code != 200:
@@ -617,7 +618,8 @@ class ProcessChainConverter(object):
                 # Check if thr URL exists by investigating the HTTP header
                 if "auth" in process_chain["webhooks"]:
                     self.webhook_auth = process_chain["webhooks"]["auth"]
-                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], self.webhook_auth.split(':')[1]))
+                    # username is expected to be without colon (':')
+                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     resp = requests.head(self.webhook_update)
                 if resp.status_code != 200:
