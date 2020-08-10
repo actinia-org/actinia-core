@@ -447,7 +447,7 @@ class EphemeralProcessing(object):
                     r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     r = requests.post(self.webhook_finished, json=json.dumps(response_model))
-                if r.status_code != 200:
+                if r.status_code not in [200, 204]:
                     raise AsyncProcessError("Unable to access finished webhook URL %s"%self.webhook_finished)
             elif final is False and self.webhook_update is not None:
                 self.message_logger.info("Send POST request to update webhook url: %s"%self.webhook_update)
@@ -457,7 +457,7 @@ class EphemeralProcessing(object):
                     r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     r = requests.post(self.webhook_update, json=json.dumps(response_model))
-                if r.status_code != 200:
+                if r.status_code not in [200, 204]:
                     raise AsyncProcessError("Unable to access the update webhook URL %s"%self.webhook_update)
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
