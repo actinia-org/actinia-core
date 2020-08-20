@@ -101,24 +101,24 @@ FROM actinia_installation as actinia_test
 
 WORKDIR /src/actinia_core
 COPY --from=build /src/actinia_core /src/actinia_core
-COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
+ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
 # TODO remove if all tests are running
 RUN rm -rf tests
-COPY tests_running tests
+# COPY tests_running tests
 
 RUN pip3 install iniconfig
-RUN make test
+#RUN make test
 
 
-# final image
-FROM actinia_installation as actinia
+## final image
+#FROM actinia_installation as actinia
 
-VOLUME /grassdb
-WORKDIR /src/actinia_core
+#VOLUME /grassdb
+#WORKDIR /src/actinia_core
 
-ENTRYPOINT ["/bin/sh"]
-CMD ["/src/start.sh"]
+#ENTRYPOINT ["/bin/sh"]
+#CMD ["/src/start.sh"]
 
-EXPOSE 8088
-EXPOSE 9191
+#EXPOSE 8088
+#EXPOSE 9191
