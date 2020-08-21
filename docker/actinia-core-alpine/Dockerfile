@@ -101,14 +101,25 @@ FROM actinia_installation as actinia_test
 
 WORKDIR /src/actinia_core
 COPY --from=build /src/actinia_core /src/actinia_core
-COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
+
+COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
+COPY actinia-test.cfg /etc/default/actinia_test
+#COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
+
+COPY tests_with_redis.sh tests_with_redis.sh
+COPY Makefile Makefile
+RUN chmod a+x tests_with_redis.sh
+
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
+ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
+
 # TODO remove if all tests are running
 RUN rm -rf tests
-# COPY tests_running tests
+COPY tests_running tests
 
+RUN apk add redis
 RUN pip3 install iniconfig
-#RUN make test
+RUN make test
 
 
 ## final image
