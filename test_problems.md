@@ -35,3 +35,6 @@ make test
     global_config.read(custom_actinia_cfg)
     global_config.REDIS_SERVER_PW
     ```
+
+## Nicht funktionierende Tests
+* test_login.py: test_create_get_delete_user
