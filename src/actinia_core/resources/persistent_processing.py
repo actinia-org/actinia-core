@@ -405,7 +405,7 @@ class PersistentProcessing(EphemeralProcessing):
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
-                       "hist", "vector"]
+                       "hist", "vector", "group"]
 
         for directory in directories:
             source_path = os.path.join(self.user_location_path, source_mapset, directory)
