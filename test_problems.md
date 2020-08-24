@@ -37,3 +37,5 @@ make test
 
 ## Nicht funktionierende Tests
 * test_login.py: test_create_get_delete_user
+* test_process_queue.py: is not listed in the tests
+* 
