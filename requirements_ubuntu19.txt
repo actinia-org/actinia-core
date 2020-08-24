@@ -1,6 +1,7 @@
 # Python3 requirements for actinia core and GRASS GIS latest
 
 boto3>=1.6.6
+colorlog
 docutils>=0.14
 Flask>=0.12.3
 Flask-HTTPAuth>=3.2.3
