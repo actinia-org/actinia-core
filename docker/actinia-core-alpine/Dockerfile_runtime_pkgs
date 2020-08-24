@@ -65,6 +65,12 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
     libffi-dev \
     "
 
+# coreutils is needed for 'du -sb' e.g. download_cache
+# (installed du is from busybox)
+ENV ACTINIA_RUNTIME_PACKAGES="\
+    coreutils \
+    "
+
 RUN apk update; \
     apk add --no-cache \
         $SNAPPY_RUNTIME_PACKAGES \
@@ -72,7 +78,8 @@ RUN apk update; \
         $GRASS_RUNTIME_PACKAGES \
         $GRASS_ADDONS_BUILD_PACKAGES \
         $ACTINIA_PLUGIN_INSTALL_PACKAGES \
-        $GOOGLE_CLOUD_BIGQUERY_PACKAGES
+        $GOOGLE_CLOUD_BIGQUERY_PACKAGES \
+        $ACTINIA_RUNTIME_PACKAGES
 
 COPY --from=pdal /usr/bin/pdal* /usr/bin/
 COPY --from=pdal /usr/lib/libpdal* /usr/lib/
