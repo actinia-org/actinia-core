@@ -119,6 +119,13 @@ COPY tests_running tests
 
 RUN apk add redis
 RUN pip3 install iniconfig
+
+# add data for tests
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_basic_spm_grass7.tar.gz && \
+  tar -xzvf nc_basic_spm_grass7.tar.gz && \
+  rm -f nc_basic_spm_grass7.tar.gz && \
+  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
+
 RUN make test
 
 

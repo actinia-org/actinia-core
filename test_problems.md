@@ -9,7 +9,6 @@ run tests inside docker
 ```
 docker run -it --mount type=bind,source="$(pwd)"/tests_running,target=/src/actinia_core/tests actinia-core:g78-stable-alpine /bin/sh
 
-redis-server &
 make test
 ```
 
