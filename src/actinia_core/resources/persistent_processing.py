@@ -421,7 +421,7 @@ class PersistentProcessing(EphemeralProcessing):
                             print(line.replace(source_mapset, target_mapset), end='')
                     else:
                         raise AsyncProcessError("group %s has no REF file"
-                                                %(group_file))
+                                                %(group_dir))
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
