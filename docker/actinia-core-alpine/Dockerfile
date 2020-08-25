@@ -130,9 +130,9 @@ COPY grassdb/nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
   unzip nc_spm_mapset_modis2015_2016_lst.zip && \
   rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
-  mv  modis_lst /actinia_core/grassdb/modis_lst
+  mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 
-RUN make test
+# RUN make test
 
 
 ## final image
