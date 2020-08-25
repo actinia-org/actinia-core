@@ -127,9 +127,12 @@ RUN pip3 install iniconfig
 #  rm -f nc_basic_spm_grass7.tar.gz && \
 #  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
 COPY grassdb/nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
+  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
+  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
+  mv  modis_lst /actinia_core/grassdb/modis_lst
 
-
-# RUN make test
+RUN make test
 
 
 ## final image
