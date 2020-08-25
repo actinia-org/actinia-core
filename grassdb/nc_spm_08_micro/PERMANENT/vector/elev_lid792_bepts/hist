@@ -1,0 +1,10 @@
+COMMAND: v.in.ascii -z -t -b input="BE3720079200WC20020829m.txt" output="ncfl_lidar_79200WC_pts" format="point" fs="|" skip=0 x=1 y=2 z=3 cat=0
+GISDBASE: /bigdata/grassdata05
+LOCATION: ncfromfile MAPSET: PERMANENT USER: helena DATE: Mon Nov  6 14:11:59 2006
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+COMMAND: v.select ainput="elev_lid792_bepts" atype="point,line,boundary,centroid,area" alayer=1 binput="templidclip" btype="point,line,boundary,centroid,area" blayer=1 output="elev_lid792_beptsclip" operator="overlap"
+GISDBASE: /local/home/helena/grassdata07
+LOCATION: nc_spm_07 MAPSET: PERMANENT USER: hmitaso DATE: Wed Dec 19 12:25:28 2007
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------

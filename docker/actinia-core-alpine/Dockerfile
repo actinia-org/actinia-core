@@ -18,7 +18,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v4 as actinia_installation
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v5 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -117,16 +117,19 @@ ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
 RUN rm -rf tests
 COPY tests_running tests
 
+# install things only for tests
 RUN apk add redis
 RUN pip3 install iniconfig
 
 # add data for tests
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_basic_spm_grass7.tar.gz && \
-  tar -xzvf nc_basic_spm_grass7.tar.gz && \
-  rm -f nc_basic_spm_grass7.tar.gz && \
-  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
+#RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_basic_spm_grass7.tar.gz && \
+#  tar -xzvf nc_basic_spm_grass7.tar.gz && \
+#  rm -f nc_basic_spm_grass7.tar.gz && \
+#  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
+COPY grassdb/nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 
-RUN make test
+
+# RUN make test
 
 
 ## final image

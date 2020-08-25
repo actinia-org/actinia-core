@@ -7,7 +7,7 @@ docker build  --file docker/actinia-core-alpine/Dockerfile  --tag actinia-core:g
 
 run tests inside docker
 ```
-docker run -it --mount type=bind,source="$(pwd)"/tests_running,target=/src/actinia_core/tests actinia-core:g78-stable-alpine /bin/sh
+docker run -it --mount type=bind,source="$(pwd)"/tests_running,target=/src/actinia_core/tests  --mount type=bind,source="$(pwd)"/grassdb/nc_spm_08_micro,target=/actinia_core/grassdb/nc_spm_08 actinia-core:g78-stable-alpine /bin/sh
 
 make test
 ```
@@ -38,4 +38,4 @@ make test
 ## Nicht funktionierende Tests
 * test_login.py: test_create_get_delete_user
 * test_process_queue.py: is not listed in the tests
-* 
+*

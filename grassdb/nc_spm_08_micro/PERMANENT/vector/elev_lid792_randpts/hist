@@ -1,0 +1,12 @@
+COMMAND: r.random input="elev_lid792_1m" n="6000" vector_output="elev_lid792_randpts"
+GISDBASE: /local/home/helena/grassdata
+LOCATION: nc_spm MAPSET: PERMANENT USER: hmitaso DATE: Mon Mar 19 00:37:45 2007
+---------------------------------------------------------------------------------
+COMMAND: v.db.connect -o map="elev_lid792_randpts@PERMANENT" driver="sqlite" database="/home/neteler/grassdata/nc_spm_latest/nc_spm_08/PERMANENT/sqlite/sqlite.db" table="elev_lid792_randpts" key="cat" layer="1" separator="|"
+GISDBASE: /home/neteler/grassdata/nc_spm_latest
+LOCATION: nc_spm_08 MAPSET: PERMANENT USER: neteler DATE: Mon Nov 26 16:55:11 2012
+---------------------------------------------------------------------------------
+COMMAND: v.db.connect -o map="elev_lid792_randpts@PERMANENT" driver="sqlite" database="$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db" table="elev_lid792_randpts" key="cat" layer="1" separator="|"
+GISDBASE: /home/neteler/grassdata
+LOCATION: nc_spm_08_grass7 MAPSET: PERMANENT USER: neteler DATE: Fri Dec  7 23:25:11 2012
+---------------------------------------------------------------------------------
