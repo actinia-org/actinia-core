@@ -22,9 +22,10 @@
 #######
 
 """
-Tests: Async Process Validation test case
+Tests: Async process2 test case
 """
 import unittest
+import warnings
 from flask.json import dumps as json_dumps
 
 try:
@@ -88,8 +89,6 @@ process_chain_legacy = {
 # Module  example for r.out.ascii with g.region adjustment and temporary file handling
 process_chain_new = {
     "version": 1,
-    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
-                 "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
         {
             "id": "1",
@@ -109,8 +108,7 @@ process_chain_new = {
             "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"export": {"type": "file", "format": "TXT"},
-                 "param": "output",
+                {"param": "output",
                  "value": "$file::out1"}
             ]
         },
@@ -125,8 +123,7 @@ process_chain_new = {
             "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"export": {"type": "file", "format": "TXT"},
-                 "param": "output",
+                {"param": "output",
                  "value": "$file::out2"}
             ]
         },
@@ -148,22 +145,37 @@ process_chain_ndvi = {
     "list": [
         {"id": "importer_1",
          "module": "importer",
-         "inputs": [{"import_descr": {"source": "S2B_MSIL1C_20171010T131249_N0205_R081_T26VPR_20171010T131243",
+         "inputs": [{"import_descr": {"source": "S2A_MSIL1C_20170817T130251_N0205_R095_T23LRJ_20170817T130509",
                                       "type": "sentinel2",
                                       "sentinel_band": "B04"},
                      "param": "map",
                      "value": "B04"},
-                    {"import_descr": {"source": "S2B_MSIL1C_20171010T131249_N0205_R081_T26VPR_20171010T131243",
+                    {"import_descr": {"source": "S2A_MSIL1C_20170817T130251_N0205_R095_T23LRJ_20170817T130509",
                                       "type": "sentinel2",
                                       "sentinel_band": "B08"},
                      "param": "map",
-                     "value": "B08"}]},
+                     "value": "B08"},
+                    {"import_descr": {"source": "https://storage.googleapis.com/graas-geodata/brazil_polygon.json",
+                                      "type": "vector"},
+                     "param": "map",
+                     "value": "polygon"}]},
 
         {"id": "g_region_1",
          "module": "g.region",
          "inputs": [{"param": "raster",
                      "value": "B04"}],
          "flags": "g"},
+
+        {"id": "g_region_2",
+         "module": "g.region",
+         "inputs": [{"param": "vector",
+                     "value": "polygon"}],
+         "flags": "g"},
+
+        {"id": "r_mask",
+         "module": "r.mask",
+         "inputs": [{"param": "vector",
+                     "value": "polygon"}]},
 
         {"id": "rmapcalc_1",
          "module": "r.mapcalc",
@@ -182,8 +194,6 @@ process_chain_ndvi = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
-                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
@@ -253,97 +263,64 @@ process_chain_ndvi_landsat = {
                       "param": "map",
                       "value": "NDVI"}]}
     ],
-    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
-                 "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
 }
 
-process_chain_landsat = {
-    "list": [
-        {"id": "importer_1",
-         "module": "importer",
-         "inputs": [{"import_descr": {"source": "LT52170762005240COA00",
-                                      "type": "landsat",
-                                      "landsat_atcor": "dos1"},
-                     "param": "map",
-                     "value": "ignored"},
-                    {"import_descr": {"source": "LE70030041999205KIS00",
-                                      "type": "landsat",
-                                      "landsat_atcor": "dos1"},
-                     "param": "map",
-                     "value": "ignored"},
-                    {"import_descr": {"source": "LC80050042013137LGN01",
-                                      "type": "landsat",
-                                      "landsat_atcor": "dos1"},
-                     "param": "map",
-                     "value": "ignored"},
-                    {"import_descr": {"source": "LE72170762002288CUB00",
-                                      "type": "landsat",
-                                      "landsat_atcor": "dos1"},
-                     "param": "map",
-                     "value": "ignored"},
-                    {"import_descr": {"source": "LT52170762007278COA00",
-                                      "type": "landsat",
-                                      "landsat_atcor": "dos1"},
-                     "param": "map",
-                     "value": "ignored"}
-                    ]
-         }],
-    "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished"},
-    "version": "1"
-}
 
-class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
+class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_legacy),
                               content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 6)
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
     def test_async_processing_new(self):
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_new),
                               content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 6)
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
     def test_async_processing_new_ndvi(self):
-        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_ndvi),
-                              content_type="application/json")
+        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
+            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async',
+                                  headers=self.admin_auth_header,
+                                  data=json_dumps(process_chain_ndvi),
+                                  content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        print(resp)
-        self.assertEqual(len(resp["process_results"]), 29)
+            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                           http_status=200, status="finished")
+        else:
+            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+
+    def test_async_processing_new_ndvi_export(self):
+        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
+            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
+                                  headers=self.admin_auth_header,
+                                  data=json_dumps(process_chain_ndvi),
+                                  content_type="application/json")
+
+            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                           http_status=200, status="finished")
+        else:
+            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
 
     def test_async_processing_new_ndvi_export_landsat(self):
-        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_ndvi_landsat),
-                              content_type="application/json")
+        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
+            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
+                                  headers=self.admin_auth_header,
+                                  data=json_dumps(process_chain_ndvi_landsat),
+                                  content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 26)
-
-    def test_async_processing_landsat(self):
-        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain_landsat),
-                              content_type="application/json")
-
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
-        self.assertEqual(len(resp["process_results"]), 96)
+            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                           http_status=200, status="finished")
+        else:
+            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
 
 
 if __name__ == '__main__':

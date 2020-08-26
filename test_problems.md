@@ -38,5 +38,7 @@ make test
 ## Nicht funktionierende Tests
 * test_login.py: test_create_get_delete_user
 * test_async_raster_export.py: test_export_region
+* test_resource_logging.py: test_list, test_logging
+* test_async_process_validation.py: test_async_processing_new (Webhook)
 * test_process_queue.py: is not listed in the tests
 *
