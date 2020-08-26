@@ -26,7 +26,6 @@ Tests: Async Process Validation test case
 """
 import os
 import unittest
-import warnings
 from flask.json import dumps as json_dumps
 
 try:
@@ -317,45 +316,42 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     #                                           http_status=200, status="finished")
     #     self.assertEqual(len(resp["process_results"]), 6)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_ndvi),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_ndvi),
+                              content_type="application/json")
 
-            resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                                  http_status=200, status="finished")
-            print(resp)
-            self.assertEqual(len(resp["process_results"]), 29)
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                              http_status=200, status="finished")
+        print(resp)
+        self.assertEqual(len(resp["process_results"]), 29)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export_landsat(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_ndvi_landsat),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_ndvi_landsat),
+                              content_type="application/json")
 
-            resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                                  http_status=200, status="finished")
-            self.assertEqual(len(resp["process_results"]), 26)
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                              http_status=200, status="finished")
+        self.assertEqual(len(resp["process_results"]), 26)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_landsat(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_landsat),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_landsat),
+                              content_type="application/json")
 
-            resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                                  http_status=200, status="finished")
-            self.assertEqual(len(resp["process_results"]), 96)
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                              http_status=200, status="finished")
+        self.assertEqual(len(resp["process_results"]), 96)
 
 
 if __name__ == '__main__':

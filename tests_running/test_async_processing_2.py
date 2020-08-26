@@ -24,8 +24,8 @@
 """
 Tests: Async process2 test case
 """
+import os
 import unittest
-import warnings
 from flask.json import dumps as json_dumps
 
 try:
@@ -286,41 +286,38 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_ndvi),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_ndvi),
+                              content_type="application/json")
 
-            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                           http_status=200, status="finished")
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_ndvi),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_ndvi),
+                              content_type="application/json")
 
-            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                           http_status=200, status="finished")
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export_landsat(self):
-        if 'GOOGLE_APPLICATION_CREDENTIALS' in os.environ and 'GOOGLE_CLOUD_PROJECT' in os.environ:
-            rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
-                                  headers=self.admin_auth_header,
-                                  data=json_dumps(process_chain_ndvi_landsat),
-                                  content_type="application/json")
+        rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_ndvi_landsat),
+                              content_type="application/json")
 
-            self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                           http_status=200, status="finished")
-        else:
-            warnings.warn("'GOOGLE_APPLICATION_CREDENTIALS' abd 'GOOGLE_CLOUD_PROJECT' are not set")
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
 
 if __name__ == '__main__':

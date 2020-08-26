@@ -69,6 +69,7 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
 # (installed du is from busybox)
 ENV ACTINIA_RUNTIME_PACKAGES="\
     coreutils \
+    zip \
     "
 
 RUN apk update; \

@@ -1,0 +1,16 @@
+COMMAND: v.in.ogr dsn="poi_names_wake_nc_spm.shp" output="poi_names_wake" min_area=0.0001 snap=-1
+GISDBASE: /home/neteler/grassdata
+LOCATION: nc_spm_06 MAPSET: PERMANENT USER: neteler DATE: Wed Aug 15 10:39:09 2007
+---------------------------------------------------------------------------------
+COMMAND: v.db.dropcol "poi_names_wake" "col=cat_"
+GISDBASE: /home/neteler/grassdata
+LOCATION: nc_spm_06 MAPSET: PERMANENT USER: neteler DATE: Wed Aug 15 10:39:10 2007
+---------------------------------------------------------------------------------
+COMMAND: v.db.connect -o map="poi_names_wake@PERMANENT" driver="sqlite" database="/home/neteler/grassdata/nc_spm_latest/nc_spm_08/PERMANENT/sqlite/sqlite.db" table="poi_names_wake" key="cat" layer="1" separator="|"
+GISDBASE: /home/neteler/grassdata/nc_spm_latest
+LOCATION: nc_spm_08 MAPSET: PERMANENT USER: neteler DATE: Mon Nov 26 16:54:59 2012
+---------------------------------------------------------------------------------
+COMMAND: v.db.connect -o map="poi_names_wake@PERMANENT" driver="sqlite" database="$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db" table="poi_names_wake" key="cat" layer="1" separator="|"
+GISDBASE: /home/neteler/grassdata
+LOCATION: nc_spm_08_grass7 MAPSET: PERMANENT USER: neteler DATE: Fri Dec  7 23:25:10 2012
+---------------------------------------------------------------------------------

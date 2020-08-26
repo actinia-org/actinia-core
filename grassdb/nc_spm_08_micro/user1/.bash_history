@@ -1,0 +1,10 @@
+g.list rast
+g.list vect
+g.list all
+g.list all
+g.list all
+g.list all
+g.list all
+g.list all
+g.list rast
+g.list rast
