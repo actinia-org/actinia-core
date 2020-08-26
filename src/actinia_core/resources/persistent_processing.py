@@ -412,17 +412,6 @@ class PersistentProcessing(EphemeralProcessing):
             source_path = os.path.join(self.user_location_path, source_mapset, directory)
             target_path = os.path.join(self.user_location_path, target_mapset)
 
-            if directory == "group":
-                group_dirs = os.listdir(source_path)
-                for group_dir in group_dirs:
-                    group_file = os.path.join(source_path, group_dir, "REF")
-                    if os.path.isfile(group_file):
-                        for line in fileinput.input(group_file, inplace=True):
-                            print(line.replace(source_mapset, target_mapset), end='')
-                    else:
-                        raise AsyncProcessError("group %s has no REF file"
-                                                %(group_dir))
-
             if os.path.exists(source_path) is True:
                 if directory == "group":
                     group_dirs = os.listdir(source_path)
