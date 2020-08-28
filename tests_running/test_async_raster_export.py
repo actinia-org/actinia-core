@@ -58,24 +58,23 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
         time.sleep(1)
 
-    # TODO
-    # def test_export_region(self):
-    #
-    #     rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async_orig',
-    #                          headers=self.user_auth_header)
-    #     resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
-    #
-    #     # Get the exported results
-    #     urls = resp["urls"]["resources"]
-    #
-    #     for url in urls:
-    #         print(url)
-    #         rv = self.server.get(url, headers=self.user_auth_header)
-    #         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-    #         self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s"%rv.mimetype)
-    #         print(rv.headers)
-    #
-    #     time.sleep(1)
+    def test_export_region(self):
+
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async_orig',
+                             headers=self.user_auth_header)
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
+
+        # Get the exported results
+        urls = resp["urls"]["resources"]
+
+        for url in urls:
+            print(url)
+            rv = self.server.get(url, headers=self.user_auth_header)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s"%rv.mimetype)
+            print(rv.headers)
+
+        time.sleep(1)
 
     def test_export_error(self):
 
