@@ -246,13 +246,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             driver_list = [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]
             if 'COG' not in driver_list:
                 format = 'GTiff'
-                # todo: insert log message
-            else:
-                print('!!!!!FORMAT SET TO COG!!!!!')
+                self.message_logger.info("COG driver not available, using GTiff driver")
 
         # Save the file in the temporary directory of the temporary gisdb
         output_path = os.path.join(self.temp_file_path, file_name)
-
 
         module_name = "r.out.gdal"
         args = ["-fmt", "input=%s" % raster_name, "format=%s" % format, "output=%s" % output_path]
@@ -261,8 +258,11 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             # generate overviews with compression:
             os.environ['COMPRESS_OVERVIEW'] = "LZW"
             args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
+
+        # DELETE ONCE GDAL 3.2 HAS BEEN RELEASED
         elif format == "COG":
             args.append("createopt=OVERVIEWS=NONE")
+        ###
 
         if additional_options:
             args.extend(additional_options)
@@ -275,12 +275,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         self._update_num_of_steps(1)
         self._run_module(p)
 
-        # DELETE IF GDAL 3.2
+        # DELETE ONCE GDAL 3.2 HAS BEEN RELEASED
         if format == "COG":
             Image = gdal.Open(output_path, 1) # 0 = read-only, 1 = read-write.
             gdal.SetConfigOption('COMPRESS_OVERVIEW', 'LZW')
             Image.BuildOverviews("NEAREST", [2,4,8,16])
             del Image
+        ####
 
         return file_name, output_path
 
