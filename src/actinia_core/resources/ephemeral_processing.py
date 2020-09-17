@@ -1081,6 +1081,10 @@ class EphemeralProcessing(object):
 
         It creates the temporary file paths.
 
+        The returncode of 0 indicates that it ran successfully. A negative value -N
+        indicates that the child was terminated by signal N (POSIX only; see also
+        https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
+
         Args:
             process (common.process_object.Process): The process object that should be executed
             poll_time (float): The time to check the process status and to send updates to the resource db
