@@ -199,7 +199,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         self.storage_interface = rdc.create_storage_interface()
 
     def _export_raster(self, raster_name,
-                       format="GTiff",
+                       format="COG",
                        additional_options=[],
                        use_raster_region=False):
         """Export a specific raster layer with r.out.gdal as GeoTiff.
@@ -209,11 +209,12 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         The region of the raster layer can be used for export. In this case a temporary region
         will be used for export, so that the original region of the mapset is not modified.
+        COG-Driver: https://gdal.org/drivers/raster/cog.html
 
         Args:
             raster_name (str): The name of the raster layer
-            format (str): GTiff
-            additional_options (list): Unused
+            format (str): COG
+            additional_options (list): Additional GDAL create options
             use_raster_region (bool): Use the region of the raster layer for export
 
         Returns:
@@ -224,12 +225,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         """
         # Export the layer
-        prefix = ".tiff"
-        if format == "GTiff":
-            prefix = ".tiff"
+        suffix = ".tif"
 
         # Remove a potential mapset
-        file_name = raster_name.split("@")[0] + prefix
+        file_name = raster_name.split("@")[0] + suffix
 
         if use_raster_region is True:
 
@@ -241,14 +240,29 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             self._update_num_of_steps(1)
             self._run_module(p)
 
+        if format == 'COG':
+            # check if GDAL has COG driver
+            from osgeo import gdal
+            driver_list = [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]
+            if 'COG' not in driver_list:
+                format = 'GTiff'
+                # todo: insert log message
+            else:
+                print('!!!!!FORMAT SET TO COG!!!!!')
+
         # Save the file in the temporary directory of the temporary gisdb
         output_path = os.path.join(self.temp_file_path, file_name)
 
-        # generate overviews with compression:
-        os.environ['COMPRESS_OVERVIEW'] = "LZW"
+
         module_name = "r.out.gdal"
-        args = ["-fmt", "input=%s"%raster_name, "format=%s"%format,
-                "createopt=COMPRESS=LZW,TILED=YES", "overviews=5", "output=%s"%output_path]
+        args = ["-fmt", "input=%s" % raster_name, "format=%s" % format, "output=%s" % output_path]
+
+        if format == "GTiff":
+            # generate overviews with compression:
+            os.environ['COMPRESS_OVERVIEW'] = "LZW"
+            args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
+        elif format == "COG":
+            args.append("createopt=OVERVIEWS=NONE")
 
         if additional_options:
             args.extend(additional_options)
@@ -260,6 +274,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         self._update_num_of_steps(1)
         self._run_module(p)
+
+        # DELETE IF GDAL 3.2
+        if format == "COG":
+            Image = gdal.Open(output_path, 1) # 0 = read-only, 1 = read-write.
+            gdal.SetConfigOption('COMPRESS_OVERVIEW', 'LZW')
+            Image.BuildOverviews("NEAREST", [2,4,8,16])
+            del Image
 
         return file_name, output_path
 
