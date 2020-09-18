@@ -221,6 +221,8 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
         self.required_mapsets.append(self.mapset_name)
         self._create_temporary_grass_environment(source_mapset_name="PERMANENT")
 
+        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will be fixed in GDAL 3.1.4
+        # use r.out.gdal -c to avoid the bug
         format = "COG"
         from osgeo import gdal
         if "COG" not in [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
