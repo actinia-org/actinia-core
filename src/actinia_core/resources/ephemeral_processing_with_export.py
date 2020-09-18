@@ -258,10 +258,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             os.environ['COMPRESS_OVERVIEW'] = "LZW"
             args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
 
-        # current workaround
+        # current workaround due to color table export
         # TODO: DELETE AND TEST ONCE GDAL 3.2 HAS BEEN RELEASED
         elif format == "COG":
-            args.append("createopt=OVERVIEWS=NONE")
+            args.append("-c")
 
         if additional_options:
             args.extend(additional_options)
@@ -273,14 +273,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         self._update_num_of_steps(1)
         self._run_module(p)
-
-        # current workaround
-        # TODO:DELETE AND TEST ONCE GDAL 3.2 HAS BEEN RELEASED
-        if format == "COG":
-            Image = gdal.Open(output_path, 1)  # 0 = read-only, 1 = read-write.
-            gdal.SetConfigOption('COMPRESS_OVERVIEW', 'LZW')
-            Image.BuildOverviews("NEAREST", [2, 4, 8, 16])
-            del Image
 
         return file_name, output_path
 

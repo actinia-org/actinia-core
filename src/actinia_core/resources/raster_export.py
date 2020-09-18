@@ -53,7 +53,7 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as COG if the COG driver is available, otherwise it is exported as GeoTIFF.'
+        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
                        'The link to the exported raster map layer is located in the JSON response.'
                        'The current region settings of the mapset are used to export the raster layer. Minimum required user role: user.',
         'parameters': [
@@ -128,7 +128,7 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as GeoTiff or COG (if COG driver available) using the raster map layer specific region. '
+        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
                        'The link to the exported raster map '
                        'layer is located in the JSON response. Minimum required user role: user.',
         'parameters': [
