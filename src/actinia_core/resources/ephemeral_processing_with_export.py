@@ -214,7 +214,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         Args:
             raster_name (str): The name of the raster layer
             format (str): COG
-            additional_options (list): Additional GDAL create options
+            additional_options (list): Unused
             use_raster_region (bool): Use the region of the raster layer for export
 
         Returns:
@@ -226,7 +226,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
         # Export the layer
         suffix = ".tif"
-
         # Remove a potential mapset
         file_name = raster_name.split("@")[0] + suffix
 
@@ -259,10 +258,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             os.environ['COMPRESS_OVERVIEW'] = "LZW"
             args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
 
-        # DELETE ONCE GDAL 3.2 HAS BEEN RELEASED
+        # current workaround
+        # TODO: DELETE AND TEST ONCE GDAL 3.2 HAS BEEN RELEASED
         elif format == "COG":
             args.append("createopt=OVERVIEWS=NONE")
-        ###
 
         if additional_options:
             args.extend(additional_options)
@@ -275,13 +274,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         self._update_num_of_steps(1)
         self._run_module(p)
 
-        # DELETE ONCE GDAL 3.2 HAS BEEN RELEASED
+        # current workaround
+        # TODO:DELETE AND TEST ONCE GDAL 3.2 HAS BEEN RELEASED
         if format == "COG":
-            Image = gdal.Open(output_path, 1) # 0 = read-only, 1 = read-write.
+            Image = gdal.Open(output_path, 1)  # 0 = read-only, 1 = read-write.
             gdal.SetConfigOption('COMPRESS_OVERVIEW', 'LZW')
-            Image.BuildOverviews("NEAREST", [2,4,8,16])
+            Image.BuildOverviews("NEAREST", [2, 4, 8, 16])
             del Image
-        ####
 
         return file_name, output_path
 
