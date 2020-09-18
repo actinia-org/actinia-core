@@ -82,6 +82,9 @@ class ProcessLogModel(Schema):
     is invoked, this model must be used to inform the user of the return process state. Each process
     has parameters, stdout/stderr output and a return value. This model is not designed to inform
     about running processes, but about finished processes.
+    The return_code of 0 indicates that it ran successfully. A negative value -N
+    indicates that the child was terminated by signal N (POSIX only; see also
+    https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
     """
     type = 'object'
     properties = {
