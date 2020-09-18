@@ -259,7 +259,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
 
         # current workaround due to color table export
-        # TODO: DELETE AND TEST ONCE GDAL 3.2 HAS BEEN RELEASED
+        # TODO: DELETE AND TEST ONCE GDAL 3.1.4 HAS BEEN RELEASED
         elif format == "COG":
             args.append("-c")
 
