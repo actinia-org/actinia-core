@@ -99,7 +99,7 @@ __email__ = "soerengebbert@googlemail.com"
 API_VERSION="v1"
 
 # This is the URL prefix that must be used in the tests
-URL_PREFIX="/api/%s"%API_VERSION
+URL_PREFIX="/api/%s" %API_VERSION
 
 
 flask_app = Flask(__name__)

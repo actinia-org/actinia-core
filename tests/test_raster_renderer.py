@@ -48,32 +48,32 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render?'
                              'n=228500&s=215000&w=630000&e=645000',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render?'
                              'n=228500&s=215000&w=630000&e=645000&width=100&height=100',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_3(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render?'
                              'width=100&height=100',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_error_1(self):
         # North is smaller then south
@@ -81,8 +81,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              'n=-228500&s=215000',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_error_2(self):
         # Negative size
@@ -90,16 +90,16 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              'render?&width=-100&height=-100',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_args_error_3(self):
         # Raster does not exist
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevat/render?',
                              headers=self.user_auth_header)
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     #################### RGB IMAGE ############################################
 
@@ -108,8 +108,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              'red=lsat5_1987_10&blue=lsat5_1987_20&green=lsat5_1987_30',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -117,8 +117,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                           '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_3(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -126,8 +126,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                           '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_green(self):
         # No green raster layer
@@ -137,8 +137,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_blue(self):
         # No blue raster layer
@@ -148,8 +148,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_red(self):
         # No red raster layer
@@ -159,8 +159,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_wrong_raster(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -169,8 +169,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_mapset_in_name_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -178,8 +178,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_mapset_in_name_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -187,8 +187,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_rgb_error_mapset_in_name_3(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -196,8 +196,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     #################### SHADE IMAGE ##########################################
 
@@ -206,8 +206,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              'shade=aspect&color=elevation',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_shade_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/render_shade?'
@@ -215,8 +215,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              '&shade=aspect&color=elevation',
                              headers=self.user_auth_header)
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_error_mapset_in_name_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/render_shade?'
@@ -224,8 +224,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_error_mapset_in_name_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/render_shade?'
@@ -233,8 +233,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_raster_layer_image_error_missing_color_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/render_shade?'
@@ -242,8 +242,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
 
 if __name__ == '__main__':

@@ -37,7 +37,7 @@ class AsyncProcessError(Exception):
     """Raise this exception in case the asynchronous processing faces an error
     """
     def __init__(self, message):
-        message = "%s:  %s"%(str(self.__class__.__name__), message)
+        message = "%s:  %s" %(str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
@@ -45,7 +45,7 @@ class AsyncProcessTermination(Exception):
     """Raise this exception in case the termination requests was executed successfully
     """
     def __init__(self, message):
-        message = "%s:  %s"%(str(self.__class__.__name__), message)
+        message = "%s:  %s" %(str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
@@ -53,7 +53,7 @@ class AsyncProcessTimeLimit(Exception):
     """Raise this exception in case the process time limit was reached
     """
     def __init__(self, message):
-        message = "%s:  %s"%(str(self.__class__.__name__), message)
+        message = "%s:  %s" %(str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
@@ -62,5 +62,5 @@ class GoogleCloudAPIError(Exception):
     when accessing the google API
     """
     def __init__(self, message):
-        message = "%s:  %s"%(str(self.__class__.__name__), message)
+        message = "%s:  %s" %(str(self.__class__.__name__), message)
         Exception.__init__(self, message)
