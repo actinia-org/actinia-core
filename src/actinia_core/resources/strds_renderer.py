@@ -214,7 +214,7 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
                                                                    legacy=False)
         where_list = []
 
-        if "start_time" in options :
+        if "start_time" in options:
             where_list.append("start_time >= \'%s\'" %options["start_time"])
         if "end_time" in options:
             where_list.append("end_time  <= \'%s\'" %options["end_time"])
