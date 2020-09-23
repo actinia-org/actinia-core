@@ -43,63 +43,63 @@ __email__ = "soerengebbert@googlemail.com"
 
 process_chain_short_1 = {
    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+       "module":"g.region",
+       "inputs":{
+           "raster":"elevation@PERMANENT",
+           "res":"1000"
         },
-        "flags":"p",
-        "verbose":True
+       "flags":"p",
+       "verbose":True
    },
    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
+       "module":"r.slope.aspect",
+       "inputs":{
+           "elevation":"elevation@PERMANENT",
+           "format":"degrees",
+           "min_slope":"0.0"
         },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect_1"
+       "outputs":{
+           "aspect":{
+               "name":"my_aspect_1"
             },
-            "slope":{
-                "name":"my_slope_1"
+           "slope":{
+               "name":"my_slope_1"
             }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+       "flags":"a",
+       "overwrite":False,
+       "verbose":True
    }
 }
 
 process_chain_short_2 = {
    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+       "module":"g.region",
+       "inputs":{
+           "raster":"elevation@PERMANENT",
+           "res":"1000"
         },
-        "flags":"p",
-        "verbose":True
+       "flags":"p",
+       "verbose":True
    },
    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
+       "module":"r.slope.aspect",
+       "inputs":{
+           "elevation":"elevation@PERMANENT",
+           "format":"degrees",
+           "min_slope":"0.0"
         },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect_2"
+       "outputs":{
+           "aspect":{
+               "name":"my_aspect_2"
             },
-            "slope":{
-                "name":"my_slope_2"
+           "slope":{
+               "name":"my_slope_2"
             }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+       "flags":"a",
+       "overwrite":False,
+       "verbose":True
    }
 }
 
@@ -116,10 +116,10 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         """
 
         for mapset in test_mapsets:
-                # Unlock mapset for deletion
-                rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % ("nc_spm_08", mapset),
-                                      headers=self.admin_auth_header)
-                print(rv.data)
+            # Unlock mapset for deletion
+            rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % ("nc_spm_08", mapset),
+                                  headers=self.admin_auth_header)
+            print(rv.data)
 
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)

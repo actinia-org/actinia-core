@@ -112,16 +112,16 @@ class GrassEnvironment(ProcessLogging):
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
         self.env["GRASS_ADDON_BASE"] = grass_addon_path
         if os.name != 'posix':
-            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"\
-                                   + os.path.join(self.env["GISBASE"], "scripts") + ";"\
-                                   + os.path.join(self.env["GISBASE"], "lib") + ";"\
+            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"
+                                   + os.path.join(self.env["GISBASE"], "scripts") + ";"
+                                   + os.path.join(self.env["GISBASE"], "lib") + ";"
                                    + os.path.join(self.env["GISBASE"], "extralib"))
-            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ";"\
+            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ";"
                                          + os.path.join(self.env["GISBASE"], "etc", "python"))
         else:
-            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ":"\
+            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ":"
                                    + os.path.join(self.env["GISBASE"], "scripts"))
-            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ":"\
+            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ":"
                                          + os.path.join(self.env["GISBASE"], "etc", "python"))
 
         self.set()
@@ -179,8 +179,8 @@ class GrassGisRC(ProcessLogging):
     def write(self, gisrc_path):
         if os.path.isdir(gisrc_path):
             try:
-               self.__gisrc_ile = os.path.join(gisrc_path, "gisrc")
-               self.__write()
+                self.__gisrc_ile = os.path.join(gisrc_path, "gisrc")
+                self.__write()
             except:
                 raise GrassInitError("Error writing the gisrc file")
 

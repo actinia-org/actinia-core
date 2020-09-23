@@ -99,7 +99,7 @@ vector_layer_buffer = {
                 "param": "map",
                 "value": "buf_point"
             }]
-        },
+    },
     ],
     "version": "1"
 }
@@ -148,7 +148,7 @@ vector_layer_clean = {
                 "param": "map",
                 "value": "map_cleaned"
             }]
-        },
+    },
     ],
     "version": "1"
 }
