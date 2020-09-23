@@ -58,8 +58,8 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/download_cache',
                              headers=self.admin_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         self.assertTrue("used" in json_load(rv.data)["process_results"])
         self.assertTrue("quota" in json_load(rv.data)["process_results"])
@@ -69,14 +69,14 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/download_cache',
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/download_cache',
                              headers=self.admin_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         self.assertTrue("used" in json_load(rv.data)["process_results"])
         self.assertTrue("quota" in json_load(rv.data)["process_results"])
@@ -94,8 +94,8 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/download_cache',
                              headers=self.admin_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_download_cache_error_2(self):
 
@@ -108,8 +108,8 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/download_cache',
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
 if __name__ == '__main__':
     unittest.main()

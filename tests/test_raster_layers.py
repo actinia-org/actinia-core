@@ -44,11 +44,11 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def create_raster_layer(self, mapset_name, raster_name):
         # Remove potentially existing raster layer
-        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
+        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' %(mapset_name, raster_name),
                                 headers=self.user_auth_header)
         # print(rv.data)
         # Create
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(mapset_name, raster_name),
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' %(mapset_name, raster_name),
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
                                                          "e":645000,"w":630000,
@@ -56,15 +56,15 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
                                                "expression": "1"}),
                               content_type="application/json")
         # print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
     def test_list_raster_layers(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers',
                              headers=self.user_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         map_list = json_loads(rv.data)["process_results"]
         self.assertTrue("elevation" in map_list)
@@ -76,8 +76,8 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*',
                              headers=self.user_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         map_list = json_loads(rv.data)["process_results"]
         self.assertFalse("elevation" in map_list)
@@ -89,8 +89,8 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=NONE',
                              headers=self.user_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         map_list = json_loads(rv.data)["process_results"]
         self.assertTrue(len(map_list) == 0)
@@ -116,11 +116,11 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # List raster layer
-        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*'%new_mapset,
+        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*' %new_mapset,
                              headers=self.user_auth_header)
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
         # Check
         map_list_result = json_loads(rv.data)["process_results"]
         for map_name in map_list_result:
@@ -128,7 +128,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # Delete raster layers
         for map_name in map_list:
-            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
+            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' %(new_mapset, map_name),
                                     headers=self.user_auth_header)
             print(rv.data.decode())
 
@@ -147,29 +147,29 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             self.create_raster_layer(new_mapset, map_name)
 
         # Rename raster layer
-        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
+        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers' %new_mapset,
                              headers=self.user_auth_header,
                              data=json_dumps(rename_map_list),
                              content_type="application/json")
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         # Rename raster layer
-        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers'%new_mapset,
+        rv = self.server.put(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers' %new_mapset,
                              headers=self.user_auth_header,
                              data=json_dumps(rename_map_list),
                              content_type="application/json")
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
 
         # Delete raster layers
         for map_name in new_map_list:
-            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s'%(new_mapset, map_name),
+            rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' %(new_mapset, map_name),
                                     headers=self.user_auth_header)
             print(rv.data.decode())
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
 
 
 if __name__ == '__main__':

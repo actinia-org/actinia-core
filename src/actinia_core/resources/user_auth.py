@@ -256,7 +256,7 @@ def check_location_mapset_module_access(user_credentials,
 
         if location_name not in accessible_datasets:
             resp = {"Status":"error",
-                    "Messages":"Unauthorized access to location <%s>"%location_name}
+                    "Messages":"Unauthorized access to location <%s>" %location_name}
             return (401, resp)
 
         # Check if the mapset is allowed to be accessed
@@ -265,7 +265,7 @@ def check_location_mapset_module_access(user_credentials,
             if not accessible_datasets[location_name] or \
                             mapset_name not in accessible_datasets[location_name]:
                 resp = {"Status":"error",
-                        "Messages":"Unauthorized access to mapset <%s> in location <%s>"%(mapset_name,
+                        "Messages":"Unauthorized access to mapset <%s> in location <%s>" %(mapset_name,
                                                                                          location_name)}
                 return (401, resp)
 
@@ -274,7 +274,7 @@ def check_location_mapset_module_access(user_credentials,
         accessible_modules = user_credentials["permissions"]["accessible_modules"]
         if module_name not in accessible_modules:
             resp = {"Status":"error",
-                    "Messages":"Module <%s> is not supported"%module_name}
+                    "Messages":"Module <%s> is not supported" %module_name}
             return (401, resp)
 
     return None
