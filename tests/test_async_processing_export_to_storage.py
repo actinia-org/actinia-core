@@ -110,8 +110,8 @@ class AsyncProcessExport2TestCaseAdmin(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
             print(rv.headers)
             print(rv.iter_encoded())
 
@@ -137,7 +137,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
             print(url)
             rv = requests.get(url)
             print(rv)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
     def test_termination(self):
 
@@ -176,7 +176,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
             print(url)
             rv = requests.get(url)
             print(rv)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
     def test_termination(self):
 

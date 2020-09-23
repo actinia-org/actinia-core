@@ -243,9 +243,9 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
         if "@" in args["blue"]:
             return self.get_error_response(message="Mapset name is not allowed in layer names")
 
-        options["red"] = "%s@%s" %(args["red"], mapset_name)
-        options["green"] = "%s@%s" %(args["green"], mapset_name)
-        options["blue"] = "%s@%s" %(args["blue"], mapset_name)
+        options["red"] = "%s@%s" % (args["red"], mapset_name)
+        options["green"] = "%s@%s" % (args["green"], mapset_name)
+        options["blue"] = "%s@%s" % (args["blue"], mapset_name)
 
         return options
 
@@ -425,7 +425,7 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s,%s" %(options["red"],
+        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s,%s" % (options["red"],
                                                                       options["green"],
                                                                       options["blue"])}}
         pc["2"] = region_pc
@@ -472,8 +472,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
         if "@" in args["color"]:
             return self.get_error_response(message="Mapset name is not allowed in layer names")
 
-        options["shade"] = "%s@%s" %(args["shade"], mapset_name)
-        options["color"] = "%s@%s" %(args["color"], mapset_name)
+        options["shade"] = "%s@%s" % (args["shade"], mapset_name)
+        options["color"] = "%s@%s" % (args["color"], mapset_name)
 
         return options
 
@@ -642,7 +642,7 @@ class EphemeralRasterShadeRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s" %(options["shade"],
+        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s" % (options["shade"],
                                                                    options["color"])}}
         pc["2"] = region_pc
         pc["3"] = {"module":"d.shade","inputs":{"shade":options["shade"],

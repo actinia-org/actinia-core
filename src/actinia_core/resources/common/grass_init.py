@@ -45,7 +45,7 @@ class GrassInitError(Exception):
     initialization error of the GRASS environment
     """
     def __init__(self, message):
-        message = "%s:  %s" %(str(self.__class__.__name__), message)
+        message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
         logger = MessageLogger()
         logger.error(message)
@@ -132,7 +132,7 @@ class GrassEnvironment(ProcessLogging):
             try:
                 self.env[key] = os.getenv(key, self.env[key])
             except Exception as e:
-                raise GrassInitError("Error getting grass environmental variables. Exception: %s" %str(e))
+                raise GrassInitError("Error getting grass environmental variables. Exception: %s" % str(e))
 
     def set(self):
         for key in self.env:
@@ -145,7 +145,7 @@ class GrassEnvironment(ProcessLogging):
                 os.environ[key] = value
                 self.log_debug(key + "=" + value)
             except Exception as e:
-                raise GrassInitError("Error setting grass environmental variables. Exception: %s" %str(e))
+                raise GrassInitError("Error setting grass environmental variables. Exception: %s" % str(e))
 
 
 class GrassGisRC(ProcessLogging):
@@ -323,22 +323,22 @@ class GrassModuleRunner(ProcessLogging):
         # Search the module in the bin directory
         grass_module_path = os.path.join(self.grassbase, "bin", grass_module)
         pathList.append(grass_module_path)
-        self.log_debug("Looking for %s" %grass_module_path)
+        self.log_debug("Looking for %s" % grass_module_path)
 
         if os.path.isfile(grass_module_path) is not True:
             grass_module_path = os.path.join(self.grassbase, "scripts", grass_module)
             pathList.append(grass_module_path)
-            self.log_debug("Looking for %s" %grass_module_path)
+            self.log_debug("Looking for %s" % grass_module_path)
             # if the module was not found in the bin dir, test the script directory
             if os.path.isfile(grass_module_path) is not True:
                 grass_module_path = os.path.join(self.grass_addon_path, "bin", grass_module)
                 pathList.append(grass_module_path)
-                self.log_debug("Looking for %s" %grass_module_path)
+                self.log_debug("Looking for %s" % grass_module_path)
                 # if the module was not found in the script dir, test the addon path
                 if os.path.isfile(grass_module_path) is not True:
                     grass_module_path = os.path.join(self.grass_addon_path, "scripts", grass_module)
                     pathList.append(grass_module_path)
-                    self.log_debug("Looking for %s" %grass_module_path)
+                    self.log_debug("Looking for %s" % grass_module_path)
                     if os.path.isfile(grass_module_path) is not True:
                         raise GrassInitError("GRASS module " + grass_module + " not found in " + str(pathList))
 
@@ -482,7 +482,7 @@ class GrassInitializer(ProcessLogging):
             shutil.rmtree(self.gisrc_path)
         else:
             logger = MessageLogger()
-            logger.error("Unable to delete temporary grass database <%s>" %self.gisrc_path)
+            logger.error("Unable to delete temporary grass database <%s>" % self.gisrc_path)
 
     def setup_tmp_region(self):
         """Setup a temporary region, so that g.region calls can be performed without
@@ -496,7 +496,7 @@ class GrassInitializer(ProcessLogging):
 
         """
         # Safe the current region in a temporary region that can be overwritten
-        errorid, stdout_buff, stderr_buff = self.run_module("g.region", ["save=%s" %self.tmp_region_name, "--o"])
+        errorid, stdout_buff, stderr_buff = self.run_module("g.region", ["save=%s" % self.tmp_region_name, "--o"])
 
         if errorid != 0:
             raise GrassInitError("Unable to create a temporary region")
@@ -516,9 +516,9 @@ class GrassInitializer(ProcessLogging):
             try:
                 if "WIND_OVERRIDE" in os.environ:
                     os.environ.pop("WIND_OVERRIDE")
-                    self.run_module("g.remove", ["name=%s" %self.tmp_region_name, "type=region", "-f"])
+                    self.run_module("g.remove", ["name=%s" % self.tmp_region_name, "type=region", "-f"])
             except Exception as e:
                 logger = MessageLogger()
-                logger.error("Unable to delete temporary region <%s>" %self.tmp_region_name)
+                logger.error("Unable to delete temporary region <%s>" % self.tmp_region_name)
 
             self.has_temp_region = False

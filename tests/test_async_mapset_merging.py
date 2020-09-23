@@ -117,15 +117,15 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         for mapset in test_mapsets:
                 # Unlock mapset for deletion
-                rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' %("nc_spm_08", mapset),
+                rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % ("nc_spm_08", mapset),
                                       headers=self.admin_auth_header)
                 print(rv.data)
 
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         mapsets = json_load(rv.data)["process_results"]
 
@@ -135,8 +135,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                 rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s' % mapset,
                                         headers=self.admin_auth_header)
                 print(rv.data)
-                self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-                self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+                self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+                self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_1_merge_no_access_to_target_mapset_error(self):
         """No access to target mapset error test"""
@@ -173,8 +173,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         ############################################################################
         # Try merge source mapsets into target mapset
@@ -195,8 +195,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         ############################################################################
         # Try merge source mapsets into target mapset
@@ -231,8 +231,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         ############################################################################
         # Merge source mapsets into target mapset
