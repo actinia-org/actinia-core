@@ -361,11 +361,6 @@ class ActiniaUser(object):
 
         return(string)
 
-    def list_all_users(self):
-        """List all users in the database
-        """
-        return self.db.list_all_ids()
-
     def exists(self):
         """Check if the user exists
 

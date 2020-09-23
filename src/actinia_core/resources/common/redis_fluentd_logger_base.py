@@ -69,8 +69,8 @@ class RedisFluentLoggerBase(object):
             cur_time = int(time.time())
             self.fluent_sender.emit_with_time(tag, timestamp=cur_time, data=data)
         except Exception as e:
-            log.error("%s is unable to connect to fluentd server host %s "
-                      + "port %i Error: %s, Content %s" %
+            log.error(("%s is unable to connect to fluentd server host %s "
+                      + "port %i Error: %s, Content %s") %
                       (tag, self.host, self.port, str(e), str(data)))
 
         # keep this until sure that all logs are fetched if stdout log is set
