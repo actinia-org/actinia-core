@@ -247,19 +247,19 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_1',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertTrue("my_aspect_1", json_load( rv.data)["process_results"]["map"])
+        self.assertTrue("my_aspect_1", json_load(rv.data)["process_results"]["map"])
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_2',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertTrue("my_aspect_2", json_load( rv.data)["process_results"]["map"])
+        self.assertTrue("my_aspect_2", json_load(rv.data)["process_results"]["map"])
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_1',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertTrue("my_slope_1", json_load( rv.data)["process_results"]["map"])
+        self.assertTrue("my_slope_1", json_load(rv.data)["process_results"]["map"])
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_2',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertTrue("my_slope_2", json_load( rv.data)["process_results"]["map"])
+        self.assertTrue("my_slope_2", json_load(rv.data)["process_results"]["map"])
 
         time.sleep(1)
 

@@ -56,7 +56,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
                                                          "e":645000,"w":630000},
-                                               "parameter": { "npoints":1, "zmin":1,
+                                               "parameter": {"npoints":1, "zmin":1,
                                                               "zmax":1, "seed":1}}),
                               content_type="application/json")
         print(rv.data)
