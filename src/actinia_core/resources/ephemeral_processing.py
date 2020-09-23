@@ -514,7 +514,7 @@ class EphemeralProcessing(object):
 
         # Check if the user is allowed to execute this number of processes
         if skip_permission_check == False and len(process_list) > self.process_num_limit:
-            raise AsyncProcessError("Process limit exceeded, a maximum of %i " \
+            raise AsyncProcessError("Process limit exceeded, a maximum of %i "
                                     "processes are allowed in the process chain." % self.process_num_limit)
 
         # Check if the module description was correct and if the
@@ -888,11 +888,11 @@ class EphemeralProcessing(object):
             self.message_logger.info(stdout_buff)
 
             if errorid != 0:
-                raise AsyncProcessError("Unable to adjust the region " \
+                raise AsyncProcessError("Unable to adjust the region "
                                         "settings to nsres: %f ewres: %f error: %s" % (ns_res,
                                                                                        ew_res,
                                                                                        stderr_buff))
-            raise AsyncProcessError("Region to large, set a coarser " \
+            raise AsyncProcessError("Region to large, set a coarser "
                                     "resolution to minimum nsres: %f ewres: %f [num_cells: %d]" % (ns_res,
                                                                                                    ew_res, num_cells))
 

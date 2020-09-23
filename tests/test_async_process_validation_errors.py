@@ -245,7 +245,7 @@ process_chain_sent_1 = {
                                       "type": "sentinel2"},
                      "param": "map",
                      "value": "B04"}]}
-         ],
+    ],
     "version": "1"
 }
 
@@ -258,7 +258,7 @@ process_chain_sent_2 = {
                                       "sentinel_band": "B04"},
                      "param": "map",
                      "value": "B04"}]}
-         ],
+    ],
     "version": "1"
 }
 
