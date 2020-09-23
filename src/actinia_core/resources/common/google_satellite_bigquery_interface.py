@@ -481,7 +481,7 @@ class GoogleSatelliteBigQueryInterface(object):
                     result[product_id] = {}
                     result[product_id]["timestamp"] = sensing_time
                     result[product_id]["public_xml_metadata_url"] = self.gcs_url + base_url[5:] + "/" + self.sentinel_xml_metadata_file
-                    result[product_id]["gcs_xml_metadata_url"] =  base_url + "/" + self.sentinel_xml_metadata_file
+                    result[product_id]["gcs_xml_metadata_url"] = base_url + "/" + self.sentinel_xml_metadata_file
 
                     # Generate the GML file from the sentinel product footprint
                     # The whole XML content is returned as well
@@ -538,9 +538,9 @@ class GoogleSatelliteBigQueryInterface(object):
         coord_list = coordinates.split()
         gml_coord_list = []
 
-        min_x =  10000000
+        min_x = 10000000
         max_x = -10000000
-        min_y =  10000000
+        min_y = 10000000
         max_y = -10000000
 
         i = 0
