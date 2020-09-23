@@ -104,7 +104,7 @@ class ResourceManagerBase(Resource):
         # Check if the user exists
         if new_user.exists() is False:
             return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="The user <%s> does not exist" %user_id)), 400)
+                                                             message="The user <%s> does not exist" % user_id)), 400)
 
         # Check admin permissions
         if self.user_role == "admin":
@@ -372,4 +372,4 @@ class ResourcesManager(ResourceManagerBase):
 
         return make_response(jsonify(SimpleResponseModel(status="finished",
                                                          message="Successfully send %i "
-                                                                 "termination requests" %termination_requests)), 200)
+                                                                 "termination requests" % termination_requests)), 200)

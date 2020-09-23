@@ -380,8 +380,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
 
         time.sleep(1)
 
@@ -511,8 +511,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.admin_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
 
     def test_termination(self):
 

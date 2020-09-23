@@ -127,8 +127,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         mapsets = json_load(rv.data)["process_results"]
 
@@ -137,8 +137,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                     headers=self.admin_auth_header)
             print(rv.data)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-            self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_1_new_mapset(self):
         """
@@ -156,8 +156,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         mapsets = json_load(rv.data)["process_results"]
 
@@ -166,8 +166,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         map_list = json_load(rv.data)["process_results"]
         self.assertTrue("my_accumulation" in map_list)
@@ -178,8 +178,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_2_existing_mapset(self):
         """
@@ -192,8 +192,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Run the processing using an existing mapset
         # Atemporary mapset will be created and merged in the existing
@@ -206,8 +206,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         map_list = json_load(rv.data)["process_results"]
         self.assertTrue("my_accumulation" in map_list)
@@ -218,8 +218,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
     def test_3_existing_mapset_lock(self):
@@ -234,8 +234,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Run the processing inside the new mapset
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
@@ -244,8 +244,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         resp = json_loads(rv.data)
 
@@ -263,8 +263,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                                      content_type="application/json")
 
         print(rv_lock_1.data)
-        self.assertEqual(rv_lock_1.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv_lock_1.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv_lock_1.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv_lock_1.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         # Third runner
         rv_lock_2 = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/processing_async',
                                      headers=self.admin_auth_header,
@@ -272,8 +272,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                                      content_type="application/json")
 
         print(rv_lock_2.data)
-        self.assertEqual(rv_lock_2.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv_lock_2.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv_lock_2.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv_lock_2.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Check the first runner
         while True:
@@ -286,7 +286,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             time.sleep(0.2)
 
         self.assertEquals(resp["status"], "finished")
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
         # Check the second runner
         resp = json_loads(rv_lock_1.data)
@@ -302,7 +302,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             time.sleep(0.2)
 
         self.assertEquals(resp["status"], "error")
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
 
         # Check the third runner
         resp = json_loads(rv_lock_2.data)
@@ -319,14 +319,14 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             time.sleep(0.2)
 
         self.assertEquals(resp["status"], "error")
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
 
         # Remove the mapset
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
                                 headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_4_create_global_mapset(self):
 

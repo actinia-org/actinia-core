@@ -231,8 +231,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                               data=json_dumps(process_chain),
                               content_type="application/json")
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         resp = json_loads(rv.data)
 
@@ -254,8 +254,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                                     headers=self.admin_auth_header)
             print("Delete", rv.data.decode())
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         self.assertEqual(resp["status"], "terminated")
 
         time.sleep(1)
@@ -321,8 +321,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                               headers=self.user_auth_header)
 
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" %rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_6(self):
 

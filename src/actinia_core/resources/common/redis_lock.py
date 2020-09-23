@@ -160,7 +160,7 @@ class RedisLockingInterface(object):
 
         """
 
-        keys=[self.lock_prefix + str(resource_id), expiration]
+        keys = [self.lock_prefix + str(resource_id), expiration]
         #print "Lock", expiration, self.lock_prefix + str(resource_id), str(self)
         return self.call_lock_resource(keys=keys)
 
@@ -180,7 +180,7 @@ class RedisLockingInterface(object):
             1 for success and 0 if unable to extent the lock because resource does not exists
 
         """
-        keys=[self.lock_prefix + str(resource_id), expiration]
+        keys = [self.lock_prefix + str(resource_id), expiration]
         #print "Extend Lock", expiration, self.lock_prefix + str(resource_id), str(self)
         return self.call_extend_resource_lock(keys=keys)
 
@@ -199,7 +199,7 @@ class RedisLockingInterface(object):
             1 for success and 0 if unable to unlock
 
         """
-        keys=[self.lock_prefix + str(resource_id),]
+        keys = [self.lock_prefix + str(resource_id),]
         #print "UnLock", self.lock_prefix + str(resource_id), str(self)
         return self.call_unlock_resource(keys=keys)
 

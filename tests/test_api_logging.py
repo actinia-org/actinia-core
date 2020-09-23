@@ -80,7 +80,7 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
 
         size = self.log.size(self.user_id)
 
-        self.assertEqual(size, 3, "The size method does not work %i" %size)
+        self.assertEqual(size, 3, "The size method does not work %i" % size)
 
         l = self.log.list(self.user_id, start=0, end=-1)
 
@@ -93,7 +93,7 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
 
         size = self.log.size(self.user_id)
 
-        self.assertEqual(size, 2, "The size method does not work %i" %size)
+        self.assertEqual(size, 2, "The size method does not work %i" % size)
 
         l = self.log.list(self.user_id, start=0, end=-1)
 
