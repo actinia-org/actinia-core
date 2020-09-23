@@ -247,7 +247,8 @@ def test_locking(r):
 
 
 if __name__ == '__main__':
-    import os, signal
+    import os
+    import signal
     import time
 
     pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")

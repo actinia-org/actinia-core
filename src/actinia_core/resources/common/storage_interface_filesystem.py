@@ -93,11 +93,11 @@ class ResourceStorageFilesystem(ResourceStorageBase):
                     # TODO Add the directory to the scheduler list
                     pass
                 else:
-                    raise IOError("Unable to create resource directory <%s>"%self.resource_export_path)
+                    raise IOError("Unable to create resource directory <%s>" %self.resource_export_path)
             else:
-                raise IOError("Unable to create resource user directory <%s>"%self.user_export_path)
+                raise IOError("Unable to create resource user directory <%s>" %self.user_export_path)
         else:
-            raise IOError("Unable to access the base resource directory <%s>"%self.resource_dir)
+            raise IOError("Unable to access the base resource directory <%s>" %self.resource_dir)
 
         self.dir_created = True
 

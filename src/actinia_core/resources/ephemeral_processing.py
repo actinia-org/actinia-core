@@ -440,7 +440,7 @@ class EphemeralProcessing(object):
         # Call the webhook after the final result was send to the database
         try:
             if final is True and self.webhook_finished is not None:
-                self.message_logger.info("Send POST request to finished webhook url: %s"%self.webhook_finished)
+                self.message_logger.info("Send POST request to finished webhook url: %s" %self.webhook_finished)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
@@ -448,9 +448,9 @@ class EphemeralProcessing(object):
                 else:
                     r = requests.post(self.webhook_finished, json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access finished webhook URL %s"%self.webhook_finished)
+                    raise AsyncProcessError("Unable to access finished webhook URL %s" %self.webhook_finished)
             elif final is False and self.webhook_update is not None:
-                self.message_logger.info("Send POST request to update webhook url: %s"%self.webhook_update)
+                self.message_logger.info("Send POST request to update webhook url: %s" %self.webhook_update)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
@@ -458,7 +458,7 @@ class EphemeralProcessing(object):
                 else:
                     r = requests.post(self.webhook_update, json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access the update webhook URL %s"%self.webhook_update)
+                    raise AsyncProcessError("Unable to access the update webhook URL %s" %self.webhook_update)
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
@@ -1080,6 +1080,10 @@ class EphemeralProcessing(object):
         process log model and returns stdout, stderr and the return code.
 
         It creates the temporary file paths.
+
+        The returncode of 0 indicates that it ran successfully. A negative value -N
+        indicates that the child was terminated by signal N (POSIX only; see also
+        https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
 
         Args:
             process (common.process_object.Process): The process object that should be executed

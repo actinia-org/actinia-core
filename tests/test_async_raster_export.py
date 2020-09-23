@@ -52,8 +52,8 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s"%rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
             print(rv.headers)
 
         time.sleep(1)
@@ -70,8 +70,8 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s"%rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
             print(rv.headers)
 
         time.sleep(1)

@@ -54,11 +54,11 @@ def extract_where_parameters(args):
     """
     options = []
     if "where" in args and args["where"] is not None:
-        options.append("where=%s"%args["where"])
+        options.append("where=%s" %args["where"])
     if "order" in args and args["order"] is not None:
-        options.append("order=%s"%args["order"])
+        options.append("order=%s" %args["order"])
     if "columns" in args and args["columns"] is not None:
-        options.append("columns=%s"%args["columns"])
+        options.append("columns=%s" %args["columns"])
 
     return options
 
@@ -106,7 +106,7 @@ def extract_start_script_parameters(args):
     options = []
     if "epsg" in args:
         options.append("-c")
-        options.append("EPSG:%i"%args["epsg"])
+        options.append("EPSG:%i" %args["epsg"])
 
     return options
 
@@ -134,11 +134,11 @@ def extract_t_create_parameters(args):
     """
     options = []
     if "temporaltype" in args and args["temporaltype"] is not None:
-        options.append("temporaltype=%s"%args["temporaltype"])
+        options.append("temporaltype=%s" %args["temporaltype"])
     if "title" in args and args["title"] is not None:
-        options.append("title=%s"%args["title"])
+        options.append("title=%s" %args["title"])
     if "description" in args and args["description"] is not None:
-        options.append("description=%s"%args["description"])
+        options.append("description=%s" %args["description"])
     options.append("semantictype=mean")
 
     return options
@@ -177,12 +177,12 @@ def extract_t_register_parameters(args):
     """
     options = []
     if "start" in args and args["start"] is not None:
-        options.append("start=%s"%args["start"])
+        options.append("start=%s" %args["start"])
     if "end" in args and args["end"] is not None:
-        options.append("end=%s"%args["end"])
+        options.append("end=%s" %args["end"])
     if "unit" in args and args["unit"] is not None:
-        options.append("unit=%s"%args["unit"])
+        options.append("unit=%s" %args["unit"])
     if "increment" in args and args["increment"] is not None:
-        options.append("increment=%s"%args["increment"])
+        options.append("increment=%s" %args["increment"])
 
     return options

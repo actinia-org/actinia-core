@@ -552,9 +552,9 @@ class PersistentRemoveLayers(PersistentProcessing):
         self._execute_process_list(process_list)
 
         if "WARNING: No data base element files found" in "\n".join(self.module_output_log[0]["stderr"]):
-            raise AsyncProcessError("<%s> layer not found"%layer_type)
+            raise AsyncProcessError("<%s> layer not found" %layer_type)
 
-        self.finish_message = "Successfully removed %s layers."%layer_type
+        self.finish_message = "Successfully removed %s layers." %layer_type
 
 def rename_raster_layers(*args):
     processing = PersistentRenameLayers(*args)
@@ -580,7 +580,7 @@ class PersistentRenameLayers(PersistentProcessing):
         # [(a, a_new),(b, b_new),(c, c_new), ...]
         name_list = list()
         for old_name, new_name in  self.request_data:
-            name_list.append("%s,%s"%(old_name, new_name))
+            name_list.append("%s,%s" %(old_name, new_name))
         name_string = ",".join(name_list)
 
         pc = {"1":{"module":"g.rename","inputs":{layer_type:name_string}}}
@@ -599,4 +599,4 @@ class PersistentRenameLayers(PersistentProcessing):
             if "not found" in "\n".join(self.module_output_log[0]["stderr"]):
                 raise AsyncProcessError("Error while renaming map layers")
 
-        self.finish_message = "Successfully renamed %s layers."%layer_type
+        self.finish_message = "Successfully renamed %s layers." %layer_type

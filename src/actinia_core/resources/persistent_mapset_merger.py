@@ -130,16 +130,16 @@ class PersistentMapsetMerger(PersistentProcessing):
         mapset_exists = self._check_mapset(mapset_name)
 
         if mapset_exists is False:
-            raise AsyncProcessError("Mapset <%s> does not exist and can not be locked."%mapset_name)
+            raise AsyncProcessError("Mapset <%s> does not exist and can not be locked." %mapset_name)
 
         # Finally lock the mapset for the time that the user can allocate at maximum
-        lock_id = "%s/%s/%s"%(self.user_group, self.location_name, mapset_name)
+        lock_id = "%s/%s/%s" %(self.user_group, self.location_name, mapset_name)
         ret = self.lock_interface.lock(resource_id=lock_id,
                                        expiration=self.process_time_limit*self.process_num_limit)
 
         if ret == 0:
-            raise AsyncProcessError("Unable to lock mapset <%s>, resource is already locked"%mapset_name)
-        self.message_logger.info("Mapset <%s> locked"%mapset_name)
+            raise AsyncProcessError("Unable to lock mapset <%s>, resource is already locked" %mapset_name)
+        self.message_logger.info("Mapset <%s> locked" %mapset_name)
 
         # if we manage to come here, the lock was correctly set, hence store the lock id for later unlocking
         self.lock_ids[lock_id] = mapset_name
@@ -189,7 +189,7 @@ class PersistentMapsetMerger(PersistentProcessing):
             # Check for termination requests
             if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
                 raise AsyncProcessTermination("Mapset merging was terminated "
-                                              "by user request at setp %i of %i"%(step, steps))
+                                              "by user request at setp %i of %i" %(step, steps))
 
             mapset_name = self.lock_ids[lock_id]
             mapsets_to_merge.append(mapset_name)
@@ -199,10 +199,10 @@ class PersistentMapsetMerger(PersistentProcessing):
                 ret = self.lock_interface.extend(resource_id=lock_id,
                                                  expiration=self.process_time_limit * 2)
                 if ret == 0:
-                    raise AsyncProcessError("Unable to extend lock for mapset <%s>"%mapset_name)
+                    raise AsyncProcessError("Unable to extend lock for mapset <%s>" %mapset_name)
 
             message = "Step %i of %i: Copy content from source " \
-                      "mapset <%s> into target mapset <%s>"%(step, steps, mapset_name,
+                      "mapset <%s> into target mapset <%s>" %(step, steps, mapset_name,
                                                              self.target_mapset_name)
             self._send_resource_update(message)
             self.message_logger.info(message)
