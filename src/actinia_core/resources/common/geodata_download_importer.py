@@ -113,7 +113,8 @@ class GeoDataDownloadImportSupport(object):
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            if self.message_logger: self.message_logger.info("%i %s %s" % (resp.status_code,
+            if self.message_logger:
+                self.message_logger.info("%i %s %s" % (resp.status_code,
                                                                            resp.text, resp.headers))
 
             if resp.status_code != 200:
@@ -122,7 +123,8 @@ class GeoDataDownloadImportSupport(object):
             # Download 256 bytes from the url and check its mimetype
             response = urlopen(url)
             mime_type = magic.from_buffer(response.read(256), mime=True).lower()
-            if self.message_logger: self.message_logger.info(mime_type)
+            if self.message_logger:
+                self.message_logger.info(mime_type)
 
             if mime_type not in SUPPORTED_MIMETYPES:
                 raise AsyncProcessError("Mimetype <%s> of url <%s> is not supported. "
@@ -292,7 +294,8 @@ class GeoDataDownloadImportSupport(object):
             raise AsyncProcessError("File <%s> does not exist." % filepath)
 
         mime_type = magic.from_file(filepath, mime=True)
-        if self.message_logger: self.message_logger.info(mime_type)
+        if self.message_logger:
+            self.message_logger.info(mime_type)
 
         if mime_type not in SUPPORTED_MIMETYPES:
             raise AsyncProcessError("Mimetype of url <%s> is not supported. "

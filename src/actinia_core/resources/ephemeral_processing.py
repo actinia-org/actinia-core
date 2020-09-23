@@ -440,7 +440,7 @@ class EphemeralProcessing(object):
         # Call the webhook after the final result was send to the database
         try:
             if final is True and self.webhook_finished is not None:
-                self.message_logger.info("Send POST request to finished webhook url: %s" %self.webhook_finished)
+                self.message_logger.info("Send POST request to finished webhook url: %s" % self.webhook_finished)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
@@ -448,9 +448,9 @@ class EphemeralProcessing(object):
                 else:
                     r = requests.post(self.webhook_finished, json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access finished webhook URL %s" %self.webhook_finished)
+                    raise AsyncProcessError("Unable to access finished webhook URL %s" % self.webhook_finished)
             elif final is False and self.webhook_update is not None:
-                self.message_logger.info("Send POST request to update webhook url: %s" %self.webhook_update)
+                self.message_logger.info("Send POST request to update webhook url: %s" % self.webhook_update)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
@@ -458,7 +458,7 @@ class EphemeralProcessing(object):
                 else:
                     r = requests.post(self.webhook_update, json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access the update webhook URL %s" %self.webhook_update)
+                    raise AsyncProcessError("Unable to access the update webhook URL %s" % self.webhook_update)
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
@@ -514,7 +514,7 @@ class EphemeralProcessing(object):
 
         # Check if the user is allowed to execute this number of processes
         if skip_permission_check == False and len(process_list) > self.process_num_limit:
-            raise AsyncProcessError("Process limit exceeded, a maximum of %i " \
+            raise AsyncProcessError("Process limit exceeded, a maximum of %i "
                                     "processes are allowed in the process chain." % self.process_num_limit)
 
         # Check if the module description was correct and if the
@@ -888,11 +888,11 @@ class EphemeralProcessing(object):
             self.message_logger.info(stdout_buff)
 
             if errorid != 0:
-                raise AsyncProcessError("Unable to adjust the region " \
+                raise AsyncProcessError("Unable to adjust the region "
                                         "settings to nsres: %f ewres: %f error: %s" % (ns_res,
                                                                                        ew_res,
                                                                                        stderr_buff))
-            raise AsyncProcessError("Region to large, set a coarser " \
+            raise AsyncProcessError("Region to large, set a coarser "
                                     "resolution to minimum nsres: %f ewres: %f [num_cells: %d]" % (ns_res,
                                                                                                    ew_res, num_cells))
 

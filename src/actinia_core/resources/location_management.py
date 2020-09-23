@@ -249,7 +249,7 @@ class LocationManagementResourceAdmin(ResourceBase):
                     return make_response(jsonify(SimpleResponseModel(status="error",
                                                                      message="Unable to delete "
                                                                              "location %s Exception %s" % (
-                                                                             location_name, str(e)))),
+                                                                                 location_name, str(e)))),
                                          500)
 
         return make_response(jsonify(SimpleResponseModel(status="error",

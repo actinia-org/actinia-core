@@ -142,7 +142,7 @@ class UserManagementResource(LoginBase):
         if user.exists() is False:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message="User <%s> does not exist" %user_id
+                message ="User <%s> does not exist" % user_id
             )), 400)
 
         credentials = user.get_credentials()
@@ -224,12 +224,12 @@ class UserManagementResource(LoginBase):
             if user.exists() is True:
                 return make_response(jsonify(SimpleResponseModel(
                     status="success",
-                    message="User %s created" %user_id
+                    message ="User %s created" % user_id
                 )), 201)
 
         return make_response(jsonify(SimpleResponseModel(
             status="error",
-            message="Unable to create user %s" %user_id
+            message ="Unable to create user %s" % user_id
         )), 400)
 
     @swagger.doc({
@@ -275,16 +275,16 @@ class UserManagementResource(LoginBase):
         if user.exists() is False:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message="Unable to delete user %s. User does not exist." %user_id
+                message ="Unable to delete user %s. User does not exist." % user_id
             )), 400)
 
         if user.delete() is True:
             return make_response(jsonify(SimpleResponseModel(
                 status="success",
-                message="User %s deleted" %user_id
+                message ="User %s deleted" % user_id
             )), 200)
 
         return make_response(jsonify(SimpleResponseModel(
             status="error",
-            message="Unable to delete user %s" %user_id
+            message ="Unable to delete user %s" % user_id
         )), 400)

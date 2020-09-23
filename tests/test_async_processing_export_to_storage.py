@@ -41,52 +41,52 @@ __email__ = "soerengebbert@googlemail.com"
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+       "module":"g.region",
+       "inputs":{
+           "raster":"elevation@PERMANENT",
+           "res":"1000"
         },
-        "flags":"p",
-        "verbose":True
+       "flags":"p",
+       "verbose":True
    },
    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
+       "module":"r.slope.aspect",
+       "inputs":{
+           "elevation":"elevation@PERMANENT",
+           "format":"degrees",
+           "min_slope":"0.0"
         },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
+       "outputs":{
+           "aspect":{
+               "name":"my_aspect",
+               "export":{
+                   "format":"GTiff",
+                   "type":"raster"
                 }
             },
-            "slope":{
-                "name":"my_slope",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
+           "slope":{
+               "name":"my_slope",
+               "export":{
+                   "format":"GTiff",
+                   "type":"raster"
                 }
             }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+       "flags":"a",
+       "overwrite":False,
+       "verbose":True
    },
    3:{
-        "module":"r.watershed",
-        "inputs":{
-            "elevation":"elevation@PERMANENT"
+       "module":"r.watershed",
+       "inputs":{
+           "elevation":"elevation@PERMANENT"
         },
-        "outputs":{
-            "accumulation":{
-                "name":"my_accumulation",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
+       "outputs":{
+           "accumulation":{
+               "name":"my_accumulation",
+               "export":{
+                   "format":"GTiff",
+                   "type":"raster"
                 }
             }
         }
@@ -110,8 +110,8 @@ class AsyncProcessExport2TestCaseAdmin(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" %rv.mimetype)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
             print(rv.headers)
             print(rv.iter_encoded())
 
@@ -137,7 +137,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
             print(url)
             rv = requests.get(url)
             print(rv)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
     def test_termination(self):
 
@@ -176,7 +176,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
             print(url)
             rv = requests.get(url)
             print(rv)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %rv.status_code)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
     def test_termination(self):
 

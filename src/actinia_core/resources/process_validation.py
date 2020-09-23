@@ -44,13 +44,13 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-DESCR="""Validate a process chain, check the provided sources (links)
+DESCR = """Validate a process chain, check the provided sources (links)
 and the mapsets. The list of processes that were checked by Actinia are returned in the
 JSON response.
 """
 
 
-SCHEMA_DOC={
+SCHEMA_DOC = {
     'tags': ['Processing'],
     'description': DESCR,
     'consumes':['application/json'],

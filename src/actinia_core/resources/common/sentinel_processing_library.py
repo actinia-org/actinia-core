@@ -125,15 +125,15 @@ class Sentinel2Processing(object):
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in Google BigQuery Sentinel-2 database. "
-                                        "Error: %s" %(self.product_id, str(e)))
+                                        "Error: %s" % (self.product_id, str(e)))
 
             if not self.query_result:
                 raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                        "in Google BigQuery Sentinel-2 database" %self.product_id)
+                                        "in Google BigQuery Sentinel-2 database" % self.product_id)
 
         if self.product_id not in self.query_result:
             raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                    "in Google BigQuery Sentinel-2 database" %self.product_id)
+                                    "in Google BigQuery Sentinel-2 database" % self.product_id)
 
         # Switch into the tempfile directory
         os.chdir(self.temp_file_path)
@@ -185,15 +185,15 @@ class Sentinel2Processing(object):
         # nothing needs to be downloaded and checked.
         for url in url_list:
             # Send a resource update
-            self.send_resource_update(message="Checking access to URL: %s" %url)
+            self.send_resource_update(message="Checking access to URL: %s" % url)
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" %(resp.status_code, resp.text, resp.headers))
+            self.message_logger.info("%i %s %s" % (resp.status_code, resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("Scene <%s> is not available. "
-                                        "The URL <%s> can not be accessed." %(self.product_id, url))
+                                        "The URL <%s> can not be accessed." % (self.product_id, url))
 
         return url_list, copy_file_list
 
@@ -214,15 +214,15 @@ class Sentinel2Processing(object):
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in AWS Sentinel-2 database. "
-                                        "Error: %s" %(self.product_id, str(e)))
+                                        "Error: %s" % (self.product_id, str(e)))
 
             if not self.query_result:
                 raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                        "in AWS Sentinel-2 database" %self.product_id)
+                                        "in AWS Sentinel-2 database" % self.product_id)
 
         if self.product_id not in self.query_result:
             raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                    "in AWS Sentinel-2 database" %self.product_id)
+                                    "in AWS Sentinel-2 database" % self.product_id)
 
         # Switch into the tempfile directory
         os.chdir(self.temp_file_path)
@@ -274,15 +274,15 @@ class Sentinel2Processing(object):
         # nothing needs to be downloaded and checked.
         for url in url_list:
             # Send a resource update
-            self.send_resource_update(message="Checking access to URL: %s" %url)
+            self.send_resource_update(message="Checking access to URL: %s" % url)
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" %(resp.status_code, resp.text, resp.headers))
+            self.message_logger.info("%i %s %s" % (resp.status_code, resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("Scene <%s> is not available. "
-                                        "The URL <%s> can not be accessed." %(self.product_id, url))
+                                        "The URL <%s> can not be accessed." % (self.product_id, url))
 
         return url_list, copy_file_list
 
@@ -371,8 +371,8 @@ class Sentinel2Processing(object):
         import_commands = []
 
         p = Process(exec_type="grass", executable="v.import",
-                         executable_params=["input=%s" %self.gml_cache_file_name,
-                                            "output=%s" %self.product_id,
+                         executable_params=["input=%s" % self.gml_cache_file_name,
+                                            "output=%s" % self.product_id,
                                             "--q"],
                          skip_permission_check=True)
         import_commands.append(p)
@@ -382,8 +382,8 @@ class Sentinel2Processing(object):
 
         # Attach a the time stamp
         p = Process(exec_type="grass", executable="v.timestamp",
-                         executable_params=["map=%s" %self.product_id,
-                                            "date=%s" %timestamp],
+                         executable_params=["map=%s" % self.product_id,
+                                            "date=%s" % timestamp],
                          skip_permission_check=True)
         import_commands.append(p)
 
@@ -401,10 +401,10 @@ class Sentinel2Processing(object):
             gdal_translate_params = list()
             # -projwin ulx uly lrx lry
             gdal_translate_params.append("-projwin")
-            gdal_translate_params.append("%f" %self.bbox[0])
-            gdal_translate_params.append("%f" %self.bbox[1])
-            gdal_translate_params.append("%f" %self.bbox[2])
-            gdal_translate_params.append("%f" %self.bbox[3])
+            gdal_translate_params.append("%f" % self.bbox[0])
+            gdal_translate_params.append("%f" % self.bbox[1])
+            gdal_translate_params.append("%f" % self.bbox[2])
+            gdal_translate_params.append("%f" % self.bbox[3])
             gdal_translate_params.append("-of")
             gdal_translate_params.append("vrt")
             gdal_translate_params.append("-projwin_srs")
@@ -418,38 +418,38 @@ class Sentinel2Processing(object):
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.import",
-                             executable_params=["input=%s" %cropped_input_file,
-                                                "output=%s" %temp_map_name,
+                             executable_params=["input=%s" % cropped_input_file,
+                                                "output=%s" % temp_map_name,
                                                 "--q"],
                              skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="g.region",
-                             executable_params=["align=%s" %temp_map_name,
-                                                "vector=%s" %self.product_id,
+                             executable_params=["align=%s" % temp_map_name,
+                                                "vector=%s" % self.product_id,
                                                 "-g"],
                              skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mask",
-                             executable_params=["vector=%s" %self.product_id],
+                             executable_params =["vector=%s" % self.product_id],
                              skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mapcalc",
-                             executable_params=["expression=%s = float(%s)" %(map_name,
+                             executable_params=["expression=%s = float(%s)" % (map_name,
                                                                              temp_map_name)],
                              skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.timestamp",
-                             executable_params=["map=%s" %map_name, "date=%s" %timestamp],
+                             executable_params =["map=%s" % map_name, "date=%s" % timestamp],
                              skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="g.remove",
                              executable_params=["type=raster",
-                                                "name=%s" %temp_map_name,
+                                                "name=%s" % temp_map_name,
                                                 "-f"],
                              skip_permission_check=True)
             import_commands.append(p)
@@ -481,7 +481,7 @@ class Sentinel2Processing(object):
         p = Process(exec_type="grass",
                          executable="r.mapcalc",
                          executable_params=["expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
-                                            "(float(%(nir)s) + float(%(red)s))" %{"ndvi":raster_result_name,
+                                            "(float(%(nir)s) + float(%(red)s))" % {"ndvi":raster_result_name,
                                                                                  "nir":nir,
                                                                                  "red":red}],
                         skip_permission_check=True)
@@ -489,7 +489,7 @@ class Sentinel2Processing(object):
 
         p = Process(exec_type="grass",
                          executable="r.colors",
-                         executable_params=["color=ndvi", "map=%s" %raster_result_name],
+                         executable_params =["color=ndvi", "map=%s" % raster_result_name],
                          skip_permission_check=True)
         ndvi_commands.append(p)
 

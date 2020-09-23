@@ -46,7 +46,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-DESCR="""Execute a user defined process chain in an ephemeral database
+DESCR = """Execute a user defined process chain in an ephemeral database
 and provide the generated resources as downloadable files via URL's. Minimum required user role: user.
 
 The process chain is executed asynchronously. The provided status URL
@@ -69,7 +69,7 @@ in the process chain for export.
 """
 
 
-SCHEMA_DOC={
+SCHEMA_DOC = {
     'tags': ['Processing'],
     'description': DESCR,
     'consumes':['application/json'],
@@ -233,7 +233,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
             p = Process(exec_type="grass",
                              executable="g.region",
-                             executable_params=["raster=%s" %raster_name, "-g"],
+                             executable_params =["raster=%s" % raster_name, "-g"],
                              stdin_source=None)
 
             self._update_num_of_steps(1)
@@ -321,8 +321,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         os.chdir(self.temp_file_path)
 
         module_name = "v.out.ogr"
-        args = ["-e", "input=%s" %vector_name, "format=%s" %format,
-                "output=%s" %file_name]
+        args = ["-e", "input=%s" % vector_name, "format=%s" % format,
+                "output=%s" % file_name]
 
         if additional_options:
             args.extend(additional_options)
@@ -369,10 +369,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
 
         module_name = "v.out.postgis"
-        args = ["-l", "input=%s" %vector_name, "output=%s" %dbstring]
+        args = ["-l", "input=%s" % vector_name, "output=%s" % dbstring]
 
         if output_layer:
-            args.append("output_layer=%s" %output_layer)
+            args.append("output_layer=%s" % output_layer)
 
         if additional_options:
             args.extend(additional_options)
@@ -456,7 +456,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     file_name = resource["value"]
 
                 if output_type == "raster":
-                    message = "Export raster layer <%s> with format %s" %(file_name, resource["export"]["format"])
+                    message = "Export raster layer <%s> with format %s" % (file_name, resource["export"]["format"])
                     self._send_resource_update(message)
                     output_name, output_path = self._export_raster(raster_name=file_name,
                                                                    format=resource["export"]["format"],
@@ -468,12 +468,12 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         if "output_layer" in resource["export"]:
                             output_layer = resource["export"]["output_layer"]
 
-                        message = "Export vector layer <%s> to PostgreSQL database" %(file_name)
+                        message = "Export vector layer <%s> to PostgreSQL database" % (file_name)
                         self._send_resource_update(message)
                         self._export_postgis(vector_name=file_name, dbstring=dbstring, output_layer=output_layer)
                         # continue
                     else:
-                        message = "Export vector layer <%s> with format %s" %(file_name, resource["export"]["format"])
+                        message = "Export vector layer <%s> with format %s" % (file_name, resource["export"]["format"])
                         self._send_resource_update(message)
                         output_name, output_path = self._export_vector(vector_name=file_name,
                                                                        format=resource["export"]["format"])
@@ -482,7 +482,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     tmp_file = resource["tmp_file"]
                     output_name, output_path = self._export_file(tmp_file=tmp_file, file_name=file_name)
                 else:
-                    raise AsyncProcessTermination("Unknown export format %s" %output_type)
+                    raise AsyncProcessTermination("Unknown export format %s" % output_type)
 
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)

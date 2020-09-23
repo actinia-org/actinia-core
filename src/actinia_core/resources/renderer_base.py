@@ -37,7 +37,7 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-REGION_PARAMETERS={
+REGION_PARAMETERS = {
     'parameters': [
         {
             'name': 'n',
