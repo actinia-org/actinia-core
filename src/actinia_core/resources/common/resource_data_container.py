@@ -154,4 +154,3 @@ class ResourceDataContainer(object):
             return ResourceStorageGCS(user_id=self.user_id,
                                       resource_id=self.resource_id,
                                       config=self.config)
-

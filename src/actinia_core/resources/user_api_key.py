@@ -163,4 +163,3 @@ class TokenCreationResource(LoginBase):
             return make_response(jsonify(TokenResponseModel(status="error",
                                          token="",
                                          message="Error while generating token: %s" %str(e))), 400)
-
