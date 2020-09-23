@@ -95,17 +95,17 @@ process_chain = {
        "flags":"gr",
        "verbose":True
    },
-    5:{
-        "executable":"/bin/true",
-        "parameters":[]
-    },
-    6:{
-        "executable":"/bin/true"
-    },
-    7:{
-        "executable":"/bin/sleep",
-        "parameters":["4"]
-    },
+   5:{
+       "executable":"/bin/true",
+       "parameters":[]
+   },
+   6:{
+       "executable":"/bin/true"
+   },
+   7:{
+       "executable":"/bin/sleep",
+       "parameters":["4"]
+   },
 }
 
 # Module chains with errors

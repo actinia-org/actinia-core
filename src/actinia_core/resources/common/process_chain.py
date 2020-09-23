@@ -655,11 +655,13 @@ class ProcessChainConverter(object):
 
         downimp_list = []
 
-        if self.message_logger: self.message_logger.info("Creating download process "
+        if self.message_logger:
+            self.message_logger.info("Creating download process "
                                                          "list for all import definitions")
 
         for entry in self.import_descr_list:
-            if self.message_logger: self.message_logger.info(entry)
+            if self.message_logger:
+                self.message_logger.info(entry)
 
             if "import_descr" not in entry:
                 raise AsyncProcessError("import_descr specification is required in import definition")
