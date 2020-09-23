@@ -317,7 +317,7 @@ class PersistentProcessing(EphemeralProcessing):
             # Break if the target mapset exists in the global database
             if os.path.exists(self.global_location_path) and \
                     os.path.isdir(self.global_location_path) and \
-                os.access(self.global_location_path, os.R_OK | os.X_OK | os.W_OK) is True:
+                    os.access(self.global_location_path, os.R_OK | os.X_OK | os.W_OK) is True:
 
                 self.orig_mapset_path = os.path.join(self.global_location_path, mapset)
 
