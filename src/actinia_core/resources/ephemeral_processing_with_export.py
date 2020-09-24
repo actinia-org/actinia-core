@@ -258,7 +258,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             # generate overviews with compression:
             os.environ['COMPRESS_OVERVIEW'] = "LZW"
             args.append("overviews=5")
-            create_opts += "TILED=YES"
+            create_opts += ",TILED=YES"
 
         args.append(create_opts)
         # current workaround due to color table export
