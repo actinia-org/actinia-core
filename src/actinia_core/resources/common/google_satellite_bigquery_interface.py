@@ -63,7 +63,7 @@ def extract_sensor_id_from_scene_id(scene_id):
         The sencor id
 
     """
-    return "%s0%s" %(scene_id[0:2], scene_id[2:3])
+    return "%s0%s" % (scene_id[0:2], scene_id[2:3])
 
 
 class GoogleSatelliteBigQueryInterface(object):
@@ -182,11 +182,11 @@ class GoogleSatelliteBigQueryInterface(object):
                         "FROM `bigquery-public-data.cloud_storage_geo_index.landsat_index` "
 
                 if scene_id:
-                    scene_id_query = "scene_id = \'%s\'" %scene_id
+                    scene_id_query = "scene_id = \'%s\'" % scene_id
                     has_where_statement = True
 
                 if spacecraft_id:
-                    spacecraft_id_query = "spacecraft_id = \'%s\'" %spacecraft_id
+                    spacecraft_id_query = "spacecraft_id = \'%s\'" % spacecraft_id
                     has_where_statement = True
 
             else:
@@ -195,60 +195,60 @@ class GoogleSatelliteBigQueryInterface(object):
                         "FROM `bigquery-public-data.cloud_storage_geo_index.sentinel_2_index` " \
 
                 if scene_id:
-                    scene_id_query = "product_id = \'%s\'" %scene_id
+                    scene_id_query = "product_id = \'%s\'" % scene_id
                     has_where_statement = True
 
             if start_time and end_time:
                 start_time = dtparser.parse(start_time)
                 end_time = dtparser.parse(end_time)
                 temporal_query = "sensing_time >= \'%(start)s\' " \
-                                 "AND sensing_time <= \'%(end)s\'" %{"start": start_time.isoformat(),
+                                 "AND sensing_time <= \'%(end)s\'" % {"start": start_time.isoformat(),
                                                                     "end": end_time.isoformat()}
                 has_where_statement = True
 
             if lon and lat:
                 spatial_query = "west_lon <= %(lon)f AND east_lon >= %(lon)f AND " \
-                                "north_lat >= %(lat)f AND south_lat <= %(lat)f" %{"lon": float(lon),
+                                "north_lat >= %(lat)f AND south_lat <= %(lat)f" % {"lon": float(lon),
                                                                                  "lat": float(lat)}
                 has_where_statement = True
 
             if cloud_cover:
-                cloud_cover_query = "cloud_cover <= %s" %str(cloud_cover)
+                cloud_cover_query = "cloud_cover <= %s" % str(cloud_cover)
                 has_where_statement = True
 
             if has_where_statement is True:
                 query += " WHERE "
 
             if scene_id_query:
-                query += " (%s) " %scene_id_query
+                query += " (%s) " % scene_id_query
                 statement_count += 1
 
             if spacecraft_id_query:
                 if statement_count > 0:
-                    query += " AND (%s) " %spacecraft_id_query
+                    query += " AND (%s) " % spacecraft_id_query
                 else:
-                    query += " (%s) " %spacecraft_id_query
+                    query += " (%s) " % spacecraft_id_query
                 statement_count += 1
 
             if temporal_query:
                 if statement_count > 0:
-                    query += " AND (%s) " %temporal_query
+                    query += " AND (%s) " % temporal_query
                 else:
-                    query += " (%s) " %temporal_query
+                    query += " (%s) " % temporal_query
                 statement_count += 1
 
             if spatial_query:
                 if statement_count > 0:
-                    query += " AND (%s) " %spatial_query
+                    query += " AND (%s) " % spatial_query
                 else:
-                    query += " (%s) " %spatial_query
+                    query += " (%s) " % spatial_query
                 statement_count += 1
 
             if cloud_cover_query:
                 if statement_count > 0:
-                    query += " AND (%s) " %cloud_cover_query
+                    query += " AND (%s) " % cloud_cover_query
                 else:
-                    query += " (%s) " %cloud_cover_query
+                    query += " (%s) " % cloud_cover_query
                 statement_count += 1
 
             query_results = self.bigquery_client.query(query)
@@ -266,7 +266,7 @@ class GoogleSatelliteBigQueryInterface(object):
 
         except Exception as e:
             raise GoogleCloudAPIError("An error occurred while querying "
-                                      "google archive. Error message: %s" %str(e))
+                                      "google archive. Error message: %s" % str(e))
 
     def get_landsat_urls(self, scene_ids, bands=["B1", "B2"]):
         """Receive the Google Cloud Storage (GCS) download urls and time stamps for a list of Landsat scene ids
@@ -342,12 +342,12 @@ class GoogleSatelliteBigQueryInterface(object):
                 sensor_id = extract_sensor_id_from_scene_id(scene_id)
                 for band in bands:
                     if band not in self.landsat_scene_bands[sensor_id]:
-                        raise Exception("Unknown landsat band name <%s>" %band)
+                        raise Exception("Unknown landsat band name <%s>" % band)
 
             # Select specific columns from the sentinel table
             query = "SELECT scene_id,sensing_time,base_url " \
                     "FROM `bigquery-public-data.cloud_storage_geo_index.landsat_index` " \
-                    "WHERE scene_id IN (\"%s\");" %"\",\"".join(scene_ids)
+                    "WHERE scene_id IN (\"%s\");" % "\",\"".join(scene_ids)
 
             query_results = self.bigquery_client.query(query)
             result = {}
@@ -367,12 +367,12 @@ class GoogleSatelliteBigQueryInterface(object):
                         if band == "MTL":
                             suffix = "txt"
 
-                        file_name = "%s_%s.%s" %(scene_id, band, suffix)
-                        map_name = "%s_%s" %(scene_id, band)
+                        file_name = "%s_%s.%s" % (scene_id, band, suffix)
+                        map_name = "%s_%s" % (scene_id, band)
                         if band != "MTL":
                             index = self.landsat_scene_bands[sensor_id].index(band)
                             raster_suffix = self.raster_suffixes[sensor_id][index]
-                            map_name = "%s%s" %(scene_id, raster_suffix)
+                            map_name = "%s%s" % (scene_id, raster_suffix)
 
                         result[scene_id][band] = {}
                         result[scene_id][band]["file"] = file_name
@@ -384,7 +384,7 @@ class GoogleSatelliteBigQueryInterface(object):
 
         except Exception as e:
             raise GoogleCloudAPIError("An error occurred while fetching "
-                                      "Landsat download URL's. Error message: %s" %str(e))
+                                      "Landsat download URL's. Error message: %s" % str(e))
 
     def get_sentinel_urls(self, product_ids, bands=["B04","B08"]):
         """Receive the download urls and time stamps for a list of Sentinel2 product ids from Google Big Query service
@@ -459,12 +459,12 @@ class GoogleSatelliteBigQueryInterface(object):
 
             for band in bands:
                 if band not in self.sentinel_bands:
-                    raise Exception("Unknown Sentinel-2 band name <%s>" %band)
+                    raise Exception("Unknown Sentinel-2 band name <%s>" % band)
 
             # Select specific columns from the sentinel table
             query = "SELECT granule_id,product_id,sensing_Time,datatake_identifier,base_url " \
                     "FROM `bigquery-public-data.cloud_storage_geo_index.sentinel_2_index` " \
-                    "WHERE product_id IN (\"%s\");" %"\",\"".join(product_ids)
+                    "WHERE product_id IN (\"%s\");" % "\",\"".join(product_ids)
 
             rows = list(self.bigquery_client.query(query))  # API request
 
@@ -492,8 +492,8 @@ class GoogleSatelliteBigQueryInterface(object):
                     # result[product_id]["xml_metadata"] = xml_metadata
 
                     for band in bands:
-                        tile_name = "%s_%s.jp2" %(tile_base_name, band)
-                        map_name = "%s_%s" %(product_id, band)
+                        tile_name = "%s_%s.jp2" % (tile_base_name, band)
+                        map_name = "%s_%s" % (product_id, band)
 
                         result[product_id][band] = {}
                         result[product_id][band]["tile"] = tile_name
@@ -505,7 +505,7 @@ class GoogleSatelliteBigQueryInterface(object):
 
         except Exception as e:
             raise GoogleCloudAPIError("An error occurred while fetching "
-                                      "Sentinel-2 download URL's. Error message: %s" %str(e))
+                                      "Sentinel-2 download URL's. Error message: %s" % str(e))
 
     def _generate_sentinel2_footprint(self, base_url):
         """Download the sentinel XML metadata and parse it for the footpring
@@ -557,6 +557,6 @@ class GoogleSatelliteBigQueryInterface(object):
             if float(x) < min_x:
                 min_x = float(x)
             i += 1
-            gml_coord_list.append("%s,%s" %(x, y))
+            gml_coord_list.append("%s,%s" % (x, y))
 
-        return GML_BODY %" ".join(gml_coord_list), xml_content, (min_x, max_y, max_x, min_y)
+        return GML_BODY % " ".join(gml_coord_list), xml_content, (min_x, max_y, max_x, min_y)

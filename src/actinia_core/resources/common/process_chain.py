@@ -425,7 +425,7 @@ class ProcessChainModel(Schema):
                             'value': 'LT52170762005240COA00_dos1.1'}],
                 'stdout': {'id': 'stats', 'format': 'kv', 'delimiter': '='},
                 'flags': 'a'
-            },
+        },
             {
                 'module': 'exporter',
                 'id': 'exporter_1',
@@ -433,7 +433,7 @@ class ProcessChainModel(Schema):
                                         'type': 'raster'},
                              'param': 'map',
                              'value': 'LT52170762005240COA00_dos1.1'}]
-            },
+        },
             {
                 "id": "ascii_out",
                 "module": "r.out.ascii",
@@ -442,7 +442,7 @@ class ProcessChainModel(Schema):
                            {"param": "precision", "value": "0"}],
                 "stdout": {"id": "elev_1", "format": "table", "delimiter": " "},
                 "flags": "h"
-            },
+        },
             {
                 "id": "ascii_export",
                 "module": "r.out.ascii",
@@ -453,14 +453,14 @@ class ProcessChainModel(Schema):
                      "param": "output",
                      "value": "$file::out1"}
                 ]
-            },
+        },
             {
                 "id": "raster_list",
                 "module": "g.list",
                 "inputs": [{"param": "type",
                             "value": "raster"}],
                 "stdout": {"id": "raster", "format": "list", "delimiter": "\n"}
-            },
+        },
             {
                 "module": "r.what",
                 "id": "r_what_1",
@@ -485,7 +485,7 @@ class ProcessChainModel(Schema):
                     }
                 ],
                 "stdout": {"id": "sample", "format": "table", "delimiter": "|"}
-            }
+        }
         ],
         'webhooks': {'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
                      'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'},
@@ -655,11 +655,13 @@ class ProcessChainConverter(object):
 
         downimp_list = []
 
-        if self.message_logger: self.message_logger.info("Creating download process "
+        if self.message_logger:
+            self.message_logger.info("Creating download process "
                                                          "list for all import definitions")
 
         for entry in self.import_descr_list:
-            if self.message_logger: self.message_logger.info(entry)
+            if self.message_logger:
+                self.message_logger.info(entry)
 
             if "import_descr" not in entry:
                 raise AsyncProcessError("import_descr specification is required in import definition")

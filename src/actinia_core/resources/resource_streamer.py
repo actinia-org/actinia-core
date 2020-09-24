@@ -83,7 +83,7 @@ class RequestStreamerResource(Resource):
         """
 
         resource_dir = global_config.GRASS_RESOURCE_DIR
-        user_export_path =os.path.join(resource_dir, user_id)
+        user_export_path = os.path.join(resource_dir, user_id)
         resource_export_path = os.path.join(user_export_path, resource_id)
         resource_export_file_path = os.path.join(resource_export_path, file_name)
 

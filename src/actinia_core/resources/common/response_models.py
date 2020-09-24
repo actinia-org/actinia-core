@@ -1247,7 +1247,7 @@ class UserInfoResponseModel(Schema):
             "cell_limit": 100000000000,
             "process_num_limit": 1000,
             "process_time_limit": 31536000
-            },
+        },
         "Status": "success",
         "User group": "superadmin",
         "User id": "actinia-gdi",

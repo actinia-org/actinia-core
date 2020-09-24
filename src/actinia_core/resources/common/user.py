@@ -48,7 +48,7 @@ class ActiniaUserError(Exception):
     """Raise this exception in case a user creation error happens
     """
     def __init__(self, message):
-        message = "%s:  %s" %(str(self.__class__.__name__), message)
+        message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
@@ -156,7 +156,7 @@ class ActiniaUser(object):
                       "guest"]
         """
         if role not in USER_ROLES:
-            raise ActiniaUserError("Unsupported user role <%s> supported are %s" %(role, str(USER_ROLES)))
+            raise ActiniaUserError("Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
         self.user_role = role
 
     def has_guest_role(self):
