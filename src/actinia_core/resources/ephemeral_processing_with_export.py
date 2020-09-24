@@ -252,16 +252,19 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         module_name = "r.out.gdal"
         args = ["-fmt", "input=%s" % raster_name, "format=%s" % format, "output=%s" % output_path]
+        create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW"
 
         if format == "GTiff":
             # generate overviews with compression:
             os.environ['COMPRESS_OVERVIEW'] = "LZW"
-            args.extend(["createopt=COMPRESS=LZW,TILED=YES", "overviews=5"])
+            args.append("overviews=5")
+            create_opts += "TILED=YES"
 
+        args.append(create_opts)
         # current workaround due to color table export
         # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946
         # TODO: DELETE AND TEST ONCE GDAL 3.1.4 HAS BEEN RELEASED
-        elif format == "COG":
+        if format == "COG":
             args.append("-c")
 
         if additional_options:
