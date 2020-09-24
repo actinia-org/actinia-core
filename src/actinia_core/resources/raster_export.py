@@ -53,9 +53,9 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as GeoTiff. The link to the exported raster map '
-                       'layer is located in the JSON response. The current region settings of the mapset'
-                       'are used to export the raster layer. Minimum required user role: user.',
+        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
+                       'The link to the exported raster map layer is located in the JSON response.'
+                       'The current region settings of the mapset are used to export the raster layer. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -128,7 +128,7 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as GeoTiff using the raster map layer specific region. '
+        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
                        'The link to the exported raster map '
                        'layer is located in the JSON response. Minimum required user role: user.',
         'parameters': [
@@ -185,7 +185,7 @@ def start_job(*args):
 class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
     """Export a raster layer from a specific mapset as geotiff file.
 
-    The region of tha raster layer can be used for export. In this case a
+    The region of the raster layer can be used for export. In this case a
     temporary mapset will be created to modify the region settings safely.
     Hence, this works also in write protected mapsets.
     """
@@ -221,8 +221,15 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
         self.required_mapsets.append(self.mapset_name)
         self._create_temporary_grass_environment(source_mapset_name="PERMANENT")
 
+        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will be fixed in GDAL 3.1.4
+        # use r.out.gdal -c to avoid the bug
+        format = "COG"
+        from osgeo import gdal
+        if "COG" not in [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
+            format = "GTiff"
+
         export_dict = {"name":self.raster_name + "@" + self.mapset_name,
-                       "export":{"format":"GTiff",
+                       "export":{"format":format,
                                  "type":"raster"}}
 
         self.resource_export_list.append(export_dict)

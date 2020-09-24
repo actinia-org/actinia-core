@@ -43,7 +43,7 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_EXPORT_FORMATS = ["GTiff", "GPKG", "SQLite", "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT", "PostgreSQL"]
+SUPPORTED_EXPORT_FORMATS = ["GTiff", "COG", "GPKG", "SQLite", "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT", "PostgreSQL"]
 
 
 class IOParameterBase(Schema):
@@ -1273,7 +1273,7 @@ class ProcessChainConverter(object):
                         if "format" not in exp or "type" not in exp:
                             raise AsyncProcessError(
                                 "Invalid export parameter in description of module <%s>" % module_name)
-                        if exp["format"] not in ["GTiff", "ESRI_Shapefile"]:
+                        if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
                             raise AsyncProcessError(
                                 "Invalid export <format> parameter in description of module <%s>" % module_name)
                         if exp["type"] not in ["raster", "vector", "strds", "file", "stvds"]:
