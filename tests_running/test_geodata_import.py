@@ -85,14 +85,14 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         proc = subprocess.Popen(args=inputlist,
                                 stdout=subprocess.PIPE,
                                 stderr=subprocess.PIPE)
-        print("Process id: %i"%proc.pid)
+        print("Process id: %i" % proc.pid)
 
         (stdout_buff, stderr_buff) = proc.communicate()
         print(stdout_buff)
         print(stderr_buff)
         proc.wait()
 
-        self.assertEqual(0, proc.returncode, "Error while running %s"%process.executable)
+        self.assertEqual(0, proc.returncode, "Error while running %s" % process.executable)
 
     def test_download_commands_gml(self):
 

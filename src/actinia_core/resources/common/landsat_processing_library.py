@@ -34,28 +34,28 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_MIMETYPES=["application/zip", "application/tiff", "application/gml"]
+SUPPORTED_MIMETYPES = ["application/zip", "application/tiff", "application/gml"]
 
-SCENE_SUFFIXES={
-"LT04":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-"LT05":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-"LE07":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
+SCENE_SUFFIXES = {
+    "LT04":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
+    "LT05":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
+    "LE07":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
         "_B7.TIF", "_B8.TIF","_MTL.txt"],
-"LC08":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
+    "LC08":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
         "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF","_MTL.txt"]}
 
-RASTER_SUFFIXES={
-"LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-"LT05":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-"LE07":[".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
-"LC08":[".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
+RASTER_SUFFIXES = {
+    "LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
+    "LT05":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
+    "LE07":[".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
+    "LC08":[".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
 
 
-SCENE_BANDS={"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
+SCENE_BANDS = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
              "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
              "LE07":["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
                      "B6_VCID_1", "B7", "B8","MTL"],
-             "LC08":["B1", "B2", "B3",  "B4", "B5", "B6", "B7",
+             "LC08":["B1", "B2", "B3", "B4", "B5", "B6", "B7",
                      "B8", "B9", "B10", "B11","MTL"]}
 
 
@@ -70,7 +70,7 @@ def extract_sensor_id_from_scene_id(scene_id):
         The sencor id
 
     """
-    return "%s0%s"%(scene_id[0:2], scene_id[2:3])
+    return "%s0%s" % (scene_id[0:2], scene_id[2:3])
 
 
 def scene_id_to_google_url(scene_id,suffix):
@@ -91,7 +91,7 @@ def scene_id_to_google_url(scene_id,suffix):
     path = scene_id[3:6]
     row = scene_id[6:9]
 
-    url = "https://storage.googleapis.com/gcp-public-data-landsat/%s/PRE/%s/%s/%s/%s%s"%(landsat_sensor_id,
+    url = "https://storage.googleapis.com/gcp-public-data-landsat/%s/PRE/%s/%s/%s/%s%s" % (landsat_sensor_id,
                                                                                          path, row,
                                                                                          scene_id,
                                                                                          scene_id,
@@ -176,7 +176,7 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         count = 0
         # Create file names, urls and check the download cache
         for suffix in SCENE_SUFFIXES[self.landsat_sensor_id]:
-            file_name = "%s%s"%(self.scene_id, suffix)
+            file_name = "%s%s" % (self.scene_id, suffix)
             # This is the file path in the download cache directory
             file_path = os.path.join(self.user_download_cache_path, file_name)
             self.file_list.append(file_path)
@@ -196,7 +196,7 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
 
         for file_path in self.file_list:
             if "_MTL.TXT" not in file_path.upper():
-                raster_name = "%s%s"%(self.scene_id, RASTER_SUFFIXES[self.landsat_sensor_id][count])
+                raster_name = "%s%s" % (self.scene_id, RASTER_SUFFIXES[self.landsat_sensor_id][count])
                 self.raster_names.append(raster_name)
                 self.band_raster_names[SCENE_BANDS[self.landsat_sensor_id][count]] = raster_name
                 p = self.get_raster_import_command(file_path=file_path,
@@ -219,12 +219,12 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         toar_commands = []
 
         p = Process(exec_type="grass", executable="i.landsat.toar",
-                         executable_params=["input=%s."%self.scene_id,
-                                            "metfile=%s_%s"%(os.path.join(self.user_download_cache_path,
+                         executable_params=["input=%s." % self.scene_id,
+                                            "metfile=%s_%s" % (os.path.join(self.user_download_cache_path,
                                                                           self.scene_id),
                                                              "MTL.txt"),
-                                            "method=%s"%option,
-                                            "output=%s_%s."%(self.scene_id, atcor_method),
+                                            "method=%s" % option,
+                                            "output=%s_%s." % (self.scene_id, atcor_method),
                                             "--q"],
                          skip_permission_check=True)
         toar_commands.append(p)
@@ -232,36 +232,36 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
 
     def get_i_vi_process_list(self, atcor_method, processing_method):
 
-        self.ndvi_name = "%s_%s_%s"%(self.scene_id, atcor_method, processing_method)
+        self.ndvi_name = "%s_%s_%s" % (self.scene_id, atcor_method, processing_method)
 
         ndvi_commands = []
 
         ivi = "i.vi"
         ivi_params = list()
         if self.landsat_sensor_id == "LC08":
-            ivi_params.append("red=%s_%s%s"%(self.scene_id, atcor_method, ".4"))
-            ivi_params.append("nir=%s_%s%s"%(self.scene_id, atcor_method, ".5"))
-            ivi_params.append("green=%s_%s%s"%(self.scene_id, atcor_method, ".3"))
-            ivi_params.append("blue=%s_%s%s"%(self.scene_id, atcor_method, ".2"))
-            ivi_params.append("band5=%s_%s%s"%(self.scene_id, atcor_method, ".7"))
-            ivi_params.append("band7=%s_%s%s"%(self.scene_id, atcor_method, ".8"))
+            ivi_params.append("red=%s_%s%s" % (self.scene_id, atcor_method, ".4"))
+            ivi_params.append("nir=%s_%s%s" % (self.scene_id, atcor_method, ".5"))
+            ivi_params.append("green=%s_%s%s" % (self.scene_id, atcor_method, ".3"))
+            ivi_params.append("blue=%s_%s%s" % (self.scene_id, atcor_method, ".2"))
+            ivi_params.append("band5=%s_%s%s" % (self.scene_id, atcor_method, ".7"))
+            ivi_params.append("band7=%s_%s%s" % (self.scene_id, atcor_method, ".8"))
         else:
-            ivi_params.append("red=%s_%s%s"%(self.scene_id, atcor_method, ".3"))
-            ivi_params.append("nir=%s_%s%s"%(self.scene_id, atcor_method, ".4"))
-            ivi_params.append("green=%s_%s%s"%(self.scene_id, atcor_method, ".2"))
-            ivi_params.append("blue=%s_%s%s"%(self.scene_id, atcor_method, ".1"))
-            ivi_params.append("band5=%s_%s%s"%(self.scene_id, atcor_method, ".5"))
-            ivi_params.append("band7=%s_%s%s"%(self.scene_id, atcor_method, ".7"))
+            ivi_params.append("red=%s_%s%s" % (self.scene_id, atcor_method, ".3"))
+            ivi_params.append("nir=%s_%s%s" % (self.scene_id, atcor_method, ".4"))
+            ivi_params.append("green=%s_%s%s" % (self.scene_id, atcor_method, ".2"))
+            ivi_params.append("blue=%s_%s%s" % (self.scene_id, atcor_method, ".1"))
+            ivi_params.append("band5=%s_%s%s" % (self.scene_id, atcor_method, ".5"))
+            ivi_params.append("band7=%s_%s%s" % (self.scene_id, atcor_method, ".7"))
 
-        ivi_params.append("viname=%s"%processing_method.lower())
-        ivi_params.append("output=%s"%self.ndvi_name)
+        ivi_params.append("viname=%s" % processing_method.lower())
+        ivi_params.append("output=%s" % self.ndvi_name)
 
         p = Process(exec_type="grass", executable=ivi, executable_params=ivi_params,
                          skip_permission_check=True)
         ndvi_commands.append(p)
 
         p = Process(exec_type="grass", executable="r.colors",
-                         executable_params=["map=%s"%self.ndvi_name, "color=ndvi"],
+                         executable_params =["map=%s" % self.ndvi_name, "color=ndvi"],
                          skip_permission_check=True)
         ndvi_commands.append(p)
 

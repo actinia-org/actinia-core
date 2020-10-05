@@ -164,7 +164,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             pprint(result)
             self.assertTrue(False, "The error was not found")
         except Exception as e:
-            self.assertTrue(True, "An exception was raised for the correct reason: %s"%str(e))
+            self.assertTrue(True, "An exception was raised for the correct reason: %s" % str(e))
 
     def otest_query_for_sentinel_scenes_multi_error(self):
         aws = AWSSentinel2AInterface(global_config)
@@ -177,7 +177,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             pprint(result)
             self.assertTrue(False, "The error was not found")
         except Exception as e:
-            self.assertTrue(True, "An exception was raised for the correct reason: %s"%str(e))
+            self.assertTrue(True, "An exception was raised for the correct reason: %s" % str(e))
 
     def otest_query_for_sentinel_scenes_band_error(self):
         aws = AWSSentinel2AInterface(global_config)
@@ -188,7 +188,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             # pprint(result)
             self.assertTrue(False, "The error was not found")
         except Exception as e:
-            self.assertTrue(True, "An exception was raised for the correct reason: %s"%str(e))
+            self.assertTrue(True, "An exception was raised for the correct reason: %s" % str(e))
 
 
 if __name__ == '__main__':

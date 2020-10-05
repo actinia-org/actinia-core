@@ -190,7 +190,7 @@ class EnqueuedProcess(object):
             if self.timeout < diff:
                 self.terminate(status="timeout",
                                message="Processes exceeded timeout (%i) in "
-                                       "waiting queue and was terminated."%self.timeout)
+                                       "waiting queue and was terminated." % self.timeout)
                 return True
 
         return False
@@ -203,17 +203,17 @@ class EnqueuedProcess(object):
         """
         if self.process.exitcode is not None and self.process.exitcode != 0:
 
-                # Check if the process noticed the error already
-                response_data = self.resource_logger.get(self.user_id,
-                                                         self.resource_id)
+            # Check if the process noticed the error already
+            response_data = self.resource_logger.get(self.user_id,
+                                                     self.resource_id)
 
-                if response_data is not None:
-                    http_code, response_model = pickle.loads(response_data)
-                    if response_model["status"] != "error" and \
-                            response_model["status"] != "terminated" and \
-                            response_model["status"] != "timeout":
-                        message = "The process unexpectedly terminated with exit code %i"%self.process.exitcode
-                        self._send_resource_update(status="error", message=message, response_data=response_data)
+            if response_data is not None:
+                http_code, response_model = pickle.loads(response_data)
+                if response_model["status"] != "error" and \
+                        response_model["status"] != "terminated" and \
+                        response_model["status"] != "timeout":
+                    message = "The process unexpectedly terminated with exit code %i" % self.process.exitcode
+                    self._send_resource_update(status="error", message=message, response_data=response_data)
 
     def _send_resource_update(self, status, message, response_data=None):
         """Send a response to the resource logger about the current resource state

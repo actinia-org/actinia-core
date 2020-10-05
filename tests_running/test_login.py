@@ -55,8 +55,8 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         """
         rv = self.server.get(URL_PREFIX + '/users', headers=self.admin_auth_header)
         print ("GET /users", rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         users = ""
         if "guest" in json_load(rv.data)["user_list"]:
@@ -131,82 +131,82 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/users/%s?password=%s&group=%s' % (new_user_id, new_password, new_group),
                               headers=new_auth_header)
         print("POST /users/thomas", rv.data)
-        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
         # Try to get the user credentials as non-admin which should fail!
         rv = self.server.get(URL_PREFIX + '/users/%s' % new_user_id,
                              headers=new_auth_header)
         print("GET /users/thomas", rv.data)
-        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
         # Try to delete the new user as non-admin which should fail!
         rv = self.server.delete(URL_PREFIX + '/users/%s' % new_user_id,
                                 headers=new_auth_header)
         print("DELETE /users/thomas", rv.data)
-        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
     def test_token_generation_admin(self):
 
         rv = self.server.get(URL_PREFIX + '/token', headers=self.admin_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_api_key_generation_admin(self):
 
         rv = self.server.get(URL_PREFIX + '/api_key', headers=self.admin_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_user(self):
 
         rv = self.server.get(URL_PREFIX + '/token', headers=self.user_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_user_expire(self):
 
         rv = self.server.get(URL_PREFIX + '/token?expiration_time=3600', headers=self.user_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_guest(self):
 
         rv = self.server.get(URL_PREFIX + '/token', headers=self.guest_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_wrong_no_auth(self):
 
         rv = self.server.get(URL_PREFIX + '/token')
         print (rv.data)
-        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "text/html", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "text/html", "Wrong mimetype %s" % rv.mimetype)
 
     def test_api_key_generation_wrong_user(self):
 
         rv = self.server.get(URL_PREFIX + '/api_key', headers=self.user_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_user_expire_error(self):
 
         rv = self.server.get(URL_PREFIX + '/token?expiration_time=1000000000', headers=self.user_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_token_generation_user_expire_wrong(self):
 
         rv = self.server.get(URL_PREFIX + '/token?expiration_time=blablub', headers=self.user_auth_header)
         print (rv.data)
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
 if __name__ == '__main__':

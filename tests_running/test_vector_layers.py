@@ -46,8 +46,8 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         map_list = json_load(rv.data)["process_results"]
         self.assertTrue("boundary_county" in map_list)
@@ -59,8 +59,8 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=elev_*',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         map_list = json_load(rv.data)["process_results"]
         self.assertFalse("boundary_county" in map_list)
@@ -74,8 +74,8 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers?pattern=NONE',
                              headers=self.user_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         map_list = json_load(rv.data)["process_results"]
         self.assertTrue(len(map_list) == 0)

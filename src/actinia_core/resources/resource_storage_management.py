@@ -148,7 +148,7 @@ class ResourceStorageSize(EphemeralProcessing):
 
             self.finish_message = "Resource storage size successfully computed"
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist."%self.user_resource_storage_path)
+            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
 
 
 def start_resource_storage_remove(*args):
@@ -179,4 +179,4 @@ class ResourceStorageDelete(PersistentProcessing):
             os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist."%self.user_resource_storage_path)
+            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)

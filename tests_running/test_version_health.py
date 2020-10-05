@@ -43,12 +43,12 @@ class VersionHealthTestCase(ActiniaResourceTestCaseBase):
     def test_version(self):
         rv = self.server.get(URL_PREFIX + '/version')
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
     def test_health_check(self):
         rv = self.server.get(URL_PREFIX + '/health_check')
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
 
 if __name__ == '__main__':

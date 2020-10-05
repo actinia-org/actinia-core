@@ -25,7 +25,7 @@
 App configuration of flask, flask_restful, redis server connection
 and global settings
 """
-actinia_string="""Actinia"""
+actinia_string = """Actinia"""
 
 actinia_description = """
 ================================
@@ -96,10 +96,10 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-API_VERSION="v1"
+API_VERSION = "v1"
 
 # This is the URL prefix that must be used in the tests
-URL_PREFIX="/api/%s"%API_VERSION
+URL_PREFIX = "/api/%s" % API_VERSION
 
 
 flask_app = Flask(__name__)
@@ -114,6 +114,6 @@ flask_api = Api(flask_app, prefix=URL_PREFIX,
 
 # Set the security definition in an unconventional way
 flask_api._swagger_object["securityDefinitions"] = {"basicAuth":{"type": "basic"}}
-flask_api._swagger_object["security"]=[{"basicAuth":[]}]
+flask_api._swagger_object["security"] = [{"basicAuth":[]}]
 
 auth = HTTPBasicAuth()

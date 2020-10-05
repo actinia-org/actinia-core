@@ -158,9 +158,8 @@ class TokenCreationResource(LoginBase):
             return make_response(jsonify(TokenResponseModel(status="success",
                                          token=g.user.generate_auth_token(expiration=expiration).decode(),
                                          message="Token successfully generated with "
-                                                 "an expiration time of %i seconds"%expiration)))
+                                                 "an expiration time of %i seconds" % expiration)))
         except Exception as e:
             return make_response(jsonify(TokenResponseModel(status="error",
                                          token="",
-                                         message="Error while generating token: %s"%str(e))), 400)
-
+                                         message="Error while generating token: %s" % str(e))), 400)

@@ -214,24 +214,24 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
                                                                    legacy=False)
         where_list = []
 
-        if "start_time" in options :
-            where_list.append("start_time >= \'%s\'"%options["start_time"])
+        if "start_time" in options:
+            where_list.append("start_time >= \'%s\'" % options["start_time"])
         if "end_time" in options:
-            where_list.append("end_time  <= \'%s\'"%options["end_time"])
+            where_list.append("end_time  <= \'%s\'" % options["end_time"])
         if "n" in options:
-            where_list.append("south <= %f"%options["n"])
+            where_list.append("south <= %f" % options["n"])
         if "s" in options:
-            where_list.append("north >= %f"%options["s"])
+            where_list.append("north >= %f" % options["s"])
         if "e" in options:
-            where_list.append("west <= %f"%options["e"])
+            where_list.append("west <= %f" % options["e"])
         if "w" in options:
-            where_list.append("east >= %f"%options["w"])
+            where_list.append("east >= %f" % options["w"])
 
         where = " AND ".join(where_list)
 
         t_rast_list = {"id": "1",
                        "module": "t.rast.list",
-                       "inputs": [{"param":"input", "value":"%s@%s"%(strds_name, self.mapset_name)},
+                       "inputs": [{"param":"input", "value":"%s@%s" % (strds_name, self.mapset_name)},
                                   {"param":"method", "value":"comma"},
                                   {"param":"where", "value":where}]}
 
@@ -291,8 +291,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         g_region_adjust = {"id": "4",
                            "module": "g.region",
-                           "inputs": [{"param":"ewres", "value":"%f"%ewres},
-                                      {"param":"nsres", "value":"%f"%nsres}],
+                           "inputs": [{"param":"ewres", "value":"%f" % ewres},
+                                      {"param":"nsres", "value":"%f" % nsres}],
                            "flags":"g"}
 
         d_rast = {"id": "6",

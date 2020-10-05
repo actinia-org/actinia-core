@@ -109,7 +109,7 @@ class AWSSentinel2AInterface(object):
 
             for band in bands:
                 if band not in self.sentinel_bands:
-                    raise Exception("Unknown Sentinel-2 band name <%s>"%band)
+                    raise Exception("Unknown Sentinel-2 band name <%s>" % band)
 
             result = []
 
@@ -133,7 +133,7 @@ class AWSSentinel2AInterface(object):
                 # Get the product info JSON file
 
                 json_url = "%(base)s/products/%(year)s/%(month)s/%(day)s/%(id)s/" \
-                           "productInfo.json"%{"base":self.aws_sentinel_base_url,
+                           "productInfo.json" % {"base":self.aws_sentinel_base_url,
                                                "year":year,
                                                "month":month,
                                                "day":day,
@@ -146,7 +146,7 @@ class AWSSentinel2AInterface(object):
                 try:
                     info = json_loads(product_info)
                 except:
-                    raise Exception("Unable to read the productInfo.json file from URL: %s. Error: %s"%(json_url,
+                    raise Exception("Unable to read the productInfo.json file from URL: %s. Error: %s" % (json_url,
                                                                                                         product_info))
 
                 if info:
@@ -177,13 +177,13 @@ class AWSSentinel2AInterface(object):
                         public_url = self.aws_sentinel_base_url + "/" + tile["path"]
 
                         for band in bands:
-                            tile_name = "%s_tile_%i_band_%s.jp2"%(product_id, tile_num, band)
-                            map_name = "%s_tile_%i_band_%s"%(product_id, tile_num, band)
+                            tile_name = "%s_tile_%i_band_%s.jp2" % (product_id, tile_num, band)
+                            map_name = "%s_tile_%i_band_%s" % (product_id, tile_num, band)
 
                             tile_info[band] = {}
                             tile_info[band]["file_name"] = tile_name
                             tile_info[band]["map_name"] = map_name
-                            tile_info[band]["public_url"] = "%s/%s.jp2"%(public_url, band)
+                            tile_info[band]["public_url"] = "%s/%s.jp2" % (public_url, band)
 
                         scene_entry["tiles"].append(tile_info)
 
@@ -211,6 +211,6 @@ class AWSSentinel2AInterface(object):
         try:
             info = json_loads(tile_info)
         except:
-            raise Exception("Unable to read the info json file from URL: %s. Error: %s"%(tile_entry["info"],
+            raise Exception("Unable to read the info json file from URL: %s. Error: %s" % (tile_entry["info"],
                                                                                          tile_info))
         return json_dumps(info["tileDataGeometry"])

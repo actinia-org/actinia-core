@@ -245,7 +245,7 @@ process_chain_sent_1 = {
                                       "type": "sentinel2"},
                      "param": "map",
                      "value": "B04"}]}
-         ],
+    ],
     "version": "1"
 }
 
@@ -258,7 +258,7 @@ process_chain_sent_2 = {
                                       "sentinel_band": "B04"},
                      "param": "map",
                      "value": "B04"}]}
-         ],
+    ],
     "version": "1"
 }
 
@@ -315,8 +315,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_webhook_update(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -325,8 +325,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_1(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -335,8 +335,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_2(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -345,8 +345,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_3(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -355,8 +355,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_4(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -365,8 +365,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_error_5(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -375,8 +375,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_output_error_1(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -385,8 +385,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_output_error_2(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -395,8 +395,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_landsat_error_1(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -405,8 +405,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_landsat_error_2(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -415,8 +415,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_landsat_error_3(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -425,8 +425,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_sent_error_1(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -435,8 +435,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_async_processing_sent_error_2(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
@@ -445,8 +445,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
 if __name__ == '__main__':

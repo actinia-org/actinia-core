@@ -58,7 +58,7 @@ process_chain_postgis = {
                                  "output_layer": "poly_2"},
                      "param": "map",
                      "value": "poly"}
-                    ]
+                     ]
          }],
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
                  "update": "http://0.0.0.0:5005/webhook/update"},
@@ -69,7 +69,7 @@ process_chain_postgis = {
 class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
 
     def gen_output_layer_name(self):
-        process_chain_postgis["list"][1]["outputs"][0]["export"]["output_layer"] = "poly_%i"%randint(0, 1000000000)
+        process_chain_postgis["list"][1]["outputs"][0]["export"]["output_layer"] = "poly_%i" % randint(0, 1000000000)
 
     def test_1_async_processing_postgis_validation(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
