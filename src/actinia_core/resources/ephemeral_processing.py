@@ -513,7 +513,7 @@ class EphemeralProcessing(object):
             raise AsyncProcessError("Empty process chain, nothing to compute")
 
         # Check if the user is allowed to execute this number of processes
-        if skip_permission_check == False and len(process_list) > self.process_num_limit:
+        if skip_permission_check is False and len(process_list) > self.process_num_limit:
             raise AsyncProcessError("Process limit exceeded, a maximum of %i "
                                     "processes are allowed in the process chain." % self.process_num_limit)
 

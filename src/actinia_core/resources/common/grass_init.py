@@ -61,22 +61,22 @@ class ProcessLogging():
 
     def log_debug(self, message):
         """Write an info message into the logfile"""
-        if message != None and message != "":
+        if message is not None and message != "":
             self.logger.debug(message)
 
     def log_info(self, message):
         """Write an info message into the logfile"""
-        if message != None and message != "":
+        if message is not None and message != "":
             self.logger.info(message)
 
     def log_warning(self, message):
         """Write a warning message into the logfile"""
-        if message != None and message != "":
+        if message is not None and message != "":
             self.logger.warning(message)
 
     def log_error(self, message):
         """Write an error message into the logfile"""
-        if message != None and message != "":
+        if message is not None and message != "":
             self.logger.error(message)
 
 
