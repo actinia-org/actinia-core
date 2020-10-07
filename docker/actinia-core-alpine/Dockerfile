@@ -1,4 +1,4 @@
-FROM mundialis/grass-py3-pdal:stable-alpine as grass
+FROM mundialis/grass-py3-pdal:latest-alpine as grass
 FROM mundialis/esa-snap:s1tbx-7.0v2 as snap
 FROM mundialis/actinia-core:alpine-build-pkgs_v4 as build
 

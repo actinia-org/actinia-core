@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:g78-latest-alpine
+FROM mundialis/actinia-core:g79-latest-alpine
 
 COPY actinia.cfg /etc/default/actinia
 
