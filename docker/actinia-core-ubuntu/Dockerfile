@@ -80,7 +80,7 @@ ENV LD_LIBRARY_PATH ".:$LD_LIBRARY_PATH"
 RUN apt-get install default-jdk maven -y
 ENV JAVA_HOME "/usr/lib/jvm/java-11-openjdk-amd64"
 RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-COPY docker/actinia-core-latest/snap /src/snap
+COPY docker/actinia-core/snap /src/snap
 RUN bash /src/snap/install.sh
 RUN update-alternatives --remove python /usr/bin/python3
 
@@ -125,9 +125,9 @@ WORKDIR /grassdb
 VOLUME /grassdb
 
 # Copy actinia config file and start scripts
-COPY docker/actinia-core-latest/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core-latest/start.sh /src/start.sh
-COPY docker/actinia-core-latest/start-dev.sh /src/start-dev.sh
+COPY docker/actinia-core/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core/start.sh /src/start.sh
+COPY docker/actinia-core/start-dev.sh /src/start-dev.sh
 
 # Set actinia config file for testing
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
