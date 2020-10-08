@@ -65,7 +65,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
     def tearDown(self):
         self.app_context.pop()
 
-    # TODO
     def test_logging(self):
 
         ret = self.log.commit(user_id=self.user_id,
@@ -100,7 +99,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
 
         self.assertFalse(ret)
 
-    # TODO
     def test_list(self):
 
         user = "lisa"

@@ -306,15 +306,15 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(resp["process_results"]), 6)
 
     # TODO
-    # def test_async_processing_new(self):
-    #     rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
-    #                           headers=self.admin_auth_header,
-    #                           data=json_dumps(process_chain_new),
-    #                           content_type="application/json")
-    #
-    #     resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-    #                                           http_status=200, status="finished")
-    #     self.assertEqual(len(resp["process_results"]), 6)
+    def test_async_processing_new(self):
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_new),
+                              content_type="application/json")
+
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                              http_status=200, status="finished")
+        self.assertEqual(len(resp["process_results"]), 6)
 
     @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")

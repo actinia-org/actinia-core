@@ -8,7 +8,7 @@ LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de
 COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
-RUN git checkout .
+# RUN git checkout .
 COPY requirements-alpine.txt requirements-alpine.txt
 # scipy installs but wheel building fails. Helping packages were
 # RUN add openblas openblas-dev lapack lapack-dev gfortran
@@ -102,20 +102,19 @@ FROM actinia_installation as actinia_test
 WORKDIR /src/actinia_core
 COPY --from=build /src/actinia_core /src/actinia_core
 
-COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
-COPY actinia-test.cfg /etc/default/actinia_test
-#COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
-
 COPY tests_with_redis.sh tests_with_redis.sh
 COPY Makefile Makefile
 RUN chmod a+x tests_with_redis.sh
 
+# set config for test
+COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
 ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
 
 # TODO remove if all tests are running
 RUN rm -rf tests
-COPY tests_running tests
+COPY tests tests
 
 # install things only for tests
 RUN apk add redis
@@ -126,25 +125,30 @@ RUN pip3 install iniconfig
 #  tar -xzvf nc_basic_spm_grass7.tar.gz && \
 #  rm -f nc_basic_spm_grass7.tar.gz && \
 #  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
-COPY grassdb/latlong_wgs84 /actinia_core/grassdb/latlong_wgs84
+
+RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
+# COPY grassdb/latlong_wgs84 /actinia_core/grassdb/latlong_wgs84
 COPY grassdb/nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
+
 RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
   unzip nc_spm_mapset_modis2015_2016_lst.zip && \
   rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
 
+# TODO: Postgres for tests
+# useing tests/data/poly.gpkg
+
 RUN make test
 
-
 ## final image
-#FROM actinia_installation as actinia
+FROM actinia_installation as actinia
 
-#VOLUME /grassdb
-#WORKDIR /src/actinia_core
+VOLUME /grassdb
+WORKDIR /src/actinia_core
 
-#ENTRYPOINT ["/bin/sh"]
-#CMD ["/src/start.sh"]
+ENTRYPOINT ["/bin/sh"]
+CMD ["/src/start.sh"]
 
-#EXPOSE 8088
-#EXPOSE 9191
+EXPOSE 8088
+EXPOSE 9191

@@ -109,4 +109,4 @@ RUN pip3 install -r /src/requirements-alpine.txt
 # TODO: replace edge community packages as soon as possible.
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-joblib
 # TODO: replace edge testing packages as soon as possible.
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-scikit-learn

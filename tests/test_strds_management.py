@@ -57,22 +57,20 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         strds_list = json_loads(rv.data)["process_results"]
-        self.assertTrue("precipitation_1950_2013_yearly_mm" in strds_list)
-        self.assertTrue("temperature_mean_1950_2013_yearly_celsius" in strds_list)
+        self.assertTrue("LST_Day_monthly" in strds_list)
 
     def test_list_strds_where_1(self):
-        rv = self.server.get(strds_url + "?where=start_time > '1900-01-01'",
+        rv = self.server.get(strds_url + "?where=start_time == '2015-01-01 00:00:00'",
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         strds_list = json_loads(rv.data)["process_results"]
-        self.assertTrue("precipitation_1950_2013_yearly_mm" in strds_list)
-        self.assertTrue("temperature_mean_1950_2013_yearly_celsius" in strds_list)
+        self.assertTrue("LST_Day_monthly" in strds_list)
 
     def test_list_strds_where_2(self):
-        rv = self.server.get(strds_url + "?where=start_time > '2000-01-01'",
+        rv = self.server.get(strds_url + "?where=start_time > '2016-01-01'",
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -132,7 +130,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         start_time = json_loads(rv.data)["process_results"]["start_time"]
 
-        self.assertEquals(start_time, "'None'")
+        self.assertEqual(start_time, "'None'")
         # Delete the strds
         rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                                 headers=self.admin_auth_header)

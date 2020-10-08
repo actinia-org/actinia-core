@@ -26,6 +26,7 @@ Tests: Google Big Query interface test case
 """
 from actinia_core.resources.common.google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
 from actinia_core.resources.common.config import global_config
+import os
 import unittest
 from pprint import pprint
 
@@ -47,6 +48,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene_time(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
 
@@ -57,6 +60,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) >= 1)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene_time_coords(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
 
@@ -67,6 +72,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) >= 1)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel2_scene_time(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
 
@@ -77,6 +84,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertEqual(len(result), 154)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel2_scene_time_coords(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
 
@@ -87,6 +96,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) >= 1)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel_scene_sinlge(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         # A very small scene
@@ -95,6 +106,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) == 1)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel_scene_four(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
@@ -105,6 +118,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) == 4)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel_scene_two_missing(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170301T225331_N0204_R115_T56DNG_20170301T225347",
@@ -115,6 +130,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) == 2)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel_scene_empty_query(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170208T092131_N0204_R093_T35TLF_NOPENOPENOPE",],
@@ -122,6 +139,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(not result)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
@@ -131,6 +150,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) == 3)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene_one_missing(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
@@ -140,6 +161,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         pprint(result)
         self.assertTrue(len(result) == 2)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene_empty_query(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_landsat_urls(["LE72_NOPENOPENOPE",],
