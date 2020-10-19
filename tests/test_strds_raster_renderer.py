@@ -40,16 +40,25 @@ __copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. K
 __maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
+location = 'nc_spm_08'
+strds_mapset = 'modis_lst'
+strds_url = (URL_PREFIX +
+    '/locations/%(location)s/mapsets/%(mapset)s/strds'
+    % {'location': location, 'mapset': strds_mapset})
+srtds_data = 'LST_Day_monthly'
+
 
 class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
 
     def test_strds_render_1(self):
 
         new_mapset = "strds_render_test"
-        self.create_new_mapset(new_mapset, "ECAD")
+        self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds_register' % new_mapset,
+        rv = self.server.post(URL_PREFIX + \
+                                '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+                                %{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -60,17 +69,17 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Create the raster layer
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/raster_layers/test_layer_1' % new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_1'%{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "1"}),
                               content_type="application/json")
         pprint(json_load(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/raster_layers/test_layer_2' % new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_2'%{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "2"}),
                               content_type="application/json")
         pprint(json_load(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/raster_layers/test_layer_3' % new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_3'%{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "3"}),
                               content_type="application/json")
@@ -80,7 +89,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
                          {"name": "test_layer_2", "start_time": "2000-01-02", "end_time": "2000-01-03"},
                          {"name": "test_layer_3", "start_time": "2000-01-03", "end_time": "2000-01-04"}]
 
-        rv = self.server.put(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register/raster_layers" % new_mapset,
+        rv = self.server.put(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register/raster_layers"%{'location': location, 'mapset': new_mapset},
                              data=json_dumps(raster_layers),
                              content_type="application/json",
                              headers=self.admin_auth_header)
@@ -89,15 +98,15 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Check strds
-        rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register/render?"
-                             "width=100&height=100" % new_mapset,
+        rv = self.server.get(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register/render?"
+                             "width=100&height=100"%{'location': location, 'mapset': new_mapset},
                              headers=self.admin_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" % rv.mimetype)
 
-        # Check strds
-        rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/%s/strds/test_strds_register/render?"
-                             "width=100&height=100&start_time=2000-01-01&end_time=2000-01-02" % new_mapset,
+        # # Check strds
+        rv = self.server.get(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register/render?"
+                             "width=100&height=100&start_time=2000-01-01 00:00:00&end_time=2000-01-02 00:00:00"%{'location': location, 'mapset': new_mapset},
                              headers=self.admin_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" % rv.mimetype)

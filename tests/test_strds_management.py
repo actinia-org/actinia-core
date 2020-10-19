@@ -37,35 +37,40 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
+location = 'nc_spm_08'
+strds_mapset = 'modis_lst'
+strds_url = (URL_PREFIX +
+    '/locations/%(location)s/mapsets/%(mapset)s/strds'
+    % {'location': location, 'mapset': strds_mapset})
+srtds_data = 'LST_Day_monthly'
+
 
 class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     #################### LIST RASTER ##########################################
 
     def test_list_strds(self):
-        rv = self.server.get(URL_PREFIX + '/locations/ECAD/mapsets/PERMANENT/strds',
+        rv = self.server.get(strds_url,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         strds_list = json_loads(rv.data)["process_results"]
-        self.assertTrue("precipitation_1950_2013_yearly_mm" in strds_list)
-        self.assertTrue("temperature_mean_1950_2013_yearly_celsius" in strds_list)
+        self.assertTrue("LST_Day_monthly" in strds_list)
 
     def test_list_strds_where_1(self):
-        rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/PERMANENT/strds?where=start_time > '1900-01-01'",
+        rv = self.server.get(strds_url + "?where=start_time == '2015-01-01 00:00:00'",
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         strds_list = json_loads(rv.data)["process_results"]
-        self.assertTrue("precipitation_1950_2013_yearly_mm" in strds_list)
-        self.assertTrue("temperature_mean_1950_2013_yearly_celsius" in strds_list)
+        self.assertTrue("LST_Day_monthly" in strds_list)
 
     def test_list_strds_where_2(self):
-        rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/PERMANENT/strds?where=start_time > '2000-01-01'",
+        rv = self.server.get(strds_url + "?where=start_time > '2016-01-01'",
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -78,7 +83,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     #################### INFO #################################################
 
     def test_strds_info(self):
-        rv = self.server.get(URL_PREFIX + '/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm',
+        rv = self.server.get(strds_url + '/%s' % srtds_data,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -86,17 +91,17 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         start_time = json_loads(rv.data)["process_results"]["start_time"]
 
-        self.assertEqual(start_time, "'1950-01-01 00:00:00'")
+        self.assertEqual(start_time, "'2015-01-01 00:00:00'")
 
     #################### CREATE REMOVE ########################################
 
     def test_strds_create_remove(self):
 
         new_mapset = "strds_test"
-        self.create_new_mapset(mapset_name=new_mapset, location_name="ECAD")
+        self.create_new_mapset(mapset_name=new_mapset, location_name=location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -107,7 +112,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Create failure since the strds already exists
-        rv = self.server.post(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -117,7 +122,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         # Read/check information of the new strds
-        rv = self.server.get(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.get(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -125,21 +130,21 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         start_time = json_loads(rv.data)["process_results"]["start_time"]
 
-        self.assertEquals(start_time, "'None'")
+        self.assertEqual(start_time, "'None'")
         # Delete the strds
-        rv = self.server.delete(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         # Try to delete the strds again to produce an error
-        rv = self.server.delete(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rv = self.server.get(URL_PREFIX + '/locations/ECAD/mapsets/%s/strds/test_strds' % new_mapset,
+        rv = self.server.get(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
@@ -149,7 +154,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_strds_info_error_1(self):
         # Raster does not exist
-        rv = self.server.get(URL_PREFIX + '/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm_nope',
+        rv = self.server.get(strds_url + '/precipitation_1950_2013_yearly_mm_nope',
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
@@ -157,7 +162,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_strds_where_error_1(self):
         # Wrong where statement
-        rv = self.server.get(URL_PREFIX + "/locations/ECAD/mapsets/PERMANENT/strds?where=start_timing > '2000-01-01'",
+        rv = self.server.get(strds_url + "?where=start_timing > '2000-01-01'",
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)

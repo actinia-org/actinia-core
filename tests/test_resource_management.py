@@ -74,6 +74,7 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                             accessible_datasets={"nc_spm_08": ["PERMANENT",
                                                                                "user1",
                                                                                "landsat",
+                                                                               "modis_lst",
                                                                                "test_mapset"],
                                                                  "ECAD": ["PERMANENT"]},
                                             process_num_limit=3,

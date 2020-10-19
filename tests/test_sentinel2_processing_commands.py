@@ -26,6 +26,7 @@ Tests: Sentinel2 processing library test case
 """
 from actinia_core.resources.common.sentinel_processing_library import Sentinel2Processing
 from actinia_core.resources.common.config import global_config
+import os
 import unittest
 
 __license__    = "GPLv3"
@@ -65,6 +66,8 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
     def tearDown(self):
         pass
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_download_import_commands(self):
         gsqi = Sentinel2Processing(global_config, "S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
                                    None, ["B12", "B08"], "/tmp", "/tmp/", update_dummy, MessageDummy())

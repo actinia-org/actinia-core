@@ -8,7 +8,7 @@ LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de
 COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
-RUN git checkout .
+# RUN git checkout .
 COPY requirements-alpine.txt requirements-alpine.txt
 # scipy installs but wheel building fails. Helping packages were
 # RUN add openblas openblas-dev lapack lapack-dev gfortran
@@ -18,7 +18,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v4 as actinia_installation
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v5 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -95,21 +95,49 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/userdata && \
     ln -s /actinia_core /root/actinia
 
-
 # tests
 FROM actinia_installation as actinia_test
 
 WORKDIR /src/actinia_core
 COPY --from=build /src/actinia_core /src/actinia_core
+
+COPY tests_with_redis.sh tests_with_redis.sh
+COPY Makefile Makefile
+RUN chmod a+x tests_with_redis.sh
+
+# set config for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia
+COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
+ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
+# TODO do not set DEFAULT_CONFIG_PATH if this is fixed
+ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
+
 # TODO remove if all tests are running
 RUN rm -rf tests
-COPY tests_running tests
+COPY tests tests
 
+# install things only for tests
+RUN apk add redis
 RUN pip3 install iniconfig
-RUN make test
 
+# add data for tests
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
+  unzip nc_spm_08_micro.zip && \
+  rm -f nc_spm_08_micro.zip && \
+  mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
+
+RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
+
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
+  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
+  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
+  mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
+RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
+
+# TODO: Postgres for tests
+# useing tests/data/poly.gpkg
+
+RUN make test
 
 # final image
 FROM actinia_installation as actinia

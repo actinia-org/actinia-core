@@ -80,11 +80,11 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         print(user)
 
         self.assertEqual(user.get_role(), "admin")
-        self.assertEquals(user.get_id(), self.user_id)
-        self.assertEquals(user.get_group(), self.user_group)
-        self.assertEquals(user.get_cell_limit(), 1000)
-        self.assertEquals(user.get_process_num_limit(), 3)
-        self.assertEquals(user.get_process_time_limit(), 30)
+        self.assertEqual(user.get_id(), self.user_id)
+        self.assertEqual(user.get_group(), self.user_group)
+        self.assertEqual(user.get_cell_limit(), 1000)
+        self.assertEqual(user.get_process_num_limit(), 3)
+        self.assertEqual(user.get_process_time_limit(), 30)
 
         datasets = user.get_accessible_datasets()
         modules = user.get_accessible_modules()
@@ -100,11 +100,11 @@ class UserTestCase(ActiniaResourceTestCaseBase):
 
         self.assertTrue(user_2.exists())
         self.assertEqual(user_2.get_role(), "admin")
-        self.assertEquals(user_2.get_id(), self.user_id)
-        self.assertEquals(user.get_group(), self.user_group)
-        self.assertEquals(user_2.get_cell_limit(), 1000)
-        self.assertEquals(user_2.get_process_num_limit(), 3)
-        self.assertEquals(user_2.get_process_time_limit(), 30)
+        self.assertEqual(user_2.get_id(), self.user_id)
+        self.assertEqual(user.get_group(), self.user_group)
+        self.assertEqual(user_2.get_cell_limit(), 1000)
+        self.assertEqual(user_2.get_process_num_limit(), 3)
+        self.assertEqual(user_2.get_process_time_limit(), 30)
 
         datasets = user_2.get_accessible_datasets()
         modules = user_2.get_accessible_modules()
@@ -120,11 +120,11 @@ class UserTestCase(ActiniaResourceTestCaseBase):
 
         self.assertTrue(user_3.exists())
         self.assertEqual(user_3.get_role(), "admin")
-        self.assertEquals(user_3.get_id(), self.user_id)
-        self.assertEquals(user.get_group(), self.user_group)
-        self.assertEquals(user_3.get_cell_limit(), 1000)
-        self.assertEquals(user_3.get_process_num_limit(), 3)
-        self.assertEquals(user_3.get_process_time_limit(), 30)
+        self.assertEqual(user_3.get_id(), self.user_id)
+        self.assertEqual(user.get_group(), self.user_group)
+        self.assertEqual(user_3.get_cell_limit(), 1000)
+        self.assertEqual(user_3.get_process_num_limit(), 3)
+        self.assertEqual(user_3.get_process_time_limit(), 30)
 
         datasets = user_3.get_accessible_datasets()
         modules = user_3.get_accessible_modules()
@@ -160,11 +160,11 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         print(user)
 
         self.assertEqual(user.get_role(), "admin")
-        self.assertEquals(user.get_id(), self.user_id)
-        self.assertEquals(user.get_group(), self.user_group)
-        self.assertEquals(user.get_cell_limit(), 1000)
-        self.assertEquals(user.get_process_num_limit(), 3)
-        self.assertEquals(user.get_process_time_limit(), 30)
+        self.assertEqual(user.get_id(), self.user_id)
+        self.assertEqual(user.get_group(), self.user_group)
+        self.assertEqual(user.get_cell_limit(), 1000)
+        self.assertEqual(user.get_process_num_limit(), 3)
+        self.assertEqual(user.get_process_time_limit(), 30)
 
         datasets = user.get_accessible_datasets()
 
@@ -182,9 +182,9 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         print(user)
 
         self.assertEqual(user.get_role(), "user")
-        self.assertEquals(user.get_cell_limit(), 1000000)
-        self.assertEquals(user.get_process_num_limit(), 10)
-        self.assertEquals(user.get_process_time_limit(), 50)
+        self.assertEqual(user.get_cell_limit(), 1000000)
+        self.assertEqual(user.get_process_num_limit(), 10)
+        self.assertEqual(user.get_process_time_limit(), 50)
 
         user = ActiniaUser(user_id=self.user_id)
         user.read_from_db()

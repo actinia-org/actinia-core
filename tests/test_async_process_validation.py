@@ -24,6 +24,7 @@
 """
 Tests: Async Process Validation test case
 """
+import os
 import unittest
 from flask.json import dumps as json_dumps
 
@@ -304,6 +305,7 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 6)
 
+    # TODO
     def test_async_processing_new(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,
@@ -314,6 +316,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 6)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
@@ -325,6 +329,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
         print(resp)
         self.assertEqual(len(resp["process_results"]), 29)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export_landsat(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
@@ -335,6 +341,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 26)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_landsat(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/process_chain_validation_async',
                               headers=self.admin_auth_header,
