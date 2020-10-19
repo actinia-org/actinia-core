@@ -8,7 +8,7 @@ LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de
 COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
-# RUN git checkout .
+RUN git checkout .
 COPY requirements-alpine.txt requirements-alpine.txt
 # scipy installs but wheel building fails. Helping packages were
 # RUN add openblas openblas-dev lapack lapack-dev gfortran
