@@ -95,7 +95,6 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/userdata && \
     ln -s /actinia_core /root/actinia
 
-
 # tests
 FROM actinia_installation as actinia_test
 
@@ -121,14 +120,12 @@ RUN apk add redis
 RUN pip3 install iniconfig
 
 # add data for tests
-#RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_basic_spm_grass7.tar.gz && \
-#  tar -xzvf nc_basic_spm_grass7.tar.gz && \
-#  rm -f nc_basic_spm_grass7.tar.gz && \
-#  mv nc_basic_spm_grass7 /actinia_core/grassdb/nc_spm_08
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
+  unzip nc_spm_08_micro.zip && \
+  rm -f nc_spm_08_micro.zip && \
+  mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 
 RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
-# COPY grassdb/latlong_wgs84 /actinia_core/grassdb/latlong_wgs84
-COPY grassdb/nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 
 RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
   unzip nc_spm_mapset_modis2015_2016_lst.zip && \

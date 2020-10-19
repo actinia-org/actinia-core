@@ -14,8 +14,7 @@ make test
 ```
 
 ## Problems
-1. `actinia-test.cfg`: `COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test` funktioniert nicht!
-2. Redis autorization is set by `from actinia_core.resources.common import redis_interface`:
+Redis autorization is set by `from actinia_core.resources.common import redis_interface`:
   * so this does set the password:
     ```
     import os

@@ -1,5 +1,0 @@
-name: WGS 84
-datum: wgs84
-ellps: wgs84
-proj: ll
-no_defs: defined
