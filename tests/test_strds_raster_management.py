@@ -171,7 +171,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(len(map_list), 24)
 
     def test_strds_raster_layer_2(self):
-        rv = self.server.get(strds_url + "/%s/raster_layers?where=start_time >= '2016-01-01'" % srtds_data,
+        rv = self.server.get(strds_url + "/%s/raster_layers?where=start_time >= '2016-01-01'" % strds_data,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
