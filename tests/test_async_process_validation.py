@@ -305,7 +305,6 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
                                               http_status=200, status="finished")
         self.assertEqual(len(resp["process_results"]), 6)
 
-    # TODO
     def test_async_processing_new(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',
                               headers=self.admin_auth_header,

@@ -7,7 +7,7 @@ docker
 !docker/actinia-core-dev/actinia.cfg
 !docker/actinia-core-prod/actinia.cfg
 !docker/actinia-core-alpine/actinia.cfg
- !docker/actinia-core-alpine/actinia-test.cfg
+!docker/actinia-core-alpine/actinia-test.cfg
 !docker/actinia-core-alpine/start.sh
 !docker/actinia-core-alpine/start-dev.sh
 .github
