@@ -132,7 +132,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(start_time, "'None'")
         # Delete the strds
-        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds' % (location, new_mapset),
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
