@@ -112,7 +112,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Create failure since the strds already exists
-        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
+        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds' % (location, new_mapset),
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
