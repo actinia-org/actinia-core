@@ -101,7 +101,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(mapset_name=new_mapset, location_name=location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
+        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds' % (location, new_mapset),
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
