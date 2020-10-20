@@ -84,17 +84,17 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Create the raster layer
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_1'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_1' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "1"}),
                               content_type="application/json")
         pprint(json_loads(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_2'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_2' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "2"}),
                               content_type="application/json")
         pprint(json_loads(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_3'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_3' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "3"}),
                               content_type="application/json")
@@ -152,7 +152,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(num_maps, "0")
 
         # Delete the strds
-        rv = self.server.delete(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.delete(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register' % {'location': location, 'mapset': new_mapset},
                                 headers=self.user_auth_header)
         pprint(json_loads(rv.data))
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)

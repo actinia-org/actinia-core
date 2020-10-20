@@ -69,17 +69,17 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Create the raster layer
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_1'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_1' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "1"}),
                               content_type="application/json")
         pprint(json_load(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_2'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_2' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "2"}),
                               content_type="application/json")
         pprint(json_load(rv.data))
-        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_3'%{'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/raster_layers/test_layer_3' % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"expression": "3"}),
                               content_type="application/json")
