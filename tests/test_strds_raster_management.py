@@ -161,7 +161,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     #################### LIST RASTER FROM STRDS ###############################
 
     def test_strds_raster_layer_1(self):
-        rv = self.server.get(strds_url + '/%s/raster_layers' % srtds_data,
+        rv = self.server.get(strds_url + '/%s/raster_layers' % strds_data,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
