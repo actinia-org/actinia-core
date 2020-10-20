@@ -83,7 +83,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     #################### INFO #################################################
 
     def test_strds_info(self):
-        rv = self.server.get(strds_url + '/%s' % srtds_data,
+        rv = self.server.get(strds_url + '/%s' % strds_data,
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
