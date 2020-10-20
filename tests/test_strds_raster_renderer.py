@@ -45,7 +45,7 @@ strds_mapset = 'modis_lst'
 strds_url = (URL_PREFIX +
     '/locations/%(location)s/mapsets/%(mapset)s/strds'
     % {'location': location, 'mapset': strds_mapset})
-srtds_data = 'LST_Day_monthly'
+strds_data = 'LST_Day_monthly'
 
 
 class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
