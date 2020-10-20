@@ -138,7 +138,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         # Try to delete the strds again to produce an error
-        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
+        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds' % (location, new_mapset),
                                 headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
