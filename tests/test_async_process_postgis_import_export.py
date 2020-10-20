@@ -59,8 +59,7 @@ process_chain_postgis = {
                      "param": "map",
                      "value": "poly"}
                      ]
-         }
-         ],
+         }],
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
                  "update": "http://0.0.0.0:5005/webhook/update"},
     "version": "1"
