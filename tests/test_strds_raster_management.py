@@ -54,7 +54,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     def test_strds_creation_error(self):
 
         # This must fail, global mapsets are not allowed to modify
-        rv = self.server.post(URL_PREFIX + \
+        rv = self.server.post(URL_PREFIX +
                                 '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register' % {'location': location, 'mapset': strds_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
@@ -71,7 +71,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX + \
+        rv = self.server.post(URL_PREFIX +
                                 '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
                                 %{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
