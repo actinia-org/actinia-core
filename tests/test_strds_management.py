@@ -122,7 +122,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         # Read/check information of the new strds
-        rv = self.server.get(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds'%(location, new_mapset),
+        rv = self.server.get(URL_PREFIX + '/locations/%s/mapsets/%s/strds/test_strds' % (location, new_mapset),
                              headers=self.user_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
