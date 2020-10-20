@@ -56,7 +56,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX + \
+        rv = self.server.post(URL_PREFIX +
                                 '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
                                 %{'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
