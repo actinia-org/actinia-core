@@ -45,7 +45,14 @@ docker-compose up
 
 # or DEV setup
 docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml up
+docker-compose -f docker-compose-dev.yml run --service-ports --entrypoint sh actinia
+# be aware, that your local actinia source code is now mounted in the docker container!
+# then, inside the docker container, run
+python3 setup.py install
+sh /src/start.sh
+# for debugging or if you need to start the wsgi server regularly during development, run it with only one worker:
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
+
 ```
 
 This will keep logging in the terminal foreground.
