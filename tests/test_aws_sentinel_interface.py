@@ -29,6 +29,7 @@ from actinia_core.resources.common.config import global_config
 import unittest
 from pprint import pprint
 import magic
+import os
 from urllib.request import urlopen
 
 __license__    = "GPLv3"
@@ -82,6 +83,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
                     self.assertTrue(mime_type in ["image/jp2"])
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_old(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
@@ -91,7 +94,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
-
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_old_geojson(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
@@ -104,6 +108,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             geojson = aws.get_sentinel_tile_footprint(tile)
             print(geojson)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_new(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",],
@@ -113,6 +119,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_new_safe(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138.SAFE",],
@@ -122,6 +130,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_singler_eplacement_bug(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001",],
@@ -131,6 +141,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_singler_eplacement_bug_2(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030T235752_20161030T235752",],
@@ -142,6 +154,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
 
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_mutli_mixed(self):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
@@ -155,6 +169,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         self.assertTrue("S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931" in result[2]["product_id"])
         self.validate_result(result, ["B04", "B08"])
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_error(self):
         aws = AWSSentinel2AInterface(global_config)
 
@@ -166,6 +182,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         except Exception as e:
             self.assertTrue(True, "An exception was raised for the correct reason: %s" % str(e))
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_multi_error(self):
         aws = AWSSentinel2AInterface(global_config)
 
@@ -179,6 +197,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         except Exception as e:
             self.assertTrue(True, "An exception was raised for the correct reason: %s" % str(e))
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_band_error(self):
         aws = AWSSentinel2AInterface(global_config)
 

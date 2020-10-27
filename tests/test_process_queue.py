@@ -175,7 +175,7 @@ class ProcessQueueTestCase(unittest.TestCase):
 
         time.sleep(20)
         stop_process_queue()
-        return
+        # return
 
 
 if __name__ == '__main__':

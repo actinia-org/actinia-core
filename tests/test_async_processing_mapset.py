@@ -285,7 +285,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                 break
             time.sleep(0.2)
 
-        self.assertEquals(resp["status"], "finished")
+        self.assertEqual(resp["status"], "finished")
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
         # Check the second runner
@@ -301,7 +301,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                 break
             time.sleep(0.2)
 
-        self.assertEquals(resp["status"], "error")
+        self.assertEqual(resp["status"], "error")
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
 
         # Check the third runner
@@ -318,7 +318,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                 break
             time.sleep(0.2)
 
-        self.assertEquals(resp["status"], "error")
+        self.assertEqual(resp["status"], "error")
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
 
         # Remove the mapset

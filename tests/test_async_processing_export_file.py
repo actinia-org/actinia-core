@@ -27,6 +27,7 @@ Tests: Async process test case
 import unittest
 from flask.json import loads as json_loads, dumps as json_dumps
 import requests
+import os
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
@@ -130,6 +131,8 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     Deactivated due to credential exposition problem
     """
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_export(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
@@ -147,6 +150,8 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
             print(rv)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_termination(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_s3',
@@ -169,6 +174,8 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     Deactivated due to credential exposition problem
     """
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_export(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',
@@ -186,6 +193,8 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
             print(rv)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_termination(self):
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export_gcs',

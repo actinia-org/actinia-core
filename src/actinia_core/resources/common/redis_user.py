@@ -126,7 +126,7 @@ class RedisUserInterface(RedisBaseInterface):
         Add a user to the user database
 
         HSET User-id db -> add user-id
-        HMSET User-id-hash db -> add a new user with all required entries
+        HSET User-id-hash db -> add a new user with all required entries
 
         Args:
             user_id (str): The user id
@@ -154,7 +154,7 @@ class RedisUserInterface(RedisBaseInterface):
                    "user_group":user_group,
                    "permissions":pstring}
         # Make the database entry
-        self.redis_server.hmset(self.user_id_hash_prefix + user_id, mapping=mapping)
+        self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
         lock.release()
 
         return True
@@ -166,7 +166,7 @@ class RedisUserInterface(RedisBaseInterface):
 
         If a parameter is not provided (set None), the original value will be kept.
 
-        HMSET User-id-hash db -> set user with all required entries
+        HSET User-id-hash db -> set user with all required entries
 
         Args:
             user_id (str): The user id
@@ -206,7 +206,7 @@ class RedisUserInterface(RedisBaseInterface):
                    "user_role":user_role, "user_group":user_group,
                    "permissions":pstring}
         # Update the database entry
-        self.redis_server.hmset(self.user_id_hash_prefix + user_id, mapping=mapping)
+        self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
 
         lock.release()
 

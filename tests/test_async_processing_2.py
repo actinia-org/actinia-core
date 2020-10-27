@@ -24,6 +24,7 @@
 """
 Tests: Async process2 test case
 """
+import os
 import unittest
 from flask.json import dumps as json_dumps
 
@@ -285,6 +286,8 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async',
                               headers=self.admin_auth_header,
@@ -294,6 +297,8 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
@@ -303,6 +308,8 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_async_processing_new_ndvi_export_landsat(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,
