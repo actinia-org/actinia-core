@@ -38,6 +38,8 @@ docker pull mundialis/actinia-core
 
 For own deployments, see the `docker/` subfolder.
 
+Actinia is also available on [OSGeoLive](https://live.osgeo.org/en/overview/actinia_overview.html).
+
 ## Examples
 
 ### Data management
