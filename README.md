@@ -30,8 +30,13 @@ see [here](https://github.com/mundialis/actinia_core/tree/master/scripts).
 
 ## Installation
 
-Please see the `docker/` subfolder for details.
+Docker images are available from https://hub.docker.com/r/mundialis/actinia-core
 
+```
+docker pull mundialis/actinia-core
+```
+
+For own deployments, see the `docker/` subfolder.
 
 ## Examples
 
