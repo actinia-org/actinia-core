@@ -134,6 +134,5 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -135,7 +135,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                 rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s' % mapset,
                                         headers=self.admin_auth_header)
                 print(rv.data)
-                self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+                self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i %s" % (rv.status_code, mapset))
                 self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_1_merge_no_access_to_target_mapset_error(self):

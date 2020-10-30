@@ -44,11 +44,11 @@ MANIFEST
 # docker
 dev
 docker/redis_data/dump.rdb
-!docker/actinia-core/actinia.cfg
-!docker/actinia-core-latest/actinia.cfg
+!docker/actinia-core-ubuntu/actinia.cfg
 !docker/actinia-core-dev/actinia.cfg
 !docker/actinia-core-prod/actinia.cfg
 !docker/actinia-core-alpine/actinia.cfg
+!docker/actinia-core-alpine/actinia-test.cfg
 docker/build
 docker/actinia-core-data/grassdb
 docker/actinia-core-data/resources

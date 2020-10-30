@@ -65,6 +65,13 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
     libffi-dev \
     "
 
+# coreutils is needed for 'du -sb' e.g. download_cache
+# (installed du is from busybox)
+ENV ACTINIA_RUNTIME_PACKAGES="\
+    coreutils \
+    zip \
+    "
+
 RUN apk update; \
     apk add --no-cache \
         $SNAPPY_RUNTIME_PACKAGES \
@@ -72,7 +79,8 @@ RUN apk update; \
         $GRASS_RUNTIME_PACKAGES \
         $GRASS_ADDONS_BUILD_PACKAGES \
         $ACTINIA_PLUGIN_INSTALL_PACKAGES \
-        $GOOGLE_CLOUD_BIGQUERY_PACKAGES
+        $GOOGLE_CLOUD_BIGQUERY_PACKAGES \
+        $ACTINIA_RUNTIME_PACKAGES
 
 COPY --from=pdal /usr/bin/pdal* /usr/bin/
 COPY --from=pdal /usr/lib/libpdal* /usr/lib/
@@ -101,4 +109,4 @@ RUN pip3 install -r /src/requirements-alpine.txt
 # TODO: replace edge community packages as soon as possible.
 RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-joblib
 # TODO: replace edge testing packages as soon as possible.
-RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/testing py3-scikit-learn
+RUN apk add --repository http://dl-cdn.alpinelinux.org/alpine/edge/community py3-scikit-learn

@@ -174,6 +174,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         accessible_datasets = {"nc_spm_08": ["PERMANENT",
                                              "user1",
                                              "landsat",
+                                             "modis_lst",
                                              "test_mapset"],
                                "ECAD": ["PERMANENT"],
                                "latlong_wgs84": ["PERMANENT"]}
