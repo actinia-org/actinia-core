@@ -9,7 +9,7 @@ Flask-RESTful>=0.3.6
 flask-restful-swagger-2
 Flask-Cors>=3.0.3
 fluent-logger>=0.9.4
-geopandas
+geopandas==0.8.1
 google-cloud
 google-cloud-bigquery
 google-cloud-storage
@@ -19,7 +19,7 @@ pandas
 passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
-pyproj>=2.2.0
+pyproj==2.6.1
 python-json-logger
 python-magic>=0.4.15
 scikit-learn
