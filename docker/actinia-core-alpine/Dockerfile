@@ -128,9 +128,9 @@ RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip &
 
 RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
 
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst_grass79.zip && \
-  unzip nc_spm_mapset_modis2015_2016_lst_grass79.zip && \
-  rm -f nc_spm_mapset_modis2015_2016_lst_grass79.zip && \
+RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
+  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
+  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
 
