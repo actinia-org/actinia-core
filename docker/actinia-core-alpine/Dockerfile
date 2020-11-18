@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v4 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v6 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -9,12 +9,12 @@ COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
 RUN git checkout .
-COPY requirements-alpine.txt requirements-alpine.txt
+COPY requirements.txt requirements.txt
 # scipy installs but wheel building fails. Helping packages were
 # RUN add openblas openblas-dev lapack lapack-dev gfortran
-RUN sed -i 's+scikit-learn+#scikit-learn+g' requirements-alpine.txt
+RUN sed -i 's+scikit-learn+#scikit-learn+g' requirements.txt
 RUN python3 setup.py sdist bdist_wheel -d /build
-# RUN pip3 wheel -r requirements-alpine.txt -w /build
+# RUN pip3 wheel -r requirements.txt -w /build
 # RUN python3 -m pep517.build --out-dir /build . && \
 
 
@@ -76,8 +76,8 @@ RUN pip3 install /build/*
 
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages
-COPY requirements-alpine.txt /src/requirements-alpine.txt
-RUN pip3 install -r /src/requirements-alpine.txt
+COPY requirements.txt /src/requirements.txt
+RUN pip3 install -r /src/requirements.txt
 
 # Copy actinia config file and start scripts + set needed envs
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia

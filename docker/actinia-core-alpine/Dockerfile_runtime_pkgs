@@ -1,5 +1,5 @@
 FROM mundialis/docker-pdal:2.1.0 as pdal
-FROM mundialis/actinia-core:alpine-build-pkgs_v4
+FROM mundialis/actinia-core:alpine-build-pkgs_v6
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
@@ -102,8 +102,8 @@ RUN apk add --allow-untrusted \
     openjdk8-jre-$OPENJDK_VERSION.apk
 
 # Duplicated in final images, only here to safe time
-COPY requirements-alpine.txt /src/requirements-alpine.txt
-RUN pip3 install -r /src/requirements-alpine.txt
+COPY requirements.txt /src/requirements.txt
+RUN pip3 install -r /src/requirements.txt
 
 # See in build stage why we need this here
 # TODO: replace edge community packages as soon as possible.
