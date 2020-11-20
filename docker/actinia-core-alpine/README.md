@@ -14,16 +14,16 @@ $ docker build \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile_build_pkgs \
         --tag actinia-core:alpine-build-pkgs .
-$ docker tag actinia-core:alpine-build-pkgs mundialis/actinia-core:alpine-build-pkgs_v5
-$ docker push mundialis/actinia-core:alpine-build-pkgs_v5
+$ docker tag actinia-core:alpine-build-pkgs mundialis/actinia-core:alpine-build-pkgs_v6
+$ docker push mundialis/actinia-core:alpine-build-pkgs_v6
 
 $ docker build \
         --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile_runtime_pkgs \
         --tag actinia-core:alpine-runtime-pkgs .
-$ docker tag actinia-core:alpine-runtime-pkgs mundialis/actinia-core:alpine-runtime-pkgs_v5
-$ docker push mundialis/actinia-core:alpine-runtime-pkgs_v5
+$ docker tag actinia-core:alpine-runtime-pkgs mundialis/actinia-core:alpine-runtime-pkgs_v6
+$ docker push mundialis/actinia-core:alpine-runtime-pkgs_v6
 
 $ docker build \
         --pull \
