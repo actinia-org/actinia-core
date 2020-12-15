@@ -88,6 +88,7 @@ class VectorInfoModel(Schema):
         'points': {'type': 'string'},
         'primitives': {'type': 'string'},
         'projection': {'type': 'string'},
+        'zone': {'type': 'string'},
         'scale': {'type': 'string'},
         'source_date': {'type': 'string'},
         'south': {'type': 'string'},
