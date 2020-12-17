@@ -8,14 +8,11 @@ LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de
 COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
+RUN git describe --dirty --tags --long --first-parent
 RUN git checkout .
-COPY requirements.txt requirements.txt
-# scipy installs but wheel building fails. Helping packages were
-# RUN add openblas openblas-dev lapack lapack-dev gfortran
-RUN sed -i 's+scikit-learn+#scikit-learn+g' requirements.txt
 RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN pip3 wheel -r requirements.txt -w /build
-# RUN python3 -m pep517.build --out-dir /build . && \
+# RUN python3 -m pep517.build --out-dir /build .
 
 
 FROM mundialis/actinia-core:alpine-runtime-pkgs_v5 as actinia_installation
