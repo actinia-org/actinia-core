@@ -1,9 +1,9 @@
-FROM mundialis/grass-py3-pdal:latest-ubuntu19
+FROM mundialis/grass-py3-pdal:stable-ubuntu
 
 # based on GRASS GIS master (grass79)
 
-LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
+LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
 
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
@@ -62,7 +62,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# Install selected GRASS GIS addons. Done with -s, so it can be used globally
+# Install selected GRASS GIS addons. Done with -s, so it can be used by actinia
 # https://grass.osgeo.org/grass79/manuals/g.extension.html
 # -s uses $GISBASE instead of $GRASS_ADDON_BASE
 WORKDIR /src
