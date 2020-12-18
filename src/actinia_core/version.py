@@ -35,6 +35,7 @@ __email__ = "soerengebbert@googlemail.com"
 from flask import make_response, jsonify
 import importlib
 import subprocess
+import sys
 
 from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common.config import global_config
@@ -44,9 +45,12 @@ from . import __version__
 
 G_VERSION = {}
 PLUGIN_VERSIONS = {}
+PYTHON_VERSION = ""
 
 
 def init_versions():
+    global PYTHON_VERSION
+
     g_version = subprocess.run(
         ['grass', '--tmp-location', 'epsg:4326', '--exec',
          'g.version', '-rge'], capture_output=True).stdout
@@ -58,6 +62,8 @@ def init_versions():
     for i in global_config.PLUGINS:
         module = importlib.import_module(i)
         PLUGIN_VERSIONS[i] = module.__version__
+
+    PYTHON_VERSION = sys.version.replace('\n', '- ')
 
 
 # Return the version of Actinia Core as REST API call
@@ -73,5 +79,6 @@ def version():
     info['plugins'] = ",".join(global_config.PLUGINS)
     info['grass_version'] = G_VERSION
     info['plugin_versions'] = PLUGIN_VERSIONS
+    info['python_version'] = PYTHON_VERSION
 
     return make_response(jsonify(info), 200)
