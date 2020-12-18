@@ -29,7 +29,7 @@ Actinia Core
 import os
 from .endpoints import create_endpoints
 from .health_check import health_check
-from .version import version
+from .version import version, init_versions
 from .resources.common.app import flask_app
 from .resources.common.config import global_config, DEFAULT_CONFIG_PATH
 from .resources.common.redis_interface import connect, create_job_queues
@@ -48,6 +48,7 @@ if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG
 
 # Create the endpoints based on the global config
 create_endpoints()
+init_versions()
 
 # TODO: Implement a better error handler
 #@flask_app.errorhandler(InvalidUsage)
