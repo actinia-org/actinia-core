@@ -33,9 +33,38 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 from flask import make_response, jsonify
-from .resources.common.app import flask_app, API_VERSION, URL_PREFIX
+import importlib
+import subprocess
+import sys
+
+from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common.config import global_config
+from .resources.common.logging_interface import log
 from . import __version__
+
+
+G_VERSION = {}
+PLUGIN_VERSIONS = {}
+PYTHON_VERSION = ""
+
+
+def init_versions():
+    global PYTHON_VERSION
+
+    g_version = subprocess.run(
+        ['grass', '--tmp-location', 'epsg:4326', '--exec',
+         'g.version', '-rge'], capture_output=True).stdout
+    log.debug('Detecting GRASS GIS version')
+    for i in g_version.decode('utf-8').strip('\n').split('\n'):
+        G_VERSION[i.split('=')[0]] = i.split('=')[1]
+
+    log.debug('Detecting Plugin versions')
+    for i in global_config.PLUGINS:
+        module = importlib.import_module(i)
+        PLUGIN_VERSIONS[i] = module.__version__
+
+    PYTHON_VERSION = sys.version.replace('\n', '- ')
+
 
 # Return the version of Actinia Core as REST API call
 @flask_app.route(URL_PREFIX + '/version')
@@ -45,10 +74,11 @@ def version():
     Returns: Response
 
     """
-    info = {"version":__version__, "plugins":",".join(global_config.PLUGINS)}
-
-    if 'actinia_gdi' in global_config.PLUGINS:
-        from actinia_gdi import __version__ as actinia_gdi_version
-        info['plugin_versions'] = {'actinia_gdi': actinia_gdi_version}
+    info = {}
+    info['version'] = __version__
+    info['plugins'] = ",".join(global_config.PLUGINS)
+    info['grass_version'] = G_VERSION
+    info['plugin_versions'] = PLUGIN_VERSIONS
+    info['python_version'] = PYTHON_VERSION
 
     return make_response(jsonify(info), 200)
