@@ -219,7 +219,7 @@ def main():
 
         user = ActiniaUser(user_id=args.user_id, user_group=args.user_group)
 
-        if user.exists() is True:
+        if user.exists() == 1:
             sys.stderr.write("Unable to create the user <%s> the user exists\n"%args.user_id)
             return
 
@@ -243,7 +243,7 @@ def main():
 
         user = ActiniaUser(user_id=args.user_id)
 
-        if user.exists() is False:
+        if user.exists() == 0:
             sys.stderr.write("Unable to update the user <%s> the user does not exists\n"%args.user_id)
             return
 
@@ -265,7 +265,7 @@ def main():
 
         user = ActiniaUser(args.user_id)
 
-        if user.exists() is True:
+        if user.exists() == 1:
             if user.delete() is True:
                 sys.stderr.write("User <%s> deleted\n"%args.user_id)
                 return
@@ -280,7 +280,7 @@ def main():
 
         user = ActiniaUser(args.user_id)
 
-        if user.exists() is True:
+        if user.exists() == 1:
             sys.stdout.write(str(user))
         else:
             sys.stderr.write("User <%s> does not exist\n"%args.user_id)
