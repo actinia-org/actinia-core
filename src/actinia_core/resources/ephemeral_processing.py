@@ -24,17 +24,20 @@
 """
 Base class for asynchronous processing
 """
-import sys
-import traceback
-import pickle
+
 import math
 import os
+import pickle
+import requests
+import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
+import traceback
 import uuid
-import requests
+
 from flask import jsonify, make_response, json
 from requests.auth import HTTPBasicAuth
 
@@ -45,22 +48,26 @@ from .common.redis_interface import enqueue_job
 from .common.redis_lock import RedisLockingInterface
 from .common.resources_logger import ResourceLogger
 from .common.process_chain import ProcessChainConverter
-from .common.exceptions import AsyncProcessError, AsyncProcessTermination
+from .common.exceptions \
+    import AsyncProcessError, AsyncProcessTermination, RsyncError
 from .common.exceptions import AsyncProcessTimeLimit
-from .common.response_models import ProcessingResponseModel, ExceptionTracebackModel
-from .common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
+from .common.response_models \
+    import ProcessingResponseModel, ExceptionTracebackModel
+from .common.response_models \
+    import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from .user_auth import check_location_mapset_module_access
 from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class AsyncEphemeralResource(ResourceBase):
-    """This class represents a processing resource that works on a temporary mapset.
+    """This class represents a processing resource that works on a temporary
+    mapset.
     """
 
     def __init__(self):
@@ -1166,6 +1173,69 @@ class EphemeralProcessing(object):
 
         if proc.returncode != 0:
             raise AsyncProcessError("Error while running executable <%s>" % process.executable)
+
+        # TODO: get value from config
+        save_interim_results = True
+        if save_interim_results:
+            self.message_logger.info("Saving interim results")
+            # TODO: get value from config
+            dest_base_path =  '/actinia_core/resources/interim/'
+            # TODO sync folders each time
+            dest = os.path.join(
+                dest_base_path, self.resource_id,
+                f"step{str(self.progress_steps)}")
+            # TODO: use rsync like tool
+            print(os.listdir(self.temp_grass_data_base))
+            print(dest)
+            # print(os.listdir(os.path.join(self.temp_mapset_path, 'cell')))
+            # copy temp mapset for first step
+            if self.progress_steps == 1:
+                shutil.copytree(self.temp_mapset_path, dest)
+                self.message_logger.info("Maspset %s is copied" % self.temp_mapset_path)
+            else:
+                old_dest = os.path.join(
+                    dest_base_path, self.resource_id,
+                    f"step{str(self.progress_steps - 1)}")
+                # check if mapset has changed
+                cur_working_dir = os.getcwd()
+                cha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
+                                "sort -k 2 | sha512sum"
+                os.chdir(old_dest)
+                p_cha512sum_old = os.popen(cha512sum_cmd)
+                cha512sum_old = p_cha512sum_old.read().strip()
+                os.chdir(self.temp_mapset_path)
+                p_cha512sum_new = os.popen(cha512sum_cmd)
+                cha512sum_new = p_cha512sum_new.read().strip()
+                os.chdir(cur_working_dir)
+                del cur_working_dir
+                if cha512sum_old == cha512sum_new:
+                    self.message_logger.info("Cha512sum of maspsets are equal; renaming interim result")
+                    os.rename(old_dest, dest)
+                    return proc.returncode, stdout_string, stderr_string
+                # get folder sizes
+                # TODO
+                # rsync or copy folder
+                ## pip3 install dirsync
+                ## from dirsync import sync
+                ## sync(self.temp_mapset_path, dest, 'sync', create=True)
+                # apk add rsync
+                self.message_logger.info("Copy old interim result")
+                shutil.copytree(old_dest, dest)
+                self.message_logger.info("Rsync mapset to interim result")
+                rsync_cmd = [
+                    "rsync",
+                    "-rzP",
+                    "--delete",
+                    self.temp_mapset_path + os.sep,
+                    dest]
+                p_rsync = subprocess.Popen(
+                    rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                rsync_out, rsync_err = p_rsync.communicate()
+                # remove old folder
+                if rsync_err.decode('utf-8') == '':
+                    shutil.rmtree(old_dest)
+                else:
+                    raise RsyncError("Error while rsyncing of step %d" % self.progress_steps)
 
         return proc.returncode, stdout_string, stderr_string
 
