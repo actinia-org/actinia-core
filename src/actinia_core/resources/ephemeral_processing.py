@@ -220,6 +220,9 @@ class EphemeralProcessing(object):
         self.resource_id = self.rdc.resource_id
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
+        self.user_resource_interim_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id, "interim")
+        self.save_interim_results = self.config.SAVE_INTERIM_RESULTS
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
         self.grass_user_data_base = self.rdc.grass_user_data_base  # User database base path, this path will be
@@ -1081,6 +1084,101 @@ class EphemeralProcessing(object):
 
         return self._run_executable(process, poll_time)
 
+    def _get_directory_size(self, directory):
+        """Returns the directory size in bytes.
+        Args:
+            directory (string): The path to a directory
+
+        Raises:
+            NotADirectoryError:
+            PermissionError:
+
+        Returns:
+            total: the size of the directory in bytes
+
+        """
+        total = 0
+        try:
+            for entry in os.scandir(directory):
+                if entry.is_file():
+                    total +=  os.path.getsize(entry)
+                elif entry.is_dir():
+                    total += self._get_directory_size(entry.path)
+        except NotADirectoryError:
+            return os.path.getsize(directory)
+        except PermissionError:
+            return 0
+        return total
+
+    def _save_interim_results(self):
+        """Saves the temporary mapset to the
+        `user_resource_interim_storage_path` by copying the directory or
+        rsyncing it
+        """
+        self.message_logger.info(
+            "Saving interim results of step %d" % self.progress_steps)
+        dest_base_path =  self.user_resource_interim_storage_path
+        dest = os.path.join(
+            dest_base_path, self.resource_id,
+            f"step{str(self.progress_steps)}")
+
+        if self.progress_steps == 1:
+            # copy temp mapset for first step
+            shutil.copytree(self.temp_mapset_path, dest)
+            self.message_logger.info(
+                "Maspset %s is copied" % self.temp_mapset_path)
+        else:
+            old_dest = os.path.join(
+                dest_base_path, self.resource_id,
+                f"step{str(self.progress_steps - 1)}")
+
+            # check if mapset has changed
+            cur_working_dir = os.getcwd()
+            cha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
+                            "sort -k 2 | sha512sum"
+            # cha512sum of the previous step
+            os.chdir(old_dest)
+            p_cha512sum_prev = os.popen(cha512sum_cmd)
+            cha512sum_prev = p_cha512sum_prev.read().strip()
+            # cha512sum of the current step
+            os.chdir(self.temp_mapset_path)
+            p_cha512sum_curr = os.popen(cha512sum_cmd)
+            cha512sum_curr= p_cha512sum_curr.read().strip()
+            os.chdir(cur_working_dir)
+            del cur_working_dir
+            # compare cha512sums
+            if cha512sum_prev == cha512sum_curr:
+                self.message_logger.info(
+                    "Cha512sum of maspsets are equal; renaming interim result")
+                os.rename(old_dest, dest)
+                return
+
+            # get folder sizes in bytes
+            size_prev_step = self._get_directory_size(old_dest)
+            size_curr_step = self._get_directory_size(self.temp_mapset_path)
+
+            # rsync or copy folder
+            if size_curr_step > size_prev_step * 0.9:
+                self.message_logger.info("Copy old interim result")
+                shutil.copytree(old_dest, dest)
+            self.message_logger.info(
+                "Rsync mapset %s to interim result" % self.temp_mapset_path)
+            rsync_cmd = [
+                "rsync",
+                "-rzP",
+                "--delete",
+                self.temp_mapset_path + os.sep,
+                dest]
+            p_rsync = subprocess.Popen(
+                rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            rsync_out, rsync_err = p_rsync.communicate()
+            # remove old folder
+            if rsync_err.decode('utf-8') == '':
+                shutil.rmtree(old_dest)
+            else:
+                raise RsyncError(
+                    "Error while rsyncing of step %d" % self.progress_steps)
+
     def _run_executable(self, process, poll_time=0.005):
         """Runs a GRASS module or a common Unix executable and sets up
         the correct handling of stdout, stderr and stdin, creates the
@@ -1172,70 +1270,16 @@ class EphemeralProcessing(object):
             self.module_output_dict[process.id] = plm
 
         if proc.returncode != 0:
-            raise AsyncProcessError("Error while running executable <%s>" % process.executable)
+            raise AsyncProcessError(
+                "Error while running executable <%s>" % process.executable)
 
-        # TODO: get value from config
-        save_interim_results = True
-        if save_interim_results:
-            self.message_logger.info("Saving interim results")
-            # TODO: get value from config
-            dest_base_path =  '/actinia_core/resources/interim/'
-            # TODO sync folders each time
-            dest = os.path.join(
-                dest_base_path, self.resource_id,
-                f"step{str(self.progress_steps)}")
-            # TODO: use rsync like tool
-            print(os.listdir(self.temp_grass_data_base))
-            print(dest)
-            # print(os.listdir(os.path.join(self.temp_mapset_path, 'cell')))
-            # copy temp mapset for first step
-            if self.progress_steps == 1:
-                shutil.copytree(self.temp_mapset_path, dest)
-                self.message_logger.info("Maspset %s is copied" % self.temp_mapset_path)
-            else:
-                old_dest = os.path.join(
-                    dest_base_path, self.resource_id,
-                    f"step{str(self.progress_steps - 1)}")
-                # check if mapset has changed
-                cur_working_dir = os.getcwd()
-                cha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
-                                "sort -k 2 | sha512sum"
-                os.chdir(old_dest)
-                p_cha512sum_old = os.popen(cha512sum_cmd)
-                cha512sum_old = p_cha512sum_old.read().strip()
-                os.chdir(self.temp_mapset_path)
-                p_cha512sum_new = os.popen(cha512sum_cmd)
-                cha512sum_new = p_cha512sum_new.read().strip()
-                os.chdir(cur_working_dir)
-                del cur_working_dir
-                if cha512sum_old == cha512sum_new:
-                    self.message_logger.info("Cha512sum of maspsets are equal; renaming interim result")
-                    os.rename(old_dest, dest)
-                    return proc.returncode, stdout_string, stderr_string
-                # get folder sizes
-                # TODO
-                # rsync or copy folder
-                ## pip3 install dirsync
-                ## from dirsync import sync
-                ## sync(self.temp_mapset_path, dest, 'sync', create=True)
-                # apk add rsync
-                self.message_logger.info("Copy old interim result")
-                shutil.copytree(old_dest, dest)
-                self.message_logger.info("Rsync mapset to interim result")
-                rsync_cmd = [
-                    "rsync",
-                    "-rzP",
-                    "--delete",
-                    self.temp_mapset_path + os.sep,
-                    dest]
-                p_rsync = subprocess.Popen(
-                    rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                rsync_out, rsync_err = p_rsync.communicate()
-                # remove old folder
-                if rsync_err.decode('utf-8') == '':
-                    shutil.rmtree(old_dest)
-                else:
-                    raise RsyncError("Error while rsyncing of step %d" % self.progress_steps)
+        # save interim results
+        if self.save_interim_results and self.temp_mapset_path is not None:
+            self._save_interim_results()
+        elif self.temp_mapset_path is None:
+            self.message_logger.debug(
+                "No temp mapset path set. Because of that no interim results" \
+                " can be saved!")
 
         return proc.returncode, stdout_string, stderr_string
 
