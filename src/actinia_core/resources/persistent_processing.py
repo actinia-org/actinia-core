@@ -505,6 +505,15 @@ class PersistentProcessing(EphemeralProcessing):
         if self.target_mapset_exists is True:
             self._merge_mapset_into_target(self.temp_mapset_name, self.target_mapset_name)
             shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
+            # remove interim results
+            if self.save_interim_results is True:
+                interim_dir = os.path.join(
+                    self.user_resource_interim_storage_path,
+                    self.resource_id)
+                self.message_logger.info(
+                    "Remove interim results %s" % interim_dir)
+                if os.path.isdir(interim_dir):
+                    shutil.rmtree(interim_dir)
 
     def _execute_process_list(self, process_list):
         """Extend the mapset lock and execute the provided process list
