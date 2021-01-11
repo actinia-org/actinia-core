@@ -221,7 +221,7 @@ class Configuration(object):
         config.set('MISC', 'DOWNLOAD_CACHE_QUOTA', str(self.DOWNLOAD_CACHE_QUOTA))
         config.set('MISC', 'TMP_WORKDIR', self.TMP_WORKDIR)
         config.set('MISC', 'SECRET_KEY', self.SECRET_KEY)
-        config.set('MISC', 'SAVE_INTERIM_RESULTS', self.SAVE_INTERIM_RESULTS)
+        config.set('MISC', 'SAVE_INTERIM_RESULTS', str(self.SAVE_INTERIM_RESULTS))
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
@@ -344,7 +344,7 @@ class Configuration(object):
                 if config.has_option("MISC", "LOG_LEVEL"):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
-                    self.SAVE_INTERIM_RESULTS = config.getint("MISC", "SAVE_INTERIM_RESULTS")
+                    self.SAVE_INTERIM_RESULTS = config.getboolean("MISC", "SAVE_INTERIM_RESULTS")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

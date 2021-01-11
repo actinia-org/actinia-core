@@ -1274,7 +1274,8 @@ class EphemeralProcessing(object):
                 "Error while running executable <%s>" % process.executable)
 
         # save interim results
-        if self.save_interim_results and self.temp_mapset_path is not None:
+        if (self.save_interim_results is True
+                and self.temp_mapset_path is not None):
             self._save_interim_results()
         elif self.temp_mapset_path is None:
             self.message_logger.debug(

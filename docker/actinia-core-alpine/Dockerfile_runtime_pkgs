@@ -70,6 +70,7 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
 ENV ACTINIA_RUNTIME_PACKAGES="\
     coreutils \
     zip \
+    rsync \
     "
 
 RUN apk update; \
