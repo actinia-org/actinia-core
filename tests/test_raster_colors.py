@@ -247,5 +247,6 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("AsyncProcessError:" in log)
         self.assertTrue("Error while running executable <r.colors.out" in log)
 
+
 if __name__ == '__main__':
     unittest.main()

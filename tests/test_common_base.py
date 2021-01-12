@@ -83,6 +83,7 @@ def stop_redis():
         return
     os.kill(redis_pid, signal.SIGTERM)
 
+
 # Register the redis stop function
 atexit.register(stop_redis)
 # Setup the environment

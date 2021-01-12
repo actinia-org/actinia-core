@@ -130,6 +130,7 @@ def main():
     file.write(str(module_reader.get()))
     file.close()
 
+
 if __name__ == "__main__":
     test()
     main()

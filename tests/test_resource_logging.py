@@ -176,5 +176,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
 
         self.assertFalse(ret)
 
+
 if __name__ == '__main__':
     unittest.main()

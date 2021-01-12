@@ -371,5 +371,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
                                        message_check="AsyncProcessError:")
 
+
 if __name__ == '__main__':
     unittest.main()

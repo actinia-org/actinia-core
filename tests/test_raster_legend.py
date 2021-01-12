@@ -150,5 +150,6 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
 
+
 if __name__ == '__main__':
     unittest.main()

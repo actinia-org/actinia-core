@@ -111,5 +111,6 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" % rv.mimetype)
 
+
 if __name__ == '__main__':
     unittest.main()

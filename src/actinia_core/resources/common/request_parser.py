@@ -62,6 +62,7 @@ def extract_where_parameters(args):
 
     return options
 
+
 # Create a g.list/g.remove pattern parser
 glist_parser = reqparse.RequestParser()
 glist_parser.add_argument('pattern', type=str, help='A pattern string must be provided', location='args')

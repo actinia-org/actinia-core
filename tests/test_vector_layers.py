@@ -80,5 +80,6 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
         map_list = json_load(rv.data)["process_results"]
         self.assertTrue(len(map_list) == 0)
 
+
 if __name__ == '__main__':
     unittest.main()
