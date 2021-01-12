@@ -46,7 +46,7 @@ process_chain_long = {
         "inputs":{
             "raster":"elevation@PERMANENT",
            "res":"1000"
-            },
+        },
         "flags":"p",
         "verbose":True
     },

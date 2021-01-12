@@ -47,7 +47,7 @@ process_chain_short_1 = {
         "inputs":{
             "raster":"elevation@PERMANENT",
            "res":"1000"
-            },
+        },
         "flags":"p",
         "verbose":True
     },
@@ -78,7 +78,7 @@ process_chain_short_2 = {
         "inputs":{
             "raster":"elevation@PERMANENT",
            "res":"1000"
-            },
+        },
         "flags":"p",
         "verbose":True
     },
