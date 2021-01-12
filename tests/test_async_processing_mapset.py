@@ -45,48 +45,48 @@ process_chain_long = {
         "module":"g.region",
        "inputs":{
            "raster":"elevation@PERMANENT"
-           },
+       },
        "flags":"p",
        "verbose":True
-        },
+    },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-           },
+       },
        "outputs":{
            "aspect":{
                "name":"my_aspect"
-               },
+           },
            "slope":{
                "name":"my_slope"
-               }
-           },
+           }
+       },
        "flags":"a",
        "overwrite":False,
        "verbose":True
-        },
+    },
    3:{
        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
-           },
+       },
        "outputs":{
            "accumulation":{
                "name":"my_accumulation"
-               }
            }
-        },
+       }
+    },
    4:{
        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
-           },
+       },
        "flags":"gr",
        "verbose":True
-        }
+    }
 }
 
 process_chain_short = {
@@ -94,29 +94,29 @@ process_chain_short = {
         "module":"g.region",
        "inputs":{
            "raster":"elevation@PERMANENT"
-           },
+       },
        "flags":"p",
        "verbose":True
-        },
+    },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-           },
+       },
        "outputs":{
            "aspect":{
                "name":"my_aspect_2"
-               },
+           },
            "slope":{
                "name":"my_slope_2"
-               }
-           },
+           }
+       },
        "flags":"a",
        "overwrite":False,
        "verbose":True
-        }
+    }
 }
 
 

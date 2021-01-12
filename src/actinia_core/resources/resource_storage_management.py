@@ -70,7 +70,7 @@ class SyncResourceStorageResource(ResourceBase):
                 'schema':ProcessingErrorResponseModel
             }
         }
-        })
+    })
     def get(self):
         """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -96,7 +96,7 @@ class SyncResourceStorageResource(ResourceBase):
                 'schema':ProcessingErrorResponseModel
             }
         }
-        })
+    })
     def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)

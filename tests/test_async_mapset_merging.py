@@ -47,29 +47,29 @@ process_chain_short_1 = {
        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"1000"
-           },
+       },
        "flags":"p",
        "verbose":True
-        },
+    },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-           },
+       },
        "outputs":{
            "aspect":{
                "name":"my_aspect_1"
-               },
+           },
            "slope":{
                "name":"my_slope_1"
-               }
-           },
+           }
+       },
        "flags":"a",
        "overwrite":False,
        "verbose":True
-        }
+    }
 }
 
 process_chain_short_2 = {
@@ -78,29 +78,29 @@ process_chain_short_2 = {
        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"1000"
-           },
+       },
        "flags":"p",
        "verbose":True
-        },
+    },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-           },
+       },
        "outputs":{
            "aspect":{
                "name":"my_aspect_2"
-               },
+           },
            "slope":{
                "name":"my_slope_2"
-               }
-           },
+           }
+       },
        "flags":"a",
        "overwrite":False,
        "verbose":True
-        }
+    }
 }
 
 test_mapsets = ["Source_A", "Source_B", "Source_C", "Source_D", "Target"]

@@ -83,7 +83,7 @@ SCHEMA_DOC = {
             'schema':ProcessingErrorResponseModel
         }
     }
-    }
+}
 
 
 class AsyncProcessValidationResource(ResourceBase):
