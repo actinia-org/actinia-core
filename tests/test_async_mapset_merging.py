@@ -46,19 +46,19 @@ process_chain_short_1 = {
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-           "res":"1000"
+            "res":"1000"
         },
         "flags":"p",
         "verbose":True
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect_1"
            },
@@ -66,9 +66,9 @@ process_chain_short_1 = {
                "name":"my_slope_1"
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     }
 }
 
@@ -77,19 +77,19 @@ process_chain_short_2 = {
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-           "res":"1000"
+            "res":"1000"
         },
         "flags":"p",
         "verbose":True
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect_2"
            },
@@ -97,9 +97,9 @@ process_chain_short_2 = {
                "name":"my_slope_2"
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     }
 }
 

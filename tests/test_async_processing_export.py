@@ -50,12 +50,12 @@ process_chain_long = {
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -67,16 +67,16 @@ process_chain_long = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
     3:{
         "module":"r.watershed",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
-       "outputs":{
+        "outputs":{
            "accumulation":{
                "name":"my_accumulation",
                "export":{
@@ -88,75 +88,75 @@ process_chain_long = {
     },
     4:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_aspect"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     5:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_slope"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     6:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_accumulation"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     7:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_aspect"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     8:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_slope"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     9:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_accumulation"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     10:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_aspect"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     11:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_slope"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     },
     12:{
         "module":"r.info",
-       "inputs":{
+        "inputs":{
            "map":"my_accumulation"
        },
-       "flags":"gr",
-       "verbose":True
+        "flags":"gr",
+        "verbose":True
     }
 }
 
@@ -171,12 +171,12 @@ process_chain_short = {
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -188,9 +188,9 @@ process_chain_short = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     }
 }
 
@@ -199,17 +199,17 @@ process_chain_short_long_run = {
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-           "res":"3"
+            "res":"3"
         },
         "flags":"p",
         "verbose":True
     },
     3:{
         "module":"r.watershed",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
-       "outputs":{
+        "outputs":{
            "accumulation":{
                "name":"my_accumulation",
                "export":{
@@ -226,19 +226,19 @@ process_chain_short_large_region = {
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-           "res":"0.001"
+            "res":"0.001"
         },
         "flags":"p",
         "verbose":True
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -250,9 +250,9 @@ process_chain_short_large_region = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     }
 }
 
@@ -262,8 +262,8 @@ process_chain_error_1 = {
         "module":"r.slope.aspect",
         "inputs":{
             "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+            "format":"degrees",
+            "min_slope":"0.0"
         },
         "outputs":{
            "aspect":{
@@ -289,8 +289,8 @@ process_chain_error_2 = {
         "module":"r.slope.aspect",
         "inputs":{
             "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+            "format":"degrees",
+            "min_slope":"0.0"
         },
         "outputs":{
            "aspect":{
@@ -315,8 +315,8 @@ process_chain_error_3 = {
         "module":"r.slope.aspect",
         "inputs":{
             "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+            "format":"degrees",
+            "min_slope":"0.0"
         },
         "outputs":{
            "aspect":{
@@ -342,8 +342,8 @@ process_chain_error_4 = {
         "module":"r.slope.aspect",
         "inputs":{
             "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+            "format":"degrees",
+            "min_slope":"0.0"
         },
         "outputs":{
            "aspect":{

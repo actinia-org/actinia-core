@@ -45,19 +45,19 @@ process_chain_long = {
         "module":"g.region",
         "inputs":{
             "raster":"elevation@PERMANENT",
-           "res":"1000"
+            "res":"1000"
         },
         "flags":"p",
         "verbose":True
     },
     2:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect",
                "export":{
@@ -73,16 +73,16 @@ process_chain_long = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
     3:{
         "module":"r.watershed",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
-       "outputs":{
+        "outputs":{
            "accumulation":{
                "name":"my_accumulation",
                "export":{
