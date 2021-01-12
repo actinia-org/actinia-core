@@ -426,8 +426,8 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
 
         pc = {}
         pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s,%s" % (options["red"],
-                                                                      options["green"],
-                                                                      options["blue"])}}
+                                                                        options["green"],
+                                                                        options["blue"])}}
         pc["2"] = region_pc
         pc["3"] = {"module":"d.rgb","inputs":{"red":options["red"],
                                               "green":options["green"],
@@ -643,7 +643,7 @@ class EphemeralRasterShadeRenderer(EphemeralRendererBase):
 
         pc = {}
         pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s" % (options["shade"],
-                                                                   options["color"])}}
+                                                                     options["color"])}}
         pc["2"] = region_pc
         pc["3"] = {"module":"d.shade","inputs":{"shade":options["shade"],
                                                 "color":options["color"]}}

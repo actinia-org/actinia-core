@@ -168,7 +168,7 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(ret)
 
         ret = self.log.get_termination(user_id=self.user_id,
-                           resource_id=self.resource_id)
+                                       resource_id=self.resource_id)
 
         self.assertEqual(False, ret)
 

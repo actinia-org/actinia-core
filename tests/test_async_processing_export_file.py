@@ -77,7 +77,7 @@ file_export = {
             "id": "4",
             "module": "r.out.ascii",
             "inputs": [{"param": "input",
-                       "value": "elevation@PERMANENT"}],
+                        "value": "elevation@PERMANENT"}],
             "outputs": [
                 {"export": {"type": "file", "format": "TXT"},
                  "param": "output",

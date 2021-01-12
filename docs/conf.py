@@ -235,7 +235,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
     ('index', 'user_guide.tex', u'Actinia Core Documentation',
-   u'Soeren Gebbert', 'manual'),
+     u'Soeren Gebbert', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

@@ -118,7 +118,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         for mapset in test_mapsets:
             # Unlock mapset for deletion
             rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % ("nc_spm_08", mapset),
-                                  headers=self.admin_auth_header)
+                                    headers=self.admin_auth_header)
             print(rv.data)
 
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',

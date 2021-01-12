@@ -343,7 +343,7 @@ class PersistentProcessing(EphemeralProcessing):
                 else:
                     raise AsyncProcessError("Unable to access mapset <%s> "
                                             "path %s" % (mapset,
-                                            self.orig_mapset_path))
+                                                         self.orig_mapset_path))
             else:
                 mapset_exists = False
         else:
@@ -385,9 +385,9 @@ class PersistentProcessing(EphemeralProcessing):
         if ret == 0:
             raise AsyncProcessError("Unable to lock location/mapset <%s/%s>, "
                                     "resource is already locked" % (self.location_name,
-                                                                  self.target_mapset_name))
+                                                                    self.target_mapset_name))
         self.message_logger.info("location/mapset <%s/%s> locked" % (self.location_name,
-                                                                   self.target_mapset_name))
+                                                                     self.target_mapset_name))
 
         # if we manage to come here, the lock was correctly set
         self.target_mapset_lock_set = True
@@ -463,8 +463,8 @@ class PersistentProcessing(EphemeralProcessing):
                                         "temporary mapset <%s>" % self.temp_mapset_name)
 
         self.message_logger.info("Copy temporary mapset from %s to %s" % (self.temp_mapset_path,
-                                                                    os.path.join(self.user_location_path,
-                                                                                 self.target_mapset_name)))
+                                                                          os.path.join(self.user_location_path,
+                                                                                       self.target_mapset_name)))
 
         source_path = self.temp_mapset_path
 
@@ -495,8 +495,8 @@ class PersistentProcessing(EphemeralProcessing):
                 raise AsyncProcessError("Unable to copy temporary mapset to "
                                         "original location. Copy error "
                                         "stdout: %s stderr: %s returncode: %i" % (stdout_buff,
-                                                                                stderr_buff,
-                                                                                p.returncode))
+                                                                                  stderr_buff,
+                                                                                  p.returncode))
         except Exception as e:
             raise AsyncProcessError("Unable to copy temporary mapset to "
                                     "original location. Exception %s" % str(e))

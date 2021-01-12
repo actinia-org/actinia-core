@@ -356,8 +356,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         return archive_name, compressed_output_path
 
     def _export_postgis(self, vector_name, dbstring,
-                       output_layer=None,
-                       additional_options=[]):
+                        output_layer=None,
+                        additional_options=[]):
         """Export a specific vector layer with v.out.postgis to a PostGIS database
 
         Args:

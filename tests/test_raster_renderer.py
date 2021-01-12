@@ -113,8 +113,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_layer_image_rgb_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'n=228513&s=214975.5&w=629992.5&e=645012&width=100&height=100'
-                          '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
+                             'n=228513&s=214975.5&w=629992.5&e=645012&width=100&height=100'
+                             '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
                              headers=self.user_auth_header)
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -122,8 +122,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_layer_image_rgb_3(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'width=100&height=100'
-                          '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
+                             'width=100&height=100'
+                             '&red=lsat5_1987_30&blue=lsat5_1987_20&green=lsat5_1987_10',
                              headers=self.user_auth_header)
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -132,8 +132,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_image_rgb_error_green(self):
         # No green raster layer
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'n=228513&s=214975.5&w=629992.5&e=645012'
-                          '&red=lsat5_1987_30&blue=lsat5_1987_20',
+                             'n=228513&s=214975.5&w=629992.5&e=645012'
+                             '&red=lsat5_1987_30&blue=lsat5_1987_20',
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
@@ -143,8 +143,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_image_rgb_error_blue(self):
         # No blue raster layer
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'n=228513&s=214975.5&w=629992.5&e=645012'
-                          '&red=lsat5_1987_30&green=lsat5_1987_20',
+                             'n=228513&s=214975.5&w=629992.5&e=645012'
+                             '&red=lsat5_1987_30&green=lsat5_1987_20',
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
@@ -154,8 +154,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_image_rgb_error_red(self):
         # No red raster layer
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'n=228513&s=214975.5&w=629992.5&e=645012'
-                          '&blue=lsat5_1987_30&green=lsat5_1987_20',
+                             'n=228513&s=214975.5&w=629992.5&e=645012'
+                             '&blue=lsat5_1987_30&green=lsat5_1987_20',
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))
@@ -164,8 +164,8 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_layer_image_rgb_error_wrong_raster(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
-                          'n=228513&s=214975.5&w=629992.5&e=645012'
-                          '&red=lsat5_1987_30_1&blue=lsat5_1987_20&green=lsat5_1987_10',
+                             'n=228513&s=214975.5&w=629992.5&e=645012'
+                             '&red=lsat5_1987_30_1&blue=lsat5_1987_20&green=lsat5_1987_10',
                              headers=self.user_auth_header)
 
         pprint(json_load(rv.data))

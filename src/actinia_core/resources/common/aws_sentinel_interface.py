@@ -134,10 +134,10 @@ class AWSSentinel2AInterface(object):
 
                 json_url = "%(base)s/products/%(year)s/%(month)s/%(day)s/%(id)s/" \
                            "productInfo.json" % {"base":self.aws_sentinel_base_url,
-                                               "year":year,
-                                               "month":month,
-                                               "day":day,
-                                               "id":product_id}
+                                                 "year":year,
+                                                 "month":month,
+                                                 "day":day,
+                                                 "id":product_id}
 
                 response = urlopen(json_url)
                 product_info = response.read()
@@ -147,7 +147,7 @@ class AWSSentinel2AInterface(object):
                     info = json_loads(product_info)
                 except:
                     raise Exception("Unable to read the productInfo.json file from URL: %s. Error: %s" % (json_url,
-                                                                                                        product_info))
+                                                                                                          product_info))
 
                 if info:
                     scene_entry = {}
@@ -212,5 +212,5 @@ class AWSSentinel2AInterface(object):
             info = json_loads(tile_info)
         except:
             raise Exception("Unable to read the info json file from URL: %s. Error: %s" % (tile_entry["info"],
-                                                                                         tile_info))
+                                                                                           tile_info))
         return json_dumps(info["tileDataGeometry"])

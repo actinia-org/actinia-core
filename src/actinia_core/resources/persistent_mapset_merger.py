@@ -203,7 +203,7 @@ class PersistentMapsetMerger(PersistentProcessing):
 
             message = "Step %i of %i: Copy content from source " \
                       "mapset <%s> into target mapset <%s>" % (step, steps, mapset_name,
-                                                             self.target_mapset_name)
+                                                               self.target_mapset_name)
             self._send_resource_update(message)
             self.message_logger.info(message)
 

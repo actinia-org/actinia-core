@@ -134,7 +134,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_creation_and_locking(self):
         # Unlock mapset for deletion
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
 
         # Delete any existing mapsets
@@ -168,7 +168,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
@@ -209,7 +209,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
