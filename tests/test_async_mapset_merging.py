@@ -44,14 +44,14 @@ __email__ = "soerengebbert@googlemail.com"
 process_chain_short_1 = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"1000"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
@@ -75,14 +75,14 @@ process_chain_short_1 = {
 process_chain_short_2 = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"1000"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",

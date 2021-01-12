@@ -43,14 +43,14 @@ __email__ = "soerengebbert@googlemail.com"
 process_chain_long = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"1000"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
@@ -77,7 +77,7 @@ process_chain_long = {
        "overwrite":False,
        "verbose":True
     },
-   3:{
+    3:{
        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"

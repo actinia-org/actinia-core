@@ -42,13 +42,13 @@ __email__ = "soerengebbert@googlemail.com"
 process_chain_long = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
@@ -71,7 +71,7 @@ process_chain_long = {
        "overwrite":False,
        "verbose":True
     },
-   3:{
+    3:{
        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
@@ -86,7 +86,7 @@ process_chain_long = {
            }
        }
     },
-   4:{
+    4:{
        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
@@ -94,7 +94,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   5:{
+    5:{
        "module":"r.info",
        "inputs":{
            "map":"my_slope"
@@ -102,7 +102,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   6:{
+    6:{
        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
@@ -110,7 +110,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   7:{
+    7:{
        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
@@ -118,7 +118,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   8:{
+    8:{
        "module":"r.info",
        "inputs":{
            "map":"my_slope"
@@ -126,7 +126,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   9:{
+    9:{
        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
@@ -134,7 +134,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   10:{
+    10:{
        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
@@ -142,7 +142,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   11:{
+    11:{
        "module":"r.info",
        "inputs":{
            "map":"my_slope"
@@ -150,7 +150,7 @@ process_chain_long = {
        "flags":"gr",
        "verbose":True
     },
-   12:{
+    12:{
        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
@@ -163,13 +163,13 @@ process_chain_long = {
 process_chain_short = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
@@ -197,14 +197,14 @@ process_chain_short = {
 process_chain_short_long_run = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"3"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   3:{
+    3:{
        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
@@ -224,14 +224,14 @@ process_chain_short_long_run = {
 process_chain_short_large_region = {
     1:{
         "module":"g.region",
-       "inputs":{
+        "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"0.001"
        },
-       "flags":"p",
-       "verbose":True
+        "flags":"p",
+        "verbose":True
     },
-   2:{
+    2:{
        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
@@ -260,12 +260,12 @@ process_chain_short_large_region = {
 process_chain_error_1 = {
     1:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -277,9 +277,9 @@ process_chain_error_1 = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
 }
 
@@ -287,12 +287,12 @@ process_chain_error_1 = {
 process_chain_error_2 = {
     1:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -303,9 +303,9 @@ process_chain_error_2 = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
 }
 
@@ -313,12 +313,12 @@ process_chain_error_2 = {
 process_chain_error_3 = {
     1:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -330,9 +330,9 @@ process_chain_error_3 = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
 }
 
@@ -340,12 +340,12 @@ process_chain_error_3 = {
 process_chain_error_4 = {
     1:{
         "module":"r.slope.aspect",
-       "inputs":{
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
        },
-       "outputs":{
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
            },
@@ -357,9 +357,9 @@ process_chain_error_4 = {
                }
            }
        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
     },
 }
 
