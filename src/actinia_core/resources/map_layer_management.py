@@ -556,6 +556,7 @@ class PersistentRemoveLayers(PersistentProcessing):
 
         self.finish_message = "Successfully removed %s layers." % layer_type
 
+
 def rename_raster_layers(*args):
     processing = PersistentRenameLayers(*args)
     processing.run()

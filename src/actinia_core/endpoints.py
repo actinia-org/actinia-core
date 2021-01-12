@@ -172,6 +172,7 @@ create_plugin_endpoints(flask_api=flask_api)
         log.info('Loading plugin %s', plugin)
         exec(import_run_str)
 
+
 def create_endpoints():
     create_core_endpoints()
     try:

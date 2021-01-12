@@ -44,6 +44,7 @@ USER_ROLES = ["superadmin",
               "user",
               "guest"]
 
+
 class ActiniaUserError(Exception):
     """Raise this exception in case a user creation error happens
     """
