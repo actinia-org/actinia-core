@@ -45,7 +45,7 @@ process_chain_long = {
         "module":"g.region",
         "inputs":{
            "raster":"elevation@PERMANENT"
-       },
+            },
         "flags":"p",
         "verbose":True
     },
@@ -94,7 +94,7 @@ process_chain_short = {
         "module":"g.region",
         "inputs":{
            "raster":"elevation@PERMANENT"
-       },
+            },
         "flags":"p",
         "verbose":True
     },

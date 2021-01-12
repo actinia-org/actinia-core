@@ -44,7 +44,7 @@ process_chain_long = {
         "module":"g.region",
         "inputs":{
            "raster":"elevation@PERMANENT"
-       },
+            },
         "flags":"p",
         "verbose":True
     },
@@ -165,7 +165,7 @@ process_chain_short = {
         "module":"g.region",
         "inputs":{
            "raster":"elevation@PERMANENT"
-       },
+            },
         "flags":"p",
         "verbose":True
     },
@@ -200,7 +200,7 @@ process_chain_short_long_run = {
         "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"3"
-       },
+            },
         "flags":"p",
         "verbose":True
     },
@@ -227,7 +227,7 @@ process_chain_short_large_region = {
         "inputs":{
            "raster":"elevation@PERMANENT",
            "res":"0.001"
-       },
+            },
         "flags":"p",
         "verbose":True
     },
@@ -264,7 +264,7 @@ process_chain_error_1 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+            },
         "outputs":{
            "aspect":{
                "name":"my_aspect"
@@ -276,7 +276,7 @@ process_chain_error_1 = {
                    "type":"raster"
                }
            }
-       },
+            },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -291,7 +291,7 @@ process_chain_error_2 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+            },
         "outputs":{
            "aspect":{
                "name":"my_aspect"
@@ -302,7 +302,7 @@ process_chain_error_2 = {
                    "format":"GTiff"
                }
            }
-       },
+            },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -317,7 +317,7 @@ process_chain_error_3 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+            },
         "outputs":{
            "aspect":{
                "name":"my_aspect"
@@ -329,7 +329,7 @@ process_chain_error_3 = {
                    "type":"raster_blaster"
                }
            }
-       },
+            },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -344,7 +344,7 @@ process_chain_error_4 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+            },
         "outputs":{
            "aspect":{
                "name":"my_aspect"
@@ -356,7 +356,7 @@ process_chain_error_4 = {
                    "type":"raster"
                }
            }
-       },
+            },
         "flags":"a",
         "overwrite":False,
         "verbose":True
