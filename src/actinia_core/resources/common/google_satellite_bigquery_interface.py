@@ -525,7 +525,7 @@ class GoogleSatelliteBigQueryInterface(object):
         blob = bucket.blob(base_url.replace("gs://gcp-public-data-sentinel-2/", "") +
                            "/" + self.sentinel_xml_metadata_file)
 
-        xml_content  = blob.download_as_string()
+        xml_content = blob.download_as_string()
 
         # Find the coordinates in the XML string
         root = eTree.fromstring(xml_content)

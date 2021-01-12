@@ -44,7 +44,7 @@ from .mapset_management import PersistentGetProjectionRegionInfo
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 
-__license__    = "GPLv3"
+__license__ = "GPLv3"
 __author__ = "S�ren Gebbert"
 __copyright__ = "Copyright 2016, S�ren Gebbert"
 __maintainer__ = "S�ren Gebbert"
