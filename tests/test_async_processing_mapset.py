@@ -48,7 +48,7 @@ process_chain_long = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -67,7 +67,7 @@ process_chain_long = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
    3:{
        "module":"r.watershed",
        "inputs":{
@@ -78,7 +78,7 @@ process_chain_long = {
                "name":"my_accumulation"
                }
            }
-   },
+        },
    4:{
        "module":"r.info",
        "inputs":{
@@ -86,7 +86,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   }
+        }
 }
 
 process_chain_short = {
@@ -97,7 +97,7 @@ process_chain_short = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -116,7 +116,7 @@ process_chain_short = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   }
+        }
 }
 
 

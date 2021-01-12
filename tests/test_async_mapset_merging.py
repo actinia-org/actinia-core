@@ -50,7 +50,7 @@ process_chain_short_1 = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -69,7 +69,7 @@ process_chain_short_1 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   }
+        }
 }
 
 process_chain_short_2 = {
@@ -81,7 +81,7 @@ process_chain_short_2 = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -100,7 +100,7 @@ process_chain_short_2 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   }
+        }
 }
 
 test_mapsets = ["Source_A", "Source_B", "Source_C", "Source_D", "Target"]

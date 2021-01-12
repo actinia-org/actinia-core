@@ -47,7 +47,7 @@ process_chain_long = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -70,7 +70,7 @@ process_chain_long = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
    3:{
        "module":"r.watershed",
        "inputs":{
@@ -85,7 +85,7 @@ process_chain_long = {
                    }
                }
            }
-   },
+        },
    4:{
        "module":"r.info",
        "inputs":{
@@ -93,7 +93,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    5:{
        "module":"r.info",
        "inputs":{
@@ -101,7 +101,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    6:{
        "module":"r.info",
        "inputs":{
@@ -109,7 +109,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    7:{
        "module":"r.info",
        "inputs":{
@@ -117,7 +117,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    8:{
        "module":"r.info",
        "inputs":{
@@ -125,7 +125,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    9:{
        "module":"r.info",
        "inputs":{
@@ -133,7 +133,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    10:{
        "module":"r.info",
        "inputs":{
@@ -141,7 +141,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    11:{
        "module":"r.info",
        "inputs":{
@@ -149,7 +149,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    12:{
        "module":"r.info",
        "inputs":{
@@ -157,7 +157,7 @@ process_chain_long = {
            },
        "flags":"gr",
        "verbose":True
-   }
+        }
 }
 
 process_chain_short = {
@@ -168,7 +168,7 @@ process_chain_short = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -191,7 +191,7 @@ process_chain_short = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   }
+        }
 }
 
 process_chain_short_long_run = {
@@ -203,7 +203,7 @@ process_chain_short_long_run = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    3:{
        "module":"r.watershed",
        "inputs":{
@@ -218,7 +218,7 @@ process_chain_short_long_run = {
                    }
                }
            }
-   }
+        }
 }
 
 process_chain_short_large_region = {
@@ -230,7 +230,7 @@ process_chain_short_large_region = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -253,7 +253,7 @@ process_chain_short_large_region = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   }
+        }
 }
 
 # Wrong export "fromat"
@@ -280,7 +280,7 @@ process_chain_error_1 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
 }
 
 # Missing export type
@@ -306,7 +306,7 @@ process_chain_error_2 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
 }
 
 # Wrong export type
@@ -333,7 +333,7 @@ process_chain_error_3 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
 }
 
 # Wrong/Unsupported export format
@@ -360,7 +360,7 @@ process_chain_error_4 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
 }
 
 

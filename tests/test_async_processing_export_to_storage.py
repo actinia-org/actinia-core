@@ -49,7 +49,7 @@ process_chain_long = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -76,7 +76,7 @@ process_chain_long = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
    3:{
        "module":"r.watershed",
        "inputs":{
@@ -91,7 +91,7 @@ process_chain_long = {
                    }
                }
            }
-   }
+        }
 }
 
 

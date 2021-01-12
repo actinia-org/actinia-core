@@ -48,7 +48,7 @@ process_chain = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"r.slope.aspect",
        "inputs":{
@@ -71,7 +71,7 @@ process_chain = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
    3:{
        "module":"r.watershed",
        "inputs":{
@@ -86,7 +86,7 @@ process_chain = {
                    }
                }
            }
-   },
+        },
    4:{
        "module":"r.info",
        "inputs":{
@@ -94,18 +94,18 @@ process_chain = {
            },
        "flags":"gr",
        "verbose":True
-   },
+        },
    5:{
        "executable":"/bin/true",
        "parameters":[]
-   },
+        },
    6:{
        "executable":"/bin/true"
-   },
+        },
    7:{
        "executable":"/bin/sleep",
        "parameters":["4"]
-   },
+        },
 }
 
 # Module chains with errors
@@ -117,7 +117,7 @@ process_chain_error_1 = {
            },
        "flags":"&p",
        "verbose":True
-   }
+        }
 }
 
 process_chain_error_2 = {
@@ -128,7 +128,7 @@ process_chain_error_2 = {
            },
        "flags":"p",
        "verbose":True
-   }
+        }
 }
 
 process_chain_error_3 = {
@@ -139,7 +139,7 @@ process_chain_error_3 = {
            },
        "flags":"p",
        "verbose":True
-   }
+        }
 }
 
 process_chain_error_4 = {
@@ -150,13 +150,13 @@ process_chain_error_4 = {
            },
        "flags":"p",
        "verbose":True
-   }
+        }
 }
 
 process_chain_error_5 = {
     1:{
 
-   }
+        }
 }
 
 process_chain_error_6 = {
@@ -182,7 +182,7 @@ process_chain_error_6 = {
        "flags":"a",
        "overwrite":False,
        "verbose":True
-   },
+        },
 }
 
 process_chain_region = {
@@ -193,7 +193,7 @@ process_chain_region = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    2:{
        "module":"g.region",
        "inputs":{
@@ -201,7 +201,7 @@ process_chain_region = {
            },
        "flags":"p",
        "verbose":True
-   },
+        },
    3:{
        "module":"r.info",
        "inputs":{
@@ -209,7 +209,7 @@ process_chain_region = {
            },
        "flags":"gr",
        "verbose":True
-   }
+        }
 }
 
 
