@@ -49,8 +49,8 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         mapsets = json_load(rv.data)["process_results"]
 
-        self.assertTrue("PERMANENT" in  mapsets)
-        self.assertTrue("user1" in  mapsets)
+        self.assertTrue("PERMANENT" in mapsets)
+        self.assertTrue("user1" in mapsets)
 
     def test_mapsets_region_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/info',
@@ -61,10 +61,10 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         region_settings = json_load(rv.data)["process_results"]["region"]
 
-        self.assertTrue("depths" in  region_settings)
-        self.assertTrue("ewres" in  region_settings)
-        self.assertTrue("cols" in  region_settings)
-        self.assertTrue("rows" in  region_settings)
+        self.assertTrue("depths" in region_settings)
+        self.assertTrue("ewres" in region_settings)
+        self.assertTrue("cols" in region_settings)
+        self.assertTrue("rows" in region_settings)
 
     def test_mapsets_region_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/info',
@@ -75,10 +75,10 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         region_settings = json_load(rv.data)["process_results"]["region"]
 
-        self.assertTrue("depths" in  region_settings)
-        self.assertTrue("ewres" in  region_settings)
-        self.assertTrue("cols" in  region_settings)
-        self.assertTrue("rows" in  region_settings)
+        self.assertTrue("depths" in region_settings)
+        self.assertTrue("ewres" in region_settings)
+        self.assertTrue("cols" in region_settings)
+        self.assertTrue("rows" in region_settings)
 
     def test_mapset_creation_and_deletion(self):
         self.create_new_mapset("test_mapset")

@@ -161,7 +161,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         mapsets = json_load(rv.data)["process_results"]
 
-        self.assertTrue("test_mapset" in  mapsets)
+        self.assertTrue("test_mapset" in mapsets)
 
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.admin_auth_header)
