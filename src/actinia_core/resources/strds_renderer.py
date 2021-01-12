@@ -286,8 +286,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         width = float(options["width"])
         height = float(options["height"])
 
-        ewres = abs(e - w)/width
-        nsres = abs(n - s)/height
+        ewres = abs(e - w) /width
+        nsres = abs(n - s) /height
 
         g_region_adjust = {"id": "4",
                            "module": "g.region",
