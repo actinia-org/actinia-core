@@ -113,7 +113,7 @@ class ListLocationsResource(ResourceBase):
                         # Check access rights to the global database
                         # Super admin can see all locations
                         if self.has_superadmin_role or dir in self.user_credentials["permissions"][
-                            "accessible_datasets"]:
+                                "accessible_datasets"]:
                             locations.append(dir)
         # List all locations in the user database
         user_database = os.path.join(self.grass_user_data_base, self.user_group)
