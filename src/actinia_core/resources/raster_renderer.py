@@ -477,7 +477,6 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         return options
 
-
     @swagger.doc({
         'tags': ['Raster Management'],
         'description': 'Render two raster layers as a composed shade PNG image. Minimum required user role: user.',

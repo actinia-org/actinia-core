@@ -65,7 +65,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
     def test_strds_create_register_unregister_1(self):
 
         self.create_new_mapset(new_mapset, location)

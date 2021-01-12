@@ -149,7 +149,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
             #                                  global_config.REDIS_QUEUE_SERVER_PORT,
             #                                  global_config.NUMBER_OF_WORKERS)
 
-
         # If the custom_actinia_cfg variable is set, then the actinia config file will be read
         # to configure Redis queue
         if cls.server_test is False and cls.custom_actinia_cfg is not False:

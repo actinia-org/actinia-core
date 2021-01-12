@@ -221,7 +221,6 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
     def test_3_existing_mapset_lock(self):
         """
         Try to run two request on a locked mapset

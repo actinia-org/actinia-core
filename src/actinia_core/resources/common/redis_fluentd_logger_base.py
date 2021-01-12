@@ -101,7 +101,6 @@ class RedisFluentLoggerBase(object):
                 log.debug('Unknown log tag for logging: %s', tag)
                 log.info(data)
 
-
     def send_to_logger(self, tag, data):
 
         if global_config.LOG_INTERFACE == "fluentd":

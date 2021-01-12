@@ -61,7 +61,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.log = ResourceLogger(*redis_args)
         del redis_args
 
-
     def tearDown(self):
         self.app_context.pop()
 

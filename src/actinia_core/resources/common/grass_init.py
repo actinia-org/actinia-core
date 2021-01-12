@@ -395,7 +395,6 @@ class GrassInitializer(ProcessLogging):
 
     def __init__(self, grass_data_base, grass_base_dir, location_name, mapset_name,
                  grass_addon_path="", config=None, user_id=None):
-
         """Initilialze the GRASS environment.
 
         Use an instance of this class for each independent process that should run

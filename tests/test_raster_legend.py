@@ -41,7 +41,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
-
     #################### IMAGE ################################################
 
     def test_raster_legend_no_args(self):

@@ -53,7 +53,6 @@ class AWSSentinel2AInterface(object):
         self.sentinel_bands = ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
                                "B08", "B8A", "B09", "B10", "B11", "B12"]
 
-
     def get_sentinel_urls(self, product_ids, bands=["B04", "B08"]):
         """Receive the download urls and time stamps for a list of Sentinel2 product ids from AWS service
 
@@ -103,7 +102,6 @@ class AWSSentinel2AInterface(object):
         #           1         2         3         4         5         6         7         8
         # 012345678901234567890123456789012345678901234567890123456789012345678901234567890
         # S2A_MSIL1C_20171031T000721_N0206_R016_T01WCP_20171031T015145
-
 
         try:
 
