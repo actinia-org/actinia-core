@@ -45,14 +45,14 @@ process_chain_short_1 = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT",
+            "raster":"elevation@PERMANENT",
            "res":"1000"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -76,14 +76,14 @@ process_chain_short_2 = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT",
+            "raster":"elevation@PERMANENT",
            "res":"1000"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",

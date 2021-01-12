@@ -44,13 +44,13 @@ process_chain = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -73,7 +73,7 @@ process_chain = {
        "verbose":True
     },
     3:{
-       "module":"r.watershed",
+        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
@@ -88,7 +88,7 @@ process_chain = {
        }
     },
     4:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
        },
@@ -96,14 +96,14 @@ process_chain = {
        "verbose":True
     },
     5:{
-       "executable":"/bin/true",
+        "executable":"/bin/true",
        "parameters":[]
     },
     6:{
-       "executable":"/bin/true"
+        "executable":"/bin/true"
     },
     7:{
-       "executable":"/bin/sleep",
+        "executable":"/bin/sleep",
        "parameters":["4"]
     },
 }
@@ -113,7 +113,7 @@ process_chain_error_1 = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"&p",
         "verbose":True
@@ -124,7 +124,7 @@ process_chain_error_2 = {
     1:{
         "module":"g.region_nopo",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
@@ -135,7 +135,7 @@ process_chain_error_3 = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevion@PANENT"
+            "raster":"elevion@PANENT"
             },
         "flags":"p",
         "verbose":True
@@ -146,7 +146,7 @@ process_chain_error_4 = {
     1:{
         "module":"g.region",
         "inputs":{
-           "faster":"elevion@PANENT"
+            "faster":"elevion@PANENT"
             },
         "flags":"p",
         "verbose":True
@@ -163,7 +163,7 @@ process_chain_error_6 = {
     2:{
         "module":"r.slope.aspect",
         "inputs":{
-           "elevation":"elevation@PERMANENT",
+            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
             },
@@ -171,7 +171,7 @@ process_chain_error_6 = {
            "aspect":{
                "name":"my_aspect"
            },
-           "slope":{
+            "slope":{
                "name":"my_slope",
                "export":{
                    "fromat":"GTiff",
@@ -189,13 +189,13 @@ process_chain_region = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"g.region",
+        "module":"g.region",
        "inputs":{
            "res":"0.001"
        },
@@ -203,7 +203,7 @@ process_chain_region = {
        "verbose":True
     },
     3:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"elevation@PERMANENT"
        },

@@ -43,13 +43,13 @@ process_chain_long = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -72,7 +72,7 @@ process_chain_long = {
        "verbose":True
     },
     3:{
-       "module":"r.watershed",
+        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
@@ -87,7 +87,7 @@ process_chain_long = {
        }
     },
     4:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
        },
@@ -95,7 +95,7 @@ process_chain_long = {
        "verbose":True
     },
     5:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_slope"
        },
@@ -103,7 +103,7 @@ process_chain_long = {
        "verbose":True
     },
     6:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
        },
@@ -111,7 +111,7 @@ process_chain_long = {
        "verbose":True
     },
     7:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
        },
@@ -119,7 +119,7 @@ process_chain_long = {
        "verbose":True
     },
     8:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_slope"
        },
@@ -127,7 +127,7 @@ process_chain_long = {
        "verbose":True
     },
     9:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
        },
@@ -135,7 +135,7 @@ process_chain_long = {
        "verbose":True
     },
     10:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
        },
@@ -143,7 +143,7 @@ process_chain_long = {
        "verbose":True
     },
     11:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_slope"
        },
@@ -151,7 +151,7 @@ process_chain_long = {
        "verbose":True
     },
     12:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_accumulation"
        },
@@ -164,13 +164,13 @@ process_chain_short = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -198,14 +198,14 @@ process_chain_short_long_run = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT",
+            "raster":"elevation@PERMANENT",
            "res":"3"
             },
         "flags":"p",
         "verbose":True
     },
     3:{
-       "module":"r.watershed",
+        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
@@ -225,14 +225,14 @@ process_chain_short_large_region = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT",
+            "raster":"elevation@PERMANENT",
            "res":"0.001"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -261,7 +261,7 @@ process_chain_error_1 = {
     1:{
         "module":"r.slope.aspect",
         "inputs":{
-           "elevation":"elevation@PERMANENT",
+            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
             },
@@ -269,7 +269,7 @@ process_chain_error_1 = {
            "aspect":{
                "name":"my_aspect"
            },
-           "slope":{
+            "slope":{
                "name":"my_slope",
                "export":{
                    "fromat":"GTiff",
@@ -288,7 +288,7 @@ process_chain_error_2 = {
     1:{
         "module":"r.slope.aspect",
         "inputs":{
-           "elevation":"elevation@PERMANENT",
+            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
             },
@@ -296,7 +296,7 @@ process_chain_error_2 = {
            "aspect":{
                "name":"my_aspect"
            },
-           "slope":{
+            "slope":{
                "name":"my_slope",
                "export":{
                    "format":"GTiff"
@@ -314,7 +314,7 @@ process_chain_error_3 = {
     1:{
         "module":"r.slope.aspect",
         "inputs":{
-           "elevation":"elevation@PERMANENT",
+            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
             },
@@ -322,7 +322,7 @@ process_chain_error_3 = {
            "aspect":{
                "name":"my_aspect"
            },
-           "slope":{
+            "slope":{
                "name":"my_slope",
                "export":{
                    "format":"GTiff",
@@ -341,7 +341,7 @@ process_chain_error_4 = {
     1:{
         "module":"r.slope.aspect",
         "inputs":{
-           "elevation":"elevation@PERMANENT",
+            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
             },
@@ -349,7 +349,7 @@ process_chain_error_4 = {
            "aspect":{
                "name":"my_aspect"
            },
-           "slope":{
+            "slope":{
                "name":"my_slope",
                "export":{
                    "format":"ASCII",

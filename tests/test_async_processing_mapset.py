@@ -44,13 +44,13 @@ process_chain_long = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
@@ -69,7 +69,7 @@ process_chain_long = {
        "verbose":True
     },
     3:{
-       "module":"r.watershed",
+        "module":"r.watershed",
        "inputs":{
            "elevation":"elevation@PERMANENT"
        },
@@ -80,7 +80,7 @@ process_chain_long = {
        }
     },
     4:{
-       "module":"r.info",
+        "module":"r.info",
        "inputs":{
            "map":"my_aspect"
        },
@@ -93,13 +93,13 @@ process_chain_short = {
     1:{
         "module":"g.region",
         "inputs":{
-           "raster":"elevation@PERMANENT"
+            "raster":"elevation@PERMANENT"
             },
         "flags":"p",
         "verbose":True
     },
     2:{
-       "module":"r.slope.aspect",
+        "module":"r.slope.aspect",
        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
