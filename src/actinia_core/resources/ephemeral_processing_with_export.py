@@ -101,7 +101,7 @@ SCHEMA_DOC = {
             'schema':ProcessingErrorResponseModel
         }
     }
- }
+    }
 
 
 class AsyncEphemeralExportResource(ResourceBase):

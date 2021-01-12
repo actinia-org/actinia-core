@@ -82,7 +82,7 @@ REGION_PARAMETERS = {
             'type': 'double'
         }
     ]
- }
+    }
 
 
 class RendererBaseResource(ResourceBase):
