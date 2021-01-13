@@ -113,7 +113,7 @@ def datetime_to_grass_datetime_string(dt):
         if tz.seconds > 86400 / 2:
             tz = (tz.seconds - 86400) / 60
         else:
-            tz = tz.seconds /60
+            tz = tz.seconds / 60
 
         string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (dt.day,
                                                         month_names[dt.month],

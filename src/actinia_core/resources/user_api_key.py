@@ -152,7 +152,7 @@ class TokenCreationResource(LoginBase):
                 if args["expiration_time"]:
                     expiration = args["expiration_time"]
 
-                    if expiration > 365 *86400:
+                    if expiration > 365 * 86400:
                         raise Exception("Expiration time is to large. Maximum is 365 days.")
 
             return make_response(jsonify(TokenResponseModel(status="success",

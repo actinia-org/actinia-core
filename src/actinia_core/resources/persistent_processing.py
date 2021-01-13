@@ -284,7 +284,7 @@ class PersistentProcessing(EphemeralProcessing):
         """
         # Lock the temporary mapset for the time that the user can allocate at maximum
         ret = self.lock_interface.lock(resource_id=self.temp_mapset_lock_id,
-                                       expiration=self.process_time_limit *self.process_num_limit)
+                                       expiration=self.process_time_limit * self.process_num_limit)
 
         if ret == 0:
             raise AsyncProcessError("Unable to lock temporary mapset <%s>, "
@@ -380,7 +380,7 @@ class PersistentProcessing(EphemeralProcessing):
 
         # Lock the mapset for the time that the user can allocate at maximum
         ret = self.lock_interface.lock(resource_id=self.target_mapset_lock_id,
-                                       expiration=self.process_time_limit *self.process_num_limit)
+                                       expiration=self.process_time_limit * self.process_num_limit)
 
         if ret == 0:
             raise AsyncProcessError("Unable to lock location/mapset <%s/%s>, "
