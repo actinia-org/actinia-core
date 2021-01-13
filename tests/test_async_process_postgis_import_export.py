@@ -56,8 +56,8 @@ process_chain_postgis = {
                                  "format": "PostgreSQL",
                                  "type": "vector",
                                  "output_layer": "poly_2"},
-                     "param": "map",
-                     "value": "poly"}
+                      "param": "map",
+                      "value": "poly"}
                      ]
          }],
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",

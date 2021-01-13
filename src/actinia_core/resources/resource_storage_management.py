@@ -70,7 +70,7 @@ class SyncResourceStorageResource(ResourceBase):
                 'schema':ProcessingErrorResponseModel
             }
         }
-     })
+    })
     def get(self):
         """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -96,7 +96,7 @@ class SyncResourceStorageResource(ResourceBase):
                 'schema':ProcessingErrorResponseModel
             }
         }
-     })
+    })
     def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -138,12 +138,12 @@ class ResourceStorageSize(EphemeralProcessing):
                                            executable_params=args))
 
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
-            quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024*1024*1024)
+            quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024 *1024 *1024)
 
             model = StorageModel(used=dc_size,
                                  free=quota_size - dc_size,
                                  quota=quota_size,
-                                 free_percent=int(100 * (quota_size - dc_size)/quota_size))
+                                 free_percent=int(100 * (quota_size - dc_size) /quota_size))
             self.module_results = model
 
             self.finish_message = "Resource storage size successfully computed"

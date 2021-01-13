@@ -140,7 +140,7 @@ class APILogResource(Resource):
                 'schema':SimpleResponseModel
             }
         }
-     })
+    })
     def get(self, user_id):
         """Get a list of all API calls that have been called by the provided user."""
 

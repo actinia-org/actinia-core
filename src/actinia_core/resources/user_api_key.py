@@ -100,12 +100,12 @@ class APIKeyCreationResource(LoginBase):
 
         try:
             return make_response(jsonify(TokenResponseModel(status="success",
-                                         token=g.user.generate_api_key().decode(),
-                                         message="API key successfully generated")))
+                                                            token=g.user.generate_api_key().decode(),
+                                                            message="API key successfully generated")))
         except:
             return make_response(jsonify(TokenResponseModel(status="error",
-                                         token="",
-                                         message="Error while generating API key")), 400)
+                                                            token="",
+                                                            message="Error while generating API key")), 400)
 
 
 class TokenCreationResource(LoginBase):
@@ -152,14 +152,14 @@ class TokenCreationResource(LoginBase):
                 if args["expiration_time"]:
                     expiration = args["expiration_time"]
 
-                    if expiration > 365*86400:
+                    if expiration > 365 *86400:
                         raise Exception("Expiration time is to large. Maximum is 365 days.")
 
             return make_response(jsonify(TokenResponseModel(status="success",
-                                         token=g.user.generate_auth_token(expiration=expiration).decode(),
-                                         message="Token successfully generated with "
-                                                 "an expiration time of %i seconds" % expiration)))
+                                                            token=g.user.generate_auth_token(expiration=expiration).decode(),
+                                                            message="Token successfully generated with "
+                                                            "an expiration time of %i seconds" % expiration)))
         except Exception as e:
             return make_response(jsonify(TokenResponseModel(status="error",
-                                         token="",
-                                         message="Error while generating token: %s" % str(e))), 400)
+                                                            token="",
+                                                            message="Error while generating token: %s" % str(e))), 400)

@@ -53,7 +53,7 @@ def datetime_to_grass_datetime_string(dt):
         if tz.seconds > 86400 / 2:
             tz = (tz.seconds - 86400) / 60
         else:
-            tz = tz.seconds/60
+            tz = tz.seconds /60
 
         string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (dt.day,
                                                         month_names[dt.month],
@@ -438,7 +438,7 @@ class Sentinel2Processing(object):
 
             p = Process(exec_type="grass", executable="r.mapcalc",
                              executable_params=["expression=%s = float(%s)" % (map_name,
-                                                                             temp_map_name)],
+                                                                               temp_map_name)],
                              skip_permission_check=True)
             import_commands.append(p)
 
@@ -482,8 +482,8 @@ class Sentinel2Processing(object):
                          executable="r.mapcalc",
                          executable_params=["expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
                                             "(float(%(nir)s) + float(%(red)s))" % {"ndvi":raster_result_name,
-                                                                                 "nir":nir,
-                                                                                 "red":red}],
+                                                                                   "nir":nir,
+                                                                                   "red":red}],
                         skip_permission_check=True)
         ndvi_commands.append(p)
 
