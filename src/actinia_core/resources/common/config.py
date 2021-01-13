@@ -128,7 +128,7 @@ class Configuration(object):
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
         self.DOWNLOAD_CACHE = "/tmp/download_cache"  # The directory to cache downloaded data
         self.DOWNLOAD_CACHE_QUOTA = 100  # The quota of the download cache in Gigibit
-        self.SAVE_INTERIM_RESULTS = False # If set True the interim results (temporary mapset) is saved to
+        self.SAVE_INTERIM_RESULTS = False # If True the interim results (temporary mapset) are saved
 
         # Logging
         self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
