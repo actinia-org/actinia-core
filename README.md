@@ -36,7 +36,7 @@ Docker images are available from https://hub.docker.com/r/mundialis/actinia-core
 docker pull mundialis/actinia-core
 ```
 
-For own deployments, see the `docker/` subfolder.
+For own deployments or local dev-setup, see the `docker/` subfolder.
 
 Actinia is also available on [OSGeoLive](https://live.osgeo.org/en/overview/actinia_overview.html).
 
