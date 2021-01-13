@@ -135,7 +135,7 @@ class PersistentMapsetMerger(PersistentProcessing):
         # Finally lock the mapset for the time that the user can allocate at maximum
         lock_id = "%s/%s/%s" % (self.user_group, self.location_name, mapset_name)
         ret = self.lock_interface.lock(resource_id=lock_id,
-                                       expiration=self.process_time_limit *self.process_num_limit)
+                                       expiration=self.process_time_limit * self.process_num_limit)
 
         if ret == 0:
             raise AsyncProcessError("Unable to lock mapset <%s>, resource is already locked" % mapset_name)
