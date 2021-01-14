@@ -1134,22 +1134,22 @@ class EphemeralProcessing(object):
 
             # check if mapset has changed
             cur_working_dir = os.getcwd()
-            cha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
+            sha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
                             "sort -k 2 | sha512sum"
-            # cha512sum of the previous step
+            # sha512sum of the previous step
             os.chdir(old_dest)
-            p_cha512sum_prev = os.popen(cha512sum_cmd)
-            cha512sum_prev = p_cha512sum_prev.read().strip()
-            # cha512sum of the current step
+            p_sha512sum_prev = os.popen(sha512sum_cmd)
+            sha512sum_prev = p_sha512sum_prev.read().strip()
+            # sha512sum of the current step
             os.chdir(self.temp_mapset_path)
-            p_cha512sum_curr = os.popen(cha512sum_cmd)
-            cha512sum_curr= p_cha512sum_curr.read().strip()
+            p_sha512sum_curr = os.popen(sha512sum_cmd)
+            sha512sum_curr= p_sha512sum_curr.read().strip()
             os.chdir(cur_working_dir)
             del cur_working_dir
-            # compare cha512sums
-            if cha512sum_prev == cha512sum_curr:
+            # compare sha512sums
+            if sha512sum_prev == sha512sum_curr:
                 self.message_logger.info(
-                    "Cha512sum of maspsets are equal; renaming interim result")
+                    "Sha512sums of maspsets are equal; renaming interim result")
                 os.rename(old_dest, dest)
                 return
 
