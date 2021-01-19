@@ -1165,7 +1165,11 @@ class EphemeralProcessing(object):
                 "Rsync mapset %s to interim result" % self.temp_mapset_path)
             rsync_cmd = [
                 "rsync",
-                "--recursive --compress --partial --progress --times",
+                "--recursive",
+                "--compress",
+                "--partial",
+                "--progress",
+                "--times",
                 "--delete",
                 self.temp_mapset_path + os.sep,
                 dest]
