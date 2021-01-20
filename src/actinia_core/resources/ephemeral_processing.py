@@ -218,6 +218,7 @@ class EphemeralProcessing(object):
         self.user_credentials = rdc.user_credentials
 
         self.resource_id = self.rdc.resource_id
+        self.iteration = self.rdc.iteration
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
         self.user_resource_interim_storage_path = os.path.join(
@@ -322,6 +323,7 @@ class EphemeralProcessing(object):
                                           status="running",
                                           user_id=self.user_id,
                                           resource_id=self.resource_id,
+                                          iteration=self.iteration,
                                           # process_log=self.module_output_log,
                                           progress=self.progress,
                                           results=results,
@@ -345,6 +347,7 @@ class EphemeralProcessing(object):
                                           status="finished",
                                           user_id=self.user_id,
                                           resource_id=self.resource_id,
+                                          iteration=self.iteration,
                                           process_log=self.module_output_log,
                                           progress=self.progress,
                                           results=results,
@@ -370,6 +373,7 @@ class EphemeralProcessing(object):
                                           status="terminated",
                                           user_id=self.user_id,
                                           resource_id=self.resource_id,
+                                          iteration=self.iteration,
                                           process_log=self.module_output_log,
                                           progress=self.progress,
                                           results=results,
@@ -394,6 +398,7 @@ class EphemeralProcessing(object):
                                           status="terminated",
                                           user_id=self.user_id,
                                           resource_id=self.resource_id,
+                                          iteration=self.iteration,
                                           process_log=self.module_output_log,
                                           progress=self.progress,
                                           results=results,
@@ -418,6 +423,7 @@ class EphemeralProcessing(object):
                                           status="error",
                                           user_id=self.user_id,
                                           resource_id=self.resource_id,
+                                          iteration=self.iteration,
                                           process_log=self.module_output_log,
                                           progress=self.progress,
                                           results=results,
@@ -444,7 +450,7 @@ class EphemeralProcessing(object):
 
         """
 
-        self.resource_logger.commit(user_id=self.user_id, resource_id=self.resource_id, document=document,
+        self.resource_logger.commit(user_id=self.user_id, resource_id=self.resource_id, iteration=self.iteration, document=document,
                                     expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
 
         # Call the webhook after the final result was send to the database
@@ -967,7 +973,7 @@ class EphemeralProcessing(object):
                     termination_check_count = 0
                     # check if the resource should be terminated
                     # and kill the current process
-                    if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
+                    if self.resource_logger.get_termination(self.user_id, self.resource_id, self.iteration) is True:
                         proc.kill()
                         raise AsyncProcessTermination("Process <%s> was terminated "
                                                       "by user request" % module_name)
@@ -1018,7 +1024,7 @@ class EphemeralProcessing(object):
             (returncode, stdout_buff, stderr_buff)
 
         """
-        if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
+        if self.resource_logger.get_termination(self.user_id, self.resource_id, self.iteration) is True:
             raise AsyncProcessTermination("Process <%s> was terminated by "
                                           "user request" % process.executable)
 
@@ -1065,7 +1071,7 @@ class EphemeralProcessing(object):
         # This is required in case a single of many fast running processes in a chain
         # is not able to trigger the termination check in the while loop
         if self.process_count % 20 == 0:
-            if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
+            if self.resource_logger.get_termination(self.user_id, self.resource_id, self.iteration) is True:
                 raise AsyncProcessTermination("Process <%s> was terminated "
                                               "by user request" % process.executable)
 

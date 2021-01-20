@@ -171,7 +171,9 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        response_data = self.resource_logger.get(user_id, resource_id)
+        iteration = 1 # TODO take the highes available iteration
+
+        response_data = self.resource_logger.get(user_id, resource_id, iteration)
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
@@ -179,6 +181,8 @@ class ResourceManager(ResourceManagerBase):
         else:
             return make_response(jsonify(SimpleResponseModel(status="error",
                                                              message="Resource does not exist")), 400)
+
+
 
     @swagger.doc({
         'tags': ['Resource Management'],

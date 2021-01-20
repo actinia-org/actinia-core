@@ -30,7 +30,7 @@ from .redis_resources import RedisResourceInterface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 
 
@@ -49,16 +49,17 @@ class ResourceLogger(RedisFluentLoggerBase):
         del redis_args
 
     @staticmethod
-    def _generate_db_resource_id(user_id, resource_id):
-        return "%s/%s" % (user_id, resource_id)
+    def _generate_db_resource_id(user_id, resource_id, iteration):
+        return "%s/%s/%d" % (user_id, resource_id, iteration)
 
-    def commit(self, user_id, resource_id, document, expiration=8640000):
+    def commit(self, user_id, resource_id, iteration, document, expiration=8640000):
         """Commit a resource entry to the database, create a new one if it does not exists,
         update existing resource entries
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
             document (str): The pickled document to store in the database
             expiration (int): Number of seconds of expiration time, default 8640000s hence 100 days
 
@@ -68,20 +69,21 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
 
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         redis_return = bool(self.db.set(db_resource_id, document, expiration))
         http_code, data = pickle.loads(document)
         data["logger"] = 'resources_logger'
         self.send_to_logger("RESOURCE_LOG", data)
         return redis_return
 
-    def commit_termination(self, user_id, resource_id, expiration=3600):
+    def commit_termination(self, user_id, resource_id, iteration, expiration=3600):
         """Commit a resource entry to the database that requires the termination of the resource,
         create a new one if it does not exists, update existing resource entries
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
             expiration (int): Number of seconds of expiration time, default 3600 hence 1 hour
 
         Returns:
@@ -90,14 +92,15 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
 
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, itertion)
         return bool(self.db.set_termination(db_resource_id, expiration))
 
-    def get(self, user_id, resource_id):
+    def get(self, user_id, resource_id, iteration):
         """Get resource entry
 
         Args:
             user_id (str): The user id
+            iteration (int): The iteration of the job
             resource_id (str): The resource id
 
         Returns:
@@ -105,7 +108,7 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return self.db.get(db_resource_id)
 
     def get_user_resources(self, user_id):
@@ -148,47 +151,50 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         return resource_list
 
-    def get_termination(self, user_id, resource_id):
+    def get_termination(self, user_id, resource_id, iteration):
         """Get resource entry that requires the termination of the resource
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
 
         Returns:
             bool:
             True is resource should be terminated or False if otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return self.db.get_termination(db_resource_id)
 
-    def delete(self, user_id, resource_id):
+    def delete(self, user_id, resource_id, iteration):
         """Delete resource entry
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
 
         Returns:
             bool:
             True for success, False otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return bool(self.db.delete(db_resource_id))
 
-    def delete_termination(self, user_id, resource_id):
+    def delete_termination(self, user_id, resource_id, iteration):
         """Delete resource termination entry
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
 
         Returns:
             bool:
             True for success, False otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id)
+        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return bool(self.db.delete_termination(db_resource_id))

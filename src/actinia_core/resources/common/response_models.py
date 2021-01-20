@@ -258,6 +258,11 @@ class ProcessingResponseModel(Schema):
             'type': 'string',
             'description': 'The unique resource id'
         },
+        'iteration': {
+            'type': 'number',
+            'format': 'integer',
+            'description': 'The iteration of this job'
+        },
         'process_log': {
             'type': 'array',
             'items': ProcessLogModel,
@@ -311,6 +316,7 @@ class ProcessingResponseModel(Schema):
     }
     required = ['status', 'user_id', 'resource_id', 'timestamp', 'datetime', 'accept_timestamp',
                 'accept_datetime', 'message']
+    # TODO is the iteration required?
 
     example = {
         "accept_datetime": "2017-05-24 22:37:21.607255",
@@ -326,6 +332,7 @@ class ProcessingResponseModel(Schema):
         "message": "Resource accepted",
         "process_results": {},
         "resource_id": "resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1",
+        "iteration": "1",
         "status": "accepted",
         "timestamp": 1495658241.608716,
         "urls": {
@@ -1074,6 +1081,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                status=None,
                                user_id=None,
                                resource_id=None,
+                               iteration=1,
                                process_log=None,
                                progress=None,
                                results=None,
@@ -1101,6 +1109,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
         resource_id (str): The resource id
+        iteration (int): Ther iteration of the job
         process_log (dict, str, list): The log from the running GRASS module
         progress (ProgressInfoModel): Progress information
         results (dict): The results of processing steps as Python data types
@@ -1124,6 +1133,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
     resp_dict = response_model_class(status=status,
                                      user_id=user_id,
                                      resource_id=resource_id,
+                                     iteration=iteration,
                                      accept_timestamp=orig_time,
                                      accept_datetime=orig_datetime,
                                      timestamp=time.time(),

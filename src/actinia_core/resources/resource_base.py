@@ -109,6 +109,9 @@ class ResourceBase(Resource):
         # Generate the resource id
         self.request_id, self.resource_id = self.generate_uuids()
 
+        # set iteration
+        self.iteration = 1 # TODO update is resource is processed before
+
         # The base URL's for resources that will be streamed
         self.resource_url_base = None
 
@@ -151,6 +154,7 @@ class ResourceBase(Resource):
                                                         status=status,
                                                         user_id=self.user_id,
                                                         resource_id=self.resource_id,
+                                                        iteration=self.iteration,
                                                         process_log=None,
                                                         results={},
                                                         message=message,
@@ -178,6 +182,7 @@ class ResourceBase(Resource):
         self.create_error_response(message=message, status=status, http_code=http_code)
         self.resource_logger.commit(user_id=self.user_id,
                                     resource_id=self.resource_id,
+                                    iteration=self.iteration,
                                     document=self.response_data)
         http_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), http_code)
@@ -288,6 +293,7 @@ class ResourceBase(Resource):
                                                         status="accepted",
                                                         user_id=self.user_id,
                                                         resource_id=self.resource_id,
+                                                        iteration=self.iteration,
                                                         process_log=None,
                                                         results={},
                                                         message="Resource accepted",
@@ -298,7 +304,7 @@ class ResourceBase(Resource):
                                                         api_info=self.api_info)
 
         # Send the status to the database
-        self.resource_logger.commit(self.user_id, self.resource_id, self.response_data)
+        self.resource_logger.commit(self.user_id, self.resource_id, self.iteration, self.response_data)
 
         # Return the ResourceDataContainer that includes all
         # required data for the asynchronous processing
@@ -310,6 +316,7 @@ class ResourceBase(Resource):
                                      user_group=self.user_group,
                                      user_credentials=self.user_credentials,
                                      resource_id=self.resource_id,
+                                     iteration=self.iteration,
                                      status_url=self.status_url,
                                      api_info=self.api_info,
                                      resource_url_base=self.resource_url_base,
@@ -348,10 +355,12 @@ class ResourceBase(Resource):
         # Wait for the async process by asking the redis database for updates
         while True:
             response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id)
+                                                     self.resource_id,
+                                                     self.iteration)
             if not response_data:
-                message = "Unable to receive process status. User id %s resource id %s" % (self.user_id,
-                                                                                           self.resource_id)
+                message = "Unable to receive process status. User id %s resource id %s and iteration %d" % (self.user_id,
+                                                                                                            self.resource_id,
+                                                                                                            self.iteration)
                 return make_response(message, 400)
 
             http_code, response_model = pickle.loads(response_data)
