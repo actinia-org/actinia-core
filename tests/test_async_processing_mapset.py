@@ -41,82 +41,82 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
-   1:{
-       "module":"g.region",
-       "inputs":{
-           "raster":"elevation@PERMANENT"
+    1:{
+        "module":"g.region",
+        "inputs":{
+            "raster":"elevation@PERMANENT"
         },
-       "flags":"p",
-       "verbose":True
-   },
-   2:{
-       "module":"r.slope.aspect",
-       "inputs":{
+        "flags":"p",
+        "verbose":True
+    },
+    2:{
+        "module":"r.slope.aspect",
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-        },
-       "outputs":{
+       },
+        "outputs":{
            "aspect":{
                "name":"my_aspect"
-            },
+           },
            "slope":{
                "name":"my_slope"
-            }
-        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
-   },
-   3:{
-       "module":"r.watershed",
-       "inputs":{
+           }
+       },
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
+    },
+    3:{
+        "module":"r.watershed",
+        "inputs":{
            "elevation":"elevation@PERMANENT"
-        },
-       "outputs":{
+       },
+        "outputs":{
            "accumulation":{
                "name":"my_accumulation"
-            }
-        }
-   },
-   4:{
-       "module":"r.info",
-       "inputs":{
+           }
+       }
+    },
+    4:{
+        "module":"r.info",
+        "inputs":{
            "map":"my_aspect"
-        },
-       "flags":"gr",
-       "verbose":True
-   }
+       },
+        "flags":"gr",
+        "verbose":True
+    }
 }
 
 process_chain_short = {
-   1:{
-       "module":"g.region",
-       "inputs":{
-           "raster":"elevation@PERMANENT"
+    1:{
+        "module":"g.region",
+        "inputs":{
+            "raster":"elevation@PERMANENT"
         },
-       "flags":"p",
-       "verbose":True
-   },
-   2:{
-       "module":"r.slope.aspect",
-       "inputs":{
+        "flags":"p",
+        "verbose":True
+    },
+    2:{
+        "module":"r.slope.aspect",
+        "inputs":{
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-        },
-       "outputs":{
+       },
+        "outputs":{
            "aspect":{
                "name":"my_aspect_2"
-            },
+           },
            "slope":{
                "name":"my_slope_2"
-            }
-        },
-       "flags":"a",
-       "overwrite":False,
-       "verbose":True
-   }
+           }
+       },
+        "flags":"a",
+        "overwrite":False,
+        "verbose":True
+    }
 }
 
 
@@ -161,7 +161,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         mapsets = json_load(rv.data)["process_results"]
 
-        self.assertTrue("test_mapset" in  mapsets)
+        self.assertTrue("test_mapset" in mapsets)
 
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset/raster_layers',
                              headers=self.admin_auth_header)
@@ -220,7 +220,6 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
-
 
     def test_3_existing_mapset_lock(self):
         """

@@ -34,17 +34,17 @@ except:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
 strds_url = (URL_PREFIX +
-    '/locations/%(location)s/mapsets/%(mapset)s/strds'
-    % {'location': location, 'mapset': strds_mapset})
+             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+             % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 
 
@@ -58,7 +58,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         # Create success
         rv = self.server.post(URL_PREFIX +
                                 '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
-                                %{'location': location, 'mapset': new_mapset},
+                                % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -110,6 +110,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
                              headers=self.admin_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "image/png", "Wrong mimetype %s" % rv.mimetype)
+
 
 if __name__ == '__main__':
     unittest.main()

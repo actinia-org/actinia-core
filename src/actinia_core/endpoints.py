@@ -46,7 +46,7 @@ from .resources.ephemeral_processing_with_export import AsyncEphemeralExportReso
 from .resources.ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
 from .resources.ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
 from .resources.persistent_mapset_merger import AsyncPersistentMapsetMergerResource
-from .resources.raster_export import  AsyncEphemeralRasterLayerRegionExporterResource
+from .resources.raster_export import AsyncEphemeralRasterLayerRegionExporterResource
 from .resources.raster_export import AsyncEphemeralRasterLayerExporterResource
 from .resources.persistent_processing import AsyncPersistentResource
 from .resources.ephemeral_custom_processing import AsyncEphemeralCustomResource
@@ -181,6 +181,7 @@ create_plugin_endpoints(flask_api=flask_api)
         import_run_str = import_str.format(plugin)
         log.info('Loading plugin %s', plugin)
         exec(import_run_str)
+
 
 def create_endpoints():
     create_core_endpoints()

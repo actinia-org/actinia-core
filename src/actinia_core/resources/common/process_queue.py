@@ -65,6 +65,7 @@ __copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co.
 process_queue = Queue()
 process_queue_manager = None
 
+
 def create_process_queue(config, use_logger=True):
     """Create the process queue that will start all processes in a separate
     process. It uses a multiprocessing.Queue() to receive Processes (function and arguments)

@@ -61,7 +61,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.log = ResourceLogger(*redis_args)
         del redis_args
 
-
     def tearDown(self):
         self.app_context.pop()
 
@@ -168,7 +167,7 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(ret)
 
         ret = self.log.get_termination(user_id=self.user_id,
-                           resource_id=self.resource_id)
+                                       resource_id=self.resource_id)
 
         self.assertEqual(False, ret)
 
@@ -176,6 +175,7 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
                                           resource_id=self.resource_id)
 
         self.assertFalse(ret)
+
 
 if __name__ == '__main__':
     unittest.main()

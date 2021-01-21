@@ -304,12 +304,12 @@ class EphemeralProcessing(object):
         # process lists that will be executed. This variable is
         # initiated in the setup method
         self.process_chain_list = []  # The list of all process chains that were processed
-        self.actinia_process_list = list() # A list of all processes that will be executed
-        self.actinia_process_dict = dict() # A list of all processes that will be executed
+        self.actinia_process_list = list()  # A list of all processes that will be executed
+        self.actinia_process_dict = dict()  # A list of all processes that will be executed
         self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
         # process chain finished
         self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
-        self.webhook_auth = None # The authentification for the webhook (base 64 decoded "username:password")
+        self.webhook_auth = None  # The authentification for the webhook (base 64 decoded "username:password")
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database

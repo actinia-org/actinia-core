@@ -32,15 +32,14 @@ try:
 except:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLegendTestCase(ActiniaResourceTestCaseBase):
-
 
     #################### IMAGE ################################################
 
@@ -150,6 +149,7 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
+
 
 if __name__ == '__main__':
     unittest.main()

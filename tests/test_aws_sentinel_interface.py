@@ -32,11 +32,11 @@ import magic
 import os
 from urllib.request import urlopen
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class AWSSentinelInterfaceTestCase(unittest.TestCase):
@@ -151,8 +151,6 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
         self.assertTrue("S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030T235752_20161030T235752" in result[0]["product_id"])
         self.validate_result(result, ["B12", "B08"])
-
-
 
     @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")

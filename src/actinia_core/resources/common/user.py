@@ -33,16 +33,17 @@ from itsdangerous import JSONWebSignatureSerializer
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.redis_user import redis_user_interface
 
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 USER_ROLES = ["superadmin",
               "admin",
               "user",
               "guest"]
+
 
 class ActiniaUserError(Exception):
     """Raise this exception in case a user creation error happens

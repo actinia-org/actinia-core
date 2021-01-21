@@ -310,7 +310,6 @@ def test_resource_entries(r):
         if "JSON file" not in resource:
             raise Exception("keys does not work")
 
-
     ret = r.set_termination(resource_id + "_1", expiration=5)
     if ret != 1:
         raise Exception("set_termination does not work")

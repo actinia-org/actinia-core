@@ -456,7 +456,6 @@ class StorageModel(Schema):
     required = ['used', 'free', 'quota', 'free_percent']
 
 
-
 class UnivarResultModel(Schema):
     """Response schema for the result of univariate computations of raster layers.
 

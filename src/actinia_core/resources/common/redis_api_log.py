@@ -135,6 +135,7 @@ class RedisAPILogInterface(RedisBaseInterface):
         """
         return bool(self.redis_server.delete(self.api_log_prefix + user_id))
 
+
 # Create the Redis interface instance
 redis_api_log_interface = RedisAPILogInterface()
 

@@ -49,8 +49,8 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         mapsets = json_load(rv.data)["process_results"]
 
-        self.assertTrue("PERMANENT" in  mapsets)
-        self.assertTrue("user1" in  mapsets)
+        self.assertTrue("PERMANENT" in mapsets)
+        self.assertTrue("user1" in mapsets)
 
     def test_mapsets_region_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/info',
@@ -61,10 +61,10 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         region_settings = json_load(rv.data)["process_results"]["region"]
 
-        self.assertTrue("depths" in  region_settings)
-        self.assertTrue("ewres" in  region_settings)
-        self.assertTrue("cols" in  region_settings)
-        self.assertTrue("rows" in  region_settings)
+        self.assertTrue("depths" in region_settings)
+        self.assertTrue("ewres" in region_settings)
+        self.assertTrue("cols" in region_settings)
+        self.assertTrue("rows" in region_settings)
 
     def test_mapsets_region_2(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/info',
@@ -75,10 +75,10 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         region_settings = json_load(rv.data)["process_results"]["region"]
 
-        self.assertTrue("depths" in  region_settings)
-        self.assertTrue("ewres" in  region_settings)
-        self.assertTrue("cols" in  region_settings)
-        self.assertTrue("rows" in  region_settings)
+        self.assertTrue("depths" in region_settings)
+        self.assertTrue("ewres" in region_settings)
+        self.assertTrue("cols" in region_settings)
+        self.assertTrue("rows" in region_settings)
 
     def test_mapset_creation_and_deletion(self):
         self.create_new_mapset("test_mapset")
@@ -134,7 +134,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_creation_and_locking(self):
         # Unlock mapset for deletion
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
 
         # Delete any existing mapsets
@@ -168,7 +168,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
@@ -209,10 +209,11 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                                headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+
 
 if __name__ == '__main__':
     unittest.main()
