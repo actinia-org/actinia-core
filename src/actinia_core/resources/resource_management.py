@@ -41,10 +41,9 @@ from .common.response_models import ProcessingResponseModel, SimpleResponseModel
     ProcessingResponseListModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ResourceManagerBase(Resource):
@@ -172,7 +171,10 @@ class ResourceManager(ResourceManagerBase):
             return ret
 
         # the latest iteration should be given
-        response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
+        if resource_id.startswith('resource_id-'):
+            response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
+        else:
+            response_data = self.resource_logger.get_all_iteration(user_id, 'resource_id-%s' % resource_id)
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
@@ -299,9 +301,10 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        # TODO iteration
-        iteration = None
-        doc = self.resource_logger.get(user_id, resource_id, iteration)
+        if not resource_id.startswith('resource_id-'):
+            resource_id = 'resource_id-%s' % resource_id
+
+        doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if doc is None:
             return make_response(jsonify(SimpleResponseModel(status="error",
@@ -456,3 +459,72 @@ class ResourcesManager(ResourceManagerBase):
         return make_response(jsonify(SimpleResponseModel(status="finished",
                                                          message="Successfully send %i "
                                                                  "termination requests" % termination_requests)), 200)
+
+class ResourceIterationManager(ResourceManager):
+    """
+    This class is responsible to answer status requests
+    of asynchronous processes (resources) and
+    to request the termination of a resource with iterations
+    """
+    def __init__(self):
+
+        # Configuration
+        ResourceManager.__init__(self)
+
+    @swagger.doc({
+        'tags': ['Resource Iteration Management'],
+        'description': 'Get the status of a resource with the iterations. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'iteration',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'The current state of the resource',
+                'schema':ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message if the resource does not exists',
+                'schema':SimpleResponseModel
+            }
+        }
+     })
+    def get(self, user_id, resource_id, iteration):
+        """Get the status of a resource of a given iteration."""
+
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        if iteration == 'latest':
+            iteration = 3
+        import pdb; pdb.set_trace()
+
+        # the latest iteration should be given
+        response_data = self.resource_logger.get_latest_iteration(user_id, resource_id, iteration)
+
+        if response_data is not None:
+            http_code, response_model = pickle.loads(response_data)
+            return make_response(jsonify(response_model), http_code)
+        else:
+            return make_response(jsonify(SimpleResponseModel(status="error",
+                                                             message="Resource does not exist")), 400)

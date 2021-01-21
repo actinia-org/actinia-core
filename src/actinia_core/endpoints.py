@@ -55,7 +55,8 @@ from .resources.process_validation import SyncProcessValidationResource
 from .resources.user_management import UserListResource, UserManagementResource
 from .resources.api_log_management import APILogResource
 from .resources.user_api_key import TokenCreationResource, APIKeyCreationResource
-from .resources.resource_management import ResourceManager, ResourcesManager
+from .resources.resource_management \
+    import ResourceManager, ResourcesManager, ResourceIterationManager
 from .resources.resource_streamer import RequestStreamerResource
 from .resources.download_cache_management import SyncDownloadCacheResource
 from .resources.resource_storage_management import SyncResourceStorageResource
@@ -154,10 +155,19 @@ def create_core_endpoints():
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
     # Resource management
+    """
+    the endpoint '/resources/<string:user_id>/<string:resource_id>' has to
+    different answerd depending on the resouce_id. If the resoucre_id starts
+    with 'resouce-id_' the latest iteration of the resouce is given back.
+    f the resocue_id is only the id than all iterations of the resource are
+    """
+    # given in the response
     flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(ResourceIterationManager, '/resources/<string:user_id>/<string:resource_id>/<integer:iteration>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(RequestStreamerResource, '/resources/<string:user_id>/<string:resource_id>/'
                                                     '<string:file_name>')
+
     # Download and resource management
     flask_api.add_resource(SyncDownloadCacheResource, '/download_cache')
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')
