@@ -154,16 +154,17 @@ def create_core_endpoints():
     flask_api.add_resource(TokenCreationResource, '/token', )
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
+
     # Resource management
     """
-    the endpoint '/resources/<string:user_id>/<string:resource_id>' has to
+    The endpoint '/resources/<string:user_id>/<string:resource_id>' has to
     different answerd depending on the resouce_id. If the resoucre_id starts
     with 'resouce-id_' the latest iteration of the resouce is given back.
-    f the resocue_id is only the id than all iterations of the resource are
+    If the resocue_id is only the id than all iterations of the resource are
+    given in the response.
     """
-    # given in the response
     flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
-    flask_api.add_resource(ResourceIterationManager, '/resources/<string:user_id>/<string:resource_id>/<integer:iteration>')
+    flask_api.add_resource(ResourceIterationManager, '/resources/<string:user_id>/<string:resource_id>/<string:iteration>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(RequestStreamerResource, '/resources/<string:user_id>/<string:resource_id>/'
                                                     '<string:file_name>')

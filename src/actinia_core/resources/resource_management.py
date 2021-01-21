@@ -459,7 +459,7 @@ class ResourcesManager(ResourceManagerBase):
                                                          message="Successfully send %i "
                                                                  "termination requests" % termination_requests)), 200)
 
-class ResourceIterationManager(ResourceManager):
+class ResourceIterationManager(ResourceManagerBase):
     """
     This class is responsible to answer status requests
     of asynchronous processes (resources) and
@@ -468,7 +468,7 @@ class ResourceIterationManager(ResourceManager):
     def __init__(self):
 
         # Configuration
-        ResourceManager.__init__(self)
+        ResourceManagerBase.__init__(self)
 
     @swagger.doc({
         'tags': ['Resource Iteration Management'],
@@ -514,12 +514,13 @@ class ResourceIterationManager(ResourceManager):
         if ret:
             return ret
 
-        if iteration == 'latest':
-            iteration = 3
-        import pdb; pdb.set_trace()
+        if not resource_id.startswith('resource_id-'):
+            resource_id = 'resource_id-%s' % resource_id
 
-        # the latest iteration should be given
-        response_data = self.resource_logger.get_latest_iteration(user_id, resource_id, iteration)
+        if iteration == 'latest':
+            response_data = self.resource_logger.get_latest_iteration(user_id, resource_id,)
+        else:
+            response_data = self.resource_logger.get(user_id, resource_id, int(iteration))
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
