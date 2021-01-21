@@ -171,9 +171,8 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        iteration = 1 # TODO take the highes available iteration
-
-        response_data = self.resource_logger.get(user_id, resource_id, iteration)
+        # the latest iteration should be given
+        response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
@@ -182,7 +181,85 @@ class ResourceManager(ResourceManagerBase):
             return make_response(jsonify(SimpleResponseModel(status="error",
                                                              message="Resource does not exist")), 400)
 
+# TODO
+    @swagger.doc({
+        'tags': ['Resource Management'],
+        'description': 'Updates/Resumes the status of a resource. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'The current state of the resource',
+                'schema':ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message if the resource does not exists',
+                'schema':SimpleResponseModel
+            }
+        }
+     })
+    # TODO
+    def put(self, user_id, resource_id):
+        """Updates/Resumes the status of a resource."""
 
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        # TODO iteration
+        response_data = self.resource_logger.get(user_id, resource_id, iteration)
+
+        if response_data is not None:
+            http_code, response_model = pickle.loads(response_data)
+            if response_model['status'] in ['error', 'terminated']:
+                pc_step = response_model['progress']['step'] - 1
+                used_processing_endpoint = response_model['api_info']['path']
+                from .common.config import global_config
+                from flask import g, request
+                import os
+                user_resource_interim_storage_path = os.path.join(
+                    global_config.GRASS_RESOURCE_DIR, g.user.get_id(), "interim", resource_id)
+                interim_folder = os.listdir(user_resource_interim_storage_path)
+                if pc_step < 1:
+                    # TODO start completely new PC with this resource_id
+                    a=5
+                if 'step%d' % (pc_step) in interim_folder:
+                    interim_mapset = os.path.join(user_resource_interim_storage_path, 'step%d' % (pc_step - 1))
+                # process chain
+                if request.get_json():
+                    process_chain = request.get_json()
+                else:
+                    process_chain = response_model['process_chain_list'][0]
+                # skip successful steps
+                process_chain_trimmed = process_chain.copy()
+                del process_chain_trimmed['list']
+                process_chain_trimmed['list'] = process_chain['list'][pc_step:]
+
+                import pdb; pdb.set_trace()
+                #interimResult = InterimResult(response_model)
+
+                a=4
+            elif response_model['status'] in ['running', 'pending', 'finished']:
+                import pdb; pdb.set_trace()
+                a=5 # # TODO
+#               return make_response(jsonify(response_model), http_code)
+        else:
+            return make_response(jsonify(SimpleResponseModel(status="error",
+                                                             message="Resource does not exist")), 400)
 
     @swagger.doc({
         'tags': ['Resource Management'],
@@ -222,7 +299,9 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        doc = self.resource_logger.get(user_id, resource_id)
+        # TODO iteration
+        iteration = None
+        doc = self.resource_logger.get(user_id, resource_id, iteration)
 
         if doc is None:
             return make_response(jsonify(SimpleResponseModel(status="error",

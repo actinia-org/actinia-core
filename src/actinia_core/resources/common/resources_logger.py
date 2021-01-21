@@ -50,7 +50,10 @@ class ResourceLogger(RedisFluentLoggerBase):
 
     @staticmethod
     def _generate_db_resource_id(user_id, resource_id, iteration):
-        return "%s/%s/%d" % (user_id, resource_id, iteration)
+        if iteration is None:
+            return "%s/%s" % (user_id, resource_id)
+        else:
+            return "%s/%s/%d" % (user_id, resource_id, iteration)
 
     def commit(self, user_id, resource_id, iteration, document, expiration=8640000):
         """Commit a resource entry to the database, create a new one if it does not exists,
@@ -100,8 +103,8 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         Args:
             user_id (str): The user id
-            iteration (int): The iteration of the job
             resource_id (str): The resource id
+            iteration (int): The iteration of the job
 
         Returns:
             str:
@@ -109,6 +112,26 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
         db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        return self.db.get(db_resource_id)
+
+    def get_latest_iteration(self, user_id, resource_id):
+        """Get resource entry
+
+        Args:
+            user_id (str): The user id
+            resource_id (str): The resource id
+
+        Returns:
+            str:
+            The resource document or None
+
+        """
+        db_resource_id_pattern = "%s*" % self._generate_db_resource_id(user_id, resource_id, None)
+        db_keys = self.db.get_keys_from_pattern(db_resource_id_pattern)
+        if len(db_keys) == 1:
+            db_resource_id = db_keys[0]
+        else:
+            db_resource_id = max(db_keys)
         return self.db.get(db_resource_id)
 
     def get_user_resources(self, user_id):

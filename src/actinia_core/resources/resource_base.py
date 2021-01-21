@@ -110,7 +110,7 @@ class ResourceBase(Resource):
         self.request_id, self.resource_id = self.generate_uuids()
 
         # set iteration
-        self.iteration = 1 # TODO update is resource is processed before
+        self.iteration = None # TODO update is resource is processed before
 
         # The base URL's for resources that will be streamed
         self.resource_url_base = None
