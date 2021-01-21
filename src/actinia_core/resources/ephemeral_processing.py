@@ -73,6 +73,9 @@ class AsyncEphemeralResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
+    def __init__(self, resource_id, iteration, post_url):
+        ResourceBase.__init__(self, resource_id, iteration, post_url)
+
     def post(self, location_name):
         """Start an async GRASS processing task, that is completely temporary.
         The generated mapset is only created temporally, all created resources

@@ -70,10 +70,9 @@ from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 def create_core_endpoints():
@@ -158,7 +157,7 @@ def create_core_endpoints():
     # Resource management
     """
     The endpoint '/resources/<string:user_id>/<string:resource_id>' has to
-    different answerd depending on the resouce_id. If the resoucre_id starts
+    different answerd depending on the resource_id. If the resoucre_id starts
     with 'resouce-id_' the latest iteration of the resouce is given back.
     If the resocue_id is only the id than all iterations of the resource are
     given in the response.

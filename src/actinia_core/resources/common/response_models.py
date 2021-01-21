@@ -195,6 +195,10 @@ class ApiInfoModel(Schema):
         'request_url': {
             'type': 'string',
             'description': 'The request URL'
+        },
+        'post_url': {
+            'type': 'string',
+            'description': 'The post URL'
         }
     }
     required = ["endpoint", "method", "path", "request_url"]
@@ -258,11 +262,6 @@ class ProcessingResponseModel(Schema):
             'type': 'string',
             'description': 'The unique resource id'
         },
-        # 'iteration': {
-        #     'type': 'number',
-        #     'format': 'integer',
-        #     'description': 'The iteration of this job'
-        # },
         'process_log': {
             'type': 'array',
             'items': ProcessLogModel,

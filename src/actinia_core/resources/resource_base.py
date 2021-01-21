@@ -46,10 +46,9 @@ from .user_auth import check_user_permissions, create_dummy_user
 from .resource_management import ResourceManager
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 class ResourceBase(Resource):
@@ -111,6 +110,7 @@ class ResourceBase(Resource):
 
         # set iteration
         self.iteration = None # TODO update is resource is processed before
+        self.post_url = None # request.url # TODO update is resource is processed before
 
         # The base URL's for resources that will be streamed
         self.resource_url_base = None
@@ -134,10 +134,83 @@ class ResourceBase(Resource):
         self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
 
         # Put API information in the response for later accounting
-        self.api_info = ApiInfoModel(endpoint=request.endpoint,
-                                     method=request.method,
-                                     path=request.path,
-                                     request_url=self.request_url)
+        kwargs = {
+            'endpoint': request.endpoint,
+            'method':request.method,
+            'path': request.path,
+            'request_url': self.request_url}
+        self.api_info = ApiInfoModel(**kwargs)
+
+
+    def __init__(self, resource_id, iteration, post_url):
+
+        # Configuration
+        Resource.__init__(self)
+
+        # Store the user id, user group and all credentials of the current user
+        self.user = g.user
+        self.user_id = g.user.get_id()
+        self.user_group = g.user.get_group()
+        self.user_role = g.user.get_role()
+        self.has_superadmin_role = g.user.has_superadmin_role()
+        self.user_credentials = g.user.get_credentials()
+
+        self.orig_time = time.time()
+        self.orig_datetime = str(datetime.now())
+
+        kwargs = dict()
+        kwargs['host'] = global_config.REDIS_SERVER_URL
+        kwargs['port'] = global_config.REDIS_SERVER_PORT
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            kwargs['password'] = global_config.REDIS_SERVER_PW
+        self.resource_logger = ResourceLogger(**kwargs)
+        del kwargs
+
+        self.message_logger = MessageLogger()
+
+        self.grass_data_base = global_config.GRASS_DATABASE
+        self.grass_user_data_base = global_config.GRASS_USER_DATABASE
+        self.grass_base_dir = global_config.GRASS_GIS_BASE
+        self.grass_start_script = global_config.GRASS_GIS_START_SCRIPT
+        self.grass_addon_path = global_config.GRASS_ADDON_PATH
+
+        # Set the resource id
+        self.resource_id = resource_id
+        self.request_id = self.generate_request_id_from_resource_id()
+
+        # set iteration and post_url
+        self.iteration = iteration
+        self.post_url = post_url
+
+        # The base URL's for resources that will be streamed
+        self.resource_url_base = None
+
+        # Generate the status URL
+        self.status_url = flask_api.url_for(ResourceManager,
+                                            user_id=self.user_id,
+                                            resource_id=self.resource_id,
+                                            _external=True)
+
+        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.status_url:
+            self.status_url = self.status_url.replace("http://", "https://")
+
+        self.request_url = request.url
+        self.resource_url = None
+        self.request_data = None
+        self.response_data = None
+        self.job_timeout = 0
+
+        # Replace this with the correct response model in subclasses
+        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
+
+        # Put API information in the response for later accounting
+        kwargs = {
+            'endpoint': request.endpoint,
+            'method':request.method,
+            'path': request.path,
+            'request_url': self.request_url,
+            'post_url': self.post_url}
+        self.api_info = ApiInfoModel(**kwargs)
 
     def create_error_response(self, message, status="error", http_code=400):
         """Create an error response, that by default sets the status to error and the http_code to 400
@@ -339,6 +412,9 @@ class ResourceBase(Resource):
         resource_id = "resource_id-" + str(new_uuid)
 
         return request_id, resource_id
+
+    def generate_request_id_from_resource_id(self):
+        return self.resource_id.replace("resource_id-", "request_id-")
 
     def wait_until_finish(self, poll_time=0.2):
         """Wait until a resource finished, terminated or failed with an error

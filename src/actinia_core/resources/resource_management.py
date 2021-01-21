@@ -183,7 +183,6 @@ class ResourceManager(ResourceManagerBase):
             return make_response(jsonify(SimpleResponseModel(status="error",
                                                              message="Resource does not exist")), 400)
 
-# TODO
     @swagger.doc({
         'tags': ['Resource Management'],
         'description': 'Updates/Resumes the status of a resource. Minimum required user role: user.',
@@ -222,14 +221,37 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        # TODO iteration
-        response_data = self.resource_logger.get(user_id, resource_id, iteration)
+        # get latest iteration
+        old_iteration, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if response_data is not None:
+            iteration = old_iteration + 1
             http_code, response_model = pickle.loads(response_data)
+            # check if a new iteration is possible (only if status is error or terminated)
             if response_model['status'] in ['error', 'terminated']:
+                # TODO use post_url if iteration > 1
+                if old_iteration:
+                    post_url = response_model['api_info']['request_url']
+                else:
+                    post_url = response_model['api_info']['post_url']
+                # used_processing_endpoint = response_model['api_info']['path']
+                # processing_async
+                # if post_url.endswith('processing_async'):
+                import re
+                location = re.findall(r'locations\/(.*?)\/', post_url)[0]
+                # mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
+                from .ephemeral_processing import AsyncEphemeralResource, start_job
+                processing_resource = AsyncEphemeralResource(location, iteration, post_url)
+                rdc = processing_resource.preprocess(location_name=location)
+                from .common.redis_interface import enqueue_job
+                # if rdc:
+                #     enqueue_job(processing_resource.job_timeout, start_job, rdc)
+        # html_code, response_model = pickle.loads(self.response_data)
+        # return make_response(jsonify(response_model), html_code)
+                import pdb; pdb.set_trace()
+
+
                 pc_step = response_model['progress']['step'] - 1
-                used_processing_endpoint = response_model['api_info']['path']
                 from .common.config import global_config
                 from flask import g, request
                 import os

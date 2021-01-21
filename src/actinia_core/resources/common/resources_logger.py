@@ -119,6 +119,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
+        if iteration == 1:
+            iteration = None
         db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return self.db.get(db_resource_id)
 
