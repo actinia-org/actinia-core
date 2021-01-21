@@ -172,7 +172,7 @@ class ResourceManager(ResourceManagerBase):
 
         # the latest iteration should be given
         if resource_id.startswith('resource_id-'):
-            response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
+            _, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
         else:
             response_data = self.resource_logger.get_all_iteration(user_id, 'resource_id-%s' % resource_id)
 
@@ -304,7 +304,7 @@ class ResourceManager(ResourceManagerBase):
         if not resource_id.startswith('resource_id-'):
             resource_id = 'resource_id-%s' % resource_id
 
-        doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
+        _, doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if doc is None:
             return make_response(jsonify(SimpleResponseModel(status="error",
@@ -518,12 +518,13 @@ class ResourceIterationManager(ResourceManagerBase):
             resource_id = 'resource_id-%s' % resource_id
 
         if iteration == 'latest':
-            response_data = self.resource_logger.get_latest_iteration(user_id, resource_id,)
+            iteration, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id,)
         else:
             response_data = self.resource_logger.get(user_id, resource_id, int(iteration))
 
         if response_data is not None:
-            http_code, response_model = pickle.loads(response_data)
+            http_code, tmp_response_model = pickle.loads(response_data)
+            response_model = {str(iteration): tmp_response_model}
             return make_response(jsonify(response_model), http_code)
         else:
             return make_response(jsonify(SimpleResponseModel(status="error",

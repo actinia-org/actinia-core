@@ -55,6 +55,14 @@ class ResourceLogger(RedisFluentLoggerBase):
         else:
             return "%s/%s/%d" % (user_id, resource_id, iteration)
 
+    @staticmethod
+    def _get_iteration_from_db_resource_id(db_resource_id):
+        resoucre_id_split = db_resource_id.split('/')
+        if len(resoucre_id_split) == 3:
+            return int(resoucre_id_split[2])
+        else:
+            return 1
+
     def commit(self, user_id, resource_id, iteration, document, expiration=8640000):
         """Commit a resource entry to the database, create a new one if it does not exists,
         update existing resource entries
@@ -122,6 +130,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             resource_id (str): The resource id
 
         Returns:
+            int:
+            The latest iteration of the resource
             str:
             The resource document or None
 
@@ -132,7 +142,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             db_resource_id = db_keys[0]
         else:
             db_resource_id = max(db_keys)
-        return self.db.get(db_resource_id)
+        iteration = self._get_iteration_from_db_resource_id(db_resource_id)
+        return iteration, self.db.get(db_resource_id)
 
     def get_all_iteration(self, user_id, resource_id):
         """Get resource entry of all iterations
@@ -152,12 +163,10 @@ class ResourceLogger(RedisFluentLoggerBase):
         db_keys.sort()
         resp_dict = dict()
         for db_key in db_keys:
-            db_key_split = db_key.split('%s/' % resource_id)
-            if len(db_key_split) > 1 and db_key_split[1] != '':
-                iteration = int(db_key_split[1])
+            iteration = self._get_iteration_from_db_resource_id(db_key)
+            if iteration != 1:
                 db_resource_id_iter = self._generate_db_resource_id(user_id, resource_id, iteration)
             else:
-                iteration = 1
                 db_resource_id_iter = db_resource_id
             resp_dict[str(iteration)] = pickle.loads(self.db.get(db_resource_id_iter))[1]
         return pickle.dumps([200, resp_dict])
