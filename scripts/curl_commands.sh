@@ -15,20 +15,20 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 
 #####
 # Show all locations in the GRASS database
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations
+curl ${AUTH} -X GET -i ${actinia}/api/v1/locations_wgs84
 
 # Create a new location based on an EPSG code
 echo '{
   "epsg": "4326"
 }' > /tmp/pc_location_epsg4326.json
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST "${actinia}/api/v1/locations/latlong_wgs84_new" -d @/tmp/pc_location_epsg4326.json
+curl ${AUTH} -H "Content-Type: application/json" -X POST "${actinia}/api/v1/locations/latlong_TEST" -d @/tmp/pc_location_epsg4326.json
 
 # Check if the location is listed
-curl ${AUTH} -X GET ${actinia}/api/v1/locations
+curl ${AUTH} -X GET ${actinia}/api/v1/locations_wgs84
 
-# Delete the new location
-curl ${AUTH} -X DELETE ${actinia}/api/v1/locations/latlong_wgs84_new
+# Delete the new location, careful!
+curl ${AUTH} -X DELETE ${actinia}/api/v1/locations/latlong_TEST
 rm -f /tmp/pc_location_epsg4326.json
 
 # Get information of the NC location
