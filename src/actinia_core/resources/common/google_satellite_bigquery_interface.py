@@ -203,13 +203,13 @@ class GoogleSatelliteBigQueryInterface(object):
                 end_time = dtparser.parse(end_time)
                 temporal_query = "sensing_time >= \'%(start)s\' " \
                                  "AND sensing_time <= \'%(end)s\'" % {"start": start_time.isoformat(),
-                                                                    "end": end_time.isoformat()}
+                                                                      "end": end_time.isoformat()}
                 has_where_statement = True
 
             if lon and lat:
                 spatial_query = "west_lon <= %(lon)f AND east_lon >= %(lon)f AND " \
                                 "north_lat >= %(lat)f AND south_lat <= %(lat)f" % {"lon": float(lon),
-                                                                                 "lat": float(lat)}
+                                                                                   "lat": float(lat)}
                 has_where_statement = True
 
             if cloud_cover:
@@ -525,7 +525,7 @@ class GoogleSatelliteBigQueryInterface(object):
         blob = bucket.blob(base_url.replace("gs://gcp-public-data-sentinel-2/", "") +
                            "/" + self.sentinel_xml_metadata_file)
 
-        xml_content  = blob.download_as_string()
+        xml_content = blob.download_as_string()
 
         # Find the coordinates in the XML string
         root = eTree.fromstring(xml_content)

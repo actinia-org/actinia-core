@@ -34,11 +34,11 @@ except:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
@@ -246,6 +246,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
         self.assertTrue("Error while running executable <r.colors.out" in log)
+
 
 if __name__ == '__main__':
     unittest.main()

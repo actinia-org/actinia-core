@@ -63,5 +63,6 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertRaises(IOError, c.read, "/dk/l/K/D/V/l/d/g")
         self.assertRaises(IOError, c.write, "/dk/l/K/D/V/l/d/g")
 
+
 if __name__ == '__main__':
     unittest.main()

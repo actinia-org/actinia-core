@@ -294,6 +294,7 @@ process_chain_landsat = {
     "version": "1"
 }
 
+
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/process_chain_validation_sync',

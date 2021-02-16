@@ -53,7 +53,6 @@ class AWSSentinel2AInterface(object):
         self.sentinel_bands = ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
                                "B08", "B8A", "B09", "B10", "B11", "B12"]
 
-
     def get_sentinel_urls(self, product_ids, bands=["B04", "B08"]):
         """Receive the download urls and time stamps for a list of Sentinel2 product ids from AWS service
 
@@ -104,7 +103,6 @@ class AWSSentinel2AInterface(object):
         # 012345678901234567890123456789012345678901234567890123456789012345678901234567890
         # S2A_MSIL1C_20171031T000721_N0206_R016_T01WCP_20171031T015145
 
-
         try:
 
             for band in bands:
@@ -134,10 +132,10 @@ class AWSSentinel2AInterface(object):
 
                 json_url = "%(base)s/products/%(year)s/%(month)s/%(day)s/%(id)s/" \
                            "productInfo.json" % {"base":self.aws_sentinel_base_url,
-                                               "year":year,
-                                               "month":month,
-                                               "day":day,
-                                               "id":product_id}
+                                                 "year":year,
+                                                 "month":month,
+                                                 "day":day,
+                                                 "id":product_id}
 
                 response = urlopen(json_url)
                 product_info = response.read()
@@ -147,7 +145,7 @@ class AWSSentinel2AInterface(object):
                     info = json_loads(product_info)
                 except:
                     raise Exception("Unable to read the productInfo.json file from URL: %s. Error: %s" % (json_url,
-                                                                                                        product_info))
+                                                                                                          product_info))
 
                 if info:
                     scene_entry = {}
@@ -212,5 +210,5 @@ class AWSSentinel2AInterface(object):
             info = json_loads(tile_info)
         except:
             raise Exception("Unable to read the info json file from URL: %s. Error: %s" % (tile_entry["info"],
-                                                                                         tile_info))
+                                                                                           tile_info))
         return json_dumps(info["tileDataGeometry"])

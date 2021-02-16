@@ -270,6 +270,7 @@ class RedisUserInterface(RedisBaseInterface):
 
         return values
 
+
 # Create the Redis interface instance
 redis_user_interface = RedisUserInterface()
 

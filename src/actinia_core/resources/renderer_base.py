@@ -82,7 +82,7 @@ REGION_PARAMETERS = {
             'type': 'double'
         }
     ]
- }
+}
 
 
 class RendererBaseResource(ResourceBase):
@@ -154,7 +154,7 @@ class RendererBaseResource(ResourceBase):
             options["w"] = args["w"]
         if "width" in args and args["width"] is not None:
             if args["width"] < 1:
-                return  self.get_error_response(message="Width must be larger than 0")
+                return self.get_error_response(message="Width must be larger than 0")
             if args["width"] > 10000:
                 return self.get_error_response(message="Width can not be larger than 10000")
             options["width"] = args["width"]

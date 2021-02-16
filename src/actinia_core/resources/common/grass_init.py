@@ -140,7 +140,7 @@ class GrassEnvironment(ProcessLogging):
                 value = self.env[key]
                 origValue = os.getenv(key)
                 if origValue:
-                    value  += ":"+origValue
+                    value += ":" + origValue
                 os.putenv(key,value)
                 os.environ[key] = value
                 self.log_debug(key + "=" + value)
@@ -236,7 +236,7 @@ class GrassWindFile(ProcessLogging):
 
         if mapset == "PERMANENT":
             #If PERMANENT is used as mapset, the DEFAULT_WIND file will be created too
-            self.__windFile = os.path.join(gisdbase, location, mapset, "DEFAULT_WIND" )
+            self.__windFile = os.path.join(gisdbase, location, mapset, "DEFAULT_WIND")
             self.__write()
 
         self.__windFile = os.path.join(gisdbase, location, mapset, "WIND")
@@ -395,7 +395,6 @@ class GrassInitializer(ProcessLogging):
 
     def __init__(self, grass_data_base, grass_base_dir, location_name, mapset_name,
                  grass_addon_path="", config=None, user_id=None):
-
         """Initilialze the GRASS environment.
 
         Use an instance of this class for each independent process that should run

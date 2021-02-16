@@ -122,7 +122,6 @@ class EphemeralCustomProcessing(EphemeralProcessing):
 
         self._run_process(p)
 
-
     def _final_cleanup(self):
         """Final cleanup called in the run function at the very end of processing
         """

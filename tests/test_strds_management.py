@@ -40,8 +40,8 @@ __email__ = "soerengebbert@googlemail.com"
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
 strds_url = (URL_PREFIX +
-    '/locations/%(location)s/mapsets/%(mapset)s/strds'
-    % {'location': location, 'mapset': strds_mapset})
+             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+             % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 
 
@@ -167,6 +167,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,3 +1,27 @@
+
+# Installation
+
+Requirements: docker and docker-compose
+
+To build and deploy actinia, run
+
+```
+git clone https://github.com/mundialis/actinia_core.git
+cd actinia_core
+docker-compose -f docker/docker-compose.yml up
+```
+Now you have a running actinia instance locally! Check with
+```
+curl http://127.0.0.1:8088/api/v1/version
+```
+
+* Having __trouble__? See [How to fix common startup errors](#startup-errors) below.
+* Want to __start developing__? Look for [Local dev-setup with docker](#local-dev-setup) below.
+* For __production deployment__, see [Production deployment](#production-deployment) below.
+
+On startup, some GRASS GIS locations are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis)  below.
+
+
 # actinia version matrix
 
 | docker image  | actinia-core                           | actinia-core-latest                      | actinia-core-dev       | actinia-core-prod           |
@@ -13,66 +37,68 @@
 
 Latest update: 16 Dec 2020
 
-# Requirements
-
- * docker
- * docker-compose
-
-# Installation
-
-To obtain the actinia_core source code, run
-
+<a id="startup-errors"></a>
+# How to fix common startup errors
+* if a redis db is running locally this will fail. Run and try again:
 ```
-mkdir $HOME/repos/
-cd $HOME/repos/
-
-git clone https://github.com/mundialis/actinia_core.git
-cd actinia_core/docker/
+/etc/init.d/redis-server stop
 ```
-
-In this directory are the needed docker-compose scripts available.
-
-# Building and deployment of actinia_core
-
-To build and deploy actinia, run
-
+* if you see an error like "max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]", run
 ```
-docker-compose build --pull
+sudo sysctl -w vm.max_map_count=262144
+```
+  this is only valid on runtime. To change permanently, set vm.max_map_count in /etc/sysctl.conf
 
-# Note: adding -d starts the containers in the background and leaves them
-#       running; without docker-compose will show the logging in the terminal:
-docker-compose up
 
-# or DEV setup
+<a id="local-dev-setup"></a>
+# Local dev-setup with docker
+To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
+```
 docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml run --service-ports --entrypoint sh actinia
-# be aware, that your local actinia source code is now mounted in the docker container!
-# then, inside the docker container, run
+docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+```
+Be aware, that your local actinia source code is now mounted in the docker container!
+Then, inside the docker container, run
+```
 python3 setup.py install
 sh /src/start.sh
-# for debugging or if you need to start the wsgi server regularly during development, run it with only one worker:
-gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
-
+```
+Now you have a running actinia instance locally.
+For debugging or if you need to start the wsgi server regularly during development, you don't need to repeat all steps from inside the start.sh file. Instead, run the server with only one worker:
+```
+python3 setup.py install && gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 ```
 
-This will keep logging in the terminal foreground.
-
-__See below for production deployment__.
-
-# Notes on actinia_core development and testing GRASS GIS inside a container
-
-For actinia_core development, run and enter the running container (in a separate terminal):
+To also integrate dev setup for actinia-gdi in plugin mode, uninstall
+ actinia-gdi in actinia-core-dev/Dockerfile (see outcommented code), build and
+ run like described above and build actinia-gdi from your mounted source code:
 ```
-docker-compose run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia_core:/src/actinia_core actinia-core
+docker-compose -f docker-compose-dev.yml build
+docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 
-docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint /bin/sh -v $HOME/repos/actinia/actinia_core:/src/actinia_core actinia-core
+cd /src/actinia_core
+python3 setup.py install
 
-docker-compose -f docker-compose-dev.yml run --rm --entrypoint /bin/bash -v $HOME/repos/actinia/actinia_core/src:/src/actinia_core/src -v $HOME/repos/actinia/actinia_core/scripts:/src/actinia_core/scripts actinia-core
-
-# To avoid cache problems, remove the packaged actinia_core
+cd /src/actinia-gdi
+python3 setup.py install
+```
+To avoid cache problems, remove the packaged actinia_core (already done in Dockerfile)
+```
 pip3 uninstall actinia_core -y
 ```
-Mind the git checkout during build time - even though actinia_core is copied from local sources to the Dockerfile, a git checkout will overwrite changes. During development it is necessary to mount the whole sourcecode.
+If you have other problems with cache, run
+```
+python3 setup.py clean --all
+```
+To reach kibana (only setup in docker-compose-dev.yml, currently outcommented), open http://127.0.0.1:5601 in your browser.
+
+If if elasticsearch is shutting down immediately (if used), check logs with
+```
+docker logs docker_elasticsearch_1
+```
+
+<a id="grass-gis"></a>
+# Testing GRASS GIS inside a container
 
 Inside the container, you can run GRASS GIS with:
 ```
@@ -89,36 +115,16 @@ grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec r.univar -g elevation
 grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.random output=myrandom n=42
 grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.info -g myrandom
 ```
-
-Alternatively, run the actinia_core server with your mounted source code inside the container:
-
+You now have some data which you can access through actinia. To get information
+via API, start actinia with gunicorn and run
 ```
-cd /src/actinia_core
-python3 setup.py install
-
-sh /src/start-dev.sh
-
-# python3 -m actinia_core.main
-gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
-
+curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v1/locations/nc_spm_08/mapsets
 ```
-If you have problems with cache, run
-```
-python3 setup.py clean --all
-```
+The folder where you downloaded the data into (`/actinia_core/grassdb`) is mounted into your docker container via the compose file, so all data is kept, even if your docker container restarts.
 
-# Testing actinia with API calls
+If you want to download the data not from inside the container but from your normal system, download https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz, extract it and place it into actinia-core/docker/actinia-core-data/grassdb/
 
-And test from outside with API calls, e.g.:
-
-```
-# on the same server
-curl -u actinia-gdi:actinia-gdi 'http://127.0.0.1:8088/api/v1/locations'
-
-# from another server (update IP to that of the actinia server), e.g.:
-curl -u actinia-gdi:actinia-gdi 'http://10.133.7.128:8088/api/v1/locations'
-```
-
+<a id="production-deployment"></a>
 # Production deployment
 
 To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. To start the server, run:
