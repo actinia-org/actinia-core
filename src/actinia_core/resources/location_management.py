@@ -44,7 +44,7 @@ from .mapset_management import PersistentGetProjectionRegionInfo
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 
-__license__    = "GPLv3"
+__license__ = "GPLv3"
 __author__ = "S�ren Gebbert"
 __copyright__ = "Copyright 2016, S�ren Gebbert"
 __maintainer__ = "S�ren Gebbert"
@@ -113,7 +113,7 @@ class ListLocationsResource(ResourceBase):
                         # Check access rights to the global database
                         # Super admin can see all locations
                         if self.has_superadmin_role or dir in self.user_credentials["permissions"][
-                            "accessible_datasets"]:
+                                "accessible_datasets"]:
                             locations.append(dir)
         # List all locations in the user database
         user_database = os.path.join(self.grass_user_data_base, self.user_group)

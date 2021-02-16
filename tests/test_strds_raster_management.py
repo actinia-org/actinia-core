@@ -41,8 +41,8 @@ __email__ = "soerengebbert@googlemail.com"
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
 strds_url = (URL_PREFIX +
-    '/locations/%(location)s/mapsets/%(mapset)s/strds'
-    % {'location': location, 'mapset': strds_mapset})
+             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+             % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 new_mapset = "raster_test_mapset"
 
@@ -65,7 +65,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
     def test_strds_create_register_unregister_1(self):
 
         self.create_new_mapset(new_mapset, location)
@@ -73,7 +72,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Create success
         rv = self.server.post(URL_PREFIX +
                                 '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
-                                %{'location': location, 'mapset': new_mapset},
+                                % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -197,6 +196,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+
 
 if __name__ == '__main__':
     unittest.main()

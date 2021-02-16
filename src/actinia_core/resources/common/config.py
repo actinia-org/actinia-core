@@ -105,7 +105,7 @@ class Configuration(object):
         self.LOGIN_REQUIRED = True     # If set False, login is not required
         self.FORCE_HTTPS_URLS = False  # Force the use of https in response urls that
         #                                point to actinia services like status URL or data storage
-        self.PLUGINS = [] # ["actinia_satellite_plugin", "actinia_statistic_plugin"]
+        self.PLUGINS = []  # ["actinia_satellite_plugin", "actinia_statistic_plugin"]
 
         # REDIS
         self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
@@ -113,7 +113,7 @@ class Configuration(object):
         self.REDIS_SERVER_PW = None             # The password of the redis server
         self.REDIS_RESOURCE_EXPIRE_TIME = 864000  # Default expire time is 10 days for resource logs,
         #                                           that are used for calculating the price of resource usage
-        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1" # The hostname of the redis work queue server
+        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"  # The hostname of the redis work queue server
         self.REDIS_QUEUE_SERVER_PORT = 6379   # The port of the redis work queue server
         self.REDIS_QUEUE_JOB_TTL = 0          # This is the time the rq:job will be stored in the redis
         self.WORKER_QUEUE_NAME = "job_queue"  # The base name of the redis worker queue,

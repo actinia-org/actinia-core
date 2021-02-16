@@ -88,7 +88,7 @@ def create_dummy_user(f):
     def decorated_function(*args, **kwargs):
         # Set a default user
         g.user = ActiniaUser(user_id=global_config.DEFAULT_USER,
-                           user_group=global_config.DEFAULT_USER_GROUP)
+                             user_group=global_config.DEFAULT_USER_GROUP)
 
         return f(*args, **kwargs)
     return decorated_function
@@ -263,10 +263,10 @@ def check_location_mapset_module_access(user_credentials,
         if mapset_name:
             # Check if the mapset exists in the global database
             if not accessible_datasets[location_name] or \
-                mapset_name not in accessible_datasets[location_name]:
+                    mapset_name not in accessible_datasets[location_name]:
                 resp = {"Status":"error",
                         "Messages":"Unauthorized access to mapset <%s> in location <%s>" % (mapset_name,
-                                                                                         location_name)}
+                                                                                            location_name)}
                 return (401, resp)
 
     # Check if the module name is in the access list

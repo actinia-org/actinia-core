@@ -37,6 +37,8 @@ from flask import make_response
 
 # This is a simple endpoint to check the health of the Actinia Core server
 # This is needed by Google load balancer
+
+
 @flask_app.route(URL_PREFIX + '/health_check')
 def health_check():
     # TODO: Add checks of the Actinia Core compute node state

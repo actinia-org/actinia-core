@@ -62,10 +62,10 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         region_settings = json_loads(rv.data)["process_results"]["region"]
         projection_settings = json_loads(rv.data)["process_results"]["projection"]
 
-        self.assertTrue("depths" in  region_settings)
-        self.assertTrue("ewres" in  region_settings)
-        self.assertTrue("cols" in  region_settings)
-        self.assertTrue("rows" in  region_settings)
+        self.assertTrue("depths" in region_settings)
+        self.assertTrue("ewres" in region_settings)
+        self.assertTrue("cols" in region_settings)
+        self.assertTrue("rows" in region_settings)
 
     def test_location_global_db_error(self):
         # ERROR: Try to create a location as admin that exists in the global database

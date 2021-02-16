@@ -77,7 +77,7 @@ file_export = {
             "id": "4",
             "module": "r.out.ascii",
             "inputs": [{"param": "input",
-                       "value": "elevation@PERMANENT"}],
+                        "value": "elevation@PERMANENT"}],
             "outputs": [
                 {"export": {"type": "file", "format": "TXT"},
                  "param": "output",
@@ -209,6 +209,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="terminated",
                                        message_check="AsyncProcessTermination:")
+
 
 if __name__ == '__main__':
     unittest.main()

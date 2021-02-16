@@ -556,6 +556,7 @@ class PersistentRemoveLayers(PersistentProcessing):
 
         self.finish_message = "Successfully removed %s layers." % layer_type
 
+
 def rename_raster_layers(*args):
     processing = PersistentRenameLayers(*args)
     processing.run()
@@ -579,7 +580,7 @@ class PersistentRenameLayers(PersistentProcessing):
         # List format must be
         # [(a, a_new),(b, b_new),(c, c_new), ...]
         name_list = list()
-        for old_name, new_name in  self.request_data:
+        for old_name, new_name in self.request_data:
             name_list.append("%s,%s" % (old_name, new_name))
         name_string = ",".join(name_list)
 
