@@ -1,5 +1,5 @@
 FROM mundialis/docker-pdal:2.1.0 as pdal
-FROM mundialis/actinia-core:alpine-build-pkgs_v6
+FROM mundialis/actinia-core:alpine-build-pkgs_v7
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
@@ -70,6 +70,7 @@ ENV GOOGLE_CLOUD_BIGQUERY_PACKAGES="\
 ENV ACTINIA_RUNTIME_PACKAGES="\
     coreutils \
     zip \
+    rsync \
     "
 
 RUN apk update; \

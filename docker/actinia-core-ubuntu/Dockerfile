@@ -33,6 +33,7 @@ RUN apt-get update && apt-get upgrade -y && \
     python3-ply \
     redis-server \
     redis-tools \
+    rsync \
     subversion \
     unzip \
     vim \

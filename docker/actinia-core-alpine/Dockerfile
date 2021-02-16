@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0.1 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v6 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v7 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -15,7 +15,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build .
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v5 as actinia_installation
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v7 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
