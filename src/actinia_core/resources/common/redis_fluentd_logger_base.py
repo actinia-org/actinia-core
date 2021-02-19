@@ -70,15 +70,15 @@ class RedisFluentLoggerBase(object):
             self.fluent_sender.emit_with_time(tag, timestamp=cur_time, data=data)
         except Exception as e:
             log.error(("%s is unable to connect to fluentd server host %s "
-                       + "port %i Error: %s, Content %s") %
+                       "port %i Error: %s, Content %s") %
                       (tag, self.host, self.port, str(e), str(data)))
 
         # keep this until sure that all logs are fetched if stdout log is set
         # tags = ['RESOURCE_LOG', 'API_LOG', 'INFO', 'DEBUG']
-        if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag
-                and 'INFO' not in tag and 'DEBUG' not in tag):
-            print("WARNING: Some output might not be redirected to STDOUT:"
-                  + " %s %s %s" % (tag, str(cur_time), str(data)))
+        if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag and
+                'INFO' not in tag and 'DEBUG' not in tag):
+            print("WARNING: Some output might not be redirected to STDOUT:" +
+                  " %s %s %s" % (tag, str(cur_time), str(data)))
 
     def _send_to_logging_interface(self, tag, data):
 
