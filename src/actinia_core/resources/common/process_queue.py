@@ -38,7 +38,6 @@ import queue as standard_queue
 from multiprocessing import Process, Queue
 from threading import Thread, Lock
 import logging
-import logging.handlers
 import atexit
 from .resources_logger import ResourceLogger
 from .logging_interface import log
