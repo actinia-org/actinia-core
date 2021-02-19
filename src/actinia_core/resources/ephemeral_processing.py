@@ -1101,7 +1101,7 @@ class EphemeralProcessing(object):
         try:
             for entry in os.scandir(directory):
                 if entry.is_file():
-                    total +=  os.path.getsize(entry)
+                    total += os.path.getsize(entry)
                 elif entry.is_dir():
                     total += self._get_directory_size(entry.path)
         except NotADirectoryError:
@@ -1117,7 +1117,7 @@ class EphemeralProcessing(object):
         """
         self.message_logger.info(
             "Saving interim results of step %d" % self.progress_steps)
-        dest_base_path =  self.user_resource_interim_storage_path
+        dest_base_path = self.user_resource_interim_storage_path
         dest = os.path.join(
             dest_base_path, self.resource_id,
             f"step{str(self.progress_steps)}")
