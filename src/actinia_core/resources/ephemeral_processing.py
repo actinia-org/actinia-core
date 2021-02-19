@@ -1143,7 +1143,7 @@ class EphemeralProcessing(object):
             # sha512sum of the current step
             os.chdir(self.temp_mapset_path)
             p_sha512sum_curr = os.popen(sha512sum_cmd)
-            sha512sum_curr= p_sha512sum_curr.read().strip()
+            sha512sum_curr = p_sha512sum_curr.read().strip()
             os.chdir(cur_working_dir)
             del cur_working_dir
             # compare sha512sums
