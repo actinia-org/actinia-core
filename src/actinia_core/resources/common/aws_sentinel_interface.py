@@ -143,7 +143,7 @@ class AWSSentinel2AInterface(object):
 
                 try:
                     info = json_loads(product_info)
-                except:
+                except Exception:
                     raise Exception("Unable to read the productInfo.json file from URL: %s. Error: %s" % (json_url,
                                                                                                           product_info))
 
@@ -189,7 +189,7 @@ class AWSSentinel2AInterface(object):
 
             return result
 
-        except:
+        except Exception:
             raise
 
     def get_sentinel_tile_footprint(self, tile_entry):
@@ -208,7 +208,7 @@ class AWSSentinel2AInterface(object):
 
         try:
             info = json_loads(tile_info)
-        except:
+        except Exception:
             raise Exception("Unable to read the info json file from URL: %s. Error: %s" % (tile_entry["info"],
                                                                                            tile_info))
         return json_dumps(info["tileDataGeometry"])

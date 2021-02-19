@@ -38,7 +38,7 @@ try:
     from fluent import event
 
     has_fluent = True
-except:
+except Exception:
     has_fluent = False
 
 __license__ = "GPLv3"

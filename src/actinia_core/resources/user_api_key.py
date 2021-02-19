@@ -102,7 +102,7 @@ class APIKeyCreationResource(LoginBase):
             return make_response(jsonify(TokenResponseModel(status="success",
                                                             token=g.user.generate_api_key().decode(),
                                                             message="API key successfully generated")))
-        except:
+        except Exception:
             return make_response(jsonify(TokenResponseModel(status="error",
                                                             token="",
                                                             message="Error while generating API key")), 400)

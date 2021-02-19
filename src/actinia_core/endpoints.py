@@ -177,6 +177,6 @@ def create_endpoints():
     create_core_endpoints()
     try:
         check_import_plugins()
-    except:
+    except Exception:
         e_type, e_value, e_tb = sys.exc_info()
         pprint(dict(message=str(e_value), traceback=str(traceback.format_tb(e_tb)), type=str(e_type)))

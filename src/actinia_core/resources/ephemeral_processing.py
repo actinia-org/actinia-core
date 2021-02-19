@@ -202,7 +202,7 @@ class EphemeralProcessing(object):
             from fluent import sender
 
             self.has_fluent = True
-        except:
+        except Exception:
             self.has_fluent = False
 
         # rdc = ResourceDataContainer()

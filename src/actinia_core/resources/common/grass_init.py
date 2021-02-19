@@ -181,7 +181,7 @@ class GrassGisRC(ProcessLogging):
             try:
                 self.__gisrc_ile = os.path.join(gisrc_path, "gisrc")
                 self.__write()
-            except:
+            except Exception:
                 raise GrassInitError("Error writing the gisrc file")
 
     def print_gisrc(self):
@@ -189,7 +189,7 @@ class GrassGisRC(ProcessLogging):
             gisrc = open(self.__gisrc_ile, 'r')
             self.log_debug(str(gisrc.read()))
             gisrc.close()
-        except:
+        except Exception:
             raise GrassInitError("Error printing the gisrc file")
 
     def __write(self):
@@ -207,7 +207,7 @@ class GrassGisRC(ProcessLogging):
             gisrc = open(self.__gisrc_ile, 'r')
             self.log_debug(gisrc.read())
             gisrc.close()
-        except:
+        except Exception:
             raise GrassInitError("Error writing the gisrc file")
 
     def get_filename(self):
@@ -255,7 +255,7 @@ class GrassWindFile(ProcessLogging):
             wind.write("""e-w resol:  1\n""")
             wind.write("""n-s resol:  1\n""")
             wind.close()
-        except:
+        except Exception:
             raise GrassInitError("Error writing the WIND file")
 
     def getFileName(self):
@@ -301,7 +301,7 @@ class GrassModuleRunner(ProcessLogging):
             stderr_buff = stderr_buff.decode()
             self.log_debug("Return code: " + str(proc.returncode))
             self.log_debug(stderr_buff)
-        except:
+        except Exception:
             raise GrassInitError("Unable to execute process: " + str(inputlist))
 
         return proc.returncode, stdout_buff, stderr_buff

@@ -1,4 +1,3 @@
-
 # -*- coding: utf-8 -*-
 #######
 # actinia-core - an open source REST API for scalable, distributed, high
@@ -53,7 +52,7 @@ try:
     from fluent import handler
 
     has_fluent = True
-except:
+except Exception:
     print("Fluent is not available")
     has_fluent = False
 
@@ -304,7 +303,7 @@ def start_process_queue_manager(config, queue, use_logger):
         fluent_sender = sender.FluentSender('actinia_process_logger',
                                             host=config.LOG_FLUENT_HOST,
                                             port=config.LOG_FLUENT_PORT)
-    except:
+    except Exception:
         pass
     # We need the resource logger to send updates to the resource database
     kwargs = dict()
@@ -382,7 +381,7 @@ def start_process_queue_manager(config, queue, use_logger):
 
             time.sleep(0.05)
             count += 1
-    except:
+    except Exception:
         raise
     finally:
         queue.close()
