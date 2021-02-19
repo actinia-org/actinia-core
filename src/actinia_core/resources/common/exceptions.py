@@ -40,12 +40,14 @@ class AsyncProcessError(Exception):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
+
 class RsyncError(Exception):
     """Raise this exception in case the rsync of the interim result fails
     """
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
+
 
 class AsyncProcessTermination(Exception):
     """Raise this exception in case the termination requests was executed successfully
