@@ -147,12 +147,12 @@ class ApiLogger(RedisFluentLoggerBase):
 
         """
 
-        l = self.db.list(user_id, start, end)
+        l_entries = self.db.list(user_id, start, end)
 
         # We need to deserialize the log entries
         result_list = []
 
-        for pentry in l:
+        for pentry in l_entries:
             entry = pickle.loads(pentry)
             result_list.append(entry)
 

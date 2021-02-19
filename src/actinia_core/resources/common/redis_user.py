@@ -261,9 +261,9 @@ class RedisUserInterface(RedisBaseInterface):
             A list of all user ids in the database
         """
         values = []
-        l = self.redis_server.hkeys(self.user_id_db)
-        print(l)
-        for entry in l:
+        l_entries = self.redis_server.hkeys(self.user_id_db)
+        print(l_entries)
+        for entry in l_entries:
             if entry:
                 entry = entry.decode()
             values.append(entry)
