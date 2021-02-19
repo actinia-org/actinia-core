@@ -1283,7 +1283,7 @@ class EphemeralProcessing(object):
             self._save_interim_results()
         elif self.temp_mapset_path is None:
             self.message_logger.debug(
-                "No temp mapset path set. Because of that no interim results" \
+                "No temp mapset path set. Because of that no interim results"
                 " can be saved!")
 
         return proc.returncode, stdout_string, stderr_string
