@@ -44,8 +44,8 @@ from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
 from .common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    # MapsetInfoModel, \
     RegionModel, ProcessingErrorResponseModel
+# from .common.response_models import MapsetInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
