@@ -28,7 +28,7 @@ User authentication and credential check
 import os
 from functools import wraps
 
-from flask import g, abort, jsonify, make_response
+from flask import g, abort
 from .common.config import global_config
 from .common.app import auth
 from .common.user import ActiniaUser

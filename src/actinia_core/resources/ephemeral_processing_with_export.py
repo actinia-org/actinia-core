@@ -30,7 +30,7 @@ import os
 from flask import jsonify, make_response
 
 from copy import deepcopy
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job

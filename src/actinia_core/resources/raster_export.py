@@ -29,7 +29,7 @@ or the raster layer region are used for export.
 """
 from flask import jsonify, make_response
 import pickle
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from .resource_base import ResourceBase
 from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from .common.redis_interface import enqueue_job

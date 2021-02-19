@@ -25,10 +25,9 @@
 Raster map renderer
 
 """
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 import tempfile
 import os
-from copy import deepcopy
 from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job

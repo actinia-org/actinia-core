@@ -25,7 +25,6 @@
 Storage base class
 """
 import os
-import shutil
 import boto3
 from .storage_interface_base import ResourceStorageBase
 

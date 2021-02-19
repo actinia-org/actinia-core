@@ -29,17 +29,16 @@ import pickle
 from functools import wraps
 from flask import g, abort, request
 import platform
-import sys
 from .redis_api_log import redis_api_log_interface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
-try:
-    from fluent import sender
-    from fluent import event
-
-    has_fluent = True
-except Exception:
-    has_fluent = False
+# try:
+#     from fluent import sender
+#     from fluent import event
+#
+#     has_fluent = True
+# except Exception:
+#     has_fluent = False
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"

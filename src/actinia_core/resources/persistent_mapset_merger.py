@@ -25,7 +25,6 @@
 Asynchronous merging of several mapsets into a single one
 """
 import pickle
-import os
 from flask import jsonify, make_response
 
 from .persistent_processing import PersistentProcessing

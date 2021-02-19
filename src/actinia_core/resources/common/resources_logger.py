@@ -24,7 +24,6 @@
 """
 Resource logger and management interface
 """
-import sys
 import pickle
 from .redis_resources import RedisResourceInterface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
