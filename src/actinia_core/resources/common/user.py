@@ -315,7 +315,7 @@ class ActiniaUser(object):
 
         try:
             self.cell_limit = int(cell_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for cell limit")
 
     def set_process_num_limit(self, process_num_limit):
@@ -331,7 +331,7 @@ class ActiniaUser(object):
 
         try:
             self.process_num_limit = int(process_num_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for process_num_limit")
 
     def set_process_time_limit(self, process_time_limit):
@@ -347,7 +347,7 @@ class ActiniaUser(object):
 
         try:
             self.process_time_limit = int(process_time_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for process_time_limit")
 
     def __str__(self):

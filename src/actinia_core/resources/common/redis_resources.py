@@ -326,7 +326,7 @@ if __name__ == '__main__':
         r.connect(host="localhost", port=7000)
         test_resource_entries(r)
         r.disconnect()
-    except Exception as e:
+    except Exception:
         raise
     finally:
         os.kill(pid, signal.SIGTERM)

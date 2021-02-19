@@ -516,7 +516,7 @@ class GrassInitializer(ProcessLogging):
                 if "WIND_OVERRIDE" in os.environ:
                     os.environ.pop("WIND_OVERRIDE")
                     self.run_module("g.remove", ["name=%s" % self.tmp_region_name, "type=region", "-f"])
-            except Exception as e:
+            except Exception:
                 logger = MessageLogger()
                 logger.error("Unable to delete temporary region <%s>" % self.tmp_region_name)
 

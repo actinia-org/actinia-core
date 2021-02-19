@@ -97,7 +97,7 @@ class RedisFluentLoggerBase(object):
         else:
             try:
                 log.log(getattr(logging, tag), data)
-            except AttributeError as e:
+            except AttributeError:
                 log.debug('Unknown log tag for logging: %s', tag)
                 log.info(data)
 
