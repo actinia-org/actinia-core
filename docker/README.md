@@ -66,22 +66,29 @@ sh /src/start.sh
 Now you have a running actinia instance locally.
 For debugging or if you need to start the wsgi server regularly during development, you don't need to repeat all steps from inside the start.sh file. Instead, run the server with only one worker:
 ```
-python3 setup.py install && gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
+python3 setup.py install
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 ```
 
-To also integrate dev setup for actinia-gdi in plugin mode, uninstall
- actinia-gdi in actinia-core-dev/Dockerfile (see outcommented code), build and
- run like described above and build actinia-gdi from your mounted source code:
+## Local dev-setup for actinia-core plugins
+To also integrate dev setup for actinia-core plugins
+(eg. actinia-actinia-metadata-plugin or actinia-module-plugin), uninstall them
+in actinia-core-dev/Dockerfile (see outcommented code), build and run like
+described above and rebuild from your mounted source code:
 ```
 docker-compose -f docker-compose-dev.yml build
 docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 
-cd /src/actinia_core
-python3 setup.py install
+(cd /src/actinia_core && python3 setup.py install)
+(cd /src/actinia-metadata-plugin && python3 setup.py install)
+(cd /src/actinia-module-plugin && python3 setup.py install)
 
-cd /src/actinia-gdi
-python3 setup.py install
+# you can also run tests here, eg.
+(cd /src/actinia-module-plugin && python3 setup.py test)
+
+gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 ```
+
 To avoid cache problems, remove the packaged actinia_core (already done in Dockerfile)
 ```
 pip3 uninstall actinia_core -y
