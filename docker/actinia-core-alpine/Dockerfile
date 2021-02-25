@@ -61,8 +61,12 @@ RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/release
 RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-gdi plugin (27722474 = 0.1.11)
-RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/27722474 > resp.json && \
+# Get actinia-metadata-plugin (38726425 = 1.0.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
+    name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
+    cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+# Get actinia-module-plugin (38724355 = 1.0.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/38724355 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
