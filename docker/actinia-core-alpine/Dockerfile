@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:latest-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0.1 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v6 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v7 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -15,7 +15,7 @@ RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN python3 -m pep517.build --out-dir /build .
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v5 as actinia_installation
+FROM mundialis/actinia-core:alpine-runtime-pkgs_v7 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -61,8 +61,12 @@ RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/release
 RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-gdi plugin (27722474 = 0.1.11)
-RUN curl https://api.github.com/repos/mundialis/actinia-gdi/releases/27722474 > resp.json && \
+# Get actinia-metadata-plugin (38726425 = 1.0.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
+    name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
+    cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+# Get actinia-module-plugin (38733194 = 1.0.1)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/38733194 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins

@@ -128,6 +128,7 @@ class Configuration(object):
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
         self.DOWNLOAD_CACHE = "/tmp/download_cache"  # The directory to cache downloaded data
         self.DOWNLOAD_CACHE_QUOTA = 100  # The quota of the download cache in Gigibit
+        self.SAVE_INTERIM_RESULTS = False # If True the interim results (temporary mapset) are saved
 
         # Logging
         self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
@@ -220,6 +221,7 @@ class Configuration(object):
         config.set('MISC', 'DOWNLOAD_CACHE_QUOTA', str(self.DOWNLOAD_CACHE_QUOTA))
         config.set('MISC', 'TMP_WORKDIR', self.TMP_WORKDIR)
         config.set('MISC', 'SECRET_KEY', self.SECRET_KEY)
+        config.set('MISC', 'SAVE_INTERIM_RESULTS', str(self.SAVE_INTERIM_RESULTS))
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
@@ -341,6 +343,8 @@ class Configuration(object):
                     self.SECRET_KEY = config.get("MISC", "SECRET_KEY")
                 if config.has_option("MISC", "LOG_LEVEL"):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
+                if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
+                    self.SAVE_INTERIM_RESULTS = config.getboolean("MISC", "SAVE_INTERIM_RESULTS")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

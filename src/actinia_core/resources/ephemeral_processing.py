@@ -24,17 +24,20 @@
 """
 Base class for asynchronous processing
 """
-import sys
-import traceback
-import pickle
+
 import math
 import os
+import pickle
+import requests
+import shlex
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
+import traceback
 import uuid
-import requests
+
 from flask import jsonify, make_response, json
 from requests.auth import HTTPBasicAuth
 
@@ -45,22 +48,26 @@ from .common.redis_interface import enqueue_job
 from .common.redis_lock import RedisLockingInterface
 from .common.resources_logger import ResourceLogger
 from .common.process_chain import ProcessChainConverter
-from .common.exceptions import AsyncProcessError, AsyncProcessTermination
+from .common.exceptions \
+    import AsyncProcessError, AsyncProcessTermination, RsyncError
 from .common.exceptions import AsyncProcessTimeLimit
-from .common.response_models import ProcessingResponseModel, ExceptionTracebackModel
-from .common.response_models import create_response_from_model, ProcessLogModel, ProgressInfoModel
+from .common.response_models \
+    import ProcessingResponseModel, ExceptionTracebackModel
+from .common.response_models \
+    import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from .user_auth import check_location_mapset_module_access
 from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class AsyncEphemeralResource(ResourceBase):
-    """This class represents a processing resource that works on a temporary mapset.
+    """This class represents a processing resource that works on a temporary
+    mapset.
     """
 
     def __init__(self):
@@ -213,6 +220,9 @@ class EphemeralProcessing(object):
         self.resource_id = self.rdc.resource_id
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
+        self.user_resource_interim_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id, "interim")
+        self.save_interim_results = self.config.SAVE_INTERIM_RESULTS
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
         self.grass_user_data_base = self.rdc.grass_user_data_base  # User database base path, this path will be
@@ -1074,6 +1084,105 @@ class EphemeralProcessing(object):
 
         return self._run_executable(process, poll_time)
 
+    def _get_directory_size(self, directory):
+        """Returns the directory size in bytes.
+        Args:
+            directory (string): The path to a directory
+
+        Raises:
+            NotADirectoryError:
+            PermissionError:
+
+        Returns:
+            total: the size of the directory in bytes
+
+        """
+        total = 0
+        try:
+            for entry in os.scandir(directory):
+                if entry.is_file():
+                    total +=  os.path.getsize(entry)
+                elif entry.is_dir():
+                    total += self._get_directory_size(entry.path)
+        except NotADirectoryError:
+            return os.path.getsize(directory)
+        except PermissionError:
+            return 0
+        return total
+
+    def _save_interim_results(self):
+        """Saves the temporary mapset to the
+        `user_resource_interim_storage_path` by copying the directory or
+        rsyncing it
+        """
+        self.message_logger.info(
+            "Saving interim results of step %d" % self.progress_steps)
+        dest_base_path =  self.user_resource_interim_storage_path
+        dest = os.path.join(
+            dest_base_path, self.resource_id,
+            f"step{str(self.progress_steps)}")
+
+        if self.progress_steps == 1:
+            # copy temp mapset for first step
+            shutil.copytree(self.temp_mapset_path, dest)
+            self.message_logger.info(
+                "Maspset %s is copied" % self.temp_mapset_path)
+        else:
+            old_dest = os.path.join(
+                dest_base_path, self.resource_id,
+                f"step{str(self.progress_steps - 1)}")
+
+            # check if mapset has changed
+            cur_working_dir = os.getcwd()
+            sha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
+                            "sort -k 2 | sha512sum"
+            # sha512sum of the previous step
+            os.chdir(old_dest)
+            p_sha512sum_prev = os.popen(sha512sum_cmd)
+            sha512sum_prev = p_sha512sum_prev.read().strip()
+            # sha512sum of the current step
+            os.chdir(self.temp_mapset_path)
+            p_sha512sum_curr = os.popen(sha512sum_cmd)
+            sha512sum_curr= p_sha512sum_curr.read().strip()
+            os.chdir(cur_working_dir)
+            del cur_working_dir
+            # compare sha512sums
+            if sha512sum_prev == sha512sum_curr:
+                self.message_logger.info(
+                    "Sha512sums of maspsets are equal; renaming interim result")
+                os.rename(old_dest, dest)
+                return
+
+            # get folder sizes in bytes
+            size_prev_step = self._get_directory_size(old_dest)
+            size_curr_step = self._get_directory_size(self.temp_mapset_path)
+
+            # rsync or copy folder
+            if size_curr_step > size_prev_step * 0.9:
+                self.message_logger.info("Copy old interim result")
+                shutil.copytree(old_dest, dest)
+            self.message_logger.info(
+                "Rsync mapset %s to interim result" % self.temp_mapset_path)
+            rsync_cmd = [
+                "rsync",
+                "--recursive",
+                "--compress",
+                "--partial",
+                "--progress",
+                "--times",
+                "--delete",
+                self.temp_mapset_path + os.sep,
+                dest]
+            p_rsync = subprocess.Popen(
+                rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            rsync_out, rsync_err = p_rsync.communicate()
+            # remove old folder
+            if rsync_err.decode('utf-8') == '':
+                shutil.rmtree(old_dest)
+            else:
+                raise RsyncError(
+                    "Error while rsyncing of step %d" % self.progress_steps)
+
     def _run_executable(self, process, poll_time=0.005):
         """Runs a GRASS module or a common Unix executable and sets up
         the correct handling of stdout, stderr and stdin, creates the
@@ -1165,7 +1274,17 @@ class EphemeralProcessing(object):
             self.module_output_dict[process.id] = plm
 
         if proc.returncode != 0:
-            raise AsyncProcessError("Error while running executable <%s>" % process.executable)
+            raise AsyncProcessError(
+                "Error while running executable <%s>" % process.executable)
+
+        # save interim results
+        if (self.save_interim_results is True
+                and self.temp_mapset_path is not None):
+            self._save_interim_results()
+        elif self.temp_mapset_path is None:
+            self.message_logger.debug(
+                "No temp mapset path set. Because of that no interim results" \
+                " can be saved!")
 
         return proc.returncode, stdout_string, stderr_string
 

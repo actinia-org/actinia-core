@@ -55,3 +55,4 @@ docker/actinia-core-data/resources
 docker/actinia-core-data/userdata
 docker/actinia-core-data/workspace
 docker/actinia-core/snap/esa-snap_all_unix_6_0.sh
+!actinia.cfg
