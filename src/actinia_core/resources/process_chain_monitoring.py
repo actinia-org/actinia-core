@@ -87,7 +87,7 @@ class MapsetSizeResponseModel(Schema):
 
 class MapsetSizeResource(ResourceManager):
     """
-    This class return the mapset sizes of a resource
+    This class returns the mapset sizes of a resource
     """
     def __init__(self):
 
@@ -157,7 +157,7 @@ class MapsetSizeResource(ResourceManager):
 
 class MapsetSizeDiffResource(ResourceManager):
     """
-    This class return the mapset size differences of a resource
+    This class returns the mapset size differences of a resource
     """
     def __init__(self):
 
@@ -246,7 +246,7 @@ class MaxMapsetSizeResponseModel(Schema):
 
 class MaxMapsetSizeResource(ResourceManager):
     """
-    This class return the maximum mapset size of a resource
+    This class returns the maximum mapset size of a resource
     """
     def __init__(self):
 
