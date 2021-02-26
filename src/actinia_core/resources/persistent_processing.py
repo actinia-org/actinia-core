@@ -591,6 +591,8 @@ class PersistentProcessing(EphemeralProcessing):
         # Copy local mapset to original location, merge mapsets
         # if necessary
         self._copy_merge_tmp_mapset_to_target_mapset()
+        # Parse the module sdtout outputs and create the results
+        self._parse_module_outputs()
 
     def _final_cleanup(self):
         """Final cleanup called in the run function at the very end of processing
