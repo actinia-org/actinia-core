@@ -58,6 +58,14 @@ def create_scatter_plot(x, y, xlabel, ylabel, title):
     return result_file
 
 
+def compute_mapset_size_diffs(mapset_sizes):
+    diffs = [None] * len(mapset_sizes)
+    diffs[0] = mapset_sizes[0] # TODO not correct cause an empty mapset has also a size!
+    for i in range(1, len(mapset_sizes)):
+        diffs[i] = mapset_sizes[i] - mapset_sizes[i-1]
+    return diffs
+
+
 class MapsetSizeResponseModel(Schema):
     """Response schema for mapset sizes of a resource
     """
@@ -79,7 +87,7 @@ class MapsetSizeResponseModel(Schema):
 
 class MapsetSizeResource(ResourceManager):
     """
-    This class return the maximum mapset size of a resource
+    This class return the mapset sizes of a resource
     """
     def __init__(self):
 
@@ -88,7 +96,7 @@ class MapsetSizeResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the maximum mapset size of a resource. Minimum required user role: user.',
+        'description': 'Get the mapset sizes of a resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -117,7 +125,7 @@ class MapsetSizeResource(ResourceManager):
         }
     })
     def get(self, user_id, resource_id):
-        """Get the maximum size of mapset of a resource."""
+        """Get the sizes of mapset of a resource."""
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
@@ -141,6 +149,77 @@ class MapsetSizeResource(ResourceManager):
             return make_response(
                 jsonify(MapsetSizeResponseModel(
                 status="success", mapset_sizes=mapset_sizes)), http_code)
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Resource does not exist")), 400)
+
+
+class MapsetSizeDiffResource(ResourceManager):
+    """
+    This class return the mapset size differences of a resource
+    """
+    def __init__(self):
+
+        # Configuration
+        ResourceManager.__init__(self)
+
+    @swagger.doc({
+        'tags': ['Process Chain Monitoring'],
+        'description': 'Get the mapset size differences of a resource. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'The current state of the resource',
+                'schema': MapsetSizeResponseModel
+            },
+            '400': {
+                'description': 'The error message if the resource does not exists',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
+    def get(self, user_id, resource_id):
+        """Get the size differences of mapset of a resource."""
+
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        response_data = self.resource_logger.get(user_id, resource_id)
+
+        if response_data is not None:
+            http_code, pc_response_model = pickle.loads(response_data)
+
+            pc_status = pc_response_model['status']
+            if pc_status in ['accepted', 'running']:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="Resource is not ready it is %s" % pc_status)),
+                    400)
+
+            mapset_sizes = [proc['mapset_size']
+                for proc in pc_response_model['process_log']]
+            diffs = compute_mapset_size_diffs(mapset_sizes)
+
+            return make_response(
+                jsonify(MapsetSizeResponseModel(
+                status="success", mapset_sizes=diffs)), http_code)
         else:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
@@ -247,7 +326,7 @@ class MapsetSizeRenderResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the maximum mapset size of a resource. Minimum required user role: user.',
+        'description': 'Render the mapset sizes of a resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -298,6 +377,94 @@ class MapsetSizeRenderResource(ResourceManager):
 
 
             y = np.array(mapset_sizes)
+            x = np.array(list(range(1, len(mapset_sizes) + 1)))
+            unit = "bytes"
+            for new_unit in ['KB', 'MB', 'GB', 'TB']:
+                if max(y) > 1024.:
+                    y = y/1024.
+                    unit = new_unit
+                    print(new_unit)
+                else:
+                    break
+
+            # create png
+            result_file = create_scatter_plot(
+                x, y, 'process chain steps', 'mapset size [%s]' % unit,
+                'Mapset sizes of the resource\n%s' % resource_id)
+
+            if result_file:
+                if os.path.isfile(result_file):
+                    image = open(result_file, "rb").read()
+                    os.remove(result_file)
+                    return Response(image, mimetype='image/png')
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Resource does not exist")), 400)
+
+
+class MapsetSizeDiffRenderResource(ResourceManager):
+    """
+    This class renders the mapset size differences of a resource
+    """
+    def __init__(self):
+
+        # Configuration
+        ResourceManager.__init__(self)
+
+    @swagger.doc({
+        'tags': ['Process Chain Monitoring'],
+        'description': 'Render the mapset size differences of a resource. Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'produces':["image/png"],
+        'responses': {
+            '200': {
+                'description': 'The PNG image'},
+            '400': {
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
+    def get(self, user_id, resource_id):
+        """Render the mapset sizes of a resource."""
+
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        response_data = self.resource_logger.get(user_id, resource_id)
+
+        if response_data is not None:
+            http_code, pc_response_model = pickle.loads(response_data)
+
+            pc_status = pc_response_model['status']
+            if pc_status in ['accepted', 'running']:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="Resource is not ready it is %s" % pc_status)),
+                    400)
+
+            mapset_sizes = [proc['mapset_size']
+                for proc in pc_response_model['process_log']]
+            diffs = compute_mapset_size_diffs(mapset_sizes)
+
+            y = np.array(diffs)
             x = np.array(list(range(1, len(mapset_sizes) + 1)))
             unit = "bytes"
             for new_unit in ['KB', 'MB', 'GB', 'TB']:
