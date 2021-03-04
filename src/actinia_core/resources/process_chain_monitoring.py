@@ -157,7 +157,7 @@ class MapsetSizeResource(ResourceManager):
 
 class MapsetSizeDiffResource(ResourceManager):
     """
-    This class returns the mapset size differences of a resource
+    This class returns the step-by-step mapset size differences of a resource
     """
     def __init__(self):
 
@@ -166,7 +166,7 @@ class MapsetSizeDiffResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the mapset size differences of a resource. Minimum required user role: user.',
+        'description': 'Get the step-by-step mapset size differences of a resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -195,7 +195,7 @@ class MapsetSizeDiffResource(ResourceManager):
         }
     })
     def get(self, user_id, resource_id):
-        """Get the size differences of mapset of a resource."""
+        """Get the step-by-step mapset size differences of a resource."""
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
@@ -405,7 +405,7 @@ class MapsetSizeRenderResource(ResourceManager):
 
 class MapsetSizeDiffRenderResource(ResourceManager):
     """
-    This class renders the mapset size differences of a resource
+    This class renders the step-by-step mapset size differences of a resource
     """
     def __init__(self):
 
@@ -414,7 +414,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Render the mapset size differences of a resource. Minimum required user role: user.',
+        'description': 'Render the step-by-step mapset size differences of a resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -442,7 +442,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         }
     })
     def get(self, user_id, resource_id):
-        """Render the mapset size differences of a resource."""
+        """Render the step-by-step mapset size differences of a resource."""
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
