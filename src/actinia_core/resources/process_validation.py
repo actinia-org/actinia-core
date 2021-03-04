@@ -78,8 +78,8 @@ SCHEMA_DOC = {
             'schema': ProcessingResponseModel
         },
         '400': {
-            'description': 'The error message and a detailed log why process chain validation '
-                          'did not succeeded',
+            'description': 'The error message and a detailed log why process '
+                           'chain validation did not succeeded',
             'schema': ProcessingErrorResponseModel
         }
     }
