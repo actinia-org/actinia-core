@@ -478,7 +478,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
             # create png
             result_file = create_scatter_plot(
                 x, y, 'process chain steps', 'mapset size [%s]' % unit,
-                'Mapset sizes of the resource\n%s' % resource_id)
+                'Step-by-step mapset size differences of the resource\n%s' % resource_id)
 
             if result_file:
                 if os.path.isfile(result_file):
