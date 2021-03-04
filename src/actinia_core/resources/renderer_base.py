@@ -213,6 +213,6 @@ class EphemeralRendererBase(EphemeralProcessing):
                 for key in options:
                     if key in ["n", "s", "e", "w"]:
                         value = options[key]
-                        pc["inputs"].append({"param":key, "value":str(value)})
+                        pc["inputs"].append({"param": key, "value": str(value)})
 
         return pc

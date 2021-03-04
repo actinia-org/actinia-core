@@ -1171,7 +1171,7 @@ class UserListResponseModel(Schema):
         }
     }
     required = ["status", "user_list"]
-    example = {"status": "success","user_list": ["actinia-gdi"]}
+    example = {"status": "success", "user_list": ["actinia-gdi"]}
 
 
 class UserInfoResponseModel(Schema):

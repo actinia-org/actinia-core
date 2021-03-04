@@ -37,25 +37,25 @@ __email__ = "soerengebbert@googlemail.com"
 SUPPORTED_MIMETYPES = ["application/zip", "application/tiff", "application/gml"]
 
 SCENE_SUFFIXES = {
-    "LT04":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-    "LT05":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-    "LE07":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
+    "LT04": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
+    "LT05": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
+    "LE07": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
             "_B7.TIF", "_B8.TIF", "_MTL.txt"],
-    "LC08":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
+    "LC08": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
             "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF", "_MTL.txt"]}
 
 RASTER_SUFFIXES = {
-    "LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-    "LT05":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
-    "LE07":[".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
-    "LC08":[".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
+    "LT04": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
+    "LT05": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
+    "LE07": [".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
+    "LC08": [".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
 
 
-SCENE_BANDS = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
-               "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
-               "LE07":["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
+SCENE_BANDS = {"LT04": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+               "LT05": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+               "LE07": ["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
                        "B6_VCID_1", "B7", "B8", "MTL"],
-               "LC08":["B1", "B2", "B3", "B4", "B5", "B6", "B7",
+               "LC08": ["B1", "B2", "B3", "B4", "B5", "B6", "B7",
                        "B8", "B9", "B10", "B11", "MTL"]}
 
 
@@ -73,7 +73,7 @@ def extract_sensor_id_from_scene_id(scene_id):
     return "%s0%s" % (scene_id[0:2], scene_id[2:3])
 
 
-def scene_id_to_google_url(scene_id,suffix):
+def scene_id_to_google_url(scene_id, suffix):
     """Convert a landsat scene id into the public google download URL for the required file
 
     Args:
@@ -183,7 +183,7 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
             # This is the download path
             temp_file_path = os.path.join(self.temp_file_path, file_name)
             # Create the download URL
-            url = scene_id_to_google_url(self.scene_id,suffix)
+            url = scene_id_to_google_url(self.scene_id, suffix)
 
             self.url_list.append(url)
             self.copy_file_list.append((temp_file_path, file_path))

@@ -72,7 +72,7 @@ in the process chain for export.
 SCHEMA_DOC = {
     'tags': ['Processing'],
     'description': DESCR,
-    'consumes':['application/json'],
+    'consumes': ['application/json'],
     'parameters': [
         {
             'name': 'location_name',
@@ -93,12 +93,12 @@ SCHEMA_DOC = {
     'responses': {
         '200': {
             'description': 'The result of the process chain execution',
-            'schema':ProcessingResponseModel
+            'schema': ProcessingResponseModel
         },
         '400': {
-            'description':'The error message and a detailed log why process chain execution '
+            'description': 'The error message and a detailed log why process chain execution '
                           'did not succeeded',
-            'schema':ProcessingErrorResponseModel
+            'schema': ProcessingErrorResponseModel
         }
     }
 }

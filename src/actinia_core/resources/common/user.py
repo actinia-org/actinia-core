@@ -64,11 +64,11 @@ class ActiniaUser(object):
     db = redis_user_interface
 
     def __init__(self, user_id, user_group=None, user_role=None,
-                 accessible_datasets={"nc_spm_08":["PERMANENT",
+                 accessible_datasets={"nc_spm_08": ["PERMANENT",
                                                       "user1",
                                                       "landsat"],
-                                      "ECAD":["PERMANENT"],
-                                      "latlong_wgs84":["PERMANENT"]},
+                                      "ECAD": ["PERMANENT"],
+                                      "latlong_wgs84": ["PERMANENT"]},
                  accessible_modules=global_config.MODULE_WHITE_LIST,
                  cell_limit = global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,
@@ -121,11 +121,11 @@ class ActiniaUser(object):
         """Create the permission dictionary
         """
 
-        self.permissions = {"accessible_datasets":self.accessible_datasets,
-                            "accessible_modules":self.accessible_modules,
-                            "cell_limit":self.cell_limit,
-                            "process_num_limit":self.process_num_limit,
-                            "process_time_limit":self.process_time_limit}
+        self.permissions = {"accessible_datasets": self.accessible_datasets,
+                            "accessible_modules": self.accessible_modules,
+                            "cell_limit": self.cell_limit,
+                            "process_num_limit": self.process_num_limit,
+                            "process_time_limit": self.process_time_limit}
 
     def read_from_db(self):
 
@@ -499,7 +499,7 @@ class ActiniaUser(object):
             API key
         """
         s = JSONWebSignatureSerializer(global_config.SECRET_KEY)
-        return s.dumps({"user_id":self.user_id})
+        return s.dumps({"user_id": self.user_id})
 
     def generate_auth_token(self, expiration=86400):
         """Generate an authentication token with a specific expiration time
@@ -649,11 +649,11 @@ class ActiniaUser(object):
                     user_group,
                     password,
                     user_role="user",
-                    accessible_datasets={"nc_spm_08":["PERMANENT",
+                    accessible_datasets={"nc_spm_08": ["PERMANENT",
                                                       "user1",
                                                       "landsat"],
-                                         "ECAD":["PERMANENT"],
-                                         "latlong_wgs84":["PERMANENT"]},
+                                         "ECAD": ["PERMANENT"],
+                                         "latlong_wgs84": ["PERMANENT"]},
                     accessible_modules=global_config.MODULE_WHITE_LIST,
                     cell_limit = global_config.MAX_CELL_LIMIT,
                     process_num_limit=global_config.PROCESS_NUM_LIMIT,

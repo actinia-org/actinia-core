@@ -86,9 +86,9 @@ class GrassEnvironment(ProcessLogging):
     def __init__(self):
 
         ProcessLogging.__init__(self)
-        self.env = {"GISBASE":"", "GISRC":"", "LD_LIBRARY_PATH":"",
-                    "GRASS_ADDON_PATH":"", "GRASS_VERSION":"", "PYTHONPATH":"",
-                    "GRASS_MESSAGE_FORMAT":"plain", "GRASS_SKIP_MAPSET_OWNER_CHECK":"1",
+        self.env = {"GISBASE": "", "GISRC": "", "LD_LIBRARY_PATH": "",
+                    "GRASS_ADDON_PATH": "", "GRASS_VERSION": "", "PYTHONPATH": "",
+                    "GRASS_MESSAGE_FORMAT": "plain", "GRASS_SKIP_MAPSET_OWNER_CHECK": "1",
                     "GRASS_TGIS_RAISE_ON_ERROR": "1"}
 
     def set_grass_environment(self, gisrc_path, grass_gis_base, grass_addon_path):
@@ -141,7 +141,7 @@ class GrassEnvironment(ProcessLogging):
                 origValue = os.getenv(key)
                 if origValue:
                     value += ":" + origValue
-                os.putenv(key,value)
+                os.putenv(key, value)
                 os.environ[key] = value
                 self.log_debug(key + "=" + value)
             except Exception as e:
@@ -243,7 +243,7 @@ class GrassWindFile(ProcessLogging):
         self.__write()
 
         try:
-            wind = open(self.__windFile,'w')
+            wind = open(self.__windFile, 'w')
             wind.write("""proj:       0\n""")
             wind.write("""zone:       0\n""")
             wind.write("""north:      100\n""")

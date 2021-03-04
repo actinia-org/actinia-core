@@ -125,13 +125,13 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
                 'default': 600
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -201,10 +201,10 @@ class EphemeralVectorRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region", "inputs":{"vector":vector_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "g.region", "inputs": {"vector": vector_name + "@" + self.mapset_name}}
         pc["2"] = region_pc
-        pc["3"] = {"module":"d.vect", "inputs":{"map":vector_name + "@" + self.mapset_name},
-                   "flags":"c"}
+        pc["3"] = {"module": "d.vect", "inputs": {"map": vector_name + "@" + self.mapset_name},
+                   "flags": "c"}
 
         # Run the selected modules
         self.skip_region_check = True

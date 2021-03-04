@@ -136,13 +136,13 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
                 'type': 'string'
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -231,12 +231,12 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         t_rast_list = {"id": "1",
                        "module": "t.rast.list",
-                       "inputs": [{"param":"input", "value":"%s@%s" % (strds_name, self.mapset_name)},
-                                  {"param":"method", "value":"comma"},
-                                  {"param":"where", "value":where}]}
+                       "inputs": [{"param": "input", "value": "%s@%s" % (strds_name, self.mapset_name)},
+                                  {"param": "method", "value": "comma"},
+                                  {"param": "where", "value": where}]}
 
         pc = {
-            "version":1,
+            "version": 1,
             "list": []
         }
         pc["list"].append(t_rast_list)
@@ -250,14 +250,14 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         g_region = {"id": "2",
                     "module": "g.region",
-                    "inputs": [{"param":"raster", "value":map_list}],
-                    "flags":"p"}
+                    "inputs": [{"param": "raster", "value": map_list}],
+                    "flags": "p"}
 
         g_region_query["id"] = "3"
         g_region_query["flags"] = "g"
 
         pc = {
-            "version":1,
+            "version": 1,
             "list": []
         }
         pc["list"].append(g_region)
@@ -291,16 +291,16 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         g_region_adjust = {"id": "4",
                            "module": "g.region",
-                           "inputs": [{"param":"ewres", "value":"%f" % ewres},
-                                      {"param":"nsres", "value":"%f" % nsres}],
-                           "flags":"g"}
+                           "inputs": [{"param": "ewres", "value": "%f" % ewres},
+                                      {"param": "nsres", "value": "%f" % nsres}],
+                           "flags": "g"}
 
         d_rast = {"id": "6",
                   "module": "d.rast.multi",
-                  "inputs": [{"param":"map", "value":map_list}]}
+                  "inputs": [{"param": "map", "value": map_list}]}
 
         pc = {
-            "version":1,
+            "version": 1,
             "list": []
         }
         pc["list"].append(g_region_adjust)

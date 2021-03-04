@@ -93,5 +93,5 @@ class RequestStreamerResource(Resource):
             return send_from_directory(resource_export_path,
                                        file_name, as_attachment=True)
         else:
-            return make_response(jsonify({"status":"error",
-                                          "message":"Resource does not exist"}), 400)
+            return make_response(jsonify({"status": "error",
+                                          "message": "Resource does not exist"}), 400)

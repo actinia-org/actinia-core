@@ -87,11 +87,11 @@ class APIKeyCreationResource(LoginBase):
         'responses': {
             '200': {
                 'description': 'The API key generation response',
-                'schema':TokenResponseModel
+                'schema': TokenResponseModel
             },
             '400': {
                 'description': 'The error message in case of failure',
-                'schema':TokenResponseModel
+                'schema': TokenResponseModel
             }
         }
     })
@@ -133,11 +133,11 @@ class TokenCreationResource(LoginBase):
         'responses': {
             '200': {
                 'description': 'The token generation response',
-                'schema':TokenResponseModel
+                'schema': TokenResponseModel
             },
             '400': {
                 'description': 'The error message in case of failure',
-                'schema':TokenResponseModel
+                'schema': TokenResponseModel
             }
         }
     })

@@ -133,11 +133,11 @@ class APILogResource(Resource):
         'responses': {
             '200': {
                 'description': 'Returned a list of all API calls that have been called by the provided user.',
-                'schema':ApiLogListModel
+                'schema': ApiLogListModel
             },
             '400': {
                 'description': 'The error message why API log gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
     })

@@ -69,10 +69,10 @@ class RasterColorModel(Schema):
         }
     }
     example = {
-        "rules":["1 0:0:0",
+        "rules": ["1 0:0:0",
                  "default 255:255:255"],
-        "color":"ndvi",
-        "raster":"elevation@PERMANENT"
+        "color": "ndvi",
+        "raster": "elevation@PERMANENT"
     }
 
 
@@ -248,7 +248,7 @@ class EphemeralRasterColorsOutput(EphemeralProcessing):
 
         result_file = tempfile.mktemp(suffix=".color", dir=self.temp_file_path)
 
-        self.request_data = {"1":{"module":"r.colors.out","inputs":{"map":"", "rules":""}}}
+        self.request_data = {"1": {"module": "r.colors.out", "inputs": {"map": "", "rules": ""}}}
         self.request_data["1"]["inputs"]["map"] = raster_name + "@" + self.mapset_name
         self.request_data["1"]["inputs"]["rules"] = result_file
 
@@ -285,7 +285,7 @@ class PersistentRasterColorsRules(PersistentProcessing):
 
         options = self.request_data
 
-        pc = {"1":{"module":"r.colors","inputs":{}}}
+        pc = {"1": {"module": "r.colors", "inputs": {}}}
         pc["1"]["inputs"]["map"] = raster_name + "@" + self.target_mapset_name
 
         if "rules" in options:

@@ -53,7 +53,7 @@ JSON response.
 SCHEMA_DOC = {
     'tags': ['Processing'],
     'description': DESCR,
-    'consumes':['application/json'],
+    'consumes': ['application/json'],
     'parameters': [
         {
             'name': 'location_name',
@@ -75,12 +75,12 @@ SCHEMA_DOC = {
         '200': {
             'description': 'The result of the process chain validation. '
                            'A list of processes that will be executed by Actinia Core',
-            'schema':ProcessingResponseModel
+            'schema': ProcessingResponseModel
         },
         '400': {
-            'description':'The error message and a detailed log why process chain validation '
+            'description': 'The error message and a detailed log why process chain validation '
                           'did not succeeded',
-            'schema':ProcessingErrorResponseModel
+            'schema': ProcessingErrorResponseModel
         }
     }
 }

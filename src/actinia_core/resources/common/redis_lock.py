@@ -199,7 +199,7 @@ class RedisLockingInterface(object):
             1 for success and 0 if unable to unlock
 
         """
-        keys = [self.lock_prefix + str(resource_id),]
+        keys = [self.lock_prefix + str(resource_id), ]
         #print "UnLock", self.lock_prefix + str(resource_id), str(self)
         return self.call_unlock_resource(keys=keys)
 

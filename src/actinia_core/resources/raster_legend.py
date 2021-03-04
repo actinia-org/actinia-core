@@ -139,13 +139,13 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
                 'default': 'elevation'
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why legend rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why legend rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -212,7 +212,7 @@ class EphemeralRasterLegend(EphemeralProcessing):
         os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
 
         pc = {}
-        pc["1"] = {"module":"d.legend","inputs":{"raster":raster_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "d.legend", "inputs": {"raster": raster_name + "@" + self.mapset_name}}
         for key in options:
             if key not in ["width", "height"]:
                 value = options[key]

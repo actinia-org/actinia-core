@@ -228,9 +228,9 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
         if "COG" not in [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
             format = "GTiff"
 
-        export_dict = {"name":self.raster_name + "@" + self.mapset_name,
-                       "export":{"format":format,
-                                 "type":"raster"}}
+        export_dict = {"name": self.raster_name + "@" + self.mapset_name,
+                       "export": {"format": format,
+                                 "type": "raster"}}
 
         self.resource_export_list.append(export_dict)
         self._export_resources(self.use_raster_region)

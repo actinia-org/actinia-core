@@ -121,7 +121,7 @@ class Sentinel2Processing(object):
         if self.query_result is None:
             self.query_interface = GoogleSatelliteBigQueryInterface(self.config)
             try:
-                self.query_result = self.query_interface.get_sentinel_urls([self.product_id,], self.bands)
+                self.query_result = self.query_interface.get_sentinel_urls([self.product_id, ], self.bands)
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in Google BigQuery Sentinel-2 database. "
@@ -210,7 +210,7 @@ class Sentinel2Processing(object):
         if self.query_result is None:
             self.query_interface = AWSSentinel2AInterface(self.config)
             try:
-                self.query_result = self.query_interface.get_sentinel_urls([self.product_id,], self.bands)
+                self.query_result = self.query_interface.get_sentinel_urls([self.product_id, ], self.bands)
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in AWS Sentinel-2 database. "
@@ -481,9 +481,9 @@ class Sentinel2Processing(object):
         p = Process(exec_type="grass",
                          executable="r.mapcalc",
                          executable_params=["expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
-                                            "(float(%(nir)s) + float(%(red)s))" % {"ndvi":raster_result_name,
-                                                                                   "nir":nir,
-                                                                                   "red":red}],
+                                            "(float(%(nir)s) + float(%(red)s))" % {"ndvi": raster_result_name,
+                                                                                   "nir": nir,
+                                                                                   "red": red}],
                         skip_permission_check=True)
         ndvi_commands.append(p)
 

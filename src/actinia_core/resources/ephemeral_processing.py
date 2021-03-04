@@ -510,11 +510,11 @@ class EphemeralProcessing(object):
             self.process_chain_list.append(process_chain)
 
         # Check for the webhook
-        if hasattr(self.proc_chain_converter,'webhook_finished') and self.proc_chain_converter.webhook_finished is not None:
+        if hasattr(self.proc_chain_converter, 'webhook_finished') and self.proc_chain_converter.webhook_finished is not None:
             self.webhook_finished = self.proc_chain_converter.webhook_finished
-        if hasattr(self.proc_chain_converter,'webhook_update') and self.proc_chain_converter.webhook_update is not None:
+        if hasattr(self.proc_chain_converter, 'webhook_update') and self.proc_chain_converter.webhook_update is not None:
             self.webhook_update = self.proc_chain_converter.webhook_update
-        if hasattr(self.proc_chain_converter,'webhook_auth') and self.proc_chain_converter.webhook_auth is not None:
+        if hasattr(self.proc_chain_converter, 'webhook_auth') and self.proc_chain_converter.webhook_auth is not None:
             self.webhook_auth = self.proc_chain_converter.webhook_auth
 
         # Check for empty process chain

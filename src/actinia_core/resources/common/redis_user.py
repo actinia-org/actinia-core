@@ -148,11 +148,11 @@ class RedisUserInterface(RedisBaseInterface):
         # First add the user-id to the user id database
         self.redis_server.hset(self.user_id_db, user_id, user_id)
 
-        mapping = {"user_id":user_id,
-                   "password_hash":password_hash,
-                   "user_role":user_role,
-                   "user_group":user_group,
-                   "permissions":pstring}
+        mapping = {"user_id": user_id,
+                   "password_hash": password_hash,
+                   "user_role": user_role,
+                   "user_group": user_group,
+                   "permissions": pstring}
         # Make the database entry
         self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
         lock.release()
@@ -202,9 +202,9 @@ class RedisUserInterface(RedisBaseInterface):
         lock = self.redis_server.lock(name="update_user_lock", timeout=1)
         lock.acquire()
 
-        mapping = {"user_id":user_id, "password_hash":password_hash,
-                   "user_role":user_role, "user_group":user_group,
-                   "permissions":pstring}
+        mapping = {"user_id": user_id, "password_hash": password_hash,
+                   "user_role": user_role, "user_group": user_group,
+                   "permissions": pstring}
         # Update the database entry
         self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
 
@@ -281,9 +281,9 @@ def test_management(r):
     user_group = "test_1"
     password_hash = "hash"
     user_role = "admin"
-    permissions = {"locations":{"NC":{"mapsets":["PERMANWENT", "user1"]},
-                                "ECAD":{"mapsets":["Temp", "Prec"]}},
-                   "modules":["r.series", "r.slope.aspect"]}
+    permissions = {"locations": {"NC": {"mapsets": ["PERMANWENT", "user1"]},
+                                "ECAD": {"mapsets": ["Temp", "Prec"]}},
+                   "modules": ["r.series", "r.slope.aspect"]}
 
     r.delete(user_id)
 
@@ -334,8 +334,8 @@ def test_management(r):
              user_group=user_group,
              password_hash="yellow",
              user_role="user",
-             permissions={"locations":{"utm32n":{"mapsets":["PERMANWENT"]}},
-                          "modules":["i.vi",]})
+             permissions={"locations": {"utm32n": {"mapsets": ["PERMANWENT"]}},
+                          "modules": ["i.vi", ]})
 
     user_creds = r.get_credentials(user_id)
     #print(user_creds)

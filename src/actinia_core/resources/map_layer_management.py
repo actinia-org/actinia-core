@@ -213,12 +213,12 @@ class RasterLayersResource(MapsetLayersResource):
             '200': {
                 'description': 'This response returns a list of raster map layers and the log '
                                'of the process chain that was used to create the response.',
-                'schema':StringListProcessingResultResponseModel
+                'schema': StringListProcessingResultResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'raster map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -251,19 +251,19 @@ class RasterLayersResource(MapsetLayersResource):
                 'description': 'A list of raster name tuples [(a, a_new),(b, b_new),(c, c_new), ...]',
                 'required': True,
                 'in': 'body',
-                'schema': {"type":"string"}
+                'schema': {"type": "string"}
             }
         ],
         'responses': {
             '200': {
                 'description': 'This response returns the log '
                                'of the process chain that was used to create the response.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'raster map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -304,12 +304,12 @@ class RasterLayersResource(MapsetLayersResource):
             '200': {
                 'description': 'This response returns the log '
                                'of the process chain that was used to create the response.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why deletion of '
                                'raster map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -359,12 +359,12 @@ class VectorLayersResource(MapsetLayersResource):
             '200': {
                 'description': 'This response returns a list of vector map layers and the log '
                                'of the process chain that was used to create the response.',
-                'schema':StringListProcessingResultResponseModel
+                'schema': StringListProcessingResultResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'vector map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -397,19 +397,19 @@ class VectorLayersResource(MapsetLayersResource):
                 'description': 'A list of vector name tuples [(a, a_new),(b, b_new),(c, c_new), ...]',
                 'required': True,
                 'in': 'body',
-                'schema': {"type":"string"}
+                'schema': {"type": "string"}
             }
         ],
         'responses': {
             '200': {
                 'description': 'This response returns the log '
                                'of the process chain that was used to create the response.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why listing of '
                                'vector map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -450,12 +450,12 @@ class VectorLayersResource(MapsetLayersResource):
             '200': {
                 'description': 'This response returns the log '
                                'of the process chain that was used to create the response.',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why deletion of '
                                'vector map layers did not succeeded',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             }
         }
     })
@@ -488,7 +488,7 @@ class PersistentListLayers(PersistentProcessing):
 
         options = extract_glist_parameters(args)
 
-        pc = {"1":{"module":"g.list","inputs":{}}}
+        pc = {"1": {"module": "g.list", "inputs": {}}}
 
         for key in options:
             pc["1"]["inputs"][key] = options[key]
@@ -536,7 +536,7 @@ class PersistentRemoveLayers(PersistentProcessing):
 
         options = extract_glist_parameters(args)
 
-        pc = {"1":{"module":"g.remove","inputs":{}, "flags":"f"}}
+        pc = {"1": {"module": "g.remove", "inputs": {}, "flags": "f"}}
         for key in options:
             pc["1"]["inputs"][key] = options[key]
         pc["1"]["inputs"]["type"] = layer_type
@@ -584,7 +584,7 @@ class PersistentRenameLayers(PersistentProcessing):
             name_list.append("%s,%s" % (old_name, new_name))
         name_string = ",".join(name_list)
 
-        pc = {"1":{"module":"g.rename","inputs":{layer_type:name_string}}}
+        pc = {"1": {"module": "g.rename", "inputs": {layer_type: name_string}}}
 
         self.skip_region_check = True
         process_list = self._validate_process_chain(skip_permission_check=True,

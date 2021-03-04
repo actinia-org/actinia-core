@@ -229,8 +229,8 @@ def check_location_mapset_module_access(user_credentials,
 
     # Mapset without location results in error
     if location_name is None and mapset_name is not None:
-        resp = {"Status":"error",
-                "Messages":"Internal error, mapset definition without location"}
+        resp = {"Status": "error",
+                "Messages": "Internal error, mapset definition without location"}
         return (500, resp)
 
     if location_name:
@@ -255,8 +255,8 @@ def check_location_mapset_module_access(user_credentials,
         accessible_datasets = user_credentials["permissions"]["accessible_datasets"]
 
         if location_name not in accessible_datasets:
-            resp = {"Status":"error",
-                    "Messages":"Unauthorized access to location <%s>" % location_name}
+            resp = {"Status": "error",
+                    "Messages": "Unauthorized access to location <%s>" % location_name}
             return (401, resp)
 
         # Check if the mapset is allowed to be accessed
@@ -264,8 +264,8 @@ def check_location_mapset_module_access(user_credentials,
             # Check if the mapset exists in the global database
             if not accessible_datasets[location_name] or \
                     mapset_name not in accessible_datasets[location_name]:
-                resp = {"Status":"error",
-                        "Messages":"Unauthorized access to mapset <%s> in location <%s>" % (mapset_name,
+                resp = {"Status": "error",
+                        "Messages": "Unauthorized access to mapset <%s> in location <%s>" % (mapset_name,
                                                                                             location_name)}
                 return (401, resp)
 
@@ -273,8 +273,8 @@ def check_location_mapset_module_access(user_credentials,
     if module_name:
         accessible_modules = user_credentials["permissions"]["accessible_modules"]
         if module_name not in accessible_modules:
-            resp = {"Status":"error",
-                    "Messages":"Module <%s> is not supported" % module_name}
+            resp = {"Status": "error",
+                    "Messages": "Module <%s> is not supported" % module_name}
             return (401, resp)
 
     return None

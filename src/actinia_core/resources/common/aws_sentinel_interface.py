@@ -131,11 +131,11 @@ class AWSSentinel2AInterface(object):
                 # Get the product info JSON file
 
                 json_url = "%(base)s/products/%(year)s/%(month)s/%(day)s/%(id)s/" \
-                           "productInfo.json" % {"base":self.aws_sentinel_base_url,
-                                                 "year":year,
-                                                 "month":month,
-                                                 "day":day,
-                                                 "id":product_id}
+                           "productInfo.json" % {"base": self.aws_sentinel_base_url,
+                                                 "year": year,
+                                                 "month": month,
+                                                 "day": day,
+                                                 "id": product_id}
 
                 response = urlopen(json_url)
                 product_info = response.read()

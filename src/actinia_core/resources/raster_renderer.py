@@ -124,13 +124,13 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
                 'default': 600
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -343,13 +343,13 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
                 'default': 600
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The RGB composition PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -428,10 +428,10 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
                                                                         options["green"],
                                                                         options["blue"])}}
         pc["2"] = region_pc
-        pc["3"] = {"module": "d.rgb","inputs": {"red": options["red"],
+        pc["3"] = {"module": "d.rgb", "inputs": {"red": options["red"],
                                               "green": options["green"],
                                               "blue": options["blue"]},
-                   "flags":"n"}
+                   "flags": "n"}
 
         self.request_data = pc
 
@@ -563,13 +563,13 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
                 'default': 600
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The shade/color composition PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -640,11 +640,11 @@ class EphemeralRasterShadeRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s" % (options["shade"],
+        pc["1"] = {"module": "g.region", "inputs": {"raster": "%s,%s" % (options["shade"],
                                                                      options["color"])}}
         pc["2"] = region_pc
-        pc["3"] = {"module":"d.shade","inputs":{"shade":options["shade"],
-                                                "color":options["color"]}}
+        pc["3"] = {"module": "d.shade", "inputs": {"shade": options["shade"],
+                                                "color": options["color"]}}
 
         # Run the selected modules
         self.skip_region_check = True

@@ -133,7 +133,7 @@ class DownloadCacheSize(EphemeralProcessing):
             self._run_process(Process(exec_type="exec",
                                       executable=executable,
                                       executable_params=args))
-            print("Disk usage ",self.module_output_log[0]["stdout"])
+            print("Disk usage ", self.module_output_log[0]["stdout"])
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
             quota_size = int(self.config.DOWNLOAD_CACHE_QUOTA * 1024 * 1024 * 1024)
 
