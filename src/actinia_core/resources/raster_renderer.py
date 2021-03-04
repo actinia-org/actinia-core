@@ -198,10 +198,10 @@ class EphemeralRasterRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"raster":raster_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "g.region", "inputs": {"raster": raster_name + "@" + self.mapset_name}}
         pc["2"] = region_pc
-        pc["3"] = {"module":"d.rast","inputs":{"map":raster_name + "@" + self.mapset_name},
-                   "flags":"n"}
+        pc["3"] = {"module": "d.rast", "inputs": {"map": raster_name + "@" + self.mapset_name},
+                   "flags": "n"}
 
         # Run the selected modules
         self.skip_region_check = True
@@ -424,13 +424,13 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"raster":"%s,%s,%s" % (options["red"],
+        pc["1"] = {"module": "g.region", "inputs": {"raster": "%s,%s,%s" % (options["red"],
                                                                         options["green"],
                                                                         options["blue"])}}
         pc["2"] = region_pc
-        pc["3"] = {"module":"d.rgb","inputs":{"red":options["red"],
-                                              "green":options["green"],
-                                              "blue":options["blue"]},
+        pc["3"] = {"module": "d.rgb","inputs": {"red": options["red"],
+                                              "green": options["green"],
+                                              "blue": options["blue"]},
                    "flags":"n"}
 
         self.request_data = pc

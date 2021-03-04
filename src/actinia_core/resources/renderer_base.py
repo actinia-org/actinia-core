@@ -198,7 +198,7 @@ class EphemeralRendererBase(EphemeralProcessing):
         os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
 
         if legacy is True:
-            pc = {"module":"g.region","inputs":{},"flags":"g"}
+            pc = {"module": "g.region", "inputs": {}, "flags": "g"}
             if options:
                 for key in options:
                     if key in ["n", "s", "e", "w"]:

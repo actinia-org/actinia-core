@@ -40,9 +40,9 @@ SCENE_SUFFIXES = {
     "LT04":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
     "LT05":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
     "LE07":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
-            "_B7.TIF", "_B8.TIF","_MTL.txt"],
+            "_B7.TIF", "_B8.TIF", "_MTL.txt"],
     "LC08":["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
-            "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF","_MTL.txt"]}
+            "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF", "_MTL.txt"]}
 
 RASTER_SUFFIXES = {
     "LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
@@ -51,12 +51,12 @@ RASTER_SUFFIXES = {
     "LC08":[".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
 
 
-SCENE_BANDS = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
-               "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
+SCENE_BANDS = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+               "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
                "LE07":["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
-                       "B6_VCID_1", "B7", "B8","MTL"],
+                       "B6_VCID_1", "B7", "B8", "MTL"],
                "LC08":["B1", "B2", "B3", "B4", "B5", "B6", "B7",
-                       "B8", "B9", "B10", "B11","MTL"]}
+                       "B8", "B9", "B10", "B11", "MTL"]}
 
 
 def extract_sensor_id_from_scene_id(scene_id):

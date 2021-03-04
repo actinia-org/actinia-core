@@ -87,12 +87,12 @@ class GoogleSatelliteBigQueryInterface(object):
         self.sentinel_bands = ["B01", "B02", "B03", "B04", "B05", "B06", "B07",
                                          "B08", "B8A", "B09", "B10", "B11", "B12"]
 
-        self.landsat_scene_bands = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
-                                    "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7","MTL"],
+        self.landsat_scene_bands = {"LT04":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+                                    "LT05":["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
                                     "LE07":["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
-                                            "B6_VCID_1", "B7", "B8","MTL"],
+                                            "B6_VCID_1", "B7", "B8", "MTL"],
                                     "LC08":["B1", "B2", "B3", "B4", "B5", "B6", "B7",
-                                            "B8", "B9", "B10", "B11","MTL"]}
+                                            "B8", "B9", "B10", "B11", "MTL"]}
 
         self.raster_suffixes = {"LT04":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
                                 "LT05":[".1", ".2", ".3", ".4", ".5", ".6", ".7"],
@@ -386,7 +386,7 @@ class GoogleSatelliteBigQueryInterface(object):
             raise GoogleCloudAPIError("An error occurred while fetching "
                                       "Landsat download URL's. Error message: %s" % str(e))
 
-    def get_sentinel_urls(self, product_ids, bands=["B04","B08"]):
+    def get_sentinel_urls(self, product_ids, bands=["B04", "B08"]):
         """Receive the download urls and time stamps for a list of Sentinel2 product ids from Google Big Query service
 
         The download urls include the public address and the google cloud storage address.
