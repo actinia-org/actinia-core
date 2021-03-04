@@ -70,7 +70,7 @@ class RasterColorModel(Schema):
     }
     example = {
         "rules": ["1 0:0:0",
-                 "default 255:255:255"],
+                  "default 255:255:255"],
         "color": "ndvi",
         "raster": "elevation@PERMANENT"
     }

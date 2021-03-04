@@ -266,7 +266,7 @@ def check_location_mapset_module_access(user_credentials,
                     mapset_name not in accessible_datasets[location_name]:
                 resp = {"Status": "error",
                         "Messages": "Unauthorized access to mapset <%s> in location <%s>" % (mapset_name,
-                                                                                            location_name)}
+                                                                                             location_name)}
                 return (401, resp)
 
     # Check if the module name is in the access list

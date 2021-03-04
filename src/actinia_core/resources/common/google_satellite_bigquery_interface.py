@@ -90,16 +90,16 @@ class GoogleSatelliteBigQueryInterface(object):
         self.landsat_scene_bands = {"LT04": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
                                     "LT05": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
                                     "LE07": ["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
-                                            "B6_VCID_1", "B7", "B8", "MTL"],
+                                             "B6_VCID_1", "B7", "B8", "MTL"],
                                     "LC08": ["B1", "B2", "B3", "B4", "B5", "B6", "B7",
-                                            "B8", "B9", "B10", "B11", "MTL"]}
+                                             "B8", "B9", "B10", "B11", "MTL"]}
 
         self.raster_suffixes = {"LT04": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
                                 "LT05": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
                                 "LE07": [".1", ".2", ".3", ".4", ".5", ".61", ".62",
-                                        ".7", ".8"],
+                                         ".7", ".8"],
                                 "LC08": [".1", ".2", ".3", ".4", ".5", ".6", ".7",
-                                        ".8", ".9", ".10", ".11"]}
+                                         ".8", ".9", ".10", ".11"]}
 
     def _start_clients(self):
         self.bigquery_client = bigquery.Client()

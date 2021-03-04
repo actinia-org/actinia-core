@@ -282,7 +282,7 @@ def test_management(r):
     password_hash = "hash"
     user_role = "admin"
     permissions = {"locations": {"NC": {"mapsets": ["PERMANWENT", "user1"]},
-                                "ECAD": {"mapsets": ["Temp", "Prec"]}},
+                                 "ECAD": {"mapsets": ["Temp", "Prec"]}},
                    "modules": ["r.series", "r.slope.aspect"]}
 
     r.delete(user_id)

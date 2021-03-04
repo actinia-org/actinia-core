@@ -230,7 +230,7 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
 
         export_dict = {"name": self.raster_name + "@" + self.mapset_name,
                        "export": {"format": format,
-                                 "type": "raster"}}
+                                  "type": "raster"}}
 
         self.resource_export_list.append(export_dict)
         self._export_resources(self.use_raster_region)
