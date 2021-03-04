@@ -442,7 +442,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         }
     })
     def get(self, user_id, resource_id):
-        """Render the mapset sizes of a resource."""
+        """Render the mapset size differences of a resource."""
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
