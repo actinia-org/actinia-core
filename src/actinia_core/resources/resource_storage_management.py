@@ -63,11 +63,11 @@ class SyncResourceStorageResource(ResourceBase):
         'responses': {
             '200': {
                 'description': 'The current state of the resource storage',
-                'schema':StorageResponseModel
+                'schema': StorageResponseModel
             },
             '400': {
                 'description': 'The error message why resource storage information gathering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -89,11 +89,11 @@ class SyncResourceStorageResource(ResourceBase):
         'responses': {
             '200': {
                 'description': 'Processing status of resource storage deletion',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message why resource storage cleaning did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
