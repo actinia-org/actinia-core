@@ -235,7 +235,7 @@ class GrassWindFile(ProcessLogging):
         self.__windname = "WIND"
 
         if mapset == "PERMANENT":
-            #If PERMANENT is used as mapset, the DEFAULT_WIND file will be created too
+            # If PERMANENT is used as mapset, the DEFAULT_WIND file will be created too
             self.__windFile = os.path.join(gisdbase, location, mapset, "DEFAULT_WIND")
             self.__write()
 

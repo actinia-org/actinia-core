@@ -164,7 +164,7 @@ class RedisLockingInterface(object):
         """
 
         keys = [self.lock_prefix + str(resource_id), expiration]
-        #print "Lock", expiration, self.lock_prefix + str(resource_id), str(self)
+        # print("Lock", expiration, self.lock_prefix + str(resource_id), str(self))
         return self.call_lock_resource(keys=keys)
 
     def extend(self, resource_id, expiration=30):
@@ -184,7 +184,7 @@ class RedisLockingInterface(object):
 
         """
         keys = [self.lock_prefix + str(resource_id), expiration]
-        #print "Extend Lock", expiration, self.lock_prefix + str(resource_id), str(self)
+        # print("Extend Lock", expiration, self.lock_prefix + str(resource_id), str(self))
         return self.call_extend_resource_lock(keys=keys)
 
     def unlock(self, resource_id):
@@ -203,7 +203,7 @@ class RedisLockingInterface(object):
 
         """
         keys = [self.lock_prefix + str(resource_id), ]
-        #print "UnLock", self.lock_prefix + str(resource_id), str(self)
+        # print("UnLock", self.lock_prefix + str(resource_id), str(self))
         return self.call_unlock_resource(keys=keys)
 
 

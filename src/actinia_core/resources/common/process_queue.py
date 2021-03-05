@@ -321,7 +321,7 @@ def start_process_queue_manager(config, queue, use_logger):
             data = None
             lock.acquire_lock()
             if len(data_set) > 0:
-                #print("Jobs from queue: ", len(data_set))
+                # print("Jobs from queue: ", len(data_set))
                 data = data_set.pop()
             lock.release_lock()
 

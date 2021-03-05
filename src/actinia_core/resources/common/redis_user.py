@@ -294,7 +294,7 @@ def test_management(r):
           permissions=permissions)
 
     user_creds = r.get_credentials(user_id)
-    #print(user_creds)
+    # print(user_creds)
 
     if user_creds["user_id"] != user_id:
         raise Exception("add does not work")
@@ -318,7 +318,7 @@ def test_management(r):
              permissions=None)
 
     user_creds = r.get_credentials(user_id)
-    #print(user_creds)
+    # print(user_creds)
 
     if user_creds["user_id"] != user_id:
         raise Exception("update does not work")
@@ -338,7 +338,7 @@ def test_management(r):
                           "modules": ["i.vi", ]})
 
     user_creds = r.get_credentials(user_id)
-    #print(user_creds)
+    # print(user_creds)
 
     if user_creds["user_id"] != user_id:
         raise Exception("update does not work")

@@ -51,8 +51,8 @@ create_endpoints()
 init_versions()
 
 # TODO: Implement a better error handler
-#@flask_app.errorhandler(InvalidUsage)
-#def handle_invalid_usage(error):
+# @flask_app.errorhandler(InvalidUsage)
+# def handle_invalid_usage(error):
 #    response = error.to_json()
 #    response.status_code = error.status_code
 #    return response
@@ -70,7 +70,7 @@ create_process_queue(global_config)
 
 # Disabled since the redis queue does not work in Python3
 # Create the job queue for redis
-#create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+# create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
 #                  global_config.REDIS_QUEUE_SERVER_PORT,
 #                  global_config.NUMBER_OF_WORKERS)
 
