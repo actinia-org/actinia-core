@@ -335,7 +335,7 @@ def start_process_queue_manager(config, queue, use_logger):
                         enqproc.terminate(status="error", message="Waiting process was terminated by server shutdown.")
                     del queue_thread
                     queue.close()
-                    #print("Exit loop")
+                    # print("Exit loop")
                     exit(0)
                 # Enqueue a new process
                 elif len(data) == 3:

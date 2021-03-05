@@ -25,9 +25,9 @@
 XML to module list
 """
 
-#from PyQt4.QtCore import *
-#from PyQt4.QtXml import *
-#from config import global_config
+# from PyQt4.QtCore import *
+# from PyQt4.QtXml import *
+# from config import global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
