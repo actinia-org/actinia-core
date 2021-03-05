@@ -148,7 +148,7 @@ class ProjectionInfoModel(Schema):
 
 
 class LocationManagementResourceUser(ResourceBase):
-    """This class returns informations about a specific location
+    """This class returns information about a specific location
     """
 
     def __init__(self):

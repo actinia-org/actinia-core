@@ -58,7 +58,7 @@ class AWSSentinel2AInterface(object):
 
         1. Transform the Sentinel ID into the path of the productInfo.json url that is required to get the tile urls
         2. Parse the productInfo.json file and extract the tile urls
-        3. Create the download links for each tile based ond each band
+        3. Create the download links for each tile based on each band
         4. Include the tileInfo.json, xml and preview url's
 
         Args:

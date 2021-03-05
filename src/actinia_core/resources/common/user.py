@@ -88,7 +88,7 @@ class ActiniaUser(object):
             accessible_datasets (dict): Dict of location:mapset lists
             accessible_modules (list): A list of modules that are allowed to use
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
+            process_num_limit (int): The maximum number of processes the user is allowed to run in a single chain
             process_time_limit (int): The maximum number of seconds a user process is allowed to run
 
         """
@@ -667,7 +667,7 @@ class ActiniaUser(object):
             accessible_datasets (dict): The user role (admin, user, guest)
             accessible_modules (list): Dict of location:mapset lists
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
+            process_num_limit (int): The maximum number of processes the user is allowed to run in a single chain
             process_time_limit (int): The maximum number of seconds a user process is allowed to run
 
         Returns:

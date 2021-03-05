@@ -49,7 +49,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 DESCR = """Execute a user defined process chain in an existing mapset
 of the persistent user database or in a new mapset that will be
-created by this reuqest in the persistent user database.
+created by this request in the persistent user database.
 
 The process chain is executed asynchronously. The provided status URL
 in the response must be polled to gain information about the processing
@@ -328,7 +328,7 @@ class PersistentProcessing(EphemeralProcessing):
             else:
                 raise AsyncProcessError("Unable to access global location <%s>" % self.location_name)
 
-        # Always check if the targte mapset already exists and set the flag accordingly
+        # Always check if the target mapset already exists and set the flag accordingly
         if os.path.exists(self.user_location_path) and \
                 os.path.isdir(self.user_location_path) and \
                         os.access(self.user_location_path, os.R_OK | os.X_OK | os.W_OK) is True:
@@ -402,7 +402,7 @@ class PersistentProcessing(EphemeralProcessing):
         self.message_logger.info("Copy source mapset <%s> content "
                                  "into the target mapset <%s>" % (source_mapset, target_mapset))
 
-        # Raster adn vector directories
+        # Raster and vector directories
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
@@ -578,7 +578,8 @@ class PersistentProcessing(EphemeralProcessing):
             self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                            mapset_name="PERMANENT")
 
-            # Create the temporary mapset wth the same name as the targte mapset and switch into it
+            # Create the temporary mapset with the same name as the target 
+            # mapset and switch into it
             self._create_temporary_mapset(temp_mapset_name=self.target_mapset_name)
             self.temp_mapset_name = self.target_mapset_name
         else:

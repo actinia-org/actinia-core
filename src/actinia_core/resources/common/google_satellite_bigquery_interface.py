@@ -508,15 +508,15 @@ class GoogleSatelliteBigQueryInterface(object):
                                       "Sentinel-2 download URL's. Error message: %s" % str(e))
 
     def _generate_sentinel2_footprint(self, base_url):
-        """Download the sentinel XML metadata and parse it for the footpring
+        """Download the sentinel XML metadata and parse it for the footprint
 
         Args:
             base_url: The google cloud storage base url of the required product_id
 
         Returns: a tuple of strings
             (str, str)
-            The first string is the footpring as GML code,
-            Teh second string the the metadata XML document
+            The first string is the footprint as GML code,
+            The second string the the metadata XML document
 
         """
 

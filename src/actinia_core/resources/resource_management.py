@@ -85,7 +85,7 @@ class ResourceManagerBase(Resource):
             user_id:
 
         Returns:
-            None if permissions granted, a error response if permissions are not fullfilled
+            None if permissions granted, a error response if permissions are not fulfilled
 
         """
         # Superuser are allowed to do everything

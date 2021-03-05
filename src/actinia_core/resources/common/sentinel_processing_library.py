@@ -110,7 +110,7 @@ class Sentinel2Processing(object):
         sentinel2 scene from the Google Cloud Storage.
 
         1. Query Google BogQuery to gather the scene information
-        2. Crate URL list of files that must be downloaded and copied to the download cache
+        2. Create URL list of files that must be downloaded and copied to the download cache
         3. Create the GML file that represents the footprint of the scene
         4. Check if the requested files exist
 
@@ -395,7 +395,7 @@ class Sentinel2Processing(object):
             temp_map_name = map_name + "_uncropped"
             cropped_input_file = input_file + ".vrt"
 
-            # Create a boundingbox around the footprint to avaoid
+            # Create a boundingbox around the footprint to avoid
             # the projection of the scene with unused values
             gdal_translate = "/usr/bin/gdal_translate"
             gdal_translate_params = list()
