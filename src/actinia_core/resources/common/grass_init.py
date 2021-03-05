@@ -86,10 +86,11 @@ class GrassEnvironment(ProcessLogging):
     def __init__(self):
 
         ProcessLogging.__init__(self)
-        self.env = {"GISBASE": "", "GISRC": "", "LD_LIBRARY_PATH": "",
-                    "GRASS_ADDON_PATH": "", "GRASS_VERSION": "", "PYTHONPATH": "",
-                    "GRASS_MESSAGE_FORMAT": "plain", "GRASS_SKIP_MAPSET_OWNER_CHECK": "1",
-                    "GRASS_TGIS_RAISE_ON_ERROR": "1"}
+        self.env = {
+            "GISBASE": "", "GISRC": "", "LD_LIBRARY_PATH": "",
+            "GRASS_ADDON_PATH": "", "GRASS_VERSION": "", "PYTHONPATH": "",
+            "GRASS_MESSAGE_FORMAT": "plain", "GRASS_SKIP_MAPSET_OWNER_CHECK": "1",
+            "GRASS_TGIS_RAISE_ON_ERROR": "1"}
 
     def set_grass_environment(self, gisrc_path, grass_gis_base, grass_addon_path):
         """Set the grass environment variables
@@ -116,13 +117,15 @@ class GrassEnvironment(ProcessLogging):
                                    + os.path.join(self.env["GISBASE"], "scripts") + ";"
                                    + os.path.join(self.env["GISBASE"], "lib") + ";"
                                    + os.path.join(self.env["GISBASE"], "extralib"))
-            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ";"
-                                         + os.path.join(self.env["GISBASE"], "etc", "python"))
+            self.env["PYTHONPATH"] = str(
+                self.env["PYTHONPATH"] + ";" + os.path.join(
+                    self.env["GISBASE"], "etc", "python"))
         else:
             self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ":"
                                    + os.path.join(self.env["GISBASE"], "scripts"))
             self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ":"
-                                         + os.path.join(self.env["GISBASE"], "etc", "python"))
+                                         + os.path.join(
+                                         self.env["GISBASE"], "etc", "python"))
 
         self.set()
         self.get()
@@ -133,7 +136,8 @@ class GrassEnvironment(ProcessLogging):
                 self.env[key] = os.getenv(key, self.env[key])
             except Exception as e:
                 raise GrassInitError(
-                    "Error getting grass environmental variables. Exception: %s" % str(e))
+                    "Error getting grass environmental variables. Exception: %s"
+                    % str(e))
 
     def set(self):
         for key in self.env:
@@ -147,7 +151,8 @@ class GrassEnvironment(ProcessLogging):
                 self.log_debug(key + "=" + value)
             except Exception as e:
                 raise GrassInitError(
-                    "Error setting grass environmental variables. Exception: %s" % str(e))
+                    "Error setting grass environmental variables. Exception: %s"
+                    % str(e))
 
 
 class GrassGisRC(ProcessLogging):
@@ -273,8 +278,8 @@ class GrassModuleRunner(ProcessLogging):
         self.grassbase = grassbase
         self.grass_addon_path = grass_addon_path
 
-    def _run_process(self, inputlist, raw=False, stdout=subprocess.PIPE, stderr=subprocess.PIPE,
-                     stdin=subprocess.PIPE):
+    def _run_process(self, inputlist, raw=False, stdout=subprocess.PIPE,
+                     stderr=subprocess.PIPE, stdin=subprocess.PIPE):
         """This function runs a process and logs its stdout and stderr output.
         It either returns the subprocess or its error id, stderr and stdout
 
@@ -346,7 +351,8 @@ class GrassModuleRunner(ProcessLogging):
                     self.log_debug("Looking for %s" % grass_module_path)
                     if os.path.isfile(grass_module_path) is not True:
                         raise GrassInitError(
-                            "GRASS module " + grass_module + " not found in " + str(pathList))
+                            "GRASS module " + grass_module + " not found in "
+                            + str(pathList))
 
         self.log_debug("GRASS module path is " + grass_module_path)
 
@@ -367,8 +373,9 @@ class GrassModuleRunner(ProcessLogging):
         Args:
             grass_module (str): The module name, eg.: "g.region"
             args (list): The module arguments as list e.g.: ["raster=slope", "-a"]
-            raw (bool): If True the subprocess that run the module is returned, otherwise
-                        a tuple of (errorid, stdout_buff, stderr_buff) is returned
+            raw (bool): If True the subprocess that run the module is returned,
+                        otherwise a tuple of (errorid, stdout_buff, stderr_buff)
+                        is returned
             stdout (file): A file object that receives stdout, default subprocess.PIPE
             stderr (file): A file object that receives stderr, default subprocess.PIPE
             stdin (file): A file object that provides stdin, default subprocess.PIPE
@@ -387,7 +394,8 @@ class GrassModuleRunner(ProcessLogging):
         if raw is False:
             errorid, stdout_buff, stderr_buff = self._run_process(parameter)
         else:
-            return self._run_process(parameter, raw=raw, stdout=stdout, stderr=stderr, stdin=stdin)
+            return self._run_process(
+                parameter, raw=raw, stdout=stdout, stderr=stderr, stdin=stdin)
 
         if errorid != 0:
             log = "Error while executing the grass module. "" \
@@ -408,7 +416,8 @@ class GrassInitializer(ProcessLogging):
         environment to run GRASS GIS modules and Python scripts.
 
         Args:
-            grass_data_base (str): GRASS GIS database root directory that contains locations
+            grass_data_base (str): GRASS GIS database root directory that contains
+                                   locations
             grass_base_dir (str): The installation directory of GRASS GIS
             location_name (str): The name of the location to work in
             mapset_name (str): The name of the mapset to work in
@@ -461,8 +470,9 @@ class GrassInitializer(ProcessLogging):
         Args:
             module_name (str): The name of the module to run
             parameter_list (list): A list of parameter for the module
-            raw (bool): If True the subprocess that run the module is returned, otherwise
-                        a tuple of (errorid, stdout_buff, stderr_buff) is returned
+            raw (bool): If True the subprocess that run the module is returned,
+                        otherwise a tuple of (errorid, stdout_buff, stderr_buff)
+                        is returned
             stdout (file): A file object that receives stdout, default subprocess.PIPE
             stderr (file): A file object that receives stderr, default subprocess.PIPE
 
@@ -494,8 +504,9 @@ class GrassInitializer(ProcessLogging):
         """Setup a temporary region, so that g.region calls can be performed without
         altering the mapsets current region.
 
-        Make sure to call delete_tmp_region() in the same process after processing finished,
-        to make sure that the temporary region was removed and the environmental variable was unset.
+        Make sure to call delete_tmp_region() in the same process after processing
+        finished, to make sure that the temporary region was removed and the
+        environmental variable was unset.
 
         Raises:
             This method raises a GrassInitError Exception

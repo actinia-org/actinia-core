@@ -38,7 +38,8 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
     The Redis API log database interface
     """
-    # API logging entries are lists in the Redis database using LPUSH, LTRIM, LRANGE for management
+    # API logging entries are lists in the Redis database using LPUSH, LTRIM,
+    # LRANGE for management
     api_log_prefix = "API-LOG-LIST::"
 
     def __init__(self):

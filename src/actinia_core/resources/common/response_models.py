@@ -42,7 +42,8 @@ __email__ = "soerengebbert@googlemail.com"
 class ProgressInfoModel(Schema):
     """This class defines the model for progress information.
 
-    Progress information is generated in case a process chain with at least one commands is processed.
+    Progress information is generated in case a process chain with at least one
+    commands is processed.
     """
     type = 'object'
     properties = {
@@ -64,7 +65,8 @@ class ProgressInfoModel(Schema):
         'num_of_sub_steps': {
             'type': 'integer',
             'format': 'int32',
-            'description': 'The total number of sub steps of the current processing step'
+            'description': 'The total number of sub steps of the current processing '
+                           'step'
         },
     }
     required = ['step', 'num_of_steps']
@@ -79,12 +81,12 @@ class ProcessLogModel(Schema):
     """This class defines the model for Unix process information.
 
     Each time a Unix process
-    is invoked, this model must be used to inform the user of the return process state. Each process
-    has parameters, stdout/stderr output and a return value. This model is not designed to inform
-    about running processes, but about finished processes.
-    The return_code of 0 indicates that it ran successfully. A negative value -N
-    indicates that the child was terminated by signal N (POSIX only; see also
-    https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
+    is invoked, this model must be used to inform the user of the return process
+    state. Each process has parameters, stdout/stderr output and a return value.
+    This model is not designed to inform about running processes, but about
+    finished processes. The return_code of 0 indicates that it ran successfully.
+    A negative value -N indicates that the child was terminated by signal N
+    (POSIX only; see also https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
     """
     type = 'object'
     properties = {
@@ -142,14 +144,16 @@ class UrlModel(Schema):
         'resources': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'A list of URLs to generated resources, that may be GeoTiff files, '
-                           'vector files, ASCII files or png images'
+            'description': 'A list of URLs to generated resources, that may be GeoTiff '
+                           'files, vector files, ASCII files or png images'
         }
     }
     required = ["status", "resources"]
     example = {"resources": [
-        "http://localhost/api/v1/resource/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"],
-        "status": "http://localhost/api/v1/resources/user/resource_id-4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
+        "http://localhost/api/v1/resource/user/resource_id-4846cbcc-3918-4654-"
+        "bf4d-7e1ba2b59ce6/my_slope.tiff"],
+        "status": "http://localhost/api/v1/resources/user/resource_id-"
+        "4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
 
 
 class SimpleResponseModel(Schema):
@@ -161,7 +165,8 @@ class SimpleResponseModel(Schema):
     properties = {
         'status': {
             'type': 'string',
-            'description': 'The status of the resource, values: accepted, running, finished, terminated, error'
+            'description': 'The status of the resource, values: accepted, running, '
+                           'finished, terminated, error'
         },
         'message': {
             'type': 'string',
@@ -234,15 +239,17 @@ class ExceptionTracebackModel(Schema):
     example = {
         "message": "Error",
         "type": "exceptions.Exception",
-        "traceback": "File \"main.py\", line 2, in <module>\n    raise Exception(\"Error\")\n"
+        "traceback": "File \"main.py\", line 2, in <module>\n    "
+                     "raise Exception(\"Error\")\n"
     }
 
 
 class ProcessingResponseModel(Schema):
     """This is the base class for ALL response models.
 
-    This class or its derivatives must be used in all responses that run GRASS modules or
-    Unix programs. Derivatives only differ in the *process_result* schema.
+    This class or its derivatives must be used in all responses that run
+    GRASS modules or Unix programs. Derivatives only differ in the
+    *process_result* schema.
     """
     type = 'object'
     properties = {
@@ -275,7 +282,8 @@ class ProcessingResponseModel(Schema):
         'progress': ProgressInfoModel,
         'message': {
             'type': 'string',
-            'description': 'Message for the user, maybe status, finished or error message'
+            'description': 'Message for the user, maybe status, finished or error '
+                           'message'
         },
         'exception': ExceptionTracebackModel,
         'accept_timestamp': {
@@ -285,7 +293,8 @@ class ProcessingResponseModel(Schema):
         },
         'accept_datetime': {
             'type': 'string',
-            'description': 'The acceptance timestamp of the response in human readable format'
+            'description': 'The acceptance timestamp of the response in human '
+                           'readable format'
         },
         'timestamp': {
             'type': 'number',
@@ -299,7 +308,8 @@ class ProcessingResponseModel(Schema):
         },
         'datetime': {
             'type': 'string',
-            'description': 'The current timestamp of the response in human readable format'
+            'description': 'The current timestamp of the response in human readable '
+                           'format'
         },
         'http_code': {
             'type': 'number',
@@ -309,8 +319,8 @@ class ProcessingResponseModel(Schema):
         'urls': UrlModel,
         'api_info': ApiInfoModel
     }
-    required = ['status', 'user_id', 'resource_id', 'timestamp', 'datetime', 'accept_timestamp',
-                'accept_datetime', 'message']
+    required = ['status', 'user_id', 'resource_id', 'timestamp', 'datetime',
+                'accept_timestamp', 'accept_datetime', 'message']
 
     example = {
         "accept_datetime": "2017-05-24 22:37:21.607255",
@@ -319,7 +329,8 @@ class ProcessingResponseModel(Schema):
             "endpoint": "asyncephemeralresource",
             "method": "POST",
             "path": "/locations/nc_spm_08/processing_async",
-            "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
+            "request_url": "http://localhost/api/v1/locations/nc_spm_08/"
+                           "processing_async"
         },
         "datetime": "2017-05-24 22:37:21.608717",
         "http_code": 200,
@@ -330,7 +341,8 @@ class ProcessingResponseModel(Schema):
         "timestamp": 1495658241.608716,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/admin/resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1"
+            "status": "http://localhost/api/v1/resources/admin/resource_id-"
+                      "2be8cafe-b451-46a0-be15-f61d95c5efa1"
         },
         "user_id": "admin"
     }
@@ -350,15 +362,21 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
-            "request_url": "http://localhost/api/v1/locations/nc_spm_08/mapsets/PERMANE/info"
+            "request_url": "http://localhost/api/v1/locations/nc_spm_08/mapsets/"
+                           "PERMANENT/info"
         },
         "datetime": "2018-05-06 22:02:14.398927",
         "exception": {
             "message": "AsyncProcessError:  Error while running executable <g.region>",
             "traceback": [
-                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/actinia_core/resources/ephemeral_processing.py\", line 1063, in _run_executable\n    raise AsyncProcessError(\"Error while running executable <%s>\" % process.executable)\n"
+                "  File \"/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/"
+                "site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/"
+                "actinia_core/resources/ephemeral_processing.py\", line 1063, in "
+                "_run_executable\n    raise AsyncProcessError(\"Error while running "
+                "executable <%s>\" % process.executable)\n"
             ],
-            "type": "<class 'actinia_core.resources.common.exceptions.AsyncProcessError'>"
+            "type": "<class 'actinia_core.resources.common.exceptions."
+                    "AsyncProcessError'>"
         },
         "http_code": 400,
         "message": "AsyncProcessError:  Error while running executable <g.region>",
@@ -383,7 +401,9 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 "return_code": 1,
                 "run_time": 0.05020904541015625,
                 "stderr": [
-                    "ERROR: MAPSET PERMANE not found at /home/soeren/actinia/workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba0b8b/nc_spm_08",
+                    "ERROR: MAPSET PERMANE not found at /home/soeren/actinia/"
+                    "workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba0b8b/"
+                    "nc_spm_08",
                     ""
                 ],
                 "stdout": ""
@@ -399,7 +419,8 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
         "timestamp": 1525636934.3989098,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/user/resource_id-79608249-521c-4a98-9e1f-9201f693870b"
+            "status": "http://localhost/api/v1/resources/user/resource_id-"
+                      "79608249-521c-4a98-9e1f-9201f693870b"
         },
         "user_id": "user"
     }
@@ -423,7 +444,8 @@ class StorageModel(Schema):
     """This class defines the model to inform about available storage
     that is used for caching or user specific resource storage.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel
+    derivative.
     """
     type = 'object'
     properties = {
@@ -454,7 +476,8 @@ class StorageModel(Schema):
 class UnivarResultModel(Schema):
     """Response schema for the result of univariate computations of raster layers.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel
+    derivative.
     """
     type = 'object'
     properties = {
@@ -519,7 +542,8 @@ class UnivarResultModel(Schema):
 class CategoricalStatisticsResultModel(Schema):
     """Response schema for the result of r.stats computations of raster layers.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel
+    derivative.
     """
     type = 'object'
     properties = {
@@ -553,7 +577,8 @@ class CategoricalStatisticsResultModel(Schema):
 class RegionModel(Schema):
     """Output of GRASS GIS module g.region -gu3
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel
+    derivative.
 
     GRASS 7.8.dev (latlong_wgs84):~ > g.region -gu3
     projection=3
@@ -687,7 +712,8 @@ class RegionModel(Schema):
 class MapsetInfoModel(Schema):
     """Schema for projection and region information from a specific mapset.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel derivative.
+    It is used as schema to define the *process_result* in a ProcessingResponseModel
+    derivative.
     """
     type = 'object'
     properties = {
@@ -700,7 +726,20 @@ class MapsetInfoModel(Schema):
     required = ["projection", "region"]
 
     example = {
-        "projection": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\",DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS 1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],PARAMETER[\"standard_parallel_1\",36.16666666666666],PARAMETER[\"standard_parallel_2\",34.33333333333334],PARAMETER[\"latitude_of_origin\",33.75],PARAMETER[\"central_meridian\",-79],PARAMETER[\"false_easting\",609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n",
+        "projection": "PROJCS[\"NAD83(HARN) / North Carolina\",GEOGCS[\"NAD83(HARN)\","
+                      "DATUM[\"NAD83_High_Accuracy_Reference_Network\",SPHEROID[\"GRS"
+                      "1980\",6378137,298.257222101,AUTHORITY[\"EPSG\",\"7019\"]],"
+                      "TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\"EPSG\",\"6152\"]],PRIMEM["
+                      "\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\","
+                      "0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY["
+                      "\"EPSG\",\"4152\"]],PROJECTION[\"Lambert_Conformal_Conic_2SP\"],"
+                      "PARAMETER[\"standard_parallel_1\",36.16666666666666],"
+                      "PARAMETER[\"standard_parallel_2\",34.33333333333334],"
+                      "PARAMETER[\"latitude_of_origin\",33.75],PARAMETER["
+                      "\"central_meridian\",-79],PARAMETER[\"false_easting\","
+                      "609601.22],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1,"
+                      "AUTHORITY[\"EPSG\",\"9001\"]],AXIS[\"X\",EAST],"
+                      "AXIS[\"Y\",NORTH],AUTHORITY[\"EPSG\",\"3358\"]]\n",
         "region": {
             "b": 0.0,
             "cells": 29535,
@@ -743,7 +782,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/info",
-            "request_url": "http://localhost/api/v1/locations/ECAD/mapsets/PERMANENT/info"
+            "request_url": "http://localhost/api/v1/locations/ECAD/mapsets/PERMANENT/"
+                           "info"
         },
         "datetime": "2018-05-02 10:53:20.392509",
         "http_code": 200,
@@ -785,7 +825,12 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
                 "stdout": "..."}
         ],
         "process_results": {
-            "projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\",6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],AUTHORITY[\"EPSG\",\"4326\"]]\n",
+            "projection": "GEOGCS[\"WGS 84\",DATUM[\"WGS_1984\",SPHEROID[\"WGS 84\","
+                          "6378137,298.257223563,AUTHORITY[\"EPSG\",\"7030\"]],"
+                          "AUTHORITY[\"EPSG\",\"6326\"]],PRIMEM[\"Greenwich\",0,"
+                          "AUTHORITY[\"EPSG\",\"8901\"]],UNIT[\"degree\","
+                          "0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]],"
+                          "AUTHORITY[\"EPSG\",\"4326\"]]\n",
             "region": {
                 "b": 0.0,
                 "cells": 1,
@@ -819,7 +864,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525258400.392495,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/user/resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518"
+            "status": "http://localhost/api/v1/resources/user/resource_id-"
+                      "2222cdb7-06f5-460d-a38f-5745a3c3b518"
         },
         "user_id": "user"
     }
@@ -864,11 +910,13 @@ class AreaUnivarResultModel(Schema):
     properties = {
         'fid': {
             'type': 'string',
-            'description': 'Field id from the polygon of the vector map layer used for area stats computation'
+            'description': 'Field id from the polygon of the vector map layer '
+                           'used for area stats computation'
         },
         'cat': {
             'type': 'string',
-            'description': 'The category id from the polygon of the vector map layer used for area stats computation'
+            'description': 'The category id from the polygon of the vector map '
+                           'layer used for area stats computation'
         },
         'raster_number': {
             'type': 'number',
@@ -985,7 +1033,8 @@ class StorageResponseModel(ProcessingResponseModel):
         "timestamp": 1525258288.1006439,
         "urls": {
             "resources": [],
-            "status": "http://localhost:8080/resources/superadmin/resource_id-f9463d91-04a6-497c-b107-37c4ee013530"
+            "status": "http://localhost:8080/resources/superadmin/resource_id-"
+                      "f9463d91-04a6-497c-b107-37c4ee013530"
         },
         "user_id": "superadmin"
     }
@@ -1041,7 +1090,8 @@ class StringListProcessingResultResponseModel(ProcessingResponseModel):
                     "Available mapsets:",
                     ""
                 ],
-                "stdout": "PERMANENT\nSource_A\nSource_B\nTarget\nlandsat\nraster_test_mapset\nuser1\n"
+                "stdout": "PERMANENT\nSource_A\nSource_B\nTarget\nlandsat\n"
+                          "raster_test_mapset\nuser1\n"
             }
         ],
         "process_results": [
@@ -1063,7 +1113,8 @@ class StringListProcessingResultResponseModel(ProcessingResponseModel):
         "timestamp": 1525255340.8610027,
         "urls": {
             "resources": [],
-            "status": "http://localhost:5000/resources/user/resource_id-715530fe-53e2-4b2b-87b2-3777c90fec7c"
+            "status": "http://localhost:5000/resources/user/resource_id-"
+                      "715530fe-53e2-4b2b-87b2-3777c90fec7c"
         },
         "user_id": "user"
     }
@@ -1086,16 +1137,19 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                process_chain_list=[],
                                exception=None,
                                resp_type="pickle"):
-    """Create a dictionary and its pickle or JSON representation to represent response information
+    """Create a dictionary and its pickle or JSON representation to represent
+    response information
 
     This function is used to create almost all responses of Actinia Core
 
     Args:
-        response_model_class (class): The response model class that must be applied. By default
-                                      this is the ProcessingResponseModel class, that is the base
-                                      for all responses that involve executables in Actinia Core. All
-                                      classes that are accepted must be derived from ProcessingResponseModel
-                                      and specify the "process_results" field. By default a string
+        response_model_class (class): The response model class that must be applied.
+                                      By default this is the ProcessingResponseModel
+                                      class, that is the base for all responses that
+                                      involve executables in Actinia Core. All classes
+                                      that are accepted must be derived from
+                                      ProcessingResponseModel and specify the
+                                      "process_results" field. By default a string
                                       is required as data type for "process_results".
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
@@ -1109,7 +1163,8 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         orig_time (time): The time of origin (seconds)
         orig_datetime (datetime): The datetime of origin (datetime format)
         resource_urls ([str]): The list of url of the new created resources
-        api_info (ApiInfoModel): Information about the API call, important for accounting
+        api_info (ApiInfoModel): Information about the API call, important for
+                                 accounting
         process_chain_list ([ProcessChainModel]): The list of process chains
         resp_type (str): What type of response, "pickle" or "json"
 
@@ -1189,11 +1244,13 @@ class UserInfoResponseModel(Schema):
             'properties': {
                 'cell_limit': {
                     'type': 'string',
-                    'description': 'The limit of number of raster cells the user is allowed to process'
+                    'description': 'The limit of number of raster cells the user '
+                                   'is allowed to process'
                 },
                 'process_num_limit': {
                     'type': 'string',
-                    'description': 'The limit of number of processes the user is allowed to integrate into one process chain'
+                    'description': 'The limit of number of processes the user is '
+                                   'allowed to integrate into one process chain'
                 },
                 'process_time_limit': {
                     'type': 'string',
@@ -1202,7 +1259,11 @@ class UserInfoResponseModel(Schema):
                 'accessible_datasets': {
                     'type': 'object',
                     'properties': {},
-                    'description': 'The persistent GRASS GIS databases the user is allowed to use. Contains one object for each location name with an array of strings containing all allowed mapset names. See example for more information.'
+                    'description': 'The persistent GRASS GIS databases the user is '
+                                   'allowed to use. Contains one object for each '
+                                   'location name with an array of strings containing '
+                                   'all allowed mapset names. See example for more '
+                                   'information.'
                 },
                 'accessible_modules': {
                     'type': 'array',

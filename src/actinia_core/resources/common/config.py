@@ -42,97 +42,133 @@ else:
 
 # Generate from GRASS_module_white_list.txt
 white_list = [
-    'r.blend', 'r.buffer', 'r.buffer.lowmem', 'r.carve', 'r.category', 'r.circle', 'r.clump', 'r.coin', 'r.colors',
-    'r.composite', 'r.compress', 'r.contour', 'r.cost', 'r.covar', 'r.cross', 'r.describe', 'r.distance', 'r.drain',
-    'r.fill.dir', 'r.fillnulls', 'r.flow', 'r.grow', 'r.grow.distance', 'r.gwflow', 'r.his', 'r.horizon', 'r.kappa',
-    'r.lake', 'r.latlong', 'r.li.cwed', 'r.li.dominance', 'r.li.edgedensity', 'r.li.mpa', 'r.li.mps', 'r.li.padcv',
-    'r.li.padrange', 'r.li.padsd', 'r.li.patchdensity', 'r.li.patchnum', 'r.li.pielou', 'r.li.renyi', 'r.li.richness',
-    'r.li.shannon', 'r.li.shape', 'r.li.simpson', 'r.mapcalc', 'r.mask', 'r.mfilter', 'r.mode', 'r.neighbors', 'r.null',
-    'r.param.scale', 'r.patch', 'r.plane', 'r.profile', 'r.proj', 'r.quant', 'r.quantile', 'r.random', 'r.random.cells',
-    'r.random.surface', 'r.reclass', 'r.reclass.area', 'r.recode', 'r.region', 'r.regression.line',
-    'r.regression.multi', 'r.regression.series', 'r.relief', 'r.report', 'r.resamp.bspline', 'r.resamp.filter',
-    'r.resamp.interp', 'r.resample', 'r.resamp.rst', 'r.resamp.stats', 'r.rescale', 'r.rescale.eq', 'r.rgb', 'r.ros',
-    'r.series', 'r.series.accumulate', 'r.series.interp', 'r.shade', 'r.sim.sediment', 'r.sim.water', 'r.slope.aspect',
-    'r.solute.transport', 'r.spread', 'r.spreadpath', 'r.statistics', 'r.stats', 'r.stats.quantile', 'r.stats.zonal',
-    'r.stream.extract', 'r.sun', 'r.sunhours', 'r.sunmask', 'r.support', 'r.support.stats', 'r.surf.area',
-    'r.surf.contour', 'r.surf.fractal', 'r.surf.gauss', 'r.surf.idw', 'r.surf.random', 'r.terraflow', 'r.texture',
-    'r.thin', 'r.tile', 'r.tileset', 'r.timestamp', 'r.topidx', 'r.topmodel', 'r.to.rast3', 'r.to.rast3elev',
-    'r.to.vect', 'r.transect', 'r.univar', 'r.uslek', 'r.usler', 'r.viewshed', 'r.vol.dem',
-    'r.volume', 'r.walk', 'r.water.outlet', 'r.watershed', 'r.what', 'r.what.color', 'r.info',
-    'g.region', 'g.mapset', 'g.proj', 'g.remove', 'g.rename', 'g.version', 'g.list', 'g.findfile', 'g.gisenv', 'i.vi',
-    'v.in.ascii', 't.rast.sample', 'r.out.png', 'r.colors.out', 'd.rast', 'd.vect', 'd.legend', 't.rast.aggr_func',
-    'd.rast.multi', 'v.buffer', 't.rast.extract', 't.rast.mapcalc', 't.rast.series', 't.rast.colors', 't.info',
-    't.rast.list', 't.rast.univar', 'importer', 'exporter']
+    'r.blend', 'r.buffer', 'r.buffer.lowmem', 'r.carve', 'r.category', 'r.circle',
+    'r.clump', 'r.coin', 'r.colors', 'r.composite', 'r.compress', 'r.contour',
+    'r.cost', 'r.covar', 'r.cross', 'r.describe', 'r.distance', 'r.drain',
+    'r.fill.dir', 'r.fillnulls', 'r.flow', 'r.grow', 'r.grow.distance', 'r.gwflow',
+    'r.his', 'r.horizon', 'r.kappa', 'r.lake', 'r.latlong', 'r.li.cwed',
+    'r.li.dominance', 'r.li.edgedensity', 'r.li.mpa', 'r.li.mps', 'r.li.padcv',
+    'r.li.padrange', 'r.li.padsd', 'r.li.patchdensity', 'r.li.patchnum',
+    'r.li.pielou', 'r.li.renyi', 'r.li.richness', 'r.li.shannon', 'r.li.shape',
+    'r.li.simpson', 'r.mapcalc', 'r.mask', 'r.mfilter', 'r.mode', 'r.neighbors',
+    'r.null', 'r.param.scale', 'r.patch', 'r.plane', 'r.profile', 'r.proj',
+    'r.quant', 'r.quantile', 'r.random', 'r.random.cells', 'r.random.surface',
+    'r.reclass', 'r.reclass.area', 'r.recode', 'r.region', 'r.regression.line',
+    'r.regression.multi', 'r.regression.series', 'r.relief', 'r.report',
+    'r.resamp.bspline', 'r.resamp.filter', 'r.resamp.interp', 'r.resample',
+    'r.resamp.rst', 'r.resamp.stats', 'r.rescale', 'r.rescale.eq', 'r.rgb', 'r.ros',
+    'r.series', 'r.series.accumulate', 'r.series.interp', 'r.shade',
+    'r.sim.sediment', 'r.sim.water', 'r.slope.aspect', 'r.solute.transport',
+    'r.spread', 'r.spreadpath', 'r.statistics', 'r.stats', 'r.stats.quantile',
+    'r.stats.zonal', 'r.stream.extract', 'r.sun', 'r.sunhours', 'r.sunmask',
+    'r.support', 'r.support.stats', 'r.surf.area', 'r.surf.contour',
+    'r.surf.fractal', 'r.surf.gauss', 'r.surf.idw', 'r.surf.random', 'r.terraflow',
+    'r.texture', 'r.thin', 'r.tile', 'r.tileset', 'r.timestamp', 'r.topidx',
+    'r.topmodel', 'r.to.rast3', 'r.to.rast3elev', 'r.to.vect', 'r.transect',
+    'r.univar', 'r.uslek', 'r.usler', 'r.viewshed', 'r.vol.dem', 'r.volume',
+    'r.walk', 'r.water.outlet', 'r.watershed', 'r.what', 'r.what.color', 'r.info',
+    'g.region', 'g.mapset', 'g.proj', 'g.remove', 'g.rename', 'g.version',
+    'g.list', 'g.findfile', 'g.gisenv', 'i.vi', 'v.in.ascii', 't.rast.sample',
+    'r.out.png', 'r.colors.out', 'd.rast', 'd.vect', 'd.legend', 't.rast.aggr_func',
+    'd.rast.multi', 'v.buffer', 't.rast.extract', 't.rast.mapcalc', 't.rast.series',
+    't.rast.colors', 't.info', 't.rast.list', 't.rast.univar', 'importer',
+    'exporter']
 
 
 class Configuration(object):
 
     def __init__(self):
         """
-        The constructor creates default parameter that can be overwritten with a read() call
+        The constructor creates default parameter that can be overwritten with
+        a read() call
         """
 
         home = os.getenv("HOME")
 
-        # GRASS
-        self.GRASS_DATABASE = "%s/actinia/grassdb" % home  # The GRASS global database
+        """GRASS"""
+        # The GRASS global database
         # The GRASS database in which the user locations
-        self.GRASS_USER_DATABASE = "%s/actinia/userdata" % home
-        #                                                          are stored. This is the base path, der user group
-        #                                                          will be added on runtime
+        # are stored. This is the base path, der user group
+        # will be added on runtime
+        self.GRASS_DATABASE = "%s/actinia/grassdb" % home
         # The default GRASS location in the global database that
-        self.GRASS_DEFAULT_LOCATION = "nc_spm_08"
-        #                                            is used for location generation
+        # is used for location generation
+        self.GRASS_USER_DATABASE = "%s/actinia/userdata" % home
         # The directory to store temporary GRASS databases
-        self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home
+        self.GRASS_DEFAULT_LOCATION = "nc_spm_08"
         # Directory to store exported resources
+        self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home
         self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home
-        self.GRASS_RESOURCE_QUOTA = 100  # The size quota of the resource storage in Gigibit
-        self.GRASS_GIS_BASE = "/usr/local/grass78/"  # Installation directory of GRASS
+        # The size quota of the resource storage in Gigibit
+        self.GRASS_RESOURCE_QUOTA = 100
+        # Installation directory of GRASS
+        self.GRASS_GIS_BASE = "/usr/local/grass78/"
         self.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass78"
         self.GRASS_ADDON_PATH = "%s/.grass7/addons/" % home
         self.GRASS_MODULES_XML_PATH = os.path.join(
             self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
-        # The path to the activation
+        # The path to the activation script of the python2 venv (old)
         self.GRASS_VENV = "%s/src/actinia/grass_venv/bin/activate_this.py" % home
-        #                                                                          script of the python2 venv (old)
 
-        # DEFAULT LIMITS when a user is created
+        """
+        LIMITS
+        DEFAULT LIMITS when a user is created
+        """
         # Maximum number of cells that are allowed to process
         self.MAX_CELL_LIMIT = 1000 * 1000 * 1000
-        self.PROCESS_TIME_LIMT = 600   # Maximum number of seconds an async process is
-        #                                allowed to run
-        self.PROCESS_NUM_LIMIT = 1000  # Maximum number of processes in a process chain
-        self.NUMBER_OF_WORKERS = 3     # The number of queues that process jobs
+        # Maximum number of seconds an async process is allowed to run
+        self.PROCESS_TIME_LIMT = 600
+        # Maximum number of processes in a process chain
+        self.PROCESS_NUM_LIMIT = 1000
+        # The number of queues that process jobs
+        self.NUMBER_OF_WORKERS = 3
 
-        # API SETTINGS
-        self.CHECK_CREDENTIALS = True  # If set False all credential checks are disabled
-        self.CHECK_LIMITS = True       # If set False all limit checks are disabled
-        self.LOG_API_CALL = True       # If set False the API calls are not logged
-        self.LOGIN_REQUIRED = True     # If set False, login is not required
-        self.FORCE_HTTPS_URLS = False  # Force the use of https in response urls that
-        #                                point to actinia services like status URL or data storage
-        self.PLUGINS = []  # ["actinia_satellite_plugin", "actinia_statistic_plugin"]
+        """
+        API SETTINGS
+        """
+        # CHECK_CREDENTIALS: If set False all credential checks are disabled
+        self.CHECK_CREDENTIALS = True
+        # CHECK_LIMITS: If set False all limit checks are disabled
+        self.CHECK_LIMITS = True
+        # LOG_API_CALL: If set False the API calls are not logged
+        self.LOG_API_CALL = True
+        # LOGIN_REQUIRED: If set False, login is not required
+        self.LOGIN_REQUIRED = True
+        # FORCE_HTTPS_URLS: Force the use of https in response urls that
+        # point to actinia services like status URL or data storage
+        self.FORCE_HTTPS_URLS = False
+        # PLUGINS: e.g. ["actinia_satellite_plugin", "actinia_statistic_plugin"]
+        self.PLUGINS = []
 
-        # REDIS
-        self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
-        self.REDIS_SERVER_PORT = 6379             # The port of the redis server
-        self.REDIS_SERVER_PW = None             # The password of the redis server
-        # Default expire time is 10 days for resource logs,
+        """
+        REDIS
+        """
+        # The hostname of the redis server
+        self.REDIS_SERVER_URL = "127.0.0.1"
+        # The port of the redis server
+        self.REDIS_SERVER_PORT = 6379
+        # The password of the redis server
+        self.REDIS_SERVER_PW = None
+        # Default expire time is 10 days for resource logs, that are used for
+        # calculating the price of resource usage
         self.REDIS_RESOURCE_EXPIRE_TIME = 864000
-        #                                           that are used for calculating the price of resource usage
-        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"  # The hostname of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PORT = 6379   # The port of the redis work queue server
-        self.REDIS_QUEUE_JOB_TTL = 0          # This is the time the rq:job will be stored in the redis
-        self.WORKER_QUEUE_NAME = "job_queue"  # The base name of the redis worker queue,
-        #                                       it will be extended by a numerical suffix
-        #                                       that represents the worker id/number
-        #                                       database to re-queue it, usually this is not necessary
-        # The base name of the redis worker queue logfile,
+        # The hostname of the redis work queue server
+        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"
+        # The port of the redis work queue server
+        self.REDIS_QUEUE_SERVER_PORT = 6379
+        # This is the time the rq:job will be stored in the redis
+        self.REDIS_QUEUE_JOB_TTL = 0
+        # The base name of the redis worker queue, it will be extended by a
+        # numerical suffix that represents the worker id/number database to
+        # re-queue it, usually this is not necessary
+        self.WORKER_QUEUE_NAME = "job_queue"
+        # The base name of the redis worker queue logfile, it will be extended
+        # by a numerical suffix that represents the worker id/number
         self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home
-        #                                                                 it will be extended by a numerical suffix
-        #                                                                 that represents the worker id/number
-        # MISC
+
+        """
+        MISC
+        """
         # The directory to store temporary files
         self.TMP_WORKDIR = "%s/actinia/workspace/tmp" % home
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
@@ -143,18 +179,30 @@ class Configuration(object):
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
 
-        # Logging
-        self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
+        """
+        LOGGING
+        """
+        # Logging: 1 Error, 2 Warning, 3 Info, 4 Debug
+        self.LOG_LEVEL = 1
         # The logging interface to use: "stdout" or "fluentd" (file will always be used)
         self.LOG_INTERFACE = "stdout"
-        self.LOG_STDOUT_FORMAT = "colored"  # The logformat to use for stdout: "colored" or "json"
-        self.LOG_FILE_FORMAT = "colored"    # The logformat to use in file: "colored" or "json"
-        # The logformat for the stderr logger: "plain" or "default", default will use STDOUT / FILE format
+        # The logformat to use for stdout: "colored" or "json"
+        self.LOG_STDOUT_FORMAT = "colored"
+        # The logformat to use in file: "colored" or "json"
+        self.LOG_FILE_FORMAT = "colored"
+        # The logformat for the stderr logger: "plain" or "default", default
+        # will use STDOUT / FILE format
         self.LOG_STDERR_FORMAT = "plain"
-        self.LOG_FLUENT_HOST = "127.0.0.1"  # The Fluentd host used for fluent logging
-        self.LOG_FLUENT_PORT = 24224        # The Fluentd host used for fluent logging
+        # The Fluentd host used for fluent logging
+        self.LOG_FLUENT_HOST = "127.0.0.1"
+        # The Fluentd host used for fluent logging
+        self.LOG_FLUENT_PORT = 24224
 
-        self.DEFAULT_USER = "user"         # If authentication is not required, a default user is used
+        """
+        MANAGEMENT
+        """
+        # If authentication is not required, a default user is used
+        self.DEFAULT_USER = "user"
         # If authentication is not required, a default group is used
         self.DEFAULT_USER_GROUP = "group"
 
@@ -165,13 +213,16 @@ class Configuration(object):
         self.S3_AWS_ACCESS_KEY_ID = ""
         self.S3_AWS_SECRET_ACCESS_KEY = ""
         self.S3_AWS_DEFAULT_REGION = ''
-        self.S3_AWS_RESOURCE_BUCKET = ""  # The AWS S3 bucket to store user resources
+        # The AWS S3 bucket to store user resources
+        self.S3_AWS_RESOURCE_BUCKET = ""
 
         # GOOGLE CLOUD STORAGE (GCS) CREDENTIALS
-        self.GOOGLE_APPLICATION_CREDENTIALS = "/etc/GCS_credentials.json"  # This file stores the Google
-        #                                                                    Cloud Storage credentials
-        self.GOOGLE_CLOUD_PROJECT = ""  # The google project
-        self.GCS_RESOURCE_BUCKET = ""   # The Google Cloud Storage bucket to store user resources
+        # This file stores the Google Cloud Storage credentials
+        self.GOOGLE_APPLICATION_CREDENTIALS = "/etc/GCS_credentials.json"
+        # The google project
+        self.GOOGLE_CLOUD_PROJECT = ""
+        # The Google Cloud Storage bucket to store user resources
+        self.GCS_RESOURCE_BUCKET = ""
 
     def __str__(self):
         string = ""

@@ -36,17 +36,20 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class ResourceStorageFilesystem(ResourceStorageBase):
-    """Storage class of generated resources at the disk storage that is configured in the config file
+    """Storage class of generated resources at the disk storage that is configured
+    in the config file
     """
 
     def __init__(self, user_id, resource_id, config, resource_url_base=None):
-        """Storage class of generated resources at the disk storage that is configured in the config file
+        """Storage class of generated resources at the disk storage that is
+        configured in the config file
 
         Args:
             user_id: The user id
             resource_id: The resource id
             config: The configuration of Actinia Core
-            resource_url_base: The base URL name that must be used to create the resource urls
+            resource_url_base: The base URL name that must be used to create the
+                               resource urls
         """
         ResourceStorageBase.__init__(self, user_id, resource_id, config)
 
@@ -73,23 +76,24 @@ class ResourceStorageFilesystem(ResourceStorageBase):
             return
 
         # check if the resource base is accessible
-        if os.path.isdir(self.resource_dir) and os.access(self.resource_dir,
-                                                          os.R_OK | os.X_OK | os.W_OK):
+        if (os.path.isdir(self.resource_dir)
+                and os.access(self.resource_dir, os.R_OK | os.X_OK | os.W_OK)):
             if os.path.exists(self.user_export_path) is False:
                 os.mkdir(self.user_export_path)
                 os.chmod(self.user_export_path, 0o0700)
 
             # Check if the user path can be created if it does not exist
-            if os.path.isdir(self.user_export_path) and os.access(self.user_export_path,
-                                                                  os.R_OK | os.X_OK | os.W_OK):
+            if (os.path.isdir(self.user_export_path)
+                    and os.access(self.user_export_path, os.R_OK | os.X_OK | os.W_OK)):
                 # Create the resource directory
                 if os.path.exists(self.resource_export_path) is False:
                     os.mkdir(self.resource_export_path)
                     os.chmod(self.resource_export_path, 0o0700)
 
                 # Check access just in case the resource exists
-                if os.path.isdir(self.resource_export_path) and os.access(self.resource_export_path,
-                                                                          os.R_OK | os.X_OK | os.W_OK):
+                if (os.path.isdir(self.resource_export_path)
+                        and os.access(
+                        self.resource_export_path, os.R_OK | os.X_OK | os.W_OK)):
                     # TODO Add the directory to the scheduler list
                     pass
                 else:
@@ -122,7 +126,8 @@ class ResourceStorageFilesystem(ResourceStorageBase):
         return self.resource_url_list
 
     def store_resource(self, file_path):
-        """Store a resource (file) at the user resource storage and return an URL to the resource accessible via HTTP
+        """Store a resource (file) at the user resource storage and return an
+        URL to the resource accessible via HTTP
 
         Args:
             file_path:
@@ -148,5 +153,6 @@ class ResourceStorageFilesystem(ResourceStorageBase):
     def remove_resources(self):
         """Remove the resource export path and everything inside
         """
-        if os.path.exists(self.resource_export_path) and os.path.isdir(self.resource_export_path):
+        if (os.path.exists(self.resource_export_path)
+                and os.path.isdir(self.resource_export_path)):
             shutil.rmtree(self.resource_export_path, ignore_errors=True)

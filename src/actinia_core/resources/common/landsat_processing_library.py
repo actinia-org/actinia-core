@@ -37,12 +37,18 @@ __email__ = "soerengebbert@googlemail.com"
 SUPPORTED_MIMETYPES = ["application/zip", "application/tiff", "application/gml"]
 
 SCENE_SUFFIXES = {
-    "LT04": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-    "LT05": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF", "_MTL.txt"],
-    "LE07": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF", "_B6_VCID_1.TIF",
-             "_B7.TIF", "_B8.TIF", "_MTL.txt"],
-    "LC08": ["_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
-             "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF", "_MTL.txt"]}
+    "LT04": [
+        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF",
+        "_B7.TIF", "_MTL.txt"],
+    "LT05": [
+        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF",
+        "_B7.TIF", "_MTL.txt"],
+    "LE07": [
+        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF",
+        "_B6_VCID_1.TIF", "_B7.TIF", "_B8.TIF", "_MTL.txt"],
+    "LC08": [
+        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
+        "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF", "_MTL.txt"]}
 
 RASTER_SUFFIXES = {
     "LT04": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
@@ -74,28 +80,29 @@ def extract_sensor_id_from_scene_id(scene_id):
 
 
 def scene_id_to_google_url(scene_id, suffix):
-    """Convert a landsat scene id into the public google download URL for the required file
+    """Convert a landsat scene id into the public google download URL for the
+    required file
 
     Args:
         scene_id (str): The Landsat scene id
-        suffix (str): The suffix of the file to create the url for,  i.e.: "_B1.TIF" or "_MTL.txt"
+        suffix (str): The suffix of the file to create the url for,  i.e.:
+                      "_B1.TIF" or "_MTL.txt"
     Returns:
         (str)
         The URL to the scene file
     """
     # URL example
-    # https://storage.googleapis.com/gcp-public-data-landsat/LT04/PRE/006/016/LT40060161989006XXX02/LT40060161989006XXX02_MTL.txt
+    # https://storage.googleapis.com/gcp-public-data-landsat/LT04/PRE/006/016/
+    # LT40060161989006XXX02/LT40060161989006XXX02_MTL.txt
 
     # Create the download URL components from the Landsat scene id
     landsat_sensor_id = extract_sensor_id_from_scene_id(scene_id)
     path = scene_id[3:6]
     row = scene_id[6:9]
 
-    url = "https://storage.googleapis.com/gcp-public-data-landsat/%s/PRE/%s/%s/%s/%s%s" % (landsat_sensor_id,
-                                                                                           path, row,
-                                                                                           scene_id,
-                                                                                           scene_id,
-                                                                                           suffix)
+    url = (
+        "https://storage.googleapis.com/gcp-public-data-landsat/%s/PRE/%s/%s/%s/%s%s"
+        % (landsat_sensor_id, path, row, scene_id, scene_id, suffix))
     return url
 
 
@@ -132,24 +139,25 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
     """
     def __init__(self, config, scene_id, temp_file_path,
                  download_cache, send_resource_update, message_logger):
-        """ A collection of functions to generate Landsat4-8 scene related import and processing
-        commands. Each function returns a process chain that can be executed
-        by the async processing classes.
+        """ A collection of functions to generate Landsat4-8 scene related import
+        and processing commands. Each function returns a process chain that can
+        be executed by the async processing classes.
 
         Args:
             config: The Actinia Core configuration object
             scene_id (str): The scene id for which all bands should be downloaded
-            temp_file_path: The path to the temporary directory to store temporary files.
-                            It is assumed that this path is available when the generated
-                            commands are executed.
+            temp_file_path: The path to the temporary directory to store temporary
+                            files. It is assumed that this path is available when
+                            the generated commands are executed.
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
 
         """
 
-        GeoDataDownloadImportSupport.__init__(self, config, temp_file_path, download_cache,
-                                              send_resource_update, message_logger, None)
+        GeoDataDownloadImportSupport.__init__(
+            self, config, temp_file_path, download_cache,
+            send_resource_update, message_logger, None)
 
         self.scene_id = scene_id
         self.landsat_sensor_id = None
@@ -159,12 +167,14 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         self.ndvi_name = None
 
     def _setup(self):
-        """Setup the download of the required Landsat scene from the Google Cloud Storage.
+        """Setup the download of the required Landsat scene from the Google Cloud
+        Storage.
 
-        Check the download cache if the file already exists, to avoid redundant downloads.
-        The downloaded files will be stored in a temporary directory. After the download of all files
-        completes, the downloaded files will be moved to the download cache. This avoids broken
-        files in case a download was interrupted or stopped by termination.
+        Check the download cache if the file already exists, to avoid redundant
+        downloads. The downloaded files will be stored in a temporary directory.
+        After the download of all files completes, the downloaded files will be
+        moved to the download cache. This avoids broken files in case a download
+        was interrupted or stopped by termination.
 
         This method uses wget to gather the landsat scenes from the Google Cloud Storage
         landsat archive using public https address.
@@ -221,13 +231,15 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         toar_commands = []
 
         p = Process(exec_type="grass", executable="i.landsat.toar",
-                    executable_params=["input=%s." % self.scene_id,
-                                       "metfile=%s_%s" % (os.path.join(self.user_download_cache_path,
-                                                                       self.scene_id),
-                                                          "MTL.txt"),
-                                       "method=%s" % option,
-                                       "output=%s_%s." % (self.scene_id, atcor_method),
-                                       "--q"],
+                    executable_params=[
+                        "input=%s." % self.scene_id,
+                        "metfile=%s_%s" % (
+                            os.path.join(
+                                self.user_download_cache_path, self.scene_id),
+                            "MTL.txt"),
+                        "method=%s" % option,
+                        "output=%s_%s." % (self.scene_id, atcor_method),
+                        "--q"],
                     skip_permission_check=True)
         toar_commands.append(p)
         return toar_commands

@@ -31,8 +31,8 @@ import time
 import unittest
 from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
-# from .health_check import health_check
-# from .version import version
+from .health_check import health_check
+from .version import version
 from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common import redis_interface
 from .resources.common.config import global_config

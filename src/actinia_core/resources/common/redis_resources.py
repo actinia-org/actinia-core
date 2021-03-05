@@ -45,15 +45,18 @@ class RedisResourceInterface(RedisBaseInterface):
 
     def __init__(self):
         """
-        The resource database stores information about a resource that was created
-        by a GRASS process or that is in state of creation. The GRASS process will
-        continually update the state of the resource by altering the resource information.
+        The resource database stores information about a resource that was
+        created by a GRASS process or that is in state of creation. The GRASS
+        process will continually update the state of the resource by altering
+        the resource information.
 
-        Other processes can access the state of the resource and deliver it to clients,
-        independently which server process creates and updates the resource.
+        Other processes can access the state of the resource and deliver it to
+        clients, independently which server process creates and updates the
+        resource.
 
-        Database entries are based on setex and have an expiration time of 8640000 seconds
-        (100 days) by default. This can also be set using the Actinia Core config file.
+        Database entries are based on setex and have an expiration time of
+        8640000 seconds (100 days) by default. This can also be set using the
+        Actinia Core config file.
 
         The following scheme should be used::
 
@@ -138,8 +141,8 @@ class RedisResourceInterface(RedisBaseInterface):
             expiration (int): The time in seconds when this resource should expire
 
         """
-        return self.redis_server.setex(self.resource_id_termination_prefix + resource_id,
-                                       expiration, 1)
+        return self.redis_server.setex(
+            self.resource_id_termination_prefix + resource_id, expiration, 1)
 
     def get(self, resource_id):
         """Get the resource entry if exists
@@ -175,8 +178,8 @@ class RedisResourceInterface(RedisBaseInterface):
     def get_termination(self, resource_id):
         """Get the resource termination entry if exists
 
-        The running job will check for termination periodically and will terminate
-        the job if an entry exists.
+        The running job will check for termination periodically and will
+        terminate the job if an entry exists.
 
         Args:
             resource_id (str): The unique id of the resource
@@ -185,7 +188,8 @@ class RedisResourceInterface(RedisBaseInterface):
             bool:
             True or False
         """
-        return bool(self.redis_server.get(self.resource_id_termination_prefix + resource_id))
+        return bool(self.redis_server.get(
+            self.resource_id_termination_prefix + resource_id))
 
     def get_termination_list(self, regexpr):
         """Get a list of termination resource entries if exists
@@ -223,7 +227,8 @@ class RedisResourceInterface(RedisBaseInterface):
             resource_id (str): The unique id of the resource
 
         """
-        return self.redis_server.delete(self.resource_id_termination_prefix + resource_id)
+        return self.redis_server.delete(
+            self.resource_id_termination_prefix + resource_id)
 
 
 # Create the Redis interface instance
@@ -318,7 +323,8 @@ if __name__ == '__main__':
     import signal
     import time
 
-    pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
+    pid = os.spawnl(
+        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
 
     time.sleep(1)
 

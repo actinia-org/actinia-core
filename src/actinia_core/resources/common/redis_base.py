@@ -63,7 +63,9 @@ class RedisBaseInterface(object):
         try:
             self.redis_server.ping()
         except redis.exceptions.ResponseError as e:
-            print('ERROR: Could not connect to redis with ' + host, port, password, str(e))
+            print(
+                'ERROR: Could not connect to redis with ' + host,
+                port, password, str(e))
 
     def disconnect(self):
         self.connection_pool.disconnect()

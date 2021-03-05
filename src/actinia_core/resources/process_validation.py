@@ -32,7 +32,8 @@ from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
+from .common.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.app import auth
 from .common.api_logger import log_api_call
 from .common.process_chain import ProcessChainModel
@@ -57,7 +58,8 @@ SCHEMA_DOC = {
     'parameters': [
         {
             'name': 'location_name',
-            'description': 'The location name that contains the data that should be used in the process chain',
+            'description': 'The location name that contains the data that '
+                           'should be used in the process chain',
             'required': True,
             'in': 'path',
             'type': 'string',
@@ -74,7 +76,8 @@ SCHEMA_DOC = {
     'responses': {
         '200': {
             'description': 'The result of the process chain validation. '
-                           'A list of processes that will be executed by Actinia Core',
+                           'A list of processes that will be executed by '
+                           'Actinia Core',
             'schema': ProcessingResponseModel
         },
         '400': {
@@ -92,7 +95,8 @@ class AsyncProcessValidationResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
-        """Validate a process chain asynchronously, check the provided sources and the mapsets."""
+        """Validate a process chain asynchronously, check the provided sources
+        and the mapsets."""
 
         rdc = self.preprocess(has_json=True, has_xml=True,
                               location_name=location_name)
@@ -111,7 +115,8 @@ class SyncProcessValidationResource(ResourceBase):
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
-        """Validate a process chain synchronously, check the provided sources and the mapsets."""
+        """Validate a process chain synchronously, check the provided sources
+        and the mapsets."""
 
         rdc = self.preprocess(has_json=True, has_xml=True,
                               location_name=location_name)

@@ -90,7 +90,8 @@ class EphemeralCustomProcessing(EphemeralProcessing):
         """Setup the variables of this class
 
         Args:
-            rdc (ResourceDataContainer): The data container that contains all required variables for processing
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
         """
 
         EphemeralProcessing.__init__(self, *args)

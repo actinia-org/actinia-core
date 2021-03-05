@@ -68,7 +68,8 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The password hash of the user id
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "password_hash").decode()
+        return self.redis_server.hget(
+            self.user_id_hash_prefix + user_id, "password_hash").decode()
 
     def get_role(self, user_id):
         """Return the role of the user
@@ -82,7 +83,8 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The api key of the user id
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_role").decode()
+        return self.redis_server.hget(
+            self.user_id_hash_prefix + user_id, "user_role").decode()
 
     def get_group(self, user_id):
         """Return the group of the user
@@ -96,7 +98,8 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The user group
         """
-        return self.redis_server.hget(self.user_id_hash_prefix + user_id, "user_group").decode()
+        return self.redis_server.hget(
+            self.user_id_hash_prefix + user_id, "user_group").decode()
 
     def get_credentials(self, user_id):
         """Return a dictionary that contains the user credentials
@@ -159,10 +162,12 @@ class RedisUserInterface(RedisBaseInterface):
 
         return True
 
-    def update(self, user_id, user_group=None, password_hash=None, user_role=None, permissions=None):
+    def update(self, user_id, user_group=None, password_hash=None, user_role=None,
+               permissions=None):
         """Update the user credentials.
 
-        Renaming an entry is not allowed, only existing entries with the same user_id can be updated.
+        Renaming an entry is not allowed, only existing entries with the same user_id
+        can be updated.
 
         If a parameter is not provided (set None), the original value will be kept.
 

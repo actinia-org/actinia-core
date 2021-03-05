@@ -51,7 +51,8 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
 
         Args:
             location_name (str): The name of the location
-            target_mapset_name (str): The name of the target mapset, into other mapsets should be merged
+            target_mapset_name (str): The name of the target mapset, into other
+                                      mapsets should be merged
 
         Process arguments must be provided as JSON document in the POST request::
 
@@ -71,7 +72,8 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
               "Status": "accepted",
               "URLs": {
                 "Resources": [],
-                "Status": "http://104.155.60.87/resources/soeren/resource_id-985164c9-1db9-49cf-b2c4-3e8e48500e31"
+                "Status": "http://104.155.60.87/resources/soeren/"
+                          "resource_id-985164c9-1db9-49cf-b2c4-3e8e48500e31"
               },
               "User id": "soeren"
             }
@@ -107,12 +109,13 @@ class PersistentMapsetMerger(PersistentProcessing):
         """Constructor
 
         Args:
-            rdc (ResourceDataContainer): The data container that contains all required variables for processing
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
 
         """
 
         PersistentProcessing.__init__(self, rdc)
-        self.lock_ids = {}                    # This dict holds the lock ids of all locked mapsets
+        self.lock_ids = {}  # This dict holds the lock ids of all locked mapsets
 
     def _check_lock_mapset(self, mapset_name):
         """Check if the mapset exists and lock it
@@ -135,15 +138,17 @@ class PersistentMapsetMerger(PersistentProcessing):
 
         # Finally lock the mapset for the time that the user can allocate at maximum
         lock_id = "%s/%s/%s" % (self.user_group, self.location_name, mapset_name)
-        ret = self.lock_interface.lock(resource_id=lock_id,
-                                       expiration=self.process_time_limit * self.process_num_limit)
+        ret = self.lock_interface.lock(
+            resource_id=lock_id,
+            expiration=self.process_time_limit * self.process_num_limit)
 
         if ret == 0:
             raise AsyncProcessError(
                 "Unable to lock mapset <%s>, resource is already locked" % mapset_name)
         self.message_logger.info("Mapset <%s> locked" % mapset_name)
 
-        # if we manage to come here, the lock was correctly set, hence store the lock id for later unlocking
+        # if we manage to come here, the lock was correctly set, hence store
+        # the lock id for later unlocking
         self.lock_ids[lock_id] = mapset_name
 
     def _check_lock_source_mapsets(self, source_mapsets):
@@ -189,9 +194,11 @@ class PersistentMapsetMerger(PersistentProcessing):
         # Copy each mapset into the target
         for lock_id in self.lock_ids:
             # Check for termination requests
-            if self.resource_logger.get_termination(self.user_id, self.resource_id) is True:
-                raise AsyncProcessTermination("Mapset merging was terminated "
-                                              "by user request at setp %i of %i" % (step, steps))
+            if self.resource_logger.get_termination(
+                    self.user_id, self.resource_id) is True:
+                raise AsyncProcessTermination(
+                    "Mapset merging was terminated "
+                    "by user request at setp %i of %i" % (step, steps))
 
             mapset_name = self.lock_ids[lock_id]
             mapsets_to_merge.append(mapset_name)

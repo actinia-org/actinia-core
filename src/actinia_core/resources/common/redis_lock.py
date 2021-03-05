@@ -41,9 +41,11 @@ class RedisLockingInterface(object):
     The Redis locking database interface
     """
     # Redis LUA script to lock e resource
-    # Two keys must be provided, the name of the resource and the expiration time in seconds
+    # Two keys must be provided, the name of the resource and the expiration time
+    # in seconds
     # lock_resource("location/mapset", 30)
-    # Return 1 for success and 0 for unable to acquire lock because resource-lock already exists
+    # Return 1 for success and 0 for unable to acquire lock because resource-lock
+    # already exists
     lua_lock_resource = """
     local value_exists = redis.call('EXISTS', KEYS[1])
     if value_exists == 0 then
@@ -54,7 +56,8 @@ class RedisLockingInterface(object):
     """
 
     # LUA script to extend the lock valid time
-    # Two keys must be provided, the name of the resource and the expiration time in seconds
+    # Two keys must be provided, the name of the resource and the expiration time
+    # in seconds
     # extend_resource_lock("user/location/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
@@ -138,7 +141,8 @@ class RedisLockingInterface(object):
         """Get the status of a resource lock
 
         Args:
-            resource_id (str): Name of the resource to lock, for example "location/mapset"
+            resource_id (str): Name of the resource to lock, for example
+                               "location/mapset"
 
         Returns:
              bool:
@@ -157,12 +161,14 @@ class RedisLockingInterface(object):
         in the Redis database.
 
         Args:
-            resource_id (str): Name of the resource to lock, for example "location/mapset"
+            resource_id (str): Name of the resource to lock, for example
+                               "location/mapset"
             expiration (int): The time in seconds for which the lock is acquired
 
         Returns:
              int:
-             1 for success and 0 if unable to acquire lock because resource-lock already exists
+             1 for success and 0 if unable to acquire lock because resource-lock
+             already exists
 
         """
 
@@ -178,16 +184,19 @@ class RedisLockingInterface(object):
         in the Redis database.
 
         Args:
-            resource_id (str): Name of the resource to extent the lock, for example "location/mapset"
+            resource_id (str): Name of the resource to extent the lock, for example
+                               "location/mapset"
             expiration (int): The time in seconds for which the lock is acquired
 
         Returns:
             int:
-            1 for success and 0 if unable to extent the lock because resource does not exists
+            1 for success and 0 if unable to extent the lock because resource does
+            not exists
 
         """
         keys = [self.lock_prefix + str(resource_id), expiration]
-        # print("Extend Lock", expiration, self.lock_prefix + str(resource_id), str(self))
+        # print("Extend Lock", expiration, self.lock_prefix + str(resource_id),
+        # str(self))
         return self.call_extend_resource_lock(keys=keys)
 
     def unlock(self, resource_id):
@@ -198,7 +207,8 @@ class RedisLockingInterface(object):
         in the Redis database.
 
         Args:
-            resource_id (str): Name of the resource to remove the lock, for example "location/mapset"
+            resource_id (str): Name of the resource to remove the lock, for example
+                               "location/mapset"
 
         Returns:
             int:

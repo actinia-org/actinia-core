@@ -61,8 +61,10 @@ class ResourceDataContainer(object):
         """
 
         Args:
-            grass_data_base (str): GRASS GIS database root directory that contains global locations
-            grass_user_data_base (str): GRASS GIS database user directory that contains group specific locations
+            grass_data_base (str): GRASS GIS database root directory that contains
+                                   global locations
+            grass_user_data_base (str): GRASS GIS database user directory that
+                                        contains group specific locations
             grass_base_dir (str): The installation directory of GRASS GIS
             request_data (dict): The module chain dictionary
             user_id (str): The user id
@@ -74,10 +76,13 @@ class ResourceDataContainer(object):
             orig_time (time): The time of origin (seconds)
             orig_datetime (datetime): The datetime of origin (datetime format)
             user_credentials (dict): The user credentials dict
-            config (actinia_core.resources.common.config.Configuration): The actinia configuration
+            config (actinia_core.resources.common.config.Configuration): The actinia
+                                                                         configuration
             location_name (str): The name of the location to work in
-            mapset_name (str): The name of the target mapset in which the computation should be performed
-            map_name: The name of the map or other resource (raster, vector, STRDS, color, ...)
+            mapset_name (str): The name of the target mapset in which the
+                               computation should be performed
+            map_name: The name of the map or other resource (raster, vector, STRDS,
+                      color, ...)
 
         """
 
@@ -108,7 +113,8 @@ class ResourceDataContainer(object):
         """Put all required data for processing into the data object
 
         Args:
-            user_data: Any payload that must be passed in addition tot the request data, like command arguments and so on
+            user_data: Any payload that must be passed in addition tot the request
+                       data, like command arguments and so on
 
         """
         self.user_data = user_data
@@ -137,7 +143,8 @@ class ResourceDataContainer(object):
     def create_storage_interface(self):
         """Create the storage interface
 
-        Returns: Either ResourceStorageFilesystem, ResourceStorageGCS or ResourceStorageS3
+        Returns: Either ResourceStorageFilesystem, ResourceStorageGCS or
+                 ResourceStorageS3
         """
         if self.is_storage_model_file():
             return ResourceStorageFilesystem(user_id=self.user_id,

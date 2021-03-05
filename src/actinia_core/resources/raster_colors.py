@@ -36,7 +36,8 @@ from .common.redis_interface import enqueue_job
 import tempfile
 import os
 import atexit
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel,\
+from .common.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel, \
     StringListProcessingResultResponseModel
 
 __license__ = "GPLv3"
@@ -50,13 +51,14 @@ class RasterColorModel(Schema):
     """Response schema that is used in cases that no asynchronous run was performed.
 
     """
-    description = "Set the color table for an existing raster map layer with a set of rules, " \
-                  "a specific color or an other raster map layer"
+    description = "Set the color table for an existing raster map layer with a " \
+                  "set of rules, a specific color or an other raster map layer"
     type = 'object'
     properties = {
         'rules': {
             'type': 'array',
-            'description': 'A list of rules to set the color table of a raster map layer',
+            'description': 'A list of rules to set the color table of a raster '
+                           'map layer',
             'items': {'type': "string"}
         },
         'color': {
@@ -65,7 +67,8 @@ class RasterColorModel(Schema):
         },
         'raster': {
             'type': 'string',
-            'description': 'The name of an existing raster map layer to copy the color table from'
+            'description': 'The name of an existing raster map layer to copy '
+                           'the color table from'
         }
     }
     example = {
@@ -82,7 +85,8 @@ class SyncPersistentRasterColorsResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Get the color definition of an existing raster map layer. Minimum required user role: user.',
+        'description': 'Get the color definition of an existing raster map layer. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -93,14 +97,16 @@ class SyncPersistentRasterColorsResource(ResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
             },
             {
                 'name': 'raster_name',
-                'description': 'The name of the raster map layer to get the color table from',
+                'description': 'The name of the raster map layer to get the '
+                               'color table from',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
@@ -138,7 +144,8 @@ class SyncPersistentRasterColorsResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Set the color definition for an existing raster map layer. Minimum required user role: user.',
+        'description': 'Set the color definition for an existing raster map '
+                       'layer. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -149,14 +156,16 @@ class SyncPersistentRasterColorsResource(ResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
             },
             {
                 'name': 'raster_name',
-                'description': 'The name of the raster map layer to set the color table',
+                'description': 'The name of the raster map layer to set the '
+                               'color table',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
@@ -208,21 +217,26 @@ class SyncPersistentRasterColorsResource(ResourceBase):
                               map_name=raster_name)
 
         if isinstance(self.request_data, dict) is False:
-            return self.get_error_response(message="Missing raster color definition in JSON content")
+            return self.get_error_response(
+                message="Missing raster color definition in JSON content")
 
         if len(self.request_data) > 1:
-            return self.get_error_response(message="The color settings expect a single entry")
+            return self.get_error_response(
+                message="The color settings expect a single entry")
 
         if "rules" in self.request_data:
             if isinstance(self.request_data["rules"], list) is False:
-                return self.get_error_response(message="Wrong rules definitions in JSON content")
+                return self.get_error_response(
+                    message="Wrong rules definitions in JSON content")
         elif "color" in self.request_data:
             pass
         elif "raster" in self.request_data:
             if "@" not in self.request_data["raster"]:
-                return self.get_error_response(message="Missing mapset definition in raster name")
+                return self.get_error_response(
+                    message="Missing mapset definition in raster name")
         else:
-            return self.get_error_response(message="Missing raster color definitions in JSON content")
+            return self.get_error_response(
+                message="Missing raster color definitions in JSON content")
 
         enqueue_job(self.job_timeout, start_job_from_rules, rdc)
         http_code, response_model = self.wait_until_finish()

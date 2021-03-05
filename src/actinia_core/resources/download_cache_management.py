@@ -37,7 +37,8 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
-from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel
+from .common.response_models import \
+    StorageResponseModel, StorageModel, ProcessingResponseModel
 from .common.api_logger import log_api_call
 from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
@@ -56,14 +57,16 @@ class SyncDownloadCacheResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Cache Management'],
-        'description': 'Get the current size of the download cache. Minimum required user role: admin.',
+        'description': 'Get the current size of the download cache. '
+                       'Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'The current state of the download cache',
                 'schema': StorageResponseModel
             },
             '400': {
-                'description': 'The error message why cache information gathering did not succeeded',
+                'description': 'The error message why cache information '
+                               'gathering did not succeeded',
                 'schema': ProcessingResponseModel
             }
         }
@@ -82,7 +85,8 @@ class SyncDownloadCacheResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Cache Management'],
-        'description': 'Clean the download cache and remove all cached data. Minimum required user role: admin.',
+        'description': 'Clean the download cache and remove all cached data. '
+                       'Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'Processing status of cache deletion',
@@ -126,7 +130,8 @@ class DownloadCacheSize(EphemeralProcessing):
 
         self._setup()
 
-        if os.path.exists(self.user_download_cache_path) and os.path.isdir(self.user_download_cache_path):
+        if (os.path.exists(self.user_download_cache_path)
+                and os.path.isdir(self.user_download_cache_path)):
 
             executable = "/usr/bin/du"
             args = ["-sb", self.user_download_cache_path]
@@ -138,16 +143,18 @@ class DownloadCacheSize(EphemeralProcessing):
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
             quota_size = int(self.config.DOWNLOAD_CACHE_QUOTA * 1024 * 1024 * 1024)
 
-            model = StorageModel(used=dc_size,
-                                 free=quota_size - dc_size,
-                                 quota=quota_size,
-                                 free_percent=int(100 * (quota_size - dc_size) / quota_size))
+            model = StorageModel(
+                used=dc_size,
+                free=quota_size - dc_size,
+                quota=quota_size,
+                free_percent=int(100 * (quota_size - dc_size) / quota_size))
             self.module_results = model
 
             self.finish_message = "Download cache size successfully computed"
         else:
             raise AsyncProcessError(
-                "Download cache directory <%s> does not exist." % self.user_download_cache_path)
+                "Download cache directory <%s> does not exist."
+                % self.user_download_cache_path)
 
 
 def start_download_cache_remove(*args):
@@ -169,7 +176,8 @@ class DownloadCacheDelete(PersistentProcessing):
 
         self._setup()
 
-        if os.path.exists(self.user_download_cache_path) and os.path.isdir(self.user_download_cache_path):
+        if (os.path.exists(self.user_download_cache_path)
+                and os.path.isdir(self.user_download_cache_path)):
             executable = "/bin/rm"
             args = ["-rf", self.user_download_cache_path]
 
@@ -181,4 +189,5 @@ class DownloadCacheDelete(PersistentProcessing):
             self.finish_message = "Download cache successfully removed."
         else:
             raise AsyncProcessError(
-                "Download cache directory <%s> does not exist." % self.user_download_cache_path)
+                "Download cache directory <%s> does not exist."
+                % self.user_download_cache_path)

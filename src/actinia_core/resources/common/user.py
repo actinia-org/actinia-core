@@ -76,11 +76,11 @@ class ActiniaUser(object):
                  process_time_limit=global_config.PROCESS_TIME_LIMT):
         """Constructor
 
-        Initialize and create a user object. To commit a new user to the database, set all required permissions
-        and call the commit() function.
+        Initialize and create a user object. To commit a new user to the database,
+        set all required permissions and call the commit() function.
 
-        To read the data of an existing user, simple initialize the constructor with the user_id and
-        call read_from_db().
+        To read the data of an existing user, simple initialize the constructor
+        with the user_id and call read_from_db().
 
         Args:
             user_id (str): The id (name, email, ..) of the user that must be unique
@@ -89,8 +89,10 @@ class ActiniaUser(object):
             accessible_datasets (dict): Dict of location:mapset lists
             accessible_modules (list): A list of modules that are allowed to use
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
-            process_time_limit (int): The maximum number of seconds a user process is allowed to run
+            process_num_limit (int): The maximum number of processes the user is
+                                     allowed to run in a singel chain
+            process_time_limit (int): The maximum number of seconds a user process
+                                      is allowed to run
 
         """
 
@@ -669,8 +671,10 @@ class ActiniaUser(object):
             accessible_datasets (dict): The user role (admin, user, guest)
             accessible_modules (list): Dict of location:mapset lists
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
-            process_time_limit (int): The maximum number of seconds a user process is allowed to run
+            process_num_limit (int): The maximum number of processes the user is
+                                     allowed to run in a singel chain
+            process_time_limit (int): The maximum number of seconds a user process
+                                      is allowed to run
 
         Returns:
             actinia_core_api.resources.common.user.ActiniaUser:

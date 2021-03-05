@@ -33,7 +33,8 @@ from flask_restful_swagger_2 import swagger
 from .resource_base import ResourceBase
 from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
+from .common.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -53,9 +54,11 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
-                       'The link to the exported raster map layer is located in the JSON response.'
-                       'The current region settings of the mapset are used to export the raster layer. Minimum required user role: user.',
+        'description': 'Export an existing raster map layer as GTiff or COG '
+                       '(if COG driver available). The link to the exported '
+                       'raster map layer is located in the JSON response.'
+                       'The current region settings of the mapset are used to '
+                       'export the raster layer. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -67,7 +70,8 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -86,12 +90,14 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
         'produces': ["application/json"],
         'responses': {
             '200': {
-                'description': 'The response including the URL to the raster map layer GeoTiff file',
+                'description': 'The response including the URL to the raster '
+                               'map layer GeoTiff file',
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why gathering raster map '
-                               'layer information did not succeeded',
+                'description': 'The error message and a detailed log why'
+                               ' gathering raster map layer information did '
+                               'not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -115,7 +121,8 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
         return make_response(jsonify(response_model), html_code)
 
 
-class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerExporterResource):
+class AsyncEphemeralRasterLayerRegionExporterResource(
+        AsyncEphemeralRasterLayerExporterResource):
     """This class represents a raster layer resource as geotiff file that
     will be created asynchronously.
 
@@ -128,9 +135,10 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Export an existing raster map layer as GTiff or COG (if COG driver available).'
-                       'The link to the exported raster map '
-                       'layer is located in the JSON response. Minimum required user role: user.',
+        'description': 'Export an existing raster map layer as GTiff or COG '
+                       '(if COG driver available). The link to the exported '
+                       'raster map layer is located in the JSON response. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -142,7 +150,8 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -161,18 +170,21 @@ class AsyncEphemeralRasterLayerRegionExporterResource(AsyncEphemeralRasterLayerE
         'produces': ["application/json"],
         'responses': {
             '200': {
-                'description': 'The response including the URL to the raster map layer GeoTiff file',
+                'description': 'The response including the URL to the raster '
+                               'map layer GeoTiff file',
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why gathering raster map '
-                               'layer information did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'gathering raster map layer information did '
+                               'not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name, raster_name):
-        """Export an existing raster map layer as GeoTiff using the raster map specific region.
+        """Export an existing raster map layer as GeoTiff using the raster
+        map specific region.
         """
         return self._execute(location_name, mapset_name, raster_name, True)
 
@@ -193,7 +205,8 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
         """Setup the variables of this class
 
         Args:
-            rdc (ResourceDataContainer): The data container that contains all required variables for processing
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
 
         """
 
@@ -221,11 +234,13 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
         self.required_mapsets.append(self.mapset_name)
         self._create_temporary_grass_environment(source_mapset_name="PERMANENT")
 
-        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will be fixed in GDAL 3.1.4
+        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will
+        # be fixed in GDAL 3.1.4
         # use r.out.gdal -c to avoid the bug
         format = "COG"
         from osgeo import gdal
-        if "COG" not in [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
+        if "COG" not in [
+                gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
             format = "GTiff"
 
         export_dict = {"name": self.raster_name + "@" + self.mapset_name,

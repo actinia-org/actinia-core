@@ -134,7 +134,8 @@ class SetRegionModel(Schema):
 
 
 class MapLayerRegionResourceBase(ResourceBase):
-    """The base class for map layer (raster, vector) resources that make use of region settings
+    """The base class for map layer (raster, vector) resources that make use of
+    region settings
     """
 
     def create_parser(self):
@@ -170,17 +171,27 @@ class MapLayerRegionResourceBase(ResourceBase):
         parser.add_argument('res', type=float,
                             help='Resolution must be specified as double value')
         parser.add_argument(
-            'nsres', type=float, help='North-South resolution must be specified as double value')
+            'nsres', type=float,
+            help='North-South resolution must be specified as double value')
         parser.add_argument(
-            'ewres', type=float, help='East-West resolution must be specified as double value')
+            'ewres', type=float,
+            help='East-West resolution must be specified as double value')
         parser.add_argument(
-            'raster', type=str, help='The raster layer name from which the region should be used, with mapset information: name@mapset')
+            'raster', type=str,
+            help='The raster layer name from which the region should be used, '
+                 'with mapset information: name@mapset')
         parser.add_argument(
-            'align', type=str, help='The raster layer name from which the region should be aligned, with mapset information: name@mapset')
+            'align', type=str,
+            help='The raster layer name from which the region should be aligned, '
+                 'with mapset information: name@mapset')
         parser.add_argument(
-            'zoom', type=str, help='The raster layer name to which the region should be zoomed, with mapset information: name@mapset')
+            'zoom', type=str,
+            help='The raster layer name to which the region should be zoomed, '
+                 'with mapset information: name@mapset')
         parser.add_argument(
-            'vector', type=str, help='The vector layer name from which the region should be used, with mapset information: name@mapset')
+            'vector', type=str,
+            help='The vector layer name from which the region should be used, '
+                 'with mapset information: name@mapset')
 
         return parser
 
@@ -213,35 +224,41 @@ class MapLayerRegionResourceBase(ResourceBase):
         if "nsres" in args and args["nsres"] is not None:
             options["nsres"] = args["nsres"]
             if options["nsres"] < 0:
-                return self.get_error_response(message="North-south resolution can not be negative")
+                return self.get_error_response(
+                    message="North-south resolution can not be negative")
 
         if "ewres" in args and args["ewres"] is not None:
             options["ewres"] = args["ewres"]
             if options["ewres"] < 0:
-                return self.get_error_response(message="East-west resolution can not be negative")
+                return self.get_error_response(
+                    message="East-west resolution can not be negative")
 
         if "raster" in args and args["raster"] is not None:
             options["raster"] = args["raster"]
             if "@" not in args["raster"]:
-                return self.get_error_response(message="The raster layer to set the region from must "
-                                                       "contain the mapset: name@mapset")
+                return self.get_error_response(
+                    message="The raster layer to set the region from must "
+                            "contain the mapset: name@mapset")
 
         if "align" in args and args["align"] is not None:
             options["align"] = args["align"]
             if "@" not in args["align"]:
-                return self.get_error_response(message="The raster layer to align the region from must "
-                                                       "contain the mapset: name@mapset")
+                return self.get_error_response(
+                    message="The raster layer to align the region from must "
+                            "contain the mapset: name@mapset")
 
         if "zoom" in args and args["zoom"] is not None:
             options["zoom"] = args["zoom"]
             if "@" not in args["zoom"]:
-                return self.get_error_response(message="The raster layer to zoom the region to must "
-                                                       "contain the mapset: name@mapset")
+                return self.get_error_response(
+                    message="The raster layer to zoom the region to must "
+                            "contain the mapset: name@mapset")
 
         if "vector" in args and args["vector"] is not None:
             options["vector"] = args["vector"]
             if "@" not in args["vector"]:
-                return self.get_error_response(message="The vector layer to set the region from must "
-                                                       "contain the mapset: name@mapset")
+                return self.get_error_response(
+                    message="The vector layer to set the region from must "
+                            "contain the mapset: name@mapset")
 
         return options

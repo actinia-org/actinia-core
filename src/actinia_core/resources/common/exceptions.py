@@ -22,8 +22,8 @@
 #######
 
 """
-Actinia Core Exceptions that should be used in case an error occures that is related to the Actinia Core
-functionality
+Actinia Core Exceptions that should be used in case an error occures that is
+related to the Actinia Core functionality
 """
 
 __license__ = "GPLv3"
