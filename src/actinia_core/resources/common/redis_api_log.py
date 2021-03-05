@@ -44,7 +44,10 @@ class RedisAPILogInterface(RedisBaseInterface):
     def __init__(self):
         RedisBaseInterface.__init__(self)
 
+    """
     ########################## API  LOG #######################################
+    """
+
     """
     The API logs are organized by lists that have as key the user id.
     Each API call from a user_id is logged in its dedicated list with

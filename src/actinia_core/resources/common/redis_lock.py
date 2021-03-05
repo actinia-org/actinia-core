@@ -115,7 +115,10 @@ class RedisLockingInterface(object):
     def disconnect(self):
         self.connection_pool.disconnect()
 
+    """
     ########################## LOCK ###########################################
+    """
+
     """
     The lock mechanism can be used to avoid concurrent access to GRASS GIS mapsets
     by several processes. A mapset has a unique id:

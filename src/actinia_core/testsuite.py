@@ -178,8 +178,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                "ECAD": ["PERMANENT"],
                                "latlong_wgs84": ["PERMANENT"]}
 
-        ################### Create users ###################
-
+        # Create users
         cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(name="guest", role="guest",
                                                                                process_num_limit=3,
                                                                                process_time_limit=2,

@@ -3,7 +3,6 @@ ignore =
     W503, # line break before binary operator
     E127, # continuation line over-indented for visual indent
     E265, # block comment should start with '# '
-    E266, # too many leading '#' for block comment
     E501, # line too long (161 > 150 characters)
     W605, # invalid escape sequence '\.'
 

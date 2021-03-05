@@ -164,9 +164,10 @@ class PersistentSTRDSLister(PersistentProcessing):
         self.module_results = mapset_lists
 
 
-###############################################################################
-################ STRDS Management #############################################
-###############################################################################
+"""
+STRDS Management
+"""
+
 
 class STRDSInfoModel(Schema):
     """Schema that contains space-time raster dataset (STRDS) information
