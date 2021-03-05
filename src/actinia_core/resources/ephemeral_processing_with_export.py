@@ -233,7 +233,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
             p = Process(exec_type="grass",
                              executable="g.region",
-                             executable_params =["raster=%s" % raster_name, "-g"],
+                             executable_params=["raster=%s" % raster_name, "-g"],
                              stdin_source=None)
 
             self._update_num_of_steps(1)

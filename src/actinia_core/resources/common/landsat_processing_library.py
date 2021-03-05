@@ -261,7 +261,7 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         ndvi_commands.append(p)
 
         p = Process(exec_type="grass", executable="r.colors",
-                         executable_params =["map=%s" % self.ndvi_name, "color=ndvi"],
+                         executable_params=["map=%s" % self.ndvi_name, "color=ndvi"],
                          skip_permission_check=True)
         ndvi_commands.append(p)
 

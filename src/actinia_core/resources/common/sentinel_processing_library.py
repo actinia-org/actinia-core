@@ -432,7 +432,7 @@ class Sentinel2Processing(object):
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mask",
-                             executable_params =["vector=%s" % self.product_id],
+                             executable_params=["vector=%s" % self.product_id],
                              skip_permission_check=True)
             import_commands.append(p)
 
@@ -443,7 +443,7 @@ class Sentinel2Processing(object):
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.timestamp",
-                             executable_params =["map=%s" % map_name, "date=%s" % timestamp],
+                             executable_params=["map=%s" % map_name, "date=%s" % timestamp],
                              skip_permission_check=True)
             import_commands.append(p)
 
@@ -489,7 +489,7 @@ class Sentinel2Processing(object):
 
         p = Process(exec_type="grass",
                          executable="r.colors",
-                         executable_params =["color=ndvi", "map=%s" % raster_result_name],
+                         executable_params=["color=ndvi", "map=%s" % raster_result_name],
                          skip_permission_check=True)
         ndvi_commands.append(p)
 

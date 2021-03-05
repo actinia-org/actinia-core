@@ -70,7 +70,7 @@ class ActiniaUser(object):
                                       "ECAD": ["PERMANENT"],
                                       "latlong_wgs84": ["PERMANENT"]},
                  accessible_modules=global_config.MODULE_WHITE_LIST,
-                 cell_limit = global_config.MAX_CELL_LIMIT,
+                 cell_limit=global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,
                  process_time_limit=global_config.PROCESS_TIME_LIMT):
         """Constructor
@@ -655,7 +655,7 @@ class ActiniaUser(object):
                                          "ECAD": ["PERMANENT"],
                                          "latlong_wgs84": ["PERMANENT"]},
                     accessible_modules=global_config.MODULE_WHITE_LIST,
-                    cell_limit = global_config.MAX_CELL_LIMIT,
+                    cell_limit=global_config.MAX_CELL_LIMIT,
                     process_num_limit=global_config.PROCESS_NUM_LIMIT,
                     process_time_limit=global_config.PROCESS_TIME_LIMT):
         """Create a new user object and initialize it
