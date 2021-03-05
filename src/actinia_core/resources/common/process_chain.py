@@ -43,7 +43,9 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_EXPORT_FORMATS = ["GTiff", "COG", "GPKG", "SQLite", "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT", "PostgreSQL"]
+SUPPORTED_EXPORT_FORMATS = [
+    "GTiff", "COG", "GPKG", "SQLite",
+    "GML", "GeoJSON", "ESRI_Shapefile", "CSV", "TXT", "PostgreSQL"]
 
 
 class IOParameterBase(Schema):
@@ -605,13 +607,16 @@ class ProcessChainConverter(object):
                 if "auth" in process_chain["webhooks"]:
                     self.webhook_auth = process_chain["webhooks"]["auth"]
                     # username is expected to be without colon (':')
-                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
+                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(
+                        self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     resp = requests.head(self.webhook_finished)
                 if resp.status_code != 200:
-                    raise AsyncProcessError("The finished webhook URL %s can not be accessed." % self.webhook_finished)
+                    raise AsyncProcessError(
+                        "The finished webhook URL %s can not be accessed." % self.webhook_finished)
             else:
-                raise AsyncProcessError("The finished URL is missing in the webhooks definition.")
+                raise AsyncProcessError(
+                    "The finished URL is missing in the webhooks definition.")
 
             if "update" in process_chain["webhooks"]:
                 self.webhook_update = process_chain["webhooks"]["update"]
@@ -619,11 +624,13 @@ class ProcessChainConverter(object):
                 if "auth" in process_chain["webhooks"]:
                     self.webhook_auth = process_chain["webhooks"]["auth"]
                     # username is expected to be without colon (':')
-                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
+                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(
+                        self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
                     resp = requests.head(self.webhook_update)
                 if resp.status_code != 200:
-                    raise AsyncProcessError("The update webhook URL %s can not be accessed." % self.webhook_update)
+                    raise AsyncProcessError(
+                        "The update webhook URL %s can not be accessed." % self.webhook_update)
 
         for process_descr in process_chain["list"]:
 
@@ -664,16 +671,20 @@ class ProcessChainConverter(object):
                 self.message_logger.info(entry)
 
             if "import_descr" not in entry:
-                raise AsyncProcessError("import_descr specification is required in import definition")
+                raise AsyncProcessError(
+                    "import_descr specification is required in import definition")
 
             if "type" not in entry["import_descr"]:
-                raise AsyncProcessError("Type specification is required in import definition")
+                raise AsyncProcessError(
+                    "Type specification is required in import definition")
 
             if "source" not in entry["import_descr"]:
-                raise AsyncProcessError("Source specification is required in import definition")
+                raise AsyncProcessError(
+                    "Source specification is required in import definition")
 
             if entry["import_descr"]["type"] not in ["raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
-                raise AsyncProcessError("Unkown type specification: %s" % entry["import_descr"]["type"])
+                raise AsyncProcessError("Unkown type specification: %s" %
+                                        entry["import_descr"]["type"])
 
             # RASTER; VECTOR, FILE
             if entry["import_descr"]["type"].lower() == "raster" or \
@@ -741,7 +752,8 @@ class ProcessChainConverter(object):
             elif entry["import_descr"]["type"].lower() == "sentinel2":
                 # Check for band information
                 if "sentinel_band" not in entry["import_descr"]:
-                    raise AsyncProcessError("Band specification is required for Sentinel2 scene import")
+                    raise AsyncProcessError(
+                        "Band specification is required for Sentinel2 scene import")
 
                 scene = entry["import_descr"]["source"]
                 band = entry["import_descr"]["sentinel_band"]
@@ -773,7 +785,8 @@ class ProcessChainConverter(object):
             elif entry["import_descr"]["type"].lower() == "landsat":
                 # Check for band information
                 if "landsat_atcor" not in entry["import_descr"]:
-                    raise AsyncProcessError("Atmospheric detection specification is required for Landsat scene import")
+                    raise AsyncProcessError(
+                        "Atmospheric detection specification is required for Landsat scene import")
 
                 atcor = entry["import_descr"]["landsat_atcor"].lower()
 
@@ -797,7 +810,8 @@ class ProcessChainConverter(object):
                 atcor_commands = lp.get_i_landsat_toar_process_list(atcor)
                 downimp_list.extend(atcor_commands)
             else:
-                raise AsyncProcessError("Unknown import type specification: %s" % entry["import_descr"]["type"])
+                raise AsyncProcessError(
+                    "Unknown import type specification: %s" % entry["import_descr"]["type"])
 
         return downimp_list
 
@@ -844,7 +858,8 @@ class ProcessChainConverter(object):
         stdin_func = None
         if "stdin" in module_descr:
             if "::" not in module_descr["stdin"]:
-                raise AsyncProcessError("The stdin option in id %s misses the ::" % str(id))
+                raise AsyncProcessError(
+                    "The stdin option in id %s misses the ::" % str(id))
 
             object_id, method = module_descr["stdin"].split("::")
 
@@ -854,22 +869,27 @@ class ProcessChainConverter(object):
             elif "stderr" == method is True:
                 stdin_func = self.process_dict[object_id].stderr
             else:
-                raise AsyncProcessError("The stdout or stderr flag in id %s is missing" % str(id))
+                raise AsyncProcessError(
+                    "The stdout or stderr flag in id %s is missing" % str(id))
 
         # Check for stdout parser that can be of type table, list or key/value pairs
         # and store the definition in a list
         if "stdout" in module_descr:
             if "id" not in module_descr["stdout"]:
-                raise AsyncProcessError("Missing unique *id* in stdout parser description of process id %s" % str(id))
+                raise AsyncProcessError(
+                    "Missing unique *id* in stdout parser description of process id %s" % str(id))
             if "format" not in module_descr["stdout"]:
-                raise AsyncProcessError("Missing *format* in stdout parser description of process id %s" % str(id))
+                raise AsyncProcessError(
+                    "Missing *format* in stdout parser description of process id %s" % str(id))
             if "delimiter" not in module_descr["stdout"]:
-                raise AsyncProcessError("Missing *delimiter* in stdout parser description of process id %s" % str(id))
+                raise AsyncProcessError(
+                    "Missing *delimiter* in stdout parser description of process id %s" % str(id))
 
             self.output_parser_list.append({id: module_descr["stdout"]})
 
         if "module" not in module_descr:
-            raise AsyncProcessError("Missing module name in module description of id %s" % str(id))
+            raise AsyncProcessError(
+                "Missing module name in module description of id %s" % str(id))
 
         module_name = module_descr["module"]
 
@@ -886,10 +906,12 @@ class ProcessChainConverter(object):
                     self.import_descr_list.append(input)
 
                 if "value" not in input:
-                    raise AsyncProcessError("<value> is missing in input description of process id: %s" % id)
+                    raise AsyncProcessError(
+                        "<value> is missing in input description of process id: %s" % id)
 
                 if "param" not in input:
-                    raise AsyncProcessError(" <param> is missing in input description of process id: %s" % id)
+                    raise AsyncProcessError(
+                        " <param> is missing in input description of process id: %s" % id)
 
                 value = input["value"]
                 param = input["param"]
@@ -899,7 +921,8 @@ class ProcessChainConverter(object):
                     file_id = value.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                        )
 
                     param = "%s=%s" % (param, self.temporary_pc_files[file_id])
                 else:
@@ -935,10 +958,12 @@ class ProcessChainConverter(object):
             for output in module_descr["outputs"]:
 
                 if "value" not in output:
-                    raise AsyncProcessError("<value> is missing in input description of process id: %s" % id)
+                    raise AsyncProcessError(
+                        "<value> is missing in input description of process id: %s" % id)
 
                 if "param" not in output:
-                    raise AsyncProcessError(" <param> is missing in input description of process id: %s" % id)
+                    raise AsyncProcessError(
+                        " <param> is missing in input description of process id: %s" % id)
 
                 value = output["value"]
                 param = output["param"]
@@ -947,7 +972,8 @@ class ProcessChainConverter(object):
                 if "export" in output:
                     exp = output["export"]
                     if "format" not in exp or "type" not in exp:
-                        raise AsyncProcessError("Invalid export parameter in description of module <%s>" % module_name)
+                        raise AsyncProcessError(
+                            "Invalid export parameter in description of module <%s>" % module_name)
                     if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
                         raise AsyncProcessError(
                             "Invalid export <format> parameter in description of module <%s>" % module_name)
@@ -967,13 +993,15 @@ class ProcessChainConverter(object):
                     file_id = value.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                        )
                     # Store the file path in the output description for export
                     param = "%s=%s" % (param, self.temporary_pc_files[file_id])
                     # Add the temp file path and the new file name with suffix to the output dict
                     if "export" in output:
                         output["tmp_file"] = self.temporary_pc_files[file_id]
-                        output["file_name"] = "%s.%s" % (file_id, output["export"]["format"].lower())
+                        output["file_name"] = "%s.%s" % (
+                            file_id, output["export"]["format"].lower())
                 else:
                     param = "%s=%s" % (param, value)
                 params.append(param)
@@ -1038,7 +1066,8 @@ class ProcessChainConverter(object):
         stdin_func = None
         if "stdin" in module_descr:
             if "::" not in module_descr["stdin"]:
-                raise AsyncProcessError("The stdin option in id %s misses the ::" % str(id))
+                raise AsyncProcessError(
+                    "The stdin option in id %s misses the ::" % str(id))
 
             object_id, method = module_descr["stdin"].split("::")
 
@@ -1066,7 +1095,8 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                        )
 
                     param = "%s" % self.temporary_pc_files[file_id]
                 else:
@@ -1162,9 +1192,11 @@ class ProcessChainConverter(object):
             program = process_chain[str(index)]
 
             if "module" in program:
-                process_list.append(self._create_module_process_legacy(str(index), program))
+                process_list.append(
+                    self._create_module_process_legacy(str(index), program))
             elif "executable" in program:
-                process_list.append(self._create_exec_process_legacy(str(index), program))
+                process_list.append(
+                    self._create_exec_process_legacy(str(index), program))
             elif "evaluate" in program:
                 process_list.append(("python", program["evaluate"]))
 
@@ -1191,7 +1223,8 @@ class ProcessChainConverter(object):
         stdin_func = None
         if "stdin" in module_descr:
             if "::" not in module_descr["stdin"]:
-                raise AsyncProcessError("The stdin option in id %s misses the ::" % str(id))
+                raise AsyncProcessError(
+                    "The stdin option in id %s misses the ::" % str(id))
 
             object_id, method = module_descr["stdin"].split("::")
 
@@ -1201,10 +1234,12 @@ class ProcessChainConverter(object):
             elif "stderr" == method is True:
                 stdin_func = self.process_dict[object_id].stderr
             else:
-                raise AsyncProcessError("The stdout or stderr flag in id %s is missing" % str(id))
+                raise AsyncProcessError(
+                    "The stdout or stderr flag in id %s is missing" % str(id))
 
         if "module" not in module_descr:
-            raise AsyncProcessError("Missing module name in module description of id %s" % str(id))
+            raise AsyncProcessError(
+                "Missing module name in module description of id %s" % str(id))
 
         module_name = module_descr["module"]
 
@@ -1218,7 +1253,8 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                        )
 
                     param = "%s=%s" % (key, self.temporary_pc_files[file_id])
                 else:
@@ -1261,7 +1297,8 @@ class ProcessChainConverter(object):
                         file_id = search_string.split("::")[1]
                         # Generate the temporary file path and store it in the dict
                         if file_id not in self.temporary_pc_files:
-                            self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                            self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                            )
 
                         param = "%s=%s" % (key, self.temporary_pc_files[file_id])
                     else:
@@ -1332,7 +1369,8 @@ class ProcessChainConverter(object):
         stdin_func = None
         if "stdin" in module_descr:
             if "::" not in module_descr["stdin"]:
-                raise AsyncProcessError("The stdin option in id %s misses the ::" % str(id))
+                raise AsyncProcessError(
+                    "The stdin option in id %s misses the ::" % str(id))
 
             object_id, method = module_descr["stdin"].split("::")
 
@@ -1341,10 +1379,12 @@ class ProcessChainConverter(object):
             elif "stderr" in method:
                 stdin_func = self.process_dict[object_id].get_stderr
             else:
-                raise AsyncProcessError("The stdout or stderr flag in id %s is missing" % str(id))
+                raise AsyncProcessError(
+                    "The stdout or stderr flag in id %s is missing" % str(id))
 
         if "executable" not in module_descr:
-            raise AsyncProcessError("Missing executable name in module description of id %s" % str(id))
+            raise AsyncProcessError(
+                "Missing executable name in module description of id %s" % str(id))
 
         executable = module_descr["executable"]
         if "parameters" in module_descr:
@@ -1355,7 +1395,8 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
+                        )
 
                     param = "%s" % self.temporary_pc_files[file_id]
                 else:

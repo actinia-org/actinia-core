@@ -242,7 +242,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         if format == 'COG':
             # check if GDAL has COG driver
             from osgeo import gdal
-            driver_list = [gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]
+            driver_list = [gdal.GetDriver(
+                i).ShortName for i in range(gdal.GetDriverCount())]
             if 'COG' not in driver_list:
                 format = 'GTiff'
                 self.message_logger.info("COG driver not available, using GTiff driver")
@@ -251,7 +252,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         output_path = os.path.join(self.temp_file_path, file_name)
 
         module_name = "r.out.gdal"
-        args = ["-fmt", "input=%s" % raster_name, "format=%s" % format, "output=%s" % output_path]
+        args = [
+            "-fmt", "input=%s" % raster_name, "format=%s" %
+            format, "output=%s" % output_path]
         create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW"
 
         if format == "GTiff":
@@ -444,7 +447,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
             # Check for termination requests between the exports
             if bool(self.resource_logger.get_termination(self.user_id, self.resource_id)) is True:
-                raise AsyncProcessTermination("Resource export was terminated by user request")
+                raise AsyncProcessTermination(
+                    "Resource export was terminated by user request")
 
             # Raster export
             if resource["export"]["type"] in ["raster", "vector", "file"]:
@@ -459,7 +463,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     file_name = resource["value"]
 
                 if output_type == "raster":
-                    message = "Export raster layer <%s> with format %s" % (file_name, resource["export"]["format"])
+                    message = "Export raster layer <%s> with format %s" % (
+                        file_name, resource["export"]["format"])
                     self._send_resource_update(message)
                     output_name, output_path = self._export_raster(raster_name=file_name,
                                                                    format=resource["export"]["format"],
@@ -471,21 +476,26 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         if "output_layer" in resource["export"]:
                             output_layer = resource["export"]["output_layer"]
 
-                        message = "Export vector layer <%s> to PostgreSQL database" % (file_name)
+                        message = "Export vector layer <%s> to PostgreSQL database" % (
+                            file_name)
                         self._send_resource_update(message)
-                        self._export_postgis(vector_name=file_name, dbstring=dbstring, output_layer=output_layer)
+                        self._export_postgis(
+                            vector_name=file_name, dbstring=dbstring, output_layer=output_layer)
                         # continue
                     else:
-                        message = "Export vector layer <%s> with format %s" % (file_name, resource["export"]["format"])
+                        message = "Export vector layer <%s> with format %s" % (
+                            file_name, resource["export"]["format"])
                         self._send_resource_update(message)
                         output_name, output_path = self._export_vector(vector_name=file_name,
                                                                        format=resource["export"]["format"])
                 elif output_type == "file":
                     file_name = resource["file_name"]
                     tmp_file = resource["tmp_file"]
-                    output_name, output_path = self._export_file(tmp_file=tmp_file, file_name=file_name)
+                    output_name, output_path = self._export_file(
+                        tmp_file=tmp_file, file_name=file_name)
                 else:
-                    raise AsyncProcessTermination("Unknown export format %s" % output_type)
+                    raise AsyncProcessTermination(
+                        "Unknown export format %s" % output_type)
 
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)

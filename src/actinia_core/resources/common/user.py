@@ -28,7 +28,8 @@ TODO: User update must be implemented
 """
 
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (TimedJSONWebSignatureSerializer, BadSignature, SignatureExpired)
+from itsdangerous import (TimedJSONWebSignatureSerializer,
+                          BadSignature, SignatureExpired)
 from itsdangerous import JSONWebSignatureSerializer
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.redis_user import redis_user_interface
@@ -157,7 +158,8 @@ class ActiniaUser(object):
                       "guest"]
         """
         if role not in USER_ROLES:
-            raise ActiniaUserError("Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
+            raise ActiniaUserError(
+                "Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
         self.user_role = role
 
     def has_guest_role(self):

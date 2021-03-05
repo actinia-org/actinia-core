@@ -137,7 +137,8 @@ class PersistentSTRDSLister(PersistentProcessing):
             for option in self.rdc.user_data:
                 if self.rdc.user_data[option] is not None:
                     if "where" in option:
-                        select = self.rdc.user_data[option] + " AND mapset = \'%s\'" % self.mapset_name
+                        select = self.rdc.user_data[option] + \
+                            " AND mapset = \'%s\'" % self.mapset_name
                         pc["1"]["inputs"]["where"] = select
                         has_where = True
                     else:

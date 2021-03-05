@@ -190,7 +190,8 @@ class AsyncPersistentResource(ResourceBase):
 
         """
         # Preprocess the post call
-        rdc = self.preprocess(has_json=True, location_name=location_name, mapset_name=mapset_name)
+        rdc = self.preprocess(
+            has_json=True, location_name=location_name, mapset_name=mapset_name)
 
         if rdc:
             enqueue_job(self.job_timeout, start_job, rdc)
@@ -244,7 +245,8 @@ class PersistentProcessing(EphemeralProcessing):
         EphemeralProcessing.__init__(self, rdc)
         self.target_mapset_name = self.mapset_name
         self.target_mapset_exists = False     # By default the target mapset does not exists
-        self.target_mapset_lock_set = False   # Set True if this process was successful in setting the lock
+        # Set True if this process was successful in setting the lock
+        self.target_mapset_lock_set = False
         self.orig_mapset_path = None
 
         # We have two mapset lock ids. The target mapset and the temporary mapset
@@ -326,7 +328,8 @@ class PersistentProcessing(EphemeralProcessing):
                         raise AsyncProcessError("Mapset <%s> exists in the global "
                                                 "dataset and can not be modified." % mapset)
             else:
-                raise AsyncProcessError("Unable to access global location <%s>" % self.location_name)
+                raise AsyncProcessError(
+                    "Unable to access global location <%s>" % self.location_name)
 
         # Always check if the targte mapset already exists and set the flag accordingly
         if (os.path.exists(self.user_location_path)
@@ -349,7 +352,8 @@ class PersistentProcessing(EphemeralProcessing):
             else:
                 mapset_exists = False
         else:
-            raise AsyncProcessError("Unable to access user location <%s>" % self.location_name)
+            raise AsyncProcessError(
+                "Unable to access user location <%s>" % self.location_name)
 
         return mapset_exists
 
@@ -411,7 +415,8 @@ class PersistentProcessing(EphemeralProcessing):
                        "hist", "vector", "group"]
 
         for directory in directories:
-            source_path = os.path.join(self.user_location_path, source_mapset, directory)
+            source_path = os.path.join(
+                self.user_location_path, source_mapset, directory)
             target_path = os.path.join(self.user_location_path, target_mapset)
 
             if os.path.exists(source_path) is True:
@@ -505,7 +510,8 @@ class PersistentProcessing(EphemeralProcessing):
 
         # Merge the temp mapset into the target mapset in case the target already exists
         if self.target_mapset_exists is True:
-            self._merge_mapset_into_target(self.temp_mapset_name, self.target_mapset_name)
+            self._merge_mapset_into_target(
+                self.temp_mapset_name, self.target_mapset_name)
             shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
             # remove interim results
             if self.save_interim_results is True:
@@ -532,7 +538,8 @@ class PersistentProcessing(EphemeralProcessing):
                 ret = self.lock_interface.extend(resource_id=self.target_mapset_lock_id,
                                                  expiration=self.process_time_limit * 2)
                 if ret == 0:
-                    raise AsyncProcessError("Unable to extend lock for mapset <%s>" % self.target_mapset_name)
+                    raise AsyncProcessError(
+                        "Unable to extend lock for mapset <%s>" % self.target_mapset_name)
 
             if self.temp_mapset_lock_set is True:
                 # Extent the lock for each process by max processing time * 2
@@ -585,7 +592,8 @@ class PersistentProcessing(EphemeralProcessing):
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset
-            self._create_temporary_grass_environment(source_mapset_name=self.target_mapset_name)
+            self._create_temporary_grass_environment(
+                source_mapset_name=self.target_mapset_name)
             self._lock_temp_mapset()
 
         # Execute the process list

@@ -201,7 +201,8 @@ class EphemeralVectorRenderer(EphemeralRendererBase):
                                                               result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module": "g.region", "inputs": {"vector": vector_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "g.region", "inputs": {
+            "vector": vector_name + "@" + self.mapset_name}}
         pc["2"] = region_pc
         pc["3"] = {"module": "d.vect", "inputs": {"map": vector_name + "@" + self.mapset_name},
                    "flags": "c"}

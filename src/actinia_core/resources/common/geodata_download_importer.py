@@ -313,7 +313,8 @@ class GeoDataDownloadImportSupport(object):
                 raise AsyncProcessError("Compression ratio is larger than 10000.")
 
             if total_sum > 2 ** 32:
-                raise AsyncProcessError("Files larger than 4GB are not supported in zip files.")
+                raise AsyncProcessError(
+                    "Files larger than 4GB are not supported in zip files.")
 
             for name in z.namelist():
                 file_name, suffix = os.path.splitext(name)

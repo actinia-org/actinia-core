@@ -122,7 +122,8 @@ class ResourceStorageSize(EphemeralProcessing):
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
         self.response_model_class = StorageResponseModel
-        self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
+        self.user_resource_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id)
 
     def _execute(self):
 
@@ -148,7 +149,8 @@ class ResourceStorageSize(EphemeralProcessing):
 
             self.finish_message = "Resource storage size successfully computed"
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
+            raise AsyncProcessError(
+                "Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
 
 
 def start_resource_storage_remove(*args):
@@ -162,7 +164,8 @@ class ResourceStorageDelete(PersistentProcessing):
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
-        self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
+        self.user_resource_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id)
 
     def _execute(self):
 
@@ -179,4 +182,5 @@ class ResourceStorageDelete(PersistentProcessing):
             os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
+            raise AsyncProcessError(
+                "Resource storage directory <%s> does not exist." % self.user_resource_storage_path)

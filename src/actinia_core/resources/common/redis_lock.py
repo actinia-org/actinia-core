@@ -108,9 +108,12 @@ class RedisLockingInterface(object):
         self.redis_server = redis.StrictRedis(connection_pool=self.connection_pool)
 
         # Register the resource lock scripts in Redis
-        self.call_lock_resource = self.redis_server.register_script(self.lua_lock_resource)
-        self.call_extend_resource_lock = self.redis_server.register_script(self.lua_extend_resource_lock)
-        self.call_unlock_resource = self.redis_server.register_script(self.lua_unlock_resource)
+        self.call_lock_resource = self.redis_server.register_script(
+            self.lua_lock_resource)
+        self.call_extend_resource_lock = self.redis_server.register_script(
+            self.lua_extend_resource_lock)
+        self.call_unlock_resource = self.redis_server.register_script(
+            self.lua_unlock_resource)
 
     def disconnect(self):
         self.connection_pool.disconnect()

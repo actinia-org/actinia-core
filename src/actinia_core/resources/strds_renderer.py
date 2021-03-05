@@ -263,7 +263,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         pc["list"].append(g_region)
         pc["list"].append(g_region_query)
 
-        process_list = self._validate_process_chain(process_chain=pc, skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         # Compute the cell size for visualization
@@ -306,7 +307,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         pc["list"].append(g_region_adjust)
         pc["list"].append(d_rast)
 
-        process_list = self._validate_process_chain(process_chain=pc, skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file

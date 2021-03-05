@@ -79,7 +79,8 @@ class ApiLogger(RedisFluentLoggerBase):
     db = redis_api_log_interface
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+        RedisFluentLoggerBase.__init__(
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
 
     def add_entry(self, user_id, http_request):
         """Add an API call entry to the database

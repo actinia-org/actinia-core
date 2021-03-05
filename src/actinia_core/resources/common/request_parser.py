@@ -37,8 +37,10 @@ __email__ = "soerengebbert@googlemail.com"
 # Create a temporal module where, order, column parser
 where_parser = reqparse.RequestParser()
 where_parser.add_argument('where', type=str, location='args', help='A SQL where option')
-where_parser.add_argument('order', type=str, location='args', help='The order of the listing')
-where_parser.add_argument('columns', type=str, location='args', help='The columns to be listed')
+where_parser.add_argument('order', type=str, location='args',
+                          help='The order of the listing')
+where_parser.add_argument('columns', type=str, location='args',
+                          help='The columns to be listed')
 
 
 def extract_where_parameters(args):
@@ -65,7 +67,8 @@ def extract_where_parameters(args):
 
 # Create a g.list/g.remove pattern parser
 glist_parser = reqparse.RequestParser()
-glist_parser.add_argument('pattern', type=str, help='A pattern string must be provided', location='args')
+glist_parser.add_argument(
+    'pattern', type=str, help='A pattern string must be provided', location='args')
 
 
 def extract_glist_parameters(args):

@@ -153,10 +153,12 @@ class TokenCreationResource(LoginBase):
                     expiration = args["expiration_time"]
 
                     if expiration > 365 * 86400:
-                        raise Exception("Expiration time is to large. Maximum is 365 days.")
+                        raise Exception(
+                            "Expiration time is to large. Maximum is 365 days.")
 
             return make_response(jsonify(TokenResponseModel(status="success",
-                                                            token=g.user.generate_auth_token(expiration=expiration).decode(),
+                                                            token=g.user.generate_auth_token(
+                                                                expiration=expiration).decode(),
                                                             message="Token successfully generated with "
                                                             "an expiration time of %i seconds" % expiration)))
         except Exception as e:

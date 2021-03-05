@@ -267,8 +267,10 @@ class ActiniaTestCaseBase(unittest.TestCase):
         """
         # Check if the resource was accepted
         print("waitAsyncStatusAssertHTTP:", response.data.decode())
-        self.assertEqual(response.status_code, 200, "HTML status code is wrong %i" % response.status_code)
-        self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s" % response.mimetype)
+        self.assertEqual(response.status_code, 200,
+                         "HTML status code is wrong %i" % response.status_code)
+        self.assertEqual(response.mimetype, "application/json",
+                         "Wrong mimetype %s" % response.mimetype)
 
         resp_data = json_loads(response.data)
 
@@ -286,7 +288,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
             time.sleep(0.2)
 
         self.assertEqual(resp_data["status"], status)
-        self.assertEqual(rv.status_code, http_status, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.status_code, http_status,
+                         "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:
             self.assertTrue(message_check in resp_data["message"])

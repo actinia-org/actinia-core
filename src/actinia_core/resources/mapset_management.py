@@ -437,7 +437,8 @@ class PersistentMapsetDeleter(PersistentProcessing):
             self.lock_interface.unlock(self.target_mapset_lock_id)
             self.finish_message = "Mapset <%s> successfully removed." % self.target_mapset_name
         else:
-            raise AsyncProcessError("Mapset <%s> does not exits" % self.target_mapset_name)
+            raise AsyncProcessError("Mapset <%s> does not exits" %
+                                    self.target_mapset_name)
 
 
 class MapsetLockManagementResponseModel(ProcessingResponseModel):
@@ -654,7 +655,8 @@ class PersistentMapsetLocker(PersistentProcessing):
         self._setup()
         self._check_lock_target_mapset()
         if self.target_mapset_exists is False:
-            raise AsyncProcessError("Unable to lock mapset <%s>. Mapset doesn not exists." % self.target_mapset_name)
+            raise AsyncProcessError(
+                "Unable to lock mapset <%s>. Mapset doesn not exists." % self.target_mapset_name)
 
         self.finish_message = "Mapset <%s> successfully locked" % self.target_mapset_name
 

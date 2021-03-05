@@ -75,7 +75,8 @@ def create_process_queue(config, use_logger=True):
     global process_queue_manager
 
     if process_queue_manager is None:
-        p = Process(target=start_process_queue_manager, args=(config, process_queue, use_logger))
+        p = Process(target=start_process_queue_manager,
+                    args=(config, process_queue, use_logger))
         p.start()
         process_queue_manager = p
 
@@ -210,7 +211,8 @@ class EnqueuedProcess(object):
                         response_model["status"] != "terminated" and \
                         response_model["status"] != "timeout":
                     message = "The process unexpectedly terminated with exit code %i" % self.process.exitcode
-                    self._send_resource_update(status="error", message=message, response_data=response_data)
+                    self._send_resource_update(
+                        status="error", message=message, response_data=response_data)
 
     def _send_resource_update(self, status, message, response_data=None):
         """Send a response to the resource logger about the current resource state
@@ -330,9 +332,11 @@ def start_process_queue_manager(config, queue, use_logger):
                 # and leave the loop
                 if "STOP" in data:
                     for enqproc in running_procs:
-                        enqproc.terminate(status="error", message="Running process was terminated by server shutdown.")
+                        enqproc.terminate(
+                            status="error", message="Running process was terminated by server shutdown.")
                     for enqproc in waiting_processes:
-                        enqproc.terminate(status="error", message="Waiting process was terminated by server shutdown.")
+                        enqproc.terminate(
+                            status="error", message="Waiting process was terminated by server shutdown.")
                     del queue_thread
                     queue.close()
                     # print("Exit loop")

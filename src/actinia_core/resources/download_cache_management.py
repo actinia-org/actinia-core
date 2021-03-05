@@ -118,7 +118,8 @@ class DownloadCacheSize(EphemeralProcessing):
 
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
-        self.user_download_cache_path = os.path.join(self.config.DOWNLOAD_CACHE, self.user_id)
+        self.user_download_cache_path = os.path.join(
+            self.config.DOWNLOAD_CACHE, self.user_id)
         self.response_model_class = StorageResponseModel
 
     def _execute(self):
@@ -145,7 +146,8 @@ class DownloadCacheSize(EphemeralProcessing):
 
             self.finish_message = "Download cache size successfully computed"
         else:
-            raise AsyncProcessError("Download cache directory <%s> does not exist." % self.user_download_cache_path)
+            raise AsyncProcessError(
+                "Download cache directory <%s> does not exist." % self.user_download_cache_path)
 
 
 def start_download_cache_remove(*args):
@@ -160,7 +162,8 @@ class DownloadCacheDelete(PersistentProcessing):
     def __init__(self, *args):
 
         PersistentProcessing.__init__(self, *args)
-        self.user_download_cache_path = os.path.join(self.config.DOWNLOAD_CACHE, self.user_id)
+        self.user_download_cache_path = os.path.join(
+            self.config.DOWNLOAD_CACHE, self.user_id)
 
     def _execute(self):
 
@@ -177,4 +180,5 @@ class DownloadCacheDelete(PersistentProcessing):
             os.mkdir(self.user_download_cache_path)
             self.finish_message = "Download cache successfully removed."
         else:
-            raise AsyncProcessError("Download cache directory <%s> does not exist." % self.user_download_cache_path)
+            raise AsyncProcessError(
+                "Download cache directory <%s> does not exist." % self.user_download_cache_path)

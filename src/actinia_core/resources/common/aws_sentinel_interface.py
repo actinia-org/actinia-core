@@ -163,11 +163,15 @@ class AWSSentinel2AInterface(object):
                         # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/tileInfo.json
                         # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/preview.jpg
 
-                        metadata_url = self.aws_sentinel_base_url + "/" + tile["path"] + "/metadata.xml"
-                        info_url = self.aws_sentinel_base_url + "/" + tile["path"] + "/tileInfo.json"
-                        preview_url = self.aws_sentinel_base_url + "/" + tile["path"] + "/preview.jpg"
+                        metadata_url = self.aws_sentinel_base_url + \
+                            "/" + tile["path"] + "/metadata.xml"
+                        info_url = self.aws_sentinel_base_url + \
+                            "/" + tile["path"] + "/tileInfo.json"
+                        preview_url = self.aws_sentinel_base_url + \
+                            "/" + tile["path"] + "/preview.jpg"
 
-                        tile_info["url"] = self.aws_sentinel_base_eu_central_url + "/#" + tile["path"] + "/"
+                        tile_info["url"] = self.aws_sentinel_base_eu_central_url + \
+                            "/#" + tile["path"] + "/"
                         tile_info["metadata"] = metadata_url
                         tile_info["info"] = info_url
                         tile_info["preview"] = preview_url
@@ -175,13 +179,16 @@ class AWSSentinel2AInterface(object):
                         public_url = self.aws_sentinel_base_url + "/" + tile["path"]
 
                         for band in bands:
-                            tile_name = "%s_tile_%i_band_%s.jp2" % (product_id, tile_num, band)
-                            map_name = "%s_tile_%i_band_%s" % (product_id, tile_num, band)
+                            tile_name = "%s_tile_%i_band_%s.jp2" % (
+                                product_id, tile_num, band)
+                            map_name = "%s_tile_%i_band_%s" % (
+                                product_id, tile_num, band)
 
                             tile_info[band] = {}
                             tile_info[band]["file_name"] = tile_name
                             tile_info[band]["map_name"] = map_name
-                            tile_info[band]["public_url"] = "%s/%s.jp2" % (public_url, band)
+                            tile_info[band]["public_url"] = "%s/%s.jp2" % (
+                                public_url, band)
 
                         scene_entry["tiles"].append(tile_info)
 

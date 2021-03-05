@@ -499,13 +499,16 @@ class PersistentRasterSTRDSRegisterer(PersistentProcessing):
 
         self._setup()
 
-        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True, mode="w")
+        input_file = tempfile.NamedTemporaryFile(
+            dir=self.temp_file_path, delete=True, mode="w")
 
         for map_entry in self.request_data:
             if "name" not in map_entry or "start_time" not in map_entry or "end_time" not in map_entry:
-                raise AsyncProcessError("Wrong input format for raster map layer registration")
+                raise AsyncProcessError(
+                    "Wrong input format for raster map layer registration")
 
-            line = "%s|%s|%s\n" % (map_entry["name"], map_entry["start_time"], map_entry["end_time"])
+            line = "%s|%s|%s\n" % (
+                map_entry["name"], map_entry["start_time"], map_entry["end_time"])
             input_file.write(line)
         input_file.flush()
         input_file.seek(0)
@@ -543,7 +546,8 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
     def _execute(self):
         self._setup()
 
-        input_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True, mode="w")
+        input_file = tempfile.NamedTemporaryFile(
+            dir=self.temp_file_path, delete=True, mode="w")
 
         for map_name in self.request_data:
             line = "%s\n" % map_name

@@ -78,13 +78,19 @@ __email__ = "soerengebbert@googlemail.com"
 def create_core_endpoints():
     # Locationmanagement
     flask_api.add_resource(ListLocationsResource, '/locations')
-    flask_api.add_resource(LocationManagementResourceUser, '/locations/<string:location_name>/info')
-    flask_api.add_resource(LocationManagementResourceAdmin, '/locations/<string:location_name>')
+    flask_api.add_resource(LocationManagementResourceUser,
+                           '/locations/<string:location_name>/info')
+    flask_api.add_resource(LocationManagementResourceAdmin,
+                           '/locations/<string:location_name>')
     # Mapset management
-    flask_api.add_resource(ListMapsetsResource, '/locations/<string:location_name>/mapsets')
-    flask_api.add_resource(MapsetManagementResourceUser, '/locations/<string:location_name>/mapsets/<string:mapset_name>/info')
-    flask_api.add_resource(MapsetManagementResourceAdmin, '/locations/<string:location_name>/mapsets/<string:mapset_name>')
-    flask_api.add_resource(MapsetLockManagementResource, '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
+    flask_api.add_resource(ListMapsetsResource,
+                           '/locations/<string:location_name>/mapsets')
+    flask_api.add_resource(MapsetManagementResourceUser,
+                           '/locations/<string:location_name>/mapsets/<string:mapset_name>/info')
+    flask_api.add_resource(MapsetManagementResourceAdmin,
+                           '/locations/<string:location_name>/mapsets/<string:mapset_name>')
+    flask_api.add_resource(MapsetLockManagementResource,
+                           '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
     # Raster management
     flask_api.add_resource(RasterLayersResource, '/locations/<string:location_name>/mapsets/'
                                                  '<string:mapset_name>/raster_layers')
@@ -128,8 +134,10 @@ def create_core_endpoints():
     flask_api.add_resource(SyncProcessValidationResource,
                            '/locations/<string:location_name>/process_chain_validation_sync')
     # Async processing
-    flask_api.add_resource(AsyncEphemeralCustomResource, '/custom_process/<string:executable>')
-    flask_api.add_resource(AsyncEphemeralResource, '/locations/<string:location_name>/processing_async')
+    flask_api.add_resource(AsyncEphemeralCustomResource,
+                           '/custom_process/<string:executable>')
+    flask_api.add_resource(AsyncEphemeralResource,
+                           '/locations/<string:location_name>/processing_async')
     flask_api.add_resource(AsyncEphemeralExportResource,
                            '/locations/<string:location_name>/processing_async_export')
     flask_api.add_resource(AsyncEphemeralExportS3Resource,
@@ -154,7 +162,8 @@ def create_core_endpoints():
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
     # Resource management
-    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(
+        ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(RequestStreamerResource, '/resources/<string:user_id>/<string:resource_id>/'
                                                     '<string:file_name>')
@@ -179,4 +188,5 @@ def create_endpoints():
         check_import_plugins()
     except Exception:
         e_type, e_value, e_tb = sys.exc_info()
-        pprint(dict(message=str(e_value), traceback=str(traceback.format_tb(e_tb)), type=str(e_type)))
+        pprint(dict(message=str(e_value), traceback=str(
+            traceback.format_tb(e_tb)), type=str(e_type)))

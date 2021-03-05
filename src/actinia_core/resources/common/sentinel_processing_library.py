@@ -121,7 +121,8 @@ class Sentinel2Processing(object):
         if self.query_result is None:
             self.query_interface = GoogleSatelliteBigQueryInterface(self.config)
             try:
-                self.query_result = self.query_interface.get_sentinel_urls([self.product_id, ], self.bands)
+                self.query_result = self.query_interface.get_sentinel_urls(
+                    [self.product_id, ], self.bands)
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in Google BigQuery Sentinel-2 database. "
@@ -147,12 +148,14 @@ class Sentinel2Processing(object):
 
         # Write the gml footprint into a temporary file
         # The file name is the product id that will also be copied into the download cache
-        self.gml_cache_file_name = os.path.join(self.user_download_cache_path, self.product_id + ".gml")
+        self.gml_cache_file_name = os.path.join(
+            self.user_download_cache_path, self.product_id + ".gml")
 
         self.import_file_info["footprint"] = (self.gml_cache_file_name, self.product_id)
 
         if os.path.exists(self.gml_cache_file_name) is False:
-            gml_temp_file_name = os.path.join(self.temp_file_path, self.product_id + ".gml")
+            gml_temp_file_name = os.path.join(
+                self.temp_file_path, self.product_id + ".gml")
             gml_file = open(gml_temp_file_name, "w")
             gml_file.write(gml_footprint)
             gml_file.close()
@@ -189,7 +192,8 @@ class Sentinel2Processing(object):
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" % (resp.status_code, resp.text, resp.headers))
+            self.message_logger.info("%i %s %s" % (
+                resp.status_code, resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("Scene <%s> is not available. "
@@ -210,7 +214,8 @@ class Sentinel2Processing(object):
         if self.query_result is None:
             self.query_interface = AWSSentinel2AInterface(self.config)
             try:
-                self.query_result = self.query_interface.get_sentinel_urls([self.product_id, ], self.bands)
+                self.query_result = self.query_interface.get_sentinel_urls(
+                    [self.product_id, ], self.bands)
             except Exception as e:
                 raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
                                         "in AWS Sentinel-2 database. "
@@ -236,12 +241,14 @@ class Sentinel2Processing(object):
 
         # Write the gml footprint into a temporary file
         # The file name is the product id that will also be copied into the download cache
-        self.gml_cache_file_name = os.path.join(self.user_download_cache_path, self.product_id + ".gml")
+        self.gml_cache_file_name = os.path.join(
+            self.user_download_cache_path, self.product_id + ".gml")
 
         self.import_file_info["footprint"] = (self.gml_cache_file_name, self.product_id)
 
         if os.path.exists(self.gml_cache_file_name) is False:
-            gml_temp_file_name = os.path.join(self.temp_file_path, self.product_id + ".gml")
+            gml_temp_file_name = os.path.join(
+                self.temp_file_path, self.product_id + ".gml")
             gml_file = open(gml_temp_file_name, "w")
             gml_file.write(gml_footprint)
             gml_file.close()
@@ -278,7 +285,8 @@ class Sentinel2Processing(object):
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" % (resp.status_code, resp.text, resp.headers))
+            self.message_logger.info("%i %s %s" % (
+                resp.status_code, resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("Scene <%s> is not available. "

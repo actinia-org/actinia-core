@@ -76,23 +76,30 @@ class Configuration(object):
 
         # GRASS
         self.GRASS_DATABASE = "%s/actinia/grassdb" % home  # The GRASS global database
-        self.GRASS_USER_DATABASE = "%s/actinia/userdata" % home  # The GRASS database in which the user locations
+        # The GRASS database in which the user locations
+        self.GRASS_USER_DATABASE = "%s/actinia/userdata" % home
         #                                                          are stored. This is the base path, der user group
         #                                                          will be added on runtime
-        self.GRASS_DEFAULT_LOCATION = "nc_spm_08"  # The default GRASS location in the global database that
+        # The default GRASS location in the global database that
+        self.GRASS_DEFAULT_LOCATION = "nc_spm_08"
         #                                            is used for location generation
-        self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home  # The directory to store temporary GRASS databases
-        self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home  # Directory to store exported resources
+        # The directory to store temporary GRASS databases
+        self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home
+        # Directory to store exported resources
+        self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home
         self.GRASS_RESOURCE_QUOTA = 100  # The size quota of the resource storage in Gigibit
         self.GRASS_GIS_BASE = "/usr/local/grass78/"  # Installation directory of GRASS
         self.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass78"
         self.GRASS_ADDON_PATH = "%s/.grass7/addons/" % home
-        self.GRASS_MODULES_XML_PATH = os.path.join(self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
-        self.GRASS_VENV = "%s/src/actinia/grass_venv/bin/activate_this.py" % home  # The path to the activation
+        self.GRASS_MODULES_XML_PATH = os.path.join(
+            self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
+        # The path to the activation
+        self.GRASS_VENV = "%s/src/actinia/grass_venv/bin/activate_this.py" % home
         #                                                                          script of the python2 venv (old)
 
         # DEFAULT LIMITS when a user is created
-        self.MAX_CELL_LIMIT = 1000 * 1000 * 1000  # Maximum number of cells that are allowed to process
+        # Maximum number of cells that are allowed to process
+        self.MAX_CELL_LIMIT = 1000 * 1000 * 1000
         self.PROCESS_TIME_LIMT = 600   # Maximum number of seconds an async process is
         #                                allowed to run
         self.PROCESS_NUM_LIMIT = 1000  # Maximum number of processes in a process chain
@@ -111,7 +118,8 @@ class Configuration(object):
         self.REDIS_SERVER_URL = "127.0.0.1"       # The hostname of the redis server
         self.REDIS_SERVER_PORT = 6379             # The port of the redis server
         self.REDIS_SERVER_PW = None             # The password of the redis server
-        self.REDIS_RESOURCE_EXPIRE_TIME = 864000  # Default expire time is 10 days for resource logs,
+        # Default expire time is 10 days for resource logs,
+        self.REDIS_RESOURCE_EXPIRE_TIME = 864000
         #                                           that are used for calculating the price of resource usage
         self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"  # The hostname of the redis work queue server
         self.REDIS_QUEUE_SERVER_PORT = 6379   # The port of the redis work queue server
@@ -120,27 +128,35 @@ class Configuration(object):
         #                                       it will be extended by a numerical suffix
         #                                       that represents the worker id/number
         #                                       database to re-queue it, usually this is not necessary
-        self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home  # The base name of the redis worker queue logfile,
+        # The base name of the redis worker queue logfile,
+        self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home
         #                                                                 it will be extended by a numerical suffix
         #                                                                 that represents the worker id/number
         # MISC
-        self.TMP_WORKDIR = "%s/actinia/workspace/tmp" % home  # The directory to store temporary files
+        # The directory to store temporary files
+        self.TMP_WORKDIR = "%s/actinia/workspace/tmp" % home
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
-        self.DOWNLOAD_CACHE = "/tmp/download_cache"           # The directory to cache downloaded data
-        self.DOWNLOAD_CACHE_QUOTA = 100                       # The quota of the download cache in Gigibit
-        self.SAVE_INTERIM_RESULTS = False                     # If True the interim results (temporary mapset) are saved
+        # The directory to cache downloaded data
+        self.DOWNLOAD_CACHE = "/tmp/download_cache"
+        # The quota of the download cache in Gigibit
+        self.DOWNLOAD_CACHE_QUOTA = 100
+        # If True the interim results (temporary mapset) are saved
+        self.SAVE_INTERIM_RESULTS = False
 
         # Logging
         self.LOG_LEVEL = 1                  # 1 Error, 2 Warning, 3 Info, 4 Debug
-        self.LOG_INTERFACE = "stdout"       # The logging interface to use: "stdout" or "fluentd" (file will always be used)
+        # The logging interface to use: "stdout" or "fluentd" (file will always be used)
+        self.LOG_INTERFACE = "stdout"
         self.LOG_STDOUT_FORMAT = "colored"  # The logformat to use for stdout: "colored" or "json"
         self.LOG_FILE_FORMAT = "colored"    # The logformat to use in file: "colored" or "json"
-        self.LOG_STDERR_FORMAT = "plain"    # The logformat for the stderr logger: "plain" or "default", default will use STDOUT / FILE format
+        # The logformat for the stderr logger: "plain" or "default", default will use STDOUT / FILE format
+        self.LOG_STDERR_FORMAT = "plain"
         self.LOG_FLUENT_HOST = "127.0.0.1"  # The Fluentd host used for fluent logging
         self.LOG_FLUENT_PORT = 24224        # The Fluentd host used for fluent logging
 
         self.DEFAULT_USER = "user"         # If authentication is not required, a default user is used
-        self.DEFAULT_USER_GROUP = "group"  # If authentication is not required, a default group is used
+        # If authentication is not required, a default group is used
+        self.DEFAULT_USER_GROUP = "group"
 
         # Not in config file
         self.MODULE_WHITE_LIST = white_list  # The default white list of GRASS modules
@@ -209,9 +225,11 @@ class Configuration(object):
         config.set('REDIS', 'REDIS_SERVER_URL', self.REDIS_SERVER_URL)
         config.set('REDIS', 'REDIS_SERVER_PORT', str(self.REDIS_SERVER_PORT))
         config.set('REDIS', 'REDIS_SERVER_PW', str(self.REDIS_SERVER_PW))
-        config.set('REDIS', 'REDIS_RESOURCE_EXPIRE_TIME', str(self.REDIS_RESOURCE_EXPIRE_TIME))
+        config.set('REDIS', 'REDIS_RESOURCE_EXPIRE_TIME',
+                   str(self.REDIS_RESOURCE_EXPIRE_TIME))
         config.set('REDIS', 'REDIS_QUEUE_SERVER_URL', self.REDIS_QUEUE_SERVER_URL)
-        config.set('REDIS', 'REDIS_QUEUE_SERVER_PORT', str(self.REDIS_QUEUE_SERVER_PORT))
+        config.set('REDIS', 'REDIS_QUEUE_SERVER_PORT',
+                   str(self.REDIS_QUEUE_SERVER_PORT))
         config.set('REDIS', 'REDIS_QUEUE_JOB_TTL', str(self.REDIS_QUEUE_JOB_TTL))
         config.set('REDIS', 'WORKER_QUEUE_NAME', str(self.WORKER_QUEUE_NAME))
         config.set('REDIS', 'WORKER_LOGFILE', str(self.WORKER_LOGFILE))
@@ -243,7 +261,8 @@ class Configuration(object):
         config.set('AWS_S3', 'S3_AWS_RESOURCE_BUCKET', self.S3_AWS_RESOURCE_BUCKET)
 
         config.add_section('GCS')
-        config.set('GCS', 'GOOGLE_APPLICATION_CREDENTIALS', self.GOOGLE_APPLICATION_CREDENTIALS)
+        config.set('GCS', 'GOOGLE_APPLICATION_CREDENTIALS',
+                   self.GOOGLE_APPLICATION_CREDENTIALS)
         config.set('GCS', 'GCS_RESOURCE_BUCKET', self.GCS_RESOURCE_BUCKET)
         config.set('GCS', 'GOOGLE_CLOUD_PROJECT', self.GOOGLE_CLOUD_PROJECT)
 
@@ -268,23 +287,28 @@ class Configuration(object):
                 if config.has_option("GRASS", "GRASS_DATABASE"):
                     self.GRASS_DATABASE = config.get("GRASS", "GRASS_DATABASE")
                 if config.has_option("GRASS", "GRASS_USER_DATABASE"):
-                    self.GRASS_USER_DATABASE = config.get("GRASS", "GRASS_USER_DATABASE")
+                    self.GRASS_USER_DATABASE = config.get(
+                        "GRASS", "GRASS_USER_DATABASE")
                 if config.has_option("GRASS", "GRASS_DEFAULT_LOCATION"):
-                    self.GRASS_DEFAULT_LOCATION = config.get("GRASS", "GRASS_DEFAULT_LOCATION")
+                    self.GRASS_DEFAULT_LOCATION = config.get(
+                        "GRASS", "GRASS_DEFAULT_LOCATION")
                 if config.has_option("GRASS", "GRASS_TMP_DATABASE"):
                     self.GRASS_TMP_DATABASE = config.get("GRASS", "GRASS_TMP_DATABASE")
                 if config.has_option("GRASS", "GRASS_RESOURCE_DIR"):
                     self.GRASS_RESOURCE_DIR = config.get("GRASS", "GRASS_RESOURCE_DIR")
                 if config.has_option("GRASS", "GRASS_RESOURCE_QUOTA"):
-                    self.GRASS_RESOURCE_QUOTA = config.getint("GRASS", "GRASS_RESOURCE_QUOTA")
+                    self.GRASS_RESOURCE_QUOTA = config.getint(
+                        "GRASS", "GRASS_RESOURCE_QUOTA")
                 if config.has_option("GRASS", "GRASS_GIS_BASE"):
                     self.GRASS_GIS_BASE = config.get("GRASS", "GRASS_GIS_BASE")
                 if config.has_option("GRASS", "GRASS_GIS_START_SCRIPT"):
-                    self.GRASS_GIS_START_SCRIPT = config.get("GRASS", "GRASS_GIS_START_SCRIPT")
+                    self.GRASS_GIS_START_SCRIPT = config.get(
+                        "GRASS", "GRASS_GIS_START_SCRIPT")
                 if config.has_option("GRASS", "GRASS_ADDON_PATH"):
                     self.GRASS_ADDON_PATH = config.get("GRASS", "GRASS_ADDON_PATH")
                 if config.has_option("GRASS", "GRASS_MODULES_XML_PATH"):
-                    self.GRASS_MODULES_XML_PATH = config.get("GRASS", "GRASS_MODULES_XML_PATH")
+                    self.GRASS_MODULES_XML_PATH = config.get(
+                        "GRASS", "GRASS_MODULES_XML_PATH")
                 if config.has_option("GRASS", "GRASS_VENV"):
                     self.GRASS_VENV = config.get("GRASS", "GRASS_VENV")
 
@@ -292,15 +316,19 @@ class Configuration(object):
                 if config.has_option("LIMITS", "MAX_CELL_LIMIT"):
                     self.MAX_CELL_LIMIT = config.getint("LIMITS", "MAX_CELL_LIMIT")
                 if config.has_option("LIMITS", "PROCESS_TIME_LIMT"):
-                    self.PROCESS_TIME_LIMT = config.getint("LIMITS", "PROCESS_TIME_LIMT")
+                    self.PROCESS_TIME_LIMT = config.getint(
+                        "LIMITS", "PROCESS_TIME_LIMT")
                 if config.has_option("LIMITS", "PROCESS_NUM_LIMIT"):
-                    self.PROCESS_NUM_LIMIT = config.getint("LIMITS", "PROCESS_NUM_LIMIT")
+                    self.PROCESS_NUM_LIMIT = config.getint(
+                        "LIMITS", "PROCESS_NUM_LIMIT")
                 if config.has_option("LIMITS", "NUMBER_OF_WORKERS"):
-                    self.NUMBER_OF_WORKERS = config.getint("LIMITS", "NUMBER_OF_WORKERS")
+                    self.NUMBER_OF_WORKERS = config.getint(
+                        "LIMITS", "NUMBER_OF_WORKERS")
 
             if config.has_section("API"):
                 if config.has_option("API", "CHECK_CREDENTIALS"):
-                    self.CHECK_CREDENTIALS = config.getboolean("API", "CHECK_CREDENTIALS")
+                    self.CHECK_CREDENTIALS = config.getboolean(
+                        "API", "CHECK_CREDENTIALS")
                 if config.has_option("API", "CHECK_LIMITS"):
                     self.CHECK_LIMITS = config.getboolean("API", "CHECK_LIMITS")
                 if config.has_option("API", "LOG_API_CALL"):
@@ -320,13 +348,17 @@ class Configuration(object):
                 if config.has_option("REDIS", "REDIS_SERVER_PW"):
                     self.REDIS_SERVER_PW = config.get("REDIS", "REDIS_SERVER_PW")
                 if config.has_option("REDIS", "REDIS_RESOURCE_EXPIRE_TIME"):
-                    self.REDIS_RESOURCE_EXPIRE_TIME = config.getint("REDIS", "REDIS_RESOURCE_EXPIRE_TIME")
+                    self.REDIS_RESOURCE_EXPIRE_TIME = config.getint(
+                        "REDIS", "REDIS_RESOURCE_EXPIRE_TIME")
                 if config.has_option("REDIS", "REDIS_QUEUE_SERVER_URL"):
-                    self.REDIS_QUEUE_SERVER_URL = config.get("REDIS", "REDIS_QUEUE_SERVER_URL")
+                    self.REDIS_QUEUE_SERVER_URL = config.get(
+                        "REDIS", "REDIS_QUEUE_SERVER_URL")
                 if config.has_option("REDIS", "REDIS_QUEUE_SERVER_PORT"):
-                    self.REDIS_QUEUE_SERVER_PORT = config.get("REDIS", "REDIS_QUEUE_SERVER_PORT")
+                    self.REDIS_QUEUE_SERVER_PORT = config.get(
+                        "REDIS", "REDIS_QUEUE_SERVER_PORT")
                 if config.has_option("REDIS", "REDIS_QUEUE_JOB_TTL"):
-                    self.REDIS_QUEUE_JOB_TTL = config.get("REDIS", "REDIS_QUEUE_JOB_TTL")
+                    self.REDIS_QUEUE_JOB_TTL = config.get(
+                        "REDIS", "REDIS_QUEUE_JOB_TTL")
                 if config.has_option("REDIS", "WORKER_QUEUE_NAME"):
                     self.WORKER_QUEUE_NAME = config.get("REDIS", "WORKER_QUEUE_NAME")
                 if config.has_option("REDIS", "WORKER_LOGFILE"):
@@ -336,7 +368,8 @@ class Configuration(object):
                 if config.has_option("MISC", "DOWNLOAD_CACHE"):
                     self.DOWNLOAD_CACHE = config.get("MISC", "DOWNLOAD_CACHE")
                 if config.has_option("MISC", "DOWNLOAD_CACHE_QUOTA"):
-                    self.DOWNLOAD_CACHE_QUOTA = config.getint("MISC", "DOWNLOAD_CACHE_QUOTA")
+                    self.DOWNLOAD_CACHE_QUOTA = config.getint(
+                        "MISC", "DOWNLOAD_CACHE_QUOTA")
                 if config.has_option("MISC", "TMP_WORKDIR"):
                     self.TMP_WORKDIR = config.get("MISC", "TMP_WORKDIR")
                 if config.has_option("MISC", "SECRET_KEY"):
@@ -344,7 +377,8 @@ class Configuration(object):
                 if config.has_option("MISC", "LOG_LEVEL"):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
-                    self.SAVE_INTERIM_RESULTS = config.getboolean("MISC", "SAVE_INTERIM_RESULTS")
+                    self.SAVE_INTERIM_RESULTS = config.getboolean(
+                        "MISC", "SAVE_INTERIM_RESULTS")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):
@@ -366,25 +400,32 @@ class Configuration(object):
                 if config.has_option("MANAGEMENT", "DEFAULT_USER"):
                     self.DEFAULT_USER = config.get("MANAGEMENT", "DEFAULT_USER")
                 if config.has_option("MANAGEMENT", "DEFAULT_USER_GROUP"):
-                    self.DEFAULT_USER_GROUP = config.get("MANAGEMENT", "DEFAULT_USER_GROUP")
+                    self.DEFAULT_USER_GROUP = config.get(
+                        "MANAGEMENT", "DEFAULT_USER_GROUP")
 
             if config.has_section("GCS"):
                 if config.has_option("GCS", "GOOGLE_APPLICATION_CREDENTIALS"):
-                    self.GOOGLE_APPLICATION_CREDENTIALS = config.get("GCS", "GOOGLE_APPLICATION_CREDENTIALS")
+                    self.GOOGLE_APPLICATION_CREDENTIALS = config.get(
+                        "GCS", "GOOGLE_APPLICATION_CREDENTIALS")
                 if config.has_option("GCS", "GCS_RESOURCE_BUCKET"):
                     self.GCS_RESOURCE_BUCKET = config.get("GCS", "GCS_RESOURCE_BUCKET")
                 if config.has_option("GCS", "GOOGLE_CLOUD_PROJECT"):
-                    self.GOOGLE_CLOUD_PROJECT = config.get("GCS", "GOOGLE_CLOUD_PROJECT")
+                    self.GOOGLE_CLOUD_PROJECT = config.get(
+                        "GCS", "GOOGLE_CLOUD_PROJECT")
 
             if config.has_section("AWS_S3"):
                 if config.has_option("AWS_S3", "S3_AWS_ACCESS_KEY_ID"):
-                    self.S3_AWS_ACCESS_KEY_ID = config.get("AWS_S3", "S3_AWS_ACCESS_KEY_ID")
+                    self.S3_AWS_ACCESS_KEY_ID = config.get(
+                        "AWS_S3", "S3_AWS_ACCESS_KEY_ID")
                 if config.has_option("AWS_S3", "S3_AWS_SECRET_ACCESS_KEY"):
-                    self.S3_AWS_SECRET_ACCESS_KEY = config.get("AWS_S3", "S3_AWS_SECRET_ACCESS_KEY")
+                    self.S3_AWS_SECRET_ACCESS_KEY = config.get(
+                        "AWS_S3", "S3_AWS_SECRET_ACCESS_KEY")
                 if config.has_option("AWS_S3", "S3_AWS_DEFAULT_REGION"):
-                    self.S3_AWS_DEFAULT_REGION = config.get("AWS_S3", "S3_AWS_DEFAULT_REGION")
+                    self.S3_AWS_DEFAULT_REGION = config.get(
+                        "AWS_S3", "S3_AWS_DEFAULT_REGION")
                 if config.has_option("AWS_S3", "S3_AWS_RESOURCE_BUCKET"):
-                    self.S3_AWS_RESOURCE_BUCKET = config.get("AWS_S3", "S3_AWS_RESOURCE_BUCKET")
+                    self.S3_AWS_RESOURCE_BUCKET = config.get(
+                        "AWS_S3", "S3_AWS_RESOURCE_BUCKET")
 
 
 global_config = Configuration()

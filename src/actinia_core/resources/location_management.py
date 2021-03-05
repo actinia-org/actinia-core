@@ -234,7 +234,8 @@ class LocationManagementResourceAdmin(ResourceBase):
         """Delete an existing location and everything inside from the user database.
         """
         # Delete only locations from the user database
-        location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
+        location = os.path.join(self.grass_user_data_base,
+                                self.user_group, location_name)
         permanent_mapset = os.path.join(location, "PERMANENT")
         wind_file = os.path.join(permanent_mapset, "WIND")
         # Check the location path, only "valid" locations can be deleted
@@ -300,7 +301,8 @@ class LocationManagementResourceAdmin(ResourceBase):
                                                    "Location <%s> exists in global database." % location_name)
 
         # Check also for the user database
-        location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
+        location = os.path.join(self.grass_user_data_base,
+                                self.user_group, location_name)
         # Check the location path
         if os.path.isdir(location):
             return self.get_error_response(message="Unable to create location. "
@@ -356,7 +358,8 @@ class PersistentLocationCreator(PersistentProcessing):
         self._execute_process_list(process_list)
 
         if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
-            shutil.move(os.path.join(self.temp_grass_data_base, new_location), self.grass_user_data_base)
+            shutil.move(os.path.join(self.temp_grass_data_base,
+                        new_location), self.grass_user_data_base)
         else:
             raise AsyncProcessError("Unable to create location <%s>" % new_location)
 

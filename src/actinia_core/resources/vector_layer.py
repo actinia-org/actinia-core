@@ -734,7 +734,8 @@ class PersistentVectorCreator(PersistentProcessing):
 
         self._check_lock_target_mapset()
         self._lock_temp_mapset()
-        self._create_temporary_grass_environment(source_mapset_name=self.target_mapset_name)
+        self._create_temporary_grass_environment(
+            source_mapset_name=self.target_mapset_name)
         self._execute_process_list(pc_1)
 
         # check if vector exists

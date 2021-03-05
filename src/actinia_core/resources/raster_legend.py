@@ -212,7 +212,8 @@ class EphemeralRasterLegend(EphemeralProcessing):
         os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
 
         pc = {}
-        pc["1"] = {"module": "d.legend", "inputs": {"raster": raster_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "d.legend", "inputs": {
+            "raster": raster_name + "@" + self.mapset_name}}
         for key in options:
             if key not in ["width", "height"]:
                 value = options[key]

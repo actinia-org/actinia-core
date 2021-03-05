@@ -366,7 +366,8 @@ class ResourcesManager(ResourceManagerBase):
         for entry in resource_list:
             if "status" in entry:
                 if entry["status"] in ["accepted", "running"]:
-                    self.resource_logger.commit_termination(user_id, entry["resource_id"])
+                    self.resource_logger.commit_termination(
+                        user_id, entry["resource_id"])
                     termination_requests += 1
 
         return make_response(jsonify(SimpleResponseModel(status="finished",

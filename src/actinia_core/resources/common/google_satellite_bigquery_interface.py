@@ -377,7 +377,8 @@ class GoogleSatelliteBigQueryInterface(object):
                         result[scene_id][band] = {}
                         result[scene_id][band]["file"] = file_name
                         result[scene_id][band]["map"] = map_name
-                        result[scene_id][band]["public_url"] = public_url + "/" + file_name
+                        result[scene_id][band]["public_url"] = public_url + \
+                            "/" + file_name
                         result[scene_id][band]["gcs_url"] = base_url + "/" + file_name
 
             return result
@@ -476,16 +477,20 @@ class GoogleSatelliteBigQueryInterface(object):
                     granule_id, product_id, sensing_time, datatake_identifier, base_url = row
                     tile_base_name = granule_id[4:10] + datatake_identifier[4:20]
                     gcs_url = base_url + "/GRANULE/" + granule_id + "/IMG_DATA/"
-                    public_url = self.gcs_url + base_url[5:] + "/GRANULE/" + granule_id + "/IMG_DATA/"
+                    public_url = self.gcs_url + \
+                        base_url[5:] + "/GRANULE/" + granule_id + "/IMG_DATA/"
 
                     result[product_id] = {}
                     result[product_id]["timestamp"] = sensing_time
-                    result[product_id]["public_xml_metadata_url"] = self.gcs_url + base_url[5:] + "/" + self.sentinel_xml_metadata_file
-                    result[product_id]["gcs_xml_metadata_url"] = base_url + "/" + self.sentinel_xml_metadata_file
+                    result[product_id]["public_xml_metadata_url"] = self.gcs_url + \
+                        base_url[5:] + "/" + self.sentinel_xml_metadata_file
+                    result[product_id]["gcs_xml_metadata_url"] = base_url + \
+                        "/" + self.sentinel_xml_metadata_file
 
                     # Generate the GML file from the sentinel product footprint
                     # The whole XML content is returned as well
-                    gml, xml_metadata, bbox = self._generate_sentinel2_footprint(base_url=base_url)
+                    gml, xml_metadata, bbox = self._generate_sentinel2_footprint(
+                        base_url=base_url)
                     result[product_id]["gml_footprint"] = gml
                     result[product_id]["bbox"] = bbox
                     # The xml content is currently not needed
@@ -530,8 +535,10 @@ class GoogleSatelliteBigQueryInterface(object):
         # Find the coordinates in the XML string
         root = eTree.fromstring(xml_content)
         # The namespace will hopefully not change
-        geo_info = root.find("{https://psd-14.sentinel2.eo.esa.int/PSD/User_Product_Level-1C.xsd}Geometric_Info")
-        global_footprint = geo_info.find("Product_Footprint").find("Product_Footprint").find("Global_Footprint")
+        geo_info = root.find(
+            "{https://psd-14.sentinel2.eo.esa.int/PSD/User_Product_Level-1C.xsd}Geometric_Info")
+        global_footprint = geo_info.find("Product_Footprint").find(
+            "Product_Footprint").find("Global_Footprint")
         coordinates = global_footprint.find("EXT_POS_LIST").text
 
         # Extract the coordinates from the text and convert it into lat/lon tuples

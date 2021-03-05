@@ -196,9 +196,11 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
 
         for file_path in self.file_list:
             if "_MTL.TXT" not in file_path.upper():
-                raster_name = "%s%s" % (self.scene_id, RASTER_SUFFIXES[self.landsat_sensor_id][count])
+                raster_name = "%s%s" % (
+                    self.scene_id, RASTER_SUFFIXES[self.landsat_sensor_id][count])
                 self.raster_names.append(raster_name)
-                self.band_raster_names[SCENE_BANDS[self.landsat_sensor_id][count]] = raster_name
+                self.band_raster_names[
+                    SCENE_BANDS[self.landsat_sensor_id][count]] = raster_name
                 p = self.get_raster_import_command(file_path=file_path,
                                                    raster_name=raster_name)
                 import_commands.append(p)

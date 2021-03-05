@@ -128,7 +128,8 @@ class ResourceBase(Resource):
         self.job_timeout = 0
 
         # Replace this with the correct response model in subclasses
-        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
+        # The class that is used to create the response
+        self.response_model_class = ProcessingResponseModel
 
         # Put API information in the response for later accounting
         self.api_info = ApiInfoModel(endpoint=request.endpoint,
@@ -194,7 +195,8 @@ class ResourceBase(Resource):
             try:
                 self.request_data = json_loads(request.data)
             except Exception as e:
-                self.create_error_response(message="No JSON data in request: Exception: %s" % str(e))
+                self.create_error_response(
+                    message="No JSON data in request: Exception: %s" % str(e))
                 return False
 
         if request.is_json is False:
@@ -281,7 +283,8 @@ class ResourceBase(Resource):
                                                    _external=True)
 
         if global_config.FORCE_HTTPS_URLS is True and "http://" in self.resource_url_base:
-            self.resource_url_base = self.resource_url_base.replace("http://", "https://")
+            self.resource_url_base = self.resource_url_base.replace(
+                "http://", "https://")
 
         # Create the accepted response that will be always send
         self.response_data = create_response_from_model(self.response_model_class,

@@ -197,7 +197,8 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             A list of resource entries
         """
-        term_key_list = self.redis_server.keys(self.resource_id_termination_prefix + regexpr)
+        term_key_list = self.redis_server.keys(
+            self.resource_id_termination_prefix + regexpr)
 
         resource_list = []
         if term_key_list:

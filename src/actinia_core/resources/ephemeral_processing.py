@@ -224,13 +224,15 @@ class EphemeralProcessing(object):
         self.save_interim_results = self.config.SAVE_INTERIM_RESULTS
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
-        self.grass_user_data_base = self.rdc.grass_user_data_base  # User database base path, this path will be
+        # User database base path, this path will be
+        self.grass_user_data_base = self.rdc.grass_user_data_base
         # extended with the user group name in the setup
         self.grass_base_dir = self.rdc.grass_base_dir
 
         self.location_name = self.rdc.location_name
         self.mapset_name = self.rdc.mapset_name
-        self.is_global_database = False  # Set this True if the work is performed based on global database
+        # Set this True if the work is performed based on global database
+        self.is_global_database = False
 
         self.map_name = self.rdc.map_name
 
@@ -263,7 +265,8 @@ class EphemeralProcessing(object):
         self.cell_limit = 0
         self.process_time_limit = 0
         self.process_num_limit = 0
-        self.skip_region_check = False  # Set this True so that regions are not checked before processing
+        # Set this True so that regions are not checked before processing
+        self.skip_region_check = False
 
         self.module_output_log = list()  # The stdout, stderr and parameter log of the module chains
         self.module_output_dict = dict()  # The stdout, stderr and parameter log of the module chains
@@ -278,7 +281,8 @@ class EphemeralProcessing(object):
         # a list of required mapsets that must be
         # linked in the temporary location
 
-        self.last_module = "g.region"  # The module that was called in the process chain, to detect g.region calls
+        # The module that was called in the process chain, to detect g.region calls
+        self.last_module = "g.region"
         # and check for correct region settings
         self.process_count = 0  # Count the processes executed from the process chain
 
@@ -287,17 +291,20 @@ class EphemeralProcessing(object):
         self.run_state = {"success": None}  # The state of the whole processing that is
         # checked in the final section of the run function
 
-        self.progress = ProgressInfoModel(step=0, num_of_steps=0)  # The progress info object
+        self.progress = ProgressInfoModel(
+            step=0, num_of_steps=0)  # The progress info object
         self.progress_steps = 0  # The count of self._run_process() and self._run_module() calls
         self.number_of_processes = 0  # The number of processes that should be processes
 
         self.setup_flag = False
 
-        self.temporary_pc_files = {}  # The names of the temporarily generated files "key":"temporary_file_path"
+        # The names of the temporarily generated files "key":"temporary_file_path"
+        self.temporary_pc_files = {}
         self.temp_file_count = 0  # The counter to generate unique temporary file names
         self.process_dict = {}  # This dictionary contains the output of a process on stdout
 
-        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
+        # The class that is used to create the response
+        self.response_model_class = ProcessingResponseModel
         self.proc_chain_converter = None  # The class that converts process chain definitions into
         # process lists that will be executed. This variable is
         # initiated in the setup method
@@ -306,8 +313,10 @@ class EphemeralProcessing(object):
         self.actinia_process_dict = dict()  # A list of all processes that will be executed
         self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
         # process chain finished
-        self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
-        self.webhook_auth = None  # The authentification for the webhook (base 64 decoded "username:password")
+        # The URL of a webhook that should be called for each status/progress update
+        self.webhook_update = None
+        # The authentification for the webhook (base 64 decoded "username:password")
+        self.webhook_auth = None
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -449,25 +458,33 @@ class EphemeralProcessing(object):
         # Call the webhook after the final result was send to the database
         try:
             if final is True and self.webhook_finished is not None:
-                self.message_logger.info("Send POST request to finished webhook url: %s" % self.webhook_finished)
+                self.message_logger.info(
+                    "Send POST request to finished webhook url: %s" % self.webhook_finished)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
-                    r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
+                    r = requests.post(self.webhook_finished, json=json.dumps(response_model), auth=HTTPBasicAuth(
+                        self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
-                    r = requests.post(self.webhook_finished, json=json.dumps(response_model))
+                    r = requests.post(self.webhook_finished,
+                                      json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access finished webhook URL %s" % self.webhook_finished)
+                    raise AsyncProcessError(
+                        "Unable to access finished webhook URL %s" % self.webhook_finished)
             elif final is False and self.webhook_update is not None:
-                self.message_logger.info("Send POST request to update webhook url: %s" % self.webhook_update)
+                self.message_logger.info(
+                    "Send POST request to update webhook url: %s" % self.webhook_update)
                 http_code, response_model = pickle.loads(document)
                 if self.webhook_auth:
                     # username is expected to be without colon (':')
-                    r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
+                    r = requests.post(self.webhook_update, json=json.dumps(response_model), auth=HTTPBasicAuth(
+                        self.webhook_auth.split(':')[0], ':'.join(self.webhook_auth.split(':')[1:])))
                 else:
-                    r = requests.post(self.webhook_update, json=json.dumps(response_model))
+                    r = requests.post(self.webhook_update,
+                                      json=json.dumps(response_model))
                 if r.status_code not in [200, 204]:
-                    raise AsyncProcessError("Unable to access the update webhook URL %s" % self.webhook_update)
+                    raise AsyncProcessError(
+                        "Unable to access the update webhook URL %s" % self.webhook_update)
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
@@ -475,7 +492,8 @@ class EphemeralProcessing(object):
                                             type=str(e_type))
             run_state = {"error": str(e), "exception": model}
             print(str(run_state))
-            self.message_logger.error("Unable to send webhook request. Traceback: %s" % str(run_state))
+            self.message_logger.error(
+                "Unable to send webhook request. Traceback: %s" % str(run_state))
 
     def _validate_process_chain(self, process_chain=None,
                                 skip_permission_check=False):
@@ -503,10 +521,12 @@ class EphemeralProcessing(object):
 
         # Backward compatibility
         if process_chain is None:
-            process_list = self.proc_chain_converter.process_chain_to_process_list(self.request_data)
+            process_list = self.proc_chain_converter.process_chain_to_process_list(
+                self.request_data)
             self.process_chain_list.append(self.request_data)
         else:
-            process_list = self.proc_chain_converter.process_chain_to_process_list(process_chain)
+            process_list = self.proc_chain_converter.process_chain_to_process_list(
+                process_chain)
             self.process_chain_list.append(process_chain)
 
         # Check for the webhook
@@ -540,7 +560,8 @@ class EphemeralProcessing(object):
                                                                    config=self.config,
                                                                    module_name=process.executable)
                         if resp is not None:
-                            raise AsyncProcessError("Module or executable <%s> is not supported" % process.executable)
+                            raise AsyncProcessError(
+                                "Module or executable <%s> is not supported" % process.executable)
             else:
                 message = "Wrong process description, type: %s " \
                           "module/executable: %s, args: %s" % (str(process.exec_type),
@@ -600,36 +621,44 @@ class EphemeralProcessing(object):
         self.resource_logger = ResourceLogger(**kwargs,
                                               fluent_sender=fluent_sender)
 
-        self.message_logger = MessageLogger(config=self.config, user_id=self.user_id, fluent_sender=fluent_sender)
+        self.message_logger = MessageLogger(
+            config=self.config, user_id=self.user_id, fluent_sender=fluent_sender)
 
         self.lock_interface = RedisLockingInterface()
         self.lock_interface.connect(**kwargs)
         del kwargs
-        self.process_time_limit = int(self.user_credentials["permissions"]["process_time_limit"])
+        self.process_time_limit = int(
+            self.user_credentials["permissions"]["process_time_limit"])
 
         # Check and create all required paths to global, user and temporary locations
         if init_grass is True:
             self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
-            self.process_num_limit = int(self.user_credentials["permissions"]["process_num_limit"])
+            self.process_num_limit = int(
+                self.user_credentials["permissions"]["process_num_limit"])
             # Setup the required paths
-            self.temp_grass_data_base = os.path.join(self.grass_temp_database, self.temp_grass_data_base_name)
+            self.temp_grass_data_base = os.path.join(
+                self.grass_temp_database, self.temp_grass_data_base_name)
             self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
 
             if self.location_name:
-                self.temp_location_path = os.path.join(self.temp_grass_data_base, self.location_name)
-                self.global_location_path = os.path.join(self.grass_data_base, self.location_name)
+                self.temp_location_path = os.path.join(
+                    self.temp_grass_data_base, self.location_name)
+                self.global_location_path = os.path.join(
+                    self.grass_data_base, self.location_name)
 
                 # Create the user database path if it does not exist
                 if not os.path.exists(self.grass_user_data_base):
                     os.mkdir(self.grass_user_data_base)
                 # Create the user group specific path, if it does not exist and set the
                 # grass user database path accordingly
-                self.grass_user_data_base = os.path.join(self.grass_user_data_base, self.user_group)
+                self.grass_user_data_base = os.path.join(
+                    self.grass_user_data_base, self.user_group)
                 if not os.path.exists(self.grass_user_data_base):
                     os.mkdir(self.grass_user_data_base)
 
                 # Create the user group specific location path, if it does not exist
-                self.user_location_path = os.path.join(self.grass_user_data_base, self.location_name)
+                self.user_location_path = os.path.join(
+                    self.grass_user_data_base, self.location_name)
                 if not os.path.exists(self.user_location_path):
                     os.mkdir(self.user_location_path)
 
@@ -718,7 +747,8 @@ class EphemeralProcessing(object):
                                 raise AsyncProcessError("Invalid mapset <%s> in location <%s>" % (mapset,
                                                                                                   self.location_name))
                 else:
-                    raise AsyncProcessError("Unable to access global location <%s>" % self.location_name)
+                    raise AsyncProcessError(
+                        "Unable to access global location <%s>" % self.location_name)
 
             # Check for leftover mapsets
             left_over_mapsets = []
@@ -741,7 +771,8 @@ class EphemeralProcessing(object):
                             raise AsyncProcessError("Invalid mapset <%s> in location <%s>" % (mapset,
                                                                                               self.location_name))
             else:
-                raise AsyncProcessError("Unable to access user location <%s>" % self.location_name)
+                raise AsyncProcessError(
+                    "Unable to access user location <%s>" % self.location_name)
 
             # Check if we missed some of the required mapsets
             if check_all_mapsets is False:
@@ -758,7 +789,8 @@ class EphemeralProcessing(object):
             # Link the original mapsets from global and user database into the temporary location
             for mapset_path, mapset in mapsets_to_link:
                 if os.path.isdir(os.path.join(self.temp_location_path, mapset)) is False:
-                    os.symlink(mapset_path, os.path.join(self.temp_location_path, mapset))
+                    os.symlink(mapset_path, os.path.join(
+                        self.temp_location_path, mapset))
 
         except Exception as e:
             raise AsyncProcessError("Unable to create a temporary GIS database"
@@ -831,7 +863,8 @@ class EphemeralProcessing(object):
         # If a source mapset is provided, the WIND file will be copied from it to the
         # temporary mapset
         if source_mapset_name is not None:
-            source_mapset_path = os.path.join(self.temp_location_path, source_mapset_name)
+            source_mapset_path = os.path.join(
+                self.temp_location_path, source_mapset_name)
             if os.path.exists(os.path.join(source_mapset_path, "WIND")):
                 shutil.copyfile(os.path.join(source_mapset_path, "WIND"),
                                 os.path.join(self.temp_mapset_path, "WIND"))
@@ -1209,8 +1242,10 @@ class EphemeralProcessing(object):
         """
 
         # Use temporary files to catch stdout and stderr
-        stdout_buff = tempfile.NamedTemporaryFile(mode="w+b", delete=True, dir=self.temp_file_path)
-        stderr_buff = tempfile.NamedTemporaryFile(mode="w+b", delete=True, dir=self.temp_file_path)
+        stdout_buff = tempfile.NamedTemporaryFile(
+            mode="w+b", delete=True, dir=self.temp_file_path)
+        stderr_buff = tempfile.NamedTemporaryFile(
+            mode="w+b", delete=True, dir=self.temp_file_path)
         stdin_file = None
 
         if process.stdin_source is not None:
@@ -1397,7 +1432,8 @@ class EphemeralProcessing(object):
                 format = stdout_def["format"]
                 delimiter = stdout_def["delimiter"]
                 if process_id not in self.module_output_dict:
-                    raise AsyncProcessError("Unable to find process id in module output dictionary")
+                    raise AsyncProcessError(
+                        "Unable to find process id in module output dictionary")
                 stdout = self.module_output_dict[process_id]["stdout"]
                 # Split the rows by the \n new line delimiter
                 rows = stdout.strip().split("\n")
@@ -1512,9 +1548,11 @@ class EphemeralProcessing(object):
                 # Send an error message if an exception was raised
                 self._send_resource_terminated(message=self.run_state["terminated"])
             elif "time limit exceeded" in self.run_state:
-                self._send_resource_time_limit_exceeded(message=self.run_state["time limit exceeded"])
+                self._send_resource_time_limit_exceeded(
+                    message=self.run_state["time limit exceeded"])
             elif "error" in self.run_state:
                 # Send an error message if an exception was raised
-                self._send_resource_error(message=self.run_state["error"], exception=self.run_state["exception"])
+                self._send_resource_error(
+                    message=self.run_state["error"], exception=self.run_state["exception"])
             else:
                 self._send_resource_error(message="Unknown error")

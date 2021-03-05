@@ -159,17 +159,28 @@ class MapLayerRegionResourceBase(ResourceBase):
 
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('n', type=float, help='Northern border must be specified as double value')
-        parser.add_argument('e', type=float, help='Eastern border must be specified as double value')
-        parser.add_argument('w', type=float, help='Western border must be specified as double value')
-        parser.add_argument('s', type=float, help='Southern border must be specified as double value')
-        parser.add_argument('res', type=float, help='Resolution must be specified as double value')
-        parser.add_argument('nsres', type=float, help='North-South resolution must be specified as double value')
-        parser.add_argument('ewres', type=float, help='East-West resolution must be specified as double value')
-        parser.add_argument('raster', type=str, help='The raster layer name from which the region should be used, with mapset information: name@mapset')
-        parser.add_argument('align', type=str, help='The raster layer name from which the region should be aligned, with mapset information: name@mapset')
-        parser.add_argument('zoom', type=str, help='The raster layer name to which the region should be zoomed, with mapset information: name@mapset')
-        parser.add_argument('vector', type=str, help='The vector layer name from which the region should be used, with mapset information: name@mapset')
+        parser.add_argument(
+            'n', type=float, help='Northern border must be specified as double value')
+        parser.add_argument(
+            'e', type=float, help='Eastern border must be specified as double value')
+        parser.add_argument(
+            'w', type=float, help='Western border must be specified as double value')
+        parser.add_argument(
+            's', type=float, help='Southern border must be specified as double value')
+        parser.add_argument('res', type=float,
+                            help='Resolution must be specified as double value')
+        parser.add_argument(
+            'nsres', type=float, help='North-South resolution must be specified as double value')
+        parser.add_argument(
+            'ewres', type=float, help='East-West resolution must be specified as double value')
+        parser.add_argument(
+            'raster', type=str, help='The raster layer name from which the region should be used, with mapset information: name@mapset')
+        parser.add_argument(
+            'align', type=str, help='The raster layer name from which the region should be aligned, with mapset information: name@mapset')
+        parser.add_argument(
+            'zoom', type=str, help='The raster layer name to which the region should be zoomed, with mapset information: name@mapset')
+        parser.add_argument(
+            'vector', type=str, help='The vector layer name from which the region should be used, with mapset information: name@mapset')
 
         return parser
 

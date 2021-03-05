@@ -38,7 +38,8 @@ class ResourceLogger(RedisFluentLoggerBase):
     """
 
     def __init__(self, host, port, password=None, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+        RedisFluentLoggerBase.__init__(
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
         # Connect to a redis database
         self.db = RedisResourceInterface()
         redis_args = (host, port)

@@ -248,12 +248,14 @@ class EphemeralRasterColorsOutput(EphemeralProcessing):
 
         result_file = tempfile.mktemp(suffix=".color", dir=self.temp_file_path)
 
-        self.request_data = {"1": {"module": "r.colors.out", "inputs": {"map": "", "rules": ""}}}
+        self.request_data = {
+            "1": {"module": "r.colors.out", "inputs": {"map": "", "rules": ""}}}
         self.request_data["1"]["inputs"]["map"] = raster_name + "@" + self.mapset_name
         self.request_data["1"]["inputs"]["rules"] = result_file
 
         # Run the selected modules
-        process_list = self._create_temporary_grass_environment_and_process_list(skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            skip_permission_check=True)
         self._execute_process_list(process_list)
 
         result = open(result_file, "r").read().strip().split("\n")
