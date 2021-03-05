@@ -115,7 +115,7 @@ class GeoDataDownloadImportSupport(object):
             resp = requests.head(url)
             if self.message_logger:
                 self.message_logger.info("%i %s %s" % (resp.status_code,
-                                                                           resp.text, resp.headers))
+                                                       resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("The URL <%s> can not be accessed." % url)

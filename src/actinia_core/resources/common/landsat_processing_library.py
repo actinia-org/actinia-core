@@ -219,14 +219,14 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         toar_commands = []
 
         p = Process(exec_type="grass", executable="i.landsat.toar",
-                         executable_params=["input=%s." % self.scene_id,
-                                            "metfile=%s_%s" % (os.path.join(self.user_download_cache_path,
-                                                                            self.scene_id),
-                                                               "MTL.txt"),
-                                            "method=%s" % option,
-                                            "output=%s_%s." % (self.scene_id, atcor_method),
-                                            "--q"],
-                         skip_permission_check=True)
+                    executable_params=["input=%s." % self.scene_id,
+                                       "metfile=%s_%s" % (os.path.join(self.user_download_cache_path,
+                                                                       self.scene_id),
+                                                          "MTL.txt"),
+                                       "method=%s" % option,
+                                       "output=%s_%s." % (self.scene_id, atcor_method),
+                                       "--q"],
+                    skip_permission_check=True)
         toar_commands.append(p)
         return toar_commands
 
@@ -257,12 +257,12 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         ivi_params.append("output=%s" % self.ndvi_name)
 
         p = Process(exec_type="grass", executable=ivi, executable_params=ivi_params,
-                         skip_permission_check=True)
+                    skip_permission_check=True)
         ndvi_commands.append(p)
 
         p = Process(exec_type="grass", executable="r.colors",
-                         executable_params=["map=%s" % self.ndvi_name, "color=ndvi"],
-                         skip_permission_check=True)
+                    executable_params=["map=%s" % self.ndvi_name, "color=ndvi"],
+                    skip_permission_check=True)
         ndvi_commands.append(p)
 
         return ndvi_commands

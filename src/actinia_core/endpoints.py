@@ -105,11 +105,11 @@ def create_core_endpoints():
                                                                      '<string:mapset_name>/render_shade')
     # STRDS management
     flask_api.add_resource(SyncSTRDSListerResource, '/locations/<string:location_name>/mapsets/'
-                                          '<string:mapset_name>/strds')
+                           '<string:mapset_name>/strds')
     flask_api.add_resource(STRDSManagementResource, '/locations/<string:location_name>/mapsets/<string:mapset_name>/strds/'
-                                  '<string:strds_name>')
+                           '<string:strds_name>')
     flask_api.add_resource(STRDSRasterManagement, '/locations/<string:location_name>/mapsets/'
-                                             '<string:mapset_name>/strds/<string:strds_name>/raster_layers')
+                           '<string:mapset_name>/strds/<string:strds_name>/raster_layers')
     # Vector management
     flask_api.add_resource(VectorLayersResource, '/locations/<string:location_name>/mapsets/'
                                                  '<string:mapset_name>/vector_layers')
@@ -139,14 +139,14 @@ def create_core_endpoints():
     flask_api.add_resource(AsyncPersistentResource, '/locations/<string:location_name>/mapsets/'
                                                     '<string:mapset_name>/processing_async')
     flask_api.add_resource(AsyncPersistentMapsetMergerResource, '/locations/<string:location_name>/mapsets/'
-                                                                 '<string:mapset_name>/merging_async')
+                           '<string:mapset_name>/merging_async')
     flask_api.add_resource(AsyncEphemeralRasterLayerExporterResource, '/locations/<string:location_name>/mapsets/'
-                                                                    '<string:mapset_name>/raster_layers/'
-                                                                    '<string:raster_name>/geotiff_async')
+                           '<string:mapset_name>/raster_layers/'
+                           '<string:raster_name>/geotiff_async')
     flask_api.add_resource(AsyncEphemeralRasterLayerRegionExporterResource, '/locations/<string:location_name>'
-                                                                          '/mapsets/<string:mapset_name>'
-                                                                          '/raster_layers/<string:raster_name>'
-                                                                          '/geotiff_async_orig')
+                           '/mapsets/<string:mapset_name>'
+                           '/raster_layers/<string:raster_name>'
+                           '/geotiff_async_orig')
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')

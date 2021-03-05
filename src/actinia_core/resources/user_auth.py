@@ -237,18 +237,18 @@ def check_location_mapset_module_access(user_credentials,
         # Check if the location exists in the global database, if not return
         grass_data_base = config.GRASS_DATABASE
         location_path = os.path.join(grass_data_base, location_name)
-        if os.path.exists(location_path) is False or \
-                        os.path.isdir(location_path) is False or\
-                        os.access(location_path, os.R_OK & os.X_OK) is False:
+        if (os.path.exists(location_path) is False
+                or os.path.isdir(location_path) is False
+                or os.access(location_path, os.R_OK & os.X_OK) is False):
             return None
 
         # Check if the mapset exists in the global location, if not return
         if mapset_name:
             mapset_path = os.path.join(location_path, mapset_name)
 
-            if os.path.exists(mapset_path) is False or \
-                            os.path.isdir(mapset_path) is False or\
-                            os.access(mapset_path, os.R_OK & os.X_OK) is False:
+            if (os.path.exists(mapset_path) is False
+                    or os.path.isdir(mapset_path) is False
+                    or os.access(mapset_path, os.R_OK & os.X_OK) is False):
                 return None
 
         # Check permissions to the global database locations and mapsets

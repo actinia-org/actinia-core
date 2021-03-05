@@ -348,7 +348,7 @@ class PersistentLocationCreator(PersistentProcessing):
                     "flags": "t"}}
 
         process_list = self._validate_process_chain(process_chain=pc,
-                                                     skip_permission_check=True)
+                                                    skip_permission_check=True)
 
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")

@@ -438,7 +438,7 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
         # Run the selected modules
         self.skip_region_check = True
         process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                  skip_permission_check=True)
+                                                                                 skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file

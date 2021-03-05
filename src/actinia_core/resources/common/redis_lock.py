@@ -33,7 +33,7 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 __credits__ = ["Thünen Institutes of Climate-Smart Agriculture",
-                  "https://www.ti.bund.de/en/ak/"]
+               "https://www.ti.bund.de/en/ak/"]
 
 
 class RedisLockingInterface(object):

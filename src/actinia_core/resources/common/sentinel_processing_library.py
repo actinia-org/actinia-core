@@ -326,7 +326,7 @@ class Sentinel2Processing(object):
             wget_params.append(url)
 
             p = Process(exec_type="exec", executable=wget, executable_params=wget_params,
-                             skip_permission_check=True)
+                        skip_permission_check=True)
 
             download_commands.append(p)
 
@@ -339,7 +339,7 @@ class Sentinel2Processing(object):
                 copy_params.append(dest)
 
                 p = Process(exec_type="exec", executable=copy, executable_params=copy_params,
-                                 skip_permission_check=True)
+                            skip_permission_check=True)
                 download_commands.append(p)
 
         return download_commands, self.import_file_info
@@ -371,10 +371,10 @@ class Sentinel2Processing(object):
         import_commands = []
 
         p = Process(exec_type="grass", executable="v.import",
-                         executable_params=["input=%s" % self.gml_cache_file_name,
-                                            "output=%s" % self.product_id,
-                                            "--q"],
-                         skip_permission_check=True)
+                    executable_params=["input=%s" % self.gml_cache_file_name,
+                                       "output=%s" % self.product_id,
+                                       "--q"],
+                    skip_permission_check=True)
         import_commands.append(p)
 
         dt = dtparser.parse(self.timestamp.split(".")[0])
@@ -382,9 +382,9 @@ class Sentinel2Processing(object):
 
         # Attach a the time stamp
         p = Process(exec_type="grass", executable="v.timestamp",
-                         executable_params=["map=%s" % self.product_id,
-                                            "date=%s" % timestamp],
-                         skip_permission_check=True)
+                    executable_params=["map=%s" % self.product_id,
+                                       "date=%s" % timestamp],
+                    skip_permission_check=True)
         import_commands.append(p)
 
         # Import and update
@@ -413,50 +413,50 @@ class Sentinel2Processing(object):
             gdal_translate_params.append(cropped_input_file)
 
             p = Process(exec_type="exec", executable=gdal_translate,
-                             executable_params=gdal_translate_params,
-                             skip_permission_check=True)
+                        executable_params=gdal_translate_params,
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.import",
-                             executable_params=["input=%s" % cropped_input_file,
-                                                "output=%s" % temp_map_name,
-                                                "--q"],
-                             skip_permission_check=True)
+                        executable_params=["input=%s" % cropped_input_file,
+                                           "output=%s" % temp_map_name,
+                                           "--q"],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="g.region",
-                             executable_params=["align=%s" % temp_map_name,
-                                                "vector=%s" % self.product_id,
-                                                "-g"],
-                             skip_permission_check=True)
+                        executable_params=["align=%s" % temp_map_name,
+                                           "vector=%s" % self.product_id,
+                                           "-g"],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mask",
-                             executable_params=["vector=%s" % self.product_id],
-                             skip_permission_check=True)
+                        executable_params=["vector=%s" % self.product_id],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mapcalc",
-                             executable_params=["expression=%s = float(%s)" % (map_name,
-                                                                               temp_map_name)],
-                             skip_permission_check=True)
+                        executable_params=["expression=%s = float(%s)" % (map_name,
+                                                                          temp_map_name)],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.timestamp",
-                             executable_params=["map=%s" % map_name, "date=%s" % timestamp],
-                             skip_permission_check=True)
+                        executable_params=["map=%s" % map_name, "date=%s" % timestamp],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="g.remove",
-                             executable_params=["type=raster",
-                                                "name=%s" % temp_map_name,
-                                                "-f"],
-                             skip_permission_check=True)
+                        executable_params=["type=raster",
+                                           "name=%s" % temp_map_name,
+                                           "-f"],
+                        skip_permission_check=True)
             import_commands.append(p)
 
             p = Process(exec_type="grass", executable="r.mask",
-                             executable_params=["-r"],
-                             skip_permission_check=True)
+                        executable_params=["-r"],
+                        skip_permission_check=True)
             import_commands.append(p)
 
         return import_commands
@@ -479,18 +479,18 @@ class Sentinel2Processing(object):
         ndvi_commands = []
 
         p = Process(exec_type="grass",
-                         executable="r.mapcalc",
-                         executable_params=["expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
-                                            "(float(%(nir)s) + float(%(red)s))" % {"ndvi": raster_result_name,
-                                                                                   "nir": nir,
-                                                                                   "red": red}],
-                        skip_permission_check=True)
+                    executable="r.mapcalc",
+                    executable_params=["expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
+                                       "(float(%(nir)s) + float(%(red)s))" % {"ndvi": raster_result_name,
+                                                                              "nir": nir,
+                                                                              "red": red}],
+                    skip_permission_check=True)
         ndvi_commands.append(p)
 
         p = Process(exec_type="grass",
-                         executable="r.colors",
-                         executable_params=["color=ndvi", "map=%s" % raster_result_name],
-                         skip_permission_check=True)
+                    executable="r.colors",
+                    executable_params=["color=ndvi", "map=%s" % raster_result_name],
+                    skip_permission_check=True)
         ndvi_commands.append(p)
 
         return ndvi_commands

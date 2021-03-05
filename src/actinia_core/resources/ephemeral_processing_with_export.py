@@ -232,9 +232,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         if use_raster_region is True:
 
             p = Process(exec_type="grass",
-                             executable="g.region",
-                             executable_params=["raster=%s" % raster_name, "-g"],
-                             stdin_source=None)
+                        executable="g.region",
+                        executable_params=["raster=%s" % raster_name, "-g"],
+                        stdin_source=None)
 
             self._update_num_of_steps(1)
             self._run_module(p)
@@ -271,9 +271,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             args.extend(additional_options)
 
         p = Process(exec_type="grass",
-                         executable=module_name,
-                         executable_params=args,
-                         stdin_source=None)
+                    executable=module_name,
+                    executable_params=args,
+                    stdin_source=None)
 
         self._update_num_of_steps(1)
         self._run_module(p)
@@ -332,9 +332,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         # Export
         p = Process(exec_type="grass",
-                         executable=module_name,
-                         executable_params=args,
-                         stdin_source=None)
+                    executable=module_name,
+                    executable_params=args,
+                    stdin_source=None)
 
         self._update_num_of_steps(1)
         self._run_module(p)
@@ -346,9 +346,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         args = ["-r", archive_name, file_name]
 
         p = Process(exec_type="exec",
-                         executable=executable,
-                         executable_params=args,
-                         stdin_source=None)
+                    executable=executable,
+                    executable_params=args,
+                    stdin_source=None)
 
         self._update_num_of_steps(1)
         self._run_process(p)
@@ -382,9 +382,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         # Export
         p = Process(exec_type="grass",
-                         executable=module_name,
-                         executable_params=args,
-                         stdin_source=None)
+                    executable=module_name,
+                    executable_params=args,
+                    stdin_source=None)
 
         self._update_num_of_steps(1)
         self._run_module(p)
@@ -420,9 +420,9 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         args = ["-r", archive_name, tmp_file]
 
         p = Process(exec_type="exec",
-                         executable=executable,
-                         executable_params=args,
-                         stdin_source=None)
+                    executable=executable,
+                    executable_params=args,
+                    stdin_source=None)
 
         self._update_num_of_steps(1)
         self._run_process(p)

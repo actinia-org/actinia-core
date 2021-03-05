@@ -134,8 +134,8 @@ class ResourceStorageSize(EphemeralProcessing):
             args = ["-sb", self.user_resource_storage_path]
 
             self._run_process(Process(exec_type="exec",
-                                           executable=executable,
-                                           executable_params=args))
+                                      executable=executable,
+                                      executable_params=args))
 
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
             quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024 * 1024 * 1024)
@@ -173,8 +173,8 @@ class ResourceStorageDelete(PersistentProcessing):
             args = ["-rf", self.user_resource_storage_path]
 
             self._run_process(Process(exec_type="exec",
-                                           executable=executable,
-                                           executable_params=args))
+                                      executable=executable,
+                                      executable_params=args))
 
             os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."

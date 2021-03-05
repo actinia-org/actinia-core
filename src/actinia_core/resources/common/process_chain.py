@@ -657,7 +657,7 @@ class ProcessChainConverter(object):
 
         if self.message_logger:
             self.message_logger.info("Creating download process "
-                                                         "list for all import definitions")
+                                     "list for all import definitions")
 
         for entry in self.import_descr_list:
             if self.message_logger:

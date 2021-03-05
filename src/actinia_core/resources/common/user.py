@@ -65,8 +65,8 @@ class ActiniaUser(object):
 
     def __init__(self, user_id, user_group=None, user_role=None,
                  accessible_datasets={"nc_spm_08": ["PERMANENT",
-                                                      "user1",
-                                                      "landsat"],
+                                                    "user1",
+                                                    "landsat"],
                                       "ECAD": ["PERMANENT"],
                                       "latlong_wgs84": ["PERMANENT"]},
                  accessible_modules=global_config.MODULE_WHITE_LIST,
