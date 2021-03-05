@@ -75,10 +75,10 @@ class RedisFluentLoggerBase(object):
 
         # keep this until sure that all logs are fetched if stdout log is set
         # tags = ['RESOURCE_LOG', 'API_LOG', 'INFO', 'DEBUG']
-        if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag and
-                'INFO' not in tag and 'DEBUG' not in tag):
-            print("WARNING: Some output might not be redirected to STDOUT:" +
-                  " %s %s %s" % (tag, str(cur_time), str(data)))
+        if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag
+                and 'INFO' not in tag and 'DEBUG' not in tag):
+            print("WARNING: Some output might not be redirected to STDOUT:"
+                  + " %s %s %s" % (tag, str(cur_time), str(data)))
 
     def _send_to_logging_interface(self, tag, data):
 

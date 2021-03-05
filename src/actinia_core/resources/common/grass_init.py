@@ -112,17 +112,17 @@ class GrassEnvironment(ProcessLogging):
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
         self.env["GRASS_ADDON_BASE"] = grass_addon_path
         if os.name != 'posix':
-            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";" +
-                                   os.path.join(self.env["GISBASE"], "scripts") + ";" +
-                                   os.path.join(self.env["GISBASE"], "lib") + ";" +
-                                   os.path.join(self.env["GISBASE"], "extralib"))
-            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ";" +
-                                         os.path.join(self.env["GISBASE"], "etc", "python"))
+            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ";"
+                                   + os.path.join(self.env["GISBASE"], "scripts") + ";"
+                                   + os.path.join(self.env["GISBASE"], "lib") + ";"
+                                   + os.path.join(self.env["GISBASE"], "extralib"))
+            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ";"
+                                         + os.path.join(self.env["GISBASE"], "etc", "python"))
         else:
-            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ":" +
-                                   os.path.join(self.env["GISBASE"], "scripts"))
-            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ":" +
-                                         os.path.join(self.env["GISBASE"], "etc", "python"))
+            self.env["PATH"] = str(os.path.join(self.env["GISBASE"], "bin") + ":"
+                                   + os.path.join(self.env["GISBASE"], "scripts"))
+            self.env["PYTHONPATH"] = str(self.env["PYTHONPATH"] + ":"
+                                         + os.path.join(self.env["GISBASE"], "etc", "python"))
 
         self.set()
         self.get()

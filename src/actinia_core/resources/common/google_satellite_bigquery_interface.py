@@ -522,8 +522,8 @@ class GoogleSatelliteBigQueryInterface(object):
 
         # Download the XML file from the google cloud storage using the cloud API
         bucket = self.storage_client.get_bucket("gcp-public-data-sentinel-2")
-        blob = bucket.blob(base_url.replace("gs://gcp-public-data-sentinel-2/", "") +
-                           "/" + self.sentinel_xml_metadata_file)
+        blob = bucket.blob(base_url.replace("gs://gcp-public-data-sentinel-2/", "")
+                           + "/" + self.sentinel_xml_metadata_file)
 
         xml_content = blob.download_as_string()
 
