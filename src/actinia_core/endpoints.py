@@ -190,7 +190,7 @@ def create_core_endpoints():
         'raster_layers/<string:raster_name>/geotiff_async')
     flask_api.add_resource(
         AsyncEphemeralRasterLayerRegionExporterResource,
-        '/locations/<string:location_name> /mapsets/<string:mapset_name>'
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>'
         '/raster_layers/<string:raster_name>/geotiff_async_orig')
     # User management
     flask_api.add_resource(UserListResource, '/users')
