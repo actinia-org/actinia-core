@@ -185,11 +185,12 @@ def check_user_permissions(f):
         if "module_name" in kwargs:
             module_name = kwargs["module_name"]
 
-        ret = check_location_mapset_module_access(user_credentials=g.user.get_credentials(),
-                                                  config=global_config,
-                                                  location_name=location_name,
-                                                  mapset_name=mapset_name,
-                                                  module_name=module_name)
+        ret = check_location_mapset_module_access(
+            user_credentials=g.user.get_credentials(),
+            config=global_config,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            module_name=module_name)
         if ret is not None:
             message_logger = MessageLogger()
             message_logger.error(str(ret[1]))
@@ -210,7 +211,8 @@ def check_location_mapset_module_access(user_credentials,
 
     Args:
         user_credentials (dict): The user credentials dictionary
-        config (actinia_core.resources.common.config.Configuration): The actinia configuration
+        config (actinia_core.resources.common.config.Configuration): The actinia
+                                                                     configuration
         location_name (str): Name of the location to access
         mapset_name (str): Name of the mapset to access
         module_name (str): Name of the module to access
@@ -224,7 +226,8 @@ def check_location_mapset_module_access(user_credentials,
     """
 
     # Admin is allowed to do anything
-    if user_credentials["user_role"] == "admin" or user_credentials["user_role"] == "superadmin":
+    if (user_credentials["user_role"] == "admin"
+            or user_credentials["user_role"] == "superadmin"):
         return None
 
     # Mapset without location results in error
@@ -265,8 +268,9 @@ def check_location_mapset_module_access(user_credentials,
             if not accessible_datasets[location_name] or \
                     mapset_name not in accessible_datasets[location_name]:
                 resp = {"Status": "error",
-                        "Messages": "Unauthorized access to mapset <%s> in location <%s>" % (mapset_name,
-                                                                                             location_name)}
+                        "Messages": "Unauthorized access to mapset "
+                                    "<%s> in location <%s>"
+                                    % (mapset_name, location_name)}
                 return (401, resp)
 
     # Check if the module name is in the access list

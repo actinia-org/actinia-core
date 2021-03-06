@@ -138,7 +138,8 @@ class ResourceBase(Resource):
                                      request_url=self.request_url)
 
     def create_error_response(self, message, status="error", http_code=400):
-        """Create an error response, that by default sets the status to error and the http_code to 400
+        """Create an error response, that by default sets the status to error
+        and the http_code to 400
 
         This method sets the self.response_data variable.
 
@@ -148,18 +149,19 @@ class ResourceBase(Resource):
             http_code: The hhtp code by default 400
 
         """
-        self.response_data = create_response_from_model(self.response_model_class,
-                                                        status=status,
-                                                        user_id=self.user_id,
-                                                        resource_id=self.resource_id,
-                                                        process_log=None,
-                                                        results={},
-                                                        message=message,
-                                                        http_code=http_code,
-                                                        orig_time=self.orig_time,
-                                                        orig_datetime=self.orig_datetime,
-                                                        status_url=self.status_url,
-                                                        api_info=self.api_info)
+        self.response_data = create_response_from_model(
+            self.response_model_class,
+            status=status,
+            user_id=self.user_id,
+            resource_id=self.resource_id,
+            process_log=None,
+            results={},
+            message=message,
+            http_code=http_code,
+            orig_time=self.orig_time,
+            orig_datetime=self.orig_datetime,
+            status_url=self.status_url,
+            api_info=self.api_info)
 
     def get_error_response(self, message, status="error", http_code=400):
         """Return the error response.
@@ -248,12 +250,15 @@ class ResourceBase(Resource):
             has_json (bool):Set True if the request has JSON data, False otherwise
             has_xml (bool):Set True if the request has XML data, False otherwise
             location_name (str): The name of the location to work in
-            mapset_name (str): The name of the target mapset in which the computation should be performed
-            map_name: The name of the map or other resource (raster, vector, STRDS, color, ...)
+            mapset_name (str): The name of the target mapset in which the
+                               computation should be performed
+            map_name: The name of the map or other resource (raster, vector,
+                      STRDS, color, ...)
 
         Returns:
-            The ResourceDataContainer that contains all required information for the async process
-            or None if the request was wrong. Then use the self.response_data variable to send a response.
+            The ResourceDataContainer that contains all required information
+            for the async process or None if the request was wrong. Then use
+            the self.response_data variable to send a response.
 
         """
         if has_json is True and has_xml is True:
@@ -282,23 +287,25 @@ class ResourceBase(Resource):
                                                    file_name="__None__",
                                                    _external=True)
 
-        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.resource_url_base:
+        if (global_config.FORCE_HTTPS_URLS is True
+                and "http://" in self.resource_url_base):
             self.resource_url_base = self.resource_url_base.replace(
                 "http://", "https://")
 
         # Create the accepted response that will be always send
-        self.response_data = create_response_from_model(self.response_model_class,
-                                                        status="accepted",
-                                                        user_id=self.user_id,
-                                                        resource_id=self.resource_id,
-                                                        process_log=None,
-                                                        results={},
-                                                        message="Resource accepted",
-                                                        http_code=200,
-                                                        orig_time=self.orig_time,
-                                                        orig_datetime=self.orig_datetime,
-                                                        status_url=self.status_url,
-                                                        api_info=self.api_info)
+        self.response_data = create_response_from_model(
+            self.response_model_class,
+            status="accepted",
+            user_id=self.user_id,
+            resource_id=self.resource_id,
+            process_log=None,
+            results={},
+            message="Resource accepted",
+            http_code=200,
+            orig_time=self.orig_time,
+            orig_datetime=self.orig_datetime,
+            status_url=self.status_url,
+            api_info=self.api_info)
 
         # Send the status to the database
         self.resource_logger.commit(self.user_id, self.resource_id, self.response_data)
@@ -339,10 +346,12 @@ class ResourceBase(Resource):
     def wait_until_finish(self, poll_time=0.2):
         """Wait until a resource finished, terminated or failed with an error
 
-        Call this method if a job was enqueued and the POST/GET/DELETE/PUT method should wait for it
+        Call this method if a job was enqueued and the POST/GET/DELETE/PUT
+        method should wait for it
 
         Args:
-            poll_time (float): Time to sleep between Redis db polls for process status requests
+            poll_time (float): Time to sleep between Redis db polls for process
+                               status requests
 
         Returns:
             (int, dict)
@@ -353,8 +362,8 @@ class ResourceBase(Resource):
             response_data = self.resource_logger.get(self.user_id,
                                                      self.resource_id)
             if not response_data:
-                message = "Unable to receive process status. User id %s resource id %s" % (self.user_id,
-                                                                                           self.resource_id)
+                message = ("Unable to receive process status. User id %s resource id %s"
+                           % (self.user_id, self.resource_id))
                 return make_response(message, 400)
 
             http_code, response_model = pickle.loads(response_data)

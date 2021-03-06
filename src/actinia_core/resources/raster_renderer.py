@@ -47,7 +47,8 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Render a raster map layer as a PNG image. Minimum required user role: user.',
+        'description': 'Render a raster map layer as a PNG image. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -59,7 +60,8 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -129,7 +131,8 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -194,20 +197,22 @@ class EphemeralRasterRenderer(EphemeralRendererBase):
 
         result_file = tempfile.mktemp(suffix=".png")
 
-        region_pc = self._setup_render_environment_and_region(options=options,
-                                                              result_file=result_file)
+        region_pc = self._setup_render_environment_and_region(
+            options=options, result_file=result_file)
 
         pc = {}
         pc["1"] = {"module": "g.region", "inputs": {
             "raster": raster_name + "@" + self.mapset_name}}
         pc["2"] = region_pc
-        pc["3"] = {"module": "d.rast", "inputs": {"map": raster_name + "@" + self.mapset_name},
-                   "flags": "n"}
+        pc["3"] = {
+            "module": "d.rast",
+            "inputs": {"map": raster_name + "@" + self.mapset_name},
+            "flags": "n"}
 
         # Run the selected modules
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file
@@ -228,20 +233,23 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
         Returns:
              dict:
-             A dictionary of d.rgb options or a error response if width or height are invalid
-            and if the mapset is present in the raster layer names.
+             A dictionary of d.rgb options or a error response if width or height
+             are invalid and if the mapset is present in the raster layer names.
 
         """
         options = self.create_parser_options(args)
 
         if "@" in args["red"]:
-            return self.get_error_response(message="Mapset name is not allowed in layer names")
+            return self.get_error_response(
+                message="Mapset name is not allowed in layer names")
 
         if "@" in args["green"]:
-            return self.get_error_response(message="Mapset name is not allowed in layer names")
+            return self.get_error_response(
+                message="Mapset name is not allowed in layer names")
 
         if "@" in args["blue"]:
-            return self.get_error_response(message="Mapset name is not allowed in layer names")
+            return self.get_error_response(
+                message="Mapset name is not allowed in layer names")
 
         options["red"] = "%s@%s" % (args["red"], mapset_name)
         options["green"] = "%s@%s" % (args["green"], mapset_name)
@@ -251,7 +259,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Render three raster map layer as composed RGB PNG image. Minimum required user role: user.',
+        'description': 'Render three raster map layer as composed RGB PNG image. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -263,7 +272,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -271,7 +281,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             },
             {
                 'name': 'red',
-                'description': 'The name of the raster map layer to render as color red',
+                'description': 'The name of the raster map layer to render '
+                               'as color red',
                 'required': True,
                 'in': 'query',
                 'type': 'string',
@@ -279,7 +290,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             },
             {
                 'name': 'green',
-                'description': 'The name of the raster map layer to render as color green',
+                'description': 'The name of the raster map layer to render as '
+                               'color green',
                 'required': True,
                 'in': 'query',
                 'type': 'string',
@@ -287,7 +299,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             },
             {
                 'name': 'blue',
-                'description': 'The name of the raster map layer to render as color blue',
+                'description': 'The name of the raster map layer to render as '
+                               'color blue',
                 'required': True,
                 'in': 'query',
                 'type': 'string',
@@ -349,7 +362,8 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             '200': {
                 'description': 'The RGB composition PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -359,12 +373,15 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
         """
 
         parser = self.create_parser()
-        parser.add_argument('red', required=True, type=str,
-                            help='The name of the raster layer associated with the color red')
-        parser.add_argument('green', required=True, type=str,
-                            help='The name of the raster layer associated with the color green')
-        parser.add_argument('blue', required=True, type=str,
-                            help='The name of the raster layer associated with the color blue')
+        parser.add_argument(
+            'red', required=True, type=str,
+            help='The name of the raster layer associated with the color red')
+        parser.add_argument(
+            'green', required=True, type=str,
+            help='The name of the raster layer associated with the color green')
+        parser.add_argument(
+            'blue', required=True, type=str,
+            help='The name of the raster layer associated with the color blue')
 
         args = parser.parse_args()
         rgb_options = self.extract_rgb_maps(args, mapset_name)
@@ -421,13 +438,12 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
 
         result_file = tempfile.mktemp(suffix=".png")
 
-        region_pc = self._setup_render_environment_and_region(options=options,
-                                                              result_file=result_file)
+        region_pc = self._setup_render_environment_and_region(
+            options=options, result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module": "g.region", "inputs": {"raster": "%s,%s,%s" % (options["red"],
-                                                                            options["green"],
-                                                                            options["blue"])}}
+        pc["1"] = {"module": "g.region", "inputs": {"raster": "%s,%s,%s" % (
+            options["red"], options["green"], options["blue"])}}
         pc["2"] = region_pc
         pc["3"] = {"module": "d.rgb", "inputs": {"red": options["red"],
                                                  "green": options["green"],
@@ -438,8 +454,8 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
 
         # Run the selected modules
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file
@@ -448,7 +464,8 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
 ###############################################################################
 
 class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
-    """Render two raster layer as shade image with g.region/d.shade approach synchronously
+    """Render two raster layer as shade image with g.region/d.shade approach
+    synchronously
     """
 
     def extract_shade_maps(self, args, mapset_name):
@@ -460,17 +477,20 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         Returns:
              dict:
-             A dictionary of d.shade options an error response if width or height are invalid
-            and if the mapset is present in the raster layer names
+             A dictionary of d.shade options an error response if width or
+             height are invalid and if the mapset is present in the raster
+             layer names
 
         """
         options = self.create_parser_options(args)
 
         if "@" in args["shade"]:
-            return self.get_error_response(message="Mapset name is not allowed in layer names")
+            return self.get_error_response(
+                message="Mapset name is not allowed in layer names")
 
         if "@" in args["color"]:
-            return self.get_error_response(message="Mapset name is not allowed in layer names")
+            return self.get_error_response(
+                message="Mapset name is not allowed in layer names")
 
         options["shade"] = "%s@%s" % (args["shade"], mapset_name)
         options["color"] = "%s@%s" % (args["color"], mapset_name)
@@ -479,7 +499,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Render two raster layers as a composed shade PNG image. Minimum required user role: user.',
+        'description': 'Render two raster layers as a composed shade PNG image. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -491,7 +512,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -499,7 +521,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
             },
             {
                 'name': 'shade',
-                'description': 'The name of the raster map layer to be used for shading',
+                'description': 'The name of the raster map layer to be used '
+                               'for shading',
                 'required': True,
                 'in': 'query',
                 'type': 'string',
@@ -507,7 +530,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
             },
             {
                 'name': 'color',
-                'description': 'The name of the raster map layer to be used for coloring',
+                'description': 'The name of the raster map layer to be used for '
+                               'coloring',
                 'required': True,
                 'in': 'query',
                 'type': 'string',
@@ -569,7 +593,8 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
             '200': {
                 'description': 'The shade/color composition PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -578,10 +603,12 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
         """Render two raster layers as a composed shade PNG image
         """
         parser = self.create_parser()
-        parser.add_argument('shade', required=True, type=str,
-                            help='The name of the raster layer associated with shading')
-        parser.add_argument('color', required=True, type=str,
-                            help='The name of the raster layer associated with color')
+        parser.add_argument(
+            'shade', required=True, type=str,
+            help='The name of the raster layer associated with shading')
+        parser.add_argument(
+            'color', required=True, type=str,
+            help='The name of the raster layer associated with color')
 
         args = parser.parse_args()
         options = self.extract_shade_maps(args, mapset_name)
@@ -637,20 +664,20 @@ class EphemeralRasterShadeRenderer(EphemeralRendererBase):
 
         result_file = tempfile.mktemp(suffix=".png")
 
-        region_pc = self._setup_render_environment_and_region(options=options,
-                                                              result_file=result_file)
+        region_pc = self._setup_render_environment_and_region(
+            options=options, result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module": "g.region", "inputs": {"raster": "%s,%s" % (options["shade"],
-                                                                         options["color"])}}
+        pc["1"] = {"module": "g.region", "inputs": {
+            "raster": "%s,%s" % (options["shade"], options["color"])}}
         pc["2"] = region_pc
         pc["3"] = {"module": "d.shade", "inputs": {"shade": options["shade"],
                                                    "color": options["color"]}}
 
         # Run the selected modules
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file

@@ -44,8 +44,10 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Render the raster map layers of a specific STRDS as a single image. All raster layers are '
-                       'rendered in order of their time stamps, from past to future. Minimum required user role: user.',
+        'description': 'Render the raster map layers of a specific STRDS as a '
+                       'single image. All raster layers are rendered in order '
+                       'of their time stamps, from past to future. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -57,7 +59,8 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -123,14 +126,16 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
             },
             {
                 'name': 'start_time',
-                'description': 'Raster map layers that have equal or greater the start time will be rendered',
+                'description': 'Raster map layers that have equal or greater '
+                               'the start time will be rendered',
                 'required': False,
                 'in': 'query',
                 'type': 'string'
             },
             {
                 'name': 'end_time',
-                'description': 'Raster map layers that have equal or lower the end time will be rendered',
+                'description': 'Raster map layers that have equal or lower the '
+                               'end time will be rendered',
                 'required': False,
                 'in': 'query',
                 'type': 'string'
@@ -141,7 +146,8 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -193,8 +199,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         Workflow:
 
-            1. A list of raster map layers is generated from a t.rast.list call that can be
-               constrained with time and region settings
+            1. A list of raster map layers is generated from a t.rast.list call
+               that can be constrained with time and region settings
             1. The default region is set to the the cumulative raster layer regions
             2. User specific region settings are applied
             3. d.rast.multi is invoked to create the PNG file
@@ -209,9 +215,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         result_file = tempfile.mktemp(suffix=".png")
 
-        g_region_query = self._setup_render_environment_and_region(options=options,
-                                                                   result_file=result_file,
-                                                                   legacy=False)
+        g_region_query = self._setup_render_environment_and_region(
+            options=options, result_file=result_file, legacy=False)
         where_list = []
 
         if "start_time" in options:
@@ -229,11 +234,13 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
         where = " AND ".join(where_list)
 
-        t_rast_list = {"id": "1",
-                       "module": "t.rast.list",
-                       "inputs": [{"param": "input", "value": "%s@%s" % (strds_name, self.mapset_name)},
-                                  {"param": "method", "value": "comma"},
-                                  {"param": "where", "value": where}]}
+        t_rast_list = {
+            "id": "1",
+            "module": "t.rast.list",
+            "inputs": [
+                {"param": "input", "value": "%s@%s" % (strds_name, self.mapset_name)},
+                {"param": "method", "value": "comma"},
+                {"param": "where", "value": where}]}
 
         pc = {
             "version": 1,
@@ -242,8 +249,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         pc["list"].append(t_rast_list)
         # Run the selected modules
         self.skip_region_check = True
-        process_chain = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                  skip_permission_check=True)
+        process_chain = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_chain)
 
         map_list = self.module_output_log[0]["stdout"].strip()

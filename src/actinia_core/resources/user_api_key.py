@@ -47,8 +47,9 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Create a temporal module where, order, column parser
 expiration_time_parser = reqparse.RequestParser()
-expiration_time_parser.add_argument('expiration_time', required=False, type=int,
-                                    location='args', help='The expiration time in seconds for the generated token')
+expiration_time_parser.add_argument(
+    'expiration_time', required=False, type=int, location='args',
+    help='The expiration time in seconds for the generated token')
 
 
 class TokenResponseModel(Schema):
@@ -82,7 +83,8 @@ class APIKeyCreationResource(LoginBase):
 
     @swagger.doc({
         'tags': ['Authentication Management'],
-        'description': 'Create an API key for permanent authentication. API keys have no expiration time. '
+        'description': 'Create an API key for permanent authentication. '
+                       'API keys have no expiration time. '
                        'Minimum required user role: admin.',
         'responses': {
             '200': {
@@ -99,13 +101,13 @@ class APIKeyCreationResource(LoginBase):
         """Create an API key for permanent authentication."""
 
         try:
-            return make_response(jsonify(TokenResponseModel(status="success",
-                                                            token=g.user.generate_api_key().decode(),
-                                                            message="API key successfully generated")))
+            return make_response(jsonify(TokenResponseModel(
+                status="success", token=g.user.generate_api_key().decode(),
+                message="API key successfully generated")))
         except Exception:
-            return make_response(jsonify(TokenResponseModel(status="error",
-                                                            token="",
-                                                            message="Error while generating API key")), 400)
+            return make_response(jsonify(TokenResponseModel(
+                status="error", token="",
+                message="Error while generating API key")), 400)
 
 
 class TokenCreationResource(LoginBase):
@@ -118,8 +120,9 @@ class TokenCreationResource(LoginBase):
 
     @swagger.doc({
         'tags': ['Authentication Management'],
-        'description': 'Create an authentication token. Tokens have an expiration time. '
-                       'The default expiration time is one day (86400s). maximum length is 365 days. '
+        'description': 'Create an authentication token. Tokens have an '
+                       'expiration time. The default expiration time is one day '
+                       '(86400s). maximum length is 365 days. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -156,12 +159,12 @@ class TokenCreationResource(LoginBase):
                         raise Exception(
                             "Expiration time is to large. Maximum is 365 days.")
 
-            return make_response(jsonify(TokenResponseModel(status="success",
-                                                            token=g.user.generate_auth_token(
-                                                                expiration=expiration).decode(),
-                                                            message="Token successfully generated with "
-                                                            "an expiration time of %i seconds" % expiration)))
+            return make_response(jsonify(TokenResponseModel(
+                status="success",
+                token=g.user.generate_auth_token(expiration=expiration).decode(),
+                message="Token successfully generated with "
+                        "an expiration time of %i seconds" % expiration)))
         except Exception as e:
-            return make_response(jsonify(TokenResponseModel(status="error",
-                                                            token="",
-                                                            message="Error while generating token: %s" % str(e))), 400)
+            return make_response(jsonify(TokenResponseModel(
+                status="error", token="",
+                message="Error while generating token: %s" % str(e))), 400)

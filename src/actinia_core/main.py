@@ -74,7 +74,7 @@ create_process_queue(global_config)
 #                  global_config.REDIS_QUEUE_SERVER_PORT,
 #                  global_config.NUMBER_OF_WORKERS)
 
-########################################################################################################################
+###############################################################################
 if __name__ == '__main__':
     # Connect to the database
     flask_app.run(host='0.0.0.0', port=8080, debug=True)

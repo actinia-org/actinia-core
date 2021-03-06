@@ -108,22 +108,30 @@ class RendererBaseResource(ResourceBase):
 
         """
         parser = reqparse.RequestParser()
-        parser.add_argument('n', type=float, location='args',
-                            help='Northern border must be specified as double value')
-        parser.add_argument('e', type=float, location='args',
-                            help='Eastern border must be specified as double value')
-        parser.add_argument('w', type=float, location='args',
-                            help='Western border must be specified as double value')
-        parser.add_argument('s', type=float, location='args',
-                            help='Southern border must be specified as double value')
-        parser.add_argument('width', type=float, location='args',
-                            help='Image width must be specified as double value')
-        parser.add_argument('height', type=float, location='args',
-                            help='Image height must be specified as double value')
-        parser.add_argument('start_time', type=str, location='args',
-                            help='Start time for STRDS raster map layer selection')
-        parser.add_argument('end_time', type=str, location='args',
-                            help='Start time for STRDS raster map layer selection')
+        parser.add_argument(
+            'n', type=float, location='args',
+            help='Northern border must be specified as double value')
+        parser.add_argument(
+            'e', type=float, location='args',
+            help='Eastern border must be specified as double value')
+        parser.add_argument(
+            'w', type=float, location='args',
+            help='Western border must be specified as double value')
+        parser.add_argument(
+            's', type=float, location='args',
+            help='Southern border must be specified as double value')
+        parser.add_argument(
+            'width', type=float, location='args',
+            help='Image width must be specified as double value')
+        parser.add_argument(
+            'height', type=float, location='args',
+            help='Image height must be specified as double value')
+        parser.add_argument(
+            'start_time', type=str, location='args',
+            help='Start time for STRDS raster map layer selection')
+        parser.add_argument(
+            'end_time', type=str, location='args',
+            help='Start time for STRDS raster map layer selection')
 
         return parser
 
@@ -137,8 +145,9 @@ class RendererBaseResource(ResourceBase):
 
         Returns:
              dict:
-             A dictionary of render options or an error response object in an case of error.
-             In case of an error response object, an update to the resource logger was performed.
+             A dictionary of render options or an error response object in an
+             case of error. In case of an error response object, an update to
+             the resource logger was performed.
 
         """
         options = {}
@@ -154,15 +163,19 @@ class RendererBaseResource(ResourceBase):
             options["w"] = args["w"]
         if "width" in args and args["width"] is not None:
             if args["width"] < 1:
-                return self.get_error_response(message="Width must be larger than 0")
+                return self.get_error_response(
+                    message="Width must be larger than 0")
             if args["width"] > 10000:
-                return self.get_error_response(message="Width can not be larger than 10000")
+                return self.get_error_response(
+                    message="Width can not be larger than 10000")
             options["width"] = args["width"]
         if "height" in args and args["height"] is not None:
             if args["height"] < 1:
-                return self.get_error_response(message="Height must be larger than 0")
+                return self.get_error_response(
+                    message="Height must be larger than 0")
             if args["height"] > 10000:
-                return self.get_error_response("Height can not be larger than 10000")
+                return self.get_error_response(
+                    "Height can not be larger than 10000")
             options["height"] = args["height"]
         if "start_time" in args and args["start_time"] is not None:
             options["start_time"] = args["start_time"]
@@ -181,9 +194,11 @@ class EphemeralRendererBase(EphemeralProcessing):
          process chain entry to setup the extent from the options.
 
         Args:
-            options: The parser options that contain n, s, e and w entries for region settings
+            options: The parser options that contain n, s, e and w entries for
+                     region settings
             result_file: The resulting PNG file name
-            legacy: If True use the legacy process chain format for the g.region process definition
+            legacy: If True use the legacy process chain format for the
+                    g.region process definition
 
         Returns:
             A process chain entry of g.region

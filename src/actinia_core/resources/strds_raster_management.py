@@ -36,7 +36,8 @@ from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
+from .common.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -96,8 +97,11 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "strdsrastermanagement",
             "method": "GET",
-            "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers",
-            "request_url": "http://localhost:5000/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>'2010-01-01'"
+            "path": "/locations/ECAD/mapsets/PERMANENT/strds/"
+                    "precipitation_1950_2013_yearly_mm/raster_layers",
+            "request_url": "http://localhost:5000/locations/ECAD/mapsets/"
+                           "PERMANENT/strds/precipitation_1950_2013_yearly_mm/"
+                           "raster_layers?where=start_time>'2010-01-01'"
         },
         "datetime": "2018-05-06 21:28:19.187395",
         "http_code": 200,
@@ -107,7 +111,8 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
                 "1": {
                     "flags": "u",
                     "inputs": {
-                        "columns": "id,start_time,end_time,north,south,east,west,min,max,rows,cols",
+                        "columns": "id,start_time,end_time,north,south,east,"
+                                   "west,min,max,rows,cols",
                         "input": "precipitation_1950_2013_yearly_mm@PERMANENT",
                         "separator": "|",
                         "where": "start_time>'2010-01-01'"
@@ -115,7 +120,9 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
                     "module": "t.rast.list",
                     "outputs": {
                         "output": {
-                            "name": "/home/soeren/actinia/workspace/temp_db/gisdbase_1b72938d2ef54c199f6627b8720f21e1/.tmp/tmptps71vn7"
+                            "name": "/home/soeren/actinia/workspace/temp_db/"
+                                    "gisdbase_1b72938d2ef54c199f6627b8720f21e1/"
+                                    ".tmp/tmptps71vn7"
                         }
                     }
                 }
@@ -128,8 +135,10 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
                     "input=precipitation_1950_2013_yearly_mm@PERMANENT",
                     "where=start_time>'2010-01-01'",
                     "separator=|",
-                    "columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols",
-                    "output=/home/soeren/actinia/workspace/temp_db/gisdbase_1b72938d2ef54c199f6627b8720f21e1/.tmp/tmptps71vn7",
+                    "columns=id,start_time,end_time,north,south,east,west,min,"
+                    "max,rows,cols",
+                    "output=/home/soeren/actinia/workspace/temp_db/"
+                    "gisdbase_1b72938d2ef54c199f6627b8720f21e1/.tmp/tmptps71vn7",
                     "-u"
                 ],
                 "return_code": 0,
@@ -191,7 +200,8 @@ class STRDSRasterListResponseModel(ProcessingResponseModel):
         "timestamp": 1525634899.1873734,
         "urls": {
             "resources": [],
-            "status": "http://localhost:5000/resources/user/resource_id-729ace44-6245-43c7-a875-d2059c1a1549"
+            "status": "http://localhost:5000/resources/user/"
+                      "resource_id-729ace44-6245-43c7-a875-d2059c1a1549"
         },
         "user_id": "user"
     }
@@ -229,8 +239,8 @@ class STRDSRasterManagement(ResourceBase):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Get a list of all raster map layers that are registered in a STRDS  '
-                       'that is located in a specific location/mapset. '
+        'description': 'Get a list of all raster map layers that are registered '
+                       'in a STRDS that is located in a specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -256,7 +266,8 @@ class STRDSRasterManagement(ResourceBase):
             },
             {
                 'name': 'where',
-                'description': 'A where statement to select user specific raster map layers from the STRDS',
+                'description': 'A where statement to select user specific '
+                               'raster map layers from the STRDS',
                 'required': False,
                 'in': 'query',
                 'type': 'string'
@@ -264,14 +275,16 @@ class STRDSRasterManagement(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'This response returns a list of all raster map layers '
-                               'that are registered a specific STRDS and the log '
-                               'of the process chain that was used to create the response.',
+                'description': 'This response returns a list of all raster map '
+                               'layers that are registered a specific STRDS and '
+                               'the log of the process chain that was used to '
+                               'create the response.',
                 'schema': STRDSRasterListResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why creating a list of raster '
-                               'map layers from STRDS did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'creating a list of raster map layers from STRDS '
+                               'did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -297,7 +310,8 @@ class STRDSRasterManagement(ResourceBase):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Register raster map layers in a STRDS located in a specific location/mapset. '
+        'description': 'Register raster map layers in a STRDS located in a '
+                       'specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -323,7 +337,8 @@ class STRDSRasterManagement(ResourceBase):
             },
             {
                 'name': 'raster_list',
-                'description': 'The list of raster map layers to be registered in the STRDS',
+                'description': 'The list of raster map layers to be registered '
+                               'in the STRDS',
                 'required': True,
                 'in': 'body',
                 'schema': RasterListRegisterModel
@@ -331,18 +346,20 @@ class STRDSRasterManagement(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'Registration of raster map layers was successfully finished.',
+                'description': 'Registration of raster map layers was '
+                               'successfully finished.',
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why raster map layer '
-                               'registration did not succeeded',
+                'description': 'The error message and a detailed log why raster '
+                               'map layer registration did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
     })
     def put(self, location_name, mapset_name, strds_name):
-        """Register raster map layers in a STRDS located in a specific location/mapset.
+        """Register raster map layers in a STRDS located in a specific
+        location/mapset.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
@@ -359,7 +376,8 @@ class STRDSRasterManagement(ResourceBase):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Unregister raster map layers from a STRDS located in a specific location/mapset. '
+        'description': 'Unregister raster map layers from a STRDS located in a '
+                       'specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -385,7 +403,8 @@ class STRDSRasterManagement(ResourceBase):
             },
             {
                 'name': 'raster_list',
-                'description': 'The list of raster map layers to be unregistered from the STRDS',
+                'description': 'The list of raster map layers to be '
+                               'unregistered from the STRDS',
                 'required': True,
                 'in': 'body',
                 'schema': {"type": "array", "items": {"type": "string"}}
@@ -393,18 +412,20 @@ class STRDSRasterManagement(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'Unregistration of raster map layers was successfully finished.',
+                'description': 'Unregistration of raster map layers was '
+                               'successfully finished.',
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why raster map layer '
-                               'unregistration did not succeeded',
+                'description': 'The error message and a detailed log why raster '
+                               'map layer unregistration did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
     })
     def delete(self, location_name, mapset_name, strds_name):
-        """Unregister raster map layers from a STRDS located in a specific location/mapset.
+        """Unregister raster map layers from a STRDS located in a specific
+        location/mapset.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
@@ -503,7 +524,9 @@ class PersistentRasterSTRDSRegisterer(PersistentProcessing):
             dir=self.temp_file_path, delete=True, mode="w")
 
         for map_entry in self.request_data:
-            if "name" not in map_entry or "start_time" not in map_entry or "end_time" not in map_entry:
+            if ("name" not in map_entry
+                    or "start_time" not in map_entry
+                    or "end_time" not in map_entry):
                 raise AsyncProcessError(
                     "Wrong input format for raster map layer registration")
 
