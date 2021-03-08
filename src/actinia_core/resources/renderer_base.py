@@ -99,7 +99,7 @@ class RendererBaseResource(ResourceBase):
             e : for east
             w : for west
             width : for the image width
-            heigt : for the image height
+            height : for the image height
             start_time : start time for STRDS where selection
             end_time : end time for STRDS where selection
 

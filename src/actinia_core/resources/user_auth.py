@@ -154,7 +154,7 @@ def check_user_permissions(f):
     This decorator function verifies the user permissions
     to access locations, mapsets and modules.
 
-    The function arguments are checked if they conatin:
+    The function arguments are checked if they contain:
 
         - location_name
         - mapset_name
