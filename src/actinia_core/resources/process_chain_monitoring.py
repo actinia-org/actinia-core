@@ -461,7 +461,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
             if pc_status in ['accepted', 'running']:
                 return make_response(jsonify(SimpleResponseModel(
                     status="error",
-                    message="Resource is not ready it is %s" % pc_status)),
+                    message="Resource is not ready, it is %s" % pc_status)),
                     400)
 
             mapset_sizes = [
