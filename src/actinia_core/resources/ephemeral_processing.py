@@ -171,7 +171,7 @@ class EphemeralProcessing(object):
        e.g: /mount/groups/[user group]/locations/ECAD/PERMANENT -> /tmp/soeren_temp_gisdbase/ECAD/PERMANENT
        e.g: /mount/groups/[user group]/locations/ECAD/Temperature -> /tmp/soeren_temp_gisdbase/ECAD/Temperature
 
-    4. Set the GRASS GIS environmental variables to point ot the new gisdbase, location and PERMANENT maspet
+    4. Set the GRASS GIS environmental variables to point to the new gisdbase, location and PERMANENT maspet
 
     5. Create a new mapset with g.mapset in the temporary location directory
 
@@ -308,7 +308,7 @@ class EphemeralProcessing(object):
         self.webhook_finished = None  # The URL of a webhook that should be called after processing of a
         # process chain finished
         self.webhook_update = None  # The URL of a webhook that should be called for each status/progress update
-        self.webhook_auth = None  # The authentification for the webhook (base 64 decoded "username:password")
+        self.webhook_auth = None  # The authentication for the webhook (base 64 decoded "username:password")
 
     def _send_resource_update(self, message, results=None):
         """Create an HTTP response document and send it to the status database
@@ -654,7 +654,7 @@ class EphemeralProcessing(object):
                                                           message_logger=self.message_logger,
                                                           send_resource_update=self._send_resource_update)
 
-    def _create_temp_database(self, mapsets=[]):
+    def _create_temp_database(self, mapsets=None):
         """Create a temporary gis database with location and mapsets
         from the global and user group database for processing.
 
@@ -682,6 +682,9 @@ class EphemeralProcessing(object):
             This function raises AsyncProcessError in case of an error.
 
         """
+        # Assign default mapsets
+        if mapsets is None:
+            mapsets = []
 
         try:
             # Create the temporary location directory
@@ -1001,7 +1004,7 @@ class EphemeralProcessing(object):
 
         Check each poll the termination status of the resource.
         If the termination state is set True, terminate the current process
-        and raise an AsyncProcessTermination exception that must be catched
+        and raise an AsyncProcessTermination exception that must be caught
         by the run() method.
 
         Args:
@@ -1038,7 +1041,7 @@ class EphemeralProcessing(object):
 
         Check each poll the termination status of the resource.
         If the termination state is set True, terminate the current process
-        and raise an AsyncProcessTermination exception that must be catched
+        and raise an AsyncProcessTermination exception that must be caught
         by the run() method.
 
         By default the status of the running process is checked each 0.005 seconds.
