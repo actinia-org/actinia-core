@@ -32,5 +32,3 @@ per-file-ignores =
     ./actinia_core/resources/common/process_chain.py: W605
     ./actinia_core/resources/common/list_grass_modules.py: F821
     ./actinia_core/resources/common/aws_sentinel_interface.py: E501
-
-# ./actinia_core/resources/common/list_grass_modules.py: F821: undefined names after missing import PyQt4 (not used file?)

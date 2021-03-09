@@ -23,6 +23,9 @@
 
 """
 XML to module list
+AW: I suspect that this file is no longer used
+    because of F821: undefined names after missing import PyQt4
+    PyQt4 is obsolete and since python3 PyQt5 is used
 """
 
 # from PyQt4.QtCore import *
