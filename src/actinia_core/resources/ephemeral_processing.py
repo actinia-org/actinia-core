@@ -654,7 +654,7 @@ class EphemeralProcessing(object):
                                                           message_logger=self.message_logger,
                                                           send_resource_update=self._send_resource_update)
 
-    def _create_temp_database(self, mapsets=[]):
+    def _create_temp_database(self, mapsets=None):
         """Create a temporary gis database with location and mapsets
         from the global and user group database for processing.
 
@@ -682,6 +682,9 @@ class EphemeralProcessing(object):
             This function raises AsyncProcessError in case of an error.
 
         """
+        # Assign default mapsets
+        if mapsets is None:
+            mapsets = []
 
         try:
             # Create the temporary location directory
