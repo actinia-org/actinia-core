@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2021 mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
-import tempfile
+from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger, Schema
 
@@ -38,13 +38,13 @@ from .common.response_models import ProcessingResponseModel, SimpleResponseModel
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
-__maintainer__ = "mudnialis"
-__email__ = "info@mudnialis.de"
+__maintainer__ = "mundialis"
+__email__ = "info@mundialis.de"
 
 
 def create_scatter_plot(x, y, xlabel, ylabel, title):
 
-    result_file = tempfile.mktemp(suffix=".png")
+    plt.clf()
     plt.scatter(x, y, s=np.pi*5, c=(1,0,0))
     plt.title(title, fontsize=14)
     plt.xlabel(xlabel, fontsize=12)
@@ -54,8 +54,9 @@ def create_scatter_plot(x, y, xlabel, ylabel, title):
     y_len = len(y)
     step = y_up / 10
     plt.xticks(np.arange(1, len(y) + 1, step=1))
-    plt.savefig(result_file)
-    return result_file
+    with NamedTemporaryFile(suffix='.png', mode="wb", delete=False) as f:
+        plt.savefig(f)
+    return f.name
 
 
 def compute_mapset_size_diffs(mapset_sizes):
