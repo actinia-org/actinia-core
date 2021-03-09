@@ -26,6 +26,7 @@ Redis base class
 """
 
 import redis
+from .logging_interface import log
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -63,7 +64,11 @@ class RedisBaseInterface(object):
         try:
             self.redis_server.ping()
         except redis.exceptions.ResponseError as e:
-            print('ERROR: Could not connect to redis with ' + host, port, password, str(e))
+            log.error('Could not connect to ' + host, port, str(e))
+        except redis.exceptions.AuthenticationError:
+            log.error('Invalid password')
+        except redis.exceptions.ConnectionError as e:
+            log.error(str(e))
 
     def disconnect(self):
         self.connection_pool.disconnect()
