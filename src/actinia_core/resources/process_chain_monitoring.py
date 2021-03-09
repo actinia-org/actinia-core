@@ -121,7 +121,7 @@ class MapsetSizeResource(ResourceManager):
                 'schema': MapsetSizeResponseModel
             },
             '400': {
-                'description': 'The error message if the resource does not exists',
+                'description': 'The error message if the resource does not exist',
                 'schema': SimpleResponseModel
             }
         }
