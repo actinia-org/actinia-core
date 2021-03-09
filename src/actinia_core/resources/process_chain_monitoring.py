@@ -351,7 +351,7 @@ class MapsetSizeRenderResource(ResourceManager):
                 'description': 'The PNG image'},
             '400': {
                 'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
+                               'rendering did not succeed',
                 'schema': SimpleResponseModel
             }
         }
