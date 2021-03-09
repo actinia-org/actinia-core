@@ -1264,12 +1264,17 @@ class EphemeralProcessing(object):
 
         process.set_stdouts(stdout=stdout_string, stderr=stderr_string)
 
-        plm = ProcessLogModel(executable=process.executable,
-                              parameter=process.executable_params,
-                              return_code=proc.returncode,
-                              stdout=stdout_string,
-                              stderr=stderr_string.split("\n"),
-                              run_time=run_time)
+        kwargs = {
+            'executable': process.executable,
+            'parameter': process.executable_params,
+            'return_code': proc.returncode,
+            'stdout': stdout_string,
+            'stderr': stderr_string.split("\n"),
+            'run_time': run_time}
+        if self.temp_mapset_path:
+            kwargs['mapset_size'] = self._get_directory_size(self.temp_mapset_path)
+
+        plm = ProcessLogModel(**kwargs)
 
         self.module_output_log.append(plm)
         # Store the log in an additional dictionary for automated output generation
