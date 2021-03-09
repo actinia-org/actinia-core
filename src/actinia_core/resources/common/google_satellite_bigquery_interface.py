@@ -287,7 +287,7 @@ class GoogleSatelliteBigQueryInterface(object):
             raise GoogleCloudAPIError("An error occurred while querying "
                                       "google archive. Error message: %s" % str(e))
 
-    def get_landsat_urls(self, scene_ids, bands=["B1", "B2"]):
+    def get_landsat_urls(self, scene_ids, bands=None):
         """Receive the Google Cloud Storage (GCS) download urls and time stamps
         for a list of Landsat scene ids with additional metadata.
 
@@ -369,6 +369,10 @@ class GoogleSatelliteBigQueryInterface(object):
         #   }
         # ]
 
+        # Assign default bands
+        if bands is None:
+            bands = ["B1", "B2"]
+
         try:
 
             self._start_clients()
@@ -423,7 +427,7 @@ class GoogleSatelliteBigQueryInterface(object):
                 "An error occurred while fetching "
                 "Landsat download URL's. Error message: %s" % str(e))
 
-    def get_sentinel_urls(self, product_ids, bands=["B04", "B08"]):
+    def get_sentinel_urls(self, product_ids, bands=None):
         """Receive the download urls and time stamps for a list of Sentinel2 product
         ids from Google Big Query service
 
@@ -545,6 +549,10 @@ class GoogleSatelliteBigQueryInterface(object):
         # S2A_MSIL1C_20170208T092131_N0204_R093_T35TLF_20170208T092143.SAFE/GRANULE/
         # L1C_T35TLF_A008527_20170208T092143/IMG_DATA/T35TLF_20170208T092131_B01.jp2
 
+        # Assign default bands
+        if bands is None:
+            bands = ["B04", "B08"]
+
         try:
 
             self._start_clients()
@@ -608,15 +616,15 @@ class GoogleSatelliteBigQueryInterface(object):
                 "Sentinel-2 download URL's. Error message: %s" % str(e))
 
     def _generate_sentinel2_footprint(self, base_url):
-        """Download the sentinel XML metadata and parse it for the footpring
+        """Download the sentinel XML metadata and parse it for the footprint
 
         Args:
             base_url: The google cloud storage base url of the required product_id
 
         Returns: a tuple of strings
             (str, str)
-            The first string is the footpring as GML code,
-            Teh second string the the metadata XML document
+            The first string is the footprint as GML code,
+            The second string the the metadata XML document
 
         """
 

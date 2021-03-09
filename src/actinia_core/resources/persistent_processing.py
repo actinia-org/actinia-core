@@ -49,7 +49,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 DESCR = """Execute a user defined process chain in an existing mapset
 of the persistent user database or in a new mapset that will be
-created by this reuqest in the persistent user database.
+created by this request in the persistent user database.
 
 The process chain is executed asynchronously. The provided status URL
 in the response must be polled to gain information about the processing
@@ -474,7 +474,7 @@ class PersistentProcessing(EphemeralProcessing):
             "Copy source mapset <%s> content "
             "into the target mapset <%s>" % (source_mapset, target_mapset))
 
-        # Raster adn vector directories
+        # Raster and vector directories
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
@@ -674,6 +674,8 @@ class PersistentProcessing(EphemeralProcessing):
         # Copy local mapset to original location, merge mapsets
         # if necessary
         self._copy_merge_tmp_mapset_to_target_mapset()
+        # Parse the module sdtout outputs and create the results
+        self._parse_module_outputs()
 
     def _final_cleanup(self):
         """Final cleanup called in the run function at the very end of processing

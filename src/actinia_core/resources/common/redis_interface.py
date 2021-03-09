@@ -55,7 +55,7 @@ def create_job_queues(host, port, num_of_queues):
     Args:
         host: The hostname of the redis server
         port: The port of the redis server
-        num_of_queues: The number fo queues that should be created
+        num_of_queues: The number of queues that should be created
 
     """
     # Redis work queue and connection

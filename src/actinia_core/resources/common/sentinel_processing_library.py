@@ -415,7 +415,7 @@ class Sentinel2Processing(object):
             temp_map_name = map_name + "_uncropped"
             cropped_input_file = input_file + ".vrt"
 
-            # Create a boundingbox around the footprint to avaoid
+            # Create a boundingbox around the footprint to avoid
             # the projection of the scene with unused values
             gdal_translate = "/usr/bin/gdal_translate"
             gdal_translate_params = list()

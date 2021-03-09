@@ -776,7 +776,7 @@ class EphemeralProcessing(object):
             message_logger=self.message_logger,
             send_resource_update=self._send_resource_update)
 
-    def _create_temp_database(self, mapsets=[]):
+    def _create_temp_database(self, mapsets=None):
         """Create a temporary gis database with location and mapsets
         from the global and user group database for processing.
 
@@ -807,6 +807,9 @@ class EphemeralProcessing(object):
             This function raises AsyncProcessError in case of an error.
 
         """
+        # Assign default mapsets
+        if mapsets is None:
+            mapsets = []
 
         try:
             # Create the temporary location directory
@@ -1146,7 +1149,7 @@ class EphemeralProcessing(object):
 
         Check each poll the termination status of the resource.
         If the termination state is set True, terminate the current process
-        and raise an AsyncProcessTermination exception that must be catched
+        and raise an AsyncProcessTermination exception that must be caught
         by the run() method.
 
         Args:
@@ -1186,7 +1189,7 @@ class EphemeralProcessing(object):
 
         Check each poll the termination status of the resource.
         If the termination state is set True, terminate the current process
-        and raise an AsyncProcessTermination exception that must be catched
+        and raise an AsyncProcessTermination exception that must be caught
         by the run() method.
 
         By default the status of the running process is checked each 0.005 seconds.
@@ -1417,12 +1420,17 @@ class EphemeralProcessing(object):
 
         process.set_stdouts(stdout=stdout_string, stderr=stderr_string)
 
-        plm = ProcessLogModel(executable=process.executable,
-                              parameter=process.executable_params,
-                              return_code=proc.returncode,
-                              stdout=stdout_string,
-                              stderr=stderr_string.split("\n"),
-                              run_time=run_time)
+        kwargs = {
+            'executable': process.executable,
+            'parameter': process.executable_params,
+            'return_code': proc.returncode,
+            'stdout': stdout_string,
+            'stderr': stderr_string.split("\n"),
+            'run_time': run_time}
+        if self.temp_mapset_path:
+            kwargs['mapset_size'] = self._get_directory_size(self.temp_mapset_path)
+
+        plm = ProcessLogModel(**kwargs)
 
         self.module_output_log.append(plm)
         # Store the log in an additional dictionary for automated output generation

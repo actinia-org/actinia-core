@@ -981,7 +981,7 @@ class ProcessChainConverter(object):
 
             for input in module_descr["inputs"]:
 
-                # Add import description to the import ist
+                # Add import description to the import list
                 if "import_descr" in input:
                     self.import_descr_list.append(input)
 

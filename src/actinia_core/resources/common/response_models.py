@@ -117,6 +117,11 @@ class ProcessLogModel(Schema):
             'type': 'number',
             'format': 'float',
             'description': 'The runtime of the executable in seconds'
+        },
+        'mapset_size': {
+            'type': 'number',
+            'format': 'float',
+            'description': 'The size of the mapset in bytes'
         }
     }
     required = ['executable', 'parameter', 'stdout', 'stderr', 'return_code']
