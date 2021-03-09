@@ -183,7 +183,6 @@ def create_core_endpoints():
         '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs/render')
 
 
-
 def check_import_plugins():
     import_str = """from {}.endpoints import create_endpoints as create_plugin_endpoints
 create_plugin_endpoints(flask_api=flask_api)
