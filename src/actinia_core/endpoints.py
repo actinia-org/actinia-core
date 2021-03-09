@@ -66,7 +66,9 @@ from .resources.raster_renderer import SyncEphemeralRasterRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
 from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
 from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
-from .resources.process_chain_monitoring import MaxMapsetSizeResource, MapsetSizeResource, MapsetSizeRenderResource, MapsetSizeDiffResource, MapsetSizeDiffRenderResource
+from .resources.process_chain_monitoring import \
+    MaxMapsetSizeResource, MapsetSizeResource, MapsetSizeRenderResource, \
+    MapsetSizeDiffResource, MapsetSizeDiffRenderResource
 
 
 __license__ = "GPLv3"
@@ -164,11 +166,21 @@ def create_core_endpoints():
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')
 
     # Endpoints for monitoring a process chain
-    flask_api.add_resource(MapsetSizeResource, '/resources/<string:user_id>/<string:resource_id>/mapsetsizes')
-    flask_api.add_resource(MaxMapsetSizeResource, '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/max')
-    flask_api.add_resource(MapsetSizeRenderResource, '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/render')
-    flask_api.add_resource(MapsetSizeDiffResource, '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs')
-    flask_api.add_resource(MapsetSizeDiffRenderResource, '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs/render')
+    flask_api.add_resource(
+        MapsetSizeResource,
+        '/resources/<string:user_id>/<string:resource_id>/mapsetsizes')
+    flask_api.add_resource(
+        MaxMapsetSizeResource,
+        '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/max')
+    flask_api.add_resource(
+        MapsetSizeRenderResource,
+        '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/render')
+    flask_api.add_resource(
+        MapsetSizeDiffResource,
+        '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs')
+    flask_api.add_resource(
+        MapsetSizeDiffRenderResource,
+        '/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs/render')
 
 
 

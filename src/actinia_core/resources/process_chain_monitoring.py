@@ -33,7 +33,7 @@ from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger, Schema
 
 from .resource_management import ResourceManager
-from .common.response_models import ProcessingResponseModel, SimpleResponseModel
+from .common.response_models import SimpleResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
@@ -45,15 +45,14 @@ __email__ = "info@mundialis.de"
 def create_scatter_plot(x, y, xlabel, ylabel, title):
 
     plt.clf()
-    plt.scatter(x, y, s=np.pi*5, c=(1,0,0))
+    plt.scatter(x, y, s=(np.pi * 5), c=(1, 0, 0))
     plt.title(title, fontsize=14)
     plt.xlabel(xlabel, fontsize=12)
     plt.ylabel(ylabel, fontsize=12)
     y_up = (max(y) + 9) // 10 * 10
     plt.ylim(0, y_up)
-    y_len = len(y)
     step = y_up / 10
-    plt.xticks(np.arange(1, len(y) + 1, step=1))
+    plt.xticks(np.arange(1, len(y) + 1, step=step))
     with NamedTemporaryFile(suffix='.png', mode="wb", delete=False) as f:
         plt.savefig(f)
     return f.name
@@ -61,9 +60,10 @@ def create_scatter_plot(x, y, xlabel, ylabel, title):
 
 def compute_mapset_size_diffs(mapset_sizes):
     diffs = [None] * len(mapset_sizes)
-    diffs[0] = mapset_sizes[0] # TODO not correct cause an empty mapset has also a size!
+    # TODO not correct cause an empty mapset has also a size!
+    diffs[0] = mapset_sizes[0]
     for i in range(1, len(mapset_sizes)):
-        diffs[i] = mapset_sizes[i] - mapset_sizes[i-1]
+        diffs[i] = mapset_sizes[i] - mapset_sizes[i - 1]
     return diffs
 
 
@@ -97,7 +97,8 @@ class MapsetSizeResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the mapset sizes of a resource. Minimum required user role: user.',
+        'description': 'Get the mapset sizes of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -144,11 +145,10 @@ class MapsetSizeResource(ResourceManager):
                     message="Resource is not ready it is %s" % pc_status)),
                     400)
 
-            mapset_sizes = [proc['mapset_size']
-                for proc in pc_response_model['process_log']]
+            mapset_sizes = [
+                proc['mapset_size'] for proc in pc_response_model['process_log']]
 
-            return make_response(
-                jsonify(MapsetSizeResponseModel(
+            return make_response(jsonify(MapsetSizeResponseModel(
                 status="success", mapset_sizes=mapset_sizes)), http_code)
         else:
             return make_response(jsonify(SimpleResponseModel(
@@ -167,7 +167,8 @@ class MapsetSizeDiffResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the step-by-step mapset size differences of a resource. Minimum required user role: user.',
+        'description': 'Get the step-by-step mapset size differences of a '
+                       'resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -214,12 +215,11 @@ class MapsetSizeDiffResource(ResourceManager):
                     message="Resource is not ready it is %s" % pc_status)),
                     400)
 
-            mapset_sizes = [proc['mapset_size']
-                for proc in pc_response_model['process_log']]
+            mapset_sizes = [
+                proc['mapset_size'] for proc in pc_response_model['process_log']]
             diffs = compute_mapset_size_diffs(mapset_sizes)
 
-            return make_response(
-                jsonify(MapsetSizeResponseModel(
+            return make_response(jsonify(MapsetSizeResponseModel(
                 status="success", mapset_sizes=diffs)), http_code)
         else:
             return make_response(jsonify(SimpleResponseModel(
@@ -256,7 +256,8 @@ class MaxMapsetSizeResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Get the maximum mapset size of a resource. Minimum required user role: user.',
+        'description': 'Get the maximum mapset size of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -303,12 +304,11 @@ class MaxMapsetSizeResource(ResourceManager):
                     message="Resource is not ready it is %s" % pc_status)),
                     400)
 
-            mapset_sizes = [proc['mapset_size']
-                for proc in pc_response_model['process_log']]
+            mapset_sizes = [
+                proc['mapset_size'] for proc in pc_response_model['process_log']]
             max_mapset_size = max(mapset_sizes)
 
-            return make_response(
-                jsonify(MaxMapsetSizeResponseModel(
+            return make_response(jsonify(MaxMapsetSizeResponseModel(
                 status="success", max_mapset_size=max_mapset_size)), http_code)
         else:
             return make_response(jsonify(SimpleResponseModel(
@@ -327,7 +327,8 @@ class MapsetSizeRenderResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Render the mapset sizes of a resource. Minimum required user role: user.',
+        'description': 'Render the mapset sizes of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -344,12 +345,13 @@ class MapsetSizeRenderResource(ResourceManager):
                 'type': 'string'
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': SimpleResponseModel
             }
         }
@@ -373,16 +375,15 @@ class MapsetSizeRenderResource(ResourceManager):
                     message="Resource is not ready it is %s" % pc_status)),
                     400)
 
-            mapset_sizes = [proc['mapset_size']
-                for proc in pc_response_model['process_log']]
-
+            mapset_sizes = [
+                proc['mapset_size'] for proc in pc_response_model['process_log']]
 
             y = np.array(mapset_sizes)
             x = np.array(list(range(1, len(mapset_sizes) + 1)))
             unit = "bytes"
             for new_unit in ['KB', 'MB', 'GB', 'TB']:
                 if max(y) > 1024.:
-                    y = y/1024.
+                    y = y / 1024.
                     unit = new_unit
                     print(new_unit)
                 else:
@@ -415,7 +416,8 @@ class MapsetSizeDiffRenderResource(ResourceManager):
 
     @swagger.doc({
         'tags': ['Process Chain Monitoring'],
-        'description': 'Render the step-by-step mapset size differences of a resource. Minimum required user role: user.',
+        'description': 'Render the step-by-step mapset size differences of a '
+                       'resource. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -432,12 +434,13 @@ class MapsetSizeDiffRenderResource(ResourceManager):
                 'type': 'string'
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description': 'The error message and a detailed log why rendering did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
                 'schema': SimpleResponseModel
             }
         }
@@ -461,8 +464,8 @@ class MapsetSizeDiffRenderResource(ResourceManager):
                     message="Resource is not ready it is %s" % pc_status)),
                     400)
 
-            mapset_sizes = [proc['mapset_size']
-                for proc in pc_response_model['process_log']]
+            mapset_sizes = [
+                proc['mapset_size'] for proc in pc_response_model['process_log']]
             diffs = compute_mapset_size_diffs(mapset_sizes)
 
             y = np.array(diffs)
@@ -470,7 +473,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
             unit = "bytes"
             for new_unit in ['KB', 'MB', 'GB', 'TB']:
                 if max(y) > 1024.:
-                    y = y/1024.
+                    y = y / 1024.
                     unit = new_unit
                     print(new_unit)
                 else:
@@ -479,7 +482,8 @@ class MapsetSizeDiffRenderResource(ResourceManager):
             # create png
             result_file = create_scatter_plot(
                 x, y, 'process chain steps', 'mapset size [%s]' % unit,
-                'Step-by-step mapset size differences of the resource\n%s' % resource_id)
+                'Step-by-step mapset size differences of the resource\n%s'
+                % resource_id)
 
             if result_file:
                 if os.path.isfile(result_file):
