@@ -738,10 +738,10 @@ class ProcessChainConverter(object):
                 raise AsyncProcessError(
                     "Source specification is required in import definition")
 
-            if (entry["import_descr"]["type"] not in [
-                    "raster", "vector", "sentinel2", "landsat", "file", "postgis"]):
-                raise AsyncProcessError("Unkown type specification: %s" %
-                                        entry["import_descr"]["type"])
+            if entry["import_descr"]["type"] not in [
+                    "raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
+                raise AsyncProcessError(
+                    "Unknown type specification: %s" % entry["import_descr"]["type"])
 
             # RASTER; VECTOR, FILE
             if entry["import_descr"]["type"].lower() == "raster" or \
@@ -992,7 +992,7 @@ class ProcessChainConverter(object):
 
                 if "param" not in input:
                     raise AsyncProcessError(
-                        " <param> is missing in input description of process id: %s"
+                        "<param> is missing in input description of process id: %s"
                         % id)
 
                 value = input["value"]

@@ -347,7 +347,7 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
 recursive_parser = reqparse.RequestParser()
 recursive_parser.add_argument(
     'recursive', type=bool,
-    help='Set True to recursively remove the STRDS and all registred raster '
+    help='Set True to recursively remove the STRDS and all registered raster '
          'map layer', location='args')
 
 

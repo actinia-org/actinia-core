@@ -428,8 +428,8 @@ class GoogleSatelliteBigQueryInterface(object):
                 "Landsat download URL's. Error message: %s" % str(e))
 
     def get_sentinel_urls(self, product_ids, bands=None):
-        """Receive the download urls and time stamps for a list of Sentinel2 product
-        ids from Google Big Query service
+        """Receive the download urls and time stamps for a list of Sentinel2
+        product ids from Google Big Query service
 
         The download urls include the public address and the google cloud storage
         address. The resulting dictionary has as keys the product ids that contain

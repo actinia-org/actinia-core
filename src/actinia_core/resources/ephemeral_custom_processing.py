@@ -114,7 +114,8 @@ class EphemeralCustomProcessing(EphemeralProcessing):
                                                    module_name=self.executable)
 
         if resp is not None:
-            raise AsyncProcessError("Executable <%s> is not supported" % self.executable)
+            raise AsyncProcessError(
+                "Executable <%s> is not supported" % self.executable)
 
         p = Process(exec_type="exec",
                     executable=self.executable,

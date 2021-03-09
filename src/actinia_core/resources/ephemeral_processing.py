@@ -212,7 +212,7 @@ class EphemeralProcessing(object):
        e.g: /mount/groups/[user group]/locations/ECAD/Temperature
         -> /tmp/soeren_temp_gisdbase/ECAD/Temperature
 
-    4. Set the GRASS GIS environmental variables to point ot the new gisdbase,
+    4. Set the GRASS GIS environmental variables to point to the new gisdbase,
        location and PERMANENT maspet
 
     5. Create a new mapset with g.mapset in the temporary location directory
@@ -374,9 +374,10 @@ class EphemeralProcessing(object):
         # The URL of a webhook that should becalled after processing of a
         self.webhook_finished = None
         # process chain finished
+
         # The URL of a webhook that should be called for each status/progress update
         self.webhook_update = None
-        # The authentification for the webhook (base 64 decoded "username:password")
+        # The authentication for the webhook (base 64 decoded "username:password")
         self.webhook_auth = None
 
     def _send_resource_update(self, message, results=None):

@@ -37,9 +37,7 @@ from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common import redis_interface
 from .resources.common.config import global_config
 from .resources.common.user import ActiniaUser
-# from .endpoints import create_endpoints
 from .resources.common.process_queue import create_process_queue
-# from .resources.common.process_queue import stop_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

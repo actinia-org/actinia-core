@@ -22,7 +22,7 @@
 #######
 
 """
-Actinia Core Exceptions that should be used in case an error occures that is
+Actinia Core Exceptions that should be used in case an error occurs that is
 related to the Actinia Core functionality
 """
 

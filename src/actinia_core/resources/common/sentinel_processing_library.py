@@ -111,7 +111,7 @@ class Sentinel2Processing(object):
         sentinel2 scene from the Google Cloud Storage.
 
         1. Query Google BogQuery to gather the scene information
-        2. Crate URL list of files that must be downloaded and copied to the
+        2. Create URL list of files that must be downloaded and copied to the
            download cache
         3. Create the GML file that represents the footprint of the scene
         4. Check if the requested files exist

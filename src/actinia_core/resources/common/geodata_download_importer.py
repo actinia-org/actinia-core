@@ -86,9 +86,8 @@ class GeoDataDownloadImportSupport(object):
         """Setup the download cache.
 
         Check the download cache if the file already exists, to avoid redundant
-        downloads.
-        Create the cahce if it does not exist and switch into the temporary
-        directory.
+        downloads. Create the cache if it does not exist and switch into the
+        temporary directory.
         """
 
         # Create the download cache directory if it does not exists

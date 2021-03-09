@@ -390,12 +390,11 @@ class PersistentProcessing(EphemeralProcessing):
                 raise AsyncProcessError(
                     "Unable to access global location <%s>" % self.location_name)
 
-        # Always check if the targte mapset already exists and set the flag accordingly
+        # Always check if the target mapset already exists and set the flag accordingly
         if (os.path.exists(self.user_location_path)
                 and os.path.isdir(self.user_location_path)
                 and os.access(
-                    self.user_location_path, os.R_OK | os.X_OK | os.W_OK)
-                is True):
+                    self.user_location_path, os.R_OK | os.X_OK | os.W_OK) is True):
 
             self.orig_mapset_path = os.path.join(self.user_location_path, mapset)
 
@@ -659,8 +658,8 @@ class PersistentProcessing(EphemeralProcessing):
             self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                            mapset_name="PERMANENT")
 
-            # Create the temporary mapset wth the same name as the targte mapset
-            # and switch into it
+            # Create the temporary mapset with the same name as the target
+            # mapset and switch into it
             self._create_temporary_mapset(temp_mapset_name=self.target_mapset_name)
             self.temp_mapset_name = self.target_mapset_name
         else:

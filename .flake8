@@ -1,6 +1,10 @@
 [flake8]
-ignore =
-    W503, # line break before binary operator
+
+# E402 module level import not at top of file
+# E501 line too long (104 > 88 characters)
+# F401 '.health_check.health_check' imported but unused
+# F821 undefined name 'QFile'
+# W605 invalid escape sequence '\<'
 
 max-line-length = 88
 exclude =
@@ -18,6 +22,7 @@ exclude =
     testsuite,
 
 per-file-ignores =
+    ./actinia_core/resources/common/api_logger.py: F401
     ./actinia_core/resources/common/app.py: E402, E501
     ./actinia_core/testsuite.py: F401
     ./actinia_core/resources/ephemeral_processing.py: F401, W605
