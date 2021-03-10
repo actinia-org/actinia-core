@@ -30,14 +30,13 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 
-from flask import jsonify, make_response, g
+from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from .base_login import LoginBase
 from .common.user import ActiniaUser
-from .common.app import auth
-from .common.api_logger import log_api_call
-from .common.response_models import UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
+from .common.response_models import \
+    UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
 
 
 __license__ = "GPLv3"
@@ -142,7 +141,7 @@ class UserManagementResource(LoginBase):
         if user.exists() is False:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message ="User <%s> does not exist" % user_id
+                message="User <%s> does not exist" % user_id
             )), 400)
 
         credentials = user.get_credentials()
@@ -224,12 +223,12 @@ class UserManagementResource(LoginBase):
             if user.exists() is True:
                 return make_response(jsonify(SimpleResponseModel(
                     status="success",
-                    message ="User %s created" % user_id
+                    message="User %s created" % user_id
                 )), 201)
 
         return make_response(jsonify(SimpleResponseModel(
             status="error",
-            message ="Unable to create user %s" % user_id
+            message="Unable to create user %s" % user_id
         )), 400)
 
     @swagger.doc({
@@ -275,16 +274,16 @@ class UserManagementResource(LoginBase):
         if user.exists() is False:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message ="Unable to delete user %s. User does not exist." % user_id
+                message="Unable to delete user %s. User does not exist." % user_id
             )), 400)
 
         if user.delete() is True:
             return make_response(jsonify(SimpleResponseModel(
                 status="success",
-                message ="User %s deleted" % user_id
+                message="User %s deleted" % user_id
             )), 200)
 
         return make_response(jsonify(SimpleResponseModel(
             status="error",
-            message ="Unable to delete user %s" % user_id
+            message="Unable to delete user %s" % user_id
         )), 400)

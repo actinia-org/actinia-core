@@ -24,7 +24,6 @@
 """
 Resource logger and management interface
 """
-import sys
 import pickle
 from .redis_resources import RedisResourceInterface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
@@ -38,8 +37,11 @@ class ResourceLogger(RedisFluentLoggerBase):
     """Write, update, receive and delete entries in the resource database
     """
 
-    def __init__(self, host, port, password=None, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+    def __init__(
+            self, host, port, password=None, config=None, user_id=None,
+            fluent_sender=None):
+        RedisFluentLoggerBase.__init__(
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
         # Connect to a redis database
         self.db = RedisResourceInterface()
         redis_args = (host, port)
@@ -72,7 +74,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             resource_id (str): The resource id
             iteration (int): The iteration of the job
             document (str): The pickled document to store in the database
-            expiration (int): Number of seconds of expiration time, default 8640000s hence 100 days
+            expiration (int): Number of seconds of expiration time, default
+                              8640000s hence 100 days
 
         Returns:
             bool:
@@ -88,14 +91,16 @@ class ResourceLogger(RedisFluentLoggerBase):
         return redis_return
 
     def commit_termination(self, user_id, resource_id, iteration, expiration=3600):
-        """Commit a resource entry to the database that requires the termination of the resource,
-        create a new one if it does not exists, update existing resource entries
+        """Commit a resource entry to the database that requires the
+        termination of the resource, create a new one if it does not exists,
+        update existing resource entries
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
             iteration (int): The iteration of the job
-            expiration (int): Number of seconds of expiration time, default 3600 hence 1 hour
+            expiration (int): Number of seconds of expiration time, default
+                              3600 hence 1 hour
 
         Returns:
             bool:
@@ -103,7 +108,8 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
 
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, itertion)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration)
         return bool(self.db.set_termination(db_resource_id, expiration))
 
     def get(self, user_id, resource_id, iteration):
@@ -138,7 +144,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
-        db_resource_id_pattern = "%s*" % self._generate_db_resource_id(user_id, resource_id, None)
+        db_resource_id_pattern = "%s*" % self._generate_db_resource_id(
+            user_id, resource_id, None)
         db_keys = self.db.get_keys_from_pattern(db_resource_id_pattern)
         if len(db_keys) == 1:
             db_resource_id = db_keys[0]
@@ -167,10 +174,12 @@ class ResourceLogger(RedisFluentLoggerBase):
         for db_key in db_keys:
             iteration = self._get_iteration_from_db_resource_id(db_key)
             if iteration != 1:
-                db_resource_id_iter = self._generate_db_resource_id(user_id, resource_id, iteration)
+                db_resource_id_iter = self._generate_db_resource_id(
+                    user_id, resource_id, iteration)
             else:
                 db_resource_id_iter = db_resource_id
-            resp_dict[str(iteration)] = pickle.loads(self.db.get(db_resource_id_iter))[1]
+            resp_dict[str(iteration)] = pickle.loads(self.db.get(
+                db_resource_id_iter))[1]
         return pickle.dumps([200, resp_dict])
 
     def get_user_resources(self, user_id):

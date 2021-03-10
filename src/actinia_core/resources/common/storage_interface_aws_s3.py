@@ -25,7 +25,6 @@
 Storage base class
 """
 import os
-import shutil
 import boto3
 from .storage_interface_base import ResourceStorageBase
 
@@ -58,9 +57,10 @@ class ResourceStorageS3(ResourceStorageBase):
         """Setup the AWS S3 botot3 client and the AWS login credentials
         """
 
-        self.session = boto3.Session(region_name=self.config.S3_AWS_DEFAULT_REGION,
-                                     aws_access_key_id=self.config.S3_AWS_ACCESS_KEY_ID,
-                                     aws_secret_access_key=self.config.S3_AWS_SECRET_ACCESS_KEY)
+        self.session = boto3.Session(
+            region_name=self.config.S3_AWS_DEFAULT_REGION,
+            aws_access_key_id=self.config.S3_AWS_ACCESS_KEY_ID,
+            aws_secret_access_key=self.config.S3_AWS_SECRET_ACCESS_KEY)
         self.s3_client = self.session.client('s3')
 
     def get_resource_urls(self):
@@ -73,7 +73,8 @@ class ResourceStorageS3(ResourceStorageBase):
         return self.resource_url_list
 
     def store_resource(self, file_path):
-        """Store a resource (file) at the user resource storage and return an URL to the resource accessible via HTTP
+        """Store a resource (file) at the user resource storage and return an
+        URL to the resource accessible via HTTP
 
         Args:
             file_path:

@@ -38,13 +38,17 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
     The Redis API log database interface
     """
-    # API logging entries are lists in the Redis database using LPUSH, LTRIM, LRANGE for management
+    # API logging entries are lists in the Redis database using LPUSH, LTRIM,
+    # LRANGE for management
     api_log_prefix = "API-LOG-LIST::"
 
     def __init__(self):
         RedisBaseInterface.__init__(self)
 
+    """
     ########################## API  LOG #######################################
+    """
+
     """
     The API logs are organized by lists that have as key the user id.
     Each API call from a user_id is logged in its dedicated list with
@@ -191,7 +195,7 @@ if __name__ == '__main__':
         r.connect(host="localhost", port=7000)
         test_api_logging(r)
         r.disconnect()
-    except Exception as e:
+    except Exception:
         raise
     finally:
         os.kill(pid, signal.SIGTERM)

@@ -77,14 +77,16 @@ class ResourceManagerBase(Resource):
 
         Permission:
             - guest and user roles can only access resources of the same user id
-            - admin role are allowed to access resources of users with the same user group, except for superusers
+            - admin role are allowed to access resources of users with the same
+              user group, except for superusers
             - superdamins role can access all resources
 
         Args:
             user_id:
 
         Returns:
-            None if permissions granted, a error response if permissions are not fullfilled
+            None if permissions granted, a error response if permissions are
+            not fulfilled
 
         """
         # Superuser are allowed to do everything
@@ -94,31 +96,32 @@ class ResourceManagerBase(Resource):
         # Check permissions for users and guests
         if self.user_role == "guest" or self.user_role == "user":
             if self.user_id != user_id:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user.")), 401)
         new_user = ActiniaUser(user_id=user_id)
 
         # Check if the user exists
         if new_user.exists() is False:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="The user <%s> does not exist" % user_id)), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="The user <%s> does not exist" % user_id)), 400)
 
         # Check admin permissions
         if self.user_role == "admin":
             # Resources of superusers are not allowed to be accessed
             if new_user.has_superadmin_role() is True:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user role.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user role.")), 401)
             # Only resources of the same user group are allowed to be accessed
             if new_user.get_group() != self.user_group:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user group.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user group.")), 401)
         return None
 
 
@@ -135,7 +138,8 @@ class ResourceManager(ResourceManagerBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Get the status of a resource. Minimum required user role: user.',
+        'description': 'Get the status of a resource. Minimum required user '
+                       'role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -155,11 +159,11 @@ class ResourceManager(ResourceManagerBase):
         'responses': {
             '200': {
                 'description': 'The current state of the resource',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message if the resource does not exists',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -172,20 +176,23 @@ class ResourceManager(ResourceManagerBase):
 
         # the latest iteration should be given
         if resource_id.startswith('resource_id-'):
-            _, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
+            _, response_data = self.resource_logger.get_latest_iteration(
+                user_id, resource_id)
         else:
-            response_data = self.resource_logger.get_all_iteration(user_id, 'resource_id-%s' % resource_id)
+            response_data = self.resource_logger.get_all_iteration(
+                user_id, 'resource_id-%s' % resource_id)
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
             return make_response(jsonify(response_model), http_code)
         else:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Updates/Resumes the status of a resource. Minimum required user role: user.',
+        'description': 'Updates/Resumes the status of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -205,11 +212,11 @@ class ResourceManager(ResourceManagerBase):
         'responses': {
             '200': {
                 'description': 'The current state of the resource',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message if the resource does not exists',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
      })
@@ -222,12 +229,14 @@ class ResourceManager(ResourceManagerBase):
             return ret
 
         # get latest iteration
-        old_iteration, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id)
+        old_iteration, response_data = self.resource_logger.get_latest_iteration(
+            user_id, resource_id)
 
         if response_data is not None:
             iteration = old_iteration + 1
             http_code, response_model = pickle.loads(response_data)
-            # check if a new iteration is possible (only if status is error or terminated)
+            # check if a new iteration is possible (only if status is error or
+            # terminated)
             if response_model['status'] in ['error', 'terminated']:
                 # TODO use post_url if iteration > 1
                 if old_iteration:
@@ -241,7 +250,8 @@ class ResourceManager(ResourceManagerBase):
                 location = re.findall(r'locations\/(.*?)\/', post_url)[0]
                 # mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
                 from .ephemeral_processing import AsyncEphemeralResource, start_job
-                processing_resource = AsyncEphemeralResource(location, iteration, post_url)
+                processing_resource = AsyncEphemeralResource(
+                    location, iteration, post_url)
                 rdc = processing_resource.preprocess(location_name=location)
                 from .common.redis_interface import enqueue_job
                 # if rdc:
@@ -250,19 +260,21 @@ class ResourceManager(ResourceManagerBase):
         # return make_response(jsonify(response_model), html_code)
                 import pdb; pdb.set_trace()
 
-
                 pc_step = response_model['progress']['step'] - 1
                 from .common.config import global_config
                 from flask import g, request
                 import os
                 user_resource_interim_storage_path = os.path.join(
-                    global_config.GRASS_RESOURCE_DIR, g.user.get_id(), "interim", resource_id)
+                    global_config.GRASS_RESOURCE_DIR, g.user.get_id(),
+                    "interim", resource_id)
                 interim_folder = os.listdir(user_resource_interim_storage_path)
                 if pc_step < 1:
                     # TODO start completely new PC with this resource_id
                     a=5
                 if 'step%d' % (pc_step) in interim_folder:
-                    interim_mapset = os.path.join(user_resource_interim_storage_path, 'step%d' % (pc_step - 1))
+                    interim_mapset = os.path.join(
+                        user_resource_interim_storage_path,
+                        'step%d' % (pc_step - 1))
                 # process chain
                 if request.get_json():
                     process_chain = request.get_json()
@@ -282,12 +294,13 @@ class ResourceManager(ResourceManagerBase):
                 a=5 # # TODO
 #               return make_response(jsonify(response_model), http_code)
         else:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Request the termination of a resource. Minimum required user role: user.',
+        'description': 'Request the termination of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -306,13 +319,16 @@ class ResourceManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Returned if termination request of the resource was successfully committed. '
-                               'Be aware that this does not mean, that the resource was successfully terminated.',
-                'schema':SimpleResponseModel
+                'description': 'Returned if termination request of the resource '
+                               'was successfully committed. '
+                               'Be aware that this does not mean, that the '
+                               'resource was successfully terminated.',
+                'schema': SimpleResponseModel
             },
             '400': {
-                'description': 'The error message why resource storage information gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why resource storage '
+                               'information gathering did not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -329,29 +345,32 @@ class ResourceManager(ResourceManagerBase):
         _, doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if doc is None:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
 
         self.resource_logger.commit_termination(user_id, resource_id)
 
-        return make_response(jsonify(SimpleResponseModel(status="accepted",
-                                                         message="Termination request committed")), 200)
+        return make_response(jsonify(SimpleResponseModel(
+            status="accepted", message="Termination request committed")), 200)
 
 
 # Create a g.list/g.remove pattern parser
 resource_parser = reqparse.RequestParser()
-resource_parser.add_argument('num', type=int, help='The maximum number of jobs that should be listed',
-                             location='args')
-resource_parser.add_argument('type', type=str, help='The type of the jobs that should be shown: '
-                                                    'all, running, error, terminated, finished',
-                             location='args')
+resource_parser.add_argument(
+    'num', type=int, help='The maximum number of jobs that should be listed',
+    location='args')
+resource_parser.add_argument(
+    'type', type=str,
+    help='The type of the jobs that should be shown: '
+         'all, running, error, terminated, finished',
+    location='args')
 
 
 class ResourcesManager(ResourceManagerBase):
     """Management of multiple resources
 
-    TODO: This methods must be secured by checking the user id. Only admins can terminate and
-    list resources from other users.
+    TODO: This methods must be secured by checking the user id. Only admins
+    can terminate and list resources from other users.
 
     """
 
@@ -376,8 +395,8 @@ class ResourcesManager(ResourceManagerBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Get a list of resources that have been generated by the specified user. '
-                       'Minimum required user role: user.',
+        'description': 'Get a list of resources that have been generated by the '
+                       'specified user. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -395,7 +414,8 @@ class ResourcesManager(ResourceManagerBase):
             },
             {
                 'name': 'type',
-                'description': 'The type of job that should be returned: accepted, running, error, terminated, finished',
+                'description': 'The type of job that should be returned: '
+                               'accepted, running, error, terminated, finished',
                 'required': False,
                 'in': 'query',
                 'type': 'string'
@@ -403,12 +423,14 @@ class ResourcesManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Returned a list of resources that have been generated by the specified user.',
-                'schema':ProcessingResponseListModel
+                'description': 'Returned a list of resources that have been '
+                               'generated by the specified user.',
+                'schema': ProcessingResponseListModel
             },
             '401': {
-                'description': 'The error message why resource gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why resource gathering did '
+                               'not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -434,12 +456,13 @@ class ResourcesManager(ResourceManagerBase):
         else:
             response_list = resource_list
 
-        return make_response(jsonify(ProcessingResponseListModel(resource_list=response_list)), 200)
+        return make_response(jsonify(ProcessingResponseListModel(
+            resource_list=response_list)), 200)
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Terminate all accepted and running resources of the specified user. '
-                       'Minimum required user role: user.',
+        'description': 'Terminate all accepted and running resources of the specified '
+                       'user. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -451,13 +474,15 @@ class ResourcesManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Termination requests have been successfully committed. Be aware that does '
-                               'not mean, that the resources have been successfully terminated.',
-                'schema':SimpleResponseModel
+                'description': 'Termination requests have been successfully '
+                               'committed. Be aware that does not mean, that '
+                               'the resources have been successfully terminated.',
+                'schema': SimpleResponseModel
             },
             '401': {
-                'description': 'The error message why the resource termination did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why the resource termination '
+                               'did not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -474,12 +499,15 @@ class ResourcesManager(ResourceManagerBase):
         for entry in resource_list:
             if "status" in entry:
                 if entry["status"] in ["accepted", "running"]:
-                    self.resource_logger.commit_termination(user_id, entry["resource_id"])
+                    self.resource_logger.commit_termination(
+                        user_id, entry["resource_id"])
                     termination_requests += 1
 
-        return make_response(jsonify(SimpleResponseModel(status="finished",
-                                                         message="Successfully send %i "
-                                                                 "termination requests" % termination_requests)), 200)
+        return make_response(jsonify(SimpleResponseModel(
+            status="finished",
+            message="Successfully send %i termination requests"
+                    % termination_requests)), 200)
+
 
 class ResourceIterationManager(ResourceManagerBase):
     """
@@ -494,7 +522,8 @@ class ResourceIterationManager(ResourceManagerBase):
 
     @swagger.doc({
         'tags': ['Resource Iteration Management'],
-        'description': 'Get the status of a resource with the iterations. Minimum required user role: user.',
+        'description': 'Get the status of a resource with the iterations. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -521,11 +550,11 @@ class ResourceIterationManager(ResourceManagerBase):
         'responses': {
             '200': {
                 'description': 'The current state of the resource',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message if the resource does not exists',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
      })
@@ -540,14 +569,16 @@ class ResourceIterationManager(ResourceManagerBase):
             resource_id = 'resource_id-%s' % resource_id
 
         if iteration == 'latest':
-            iteration, response_data = self.resource_logger.get_latest_iteration(user_id, resource_id,)
+            iteration, response_data = self.resource_logger.get_latest_iteration(
+                user_id, resource_id,)
         else:
-            response_data = self.resource_logger.get(user_id, resource_id, int(iteration))
+            response_data = self.resource_logger.get(
+                user_id, resource_id, int(iteration))
 
         if response_data is not None:
             http_code, tmp_response_model = pickle.loads(response_data)
             response_model = {str(iteration): tmp_response_model}
             return make_response(jsonify(response_model), http_code)
         else:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)

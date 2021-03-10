@@ -55,7 +55,7 @@ def create_job_queues(host, port, num_of_queues):
     Args:
         host: The hostname of the redis server
         port: The port of the redis server
-        num_of_queues: The number fo queues that should be created
+        num_of_queues: The number of queues that should be created
 
     """
     # Redis work queue and connection
@@ -126,11 +126,12 @@ def enqueue_job_old(timeout, func, *args):
     # Compute the current
     current_queue = num % num_queues
     print("###  Enqueue job in queue %i" % current_queue)
-    ret = job_queues[current_queue].enqueue(func,
-                                            *args,
-                                            timeout=timeout,
-                                            ttl=global_config.REDIS_QUEUE_JOB_TTL,
-                                            result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
+    ret = job_queues[current_queue].enqueue(
+        func,
+        *args,
+        timeout=timeout,
+        ttl=global_config.REDIS_QUEUE_JOB_TTL,
+        result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
     print(ret)
 
     return current_queue

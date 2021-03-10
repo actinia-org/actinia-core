@@ -37,8 +37,10 @@ __email__ = "soerengebbert@googlemail.com"
 # Create a temporal module where, order, column parser
 where_parser = reqparse.RequestParser()
 where_parser.add_argument('where', type=str, location='args', help='A SQL where option')
-where_parser.add_argument('order', type=str, location='args', help='The order of the listing')
-where_parser.add_argument('columns', type=str, location='args', help='The columns to be listed')
+where_parser.add_argument('order', type=str, location='args',
+                          help='The order of the listing')
+where_parser.add_argument('columns', type=str, location='args',
+                          help='The columns to be listed')
 
 
 def extract_where_parameters(args):
@@ -65,7 +67,8 @@ def extract_where_parameters(args):
 
 # Create a g.list/g.remove pattern parser
 glist_parser = reqparse.RequestParser()
-glist_parser.add_argument('pattern', type=str, help='A pattern string must be provided', location='args')
+glist_parser.add_argument(
+    'pattern', type=str, help='A pattern string must be provided', location='args')
 
 
 def extract_glist_parameters(args):
@@ -89,8 +92,8 @@ def extract_glist_parameters(args):
 
 # Create a grass EPSG code parser
 start_script_parser = reqparse.RequestParser()
-start_script_parser.add_argument('epsg', required=True, location='args',
-                                 type=int, help='A EPSG code as integer must be provided')
+start_script_parser.add_argument('epsg', required=True, location='args', type=int,
+                                 help='A EPSG code as integer must be provided')
 
 
 def extract_start_script_parameters(args):
@@ -149,20 +152,21 @@ def extract_t_create_parameters(args):
 t_register_parser = reqparse.RequestParser()
 t_register_parser.add_argument('start', type=str, location='args',
                                help='Valid start date and time of the first map. '
-                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS +HHMM", '
-                                    'relative time is of type integer')
+                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS '
+                                    '+HHMM", relative time is of type integer')
 t_register_parser.add_argument('end', type=str, location='args',
                                help='Valid end date and time of all maps. '
-                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS +HHMM", '
-                                    'relative time is of type integer')
+                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS0'
+                                    ' +HHMM", relative time is of type integer')
 t_register_parser.add_argument('unit', type=str, location='args',
-                               help='Time stamp unit. '
-                                    'Unit must be set in case of relative time stamps. '
-                                    'options: years,months,days,hours,minutes,seconds')
+                               help='Time stamp unit. Unit must be set in case of '
+                                    'relative time stamps. options: '
+                                    'years,months,days,hours,minutes,seconds')
 t_register_parser.add_argument('increment', type=str, location='args',
-                               help='Time increment, works only in conjunction with start option. '
-                                    'Time increment between maps for valid time interval creation '
-                                    '(format absolute: NNN seconds, minutes, hours, days, weeks, '
+                               help='Time increment, works only in conjunction with '
+                                    'start option. Time increment between maps for '
+                                    'valid time interval creation (format absolute: '
+                                    'NNN seconds, minutes, hours, days, weeks, '
                                     'months, years; format relative is integer: 5)')
 
 

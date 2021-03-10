@@ -53,7 +53,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1"}),
                               content_type="application/json")
@@ -90,7 +90,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1"}),
                               content_type="application/json")
@@ -126,7 +126,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1.5"}),
                               content_type="application/json")
@@ -161,7 +161,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer_1' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1.0"}),
                               content_type="application/json")
@@ -173,7 +173,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer_2' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "2.0"}),
                               content_type="application/json")
@@ -185,7 +185,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer_3' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "3.0"}),
                               content_type="application/json")
@@ -216,7 +216,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1"}),
                               content_type="application/json")
@@ -227,7 +227,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1"}),
                               content_type="application/json")

@@ -73,77 +73,79 @@ class ResourceBase(Resource):
     else:
         decorators.append(create_dummy_user)
 
-    def __init__(self):
+    # def __init__(self):
+    #
+    #     # Configuration
+    #     Resource.__init__(self)
+    #
+    #     # Store the user id, user group and all credentials of the current user
+    #     self.user = g.user
+    #     self.user_id = g.user.get_id()
+    #     self.user_group = g.user.get_group()
+    #     self.user_role = g.user.get_role()
+    #     self.has_superadmin_role = g.user.has_superadmin_role()
+    #     self.user_credentials = g.user.get_credentials()
+    #
+    #     self.orig_time = time.time()
+    #     self.orig_datetime = str(datetime.now())
+    #
+    #     kwargs = dict()
+    #     kwargs['host'] = global_config.REDIS_SERVER_URL
+    #     kwargs['port'] = global_config.REDIS_SERVER_PORT
+    #     if (global_config.REDIS_SERVER_PW
+    #             and global_config.REDIS_SERVER_PW is not None):
+    #         kwargs['password'] = global_config.REDIS_SERVER_PW
+    #     self.resource_logger = ResourceLogger(**kwargs)
+    #     del kwargs
+    #
+    #     self.message_logger = MessageLogger()
+    #
+    #     self.grass_data_base = global_config.GRASS_DATABASE
+    #     self.grass_user_data_base = global_config.GRASS_USER_DATABASE
+    #     self.grass_base_dir = global_config.GRASS_GIS_BASE
+    #     self.grass_start_script = global_config.GRASS_GIS_START_SCRIPT
+    #     self.grass_addon_path = global_config.GRASS_ADDON_PATH
+    #
+    #     # Generate the resource id
+    #     self.request_id, self.resource_id = self.generate_uuids()
+    #
+    #     # set iteration
+    #     # TODO update is resource is processed before
+    #     self.iteration = None
+    #     # request.url # TODO update is resource is processed before
+    #     self.post_url = None
+    #
+    #     # The base URL's for resources that will be streamed
+    #     self.resource_url_base = None
+    #
+    #     # Generate the status URL
+    #     self.status_url = flask_api.url_for(ResourceManager,
+    #                                         user_id=self.user_id,
+    #                                         resource_id=self.resource_id,
+    #                                         _external=True)
+    #
+    #     if global_config.FORCE_HTTPS_URLS is True and "http://" in self.status_url:
+    #         self.status_url = self.status_url.replace("http://", "https://")
+    #
+    #     self.request_url = request.url
+    #     self.resource_url = None
+    #     self.request_data = None
+    #     self.response_data = None
+    #     self.job_timeout = 0
+    #
+    #     # Replace this with the correct response model in subclasses
+    #     # The class that is used to create the response
+    #     self.response_model_class = ProcessingResponseModel
+    #
+    #     # Put API information in the response for later accounting
+    #     kwargs = {
+    #         'endpoint': request.endpoint,
+    #         'method': request.method,
+    #         'path': request.path,
+    #         'request_url': self.request_url}
+    #     self.api_info = ApiInfoModel(**kwargs)
 
-        # Configuration
-        Resource.__init__(self)
-
-        # Store the user id, user group and all credentials of the current user
-        self.user = g.user
-        self.user_id = g.user.get_id()
-        self.user_group = g.user.get_group()
-        self.user_role = g.user.get_role()
-        self.has_superadmin_role = g.user.has_superadmin_role()
-        self.user_credentials = g.user.get_credentials()
-
-        self.orig_time = time.time()
-        self.orig_datetime = str(datetime.now())
-
-        kwargs = dict()
-        kwargs['host'] = global_config.REDIS_SERVER_URL
-        kwargs['port'] = global_config.REDIS_SERVER_PORT
-        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
-            kwargs['password'] = global_config.REDIS_SERVER_PW
-        self.resource_logger = ResourceLogger(**kwargs)
-        del kwargs
-
-        self.message_logger = MessageLogger()
-
-        self.grass_data_base = global_config.GRASS_DATABASE
-        self.grass_user_data_base = global_config.GRASS_USER_DATABASE
-        self.grass_base_dir = global_config.GRASS_GIS_BASE
-        self.grass_start_script = global_config.GRASS_GIS_START_SCRIPT
-        self.grass_addon_path = global_config.GRASS_ADDON_PATH
-
-        # Generate the resource id
-        self.request_id, self.resource_id = self.generate_uuids()
-
-        # set iteration
-        self.iteration = None # TODO update is resource is processed before
-        self.post_url = None # request.url # TODO update is resource is processed before
-
-        # The base URL's for resources that will be streamed
-        self.resource_url_base = None
-
-        # Generate the status URL
-        self.status_url = flask_api.url_for(ResourceManager,
-                                            user_id=self.user_id,
-                                            resource_id=self.resource_id,
-                                            _external=True)
-
-        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.status_url:
-            self.status_url = self.status_url.replace("http://", "https://")
-
-        self.request_url = request.url
-        self.resource_url = None
-        self.request_data = None
-        self.response_data = None
-        self.job_timeout = 0
-
-        # Replace this with the correct response model in subclasses
-        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
-
-        # Put API information in the response for later accounting
-        kwargs = {
-            'endpoint': request.endpoint,
-            'method':request.method,
-            'path': request.path,
-            'request_url': self.request_url}
-        self.api_info = ApiInfoModel(**kwargs)
-
-
-    def __init__(self, resource_id, iteration, post_url):
-
+    def __init__(self, resource_id, iteration=None, post_url=None):
         # Configuration
         Resource.__init__(self)
 
@@ -201,19 +203,21 @@ class ResourceBase(Resource):
         self.job_timeout = 0
 
         # Replace this with the correct response model in subclasses
-        self.response_model_class = ProcessingResponseModel  # The class that is used to create the response
+        # The class that is used to create the response
+        self.response_model_class = ProcessingResponseModel
 
         # Put API information in the response for later accounting
         kwargs = {
             'endpoint': request.endpoint,
-            'method':request.method,
+            'method': request.method,
             'path': request.path,
             'request_url': self.request_url,
             'post_url': self.post_url}
         self.api_info = ApiInfoModel(**kwargs)
 
     def create_error_response(self, message, status="error", http_code=400):
-        """Create an error response, that by default sets the status to error and the http_code to 400
+        """Create an error response, that by default sets the status to error
+        and the http_code to 400
 
         This method sets the self.response_data variable.
 
@@ -223,19 +227,20 @@ class ResourceBase(Resource):
             http_code: The hhtp code by default 400
 
         """
-        self.response_data = create_response_from_model(self.response_model_class,
-                                                        status=status,
-                                                        user_id=self.user_id,
-                                                        resource_id=self.resource_id,
-                                                        iteration=self.iteration,
-                                                        process_log=None,
-                                                        results={},
-                                                        message=message,
-                                                        http_code=http_code,
-                                                        orig_time=self.orig_time,
-                                                        orig_datetime=self.orig_datetime,
-                                                        status_url=self.status_url,
-                                                        api_info=self.api_info)
+        self.response_data = create_response_from_model(
+            self.response_model_class,
+            status=status,
+            user_id=self.user_id,
+            resource_id=self.resource_id,
+            iteration=self.iteration,
+            process_log=None,
+            results={},
+            message=message,
+            http_code=http_code,
+            orig_time=self.orig_time,
+            orig_datetime=self.orig_datetime,
+            status_url=self.status_url,
+            api_info=self.api_info)
 
     def get_error_response(self, message, status="error", http_code=400):
         """Return the error response.
@@ -272,7 +277,8 @@ class ResourceBase(Resource):
             try:
                 self.request_data = json_loads(request.data)
             except Exception as e:
-                self.create_error_response(message="No JSON data in request: Exception: %s" % str(e))
+                self.create_error_response(
+                    message="No JSON data in request: Exception: %s" % str(e))
                 return False
 
         if request.is_json is False:
@@ -324,12 +330,15 @@ class ResourceBase(Resource):
             has_json (bool):Set True if the request has JSON data, False otherwise
             has_xml (bool):Set True if the request has XML data, False otherwise
             location_name (str): The name of the location to work in
-            mapset_name (str): The name of the target mapset in which the computation should be performed
-            map_name: The name of the map or other resource (raster, vector, STRDS, color, ...)
+            mapset_name (str): The name of the target mapset in which the
+                               computation should be performed
+            map_name: The name of the map or other resource (raster, vector,
+                      STRDS, color, ...)
 
         Returns:
-            The ResourceDataContainer that contains all required information for the async process
-            or None if the request was wrong. Then use the self.response_data variable to send a response.
+            The ResourceDataContainer that contains all required information
+            for the async process or None if the request was wrong. Then use
+            the self.response_data variable to send a response.
 
         """
         if has_json is True and has_xml is True:
@@ -358,26 +367,30 @@ class ResourceBase(Resource):
                                                    file_name="__None__",
                                                    _external=True)
 
-        if global_config.FORCE_HTTPS_URLS is True and "http://" in self.resource_url_base:
-            self.resource_url_base = self.resource_url_base.replace("http://", "https://")
+        if (global_config.FORCE_HTTPS_URLS is True
+                and "http://" in self.resource_url_base):
+            self.resource_url_base = self.resource_url_base.replace(
+                "http://", "https://")
 
         # Create the accepted response that will be always send
-        self.response_data = create_response_from_model(self.response_model_class,
-                                                        status="accepted",
-                                                        user_id=self.user_id,
-                                                        resource_id=self.resource_id,
-                                                        iteration=self.iteration,
-                                                        process_log=None,
-                                                        results={},
-                                                        message="Resource accepted",
-                                                        http_code=200,
-                                                        orig_time=self.orig_time,
-                                                        orig_datetime=self.orig_datetime,
-                                                        status_url=self.status_url,
-                                                        api_info=self.api_info)
+        self.response_data = create_response_from_model(
+            self.response_model_class,
+            status="accepted",
+            user_id=self.user_id,
+            resource_id=self.resource_id,
+            iteration=self.iteration,
+            process_log=None,
+            results={},
+            message="Resource accepted",
+            http_code=200,
+            orig_time=self.orig_time,
+            orig_datetime=self.orig_datetime,
+            status_url=self.status_url,
+            api_info=self.api_info)
 
         # Send the status to the database
-        self.resource_logger.commit(self.user_id, self.resource_id, self.iteration, self.response_data)
+        self.resource_logger.commit(
+            self.user_id, self.resource_id, self.iteration, self.response_data)
 
         # Return the ResourceDataContainer that includes all
         # required data for the asynchronous processing
@@ -419,10 +432,12 @@ class ResourceBase(Resource):
     def wait_until_finish(self, poll_time=0.2):
         """Wait until a resource finished, terminated or failed with an error
 
-        Call this method if a job was enqueued and the POST/GET/DELETE/PUT method should wait for it
+        Call this method if a job was enqueued and the POST/GET/DELETE/PUT
+        method should wait for it
 
         Args:
-            poll_time (float): Time to sleep between Redis db polls for process status requests
+            poll_time (float): Time to sleep between Redis db polls for process
+                               status requests
 
         Returns:
             (int, dict)
@@ -434,9 +449,9 @@ class ResourceBase(Resource):
                                                      self.resource_id,
                                                      self.iteration)
             if not response_data:
-                message = "Unable to receive process status. User id %s resource id %s and iteration %d" % (self.user_id,
-                                                                                                            self.resource_id,
-                                                                                                            self.iteration)
+                message = ("Unable to receive process status. User id "
+                           "%s resource id %s and iteration %d"
+                           % (self.user_id, self.resource_id, self.iteration))
                 return make_response(message, 400)
 
             http_code, response_model = pickle.loads(response_data)

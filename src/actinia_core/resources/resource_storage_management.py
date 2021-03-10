@@ -37,7 +37,8 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 from .common.process_object import Process
 from .common.exceptions import AsyncProcessError
-from .common.response_models import StorageResponseModel, StorageModel, ProcessingResponseModel,\
+from .common.response_models import \
+    StorageResponseModel, StorageModel, ProcessingResponseModel, \
     ProcessingErrorResponseModel
 
 from .common.app import auth
@@ -59,15 +60,17 @@ class SyncResourceStorageResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Get the current size of the resource storage. Minimum required user role: admin.',
+        'description': 'Get the current size of the resource storage. '
+                       'Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'The current state of the resource storage',
-                'schema':StorageResponseModel
+                'schema': StorageResponseModel
             },
             '400': {
-                'description': 'The error message why resource storage information gathering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message why resource storage '
+                               'information gathering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -85,15 +88,17 @@ class SyncResourceStorageResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Clean the resource storage and remove all cached data. Minimum required user role: admin.',
+        'description': 'Clean the resource storage and remove all cached data. '
+                       'Minimum required user role: admin.',
         'responses': {
             '200': {
                 'description': 'Processing status of resource storage deletion',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message why resource storage cleaning did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message why resource storage cleaning '
+                               'did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -122,33 +127,38 @@ class ResourceStorageSize(EphemeralProcessing):
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
         self.response_model_class = StorageResponseModel
-        self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
+        self.user_resource_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id)
 
     def _execute(self):
 
         self._setup()
 
-        if os.path.exists(self.user_resource_storage_path) and os.path.isdir(self.user_resource_storage_path):
+        if (os.path.exists(self.user_resource_storage_path)
+                and os.path.isdir(self.user_resource_storage_path)):
 
             executable = "/usr/bin/du"
             args = ["-sb", self.user_resource_storage_path]
 
             self._run_process(Process(exec_type="exec",
-                                           executable=executable,
-                                           executable_params=args))
+                                      executable=executable,
+                                      executable_params=args))
 
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
             quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024 * 1024 * 1024)
 
-            model = StorageModel(used=dc_size,
-                                 free=quota_size - dc_size,
-                                 quota=quota_size,
-                                 free_percent=int(100 * (quota_size - dc_size) / quota_size))
+            model = StorageModel(
+                used=dc_size,
+                free=quota_size - dc_size,
+                quota=quota_size,
+                free_percent=int(100 * (quota_size - dc_size) / quota_size))
             self.module_results = model
 
             self.finish_message = "Resource storage size successfully computed"
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
+            raise AsyncProcessError(
+                "Resource storage directory <%s> does not exist."
+                % self.user_resource_storage_path)
 
 
 def start_resource_storage_remove(*args):
@@ -162,21 +172,25 @@ class ResourceStorageDelete(PersistentProcessing):
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
-        self.user_resource_storage_path = os.path.join(self.config.GRASS_RESOURCE_DIR, self.user_id)
+        self.user_resource_storage_path = os.path.join(
+            self.config.GRASS_RESOURCE_DIR, self.user_id)
 
     def _execute(self):
 
         self._setup()
 
-        if os.path.exists(self.user_resource_storage_path) and os.path.isdir(self.user_resource_storage_path):
+        if (os.path.exists(self.user_resource_storage_path)
+                and os.path.isdir(self.user_resource_storage_path)):
             executable = "/bin/rm"
             args = ["-rf", self.user_resource_storage_path]
 
             self._run_process(Process(exec_type="exec",
-                                           executable=executable,
-                                           executable_params=args))
+                                      executable=executable,
+                                      executable_params=args))
 
             os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
-            raise AsyncProcessError("Resource storage directory <%s> does not exist." % self.user_resource_storage_path)
+            raise AsyncProcessError(
+                "Resource storage directory <%s> does not exist."
+                % self.user_resource_storage_path)

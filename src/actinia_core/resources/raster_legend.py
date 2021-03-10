@@ -32,7 +32,7 @@ from .resource_base import ResourceBase
 from .common.redis_interface import enqueue_job
 import tempfile
 import os
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from .common.response_models import ProcessingErrorResponseModel
 
 
@@ -54,7 +54,8 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
                                  'screen coordinates (0,0 is lower left). '
                                  'bottom,top,left,right 0-100%')
         parser.add_argument('range', type=str, location='args',
-                            help='Use a subset of the map range for the legend (min,max)')
+                            help='Use a subset of the map range for the legend '
+                                 '(min,max)')
         parser.add_argument('use', type=str, location='args',
                             help='List of discrete category numbers/values for legend')
         parser.add_argument('fontsize', type=float, location='args',
@@ -62,9 +63,11 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
         parser.add_argument('labelnum', type=float, location='args',
                             help='Number of text labels for smooth gradient legend')
         parser.add_argument('width', type=float, location='args',
-                            help='North-South resolution must be specified as double value')
+                            help='North-South resolution must be specified as '
+                                 'double value')
         parser.add_argument('height', type=float, location='args',
-                            help='East-West resolution must be specified as double value')
+                            help='East-West resolution must be specified as '
+                                 'double value')
 
         return parser
 
@@ -99,20 +102,23 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
             if args["width"] < 1:
                 return self.get_error_response(message="Width must be larger than 0")
             if args["width"] > 10000:
-                return self.get_error_response(message="Width can not be larger than 10000")
+                return self.get_error_response(
+                    message="Width can not be larger than 10000")
             options["width"] = args["width"]
         if "height" in args and args["height"] is not None:
             if args["height"] < 1:
                 return self.get_error_response(message="Height must be larger than 0")
             if args["height"] > 10000:
-                return self.get_error_response(message="Height can not be larger than 10000")
+                return self.get_error_response(
+                    message="Height can not be larger than 10000")
             options["height"] = args["height"]
 
         return options
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Render the legend of a raster map layer as a PNG image. Minimum required user role: user.',
+        'description': 'Render the legend of a raster map layer as a PNG image. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -124,7 +130,8 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -132,20 +139,22 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
             },
             {
                 'name': 'raster_name',
-                'description': 'The name of the raster map layer of which the legend should be rendered',
+                'description': 'The name of the raster map layer of which the '
+                               'legend should be rendered',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
                 'default': 'elevation'
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why legend rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why legend '
+                               'rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -212,14 +221,15 @@ class EphemeralRasterLegend(EphemeralProcessing):
         os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
 
         pc = {}
-        pc["1"] = {"module":"d.legend","inputs":{"raster":raster_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "d.legend", "inputs": {
+            "raster": raster_name + "@" + self.mapset_name}}
         for key in options:
             if key not in ["width", "height"]:
                 value = options[key]
                 pc["1"]["inputs"][key] = value
 
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file

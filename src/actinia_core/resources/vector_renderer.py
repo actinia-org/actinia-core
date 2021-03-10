@@ -28,13 +28,12 @@ Raster map renderer
 
 import tempfile
 import os
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, Response
-import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
+from .common.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -49,7 +48,8 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
 
     @swagger.doc({
         'tags': ['Vector Management'],
-        'description': 'Render a single vector map layer. Minimum required user role: user.',
+        'description': 'Render a single vector map layer. Minimum required user '
+                       'role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -61,7 +61,8 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required raster map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required raster map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -126,13 +127,14 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
                 'default': 600
             }
         ],
-        'produces':["image/png"],
+        'produces': ["image/png"],
         'responses': {
             '200': {
                 'description': 'The PNG image'},
             '400': {
-                'description':'The error message and a detailed log why rendering did not succeeded',
-                'schema':ProcessingErrorResponseModel
+                'description': 'The error message and a detailed log why '
+                               'rendering did not succeeded',
+                'schema': ProcessingErrorResponseModel
             }
         }
     })
@@ -198,19 +200,22 @@ class EphemeralVectorRenderer(EphemeralRendererBase):
 
         result_file = tempfile.mktemp(suffix=".png")
 
-        region_pc = self._setup_render_environment_and_region(options=options,
-                                                              result_file=result_file)
+        region_pc = self._setup_render_environment_and_region(
+            options=options, result_file=result_file)
 
         pc = {}
-        pc["1"] = {"module":"g.region","inputs":{"vector":vector_name + "@" + self.mapset_name}}
+        pc["1"] = {"module": "g.region", "inputs": {
+            "vector": vector_name + "@" + self.mapset_name}}
         pc["2"] = region_pc
-        pc["3"] = {"module":"d.vect","inputs":{"map":vector_name + "@" + self.mapset_name},
-                   "flags":"c"}
+        pc["3"] = {
+            "module": "d.vect",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "c"}
 
         # Run the selected modules
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         self.module_results = result_file
