@@ -113,7 +113,7 @@ flask_api = Api(flask_app, prefix=URL_PREFIX,
                 consumes=['application/gml+xml', 'application/json'])
 
 # Set the security definition in an unconventional way
-flask_api._swagger_object["securityDefinitions"] = {"basicAuth":{"type": "basic"}}
-flask_api._swagger_object["security"] = [{"basicAuth":[]}]
+flask_api._swagger_object["securityDefinitions"] = {"basicAuth": {"type": "basic"}}
+flask_api._swagger_object["security"] = [{"basicAuth": []}]
 
 auth = HTTPBasicAuth()

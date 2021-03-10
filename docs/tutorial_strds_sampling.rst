@@ -13,9 +13,9 @@ at three different coordinates.
 
    .. code-block:: bash
 
-      JSON='{"points":[["a", "-5.095406","38.840583"],
-                       ["b", "9.9681980","51.666166"],
-                       ["c", "24.859647","52.699099"]]}'
+      JSON='{"points":[["a", "-5.095406", "38.840583"],
+                       ["b", "9.9681980", "51.666166"],
+                       ["c", "24.859647", "52.699099"]]}'
 
       curl ${AUTH} -X POST -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" \
            -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"

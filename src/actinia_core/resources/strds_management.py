@@ -53,8 +53,8 @@ class SyncSTRDSListerResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Get a list of all STRDS that are located in a specific location/mapset. '
-                       'Minimum required user role: user.',
+        'description': 'Get a list of all STRDS that are located in a specific '
+                       'location/mapset. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -80,8 +80,9 @@ class SyncSTRDSListerResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'This response returns a list of STRDS names and timestamps and the log '
-                               'of the process chain that was used to create the response.',
+                'description': 'This response returns a list of STRDS names and '
+                               'timestamps and the log of the process chain '
+                               'that was used to create the response.',
                 'schema': StringListProcessingResultResponseModel
             },
             '400': {
@@ -137,7 +138,8 @@ class PersistentSTRDSLister(PersistentProcessing):
             for option in self.rdc.user_data:
                 if self.rdc.user_data[option] is not None:
                     if "where" in option:
-                        select = self.rdc.user_data[option] + " AND mapset = \'%s\'" % self.mapset_name
+                        select = self.rdc.user_data[option] + \
+                            " AND mapset = \'%s\'" % self.mapset_name
                         pc["1"]["inputs"]["where"] = select
                         has_where = True
                     else:
@@ -164,9 +166,10 @@ class PersistentSTRDSLister(PersistentProcessing):
         self.module_results = mapset_lists
 
 
-###############################################################################
-################ STRDS Management #############################################
-###############################################################################
+"""
+STRDS Management
+"""
+
 
 class STRDSInfoModel(Schema):
     """Schema that contains space-time raster dataset (STRDS) information
@@ -255,12 +258,15 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "strdsmanagementresource",
             "method": "GET",
-            "path": "/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm",
-            "request_url": "http://localhost:8080/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm"
+            "path": "/locations/ECAD/mapsets/PERMANENT/strds/"
+                    "precipitation_1950_2013_yearly_mm",
+            "request_url": "http://localhost:8080/locations/ECAD/mapsets/"
+                           "PERMANENT/strds/precipitation_1950_2013_yearly_mm"
         },
         "datetime": "2018-05-02 10:36:43.677867",
         "http_code": 200,
-        "message": "Information gathering for STRDS <precipitation_1950_2013_yearly_mm> successful",
+        "message": "Information gathering for STRDS "
+                   "<precipitation_1950_2013_yearly_mm> successful",
         "process_chain_list": [
             {
                 "1": {
@@ -331,16 +337,18 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525257403.6778474,
         "urls": {
             "resources": [],
-            "status": "http://localhost:8080/resources/user/resource_id-1f178974-684d-417e-a3f4-878708b7382b"
+            "status": "http://localhost:8080/resources/user/"
+                      "resource_id-1f178974-684d-417e-a3f4-878708b7382b"
         },
         "user_id": "user"
     }
 
 
 recursive_parser = reqparse.RequestParser()
-recursive_parser.add_argument('recursive', type=bool, help='Set True to recursively remove '
-                                                           'the STRDS and all registered raster '
-                                                           'map layer', location='args')
+recursive_parser.add_argument(
+    'recursive', type=bool,
+    help='Set True to recursively remove the STRDS and all registered raster '
+         'map layer', location='args')
 
 
 class STRDSCreationModel(Schema):
@@ -359,7 +367,8 @@ class STRDSCreationModel(Schema):
         },
         'temporaltype': {
             'type': 'string',
-            'description': 'The temporal type of the STRDS, which can be absolute and relative',
+            'description': 'The temporal type of the STRDS, which can be '
+                           'absolute and relative',
             'default': "absolute"
         }
     }
@@ -376,7 +385,8 @@ class STRDSManagementResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['STRDS Management'],
-        'description': 'Get information about a STRDS that is located in a specific location/mapset. '
+        'description': 'Get information about a STRDS that is located in a '
+                       'specific location/mapset. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -403,13 +413,14 @@ class STRDSManagementResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'This response returns information about a specific STRDS and the log '
-                               'of the process chain that was used to create the response.',
+                'description': 'This response returns information about a '
+                               'specific STRDS and the log of the process chain '
+                               'that was used to create the response.',
                 'schema': STRDSInfoResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why information gathering of the'
-                               'STRDS did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'information gathering of the STRDS did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -457,7 +468,8 @@ class STRDSManagementResource(ResourceBase):
             },
             {
                 'name': 'recursive',
-                'description': 'Delete the STRDS and all registered raster map layer recursively',
+                'description': 'Delete the STRDS and all registered raster map '
+                               'layer recursively',
                 'required': False,
                 'in': 'query',
                 'type': 'boolean'
@@ -469,8 +481,8 @@ class STRDSManagementResource(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why deletion of the'
-                               'STRDS did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'deletion of the STRDS did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -534,8 +546,8 @@ class STRDSManagementResource(ResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why creation of the'
-                               'STRDS did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'creation of the STRDS did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -598,7 +610,8 @@ class PersistentSTRDSInfo(PersistentProcessing):
                 strds[k] = v
 
         self.module_results = STRDSInfoModel(**strds)
-        self.finish_message = "Information gathering for STRDS <%s> successful" % self.map_name
+        self.finish_message = \
+            "Information gathering for STRDS <%s> successful" % self.map_name
 
 
 def strds_delete(*args):
@@ -658,9 +671,9 @@ class PersistentSTRDSCreator(PersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         pc_1 = {}
-        pc_1["1"] = {"module": "t.list", "inputs": {"type": "strds",
-                                                    "where": "id = \'%s@%s\'" % (self.map_name,
-                                                                                 self.target_mapset_name)}}
+        pc_1["1"] = {"module": "t.list", "inputs": {
+            "type": "strds",
+            "where": "id = \'%s@%s\'" % (self.map_name, self.target_mapset_name)}}
         # Check the first process chain
         pc_1 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_1)

@@ -31,11 +31,15 @@ from pprint import pprint
 from .resources.common.app import flask_api
 from .resources.common.config import global_config
 from .resources.common.logging_interface import log
-from .resources.location_management import ListLocationsResource, LocationManagementResourceUser
+from .resources.location_management import \
+    ListLocationsResource, LocationManagementResourceUser
 from .resources.location_management import LocationManagementResourceAdmin
-from .resources.mapset_management import ListMapsetsResource, MapsetManagementResourceUser
-from .resources.mapset_management import MapsetLockManagementResource, MapsetManagementResourceAdmin
-from .resources.strds_management import STRDSManagementResource, SyncSTRDSListerResource
+from .resources.mapset_management import \
+    ListMapsetsResource, MapsetManagementResourceUser
+from .resources.mapset_management import \
+    MapsetLockManagementResource, MapsetManagementResourceAdmin
+from .resources.strds_management import \
+    STRDSManagementResource, SyncSTRDSListerResource
 from .resources.strds_raster_management import STRDSRasterManagement
 from .resources.raster_layer import RasterLayerResource
 from .resources.map_layer_management import RasterLayersResource
@@ -81,75 +85,116 @@ __email__ = "soerengebbert@googlemail.com"
 def create_core_endpoints():
     # Locationmanagement
     flask_api.add_resource(ListLocationsResource, '/locations')
-    flask_api.add_resource(LocationManagementResourceUser, '/locations/<string:location_name>/info')
-    flask_api.add_resource(LocationManagementResourceAdmin, '/locations/<string:location_name>')
+    flask_api.add_resource(LocationManagementResourceUser,
+                           '/locations/<string:location_name>/info')
+    flask_api.add_resource(LocationManagementResourceAdmin,
+                           '/locations/<string:location_name>')
     # Mapset management
-    flask_api.add_resource(ListMapsetsResource, '/locations/<string:location_name>/mapsets')
-    flask_api.add_resource(MapsetManagementResourceUser, '/locations/<string:location_name>/mapsets/<string:mapset_name>/info')
-    flask_api.add_resource(MapsetManagementResourceAdmin, '/locations/<string:location_name>/mapsets/<string:mapset_name>')
-    flask_api.add_resource(MapsetLockManagementResource, '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
+    flask_api.add_resource(ListMapsetsResource,
+                           '/locations/<string:location_name>/mapsets')
+    flask_api.add_resource(
+        MapsetManagementResourceUser,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/info')
+    flask_api.add_resource(
+        MapsetManagementResourceAdmin,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>')
+    flask_api.add_resource(
+        MapsetLockManagementResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
     # Raster management
-    flask_api.add_resource(RasterLayersResource, '/locations/<string:location_name>/mapsets/'
-                                                 '<string:mapset_name>/raster_layers')
-    flask_api.add_resource(RasterLayerResource, '/locations/<string:location_name>/mapsets/'
-                                                '<string:mapset_name>/raster_layers/<string:raster_name>')
-    flask_api.add_resource(SyncEphemeralRasterLegendResource, '/locations/<string:location_name>/mapsets/'
-                                                              '<string:mapset_name>/raster_layers/'
-                                                              '<string:raster_name>/legend')
-    flask_api.add_resource(SyncPersistentRasterColorsResource, '/locations/<string:location_name>/mapsets/'
-                                                               '<string:mapset_name>/raster_layers/'
-                                                               '<string:raster_name>/colors')
-    flask_api.add_resource(SyncEphemeralRasterRendererResource, '/locations/<string:location_name>/mapsets/'
-                                                                '<string:mapset_name>/raster_layers/'
-                                                                '<string:raster_name>/render')
-    flask_api.add_resource(SyncEphemeralRasterRGBRendererResource, '/locations/<string:location_name>/mapsets/'
-                                                                   '<string:mapset_name>/render_rgb')
-    flask_api.add_resource(SyncEphemeralRasterShapeRendererResource, '/locations/<string:location_name>/mapsets/'
-                                                                     '<string:mapset_name>/render_shade')
+    flask_api.add_resource(
+        RasterLayersResource, '/locations/<string:location_name>/mapsets/'
+                              '<string:mapset_name>/raster_layers')
+    flask_api.add_resource(
+        RasterLayerResource,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/raster_layers/<string:raster_name>')
+    flask_api.add_resource(
+        SyncEphemeralRasterLegendResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'raster_layers/<string:raster_name>/legend')
+    flask_api.add_resource(
+        SyncPersistentRasterColorsResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'raster_layers/<string:raster_name>/colors')
+    flask_api.add_resource(
+        SyncEphemeralRasterRendererResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'raster_layers/<string:raster_name>/render')
+    flask_api.add_resource(
+        SyncEphemeralRasterRGBRendererResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/render_rgb')
+    flask_api.add_resource(
+        SyncEphemeralRasterShapeRendererResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/render_shade')
     # STRDS management
-    flask_api.add_resource(SyncSTRDSListerResource, '/locations/<string:location_name>/mapsets/'
-                                          '<string:mapset_name>/strds')
-    flask_api.add_resource(STRDSManagementResource, '/locations/<string:location_name>/mapsets/<string:mapset_name>/strds/'
-                                  '<string:strds_name>')
-    flask_api.add_resource(STRDSRasterManagement, '/locations/<string:location_name>/mapsets/'
-                                             '<string:mapset_name>/strds/<string:strds_name>/raster_layers')
+    flask_api.add_resource(
+        SyncSTRDSListerResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/strds')
+    flask_api.add_resource(
+        STRDSManagementResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/strds/'
+        '<string:strds_name>')
+    flask_api.add_resource(
+        STRDSRasterManagement,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/strds/<string:strds_name>/raster_layers')
     # Vector management
-    flask_api.add_resource(VectorLayersResource, '/locations/<string:location_name>/mapsets/'
-                                                 '<string:mapset_name>/vector_layers')
-    flask_api.add_resource(VectorLayerResource, '/locations/<string:location_name>/mapsets/'
-                                                '<string:mapset_name>/vector_layers/<string:vector_name>')
-    flask_api.add_resource(SyncEphemeralVectorRendererResource, '/locations/<string:location_name>/mapsets/'
-                                                                '<string:mapset_name>/vector_layers/'
-                                                                '<string:vector_name>/render')
-    flask_api.add_resource(SyncEphemeralSTRDSRendererResource, '/locations/<string:location_name>/mapsets/'
-                                                               '<string:mapset_name>/strds/<string:strds_name>/render')
+    flask_api.add_resource(
+        VectorLayersResource,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/vector_layers')
+    flask_api.add_resource(
+        VectorLayerResource,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/vector_layers/<string:vector_name>')
+    flask_api.add_resource(
+        SyncEphemeralVectorRendererResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'vector_layers/<string:vector_name>/render')
+    flask_api.add_resource(
+        SyncEphemeralSTRDSRendererResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'strds/<string:strds_name>/render')
 
     # Validation
-    flask_api.add_resource(AsyncProcessValidationResource,
-                           '/locations/<string:location_name>/process_chain_validation_async')
+    flask_api.add_resource(
+        AsyncProcessValidationResource,
+        '/locations/<string:location_name>/process_chain_validation_async')
 
-    flask_api.add_resource(SyncProcessValidationResource,
-                           '/locations/<string:location_name>/process_chain_validation_sync')
+    flask_api.add_resource(
+        SyncProcessValidationResource,
+        '/locations/<string:location_name>/process_chain_validation_sync')
     # Async processing
-    flask_api.add_resource(AsyncEphemeralCustomResource, '/custom_process/<string:executable>')
-    flask_api.add_resource(AsyncEphemeralResource, '/locations/<string:location_name>/processing_async')
-    flask_api.add_resource(AsyncEphemeralExportResource,
-                           '/locations/<string:location_name>/processing_async_export')
-    flask_api.add_resource(AsyncEphemeralExportS3Resource,
-                           '/locations/<string:location_name>/processing_async_export_s3')
-    flask_api.add_resource(AsyncEphemeralExportGCSResource,
-                           '/locations/<string:location_name>/processing_async_export_gcs')
-    flask_api.add_resource(AsyncPersistentResource, '/locations/<string:location_name>/mapsets/'
-                                                    '<string:mapset_name>/processing_async')
-    flask_api.add_resource(AsyncPersistentMapsetMergerResource, '/locations/<string:location_name>/mapsets/'
-                                                                 '<string:mapset_name>/merging_async')
-    flask_api.add_resource(AsyncEphemeralRasterLayerExporterResource, '/locations/<string:location_name>/mapsets/'
-                                                                    '<string:mapset_name>/raster_layers/'
-                                                                    '<string:raster_name>/geotiff_async')
-    flask_api.add_resource(AsyncEphemeralRasterLayerRegionExporterResource, '/locations/<string:location_name>'
-                                                                          '/mapsets/<string:mapset_name>'
-                                                                          '/raster_layers/<string:raster_name>'
-                                                                          '/geotiff_async_orig')
+    flask_api.add_resource(AsyncEphemeralCustomResource,
+                           '/custom_process/<string:executable>')
+    flask_api.add_resource(AsyncEphemeralResource,
+                           '/locations/<string:location_name>/processing_async')
+    flask_api.add_resource(
+        AsyncEphemeralExportResource,
+        '/locations/<string:location_name>/processing_async_export')
+    flask_api.add_resource(
+        AsyncEphemeralExportS3Resource,
+        '/locations/<string:location_name>/processing_async_export_s3')
+    flask_api.add_resource(
+        AsyncEphemeralExportGCSResource,
+        '/locations/<string:location_name>/processing_async_export_gcs')
+    flask_api.add_resource(
+        AsyncPersistentResource,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/processing_async')
+    flask_api.add_resource(
+        AsyncPersistentMapsetMergerResource,
+        '/locations/<string:location_name>/mapsets/'
+        '<string:mapset_name>/merging_async')
+    flask_api.add_resource(
+        AsyncEphemeralRasterLayerExporterResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>/'
+        'raster_layers/<string:raster_name>/geotiff_async')
+    flask_api.add_resource(
+        AsyncEphemeralRasterLayerRegionExporterResource,
+        '/locations/<string:location_name>/mapsets/<string:mapset_name>'
+        '/raster_layers/<string:raster_name>/geotiff_async_orig')
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')
@@ -157,10 +202,12 @@ def create_core_endpoints():
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
     # Resource management
-    flask_api.add_resource(ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
+    flask_api.add_resource(
+        ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
-    flask_api.add_resource(RequestStreamerResource, '/resources/<string:user_id>/<string:resource_id>/'
-                                                    '<string:file_name>')
+    flask_api.add_resource(
+        RequestStreamerResource,
+        '/resources/<string:user_id>/<string:resource_id>/<string:file_name>')
     # Download and resource management
     flask_api.add_resource(SyncDownloadCacheResource, '/download_cache')
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')
@@ -197,6 +244,7 @@ def create_endpoints():
     create_core_endpoints()
     try:
         check_import_plugins()
-    except:
+    except Exception:
         e_type, e_value, e_tb = sys.exc_info()
-        pprint(dict(message=str(e_value), traceback=str(traceback.format_tb(e_tb)), type=str(e_type)))
+        pprint(dict(message=str(e_value), traceback=str(
+            traceback.format_tb(e_tb)), type=str(e_type)))

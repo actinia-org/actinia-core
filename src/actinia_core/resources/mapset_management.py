@@ -44,7 +44,8 @@ from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
 from .common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    MapsetInfoModel, RegionModel, ProcessingErrorResponseModel
+    RegionModel, ProcessingErrorResponseModel
+# from .common.response_models import MapsetInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -60,7 +61,8 @@ class ListMapsetsResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Mapset Management'],
-        'description': 'Get a list of all mapsets that are located in a specific location. '
+        'description': 'Get a list of all mapsets that are located in a '
+                       'specific location. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -74,8 +76,9 @@ class ListMapsetsResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'This response returns a list of mapset names and the log '
-                               'of the process chain that was used to create the response.',
+                'description': 'This response returns a list of mapset names '
+                               'and the log of the process chain that was used '
+                               'to create the response.',
                 'schema': StringListProcessingResultResponseModel
             },
             '400': {
@@ -147,7 +150,8 @@ class MapsetManagementResourceUser(ResourceBase):
     @swagger.doc({
         'tags': ['Mapset Management'],
         'description': 'Get the current computational region of the mapset and the '
-                       'projection of the location as WKT string. Minimum required user role: user.',
+                       'projection of the location as WKT string. Minimum required '
+                       'user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -179,7 +183,8 @@ class MapsetManagementResourceUser(ResourceBase):
         }
     })
     def get(self, location_name, mapset_name):
-        """Get the current computational region of the mapset and the projection of the location as WKT string.
+        """Get the current computational region of the mapset and the projection
+        of the location as WKT string.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
@@ -203,7 +208,8 @@ class MapsetManagementResourceAdmin(ResourceBase):
 
     @swagger.doc({
         'tags': ['Mapset Management'],
-        'description': 'Create a new mapset in an existing location. Minimum required user role: admin.',
+        'description': 'Create a new mapset in an existing location. Minimum '
+                       'required user role: admin.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -352,7 +358,7 @@ class PersistentGetProjectionRegionInfo(PersistentProcessing):
                                    projection=self.module_output_log[1]["stdout"])
 
         # self.module_results = MapsetInfoModel(region=RegionModel(**mapset_region),
-        #                                      projection=self.module_output_log[1]["stdout"])
+        #                             projection=self.module_output_log[1]["stdout"])
 
 
 def create_mapset(*args):
@@ -398,7 +404,8 @@ class PersistentMapsetCreator(PersistentProcessing):
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        self.finish_message = "Mapset <%s> successfully created." % self.target_mapset_name
+        self.finish_message = \
+            "Mapset <%s> successfully created." % self.target_mapset_name
 
 
 def delete_mapset(*args):
@@ -434,9 +441,11 @@ class PersistentMapsetDeleter(PersistentProcessing):
         if self.target_mapset_exists is True:
             shutil.rmtree(self.orig_mapset_path)
             self.lock_interface.unlock(self.target_mapset_lock_id)
-            self.finish_message = "Mapset <%s> successfully removed." % self.target_mapset_name
+            self.finish_message = \
+                "Mapset <%s> successfully removed." % self.target_mapset_name
         else:
-            raise AsyncProcessError("Mapset <%s> does not exits" % self.target_mapset_name)
+            raise AsyncProcessError("Mapset <%s> does not exits" %
+                                    self.target_mapset_name)
 
 
 class MapsetLockManagementResponseModel(ProcessingResponseModel):
@@ -454,7 +463,8 @@ class MapsetLockManagementResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetlockmanagementresource",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANENT/lock",
-            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/PERMANENT/lock"
+            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/"
+                           "PERMANENT/lock"
         },
         "datetime": "2018-05-02 11:03:26.586348",
         "http_code": 200,
@@ -472,7 +482,8 @@ class MapsetLockManagementResponseModel(ProcessingResponseModel):
         "timestamp": 1525259006.5863316,
         "urls": {
             "resources": [],
-            "status": "http://localhost:8080/resources/admin/resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf"
+            "status": "http://localhost:8080/resources/admin/"
+                      "resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf"
         },
         "user_id": "admin"
     }
@@ -508,7 +519,8 @@ class MapsetLockManagementResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'Get the location/mapset lock status, either "True" or "None"',
+                'description': 'Get the location/mapset lock status, either '
+                               '"True" or "None"',
                 'schema': MapsetLockManagementResponseModel
             },
             '400': {
@@ -530,8 +542,9 @@ class MapsetLockManagementResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Mapset Management'],
-        'description': 'Create a location/mapset lock. A location/mapset lock can be created '
-                       'so that no operation can be performed on it until it is unlocked. '
+        'description': 'Create a location/mapset lock. A location/mapset lock can '
+                       'be created so that no operation can be performed on it '
+                       'until it is unlocked. '
                        'Minimum required user role: admin.',
         'parameters': [
             {
@@ -553,7 +566,8 @@ class MapsetLockManagementResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'Success message if the location/mapset was locked successfully',
+                'description': 'Success message if the location/mapset was '
+                               'locked successfully',
                 'schema': ProcessingResponseModel
             },
             '400': {
@@ -575,8 +589,9 @@ class MapsetLockManagementResource(ResourceBase):
 
     @swagger.doc({
         'tags': ['Mapset Management'],
-        'description': 'Delete a location/mapset lock. A location/mapset lock can be deleted '
-                       'so that operation can be performed on it until it is locked. '
+        'description': 'Delete a location/mapset lock. A location/mapset lock '
+                       'can be deleted so that operation can be performed on '
+                       'it until it is locked. '
                        'Minimum required user role: admin.',
         'parameters': [
             {
@@ -598,7 +613,8 @@ class MapsetLockManagementResource(ResourceBase):
         ],
         'responses': {
             '200': {
-                'description': 'Success message if the location/mapset was unlocked successfully',
+                'description': 'Success message if the location/mapset was '
+                               'unlocked successfully',
                 'schema': ProcessingResponseModel
             },
             '400': {
@@ -653,9 +669,12 @@ class PersistentMapsetLocker(PersistentProcessing):
         self._setup()
         self._check_lock_target_mapset()
         if self.target_mapset_exists is False:
-            raise AsyncProcessError("Unable to lock mapset <%s>. Mapset doesn not exists." % self.target_mapset_name)
+            raise AsyncProcessError(
+                "Unable to lock mapset <%s>. Mapset doesn not exists."
+                % self.target_mapset_name)
 
-        self.finish_message = "Mapset <%s> successfully locked" % self.target_mapset_name
+        self.finish_message = \
+            "Mapset <%s> successfully locked" % self.target_mapset_name
 
     def _final_cleanup(self):
         """Final cleanup called in the run function at the very end of processing
@@ -680,4 +699,5 @@ class PersistentMapsetUnlocker(PersistentProcessing):
         self._setup()
         self.lock_interface.unlock(self.target_mapset_lock_id)
 
-        self.finish_message = "Mapset <%s> successfully unlocked" % self.target_mapset_name
+        self.finish_message = \
+            "Mapset <%s> successfully unlocked" % self.target_mapset_name

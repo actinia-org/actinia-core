@@ -32,7 +32,8 @@ import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .common.redis_interface import enqueue_job
-from .common.response_models import ProcessingResponseModel, ProcessingErrorResponseModel
+from .common.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel
 from .common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
@@ -109,7 +110,9 @@ class VectorInfoModel(Schema):
             {"column": "cat", "type": "INTEGER"},
             {"column": "z", "type": "DOUBLE PRECISION"}
         ],
-        "COMMAND": " v.random -z output=\"test_layer\" npoints=1 layer=\"-1\" zmin=1.0 zmax=1.0 seed=1 column=\"z\" column_type=\"double precision\"",
+        "COMMAND": " v.random -z output=\"test_layer\" npoints=1 layer=\"-1\" "
+                   "zmin=1.0 zmax=1.0 seed=1 column=\"z\" "
+                   "column_type=\"double precision\"",
         "areas": "0",
         "bottom": "1.000000",
         "boundaries": "0",
@@ -145,7 +148,8 @@ class VectorInfoModel(Schema):
         "top": "1.000000",
         "volumes": "0",
         "west": "644375.544828422",
-        "attribute_database": "/tmp/gisdbase_eabed7327ec84d219698670884136c2a/nc_spm_08/user1/vector/test_layer/sqlite.db",
+        "attribute_database": "/tmp/gisdbase_eabed7327ec84d219698670884136c2a/"
+                              "nc_spm_08/user1/vector/test_layer/sqlite.db",
         "attribute_database_driver": "sqlite",
         "attribute_layer_name": "test_layer",
         "attribute_layer_number": "1",
@@ -169,7 +173,8 @@ class VectorInfoResponseModel(ProcessingResponseModel):
             "endpoint": "vectorlayerresource",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology",
-            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets/"
+                           "PERMANENT/vector_layers/geology"
         },
         "datetime": "2018-05-06 21:36:54.032325",
         "http_code": 200,
@@ -235,7 +240,8 @@ class VectorInfoResponseModel(ProcessingResponseModel):
                 "return_code": 0,
                 "run_time": 0.050185441970825195,
                 "stderr": [
-                    "Displaying column types/names for database connection of layer <1>:",
+                    "Displaying column types/names for database connection of "
+                    "layer <1>:",
                     ""
                 ],
                 "stdout": "..."
@@ -276,9 +282,14 @@ class VectorInfoResponseModel(ProcessingResponseModel):
                     "type": "DOUBLE PRECISION"
                 }
             ],
-            "COMMAND": " v.db.connect -o map=\"geology@PERMANENT\" driver=\"sqlite\" database=\"$GISDBASE/$LOCATION_NAME/$MAPSET/sqlite/sqlite.db\" table=\"geology\" key=\"cat\" layer=\"1\" separator=\"|\"",
+            "COMMAND": " v.db.connect -o map=\"geology@PERMANENT\" "
+                       "driver=\"sqlite\" database=\"$GISDBASE/$LOCATION_NAME/"
+                       "$MAPSET/sqlite/sqlite.db\" table=\"geology\" key=\"cat\" "
+                       "layer=\"1\" separator=\"|\"",
             "areas": "1832",
-            "attribute_database": "/home/soeren/actinia/workspace/temp_db/gisdbase_d98fc0548fc44fac8fe43abd575e98cc/nc_spm_08/PERMANENT/sqlite/sqlite.db",
+            "attribute_database": "/home/soeren/actinia/workspace/temp_db/"
+                                  "gisdbase_d98fc0548fc44fac8fe43abd575e98cc/"
+                                  "nc_spm_08/PERMANENT/sqlite/sqlite.db",
             "attribute_database_driver": "sqlite",
             "attribute_layer_name": "geology",
             "attribute_layer_number": "1",
@@ -289,7 +300,8 @@ class VectorInfoResponseModel(ProcessingResponseModel):
             "centroids": "1832",
             "comment": "",
             "creator": "helena",
-            "database": "/home/soeren/actinia/workspace/temp_db/gisdbase_d98fc0548fc44fac8fe43abd575e98cc",
+            "database": "/home/soeren/actinia/workspace/temp_db/"
+                        "gisdbase_d98fc0548fc44fac8fe43abd575e98cc",
             "digitization_threshold": "0.000000",
             "east": "930172.312822711",
             "format": "native",
@@ -325,7 +337,8 @@ class VectorInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525635414.0323067,
         "urls": {
             "resources": [],
-            "status": "http://localhost:5000/resources/user/resource_id-5494af8c-8c9d-4f8e-a568-d6e86d69d8fd"
+            "status": "http://localhost:5000/resources/user/"
+                      "resource_id-5494af8c-8c9d-4f8e-a568-d6e86d69d8fd"
         },
         "user_id": "user"
     }
@@ -345,7 +358,8 @@ class VectorCreationModel(Schema):
         'seed': {
             'type': 'number',
             'format': 'integer',
-            'description': 'The seed to initialize the random generator. If not set the process ID is used',
+            'description': 'The seed to initialize the random generator. '
+                           'If not set the process ID is used',
             'default': random.randint(0, 1000000)
         },
         'zmin': {
@@ -396,7 +410,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required vector map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required vector map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -404,7 +419,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             },
             {
                 'name': 'vector_name',
-                'description': 'The name of the vector map layer to get information about',
+                'description': 'The name of the vector map layer to get '
+                               'information about',
                 'required': True,
                 'in': 'path',
                 'type': 'string',
@@ -419,8 +435,9 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'schema': VectorInfoResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why gathering vector map '
-                               'layer information did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'gathering vector map layer information '
+                               'did not succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -455,7 +472,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required vector map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required vector map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
@@ -499,8 +517,9 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @swagger.doc({
         'tags': ['Vector Management'],
-        'description': 'Create a new vector map layer based on randomly generated point coordinates '
-                       'in a user specific region. This method will fail if the map already exists. '
+        'description': 'Create a new vector map layer based on randomly '
+                       'generated point coordinates in a user specific region. '
+                       'This method will fail if the map already exists. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -512,7 +531,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             },
             {
                 'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the required vector map layer',
+                'description': 'The name of the mapset that contains the '
+                               'required vector map layer',
                 'required': True,
                 'in': 'path',
                 'type': 'string'
@@ -526,7 +546,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             },
             {
                 'name': 'creation_params',
-                'description': 'Parameters to create random vector point map layer in a specific region.',
+                'description': 'Parameters to create random vector point map '
+                               'layer in a specific region.',
                 'required': True,
                 'in': 'body',
                 'schema': VectorRegionCreationModel
@@ -540,14 +561,16 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'schema': ProcessingResponseModel
             },
             '400': {
-                'description': 'The error message and a detailed log why gathering vector map '
-                               'layer information did not succeeded',
+                'description': 'The error message and a detailed log why '
+                               'gathering vector map layer information did not '
+                               'succeeded',
                 'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name, vector_name):
-        """Create a new vector map layer based on randomly generated point coordinates in a user specific region.
+        """Create a new vector map layer based on randomly generated point
+        coordinates in a user specific region.
         """
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
@@ -585,18 +608,24 @@ class EphemeralVectorInfo(EphemeralProcessing):
         self.required_mapsets.append(self.mapset_name)
 
         pc = {}
-        pc["1"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
-                   "flags": "gte"}
+        pc["1"] = {
+            "module": "v.info",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "gte"}
 
-        pc["2"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
-                   "flags": "h"}
+        pc["2"] = {
+            "module": "v.info",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "h"}
 
-        pc["3"] = {"module": "v.info", "inputs": {"map": vector_name + "@" + self.mapset_name},
-                   "flags": "c"}
+        pc["3"] = {
+            "module": "v.info",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "c"}
 
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(process_chain=pc,
-                                                                                 skip_permission_check=True)
+        process_list = self._create_temporary_grass_environment_and_process_list(
+            process_chain=pc, skip_permission_check=True)
         self._execute_process_list(process_list)
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")
@@ -666,7 +695,8 @@ class PersistentVectorDeleter(PersistentProcessing):
 
         self._execute_process_list(process_list)
 
-        if "WARNING: No data base element files found" in "\n".join(self.module_output_log[0]["stderr"]):
+        if "WARNING: No data base element files found" in "\n".join(
+                self.module_output_log[0]["stderr"]):
             raise AsyncProcessError("Vector layer <%s> not found" % (vector_name))
 
         self.finish_message = "Vector layer <%s> successfully removed." % vector_name
@@ -692,9 +722,11 @@ class PersistentVectorCreator(PersistentProcessing):
         1. Check the process chain
         2. Lock the temp and target mapsets
         3. Setup GRASS and create the temporary mapset
-        4. Execute g.list of the first process chain to check if the target vector exists
+        4. Execute g.list of the first process chain to check if the target
+           vector exists
         5. If the target vector does not exists then run v.random
-        6. Copy the local temporary mapset to the storage and merge it into the target mapset
+        6. Copy the local temporary mapset to the storage and merge it into the
+           target mapset
         """
         self._setup()
 
@@ -734,7 +766,8 @@ class PersistentVectorCreator(PersistentProcessing):
 
         self._check_lock_target_mapset()
         self._lock_temp_mapset()
-        self._create_temporary_grass_environment(source_mapset_name=self.target_mapset_name)
+        self._create_temporary_grass_environment(
+            source_mapset_name=self.target_mapset_name)
         self._execute_process_list(pc_1)
 
         # check if vector exists

@@ -72,7 +72,8 @@ class ResourceStorageBase(object):
 
     @abstractmethod
     def store_resource(self, file_path):
-        """Store a resource (file) at the user resource storage and return an URL to the resource accessible via HTTP
+        """Store a resource (file) at the user resource storage and return an URL
+        to the resource accessible via HTTP
 
         Args:
             file_path:

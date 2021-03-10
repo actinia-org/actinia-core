@@ -26,7 +26,6 @@ Log messages as debug, info, warning and error
 """
 
 import time
-import sys
 import platform
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 

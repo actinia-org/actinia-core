@@ -51,7 +51,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' % (mapset_name, raster_name),
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000,
+                                                         "e":645000, "w":630000,
                                                          "ewres": 50, "nsres": 50},
                                                "expression": "1"}),
                               content_type="application/json")

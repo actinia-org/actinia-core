@@ -87,11 +87,11 @@ class RequestStreamerResource(Resource):
         resource_export_path = os.path.join(user_export_path, resource_id)
         resource_export_file_path = os.path.join(resource_export_path, file_name)
 
-        if os.path.exists(resource_export_file_path) is True and \
-                          os.access(resource_export_file_path, os.R_OK) is True:
+        if (os.path.exists(resource_export_file_path) is True
+                and os.access(resource_export_file_path, os.R_OK) is True):
 
             return send_from_directory(resource_export_path,
                                        file_name, as_attachment=True)
         else:
-            return make_response(jsonify({"status":"error",
-                                          "message":"Resource does not exist"}), 400)
+            return make_response(jsonify({"status": "error",
+                                          "message": "Resource does not exist"}), 400)

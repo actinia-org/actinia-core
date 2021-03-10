@@ -55,7 +55,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer' % new_mapset,
                               headers=self.user_auth_header,
                               data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000,"w":630000},
+                                                         "e":645000, "w":630000},
                                                "parameter": {"npoints":1, "zmin":1,
                                                               "zmax":1, "seed":1}}),
                               content_type="application/json")

@@ -41,8 +41,8 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-if os.environ.get('DEFAULT_CONFIG_PATH'):
-    DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
+# if os.environ.get('DEFAULT_CONFIG_PATH'):
+#     DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
 if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG_PATH):
     global_config.read(DEFAULT_CONFIG_PATH)
 
@@ -51,8 +51,8 @@ create_endpoints()
 init_versions()
 
 # TODO: Implement a better error handler
-#@flask_app.errorhandler(InvalidUsage)
-#def handle_invalid_usage(error):
+# @flask_app.errorhandler(InvalidUsage)
+# def handle_invalid_usage(error):
 #    response = error.to_json()
 #    response.status_code = error.status_code
 #    return response
@@ -70,11 +70,11 @@ create_process_queue(global_config)
 
 # Disabled since the redis queue does not work in Python3
 # Create the job queue for redis
-#create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+# create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
 #                  global_config.REDIS_QUEUE_SERVER_PORT,
 #                  global_config.NUMBER_OF_WORKERS)
 
-########################################################################################################################
+###############################################################################
 if __name__ == '__main__':
     # Connect to the database
     flask_app.run(host='0.0.0.0', port=8080, debug=True)

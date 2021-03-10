@@ -29,7 +29,6 @@ import pickle
 from functools import wraps
 from flask import g, abort, request
 import platform
-import sys
 from .redis_api_log import redis_api_log_interface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
@@ -38,7 +37,7 @@ try:
     from fluent import event
 
     has_fluent = True
-except:
+except Exception:
     has_fluent = False
 
 __license__ = "GPLv3"
@@ -80,7 +79,8 @@ class ApiLogger(RedisFluentLoggerBase):
     db = redis_api_log_interface
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+        RedisFluentLoggerBase.__init__(
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
 
     def add_entry(self, user_id, http_request):
         """Add an API call entry to the database
@@ -147,12 +147,12 @@ class ApiLogger(RedisFluentLoggerBase):
 
         """
 
-        l = self.db.list(user_id, start, end)
+        l_entries = self.db.list(user_id, start, end)
 
         # We need to deserialize the log entries
         result_list = []
 
-        for pentry in l:
+        for pentry in l_entries:
             entry = pickle.loads(pentry)
             result_list.append(entry)
 

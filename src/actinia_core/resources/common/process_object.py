@@ -33,7 +33,8 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class Process(object):
-    """This class specifies a process object that will be executed as part of a process chain
+    """This class specifies a process object that will be executed as part of a
+    process chain
     """
 
     def __init__(self, exec_type, executable, executable_params,
@@ -42,12 +43,14 @@ class Process(object):
 
         Args:
             exec_type (str): The executable type, can be "grass" or "exec"
-            executable (str): The name and path of the executable, eg: g.version or /bin/cp
-            executable_params (list): A list of parameters (strings) for the executable
+            executable (str): The name and path of the executable, eg: g.version
+            or /bin/cp executable_params (list): A list of parameters (strings)
+            for the executable
             stdin_source (str): The get_stdout or get_stderr method of a Process
-            skip_permission_check(boolean): Skip permission check for the module or executable,
-                                            this is meaningful for internal process chain use.
-                                            Hence the user can use internal process chains that
+            skip_permission_check(boolean): Skip permission check for the module
+                                            or executable, this is meaningful for
+                                            internal process chain use. Hence the
+                                            user can use internal process chains that
                                             contain module he has no permissions to use.
             id (str): The unique id of the process
         """
@@ -83,4 +86,6 @@ class Process(object):
         return self.stderr
 
     def __str__(self):
-        return self.exec_type + " " + self.executable + " " + str(self.executable_params)
+        return (
+            self.exec_type + " " + self.executable + " "
+            + str(self.executable_params))

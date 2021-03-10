@@ -24,7 +24,6 @@
 """
 Resource logger and management interface
 """
-import sys
 import pickle
 from .redis_resources import RedisResourceInterface
 from .redis_fluentd_logger_base import RedisFluentLoggerBase
@@ -38,8 +37,11 @@ class ResourceLogger(RedisFluentLoggerBase):
     """Write, update, receive and delete entries in the resource database
     """
 
-    def __init__(self, host, port, password=None, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+    def __init__(
+            self, host, port, password=None, config=None, user_id=None,
+            fluent_sender=None):
+        RedisFluentLoggerBase.__init__(
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
         # Connect to a redis database
         self.db = RedisResourceInterface()
         redis_args = (host, port)
@@ -60,7 +62,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             user_id (str): The user id
             resource_id (str): The resource id
             document (str): The pickled document to store in the database
-            expiration (int): Number of seconds of expiration time, default 8640000s hence 100 days
+            expiration (int): Number of seconds of expiration time, default
+                              8640000s hence 100 days
 
         Returns:
             bool:
@@ -76,13 +79,15 @@ class ResourceLogger(RedisFluentLoggerBase):
         return redis_return
 
     def commit_termination(self, user_id, resource_id, expiration=3600):
-        """Commit a resource entry to the database that requires the termination of the resource,
-        create a new one if it does not exists, update existing resource entries
+        """Commit a resource entry to the database that requires the
+        termination of the resource, create a new one if it does not exists,
+        update existing resource entries
 
         Args:
             user_id (str): The user id
             resource_id (str): The resource id
-            expiration (int): Number of seconds of expiration time, default 3600 hence 1 hour
+            expiration (int): Number of seconds of expiration time, default
+                              3600 hence 1 hour
 
         Returns:
             bool:
