@@ -114,6 +114,7 @@ cd /actinia_core/grassdb
 wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz && \
      tar xzvf nc_spm_08_grass7.tar.gz && \
      rm -f nc_spm_08_grass7.tar.gz && \
+     rm -rf nc_spm_08 && \
      mv nc_spm_08_grass7 nc_spm_08
 cd -
 
