@@ -145,7 +145,7 @@ class ResourceBase(Resource):
     #         'request_url': self.request_url}
     #     self.api_info = ApiInfoModel(**kwargs)
 
-    def __init__(self, resource_id, iteration=None, post_url=None):
+    def __init__(self, resource_id=None, iteration=None, post_url=None):
         # Configuration
         Resource.__init__(self)
 
@@ -177,8 +177,12 @@ class ResourceBase(Resource):
         self.grass_addon_path = global_config.GRASS_ADDON_PATH
 
         # Set the resource id
-        self.resource_id = resource_id
-        self.request_id = self.generate_request_id_from_resource_id()
+        if resource_id is None:
+            # Generate the resource id
+            self.request_id, self.resource_id = self.generate_uuids()
+        else:
+            self.resource_id = resource_id
+            self.request_id = self.generate_request_id_from_resource_id()
 
         # set iteration and post_url
         self.iteration = iteration
@@ -211,8 +215,9 @@ class ResourceBase(Resource):
             'endpoint': request.endpoint,
             'method': request.method,
             'path': request.path,
-            'request_url': self.request_url,
-            'post_url': self.post_url}
+            'request_url': self.request_url}
+        if self.post_url is not None:
+            kwargs['post_url'] = self.post_url
         self.api_info = ApiInfoModel(**kwargs)
 
     def create_error_response(self, message, status="error", http_code=400):
