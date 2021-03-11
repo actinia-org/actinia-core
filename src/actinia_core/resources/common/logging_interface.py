@@ -26,6 +26,7 @@ Logging interface
 """
 
 import logging
+import logging.handlers
 import sys
 import platform
 from datetime import datetime
