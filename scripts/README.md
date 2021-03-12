@@ -598,7 +598,7 @@ acp location="nc_spm_08" grass_command="r.info slope_elev@test_mapset"
 
 ```bash
 # create new location
-ace create-location="mylatlon 4326"
+ace create_location="mylatlon 4326"
 # create new mapset within location
 ace location="mylatlon" create_mapset="user1"
 ```
