@@ -1518,12 +1518,92 @@ class EphemeralProcessing(object):
 
         """
         # Create the process chain
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            skip_permission_check=skip_permission_check)
+        if self.rdc.iteration is not None:
+            process_list = self._create_temporary_grass_environment_and_process_list_for_iteration(
+                skip_permission_check=skip_permission_check)
+        else:
+            process_list = self._create_temporary_grass_environment_and_process_list(
+                skip_permission_check=skip_permission_check)
+
+        import pdb; pdb.set_trace()
         # Run all executables
         self._execute_process_list(process_list=process_list)
+        import pdb; pdb.set_trace()
         # Parse the module sdtout outputs and create the results
         self._parse_module_outputs()
+
+    def _create_temporary_grass_environment_and_process_list_for_iteration(
+            self, process_chain=None, skip_permission_check=False):
+        """Helper method to:
+
+        - Setup logger and credentials
+        - Analyse the process chain
+        - Create the temporal database
+        - Initialize the GRASS environment and create the temporary mapset
+        - Return the created process list
+
+        Args:
+            process_chain (dict): The process chain to be checked and converted
+                                  into a process list
+            skip_permission_check (bool): If set True, the permission checks
+                                          of module access and process num
+                                          limits are not performed
+
+        Raises:
+            This method will raise an AsyncProcessError
+
+        Returns: list
+                  The process list to be executed by _execute_process_list()
+
+        """
+        # Setup the user credentials and logger
+        self._setup()
+
+        import pdb; pdb.set_trace()
+        process_chain_complete = self.request_data
+        old_response_data = self.resource_logger.get(self.user_id, self.resource_id, self.rdc.iteration-1)
+        if old_response_data is None:
+            return None
+        http_code, response_model = pickle.loads(old_response_data)
+        if response_model['status'] not in ['error', 'terminated']:
+            return None
+        pc_step = response_model['progress']['step'] - 1
+        if pc_step >= 0:
+            process_chain_trimmed = process_chain_complete.copy()
+            del process_chain_trimmed['list']
+            process_chain_trimmed['list'] = process_chain_complete['list'][pc_step:]
+        else:
+            process_chain_trimmed = process_chain_complete
+
+        # Create and check the process chain
+        process_list = self._validate_process_chain(
+            process_chain=process_chain_trimmed,
+            skip_permission_check=skip_permission_check)
+
+        # check iterim results
+        iterim_error = False
+        if self.save_interim_results is False:
+            iterim_error = True
+        if os.path.isdir(os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id)):
+            interim_folder = os.listdir(os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id))
+        else:
+            iterim_error = True
+        if interim_folder[0] != f"step{str(pc_step)}":
+            iterim_error = True
+        if iterim_error is True:
+            msg = "No interim results saved in previous iteration for step {str(pc_step)}"
+            # TODO errors
+
+        ### TODO !!!!!!!!!!!!!!!!!!!
+        # set interim results to temporary mapset
+
+        # Init GRASS and create the temporary mapset
+        import pdb; pdb.set_trace()
+        self._create_temporary_grass_environment()
+
+        return process_list
 
     def _create_temporary_grass_environment_and_process_list(
             self, process_chain=None, skip_permission_check=False):
@@ -1624,6 +1704,7 @@ class EphemeralProcessing(object):
 
         """
         for process in process_list:
+            import pdb; pdb.set_trace()
             if process.exec_type == "grass":
                 self._run_module(process)
             elif process.exec_type == "exec":
@@ -1655,6 +1736,7 @@ class EphemeralProcessing(object):
             message = [e.__class__, e_type, e_value, traceback.format_tb(e_traceback)]
             message = pprint.pformat(message)
         """
+
         try:
             # Run the _execute function that does all the work
             self._execute()
@@ -1681,6 +1763,7 @@ class EphemeralProcessing(object):
                                             type=str(e_type))
             self.run_state = {"error": str(e), "exception": model}
         finally:
+            import pdb; pdb.set_trace()
             try:
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()

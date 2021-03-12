@@ -113,8 +113,8 @@ class AsyncEphemeralExportResource(ResourceBase):
     This class represents a resource that runs asynchronous processing tasks in
     a temporary mapset and exports the computed results as geotiff files.
     """
-    def __init__(self):
-        ResourceBase.__init__(self)
+    def __init__(self, resource_id, iteration, post_url):
+        ResourceBase.__init__(self, resource_id, iteration, post_url)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name):
