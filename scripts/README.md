@@ -287,7 +287,6 @@ At time (more to come) the following export formats are currently supported:
 * database: `PostgreSQL`
 * table: `CSV`, `TXT`
 
-The vector formats will be extended in future versions of actina with Geopackage and SQLite formats.
 
 ## Displaying a map - map rendering
 
