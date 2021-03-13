@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ from .common.response_models import \
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
+__email__ = "info@mundialis.de"
 
 
 DESCR = """Execute a user defined process chain in an ephemeral database
@@ -222,7 +222,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         Args:
             raster_name (str): The name of the raster layer
-            format (str): COG
+            format (str): COG (default), GTiff
             additional_options (list): Unused
             use_raster_region (bool): Use the region of the raster layer for export
 
@@ -293,7 +293,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         return file_name, output_path
 
     def _export_vector(self, vector_name,
-                       format="GML",
+                       format="GPKG",
                        additional_options=[]):
         """Export a specific vector layer with v.out.ogr using a specific output format
 
@@ -304,7 +304,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         Args:
             vector_name (str): The name of the raster layer
-            format (str): GML, GeoJSON, ESRI_Shapefile, SQLite, CSV
+            format (str): GPKG (default), GML, GeoJSON, ESRI_Shapefile, SQLite, CSV
             additional_options (list): Unused
 
         Returns:
@@ -316,6 +316,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
         # Export the layer
         prefix = ""
+        if format == "GPKG":
+            prefix = ".gpkg"
         if format == "GML":
             prefix = ".gml"
         if format == "GeoJSON":
@@ -324,8 +326,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             prefix = ""
         if format == "SQLite":
             prefix = ".sqlite"
-        if format == "GPKG":
-            prefix = ".gpkg"
         if format == "CSV":
             prefix = ".csv"
 
