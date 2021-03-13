@@ -282,8 +282,9 @@ which will deliver the output:
 
 At time (more to come) the following export formats are currently supported:
 
-* raster: `GTiff`, `COG`
-* vector: `ESRI_Shapefile`, `GeoJSON`, `GML`
+* raster: `COG`, `GTiff`
+* vector: `GPKG`, `GML`, `GeoJSON`, `ESRI_Shapefile`, `SQLite`, `CSV`
+* database: `PostgreSQL`
 * table: `CSV`, `TXT`
 
 The vector formats will be extended in future versions of actina with Geopackage and SQLite formats.
