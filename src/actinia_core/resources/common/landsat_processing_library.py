@@ -76,7 +76,7 @@ def extract_sensor_id_from_scene_id(scene_id):
         The sencor id
 
     """
-    return "%s0%s" % (scene_id[0:2], scene_id[2:3])
+    return scene_id.split('_')[0]
 
 
 def scene_id_to_google_url(scene_id, suffix):
@@ -91,17 +91,18 @@ def scene_id_to_google_url(scene_id, suffix):
         (str)
         The URL to the scene file
     """
-    # URL example
-    # https://storage.googleapis.com/gcp-public-data-landsat/LT04/PRE/006/016/
-    # LT40060161989006XXX02/LT40060161989006XXX02_MTL.txt
+    # new URL example
+    # https://storage.googleapis.com/gcp-public-data-landsat/LC08/01/001/004/
+    # LC08_L1GT_001004_20130910_20170502_01_T2/
+    # LC08_L1GT_001004_20130910_20170502_01_T2_B1.TIF
 
     # Create the download URL components from the Landsat scene id
     landsat_sensor_id = extract_sensor_id_from_scene_id(scene_id)
-    path = scene_id[3:6]
-    row = scene_id[6:9]
+    path = scene_id.split('_')[2][:3]
+    row = scene_id.split('_')[2][3:]
 
     url = (
-        "https://storage.googleapis.com/gcp-public-data-landsat/%s/PRE/%s/%s/%s/%s%s"
+        "https://storage.googleapis.com/gcp-public-data-landsat/%s/01/%s/%s/%s/%s%s"
         % (landsat_sensor_id, path, row, scene_id, scene_id, suffix))
     return url
 
