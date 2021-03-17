@@ -187,11 +187,11 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             print(p)
             self.assertEqual("r.import", p.executable)
 
-    def test_landsat_dowunload_commads(self):
+    def test_landsat_download_commands(self):
 
         lp = LandsatProcessing(config=global_config,
                                temp_file_path="/tmp",
-                               scene_id="LT41970251990147XXX03",
+                               scene_id="LC08_L1GT_001004_20130910_20170502_01_T2",
                                download_cache=self.cache_dir,
                                send_resource_update=update_dummy,
                                message_logger=MessageDummy())
