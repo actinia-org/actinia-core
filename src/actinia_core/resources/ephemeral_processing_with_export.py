@@ -222,7 +222,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         Args:
             raster_name (str): The name of the raster layer
-            format (str): COG (default), GTiff
+            format (str): COG (default; requires GDAL >= 3.1 on server), GTiff
             additional_options (list): Unused
             use_raster_region (bool): Use the region of the raster layer for export
 

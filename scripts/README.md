@@ -282,7 +282,7 @@ which will deliver the output:
 
 At time (more to come) the following export formats are currently supported:
 
-* raster: `COG`, `GTiff`
+* raster: `COG` (requires GDAL >= 3.1 on server), `GTiff`
 * vector: `GPKG`, `GML`, `GeoJSON`, `ESRI_Shapefile`, `SQLite`, `CSV`
 * database: `PostgreSQL`
 * table: `CSV`, `TXT`
