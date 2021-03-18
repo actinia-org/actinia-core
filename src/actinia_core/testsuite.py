@@ -37,9 +37,7 @@ from .resources.common.app import flask_app, URL_PREFIX
 from .resources.common import redis_interface
 from .resources.common.config import global_config
 from .resources.common.user import ActiniaUser
-from .endpoints import create_endpoints
 from .resources.common.process_queue import create_process_queue
-from .resources.common.process_queue import stop_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -65,7 +63,8 @@ class ActiniaRequests(object):
         a binary file.
 
         Args:
-            resp: The requests.Response object that needs to be extended to be a flask Response object
+            resp: The requests.Response object that needs to be extended to be
+                  a flask Response object
 
         Returns: extended requests.Response object with mimetype and data attributes
 
@@ -145,12 +144,13 @@ class ActiniaTestCaseBase(unittest.TestCase):
             global_config.REDIS_QUEUE_SERVER_PORT = 6379
             global_config.NUMBER_OF_WORKERS = 3
             # Create the job queue
-            # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
-            #                                  global_config.NUMBER_OF_WORKERS)
+            # redis_interface.create_job_queues(
+            #     global_config.REDIS_QUEUE_SERVER_URL,
+            #     global_config.REDIS_QUEUE_SERVER_PORT,
+            #     global_config.NUMBER_OF_WORKERS)
 
-        # If the custom_actinia_cfg variable is set, then the actinia config file will be read
-        # to configure Redis queue
+        # If the custom_actinia_cfg variable is set, then the actinia config
+        # file will be read to configure Redis queue
         if cls.server_test is False and cls.custom_actinia_cfg is not False:
             global_config.read(cls.custom_actinia_cfg)
 
@@ -178,20 +178,18 @@ class ActiniaTestCaseBase(unittest.TestCase):
                                "ECAD": ["PERMANENT"],
                                "latlong_wgs84": ["PERMANENT"]}
 
-        ################### Create users ###################
-
-        cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(name="guest", role="guest",
-                                                                               process_num_limit=3,
-                                                                               process_time_limit=2,
-                                                                               accessible_datasets=accessible_datasets)
-        cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(name="user", role="user",
-                                                                            process_num_limit=3,
-                                                                            process_time_limit=4,
-                                                                            accessible_datasets=accessible_datasets)
-        cls.admin_id, cls.admin_group, cls.admin_auth_header = cls.create_user(name="admin", role="admin",
-                                                                               accessible_datasets=accessible_datasets)
-        cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(name="superadmin", role="superadmin",
-                                                                            accessible_datasets=accessible_datasets)
+        # Create users
+        cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(
+            name="guest", role="guest", process_num_limit=3, process_time_limit=2,
+            accessible_datasets=accessible_datasets)
+        cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(
+            name="user", role="user", process_num_limit=3, process_time_limit=4,
+            accessible_datasets=accessible_datasets)
+        cls.admin_id, cls.admin_group, cls.admin_auth_header = cls.create_user(
+            name="admin", role="admin", accessible_datasets=accessible_datasets)
+        cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(
+            name="superadmin", role="superadmin",
+            accessible_datasets=accessible_datasets)
 
     @classmethod
     def create_user(cls, name="guest", role="guest",
@@ -248,14 +246,17 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def waitAsyncStatusAssertHTTP(self, response, headers, http_status=200, status="finished",
-                                  message_check=None):
+    def waitAsyncStatusAssertHTTP(self, response, headers, http_status=200,
+                                  status="finished", message_check=None):
         """Poll the status of a resource and assert its finished HTTP status
 
-        The response will be checked if the resource was accepted. Hence it must always be HTTP 200 status.
+        The response will be checked if the resource was accepted. Hence it
+        must always be HTTP 200 status.
 
-        The status URL from the response is then polled until status: finished, error or terminated.
-        The result of the poll can be checked against its HTTP status and its actinia status message.
+        The status URL from the response is then polled until status: finished,
+        error or terminated.
+        The result of the poll can be checked against its HTTP status and its
+        actinia status message.
 
         Args:
             response: The accept response
@@ -268,8 +269,10 @@ class ActiniaTestCaseBase(unittest.TestCase):
         """
         # Check if the resource was accepted
         print("waitAsyncStatusAssertHTTP:", response.data.decode())
-        self.assertEqual(response.status_code, 200, "HTML status code is wrong %i" % response.status_code)
-        self.assertEqual(response.mimetype, "application/json", "Wrong mimetype %s" % response.mimetype)
+        self.assertEqual(response.status_code, 200,
+                         "HTML status code is wrong %i" % response.status_code)
+        self.assertEqual(response.mimetype, "application/json",
+                         "Wrong mimetype %s" % response.mimetype)
 
         resp_data = json_loads(response.data)
 
@@ -277,17 +280,21 @@ class ActiniaTestCaseBase(unittest.TestCase):
         rv_resource_id = resp_data["resource_id"]
 
         while True:
-            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            rv = self.server.get(URL_PREFIX + "/resources/%s/%s"
+                                 % (rv_user_id, rv_resource_id),
                                  headers=headers)
             print("waitAsyncStatusAssertHTTP in loop:", rv.data.decode())
             resp_data = json_loads(rv.data)
-            if resp_data["status"] == "finished" or resp_data["status"] == "error" or \
-                    resp_data["status"] == "terminated" or resp_data["status"] == "timeout":
+            if (resp_data["status"] == "finished"
+                    or resp_data["status"] == "error"
+                    or resp_data["status"] == "terminated"
+                    or resp_data["status"] == "timeout"):
                 break
             time.sleep(0.2)
 
         self.assertEqual(resp_data["status"], status)
-        self.assertEqual(rv.status_code, http_status, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.status_code, http_status,
+                         "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:
             self.assertTrue(message_check in resp_data["message"])
@@ -298,16 +305,19 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
 
         # Unlock mapset for deletion
-        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
-                                headers=self.admin_auth_header)
+        rv = self.server.delete(
+            URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
+            headers=self.admin_auth_header)
         print(rv.data.decode())
 
         # Delete any existing mapsets
-        rv = self.server.delete(URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-                                headers=self.admin_auth_header)
+        rv = self.server.delete(
+            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
+            headers=self.admin_auth_header)
         print(rv.data.decode())
 
         # Create new mapsets
-        rv = self.server.post(URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-                              headers=self.admin_auth_header)
+        rv = self.server.post(
+            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
+            headers=self.admin_auth_header)
         print(rv.data.decode())

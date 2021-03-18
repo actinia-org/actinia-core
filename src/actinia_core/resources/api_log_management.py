@@ -45,7 +45,8 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class ApiLogEntryModel(Schema):
-    """Response schema for a single API log entry that is used to track all API calls of a user.
+    """Response schema for a single API log entry that is used to track all API
+    calls of a user.
     """
     type = 'object'
     properties = {
@@ -116,9 +117,10 @@ class APILogResource(Resource):
 
     @swagger.doc({
         'tags': ['API Log'],
-        'description': 'Get a list of all API calls that have been called by the provided user. '
-                       'Admin and superadmin roles can list API calls from any user. A user role '
-                       'can only list API calls from itself. '
+        'description': 'Get a list of all API calls that have been called by the '
+                       'provided user. Admin and superadmin roles can list API '
+                       'calls from any user. A user role can only list API calls '
+                       'from itself. '
                        'Minimum required user role: user.',
 
         'parameters': [
@@ -132,12 +134,14 @@ class APILogResource(Resource):
         ],
         'responses': {
             '200': {
-                'description': 'Returned a list of all API calls that have been called by the provided user.',
-                'schema':ApiLogListModel
+                'description': 'Returned a list of all API calls that have been '
+                               'called by the provided user.',
+                'schema': ApiLogListModel
             },
             '400': {
-                'description': 'The error message why API log gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why API log gathering did not '
+                               'succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -145,9 +149,10 @@ class APILogResource(Resource):
         """Get a list of all API calls that have been called by the provided user."""
 
         if self.user_role not in ["admin", "superadmin"] and user_id != self.user_id:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="You do not have the permission "
-                                                                     "to list the API calls of the user")), 401)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="You do not have the permission "
+                        "to list the API calls of the user")), 401)
 
         api_log_list = self.api_logger.list(user_id, 0, -1)
         return make_response(jsonify(ApiLogListModel(api_log_list=api_log_list)), 200)

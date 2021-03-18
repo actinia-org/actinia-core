@@ -58,7 +58,8 @@ class LocationListResponseModel(Schema):
     properties = {
         'status': {
             'type': 'string',
-            'description': 'The status of the resource, values: accepted, running, finished, terminated, error'
+            'description': 'The status of the resource, values: accepted, '
+                           'running, finished, terminated, error'
         },
         'locations': {
             'type': 'array',
@@ -85,7 +86,8 @@ class ListLocationsResource(ResourceBase):
     @swagger.doc({
         'tags': ['Location Management'],
         'description': 'Get a list of all available locations that are located in the '
-                       'GRASS database and the user has access to. Minimum required user role: user.',
+                       'GRASS database and the user has access to. Minimum required '
+                       'user role: user.',
         'responses': {
             '200': {
                 'description': 'This response returns a list of location names',
@@ -106,14 +108,17 @@ class ListLocationsResource(ResourceBase):
             dirs = os.listdir(self.grass_data_base)
             for dir in dirs:
                 dir_path = os.path.join(self.grass_data_base, dir)
-                if os.path.isdir(dir_path) and os.access(dir_path, os.R_OK & os.X_OK):
+                if (os.path.isdir(dir_path)
+                        and os.access(dir_path, os.R_OK & os.X_OK)):
                     # Check for PERMANENT mapset existence
                     mapset_path = os.path.join(dir_path, "PERMANENT")
-                    if os.path.isdir(mapset_path) and os.access(mapset_path, os.R_OK & os.X_OK):
+                    if (os.path.isdir(mapset_path)
+                            and os.access(mapset_path, os.R_OK & os.X_OK)):
                         # Check access rights to the global database
                         # Super admin can see all locations
-                        if self.has_superadmin_role or dir in self.user_credentials["permissions"][
-                                "accessible_datasets"]:
+                        if (self.has_superadmin_role
+                                or dir in self.user_credentials["permissions"][
+                                    "accessible_datasets"]):
                             locations.append(dir)
         # List all locations in the user database
         user_database = os.path.join(self.grass_user_data_base, self.user_group)
@@ -124,13 +129,15 @@ class ListLocationsResource(ResourceBase):
                 if os.path.isdir(dir_path) and os.access(dir_path, os.R_OK & os.X_OK):
                     # Check for PERMANENT mapset existence
                     mapset_path = os.path.join(dir_path, "PERMANENT")
-                    if os.path.isdir(mapset_path) and os.access(mapset_path, os.R_OK & os.X_OK):
+                    if (os.path.isdir(mapset_path)
+                            and os.access(mapset_path, os.R_OK & os.X_OK)):
                         locations.append(dir)
         if locations:
-            return make_response(jsonify(LocationListResponseModel(status="success", locations=locations)), 200)
+            return make_response(jsonify(LocationListResponseModel(
+                status="success", locations=locations)), 200)
         else:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Unable to access GRASS database.")), 405)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Unable to access GRASS database.")), 405)
 
 
 class ProjectionInfoModel(Schema):
@@ -140,7 +147,8 @@ class ProjectionInfoModel(Schema):
     properties = {
         'epsg': {
             'type': 'string',
-            'description': 'The EPSG code of the projection that should be used to create a location'
+            'description': 'The EPSG code of the projection that should be used '
+                           'to create a location'
         }
     }
     example = {"epsg": "4326"}
@@ -148,7 +156,7 @@ class ProjectionInfoModel(Schema):
 
 
 class LocationManagementResourceUser(ResourceBase):
-    """This class returns informations about a specific location
+    """This class returns information about a specific location
     """
 
     def __init__(self):
@@ -157,7 +165,8 @@ class LocationManagementResourceUser(ResourceBase):
     @swagger.doc({
         'tags': ['Location Management'],
         'description': 'Get the location projection and current computational '
-                       'region of the PERMANENT mapset. Minimum required user role: user.',
+                       'region of the PERMANENT mapset. Minimum required user '
+                       'role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -208,8 +217,8 @@ class LocationManagementResourceAdmin(ResourceBase):
 
     @swagger.doc({
         'tags': ['Location Management'],
-        'description': 'Delete an existing location and everything inside from the user database. '
-                       'Minimum required user role: admin.',
+        'description': 'Delete an existing location and everything inside from the '
+                       'user database. Minimum required user role: admin.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -234,7 +243,8 @@ class LocationManagementResourceAdmin(ResourceBase):
         """Delete an existing location and everything inside from the user database.
         """
         # Delete only locations from the user database
-        location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
+        location = os.path.join(self.grass_user_data_base,
+                                self.user_group, location_name)
         permanent_mapset = os.path.join(location, "PERMANENT")
         wind_file = os.path.join(permanent_mapset, "WIND")
         # Check the location path, only "valid" locations can be deleted
@@ -242,19 +252,18 @@ class LocationManagementResourceAdmin(ResourceBase):
             if os.path.isdir(permanent_mapset) and os.path.isfile(wind_file):
                 try:
                     shutil.rmtree(location)
-                    return make_response(jsonify(SimpleResponseModel(status="success",
-                                                                     message="location %s deleted" % location_name)),
-                                         200)
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="success",
+                        message="location %s deleted" % location_name)), 200)
                 except Exception as e:
-                    return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                     message="Unable to delete "
-                                                                             "location %s Exception %s" % (
-                                                                                 location_name, str(e)))),
-                                         500)
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="error",
+                        message="Unable to delete location %s Exception %s"
+                                % (location_name, str(e)))), 500)
 
-        return make_response(jsonify(SimpleResponseModel(status="error",
-                                                         message="location %s does not exists" % location_name)),
-                             400)
+        return make_response(jsonify(SimpleResponseModel(
+            status="error",
+            message="location %s does not exists" % location_name)), 400)
 
     @swagger.doc({
         'tags': ['Location Management'],
@@ -296,15 +305,18 @@ class LocationManagementResourceAdmin(ResourceBase):
 
         # Check the location path
         if os.path.isdir(location):
-            return self.get_error_response(message="Unable to create location. "
-                                                   "Location <%s> exists in global database." % location_name)
+            return self.get_error_response(
+                message="Unable to create location. "
+                        "Location <%s> exists in global database." % location_name)
 
         # Check also for the user database
-        location = os.path.join(self.grass_user_data_base, self.user_group, location_name)
+        location = os.path.join(self.grass_user_data_base,
+                                self.user_group, location_name)
         # Check the location path
         if os.path.isdir(location):
-            return self.get_error_response(message="Unable to create location. "
-                                                   "Location <%s> exists in user database." % location_name)
+            return self.get_error_response(
+                message="Unable to create location. "
+                        "Location <%s> exists in user database." % location_name)
 
         rdc = self.preprocess(has_json=True, has_xml=False,
                               location_name=location_name,
@@ -348,7 +360,7 @@ class PersistentLocationCreator(PersistentProcessing):
                     "flags": "t"}}
 
         process_list = self._validate_process_chain(process_chain=pc,
-                                                     skip_permission_check=True)
+                                                    skip_permission_check=True)
 
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name="PERMANENT")
@@ -356,7 +368,8 @@ class PersistentLocationCreator(PersistentProcessing):
         self._execute_process_list(process_list)
 
         if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
-            shutil.move(os.path.join(self.temp_grass_data_base, new_location), self.grass_user_data_base)
+            shutil.move(os.path.join(self.temp_grass_data_base,
+                        new_location), self.grass_user_data_base)
         else:
             raise AsyncProcessError("Unable to create location <%s>" % new_location)
 

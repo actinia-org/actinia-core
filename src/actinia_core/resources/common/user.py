@@ -28,7 +28,8 @@ TODO: User update must be implemented
 """
 
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (TimedJSONWebSignatureSerializer, BadSignature, SignatureExpired)
+from itsdangerous import (TimedJSONWebSignatureSerializer,
+                          BadSignature, SignatureExpired)
 from itsdangerous import JSONWebSignatureSerializer
 from actinia_core.resources.common.config import global_config
 from actinia_core.resources.common.redis_user import redis_user_interface
@@ -64,22 +65,22 @@ class ActiniaUser(object):
     db = redis_user_interface
 
     def __init__(self, user_id, user_group=None, user_role=None,
-                 accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                      "user1",
-                                                      "landsat"],
-                                      "ECAD":["PERMANENT"],
-                                      "latlong_wgs84":["PERMANENT"]},
+                 accessible_datasets={"nc_spm_08": ["PERMANENT",
+                                                    "user1",
+                                                    "landsat"],
+                                      "ECAD": ["PERMANENT"],
+                                      "latlong_wgs84": ["PERMANENT"]},
                  accessible_modules=global_config.MODULE_WHITE_LIST,
-                 cell_limit = global_config.MAX_CELL_LIMIT,
+                 cell_limit=global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,
                  process_time_limit=global_config.PROCESS_TIME_LIMT):
         """Constructor
 
-        Initialize and create a user object. To commit a new user to the database, set all required permissions
-        and call the commit() function.
+        Initialize and create a user object. To commit a new user to the database,
+        set all required permissions and call the commit() function.
 
-        To read the data of an existing user, simple initialize the constructor with the user_id and
-        call read_from_db().
+        To read the data of an existing user, simple initialize the constructor
+        with the user_id and call read_from_db().
 
         Args:
             user_id (str): The id (name, email, ..) of the user that must be unique
@@ -88,8 +89,10 @@ class ActiniaUser(object):
             accessible_datasets (dict): Dict of location:mapset lists
             accessible_modules (list): A list of modules that are allowed to use
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
-            process_time_limit (int): The maximum number of seconds a user process is allowed to run
+            process_num_limit (int): The maximum number of processes the user
+                                     is allowed to run in a single chain
+            process_time_limit (int): The maximum number of seconds a user
+                                      process is allowed to run
 
         """
 
@@ -121,11 +124,11 @@ class ActiniaUser(object):
         """Create the permission dictionary
         """
 
-        self.permissions = {"accessible_datasets":self.accessible_datasets,
-                            "accessible_modules":self.accessible_modules,
-                            "cell_limit":self.cell_limit,
-                            "process_num_limit":self.process_num_limit,
-                            "process_time_limit":self.process_time_limit}
+        self.permissions = {"accessible_datasets": self.accessible_datasets,
+                            "accessible_modules": self.accessible_modules,
+                            "cell_limit": self.cell_limit,
+                            "process_num_limit": self.process_num_limit,
+                            "process_time_limit": self.process_time_limit}
 
     def read_from_db(self):
 
@@ -157,7 +160,8 @@ class ActiniaUser(object):
                       "guest"]
         """
         if role not in USER_ROLES:
-            raise ActiniaUserError("Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
+            raise ActiniaUserError(
+                "Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
         self.user_role = role
 
     def has_guest_role(self):
@@ -315,7 +319,7 @@ class ActiniaUser(object):
 
         try:
             self.cell_limit = int(cell_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for cell limit")
 
     def set_process_num_limit(self, process_num_limit):
@@ -331,7 +335,7 @@ class ActiniaUser(object):
 
         try:
             self.process_num_limit = int(process_num_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for process_num_limit")
 
     def set_process_time_limit(self, process_time_limit):
@@ -347,7 +351,7 @@ class ActiniaUser(object):
 
         try:
             self.process_time_limit = int(process_time_limit)
-        except Exception as e:
+        except Exception:
             raise ActiniaUserError("Wrong format for process_time_limit")
 
     def __str__(self):
@@ -499,7 +503,7 @@ class ActiniaUser(object):
             API key
         """
         s = JSONWebSignatureSerializer(global_config.SECRET_KEY)
-        return s.dumps({"user_id":self.user_id})
+        return s.dumps({"user_id": self.user_id})
 
     def generate_auth_token(self, expiration=86400):
         """Generate an authentication token with a specific expiration time
@@ -649,13 +653,13 @@ class ActiniaUser(object):
                     user_group,
                     password,
                     user_role="user",
-                    accessible_datasets={"nc_spm_08":["PERMANENT",
-                                                      "user1",
-                                                      "landsat"],
-                                         "ECAD":["PERMANENT"],
-                                         "latlong_wgs84":["PERMANENT"]},
+                    accessible_datasets={"nc_spm_08": ["PERMANENT",
+                                                       "user1",
+                                                       "landsat"],
+                                         "ECAD": ["PERMANENT"],
+                                         "latlong_wgs84": ["PERMANENT"]},
                     accessible_modules=global_config.MODULE_WHITE_LIST,
-                    cell_limit = global_config.MAX_CELL_LIMIT,
+                    cell_limit=global_config.MAX_CELL_LIMIT,
                     process_num_limit=global_config.PROCESS_NUM_LIMIT,
                     process_time_limit=global_config.PROCESS_TIME_LIMT):
         """Create a new user object and initialize it
@@ -667,8 +671,10 @@ class ActiniaUser(object):
             accessible_datasets (dict): The user role (admin, user, guest)
             accessible_modules (list): Dict of location:mapset lists
             cell_limit (int): Maximum number of cells to process
-            process_num_limit (int): The maximum number of processes the user is allowed to run in a singel chain
-            process_time_limit (int): The maximum number of seconds a user process is allowed to run
+            process_num_limit (int): The maximum number of processes the user
+                                     is allowed to run in a single chain
+            process_time_limit (int): The maximum number of seconds a user
+                                      process is allowed to run
 
         Returns:
             actinia_core_api.resources.common.user.ActiniaUser:

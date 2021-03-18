@@ -78,14 +78,16 @@ class ResourceManagerBase(Resource):
 
         Permission:
             - guest and user roles can only access resources of the same user id
-            - admin role are allowed to access resources of users with the same user group, except for superusers
+            - admin role are allowed to access resources of users with the same
+              user group, except for superusers
             - superdamins role can access all resources
 
         Args:
             user_id:
 
         Returns:
-            None if permissions granted, a error response if permissions are not fullfilled
+            None if permissions granted, a error response if permissions are
+            not fulfilled
 
         """
         # Superuser are allowed to do everything
@@ -95,31 +97,32 @@ class ResourceManagerBase(Resource):
         # Check permissions for users and guests
         if self.user_role == "guest" or self.user_role == "user":
             if self.user_id != user_id:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user.")), 401)
         new_user = ActiniaUser(user_id=user_id)
 
         # Check if the user exists
         if new_user.exists() is False:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="The user <%s> does not exist" % user_id)), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="The user <%s> does not exist" % user_id)), 400)
 
         # Check admin permissions
         if self.user_role == "admin":
             # Resources of superusers are not allowed to be accessed
             if new_user.has_superadmin_role() is True:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user role.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user role.")), 401)
             # Only resources of the same user group are allowed to be accessed
             if new_user.get_group() != self.user_group:
-                return make_response(jsonify(SimpleResponseModel(status="error",
-                                                                 message="You do not have the permission "
-                                                                         "to access this resource. "
-                                                                         "Wrong user group.")), 401)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="You do not have the permission to access this resource. "
+                            "Wrong user group.")), 401)
         return None
 
 
@@ -136,7 +139,8 @@ class ResourceManager(ResourceManagerBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Get the status of a resource. Minimum required user role: user.',
+        'description': 'Get the status of a resource. Minimum required user '
+                       'role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -156,11 +160,11 @@ class ResourceManager(ResourceManagerBase):
         'responses': {
             '200': {
                 'description': 'The current state of the resource',
-                'schema':ProcessingResponseModel
+                'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message if the resource does not exists',
-                'schema':SimpleResponseModel
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -177,12 +181,13 @@ class ResourceManager(ResourceManagerBase):
             http_code, response_model = pickle.loads(response_data)
             return make_response(jsonify(response_model), http_code)
         else:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Request the termination of a resource. Minimum required user role: user.',
+        'description': 'Request the termination of a resource. '
+                       'Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -201,13 +206,16 @@ class ResourceManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Returned if termination request of the resource was successfully committed. '
-                               'Be aware that this does not mean, that the resource was successfully terminated.',
-                'schema':SimpleResponseModel
+                'description': 'Returned if termination request of the resource '
+                               'was successfully committed. '
+                               'Be aware that this does not mean, that the '
+                               'resource was successfully terminated.',
+                'schema': SimpleResponseModel
             },
             '400': {
-                'description': 'The error message why resource storage information gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why resource storage '
+                               'information gathering did not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -221,29 +229,32 @@ class ResourceManager(ResourceManagerBase):
         doc = self.resource_logger.get(user_id, resource_id)
 
         if doc is None:
-            return make_response(jsonify(SimpleResponseModel(status="error",
-                                                             message="Resource does not exist")), 400)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
 
         self.resource_logger.commit_termination(user_id, resource_id)
 
-        return make_response(jsonify(SimpleResponseModel(status="accepted",
-                                                         message="Termination request committed")), 200)
+        return make_response(jsonify(SimpleResponseModel(
+            status="accepted", message="Termination request committed")), 200)
 
 
 # Create a g.list/g.remove pattern parser
 resource_parser = reqparse.RequestParser()
-resource_parser.add_argument('num', type=int, help='The maximum number of jobs that should be listed',
-                             location='args')
-resource_parser.add_argument('type', type=str, help='The type of the jobs that should be shown: '
-                                                    'all, running, error, terminated, finished',
-                             location='args')
+resource_parser.add_argument(
+    'num', type=int, help='The maximum number of jobs that should be listed',
+    location='args')
+resource_parser.add_argument(
+    'type', type=str,
+    help='The type of the jobs that should be shown: '
+         'all, running, error, terminated, finished',
+    location='args')
 
 
 class ResourcesManager(ResourceManagerBase):
     """Management of multiple resources
 
-    TODO: This methods must be secured by checking the user id. Only admins can terminate and
-    list resources from other users.
+    TODO: This methods must be secured by checking the user id. Only admins
+    can terminate and list resources from other users.
 
     """
 
@@ -268,8 +279,8 @@ class ResourcesManager(ResourceManagerBase):
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Get a list of resources that have been generated by the specified user. '
-                       'Minimum required user role: user.',
+        'description': 'Get a list of resources that have been generated by the '
+                       'specified user. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -287,7 +298,8 @@ class ResourcesManager(ResourceManagerBase):
             },
             {
                 'name': 'type',
-                'description': 'The type of job that should be returned: accepted, running, error, terminated, finished',
+                'description': 'The type of job that should be returned: '
+                               'accepted, running, error, terminated, finished',
                 'required': False,
                 'in': 'query',
                 'type': 'string'
@@ -295,12 +307,14 @@ class ResourcesManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Returned a list of resources that have been generated by the specified user.',
-                'schema':ProcessingResponseListModel
+                'description': 'Returned a list of resources that have been '
+                               'generated by the specified user.',
+                'schema': ProcessingResponseListModel
             },
             '401': {
-                'description': 'The error message why resource gathering did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why resource gathering did '
+                               'not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -326,12 +340,13 @@ class ResourcesManager(ResourceManagerBase):
         else:
             response_list = resource_list
 
-        return make_response(jsonify(ProcessingResponseListModel(resource_list=response_list)), 200)
+        return make_response(jsonify(ProcessingResponseListModel(
+            resource_list=response_list)), 200)
 
     @swagger.doc({
         'tags': ['Resource Management'],
-        'description': 'Terminate all accepted and running resources of the specified user. '
-                       'Minimum required user role: user.',
+        'description': 'Terminate all accepted and running resources of the specified '
+                       'user. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'user_id',
@@ -343,13 +358,15 @@ class ResourcesManager(ResourceManagerBase):
         ],
         'responses': {
             '200': {
-                'description': 'Termination requests have been successfully committed. Be aware that does '
-                               'not mean, that the resources have been successfully terminated.',
-                'schema':SimpleResponseModel
+                'description': 'Termination requests have been successfully '
+                               'committed. Be aware that does not mean, that '
+                               'the resources have been successfully terminated.',
+                'schema': SimpleResponseModel
             },
             '401': {
-                'description': 'The error message why the resource termination did not succeeded',
-                'schema':SimpleResponseModel
+                'description': 'The error message why the resource termination '
+                               'did not succeeded',
+                'schema': SimpleResponseModel
             }
         }
     })
@@ -366,9 +383,10 @@ class ResourcesManager(ResourceManagerBase):
         for entry in resource_list:
             if "status" in entry:
                 if entry["status"] in ["accepted", "running"]:
-                    self.resource_logger.commit_termination(user_id, entry["resource_id"])
+                    self.resource_logger.commit_termination(
+                        user_id, entry["resource_id"])
                     termination_requests += 1
 
-        return make_response(jsonify(SimpleResponseModel(status="finished",
-                                                         message="Successfully send %i "
-                                                                 "termination requests" % termination_requests)), 200)
+        return make_response(jsonify(SimpleResponseModel(
+            status="finished", message="Successfully send %i termination requests"
+                                       % termination_requests)), 200)

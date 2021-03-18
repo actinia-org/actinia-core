@@ -90,7 +90,8 @@ class EphemeralCustomProcessing(EphemeralProcessing):
         """Setup the variables of this class
 
         Args:
-            rdc (ResourceDataContainer): The data container that contains all required variables for processing
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
         """
 
         EphemeralProcessing.__init__(self, *args)
@@ -113,12 +114,13 @@ class EphemeralCustomProcessing(EphemeralProcessing):
                                                    module_name=self.executable)
 
         if resp is not None:
-            raise AsyncProcessError("Executable <%s> is not suported" % self.executable)
+            raise AsyncProcessError(
+                "Executable <%s> is not supported" % self.executable)
 
         p = Process(exec_type="exec",
-                         executable=self.executable,
-                         executable_params=self.executable_params,
-                         stdin_source=None)
+                    executable=self.executable,
+                    executable_params=self.executable_params,
+                    stdin_source=None)
 
         self._run_process(p)
 

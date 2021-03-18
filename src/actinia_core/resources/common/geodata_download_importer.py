@@ -40,11 +40,13 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 # Mimetypes supported for download
-SUPPORTED_MIMETYPES = ["application/zip", "image/tiff", "application/gml", "text/xml",
-                       "application/x-sqlite3", "application/xml", "text/plain", "text/x-python"]
+SUPPORTED_MIMETYPES = [
+    "application/zip", "image/tiff", "application/gml", "text/xml",
+    "application/x-sqlite3", "application/xml", "text/plain", "text/x-python"]
 # Suffixes supported in zip files
-SUPPORTED_SUFFIXES = [".tif", ".tiff", ".xml", ".gml", ".shp", ".dbf", ".shx", ".atx", ".sbx",
-                      ".qix", ".aih", ".prj", ".cpg", ".json"]
+SUPPORTED_SUFFIXES = [
+    ".tif", ".tiff", ".xml", ".gml", ".shp", ".dbf", ".shx", ".atx", ".sbx",
+    ".qix", ".aih", ".prj", ".cpg", ".json"]
 
 
 class GeoDataDownloadImportSupport(object):
@@ -53,19 +55,20 @@ class GeoDataDownloadImportSupport(object):
 
     def __init__(self, config, temp_file_path, download_cache,
                  send_resource_update, message_logger, url_list):
-        """ A collection of functions to generate geodata related import and processing
-        commands. Each function returns a process chain that can be executed
-        by the async processing classes.
+        """ A collection of functions to generate geodata related import and
+        processing commands. Each function returns a process chain that can be
+        executed by the async processing classes.
 
         Args:
             config: The Actinia Core configuration object
-            temp_file_path: The path to the temporary directory to store temporary files.
-                            It is assumed that this path is available when the generated
-                            commands are executed.
+            temp_file_path: The path to the temporary directory to store
+                            temporary files. It is assumed that this path is
+                            available when the generated commands are executed.
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
-            url_list: A list of urls that should be accessed to download imported geodata
+            url_list: A list of urls that should be accessed to download
+                      imported geodata
 
         """
         self.config = config
@@ -82,8 +85,9 @@ class GeoDataDownloadImportSupport(object):
     def _setup(self):
         """Setup the download cache.
 
-        Check the download cache if the file already exists, to avoid redundant downloads.
-        Create the cahce if it does not exist and switch into the temporary directory.
+        Check the download cache if the file already exists, to avoid redundant
+        downloads. Create the cache if it does not exist and switch into the
+        temporary directory.
         """
 
         # Create the download cache directory if it does not exists
@@ -92,7 +96,8 @@ class GeoDataDownloadImportSupport(object):
         else:
             os.mkdir(self.config.DOWNLOAD_CACHE)
 
-        # Create the user specific download cache directory to put the downloaded files into it
+        # Create the user specific download cache directory to put the
+        # downloaded files into it
         if os.path.exists(self.user_download_cache_path):
             pass
         else:
@@ -115,7 +120,7 @@ class GeoDataDownloadImportSupport(object):
             resp = requests.head(url)
             if self.message_logger:
                 self.message_logger.info("%i %s %s" % (resp.status_code,
-                                                                           resp.text, resp.headers))
+                                                       resp.text, resp.headers))
 
             if resp.status_code != 200:
                 raise AsyncProcessError("The URL <%s> can not be accessed." % url)
@@ -128,8 +133,9 @@ class GeoDataDownloadImportSupport(object):
 
             if mime_type not in SUPPORTED_MIMETYPES:
                 raise AsyncProcessError("Mimetype <%s> of url <%s> is not supported. "
-                                        "Supported mimetypes are: %s" % (mime_type,
-                                                                         url, ",".join(SUPPORTED_MIMETYPES)))
+                                        "Supported mimetypes are: %s" % (
+                                            mime_type, url,
+                                            ",".join(SUPPORTED_MIMETYPES)))
 
             self.detected_mime_types.append(mime_type)
 
@@ -137,9 +143,10 @@ class GeoDataDownloadImportSupport(object):
         """Create the process list to download, import and preprocess
         geodata location on a remote location
 
-        The downloaded files will be stored in a temporary directory. After the download of all files
-        completes, the downloaded files will be moved to the download cache. This avoids broken
-        files in case a download was interrupted or stopped by termination.
+        The downloaded files will be stored in a temporary directory. After the
+        download of all files completes, the downloaded files will be moved to
+        the download cache. This avoids broken files in case a download was
+        interrupted or stopped by termination.
 
         This method creates wget calls and mv calls.
 
@@ -181,8 +188,9 @@ class GeoDataDownloadImportSupport(object):
                 wget_params.append("%s" % source)
                 wget_params.append(url)
 
-                p = Process(exec_type="exec", executable=wget, executable_params=wget_params,
-                            skip_permission_check=True)
+                p = Process(
+                    exec_type="exec", executable=wget, executable_params=wget_params,
+                    skip_permission_check=True)
 
                 download_commands.append(p)
                 if source != dest:
@@ -191,8 +199,10 @@ class GeoDataDownloadImportSupport(object):
                     copy_params.append(source)
                     copy_params.append(dest)
 
-                    p = Process(exec_type="exec", executable=copy, executable_params=copy_params,
-                                skip_permission_check=True)
+                    p = Process(
+                        exec_type="exec", executable=copy,
+                        executable_params=copy_params,
+                        skip_permission_check=True)
                     download_commands.append(p)
             count += 1
 
@@ -275,12 +285,13 @@ class GeoDataDownloadImportSupport(object):
 
     def perform_file_validation(self, filepath, mimetype=None):
         """Perform a file validation check of mimetypes and zip bombs.
-        This function checks zip files and returns the file names of the extracted file(s).
+        This function checks zip files and returns the file names of the
+        extracted file(s).
         If mimetype is None all supported mimetypes will be checked.
 
         Args:
-            filepath (str): The path to a file that should be checked against supported mimetypes and
-                      zip-bomb security.
+            filepath (str): The path to a file that should be checked against
+                      supported mimetypes and zip-bomb security.
             mimetype (str): A specific mimetype that should be checked
 
         Returns:
@@ -299,7 +310,8 @@ class GeoDataDownloadImportSupport(object):
 
         if mime_type not in SUPPORTED_MIMETYPES:
             raise AsyncProcessError("Mimetype of url <%s> is not supported. "
-                                    "Supported mimetypes are: %s" % (filepath, ",".join(SUPPORTED_MIMETYPES)))
+                                    "Supported mimetypes are: %s" % (
+                                        filepath, ",".join(SUPPORTED_MIMETYPES)))
 
         if mime_type.lower() == "application/zip":
             z = zipfile.ZipFile(filepath)
@@ -313,15 +325,18 @@ class GeoDataDownloadImportSupport(object):
                 raise AsyncProcessError("Compression ratio is larger than 10000.")
 
             if total_sum > 2 ** 32:
-                raise AsyncProcessError("Files larger than 4GB are not supported in zip files.")
+                raise AsyncProcessError(
+                    "Files larger than 4GB are not supported in zip files.")
 
             for name in z.namelist():
                 file_name, suffix = os.path.splitext(name)
                 file_list.append(file_name)
                 if suffix not in SUPPORTED_SUFFIXES:
-                    raise AsyncProcessError("Suffix %s of zipped file <%s> is not supported. "
-                                            "Supported suffixes in zip files are: %s" % (suffix, name,
-                                                                                         ",".join(SUPPORTED_SUFFIXES)))
+                    raise AsyncProcessError("Suffix %s of zipped file <%s> is not "
+                                            "supported. Supported suffixes in zip "
+                                            "files are: %s" % (
+                                                suffix, name,
+                                                ",".join(SUPPORTED_SUFFIXES)))
             z.close()
 
         return file_list

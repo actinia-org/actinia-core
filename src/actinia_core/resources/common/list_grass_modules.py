@@ -23,11 +23,14 @@
 
 """
 XML to module list
+AW: I suspect that this file is no longer used
+    because of F821: undefined names after missing import PyQt4
+    PyQt4 is obsolete and since python3 PyQt5 is used
 """
 
-#from PyQt4.QtCore import *
-#from PyQt4.QtXml import *
-#from config import global_config
+# from PyQt4.QtCore import *
+# from PyQt4.QtXml import *
+# from config import global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
