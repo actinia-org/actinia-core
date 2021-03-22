@@ -93,13 +93,13 @@ def enqueue_job(timeout, func, *args):
         *args: The function arguments, the first argument must be the
                RessourceDataContainer
     """
-    # process_queue.put((func, timeout, args))
+    process_queue.put((func, timeout, args))
 
-    # for debugging in ephemeral_processing.py
-    from ..ephemeral_processing import \
-        AsyncEphemeralResource, start_job, EphemeralProcessing
-    processing = EphemeralProcessing(*args)
-    processing.run()
+    # # for debugging in ephemeral_processing.py (see also grass_init.py)
+    # from ..ephemeral_processing import \
+    #     AsyncEphemeralResource, start_job, EphemeralProcessing
+    # processing = EphemeralProcessing(*args)
+    # processing.run()
 
 
 def stop_process_queue():

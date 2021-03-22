@@ -108,8 +108,6 @@ class GrassEnvironment(ProcessLogging):
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
         self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
         self.env["GISRC"] = os.path.join(gisrc_path, "gisrc")
-        # import pdb; pdb.set_trace()
-        # with open('/tmp/tmpvo09a1oj/gisrc') as f:read_data = f.read()
         self.env["LD_LIBRARY_PATH"] = str(os.path.join(self.env["GISBASE"], "lib"))
         self.env["GRASS_VERSION"] = "7.7.svn"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
@@ -142,7 +140,12 @@ class GrassEnvironment(ProcessLogging):
                     % str(e))
 
     def set(self):
-        import pdb; pdb.set_trace()
+        # # for debugging in ephemeral_processing.py (see also process_queue.py)
+        # for var in [
+        #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
+        #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
+        #     if var in os.environ:
+        #         del os.environ[var]
         for key in self.env:
             try:
                 value = self.env[key]
@@ -310,13 +313,6 @@ class GrassModuleRunner(ProcessLogging):
             (stdout_buff, stderr_buff) = proc.communicate()
             stdout_buff = stdout_buff.decode()
             stderr_buff = stderr_buff.decode()
-            # import pdb; pdb.set_trace()
-            # inputlist2 = ['g.gisenv', 'get=LOCATION_NAME']
-            # proc = subprocess.Popen(args=inputlist2, stdout=stdout,stderr=stderr, stdin=stdin)#
-            # (stdout_buff, stderr_buff) = proc.communicate()
-            # stderr_buff.decode()
-            # stdout_buff.decode()
-            # os.environ['GISRC']
 
             self.log_debug("Return code: " + str(proc.returncode))
             self.log_debug(stderr_buff)

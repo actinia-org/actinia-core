@@ -983,6 +983,7 @@ class EphemeralProcessing(object):
                 "--compress",
                 "--partial",
                 "--progress",
+                "--exclude", ".gislock",
                 "--times",
                 "--delete",
                 interim_result_mapset + os.sep,
@@ -1362,6 +1363,7 @@ class EphemeralProcessing(object):
                 "--partial",
                 "--progress",
                 "--times",
+                "--exclude", ".gislock",
                 "--delete",
                 self.temp_mapset_path + os.sep,
                 dest]
@@ -1374,6 +1376,12 @@ class EphemeralProcessing(object):
             else:
                 raise RsyncError(
                     "Error while rsyncing of step %d" % self.progress_steps)
+
+            # remove .gislock
+            gislock_file = os.path.join(dest, '.gislock')
+            if os.path.isfile(gislock_file):
+                os.remove(gislock_file)
+
 
     def _run_executable(self, process, poll_time=0.005):
         """Runs a GRASS module or a common Unix executable and sets up
@@ -1629,7 +1637,6 @@ class EphemeralProcessing(object):
             msg = f"No interim results saved in previous iteration for step {pc_step}"
             print(msg)
             # TODO errors
-        # import pdb; pdb.set_trace()
 
         # TODO !!!!!!!!!!!!!!!!!!!
         # set interim results to temporary mapset
