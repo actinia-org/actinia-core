@@ -71,7 +71,7 @@ class ResourceDataContainer(object):
             user_id (str): The user id
             user_group (str): The user group
             resource_id (str): The id of the resource
-            itertion (int): The iteartion of the job
+            iteration (int): The iteartion of the job
             status_url (str): The url to be used to create the status response
             api_info (ApiInfoModel): Information about the API call
             resource_url_base (str): The base URL for resources

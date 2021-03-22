@@ -93,12 +93,12 @@ def enqueue_job(timeout, func, *args):
         *args: The function arguments, the first argument must be the
                RessourceDataContainer
     """
-    # process_queue.put((func, timeout, args))
+    process_queue.put((func, timeout, args))
 
-    # for debugging in ephemeral_processing.py
-    from ..ephemeral_processing import AsyncEphemeralResource, start_job, EphemeralProcessing
-    processing = EphemeralProcessing(*args)
-    processing.run()
+    # # for debugging in ephemeral_processing.py
+    # from ..ephemeral_processing import AsyncEphemeralResource, start_job, EphemeralProcessing
+    # processing = EphemeralProcessing(*args)
+    # processing.run()
 
 
 def stop_process_queue():
@@ -266,7 +266,7 @@ class EnqueuedProcess(object):
             self.resource_logger.commit(
                 user_id=self.user_id,
                 resource_id=self.resource_id,
-                itertion=self.itertion,
+                iteration=self.iteration,
                 document=document,
                 expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
 

@@ -70,7 +70,7 @@ class AsyncEphemeralResource(ResourceBase):
     """
     # def __init__(self):
     #     ResourceBase.__init__(self)
-    def __init__(self, resource_id, iteration, post_url):
+    def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
     def post(self, location_name):
@@ -1525,10 +1525,10 @@ class EphemeralProcessing(object):
             process_list = self._create_temporary_grass_environment_and_process_list(
                 skip_permission_check=skip_permission_check)
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         # Run all executables
         self._execute_process_list(process_list=process_list)
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         # Parse the module sdtout outputs and create the results
         self._parse_module_outputs()
 
@@ -1559,7 +1559,7 @@ class EphemeralProcessing(object):
         # Setup the user credentials and logger
         self._setup()
 
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         process_chain_complete = self.request_data
         old_response_data = self.resource_logger.get(self.user_id, self.resource_id, self.rdc.iteration-1)
         if old_response_data is None:
@@ -1600,7 +1600,7 @@ class EphemeralProcessing(object):
         # set interim results to temporary mapset
 
         # Init GRASS and create the temporary mapset
-        import pdb; pdb.set_trace()
+        # import pdb; pdb.set_trace()
         self._create_temporary_grass_environment()
 
         return process_list
@@ -1704,7 +1704,7 @@ class EphemeralProcessing(object):
 
         """
         for process in process_list:
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             if process.exec_type == "grass":
                 self._run_module(process)
             elif process.exec_type == "exec":
@@ -1763,7 +1763,7 @@ class EphemeralProcessing(object):
                                             type=str(e_type))
             self.run_state = {"error": str(e), "exception": model}
         finally:
-            import pdb; pdb.set_trace()
+            # import pdb; pdb.set_trace()
             try:
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()

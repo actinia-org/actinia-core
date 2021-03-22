@@ -127,7 +127,7 @@ SCHEMA_DOC = {
 
 class AsyncPersistentResource(ResourceBase):
 
-    def __init__(self, resource_id, iteration, post_url):
+    def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
