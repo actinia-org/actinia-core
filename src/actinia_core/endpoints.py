@@ -207,7 +207,7 @@ def create_core_endpoints():
     The endpoint '/resources/<string:user_id>/<string:resource_id>' has two
     different answers depending on the resource_id. If the resoucre_id starts
     with 'resoucre-id' the latest iteration of the resoucre is given back.
-    If the resocue_id is only the id than all iterations of the resource are
+    If the resocue_id is only the id then all iterations of the resource are
     given in the response.
     """
     flask_api.add_resource(
