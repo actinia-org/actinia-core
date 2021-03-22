@@ -941,7 +941,8 @@ class EphemeralProcessing(object):
 
         self.ginit.initialize()
 
-    def _create_temporary_mapset(self, temp_mapset_name, source_mapset_name=None):
+    def _create_temporary_mapset(self, temp_mapset_name, source_mapset_name=None,
+                                 interim_result_mapset=None):
         """Create the temporary mapset and switch into it
 
         This method needs an initialized the GRASS environment.
@@ -962,12 +963,39 @@ class EphemeralProcessing(object):
             temp_mapset_name (str): The name of the temporary mapset to be created
             source_mapset_name (str): The name of the source mapset to copy the
                                       WIND file from
+            interim_result_mapset (str):
 
         Raises:
             This function will raise an exception if the
             g.mapset/g.mapsets/db.connect modules fail
 
         """
+        self.temp_mapset_path = os.path.join(self.temp_location_path, temp_mapset_name)
+
+        # if interim_result_mapset is set copy the mapset from the interim
+        # results
+        if interim_result_mapset:
+            self.message_logger.info(
+                "Rsync interim result mapset to temporary GRASS DB")
+            rsync_cmd = [
+                "rsync",
+                "--recursive",
+                "--compress",
+                "--partial",
+                "--progress",
+                "--times",
+                "--delete",
+                interim_result_mapset + os.sep,
+                self.temp_mapset_path]
+            p_rsync = subprocess.Popen(
+                rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            rsync_out, rsync_err = p_rsync.communicate()
+            # remove old folder
+            if rsync_err.decode('utf-8') != '':
+                raise RsyncError(
+                    "Error while rsyncing of interim results to new temporare mapset")
+
+        # import pdb; pdb.set_trace()
         self.ginit.run_module("g.mapset", ["-c", "mapset=%s" % temp_mapset_name])
 
         if self.required_mapsets:
@@ -978,7 +1006,6 @@ class EphemeralProcessing(object):
             self.message_logger.info("Added the following mapsets to the mapset "
                                      "search path: " + ",".join(self.required_mapsets))
 
-        self.temp_mapset_path = os.path.join(self.temp_location_path, temp_mapset_name)
         # Set the vector database connection to vector map specific databases
         self.ginit.run_module("db.connect", [
             "driver=sqlite",
@@ -988,7 +1015,7 @@ class EphemeralProcessing(object):
 
         # If a source mapset is provided, the WIND file will be copied from it to the
         # temporary mapset
-        if source_mapset_name is not None:
+        if source_mapset_name is not None and interim_result_mapset is None:
             source_mapset_path = os.path.join(
                 self.temp_location_path, source_mapset_name)
             if os.path.exists(os.path.join(source_mapset_path, "WIND")):
@@ -1462,7 +1489,8 @@ class EphemeralProcessing(object):
 
         return proc.returncode, stdout_string, stderr_string
 
-    def _create_temporary_grass_environment(self, source_mapset_name=None):
+    def _create_temporary_grass_environment(self, source_mapset_name=None,
+                                            interim_result_mapset=None):
         """Create a temporary GRASS GIS environment
 
         This method will:
@@ -1477,6 +1505,7 @@ class EphemeralProcessing(object):
         Args:
             source_mapset_name (str): The name of the source mapset to copy the
                                       WIND file from
+            interim_result_mapset (str): TODO
 
         Raises:
             This method will raise an AsyncProcessError
@@ -1493,7 +1522,8 @@ class EphemeralProcessing(object):
 
         # Create the temporary mapset and switch into it
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name,
-                                      source_mapset_name=source_mapset_name)
+                                      source_mapset_name=source_mapset_name,
+                                      interim_result_mapset=interim_result_mapset)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses.
@@ -1560,7 +1590,7 @@ class EphemeralProcessing(object):
         # Setup the user credentials and logger
         self._setup()
 
-        # import pdb; pdb.set_trace()
+        # check old resource
         process_chain_complete = self.request_data
         old_response_data = self.resource_logger.get(
             self.user_id, self.resource_id, self.rdc.iteration-1)
@@ -1569,6 +1599,7 @@ class EphemeralProcessing(object):
         http_code, response_model = pickle.loads(old_response_data)
         if response_model['status'] not in ['error', 'terminated']:
             return None
+            # TODO add running if time_delta does not change any more
         pc_step = response_model['progress']['step'] - 1
         if pc_step >= 0:
             process_chain_trimmed = process_chain_complete.copy()
@@ -1598,13 +1629,18 @@ class EphemeralProcessing(object):
             msg = f"No interim results saved in previous iteration for step {pc_step}"
             print(msg)
             # TODO errors
+        # import pdb; pdb.set_trace()
 
         # TODO !!!!!!!!!!!!!!!!!!!
         # set interim results to temporary mapset
 
         # Init GRASS and create the temporary mapset
+        interim_result_mapset = os.path.join(
+            self.user_resource_interim_storage_path, self.resource_id,
+            interim_folder[0])
         # import pdb; pdb.set_trace()
-        self._create_temporary_grass_environment()
+        self._create_temporary_grass_environment(
+            interim_result_mapset=interim_result_mapset)
 
         return process_list
 
@@ -1707,7 +1743,6 @@ class EphemeralProcessing(object):
 
         """
         for process in process_list:
-            # import pdb; pdb.set_trace()
             if process.exec_type == "grass":
                 self._run_module(process)
             elif process.exec_type == "exec":
