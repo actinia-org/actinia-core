@@ -1519,8 +1519,9 @@ class EphemeralProcessing(object):
         """
         # Create the process chain
         if self.rdc.iteration is not None:
-            process_list = self._create_temporary_grass_environment_and_process_list_for_iteration(
-                skip_permission_check=skip_permission_check)
+            process_list = \
+                self._create_temporary_grass_environment_and_process_list_for_iteration(
+                    skip_permission_check=skip_permission_check)
         else:
             process_list = self._create_temporary_grass_environment_and_process_list(
                 skip_permission_check=skip_permission_check)
@@ -1561,7 +1562,8 @@ class EphemeralProcessing(object):
 
         # import pdb; pdb.set_trace()
         process_chain_complete = self.request_data
-        old_response_data = self.resource_logger.get(self.user_id, self.resource_id, self.rdc.iteration-1)
+        old_response_data = self.resource_logger.get(
+            self.user_id, self.resource_id, self.rdc.iteration-1)
         if old_response_data is None:
             return None
         http_code, response_model = pickle.loads(old_response_data)
@@ -1593,10 +1595,11 @@ class EphemeralProcessing(object):
         if interim_folder[0] != f"step{str(pc_step)}":
             iterim_error = True
         if iterim_error is True:
-            msg = "No interim results saved in previous iteration for step {str(pc_step)}"
+            msg = f"No interim results saved in previous iteration for step {pc_step}"
+            print(msg)
             # TODO errors
 
-        ### TODO !!!!!!!!!!!!!!!!!!!
+        # TODO !!!!!!!!!!!!!!!!!!!
         # set interim results to temporary mapset
 
         # Init GRASS and create the temporary mapset

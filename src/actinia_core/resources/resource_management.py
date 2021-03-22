@@ -234,7 +234,8 @@ class ResourceManager(ResourceManagerBase):
         # check if in general interim results are saved
         if global_config.SAVE_INTERIM_RESULTS is False:
             return make_response(jsonify(SimpleResponseModel(
-                status="error", message="Saving iterim results is not configured")), 400)
+                status="error",
+                message="Saving iterim results is not configured")), 400)
 
         # check if latest iteration is found
         old_iteration, response_data = self.resource_logger.get_latest_iteration(
@@ -254,11 +255,10 @@ class ResourceManager(ResourceManagerBase):
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message=f"Resource is {response_model['status']} PUT not "
-                         "possible")), 400)
+                        "possible")), 400)
         elif response_model['status'] in ['running']:
             # check if status is running but processing time is not changing
             # any more
-            first_time_delta = response_model['time_delta']
             sleep(5)
             old_iteration2, response_data2 = self.resource_logger.get_latest_iteration(
                 user_id, resource_id)
@@ -275,7 +275,8 @@ class ResourceManager(ResourceManagerBase):
                 pass
             else:
                 return make_response(jsonify(SimpleResponseModel(
-                    status="error", message="Resource is running no restart possible")), 400)
+                    status="error",
+                    message="Resource is running no restart possible")), 400)
         elif response_model['status'] in ['error', 'terminated']:
             pass
 
@@ -285,9 +286,7 @@ class ResourceManager(ResourceManagerBase):
             "interim", resource_id)
         interim_folder = os.listdir(user_resource_interim_storage_path)
         pc_step = response_model['progress']['step'] - 1
-        if interim_folder[0] != f"step{str(pc_step)}":
-            iterim_error = True
-        if interim_folder[0] != f"step{str(pc_step)}":
+        if interim_folder[0] != f"step{pc_step}":
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="No interim results saved in previous iteration for "
@@ -307,16 +306,14 @@ class ResourceManager(ResourceManagerBase):
         # check the old processing type
         processing_type = post_url.split('/')[-1]
         location = re.findall(r'locations\/(.*?)\/', post_url)[0]
-        if processing_type == 'processing_async' and not 'mapsets' in post_url:
+        if processing_type == 'processing_async' and 'mapsets' not in post_url:
             # '/locations/<string:location_name>/processing_async'
-            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .ephemeral_processing import AsyncEphemeralResource, start_job
             processing_resource = AsyncEphemeralResource(
                 resource_id, iteration, post_url)
             rdc = processing_resource.preprocess(location_name=location)
         elif processing_type == 'processing_async' and 'mapsets' in post_url:
             # /locations/{location_name}/mapsets/{mapset_name}/processing_async
-            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .persistent_processing import AsyncPersistentResource, start_job
             processing_resource = AsyncPersistentResource(
                 resource_id, iteration, post_url)
@@ -325,7 +322,6 @@ class ResourceManager(ResourceManagerBase):
                 location_name=location, mapset_name=mapset)
         elif processing_type == 'processing_async_export':
             # /locations/{location_name}/processing_async_export
-            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .ephemeral_processing_with_export import \
                 AsyncEphemeralExportResource, start_job
             processing_resource = AsyncEphemeralExportResource(
@@ -340,7 +336,7 @@ class ResourceManager(ResourceManagerBase):
                 status="error",
                 message=f"Processing endpoint {post_url} does not support put")), 400)
 
-        ## enqueue job
+        # enqueue job
         if rdc:
             enqueue_job(processing_resource.job_timeout, start_job, rdc)
         html_code, response_model = pickle.loads(processing_resource.response_data)

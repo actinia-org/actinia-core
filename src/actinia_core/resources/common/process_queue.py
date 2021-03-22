@@ -96,7 +96,8 @@ def enqueue_job(timeout, func, *args):
     process_queue.put((func, timeout, args))
 
     # # for debugging in ephemeral_processing.py
-    # from ..ephemeral_processing import AsyncEphemeralResource, start_job, EphemeralProcessing
+    # from ..ephemeral_processing import \
+    #     AsyncEphemeralResource, start_job, EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
 
