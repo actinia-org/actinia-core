@@ -34,6 +34,7 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
+from time import sleep
 from .common.app import auth
 from .common.config import global_config
 from .common.redis_interface import enqueue_job
@@ -223,7 +224,6 @@ class ResourceManager(ResourceManagerBase):
             }
         }
      })
-    # TODO
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
 
@@ -256,11 +256,26 @@ class ResourceManager(ResourceManagerBase):
                 message=f"Resource is {response_model['status']} PUT not "
                          "possible")), 400)
         elif response_model['status'] in ['running']:
-            # TODO
             # check if status is running but processing time is not changing
             # any more
-            import pdb; pdb.set_trace()
-            pass
+            first_time_delta = response_model['time_delta']
+            sleep(5)
+            old_iteration2, response_data2 = self.resource_logger.get_latest_iteration(
+                user_id, resource_id)
+            if response_data2 is None:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource does not exist")), 400)
+            http_code2, response_model2 = pickle.loads(response_data2)
+            if response_model is None:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource has no response model")), 400)
+            # check time_delta
+            if response_model['time_delta'] == response_model2['time_delta']:
+                # process is not running any more and can be restarted
+                pass
+            else:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource is running no restart possible")), 400)
         elif response_model['status'] in ['error', 'terminated']:
             pass
 
@@ -294,14 +309,14 @@ class ResourceManager(ResourceManagerBase):
         location = re.findall(r'locations\/(.*?)\/', post_url)[0]
         if processing_type == 'processing_async' and not 'mapsets' in post_url:
             # '/locations/<string:location_name>/processing_async'
-            # here are debuggers
+            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .ephemeral_processing import AsyncEphemeralResource, start_job
             processing_resource = AsyncEphemeralResource(
                 resource_id, iteration, post_url)
             rdc = processing_resource.preprocess(location_name=location)
         elif processing_type == 'processing_async' and 'mapsets' in post_url:
             # /locations/{location_name}/mapsets/{mapset_name}/processing_async
-            # here are NO debuggers
+            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .persistent_processing import AsyncPersistentResource, start_job
             processing_resource = AsyncPersistentResource(
                 resource_id, iteration, post_url)
@@ -310,18 +325,17 @@ class ResourceManager(ResourceManagerBase):
                 location_name=location, mapset_name=mapset)
         elif processing_type == 'processing_async_export':
             # /locations/{location_name}/processing_async_export
-            # here are NO debuggers
+            # here are debuggers: ephemeral_processing.py(1563)_create_temporary_grass_environment_and_process_list_for_iteration()
             from .ephemeral_processing_with_export import \
                 AsyncEphemeralExportResource, start_job
             processing_resource = AsyncEphemeralExportResource(
                 resource_id, iteration, post_url)
             rdc = processing_resource.preprocess(
-                location_name=location, mapset_name=mapset)
-        # TODO
-        # /locations/{location_name}/gdi_processing_async_export
-        # /locations/{location_name}/mapsets/{mapset_name}/gdi_processing_async
+                location_name=location)
         else:
-            # import pdb; pdb.set_trace()
+            # TODO ?
+            # /locations/{location_name}/gdi_processing_async_export
+            # /locations/{location_name}/mapsets/{mapset_name}/gdi_processing_async
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message=f"Processing endpoint {post_url} does not support put")), 400)
