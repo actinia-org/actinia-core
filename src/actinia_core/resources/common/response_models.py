@@ -90,6 +90,10 @@ class ProcessLogModel(Schema):
     """
     type = 'object'
     properties = {
+        'id': {
+            'type': 'string',
+            'description': 'The ID of the executable'
+        },
         'executable': {
             'type': 'string',
             'description': 'The name of the executable'

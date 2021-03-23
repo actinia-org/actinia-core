@@ -641,10 +641,24 @@ class PersistentProcessing(EphemeralProcessing):
             - Cleanup and unlock the mapset
 
         """
+
         # Setup the user credentials and logger
         self._setup()
-        # Create the process chain
-        process_list = self._validate_process_chain()
+        # check if this is a job resumption
+        if self.rdc.iteration is not None:
+            # Create the process chain
+            process_chain_trimmed, pc_step, process_chain_complete = \
+                self._trim_process_chain()
+            process_list = self._validate_process_chain(
+                process_chain=process_chain_trimmed,
+                old_process_chain=process_chain_complete,)
+            # check iterim results
+            interim_result_mapset = self._check_interim_result_mapset(pc_step)
+        else:
+            # Create the process chain
+            process_list = self._validate_process_chain()
+            interim_result_mapset = None
+
         # Check and lock the target and temp mapsets
         self._check_lock_target_mapset()
 
@@ -660,7 +674,9 @@ class PersistentProcessing(EphemeralProcessing):
 
             # Create the temporary mapset with the same name as the target
             # mapset and switch into it
-            self._create_temporary_mapset(temp_mapset_name=self.target_mapset_name)
+            self._create_temporary_mapset(
+                temp_mapset_name=self.target_mapset_name,
+                interim_result_mapset=interim_result_mapset)
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset

@@ -583,8 +583,74 @@ class EphemeralProcessing(object):
             self.message_logger.error(
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
 
+    def _trim_process_chain(self):
+        """Helper method to:
+
+        - check the old resource run and get the step of the process chain
+          where to continue
+        - trim the process chain
+
+        Returns:
+            process_chain_trimmed (dict): The trimmed process chain to resumpt
+                                          the job
+            pc_step (int): The number of the step in the process chain where to
+                           continue
+        """
+        # check old resource
+        process_chain_complete = self.request_data
+        old_response_data = self.resource_logger.get(
+            self.user_id, self.resource_id, self.rdc.iteration-1)
+        if old_response_data is None:
+            return None
+        http_code, response_model = pickle.loads(old_response_data)
+        self.module_output_dict = {
+            element['id']: element for element in response_model['process_log']}
+
+        # create a trimmed process chain without the successful steps
+        pc_step = response_model['progress']['step'] - 1
+        if pc_step >= 0:
+            process_chain_trimmed = process_chain_complete.copy()
+            del process_chain_trimmed['list']
+            process_chain_trimmed['list'] = process_chain_complete['list'][pc_step:]
+        else:
+            process_chain_trimmed = process_chain_complete
+
+        return process_chain_trimmed, pc_step, process_chain_complete
+
+    def _check_interim_result_mapset(self, pc_step):
+        """Helper method to check if the interim result mapset is saved
+
+        Args:
+            pc_step (int): The number of the step in the process chain where to
+                           continue
+
+        Returns:
+            (str): The path to the interim result mapset which has to be copied
+                   to the temprary mapsets (with _create_temporary_grass_environment)
+        """
+        iterim_error = False
+        if self.save_interim_results is False:
+            iterim_error = True
+        if os.path.isdir(os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id)):
+            interim_folder = os.listdir(os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id))
+        else:
+            iterim_error = True
+        if interim_folder[0] != f"step{pc_step}":
+            iterim_error = True
+        if iterim_error is True:
+            msg = f"No interim results saved in previous iteration for step {pc_step}"
+            self.message_logger.error(msg)
+            return None
+
+        return os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id, f"step{pc_step}")
+
+
     def _validate_process_chain(self, process_chain=None,
-                                skip_permission_check=False):
+                                skip_permission_check=False,
+                                old_process_chain=None):
         """
         Create the process list and check for user permissions.
 
@@ -608,6 +674,10 @@ class EphemeralProcessing(object):
         Returns: list:
             The process list
         """
+
+        if old_process_chain is not None:
+            old_process_list = self.proc_chain_converter.process_chain_to_process_list(
+                old_process_chain)
 
         # Backward compatibility
         if process_chain is None:
@@ -996,7 +1066,6 @@ class EphemeralProcessing(object):
                 raise RsyncError(
                     "Error while rsyncing of interim results to new temporare mapset")
 
-        # import pdb; pdb.set_trace()
         self.ginit.run_module("g.mapset", ["-c", "mapset=%s" % temp_mapset_name])
 
         if self.required_mapsets:
@@ -1466,6 +1535,7 @@ class EphemeralProcessing(object):
         process.set_stdouts(stdout=stdout_string, stderr=stderr_string)
 
         kwargs = {
+            'id': process.id,
             'executable': process.executable,
             'parameter': process.executable_params,
             'return_code': proc.returncode,
@@ -1513,7 +1583,9 @@ class EphemeralProcessing(object):
         Args:
             source_mapset_name (str): The name of the source mapset to copy the
                                       WIND file from
-            interim_result_mapset (str): TODO
+            interim_result_mapset (str): The path to the mapset which is saved
+                                         as interim result and should be used
+                                         as start mapset for the job resumtion
 
         Raises:
             This method will raise an AsyncProcessError
@@ -1564,10 +1636,8 @@ class EphemeralProcessing(object):
             process_list = self._create_temporary_grass_environment_and_process_list(
                 skip_permission_check=skip_permission_check)
 
-        # import pdb; pdb.set_trace()
         # Run all executables
         self._execute_process_list(process_list=process_list)
-        # import pdb; pdb.set_trace()
         # Parse the module sdtout outputs and create the results
         self._parse_module_outputs()
 
@@ -1599,53 +1669,21 @@ class EphemeralProcessing(object):
         self._setup()
 
         # check old resource
-        process_chain_complete = self.request_data
-        old_response_data = self.resource_logger.get(
-            self.user_id, self.resource_id, self.rdc.iteration-1)
-        if old_response_data is None:
-            return None
-        http_code, response_model = pickle.loads(old_response_data)
-        if response_model['status'] not in ['error', 'terminated']:
-            return None
-            # TODO add running if time_delta does not change any more
-        pc_step = response_model['progress']['step'] - 1
-        if pc_step >= 0:
-            process_chain_trimmed = process_chain_complete.copy()
-            del process_chain_trimmed['list']
-            process_chain_trimmed['list'] = process_chain_complete['list'][pc_step:]
-        else:
-            process_chain_trimmed = process_chain_complete
+        process_chain_trimmed, pc_step, process_chain_complete = \
+            self._trim_process_chain()
 
         # Create and check the process chain
         process_list = self._validate_process_chain(
             process_chain=process_chain_trimmed,
+            old_process_chain=process_chain_complete,
             skip_permission_check=skip_permission_check)
 
         # check iterim results
-        iterim_error = False
-        if self.save_interim_results is False:
-            iterim_error = True
-        if os.path.isdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id)):
-            interim_folder = os.listdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id))
-        else:
-            iterim_error = True
-        if interim_folder[0] != f"step{str(pc_step)}":
-            iterim_error = True
-        if iterim_error is True:
-            msg = f"No interim results saved in previous iteration for step {pc_step}"
-            print(msg)
-            # TODO errors
+        interim_result_mapset = self._check_interim_result_mapset(pc_step)
+        if interim_result_mapset is None:
+            return None
 
-        # TODO !!!!!!!!!!!!!!!!!!!
-        # set interim results to temporary mapset
-
-        # Init GRASS and create the temporary mapset
-        interim_result_mapset = os.path.join(
-            self.user_resource_interim_storage_path, self.resource_id,
-            interim_folder[0])
-        # import pdb; pdb.set_trace()
+        # Init GRASS and create the temporary mapset with the interim results
         self._create_temporary_grass_environment(
             interim_result_mapset=interim_result_mapset)
 
@@ -1808,7 +1846,6 @@ class EphemeralProcessing(object):
                                             type=str(e_type))
             self.run_state = {"error": str(e), "exception": model}
         finally:
-            # import pdb; pdb.set_trace()
             try:
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()
