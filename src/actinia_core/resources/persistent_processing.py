@@ -40,6 +40,7 @@ from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.process_chain import ProcessChainModel
 from .common.response_models import ProcessingResponseModel
+from .common.interim_results import InterimResult
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -583,9 +584,9 @@ class PersistentProcessing(EphemeralProcessing):
                 self.temp_mapset_name, self.target_mapset_name)
             shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
             # remove interim results
-            if self.save_interim_results is True:
+            if self.interim_result.saving_interim_results is True:
                 interim_dir = os.path.join(
-                    self.user_resource_interim_storage_path,
+                    self.interim_result.user_resource_interim_storage_path,
                     self.resource_id)
                 self.message_logger.info(
                     "Remove interim results %s" % interim_dir)
@@ -653,7 +654,7 @@ class PersistentProcessing(EphemeralProcessing):
                 process_chain=process_chain_trimmed,
                 old_process_chain=process_chain_complete,)
             # check iterim results
-            interim_result_mapset = self._check_interim_result_mapset(pc_step)
+            interim_result_mapset = self.interim_result.check_interim_result_mapset(pc_step)
         else:
             # Create the process chain
             process_list = self._validate_process_chain()

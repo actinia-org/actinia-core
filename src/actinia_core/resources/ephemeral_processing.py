@@ -54,6 +54,7 @@ from .common.response_models \
     import ProcessingResponseModel, ExceptionTracebackModel
 from .common.response_models \
     import create_response_from_model, ProcessLogModel, ProgressInfoModel
+from .common.interim_results import InterimResult, get_directory_size
 from .user_auth import check_location_mapset_module_access
 from .resource_base import ResourceBase
 
@@ -266,9 +267,7 @@ class EphemeralProcessing(object):
         self.iteration = self.rdc.iteration
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
-        self.user_resource_interim_storage_path = os.path.join(
-            self.config.GRASS_RESOURCE_DIR, self.user_id, "interim")
-        self.save_interim_results = self.config.SAVE_INTERIM_RESULTS
+        self.interim_result = InterimResult(self.user_id, self.resource_id)
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
         # User database base path, this path will be
@@ -616,37 +615,6 @@ class EphemeralProcessing(object):
             process_chain_trimmed = process_chain_complete
 
         return process_chain_trimmed, pc_step, process_chain_complete
-
-    def _check_interim_result_mapset(self, pc_step):
-        """Helper method to check if the interim result mapset is saved
-
-        Args:
-            pc_step (int): The number of the step in the process chain where to
-                           continue
-
-        Returns:
-            (str): The path to the interim result mapset which has to be copied
-                   to the temprary mapsets (with _create_temporary_grass_environment)
-        """
-        iterim_error = False
-        if self.save_interim_results is False:
-            iterim_error = True
-        if os.path.isdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id)):
-            interim_folder = os.listdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id))
-        else:
-            iterim_error = True
-        if interim_folder[0] != f"step{pc_step}":
-            iterim_error = True
-        if iterim_error is True:
-            msg = f"No interim results saved in previous iteration for step {pc_step}"
-            self.message_logger.error(msg)
-            return None
-
-        return os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id, f"step{pc_step}")
-
 
     def _validate_process_chain(self, process_chain=None,
                                 skip_permission_check=False,
@@ -1047,22 +1015,9 @@ class EphemeralProcessing(object):
         if interim_result_mapset:
             self.message_logger.info(
                 "Rsync interim result mapset to temporary GRASS DB")
-            rsync_cmd = [
-                "rsync",
-                "--recursive",
-                "--compress",
-                "--partial",
-                "--progress",
-                "--exclude", ".gislock",
-                "--times",
-                "--delete",
-                interim_result_mapset + os.sep,
-                self.temp_mapset_path]
-            p_rsync = subprocess.Popen(
-                rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            rsync_out, rsync_err = p_rsync.communicate()
-            # remove old folder
-            if rsync_err.decode('utf-8') != '':
+            rsync_status = self.interim_result.rsync_mapsets(
+                interim_result_mapset, self.temp_mapset_path)
+            if rsync_status != 'success':
                 raise RsyncError(
                     "Error while rsyncing of interim results to new temporare mapset")
 
@@ -1346,112 +1301,6 @@ class EphemeralProcessing(object):
 
         return self._run_executable(process, poll_time)
 
-    def _get_directory_size(self, directory):
-        """Returns the directory size in bytes.
-        Args:
-            directory (string): The path to a directory
-
-        Raises:
-            NotADirectoryError:
-            PermissionError:
-
-        Returns:
-            total: the size of the directory in bytes
-
-        """
-        total = 0
-        try:
-            for entry in os.scandir(directory):
-                if entry.is_file():
-                    total += os.path.getsize(entry)
-                elif entry.is_dir():
-                    total += self._get_directory_size(entry.path)
-        except NotADirectoryError:
-            return os.path.getsize(directory)
-        except PermissionError:
-            return 0
-        return total
-
-    def _save_interim_results(self):
-        """Saves the temporary mapset to the
-        `user_resource_interim_storage_path` by copying the directory or
-        rsyncing it
-        """
-        self.message_logger.info(
-            "Saving interim results of step %d" % self.progress_steps)
-        dest_base_path = self.user_resource_interim_storage_path
-        dest = os.path.join(
-            dest_base_path, self.resource_id,
-            f"step{str(self.progress_steps)}")
-
-        if self.progress_steps == 1:
-            # copy temp mapset for first step
-            shutil.copytree(self.temp_mapset_path, dest)
-            self.message_logger.info(
-                "Maspset %s is copied" % self.temp_mapset_path)
-        else:
-            old_dest = os.path.join(
-                dest_base_path, self.resource_id,
-                f"step{str(self.progress_steps - 1)}")
-
-            # check if mapset has changed
-            cur_working_dir = os.getcwd()
-            sha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
-                            "sort -k 2 | sha512sum"
-            # sha512sum of the previous step
-            os.chdir(old_dest)
-            p_sha512sum_prev = os.popen(sha512sum_cmd)
-            sha512sum_prev = p_sha512sum_prev.read().strip()
-            # sha512sum of the current step
-            os.chdir(self.temp_mapset_path)
-            p_sha512sum_curr = os.popen(sha512sum_cmd)
-            sha512sum_curr = p_sha512sum_curr.read().strip()
-            os.chdir(cur_working_dir)
-            del cur_working_dir
-            # compare sha512sums
-            if sha512sum_prev == sha512sum_curr:
-                self.message_logger.info(
-                    "Sha512sums of maspsets are equal; renaming interim result")
-                os.rename(old_dest, dest)
-                return
-
-            # get folder sizes in bytes
-            size_prev_step = self._get_directory_size(old_dest)
-            size_curr_step = self._get_directory_size(self.temp_mapset_path)
-
-            # rsync or copy folder
-            if size_curr_step > size_prev_step * 0.9:
-                self.message_logger.info("Copy old interim result")
-                shutil.copytree(old_dest, dest)
-            self.message_logger.info(
-                "Rsync mapset %s to interim result" % self.temp_mapset_path)
-            rsync_cmd = [
-                "rsync",
-                "--recursive",
-                "--compress",
-                "--partial",
-                "--progress",
-                "--times",
-                "--exclude", ".gislock",
-                "--delete",
-                self.temp_mapset_path + os.sep,
-                dest]
-            p_rsync = subprocess.Popen(
-                rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            rsync_out, rsync_err = p_rsync.communicate()
-            # remove old folder
-            if rsync_err.decode('utf-8') == '':
-                shutil.rmtree(old_dest)
-            else:
-                raise RsyncError(
-                    "Error while rsyncing of step %d" % self.progress_steps)
-
-            # remove .gislock
-            gislock_file = os.path.join(dest, '.gislock')
-            if os.path.isfile(gislock_file):
-                os.remove(gislock_file)
-
-
     def _run_executable(self, process, poll_time=0.005):
         """Runs a GRASS module or a common Unix executable and sets up
         the correct handling of stdout, stderr and stdin, creates the
@@ -1543,7 +1392,7 @@ class EphemeralProcessing(object):
             'stderr': stderr_string.split("\n"),
             'run_time': run_time}
         if self.temp_mapset_path:
-            kwargs['mapset_size'] = self._get_directory_size(self.temp_mapset_path)
+            kwargs['mapset_size'] = get_directory_size(self.temp_mapset_path)
 
         plm = ProcessLogModel(**kwargs)
 
@@ -1557,9 +1406,10 @@ class EphemeralProcessing(object):
                 "Error while running executable <%s>" % process.executable)
 
         # save interim results
-        if (self.save_interim_results is True
+        if (self.interim_result.saving_interim_results is True
                 and self.temp_mapset_path is not None):
-            self._save_interim_results()
+            self.interim_result.save_interim_results(
+                self.progress_steps, self.temp_mapset_path)
         elif self.temp_mapset_path is None:
             self.message_logger.debug(
                 "No temp mapset path set. Because of that no interim results"
@@ -1679,7 +1529,7 @@ class EphemeralProcessing(object):
             skip_permission_check=skip_permission_check)
 
         # check iterim results
-        interim_result_mapset = self._check_interim_result_mapset(pc_step)
+        interim_result_mapset = self.interim_result.check_interim_result_mapset(pc_step)
         if interim_result_mapset is None:
             return None
 

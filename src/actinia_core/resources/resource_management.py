@@ -43,6 +43,7 @@ from .common.api_logger import log_api_call
 from .common.user import ActiniaUser
 from .common.response_models import ProcessingResponseModel, SimpleResponseModel,\
     ProcessingResponseListModel
+from .common.interim_results import InterimResult
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
@@ -193,6 +194,110 @@ class ResourceManager(ResourceManagerBase):
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
 
+    def _check_possibility_of_new_iteration(self, response_model, user_id, resource_id):
+        """Check if it possible to start a new iteration of the process chain
+        of the resource_id. A new iteration is only possible if the status of
+        the resource is error or terminated, or running but the time_delta does
+        not change any more.
+
+        Args:
+            response_model (ProcessingResponseModel): The processing response
+                                                      model of the old iteration
+                                                      of the resource
+            user_id (str): The unique user name/id
+            resource_id (str): The id of the resource
+        """
+        error_msg = None
+        if response_model is None:
+            error_msg = "Resource has no response model"
+        if response_model['status'] in ['accepted', 'finished']:
+            error_msg = f"Resource is {response_model['status']} PUT not possible"
+        elif response_model['status'] in ['running']:
+            sleep(5)
+            _, response_data2 = self.resource_logger.get_latest_iteration(
+                user_id, resource_id)
+            if response_data2 is None:
+                error_msg = "Resource does not exist"
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource does not exist")), 400)
+            _, response_model2 = pickle.loads(response_data2)
+            if response_model2 is None:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource has no response model")), 400)
+            # check time_delta and set not running processes to error
+            if response_model['time_delta'] == response_model2['time_delta']:
+                iteration = response_model2['iteration'] if 'iteration' in \
+                    response_model2 else None
+                response_model2['status'] = 'error'
+                response_model2['message'] = "The process no longer seems to be " \
+                    "running and has therefore been set to error."
+                redis_return = self.resource_logger.commit(
+                    user_id, resource_id, iteration, pickle.dumps([200, response_model2]))
+                if redis_return is True:
+                    pass
+                else:
+                    error_msg = "Resource is running and can not be set to error"
+            else:
+                error_msg = "Resource is running no restart possible"
+        elif response_model['status'] in ['error', 'terminated']:
+            pass
+        if error_msg is not None:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message=error_msg)), 400)
+
+    def _create_ResourceDataContainer_for_resumption(self, post_url, pc_step,
+                                                     user_id, resource_id, iteration):
+        """Create the ResourceDataContainer for the resumption of the resource
+        depending on the post_url
+
+        Args:
+            post_url (str): The request url of the original resource
+            pc_step (int): The number of the process chain step where to
+                           continue the process
+            user_id (str): The unique user name/id
+            resource_id (str): The id of the resource
+            iteration (int): The number of iteration of this resource
+
+        Returns:
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
+            processing_resource (AsyncEphemeralResource/AsyncPersistentResource/
+            AsyncEphemeralExportResource): The processing resource
+            start_job (function): The start job function of the processing_resource
+        """
+        interim_result = InterimResult(user_id, resource_id)
+        if interim_result.check_interim_result_mapset(pc_step) is None:
+            return None
+        processing_type = post_url.split('/')[-1]
+        location = re.findall(r'locations\/(.*?)\/', post_url)[0]
+        if processing_type.endswith('processing_async') and 'mapsets' not in post_url:
+            # /locations/<string:location_name>/processing_async
+            from .ephemeral_processing import AsyncEphemeralResource, start_job
+            processing_resource = AsyncEphemeralResource(
+                resource_id, iteration, post_url)
+            rdc = processing_resource.preprocess(location_name=location)
+        elif processing_type.endswith('processing_async') and 'mapsets' in post_url:
+            # /locations/{location_name}/mapsets/{mapset_name}/processing_async
+            from .persistent_processing import AsyncPersistentResource, start_job
+            processing_resource = AsyncPersistentResource(
+                resource_id, iteration, post_url)
+            mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
+            rdc = processing_resource.preprocess(
+                location_name=location, mapset_name=mapset)
+        elif processing_type.endswith('processing_async_export'):
+            # /locations/{location_name}/processing_async_export
+            from .ephemeral_processing_with_export import \
+                AsyncEphemeralExportResource, start_job
+            processing_resource = AsyncEphemeralExportResource(
+                resource_id, iteration, post_url)
+            rdc = processing_resource.preprocess(
+                location_name=location)
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message=f"Processing endpoint {post_url} does not support put")), 400)
+        return rdc, processing_resource, start_job
+
     @swagger.doc({
         'tags': ['Resource Management'],
         'description': 'Updates/Resumes the status of a resource. '
@@ -231,12 +336,6 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        # check if in general interim results are saved
-        if global_config.SAVE_INTERIM_RESULTS is False:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Saving iterim results is not configured")), 400)
-
         # check if latest iteration is found
         old_iteration, response_data = self.resource_logger.get_latest_iteration(
             user_id, resource_id)
@@ -244,53 +343,12 @@ class ResourceManager(ResourceManagerBase):
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
 
-        # check if a new iteration is possible (only if status is error or
-        # terminated; or status is running but processing time is not changing
-        # any more)
-        http_code, response_model = pickle.loads(response_data)
-        if response_model is None:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error", message="Resource has no response model")), 400)
-        if response_model['status'] in ['accepted', 'finished']:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message=f"Resource is {response_model['status']} PUT not "
-                        "possible")), 400)
-        elif response_model['status'] in ['running']:
-            # check if status is running but processing time is not changing
-            # any more
-            sleep(5)
-            old_iteration2, response_data2 = self.resource_logger.get_latest_iteration(
-                user_id, resource_id)
-            if response_data2 is None:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error", message="Resource does not exist")), 400)
-            http_code2, response_model2 = pickle.loads(response_data2)
-            if response_model is None:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error", message="Resource has no response model")), 400)
-            # check time_delta
-            if response_model['time_delta'] == response_model2['time_delta']:
-                # process is not running any more and can be restarted
-                pass
-            else:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is running no restart possible")), 400)
-        elif response_model['status'] in ['error', 'terminated']:
-            pass
+        # check if a new iteration is possible
+        _, response_model = pickle.loads(response_data)
+        self._check_possibility_of_new_iteration(response_model, user_id, resource_id)
 
-        # check if interim results are saved
-        user_resource_interim_storage_path = os.path.join(
-            global_config.GRASS_RESOURCE_DIR, g.user.get_id(),
-            "interim", resource_id)
-        interim_folder = os.listdir(user_resource_interim_storage_path)
+        # get step of the process chain
         pc_step = response_model['progress']['step'] - 1
-        if interim_folder[0] != f"step{pc_step}":
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="No interim results saved in previous iteration for "
-                       f"step {str(pc_step)}")), 400)
 
         # start new iteration
         iteration = old_iteration + 1
@@ -303,38 +361,9 @@ class ResourceManager(ResourceManagerBase):
         else:
             post_url = None
 
-        # check the old processing type
-        processing_type = post_url.split('/')[-1]
-        location = re.findall(r'locations\/(.*?)\/', post_url)[0]
-        if processing_type == 'processing_async' and 'mapsets' not in post_url:
-            # '/locations/<string:location_name>/processing_async'
-            from .ephemeral_processing import AsyncEphemeralResource, start_job
-            processing_resource = AsyncEphemeralResource(
-                resource_id, iteration, post_url)
-            rdc = processing_resource.preprocess(location_name=location)
-        elif processing_type == 'processing_async' and 'mapsets' in post_url:
-            # /locations/{location_name}/mapsets/{mapset_name}/processing_async
-            from .persistent_processing import AsyncPersistentResource, start_job
-            processing_resource = AsyncPersistentResource(
-                resource_id, iteration, post_url)
-            mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
-            rdc = processing_resource.preprocess(
-                location_name=location, mapset_name=mapset)
-        elif processing_type == 'processing_async_export':
-            # /locations/{location_name}/processing_async_export
-            from .ephemeral_processing_with_export import \
-                AsyncEphemeralExportResource, start_job
-            processing_resource = AsyncEphemeralExportResource(
-                resource_id, iteration, post_url)
-            rdc = processing_resource.preprocess(
-                location_name=location)
-        else:
-            # TODO ?
-            # /locations/{location_name}/gdi_processing_async_export
-            # /locations/{location_name}/mapsets/{mapset_name}/gdi_processing_async
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message=f"Processing endpoint {post_url} does not support put")), 400)
+        rdc, processing_resource, start_job = \
+            self._create_ResourceDataContainer_for_resumption(
+                post_url, pc_step, user_id, resource_id, iteration)
 
         # enqueue job
         if rdc:
@@ -387,13 +416,13 @@ class ResourceManager(ResourceManagerBase):
         if not resource_id.startswith('resource_id-'):
             resource_id = 'resource_id-%s' % resource_id
 
-        _, doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
+        iteration, doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if doc is None:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
 
-        self.resource_logger.commit_termination(user_id, resource_id)
+        self.resource_logger.commit_termination(user_id, resource_id, iteration)
 
         return make_response(jsonify(SimpleResponseModel(
             status="accepted", message="Termination request committed")), 200)
