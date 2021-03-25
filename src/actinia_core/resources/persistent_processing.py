@@ -40,7 +40,6 @@ from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .common.process_chain import ProcessChainModel
 from .common.response_models import ProcessingResponseModel
-from .common.interim_results import InterimResult
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -654,7 +653,8 @@ class PersistentProcessing(EphemeralProcessing):
                 process_chain=process_chain_trimmed,
                 old_process_chain=process_chain_complete,)
             # check iterim results
-            interim_result_mapset = self.interim_result.check_interim_result_mapset(pc_step)
+            interim_result_mapset = self.interim_result.check_interim_result_mapset(
+                pc_step)
         else:
             # Create the process chain
             process_list = self._validate_process_chain()

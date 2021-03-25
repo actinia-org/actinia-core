@@ -644,8 +644,7 @@ class EphemeralProcessing(object):
         """
 
         if old_process_chain is not None:
-            old_process_list = self.proc_chain_converter.process_chain_to_process_list(
-                old_process_chain)
+            self.proc_chain_converter.process_chain_to_process_list(old_process_chain)
 
         # Backward compatibility
         if process_chain is None:

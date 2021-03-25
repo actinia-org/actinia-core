@@ -43,10 +43,6 @@ def get_directory_size(directory):
     Args:
         directory (string): The path to a directory
 
-    Raises:
-        NotADirectoryError:
-        PermissionError:
-
     Returns:
         total: the size of the directory in bytes
 
@@ -69,6 +65,11 @@ class InterimResult(object):
     """This class manages the interim results
     """
     def __init__(self, user_id, resource_id):
+        """Init method for InterimResult class
+        Args:
+            user_id (str): The unique user name/id
+            resource_id (str): The id of the resource
+        """
         self.logger = MessageLogger()
         self.user_resource_interim_storage_path = os.path.join(
             global_config.GRASS_RESOURCE_DIR, user_id, "interim")
@@ -76,7 +77,14 @@ class InterimResult(object):
         self.resource_id = resource_id
 
     def _get_step_folder_name(self, pc_step):
-        """TODO
+        """Return the name of the interim folder for the process chain step
+        Args:
+            pc_step (int): The number of the step in the process chain where to
+                           continue
+
+        Returns:
+            (str): The name of the interim folder for the process chain step
+
         """
         return f"step{pc_step}"
 
@@ -101,7 +109,7 @@ class InterimResult(object):
                 self.user_resource_interim_storage_path, self.resource_id))
         else:
             iterim_error = True
-            msg = f"No interim results saved in previous iteration"
+            msg = "No interim results saved in previous iteration"
         if interim_folder[0] != f"step{pc_step}":
             iterim_error = True
             msg = f"No interim results saved in previous iteration for step {pc_step}"
@@ -114,7 +122,14 @@ class InterimResult(object):
                 self._get_step_folder_name(pc_step))
 
     def _compare_sha512sums_of_folders(self, folder1, folder2):
-        """ TODO
+        """Compares the sha512sums of two folders.
+        Args:
+            folder1 (str): Path to one folder
+            folder2 (str): Path to another folder
+
+        Returns:
+            (bool): A boolean "True" if the sha512sums of the folder are the same
+                    otherwise "False" (also if one of the folder does not exist)
         """
         for folder in [folder1, folder2]:
             if not os.path.isdir(folder):
@@ -141,7 +156,14 @@ class InterimResult(object):
             return False
 
     def rsync_mapsets(self, src, dest):
-        """TODO"""
+        """Using rsync to update the mapset folder.
+        Args:
+            src (str): Path of the source mapset
+            dest (str): Path to destination mapset (where to rsync the src mapset)
+
+        Returns:
+            (str): "success" if the rsync has worked otherwise "error"
+        """
         rsync_cmd = [
             "rsync",
             "--recursive",
@@ -189,7 +211,8 @@ class InterimResult(object):
                 self._get_step_folder_name(progress_step - 1))
 
             # check if mapset has changed
-            same_mapsets = self._compare_sha512sums_of_folders(old_dest, temp_mapset_path)
+            same_mapsets = self._compare_sha512sums_of_folders(
+                old_dest, temp_mapset_path)
             if same_mapsets is True:
                 self.logger.info(
                     "Sha512sums of maspsets are equal; renaming interim result")
