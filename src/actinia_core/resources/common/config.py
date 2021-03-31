@@ -478,5 +478,13 @@ class Configuration(object):
                     self.S3_AWS_RESOURCE_BUCKET = config.get(
                         "AWS_S3", "S3_AWS_RESOURCE_BUCKET")
 
+        # Overwrite values with environment variables if exist:
+        if os.environ.get('REDIS_SERVER_URL'):
+            self.REDIS_SERVER_URL = os.environ['REDIS_SERVER_URL']
+        if os.environ.get('REDIS_SERVER_PORT'):
+            self.REDIS_SERVER_PORT = os.environ['REDIS_SERVER_PORT']
+        if os.environ.get('REDIS_SERVER_PW'):
+            self.REDIS_SERVER_PW = os.environ['REDIS_SERVER_PW']
+
 
 global_config = Configuration()
