@@ -478,5 +478,28 @@ class Configuration(object):
                     self.S3_AWS_RESOURCE_BUCKET = config.get(
                         "AWS_S3", "S3_AWS_RESOURCE_BUCKET")
 
+        def print_warning(cfg_section, cfg_key, file_val=None, env_val=None):
+            if env_val is None:
+                env_val = os.environ[cfg_key]
+            if config.has_option(cfg_section, cfg_key):
+                if file_val is None:
+                    file_val = config.get(cfg_section, cfg_key)
+                print("Config for %s from config file with value '%s' will be"
+                      " overwritten by environment variable with value '%s'." %
+                      (cfg_key, file_val, env_val))
+
+        # Overwrite values with environment variables if exist:
+        if os.environ.get('REDIS_SERVER_URL'):
+            print_warning("REDIS", "REDIS_SERVER_URL")
+            self.REDIS_SERVER_URL = os.environ['REDIS_SERVER_URL']
+
+        if os.environ.get('REDIS_SERVER_PORT'):
+            print_warning("REDIS", "REDIS_SERVER_PORT")
+            self.REDIS_SERVER_PORT = os.environ['REDIS_SERVER_PORT']
+
+        if os.environ.get('REDIS_SERVER_PW'):
+            print_warning("REDIS", "REDIS_SERVER_PW", "XXX", "XXX")
+            self.REDIS_SERVER_PW = os.environ['REDIS_SERVER_PW']
+
 
 global_config = Configuration()
