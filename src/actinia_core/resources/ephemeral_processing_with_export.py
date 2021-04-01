@@ -243,6 +243,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             p = Process(exec_type="grass",
                         executable="g.region",
                         executable_params=["raster=%s" % raster_name, "-g"],
+                        id=f"exporter_region_{raster_name}",
                         stdin_source=None)
 
             self._update_num_of_steps(1)
@@ -285,6 +286,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         p = Process(exec_type="grass",
                     executable=module_name,
                     executable_params=args,
+                    id=f"exporter_raster_{raster_name}",
                     stdin_source=None)
 
         self._update_num_of_steps(1)
@@ -346,6 +348,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         p = Process(exec_type="grass",
                     executable=module_name,
                     executable_params=args,
+                    id=f"exporter_vector_{vector_name}",
                     stdin_source=None)
 
         self._update_num_of_steps(1)
@@ -360,6 +363,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         p = Process(exec_type="exec",
                     executable=executable,
                     executable_params=args,
+                    id=f"exporter_zip_{vector_name}",
                     stdin_source=None)
 
         self._update_num_of_steps(1)
@@ -397,6 +401,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         p = Process(exec_type="grass",
                     executable=module_name,
                     executable_params=args,
+                    id=f"exporter_postgis_{vector_name}",
                     stdin_source=None)
 
         self._update_num_of_steps(1)
@@ -435,6 +440,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         p = Process(exec_type="exec",
                     executable=executable,
                     executable_params=args,
+                    id=f"exporter_file_{file_name}",
                     stdin_source=None)
 
         self._update_num_of_steps(1)
@@ -452,6 +458,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         At the moment only raster layer export is supported.
 
         """
+
         for resource in self.resource_export_list:
 
             # print("Check for termination %i"
@@ -459,7 +466,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
             # Check for termination requests between the exports
             if bool(self.resource_logger.get_termination(
-                    self.user_id, self.resource_id)) is True:
+                    self.user_id, self.resource_id, self.iteration)) is True:
                 raise AsyncProcessTermination(
                     "Resource export was terminated by user request")
 
