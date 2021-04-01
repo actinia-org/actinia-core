@@ -96,7 +96,7 @@ def enqueue_job(timeout, func, *args):
     process_queue.put((func, timeout, args))
 
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
-
+    #
     # # for '/locations/<string:location_name>/processing_async'
     # from ..ephemeral_processing import \
     #     AsyncEphemeralResource, start_job, EphemeralProcessing

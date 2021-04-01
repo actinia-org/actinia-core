@@ -582,43 +582,32 @@ class EphemeralProcessing(object):
             self.message_logger.error(
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
 
-    def _trim_process_chain(self):
-        """Helper method to:
-
-        - check the old resource run and get the step of the process chain
-          where to continue
-        - trim the process chain
+    def _old_process_chain(self):
+        """Helper method to check the old resource run and get the step of the
+        process chain where to continue
 
         Returns:
-            process_chain_trimmed (dict): The trimmed process chain to resumpt
-                                          the job
             pc_step (int): The number of the step in the process chain where to
                            continue
+           old_process_chain (dict): The process chain of the old resource run
         """
         # check old resource
-        process_chain_complete = self.request_data
         old_response_data = self.resource_logger.get(
             self.user_id, self.resource_id, self.rdc.iteration-1)
         if old_response_data is None:
             return None
-        http_code, response_model = pickle.loads(old_response_data)
+        _, response_model = pickle.loads(old_response_data)
         self.module_output_dict = {
             element['id']: element for element in response_model['process_log']}
 
-        # create a trimmed process chain without the successful steps
         pc_step = response_model['progress']['step'] - 1
-        if pc_step >= 0:
-            process_chain_trimmed = process_chain_complete.copy()
-            del process_chain_trimmed['list']
-            process_chain_trimmed['list'] = process_chain_complete['list'][pc_step:]
-        else:
-            process_chain_trimmed = process_chain_complete
+        old_process_chain = response_model['process_chain_list'][0]
 
-        return process_chain_trimmed, pc_step, process_chain_complete
+        return pc_step, old_process_chain
 
     def _validate_process_chain(self, process_chain=None,
                                 skip_permission_check=False,
-                                old_process_chain=None):
+                                old_process_chain=None, pc_step=None):
         """
         Create the process list and check for user permissions.
 
@@ -635,6 +624,9 @@ class EphemeralProcessing(object):
             skip_permission_check (bool): If set True, the permission checks
                                           of module access and process num
                                           limits are not performed
+            old_process_chain (dict): The process chain of the previouse
+                                      resource run to be checked and converted
+                                      for e.g. stdout
 
         Raises:
             This function raises AsyncProcessError in case of an error.
@@ -645,6 +637,7 @@ class EphemeralProcessing(object):
 
         if old_process_chain is not None:
             self.proc_chain_converter.process_chain_to_process_list(old_process_chain)
+            self.proc_chain_converter.import_descr_list = list()
 
         # Backward compatibility
         if process_chain is None:
@@ -655,6 +648,8 @@ class EphemeralProcessing(object):
             process_list = self.proc_chain_converter.process_chain_to_process_list(
                 process_chain)
             self.process_chain_list.append(process_chain)
+        if pc_step is not None:
+            del process_list[:pc_step]
 
         # Check for the webhook
         if (hasattr(self.proc_chain_converter, 'webhook_finished')
@@ -1517,15 +1512,13 @@ class EphemeralProcessing(object):
         # Setup the user credentials and logger
         self._setup()
 
-        # check old resource
-        process_chain_trimmed, pc_step, process_chain_complete = \
-            self._trim_process_chain()
-
         # Create and check the process chain
+        pc_step, old_process_chain_list = self._old_process_chain()
         process_list = self._validate_process_chain(
-            process_chain=process_chain_trimmed,
-            old_process_chain=process_chain_complete,
-            skip_permission_check=skip_permission_check)
+            process_chain=self.request_data,
+            old_process_chain=old_process_chain_list,
+            skip_permission_check=skip_permission_check,
+            pc_step=pc_step)
 
         # check iterim results
         interim_result_mapset = self.interim_result.check_interim_result_mapset(pc_step)
