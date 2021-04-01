@@ -267,7 +267,8 @@ class EphemeralProcessing(object):
         self.iteration = self.rdc.iteration
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
-        self.interim_result = InterimResult(self.user_id, self.resource_id)
+        self.interim_result = InterimResult(
+            self.user_id, self.resource_id, self.iteration)
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
         # User database base path, this path will be
@@ -638,6 +639,7 @@ class EphemeralProcessing(object):
         if old_process_chain is not None:
             self.proc_chain_converter.process_chain_to_process_list(old_process_chain)
             self.proc_chain_converter.import_descr_list = list()
+            self.proc_chain_converter.resource_export_list = list()
 
         # Backward compatibility
         if process_chain is None:
@@ -1521,7 +1523,8 @@ class EphemeralProcessing(object):
             pc_step=pc_step)
 
         # check iterim results
-        interim_result_mapset = self.interim_result.check_interim_result_mapset(pc_step)
+        interim_result_mapset = self.interim_result.check_interim_result_mapset(
+            pc_step, self.iteration - 1)
         if interim_result_mapset is None:
             return None
 

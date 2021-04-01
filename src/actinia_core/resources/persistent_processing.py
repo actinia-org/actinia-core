@@ -654,7 +654,7 @@ class PersistentProcessing(EphemeralProcessing):
                 pc_step=pc_step)
             # check iterim results
             interim_result_mapset = self.interim_result.check_interim_result_mapset(
-                pc_step)
+                pc_step, self.rdc.iteration - 1)
         else:
             # Create the process chain
             process_list = self._validate_process_chain()

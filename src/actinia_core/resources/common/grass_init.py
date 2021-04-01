@@ -168,13 +168,6 @@ class GrassGisRC(ProcessLogging):
         ATTENTION: Here the TGIS_DISABLE_MAPSET_CHECK variable is set True
         to allow map registering from none-current mapsets
     """
-    # def __init__(self):
-    #
-    #     ProcessLogging.__init__(self)
-    #     self.location_name = None
-    #     self.mapset = None
-    #     self.gisdbase = ""
-    #     self.__gisrc_ile = ""
 
     def __init__(self, gisdbase, location_name, mapset):
         ProcessLogging.__init__(self)

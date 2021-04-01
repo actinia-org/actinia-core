@@ -265,8 +265,8 @@ class ResourceManager(ResourceManagerBase):
             AsyncEphemeralExportResource): The processing resource
             start_job (function): The start job function of the processing_resource
         """
-        interim_result = InterimResult(user_id, resource_id)
-        if interim_result.check_interim_result_mapset(pc_step) is None:
+        interim_result = InterimResult(user_id, resource_id, iteration)
+        if interim_result.check_interim_result_mapset(pc_step, iteration-1) is None:
             return None
         processing_type = post_url.split('/')[-1]
         location = re.findall(r'locations\/(.*?)\/', post_url)[0]
