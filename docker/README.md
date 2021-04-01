@@ -144,13 +144,13 @@ docker-compose -f docker-compose-prod.yml up -d
 Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnarability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the build-in actinia-user cli. __Please change below username (-u) and password (-w)__:
 ```
 # list help about the cli tool:
-docker-compose -f docker-compose-prod.yml exec actinia-core \
+docker-compose -f docker-compose-prod.yml exec actinia \
     actinia-user --help
 
 # create a user and grant permissions to mapsets:
-docker-compose -f docker-compose-prod.yml exec actinia-core \
+docker-compose -f docker-compose-prod.yml exec actinia \
     actinia-user create -u actinia-core -w actinia-core -r user -g user -c 100000000 -n 1000 -t 6000
-docker-compose -f docker-compose-prod.yml exec actinia-core \
+docker-compose -f docker-compose-prod.yml exec actinia \
     actinia-user update -u actinia-core -d nc_spm_08/PERMANENT
 ```
 Read more about user roles here: https://actinia.mundialis.de/tutorial/actinia_concepts.html#user-user-roles-and-user-groups

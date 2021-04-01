@@ -1,7 +1,7 @@
 version: "3"
 services:
 
-  actinia-core:
+  actinia:
     build:
       context: actinia-core-prod/
     volumes:
