@@ -1,4 +1,4 @@
-name: ci
+name: Docker build
 
 on:
   push:
@@ -12,6 +12,9 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -31,6 +34,7 @@ jobs:
         with:
           push: true
           tags: user/app:latest
+          context: .
           file: docker/actinia-core-alpine/Dockerfile
           no-cache: false
       -
