@@ -21,6 +21,8 @@ jobs:
     - name: test
       run: |
         ls
+        ls docker
+        ls docker/actinia-core-tests
     #   id: buildx
     #   with:
     #     install: true
@@ -33,18 +35,18 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: false
-        tags: actinia-core:latest-alpine
+        tags: actinia-core-tests:0.99.24-alpine
         context: .
         file: docker/actinia-core-tests/Dockerfile
         no-cache: true
         # pull: true
-    # - name: Build tests
+    # - name: Build actinia tests
     #   id: docker_build
     #   uses: docker/build-push-action@v2
     #   with:
     #     push: false
     #     tags: actinia-core-test:latest-alpine
     #     context: .
-    #     file: docker/actinia-core-tests/Dockerfile-alpine
+    #     file: docker/actinia-core-tests/Dockerfile
     #     no-cache: true
     #     pull: false
