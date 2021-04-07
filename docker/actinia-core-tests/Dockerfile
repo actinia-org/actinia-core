@@ -8,9 +8,7 @@ WORKDIR /src/actinia_core
 
 # uninstall actinia core from FROM-image
 RUN pip3 uninstall actinia-core -y
-
-RUN git describe --dirty --tags --long --first-parent
-RUN python3 setup.py sdist bdist_wheel -d /build
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages
