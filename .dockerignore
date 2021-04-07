@@ -1,4 +1,4 @@
-#docker
+docker
 !docker/grass_addons_list.csv
 !docker/actinia-core-ubuntu/snap
 !docker/actinia-core-ubuntu/actinia.cfg
