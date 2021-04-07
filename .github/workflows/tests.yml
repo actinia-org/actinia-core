@@ -1,0 +1,38 @@
+name: actinia tests
+
+on:
+- push
+- pull_request
+
+jobs:
+
+  alpine-tests:
+    runs-on: ubuntu-latest
+    steps:
+    # - name: Checkout
+    #   uses: actions/checkout@v2
+    - name: Set up QEMU
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    # - name: Build actinia
+    #   id: docker_build
+    #   uses: docker/build-push-action@v2
+    #   with:
+    #     push: false
+    #     tags: actinia-core:latest-alpine
+    #     context: .
+    #     file: docker/actinia-core-alpine/Dockerfile
+    #     no-cache: false
+    #     # pull: true
+    - run: ls > tmp.txt
+    - name: Build tests
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        tags: actinia-core-test:latest-alpine
+        context: .
+        file: docker/actinia-core-tests/Dockerfile-alpine
+        no-cache: true
+        pull: false
