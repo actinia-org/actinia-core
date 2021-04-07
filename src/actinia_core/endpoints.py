@@ -215,7 +215,7 @@ def create_core_endpoints():
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(
         ResourceIterationManager,
-        '/resources/<string:user_id>/<string:resource_id>/<string:iteration>')
+        '/resources/<string:user_id>/<string:resource_id>/<int:iteration>')
     flask_api.add_resource(
         RequestStreamerResource,
         '/resources/<string:user_id>/<string:resource_id>/<string:file_name>')

@@ -648,6 +648,7 @@ class PersistentProcessing(EphemeralProcessing):
         if self.rdc.iteration is not None:
             # Create the process chain
             pc_step, old_process_chain_list = self._old_process_chain()
+            self.interim_result.set_old_pc_step(pc_step)
             process_list = self._validate_process_chain(
                 process_chain=self.request_data,
                 old_process_chain=old_process_chain_list,

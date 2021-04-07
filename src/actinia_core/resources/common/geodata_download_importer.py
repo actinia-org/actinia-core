@@ -231,7 +231,8 @@ class GeoDataDownloadImportSupport(object):
         """
         p = Process(exec_type="exec", executable="/bin/mv",
                     executable_params=[file_path, file_name],
-                    id=f"mv_{os.path.basename(file_path)}_to_{os.path.basename(file_name)}",
+                    id=f"mv_{os.path.basename(file_path)}_to_"
+                       f"{os.path.basename(file_name)}",
                     skip_permission_check=True)
         return p
 

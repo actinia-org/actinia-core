@@ -349,6 +349,13 @@ class ResourceManager(ResourceManagerBase):
 
         # get step of the process chain
         pc_step = response_model['progress']['step'] - 1
+        for iter in range(old_iteration - 1, 0, -1):
+            old_response_data = self.resource_logger.get(
+                user_id, resource_id, iter)
+            if old_response_data is None:
+                return None
+            _, old_response_model = pickle.loads(old_response_data)
+            pc_step += old_response_model['progress']['step'] - 1
 
         # start new iteration
         iteration = old_iteration + 1
@@ -618,7 +625,7 @@ class ResourceIterationManager(ResourceManagerBase):
                 'description': 'The id of the resource',
                 'required': True,
                 'in': 'path',
-                'type': 'string'
+                'type': 'integer'
             }
         ],
         'responses': {
@@ -642,12 +649,8 @@ class ResourceIterationManager(ResourceManagerBase):
         if not resource_id.startswith('resource_id-'):
             resource_id = 'resource_id-%s' % resource_id
 
-        if iteration == 'latest':
-            iteration, response_data = self.resource_logger.get_latest_iteration(
-                user_id, resource_id,)
-        else:
-            response_data = self.resource_logger.get(
-                user_id, resource_id, int(iteration))
+        response_data = self.resource_logger.get(
+            user_id, resource_id, int(iteration))
 
         if response_data is not None:
             http_code, tmp_response_model = pickle.loads(response_data)

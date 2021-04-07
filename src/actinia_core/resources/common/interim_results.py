@@ -69,6 +69,8 @@ class InterimResult(object):
         Args:
             user_id (str): The unique user name/id
             resource_id (str): The id of the resource
+            old_pc_step (int): The number of the successfully finished steps of
+                               the process chain in the previous iteration
         """
         self.logger = MessageLogger()
         self.user_resource_interim_storage_path = os.path.join(
@@ -76,8 +78,19 @@ class InterimResult(object):
         self.saving_interim_results = global_config.SAVE_INTERIM_RESULTS
         self.resource_id = resource_id
         self.iteration = iteration if iteration is not None else 1
+        self.old_pc_step = None
 
-    def _get_step_folder_name(self, pc_step, iteration):
+    def set_old_pc_step(self, old_pc_step):
+        """Set method for the number of the successfully finished steps of
+        the process chain in the previous iteration
+
+        Args:
+            old_pc_step (int): The number of the successfully finished steps of
+                               the process chain in the previous iteration
+        """
+        self.old_pc_step = old_pc_step
+
+    def _get_step_folder_name(self, pc_step):
         """Return the name of the interim folder for the process chain step
         Args:
             pc_step (int): The number of the step in the process chain where to
@@ -87,8 +100,7 @@ class InterimResult(object):
             (str): The name of the interim folder for the process chain step
 
         """
-        iter = iteration if iteration is not None else 1
-        return f"iteration{iter}_step{pc_step}"
+        return f"step{pc_step}"
 
     def check_interim_result_mapset(self, pc_step, iteration):
         """Helper method to check if the interim result mapset is saved
@@ -112,7 +124,8 @@ class InterimResult(object):
         else:
             iterim_error = True
             msg = "No interim results saved in previous iteration"
-        if self._get_step_folder_name(pc_step, iteration) not in interim_folder:
+
+        if self._get_step_folder_name(pc_step) not in interim_folder:
             iterim_error = True
             msg = f"No interim results saved in previous iteration for step {pc_step}"
         if iterim_error is True:
@@ -121,7 +134,7 @@ class InterimResult(object):
 
         return os.path.join(
                 self.user_resource_interim_storage_path, self.resource_id,
-                self._get_step_folder_name(pc_step, iteration))
+                self._get_step_folder_name(pc_step))
 
     def _compare_sha512sums_of_folders(self, folder1, folder2):
         """Compares the sha512sums of two folders.
@@ -195,12 +208,14 @@ class InterimResult(object):
         `user_resource_interim_storage_path` by copying the directory or
         rsyncing it
         """
+        if self.old_pc_step is not None:
+            progress_step += self.old_pc_step
         self.logger.info(
             "Saving interim results of step %d" % progress_step)
         dest_base_path = self.user_resource_interim_storage_path
         dest = os.path.join(
             dest_base_path, self.resource_id,
-            self._get_step_folder_name(progress_step, self.iteration))
+            self._get_step_folder_name(progress_step))
 
         if progress_step == 1:
             # copy temp mapset for first step
@@ -210,7 +225,7 @@ class InterimResult(object):
         else:
             old_dest = os.path.join(
                 dest_base_path, self.resource_id,
-                self._get_step_folder_name(progress_step - 1, self.iteration))
+                self._get_step_folder_name(progress_step - 1))
 
             # check if mapset has changed
             same_mapsets = self._compare_sha512sums_of_folders(

@@ -593,15 +593,18 @@ class EphemeralProcessing(object):
            old_process_chain (dict): The process chain of the old resource run
         """
         # check old resource
-        old_response_data = self.resource_logger.get(
-            self.user_id, self.resource_id, self.rdc.iteration-1)
-        if old_response_data is None:
-            return None
-        _, response_model = pickle.loads(old_response_data)
-        self.module_output_dict = {
-            element['id']: element for element in response_model['process_log']}
+        pc_step = 0
 
-        pc_step = response_model['progress']['step'] - 1
+        for iter in range(1, self.rdc.iteration):
+            old_response_data = self.resource_logger.get(
+                self.user_id, self.resource_id, iter)
+            if old_response_data is None:
+                return None
+            _, response_model = pickle.loads(old_response_data)
+            for element in response_model['process_log']:
+                self.module_output_dict[element['id']] = element
+
+            pc_step += response_model['progress']['step'] - 1
         old_process_chain = response_model['process_chain_list'][0]
 
         return pc_step, old_process_chain
@@ -1516,6 +1519,7 @@ class EphemeralProcessing(object):
 
         # Create and check the process chain
         pc_step, old_process_chain_list = self._old_process_chain()
+        self.interim_result.set_old_pc_step(pc_step)
         process_list = self._validate_process_chain(
             process_chain=self.request_data,
             old_process_chain=old_process_chain_list,
