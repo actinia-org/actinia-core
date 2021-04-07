@@ -49,6 +49,7 @@ docker/redis_data/dump.rdb
 !docker/actinia-core-prod/actinia.cfg
 !docker/actinia-core-alpine/actinia.cfg
 !docker/actinia-core-alpine/actinia-test.cfg
+!docker/actinia-core-tests/actinia-test.cfg
 docker/build
 docker/actinia-core-data/grassdb
 docker/actinia-core-data/resources
