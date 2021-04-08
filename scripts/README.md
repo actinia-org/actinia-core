@@ -282,11 +282,11 @@ which will deliver the output:
 
 At time (more to come) the following export formats are currently supported:
 
-* raster: `GTiff`, `COG`
-* vector: `ESRI_Shapefile`, `GeoJSON`, `GML`
+* raster: `COG` (requires GDAL >= 3.1 on server), `GTiff`
+* vector: `GPKG`, `GML`, `GeoJSON`, `ESRI_Shapefile`, `SQLite`, `CSV`
+* database: `PostgreSQL`
 * table: `CSV`, `TXT`
 
-The vector formats will be extended in future versions of actina with Geopackage and SQLite formats.
 
 ## Displaying a map - map rendering
 
@@ -598,7 +598,7 @@ acp location="nc_spm_08" grass_command="r.info slope_elev@test_mapset"
 
 ```bash
 # create new location
-ace create-location="mylatlon 4326"
+ace create_location="mylatlon 4326"
 # create new mapset within location
 ace location="mylatlon" create_mapset="user1"
 ```

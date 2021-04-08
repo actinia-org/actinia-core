@@ -1190,6 +1190,14 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
     # if issubclass(response_model_class, ProcessingResponseModel) is False:
     #    raise IOError
 
+    # if webhook auth is given set pw to XXX
+    for i in range(len(process_chain_list)):
+        if ('webhooks' in process_chain_list[i]
+                and 'auth' in process_chain_list[i]['webhooks']):
+            webhook_auth = process_chain_list[i]['webhooks']['auth']
+            process_chain_list[i]['webhooks']['auth'] = \
+                f"{webhook_auth.split(':')[0]}:XXX"
+
     resp_dict = response_model_class(status=status,
                                      user_id=user_id,
                                      resource_id=resource_id,

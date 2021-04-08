@@ -1,14 +1,14 @@
 FROM mundialis/actinia-core:0.99
 
-# Copy actinia config file and start scripts
 COPY actinia.cfg /etc/default/actinia
 COPY start.sh /src/start.sh
 
-WORKDIR /src/actinia_core
-RUN python3 setup.py install
+# Let actinia run as non-root user
+ARG USER_ID=1000
+ARG GROUP_ID=1000
 
-EXPOSE 8088
-EXPOSE 9191
+RUN addgroup -g $GROUP_ID user
+RUN adduser -D -g '' -u $USER_ID -G user user
+RUN chown -R user:user /src/
 
-ENTRYPOINT ["/bin/bash"]
-CMD ["/src/start.sh"]
+USER user
