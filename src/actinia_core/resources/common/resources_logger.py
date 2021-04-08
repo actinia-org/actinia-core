@@ -101,7 +101,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         self.send_to_logger("RESOURCE_LOG", data)
         return redis_return
 
-    def commit_termination(self, user_id, resource_id, iteration, expiration=3600):
+    def commit_termination(self, user_id, resource_id, iteration=None, expiration=3600):
         """Commit a resource entry to the database that requires the
         termination of the resource, create a new one if it does not exists,
         update existing resource entries
@@ -123,7 +123,7 @@ class ResourceLogger(RedisFluentLoggerBase):
             user_id, resource_id, iteration)
         return bool(self.db.set_termination(db_resource_id, expiration))
 
-    def get(self, user_id, resource_id, iteration):
+    def get(self, user_id, resource_id, iteration=None):
         """Get resource entry
 
         Args:
@@ -136,12 +136,10 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
-        if iteration == 1:
-            iteration = None
         db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return self.db.get(db_resource_id)
 
-    def get_latest_iteration(self, user_id, resource_id):
+    def get_latest_iteration(self, user_id, resource_id=None):
         """Get resource entry with latest iteration
 
         Args:
@@ -251,7 +249,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return self.db.get_termination(db_resource_id)
 
-    def delete(self, user_id, resource_id, iteration):
+    def delete(self, user_id, resource_id, iteration=None):
         """Delete resource entry
 
         Args:
@@ -267,7 +265,7 @@ class ResourceLogger(RedisFluentLoggerBase):
         db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
         return bool(self.db.delete(db_resource_id))
 
-    def delete_termination(self, user_id, resource_id, iteration):
+    def delete_termination(self, user_id, resource_id, iteration=None):
         """Delete resource termination entry
 
         Args:
