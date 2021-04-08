@@ -1,7 +1,7 @@
-FROM mundialis/actinia-core:0.99.24 as actinia_test
+FROM mundialis/actinia-core:0.99.26 as actinia_test
 
-LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+LABEL authors="Carmen Tawalika,Anika Weinmann"
+LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
@@ -13,6 +13,12 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 # Duplicate install actinia_core requirements. They are already wheels in
 # /build folder, keep to check match of required packages
 COPY requirements.txt /src/requirements.txt
+RUN rm -rf /build && \
+  python3 setup.py sdist bdist_wheel -d /build
+# Install actinia-core
+# the problem with getting broken 20.0.1 seems to be overcome, the outcommenting
+# RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
+RUN pip3 install /build/*
 RUN pip3 install -r /src/requirements.txt
 
 # needed files for test
@@ -35,12 +41,12 @@ RUN apk add redis
 RUN pip3 install iniconfig colorlog
 
 # add data for tests
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
+RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
   unzip nc_spm_08_micro.zip && \
   rm -f nc_spm_08_micro.zip && \
   mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
+RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
   unzip nc_spm_mapset_modis2015_2016_lst.zip && \
   rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
