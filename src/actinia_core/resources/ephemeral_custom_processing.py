@@ -120,6 +120,7 @@ class EphemeralCustomProcessing(EphemeralProcessing):
         p = Process(exec_type="exec",
                     executable=self.executable,
                     executable_params=self.executable_params,
+                    id=f"exec_{self.executable}",
                     stdin_source=None)
 
         self._run_process(p)

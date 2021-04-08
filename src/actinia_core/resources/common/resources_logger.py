@@ -51,7 +51,18 @@ class ResourceLogger(RedisFluentLoggerBase):
         del redis_args
 
     @staticmethod
-    def _generate_db_resource_id(user_id, resource_id, iteration):
+    def _generate_db_resource_id(user_id, resource_id, iteration=None):
+        """Generate DB resource id
+
+        Args:
+            user_id (str): The user id
+            resource_id (str): The resource id
+            iteration (int): The iteration of the job
+
+        Returns:
+            str: The generated DB resource id
+
+        """
         if iteration is None:
             return "%s/%s" % (user_id, resource_id)
         else:
@@ -152,6 +163,8 @@ class ResourceLogger(RedisFluentLoggerBase):
         else:
             db_resource_id = max(db_keys)
         iteration = self._get_iteration_from_db_resource_id(db_resource_id)
+        if iteration == 1:
+            iteration = None
         return iteration, self.db.get(db_resource_id)
 
     def get_all_iteration(self, user_id, resource_id):
@@ -222,7 +235,7 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         return resource_list
 
-    def get_termination(self, user_id, resource_id, iteration):
+    def get_termination(self, user_id, resource_id, iteration=None):
         """Get resource entry that requires the termination of the resource
 
         Args:

@@ -846,6 +846,7 @@ class ProcessChainConverter(object):
                 input_file, map_name = import_file_info[band]
                 p = Process(exec_type="grass",
                             executable="g.rename",
+                            id=f"rename_{entry['value']}",
                             executable_params=[
                                 "raster=%s,%s" % (map_name, entry["value"]), ])
                 downimp_list.append(p)

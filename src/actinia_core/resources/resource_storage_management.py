@@ -142,6 +142,7 @@ class ResourceStorageSize(EphemeralProcessing):
 
             self._run_process(Process(exec_type="exec",
                                       executable=executable,
+                                      id="compute_download_cache_size",
                                       executable_params=args))
 
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
@@ -186,6 +187,7 @@ class ResourceStorageDelete(PersistentProcessing):
 
             self._run_process(Process(exec_type="exec",
                                       executable=executable,
+                                      id="delete_user_specific_resource_directory",
                                       executable_params=args))
 
             os.mkdir(self.user_resource_storage_path)
