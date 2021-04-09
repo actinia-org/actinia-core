@@ -6,7 +6,6 @@ docker
 !docker/actinia-core-ubuntu/start-dev.sh
 !docker/actinia-core-dev/actinia.cfg
 !docker/actinia-core-prod/actinia.cfg
-!docker/actinia-core-tests/actinia.cfg
 !docker/actinia-core-alpine/actinia.cfg
 !docker/actinia-core-tests/actinia-test.cfg
 !docker/actinia-core-alpine/start.sh

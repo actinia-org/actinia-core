@@ -16,8 +16,6 @@ COPY requirements.txt /src/requirements.txt
 RUN rm -rf /build && \
   python3 setup.py sdist bdist_wheel -d /build
 # Install actinia-core
-# the problem with getting broken 20.0.1 seems to be overcome, the outcommenting
-# RUN apk add curl && curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py && python3 get-pip.py pip==20.0.2 && rm get-pip.py
 RUN pip3 install /build/*
 RUN pip3 install -r /src/requirements.txt
 
