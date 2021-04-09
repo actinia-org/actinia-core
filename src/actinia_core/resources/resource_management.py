@@ -331,6 +331,10 @@ class ResourceManager(ResourceManagerBase):
      })
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
+        if global_config.SAVE_INTERIM_RESULTS is not True:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Interim results are not set in the configureation")), 400)
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
