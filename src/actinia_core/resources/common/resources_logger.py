@@ -118,7 +118,6 @@ class ResourceLogger(RedisFluentLoggerBase):
             True for success, False otherwise
 
         """
-
         db_resource_id = self._generate_db_resource_id(
             user_id, resource_id, iteration)
         return bool(self.db.set_termination(db_resource_id, expiration))

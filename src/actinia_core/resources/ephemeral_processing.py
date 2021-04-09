@@ -596,8 +596,12 @@ class EphemeralProcessing(object):
         pc_step = 0
 
         for iter in range(1, self.rdc.iteration):
-            old_response_data = self.resource_logger.get(
-                self.user_id, self.resource_id, iter)
+            if iter == 1:
+                old_response_data = self.resource_logger.get(
+                    self.user_id, self.resource_id)
+            else:
+                old_response_data = self.resource_logger.get(
+                    self.user_id, self.resource_id, iter)
             if old_response_data is None:
                 return None
             _, response_model = pickle.loads(old_response_data)

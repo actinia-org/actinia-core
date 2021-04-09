@@ -339,6 +339,7 @@ class ResourceManager(ResourceManagerBase):
         # check if latest iteration is found
         old_iteration, response_data = self.resource_logger.get_latest_iteration(
             user_id, resource_id)
+        old_iteration = 1 if old_iteration is None else old_iteration
         if response_data is None:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
@@ -350,8 +351,12 @@ class ResourceManager(ResourceManagerBase):
         # get step of the process chain
         pc_step = response_model['progress']['step'] - 1
         for iter in range(old_iteration - 1, 0, -1):
-            old_response_data = self.resource_logger.get(
-                user_id, resource_id, iter)
+            if iter == 1:
+                old_response_data = self.resource_logger.get(
+                    user_id, resource_id)
+            else:
+                old_response_data = self.resource_logger.get(
+                    user_id, resource_id, iter)
             if old_response_data is None:
                 return None
             _, old_response_model = pickle.loads(old_response_data)
