@@ -96,50 +96,6 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/userdata && \
     ln -s /actinia_core /root/actinia
 
-# tests
-FROM actinia_installation as actinia_test
-
-WORKDIR /src/actinia_core
-COPY --from=build /src/actinia_core /src/actinia_core
-
-COPY tests_with_redis.sh tests_with_redis.sh
-COPY Makefile Makefile
-RUN chmod a+x tests_with_redis.sh
-
-# set config for test
-COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
-# TODO do not set DEFAULT_CONFIG_PATH if this is fixed
-ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
-
-# TODO remove if all tests are running
-RUN rm -rf tests
-COPY tests tests
-
-# install things only for tests
-RUN apk add redis
-RUN pip3 install iniconfig
-
-# add data for tests
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
-  unzip nc_spm_08_micro.zip && \
-  rm -f nc_spm_08_micro.zip && \
-  mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
-
-RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
-
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
-  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
-  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
-  mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
-RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
-
-# TODO: Postgres for tests
-# useing tests/data/poly.gpkg
-
-RUN make test
-
 # final image
 FROM actinia_installation as actinia
 
