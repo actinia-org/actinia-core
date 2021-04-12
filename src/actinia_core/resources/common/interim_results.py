@@ -125,7 +125,8 @@ class InterimResult(object):
             iterim_error = True
             msg = "No interim results saved in previous iteration"
 
-        if iterim_error is False and self._get_step_folder_name(pc_step) not in interim_folder:
+        if (iterim_error is False
+                and self._get_step_folder_name(pc_step) not in interim_folder):
             iterim_error = True
             msg = f"No interim results saved in previous iteration for step {pc_step}"
         if iterim_error is True:

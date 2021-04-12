@@ -349,7 +349,8 @@ class ResourceManager(ResourceManagerBase):
 
         # check if a new iteration is possible
         _, response_model = pickle.loads(response_data)
-        err_msg = self._check_possibility_of_new_iteration(response_model, user_id, resource_id)
+        err_msg = self._check_possibility_of_new_iteration(
+            response_model, user_id, resource_id)
         if err_msg is not None:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message=err_msg)), 404)
