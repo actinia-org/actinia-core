@@ -241,9 +241,7 @@ class ResourceManager(ResourceManagerBase):
                 error_msg = "Resource is running no restart possible"
         elif response_model['status'] in ['error', 'terminated']:
             pass
-        if error_msg is not None:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error", message=error_msg)), 400)
+        return error_msg
 
     def _create_ResourceDataContainer_for_resumption(self, post_url, pc_step,
                                                      user_id, resource_id, iteration):
@@ -267,7 +265,7 @@ class ResourceManager(ResourceManagerBase):
         """
         interim_result = InterimResult(user_id, resource_id, iteration)
         if interim_result.check_interim_result_mapset(pc_step, iteration-1) is None:
-            return None
+            return None, None, None
         processing_type = post_url.split('/')[-1]
         location = re.findall(r'locations\/(.*?)\/', post_url)[0]
         if processing_type.endswith('processing_async') and 'mapsets' not in post_url:
@@ -331,10 +329,11 @@ class ResourceManager(ResourceManagerBase):
      })
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
+
         if global_config.SAVE_INTERIM_RESULTS is not True:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message="Interim results are not set in the configureation")), 400)
+                message="Interim results are not set in the configureation")), 404)
 
         ret = self.check_permissions(user_id=user_id)
         if ret:
@@ -350,8 +349,10 @@ class ResourceManager(ResourceManagerBase):
 
         # check if a new iteration is possible
         _, response_model = pickle.loads(response_data)
-        self._check_possibility_of_new_iteration(response_model, user_id, resource_id)
-
+        err_msg = self._check_possibility_of_new_iteration(response_model, user_id, resource_id)
+        if err_msg is not None:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message=err_msg)), 404)
         # get step of the process chain
         pc_step = response_model['progress']['step'] - 1
         for iter in range(old_iteration - 1, 0, -1):

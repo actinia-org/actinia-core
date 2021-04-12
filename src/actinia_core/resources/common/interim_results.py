@@ -125,7 +125,7 @@ class InterimResult(object):
             iterim_error = True
             msg = "No interim results saved in previous iteration"
 
-        if self._get_step_folder_name(pc_step) not in interim_folder:
+        if iterim_error is False and self._get_step_folder_name(pc_step) not in interim_folder:
             iterim_error = True
             msg = f"No interim results saved in previous iteration for step {pc_step}"
         if iterim_error is True:
@@ -208,6 +208,7 @@ class InterimResult(object):
         `user_resource_interim_storage_path` by copying the directory or
         rsyncing it
         """
+
         if self.old_pc_step is not None:
             progress_step += self.old_pc_step
         self.logger.info(
