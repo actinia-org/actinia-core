@@ -560,93 +560,102 @@ class JobResumptionTestCase(ActiniaResourceTestCaseBase):
             rv3, headers=self.admin_auth_header, http_status=200, status="finished")
 
     # TODO
-    # def test_job_resumption_processing_exporter(self):
-    #     """Test job resumption with processing_async endpoint and exporter
-    #     """
-    #     tpl = Template(json_dumps(process_chain_4_exporter))
-    #     rv = self.server.post(
-    #         URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
-    #         headers=self.admin_auth_header,
-    #         data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-    #         content_type="application/json")
-    #     resp = self.waitAsyncStatusAssertHTTP(
-    #         rv, headers=self.admin_auth_header, http_status=400, status="error")
-    #     status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
-    #
-    #     # check if interim results are saved
-    #     resp_data = json_loads(rv.data)
-    #     rv_user_id = resp_data["user_id"]
-    #     rv_resource_id = resp_data["resource_id"]
-    #     interim_dir = os.path.join(
-    #         global_config.GRASS_RESOURCE_DIR,
-    #         rv_user_id, "interim", rv_resource_id)
-    #     self.assertTrue(os.path.isdir(interim_dir),
-    #                     "Interim results are not stored in the expected folder")
-    #
-    #     # resumption of the job
-    #     rv2 = self.server.put(
-    #         URL_PREFIX + status_url,
-    #         headers=self.admin_auth_header,
-    #         data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-    #         content_type="application/json")
-    #     import pdb; pdb.set_trace()
-    #     resp2 = self.waitAsyncStatusAssertHTTP(
-    #         rv2, headers=self.admin_auth_header, http_status=200, status="finished")
-    #     import pdb; pdb.set_trace()
-    #     resp2['urls']['resources']
-    #
-    #     # Get the exported results
-    #     urls = resp2["urls"]["resources"]
-    #
-    #     # for url in urls:
-    #     #     print(url)
-    #     #     rv = self.server.get(url, headers=self.admin_auth_header)
-    #     #     self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-    #     #     self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
+    def test_job_resumption_processing_exporter(self):
+        """Test job resumption with processing_async endpoint and exporter
+        """
+        tpl = Template(json_dumps(process_chain_4_exporter))
+        rv = self.server.post(
+            URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
+            content_type="application/json")
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=400, status="error")
+        status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
-    # TODO
-    # def test_job_2_times_resumption_processing_exporter(self):
-    #     """Test job 2 times resumption with processing_async endpoint and
-    #     exporter
-    #     """
-    #     tpl = Template(json_dumps(process_chain_4_exporter))
-    #     rv = self.server.post(
-    #         URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
-    #         headers=self.admin_auth_header,
-    #         data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-    #         content_type="application/json")
-    #     resp = self.waitAsyncStatusAssertHTTP(
-    #         rv, headers=self.admin_auth_header, http_status=400, status="error")
-    #     status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
-    #
-    #     # first job resumption
-    #     rv2 = self.server.put(
-    #         URL_PREFIX + status_url,
-    #         headers=self.admin_auth_header,
-    #         data=tpl.render(map1="elevation@PERMANENT", map2="baum1"),
-    #         content_type="application/json")
-    #     resp2 = self.waitAsyncStatusAssertHTTP(
-    #         rv2, headers=self.admin_auth_header, http_status=400, status="error")
-    #     status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
-    #
-    #     # check if interim results are saved
-    #     resp_data = json_loads(rv2.data)
-    #     rv_user_id = resp_data["user_id"]
-    #     rv_resource_id = resp_data["resource_id"]
-    #     interim_dir = os.path.join(
-    #         global_config.GRASS_RESOURCE_DIR,
-    #         rv_user_id, "interim", rv_resource_id)
-    #     self.assertTrue(os.path.isdir(interim_dir),
-    #                     "Interim results are not stored in the expected folder")
-    #
-    #     # second job resumption
-    #     rv3 = self.server.put(
-    #         URL_PREFIX + status_url,
-    #         headers=self.admin_auth_header,
-    #         data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-    #         content_type="application/json")
-    #     self.waitAsyncStatusAssertHTTP(
-    #         rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+        # check if interim results are saved
+        resp_data = json_loads(rv.data)
+        rv_user_id = resp_data["user_id"]
+        rv_resource_id = resp_data["resource_id"]
+        interim_dir = os.path.join(
+            global_config.GRASS_RESOURCE_DIR,
+            rv_user_id, "interim", rv_resource_id)
+        self.assertTrue(os.path.isdir(interim_dir),
+                        "Interim results are not stored in the expected folder")
+
+        # resumption of the job
+        rv2 = self.server.put(
+            URL_PREFIX + status_url,
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
+            content_type="application/json")
+        resp2 = self.waitAsyncStatusAssertHTTP(
+            rv2, headers=self.admin_auth_header, http_status=200, status="finished")
+
+        # Get the exported results
+        urls = resp2["urls"]["resources"]
+        for url in urls:
+            print(url)
+            rv = self.server.get(url, headers=self.admin_auth_header)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            if url.endswith('.tif'):
+                self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
+            elif url.endswith('.zip'):
+                self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
+
+    def test_job_2_times_resumption_processing_exporter(self):
+        """Test job 2 times resumption with processing_async endpoint and
+        exporter
+        """
+        tpl = Template(json_dumps(process_chain_4_exporter))
+        rv = self.server.post(
+            URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
+            content_type="application/json")
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=400, status="error")
+        status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
+
+        # first job resumption
+        rv2 = self.server.put(
+            URL_PREFIX + status_url,
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum1"),
+            content_type="application/json")
+        resp2 = self.waitAsyncStatusAssertHTTP(
+            rv2, headers=self.admin_auth_header, http_status=400, status="error")
+        status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
+
+        # check if interim results are saved
+        resp_data = json_loads(rv2.data)
+        rv_user_id = resp_data["user_id"]
+        rv_resource_id = resp_data["resource_id"]
+        interim_dir = os.path.join(
+            global_config.GRASS_RESOURCE_DIR,
+            rv_user_id, "interim", rv_resource_id)
+        self.assertTrue(os.path.isdir(interim_dir),
+                        "Interim results are not stored in the expected folder")
+
+        # second job resumption
+        rv3 = self.server.put(
+            URL_PREFIX + status_url,
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
+            content_type="application/json")
+        resp3 = self.waitAsyncStatusAssertHTTP(
+            rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+
+        # Get the exported results
+        urls = resp3["urls"]["resources"]
+        for url in urls:
+            print(url)
+            rv = self.server.get(url, headers=self.admin_auth_header)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+            if url.endswith('.tif'):
+                self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
+            elif url.endswith('.zip'):
+                self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
 
     def compare_stdout(self, resp):
         proc_results = resp['process_results']
@@ -784,7 +793,6 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
             'Interim results are not set in the configureation')
 
 # TODOs
-# 1. exporter tests fix!
 # 2. resourcen endpoint test
 # 3. persistent_processing: interim result removing
 # 4. different processing endpoints testen
