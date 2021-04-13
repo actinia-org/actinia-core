@@ -983,7 +983,8 @@ class EphemeralProcessing(object):
         self.ginit.initialize()
 
     def _create_temporary_mapset(self, temp_mapset_name, source_mapset_name=None,
-                                 interim_result_mapset=None):
+                                 interim_result_mapset=None,
+                                 interim_result_file_path=None):
         """Create the temporary mapset and switch into it
 
         This method needs an initialized the GRASS environment.
@@ -1004,7 +1005,12 @@ class EphemeralProcessing(object):
             temp_mapset_name (str): The name of the temporary mapset to be created
             source_mapset_name (str): The name of the source mapset to copy the
                                       WIND file from
-            interim_result_mapset (str):
+            interim_result_mapset (str): The path to the mapset which is saved
+                                         as interim result and should be used
+                                         as start mapset for the job resumtion
+            interim_result_file_path (str): The path of the interim result
+                                            temporary file path
+
 
         Raises:
             This function will raise an exception if the
@@ -1023,6 +1029,15 @@ class EphemeralProcessing(object):
             if rsync_status != 'success':
                 raise RsyncError(
                     "Error while rsyncing of interim results to new temporare mapset")
+        if interim_result_file_path:
+            self.message_logger.info(
+                "Rsync interim result file path to temporary GRASS DB")
+            rsync_status = self.interim_result.rsync_mapsets(
+                interim_result_file_path, self.temp_file_path)
+            if rsync_status != 'success':
+                raise RsyncError(
+                    "Error while rsyncing of interim temporary file path to new "
+                    "temporare file path")
 
         self.ginit.run_module("g.mapset", ["-c", "mapset=%s" % temp_mapset_name])
 
@@ -1412,7 +1427,7 @@ class EphemeralProcessing(object):
         if (self.interim_result.saving_interim_results is True
                 and self.temp_mapset_path is not None):
             self.interim_result.save_interim_results(
-                self.progress_steps, self.temp_mapset_path)
+                self.progress_steps, self.temp_mapset_path, self.temp_file_path)
         elif self.temp_mapset_path is None:
             self.message_logger.debug(
                 "No temp mapset path set. Because of that no interim results"
@@ -1421,7 +1436,8 @@ class EphemeralProcessing(object):
         return proc.returncode, stdout_string, stderr_string
 
     def _create_temporary_grass_environment(self, source_mapset_name=None,
-                                            interim_result_mapset=None):
+                                            interim_result_mapset=None,
+                                            interim_result_file_path=None):
         """Create a temporary GRASS GIS environment
 
         This method will:
@@ -1439,7 +1455,8 @@ class EphemeralProcessing(object):
             interim_result_mapset (str): The path to the mapset which is saved
                                          as interim result and should be used
                                          as start mapset for the job resumtion
-
+            interim_result_file_path (str): The path of the interim result
+                                            temporary file path
         Raises:
             This method will raise an AsyncProcessError
         """
@@ -1456,7 +1473,8 @@ class EphemeralProcessing(object):
         # Create the temporary mapset and switch into it
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name,
                                       source_mapset_name=source_mapset_name,
-                                      interim_result_mapset=interim_result_mapset)
+                                      interim_result_mapset=interim_result_mapset,
+                                      interim_result_file_path=interim_result_file_path)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses.
@@ -1531,14 +1549,16 @@ class EphemeralProcessing(object):
             pc_step=pc_step)
 
         # check iterim results
-        interim_result_mapset = self.interim_result.check_interim_result_mapset(
-            pc_step, self.iteration - 1)
+        interim_result_mapset, interim_result_file_path = \
+            self.interim_result.check_interim_result_mapset(
+                pc_step, self.iteration - 1)
         if interim_result_mapset is None:
             return None
 
         # Init GRASS and create the temporary mapset with the interim results
         self._create_temporary_grass_environment(
-            interim_result_mapset=interim_result_mapset)
+            interim_result_mapset=interim_result_mapset,
+            interim_result_file_path=interim_result_file_path)
 
         return process_list
 

@@ -654,12 +654,14 @@ class PersistentProcessing(EphemeralProcessing):
                 old_process_chain=old_process_chain_list,
                 pc_step=pc_step)
             # check iterim results
-            interim_result_mapset = self.interim_result.check_interim_result_mapset(
-                pc_step, self.rdc.iteration - 1)
+            interim_result_mapset, interim_result_file_path = \
+                self.interim_result.check_interim_result_mapset(
+                    pc_step, self.rdc.iteration - 1)
         else:
             # Create the process chain
             process_list = self._validate_process_chain()
             interim_result_mapset = None
+            interim_result_file_path = None
 
         # Check and lock the target and temp mapsets
         self._check_lock_target_mapset()
@@ -678,7 +680,8 @@ class PersistentProcessing(EphemeralProcessing):
             # mapset and switch into it
             self._create_temporary_mapset(
                 temp_mapset_name=self.target_mapset_name,
-                interim_result_mapset=interim_result_mapset)
+                interim_result_mapset=interim_result_mapset,
+                interim_result_file_path=interim_result_file_path)
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset
