@@ -652,7 +652,6 @@ class ResourceIterationManager(ResourceManagerBase):
      })
     def get(self, user_id, resource_id, iteration):
         """Get the status of a resource of a given iteration."""
-
         ret = self.check_permissions(user_id=user_id)
         if ret:
             return ret
@@ -664,9 +663,9 @@ class ResourceIterationManager(ResourceManagerBase):
             user_id, resource_id, int(iteration))
 
         if response_data is not None:
-            http_code, tmp_response_model = pickle.loads(response_data)
+            _, tmp_response_model = pickle.loads(response_data)
             response_model = {str(iteration): tmp_response_model}
-            return make_response(jsonify(response_model), http_code)
+            return make_response(jsonify(response_model), 200)
         else:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)

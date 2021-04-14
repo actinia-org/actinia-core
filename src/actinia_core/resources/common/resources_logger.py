@@ -63,6 +63,8 @@ class ResourceLogger(RedisFluentLoggerBase):
             str: The generated DB resource id
 
         """
+        if iteration == 1:
+            iteration = None
         if iteration is None:
             return "%s/%s" % (user_id, resource_id)
         else:
