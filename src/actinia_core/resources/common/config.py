@@ -39,6 +39,8 @@ if os.environ.get('DEFAULT_CONFIG_PATH'):
     DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
 else:
     DEFAULT_CONFIG_PATH = "/etc/default/actinia"
+if not os.path.isfile(DEFAULT_CONFIG_PATH):
+    open(DEFAULT_CONFIG_PATH, 'a').close()
 
 # Generate from GRASS_module_white_list.txt
 white_list = [
