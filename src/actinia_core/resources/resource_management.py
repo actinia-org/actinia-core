@@ -35,7 +35,7 @@ from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
 from time import sleep
 from .common.app import auth
-from .common.config import global_config
+from .common.config import global_config, DEFAULT_CONFIG_PATH
 from .common.redis_interface import enqueue_job
 from .common.resources_logger import ResourceLogger
 from .common.api_logger import log_api_call
@@ -329,7 +329,7 @@ class ResourceManager(ResourceManagerBase):
      })
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
-
+        global_config.read(DEFAULT_CONFIG_PATH)
         if global_config.SAVE_INTERIM_RESULTS is not True:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",

@@ -24,15 +24,16 @@
 """
 Tests: Async process2 test case
 """
+import configparser
 import os
 import unittest
 from flask.json import dumps as json_dumps
 from flask.json import loads as json_loads
 from jinja2 import Template
 from time import sleep
+
 from actinia_core.resources.common import redis_interface
 from actinia_core.resources.common.process_queue import create_process_queue
-
 from actinia_core.resources.common.config import global_config
 
 try:
@@ -334,6 +335,8 @@ process_chain_5_stdout = {
 
 class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
+    cfg_file = os.environ.get('ACTINIA_CUSTOM_TEST_CFG', '/etc/default/actinia')
+    tmp_cfg_file = "%s_tmp" % cfg_file
     endpoint = '/locations/nc_spm_08/processing_async'
     resource_user_id = None
     resource_resource_id = None
@@ -341,8 +344,13 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
     @classmethod
     def setUpClass(cls):
-
-        global_config.SAVE_INTERIM_RESULTS = True
+        # change save_interim_results in config to True
+        os.replace(cls.cfg_file, cls.tmp_cfg_file)
+        config = configparser.ConfigParser()
+        config.read(cls.tmp_cfg_file)
+        config['MISC']['save_interim_results'] = 'True'
+        with open(cls.cfg_file, 'w') as configfile:
+            config.write(configfile)
 
         # Start the redis interface
         redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
@@ -375,6 +383,18 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(
             name="superadmin", role="superadmin",
             accessible_datasets=accessible_datasets)
+
+    @classmethod
+    def tearDownClass(cls):
+        # reset config
+        os.replace(cls.tmp_cfg_file, cls.cfg_file)
+
+        for user in cls.users_list:
+            user.delete()
+
+        if cls.server_test is False:
+            redis_interface.disconnect()
+
 
     def test_saved_interim_results(self):
         """Test if the interim results are saved correctly

@@ -29,7 +29,7 @@ import os
 import subprocess
 import shutil
 from .messages_logger import MessageLogger
-from .config import global_config
+from .config import global_config, DEFAULT_CONFIG_PATH
 from .exceptions import RsyncError
 
 __license__ = "GPLv3"
@@ -64,6 +64,7 @@ def get_directory_size(directory):
 class InterimResult(object):
     """This class manages the interim results
     """
+
     def __init__(self, user_id, resource_id, iteration):
         """Init method for InterimResult class
         Args:
@@ -72,6 +73,7 @@ class InterimResult(object):
             old_pc_step (int): The number of the successfully finished steps of
                                the process chain in the previous iteration
         """
+        global_config.read(DEFAULT_CONFIG_PATH)
         self.logger = MessageLogger()
         self.user_resource_interim_storage_path = os.path.join(
             global_config.GRASS_RESOURCE_DIR, user_id, "interim")
