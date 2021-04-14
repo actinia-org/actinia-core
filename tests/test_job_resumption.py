@@ -337,64 +337,39 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
     cfg_file = os.environ.get('ACTINIA_CUSTOM_TEST_CFG', '/etc/default/actinia')
     tmp_cfg_file = "%s_tmp" % cfg_file
+    save_interim_results_value = None
     endpoint = '/locations/nc_spm_08/processing_async'
     resource_user_id = None
     resource_resource_id = None
     sleep_time = 15
 
     @classmethod
-    def setUpClass(cls):
-        # change save_interim_results in config to True
-        os.replace(cls.cfg_file, cls.tmp_cfg_file)
+    def save_config(cls, src, dest, value):
         config = configparser.ConfigParser()
-        config.read(cls.tmp_cfg_file)
-        config['MISC']['save_interim_results'] = 'True'
-        with open(cls.cfg_file, 'w') as configfile:
+        config.read(src)
+        config['MISC']['save_interim_results'] = value
+        with open(dest, 'w') as configfile:
             config.write(configfile)
 
-        # Start the redis interface
-        redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
-        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
-            redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+    @classmethod
+    def setUpClass(cls):
+        # change save_interim_results in config to True
+        cls.save_interim_results_value = global_config.SAVE_INTERIM_RESULTS
+        if cls.save_interim_results_value is False:
+            os.replace(cls.cfg_file, cls.tmp_cfg_file)
+            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, 'True')
 
-        redis_interface.connect(*redis_args)
-
-        # Process queue
-        create_process_queue(config=global_config)
-
-        # We create 4 user for all roles: guest, user, admin, root
-        accessible_datasets = {"nc_spm_08": ["PERMANENT",
-                                             "user1",
-                                             "landsat",
-                                             "modis_lst",
-                                             "test_mapset"],
-                               "ECAD": ["PERMANENT"],
-                               "latlong_wgs84": ["PERMANENT"]}
-
-        # Create users
-        cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(
-            name="guest", role="guest", process_num_limit=3, process_time_limit=2,
-            accessible_datasets=accessible_datasets)
-        cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(
-            name="user", role="user", process_num_limit=3, process_time_limit=4,
-            accessible_datasets=accessible_datasets)
-        cls.admin_id, cls.admin_group, cls.admin_auth_header = cls.create_user(
-            name="admin", role="admin", accessible_datasets=accessible_datasets)
-        cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(
-            name="superadmin", role="superadmin",
-            accessible_datasets=accessible_datasets)
+        super(JobResumptionProcessingTestCase, cls).setUpClass()
 
     @classmethod
     def tearDownClass(cls):
         # reset config
-        os.replace(cls.tmp_cfg_file, cls.cfg_file)
+        if cls.save_interim_results_value is False:
+            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, 'False')
+            os.remove(cls.tmp_cfg_file)
+        global_config.read(cls.cfg_file)
 
-        for user in cls.users_list:
-            user.delete()
-
-        if cls.server_test is False:
-            redis_interface.disconnect()
-
+        super(JobResumptionProcessingTestCase, cls).tearDownClass()
 
     def test_saved_interim_results(self):
         """Test if the interim results are saved correctly
