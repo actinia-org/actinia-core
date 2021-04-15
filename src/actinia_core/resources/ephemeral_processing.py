@@ -69,8 +69,7 @@ class AsyncEphemeralResource(ResourceBase):
     """This class represents a processing resource that works on a temporary
     mapset.
     """
-    # def __init__(self):
-    #     ResourceBase.__init__(self)
+
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 

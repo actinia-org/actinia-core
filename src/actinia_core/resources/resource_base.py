@@ -285,7 +285,7 @@ class ResourceBase(Resource):
                 return None
         elif has_json is True:
             if self.check_for_json() is False:
-                return None  # HERE
+                return None
 
         # Compute the job timeout of the worker queue from the user credentials
         process_time_limit = self.user_credentials["permissions"]["process_time_limit"]
