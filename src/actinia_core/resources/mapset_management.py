@@ -649,8 +649,16 @@ class PersistentGetMapsetLock(PersistentProcessing):
 
     def _execute(self):
         self._setup()
-        self.module_results = self.lock_interface.get(self.target_mapset_lock_id)
-        self.finish_message = "Mapset lock state: %s" % str(self.module_results)
+        exists = self._check_mapset(self.mapset_name)
+        if exists is False:
+            raise AsyncProcessError(
+                "Invalid mapset <%s> in location <%s>"
+                % (self.mapset_name, self.location_name))
+        else:
+            self.module_results = self.lock_interface.get(
+                self.target_mapset_lock_id)
+            self.finish_message = "Mapset lock state: %s" % str(
+                self.module_results)
 
 
 def lock_mapset(*args):
