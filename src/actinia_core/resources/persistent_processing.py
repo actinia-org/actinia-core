@@ -377,7 +377,6 @@ class PersistentProcessing(EphemeralProcessing):
                     os.access(
                         self.global_location_path,
                         os.R_OK | os.X_OK | os.W_OK) is True:
-
                 self.orig_mapset_path = os.path.join(self.global_location_path, mapset)
 
                 if os.path.exists(self.orig_mapset_path) is True:
@@ -417,6 +416,23 @@ class PersistentProcessing(EphemeralProcessing):
 
         return mapset_exists
 
+    def _check_target_mapset_exists(self):
+        """Check if the target mapset exists
+
+        This method will check if the target mapset exists in the global and user
+        location.
+        If the mapset is in the global database, then an AsyncProcessError will
+        be raised, since global mapsets can not be modified.
+
+        This method sets in case of success:
+
+            self.target_mapset_exists = True/False
+
+        Raises:
+            AsyncProcessError
+        """
+        self.target_mapset_exists = self._check_mapset(self.target_mapset_name)
+
     def _check_lock_target_mapset(self):
         """Check if the target mapset exists and lock it, then lock the temporary mapset
 
@@ -434,7 +450,7 @@ class PersistentProcessing(EphemeralProcessing):
             AsyncProcessError
 
         """
-        self.target_mapset_exists = self._check_mapset(self.target_mapset_name)
+        self._check_target_mapset_exists()
         self._lock_target_mapset()
 
     def _lock_target_mapset(self):

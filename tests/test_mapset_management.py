@@ -211,7 +211,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
                                 headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
