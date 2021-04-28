@@ -647,7 +647,8 @@ class PersistentProcessing(EphemeralProcessing):
         # check if this is a job resumption
         if self.rdc.iteration is not None:
             # Create the process chain
-            pc_step, old_process_chain_list = self._old_process_chain()
+            pc_step, old_process_chain_list = \
+                self._get_previous_iteration_process_chain()
             self.interim_result.set_old_pc_step(pc_step)
             process_list = self._validate_process_chain(
                 process_chain=self.request_data,

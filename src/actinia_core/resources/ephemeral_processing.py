@@ -582,7 +582,7 @@ class EphemeralProcessing(object):
             self.message_logger.error(
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
 
-    def _old_process_chain(self):
+    def _get_previous_iteration_process_chain(self):
         """Helper method to check the old resource run and get the step of the
         process chain where to continue
 
@@ -1539,7 +1539,7 @@ class EphemeralProcessing(object):
         self._setup()
 
         # Create and check the process chain
-        pc_step, old_process_chain_list = self._old_process_chain()
+        pc_step, old_process_chain_list = self._get_previous_iteration_process_chain()
         self.interim_result.set_old_pc_step(pc_step)
         process_list = self._validate_process_chain(
             process_chain=self.request_data,
