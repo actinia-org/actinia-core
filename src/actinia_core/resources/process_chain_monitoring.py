@@ -228,7 +228,7 @@ class MapsetSizeDiffResource(ResourceManager):
 
 
 class MaxMapsetSizeResponseModel(Schema):
-    """Response schema for maximum mapset size of a resouce
+    """Response schema for maximum mapset size of a resoucre
     """
     type = 'object'
     properties = {

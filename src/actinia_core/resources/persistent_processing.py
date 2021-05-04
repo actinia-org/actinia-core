@@ -127,8 +127,8 @@ SCHEMA_DOC = {
 
 class AsyncPersistentResource(ResourceBase):
 
-    def __init__(self):
-        ResourceBase.__init__(self)
+    def __init__(self, resource_id=None, iteration=None, post_url=None):
+        ResourceBase.__init__(self, resource_id, iteration, post_url)
 
     @swagger.doc(deepcopy(SCHEMA_DOC))
     def post(self, location_name, mapset_name):
@@ -599,9 +599,9 @@ class PersistentProcessing(EphemeralProcessing):
                 self.temp_mapset_name, self.target_mapset_name)
             shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
             # remove interim results
-            if self.save_interim_results is True:
+            if self.interim_result.saving_interim_results is True:
                 interim_dir = os.path.join(
-                    self.user_resource_interim_storage_path,
+                    self.interim_result.user_resource_interim_storage_path,
                     self.resource_id)
                 self.message_logger.info(
                     "Remove interim results %s" % interim_dir)
@@ -657,10 +657,29 @@ class PersistentProcessing(EphemeralProcessing):
             - Cleanup and unlock the mapset
 
         """
+
         # Setup the user credentials and logger
         self._setup()
-        # Create the process chain
-        process_list = self._validate_process_chain()
+        # check if this is a job resumption
+        if self.rdc.iteration is not None:
+            # Create the process chain
+            pc_step, old_process_chain_list = \
+                self._get_previous_iteration_process_chain()
+            self.interim_result.set_old_pc_step(pc_step)
+            process_list = self._validate_process_chain(
+                process_chain=self.request_data,
+                old_process_chain=old_process_chain_list,
+                pc_step=pc_step)
+            # check iterim results
+            interim_result_mapset, interim_result_file_path = \
+                self.interim_result.check_interim_result_mapset(
+                    pc_step, self.rdc.iteration - 1)
+        else:
+            # Create the process chain
+            process_list = self._validate_process_chain()
+            interim_result_mapset = None
+            interim_result_file_path = None
+
         # Check and lock the target and temp mapsets
         self._check_lock_target_mapset()
 
@@ -676,7 +695,10 @@ class PersistentProcessing(EphemeralProcessing):
 
             # Create the temporary mapset with the same name as the target
             # mapset and switch into it
-            self._create_temporary_mapset(temp_mapset_name=self.target_mapset_name)
+            self._create_temporary_mapset(
+                temp_mapset_name=self.target_mapset_name,
+                interim_result_mapset=interim_result_mapset,
+                interim_result_file_path=interim_result_file_path)
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset

@@ -68,23 +68,27 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
 
         ret = self.log.commit(user_id=self.user_id,
                               resource_id=self.resource_id,
+                              iteration=1,
                               document=self.document)
 
         self.assertTrue(ret)
 
         ret = self.log.commit(user_id=self.user_id,
                               resource_id=self.resource_id,
+                              iteration=1,
                               document=self.document)
 
         self.assertTrue(ret)
 
         doc = self.log.get(user_id=self.user_id,
-                           resource_id=self.resource_id)
+                           resource_id=self.resource_id,
+                           iteration=1)
         print(doc)
         self.assertEqual(self.document, doc)
 
         ret = self.log.delete(user_id=self.user_id,
-                              resource_id=self.resource_id)
+                              resource_id=self.resource_id,
+                              iteration=1)
 
         self.assertTrue(ret)
 
@@ -104,6 +108,7 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         resource = "a"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 
@@ -111,12 +116,14 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         resource = "a"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 
         resource = "b"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 
@@ -124,18 +131,21 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         resource = "a"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 
         resource = "b"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 
         resource = "c"
         ret = self.log.commit(user_id=user,
                               resource_id=resource,
+                              iteration=1,
                               document=self.document)
         self.assertTrue(ret)
 

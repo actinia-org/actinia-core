@@ -140,6 +140,13 @@ class GrassEnvironment(ProcessLogging):
                     % str(e))
 
     def set(self):
+        # # for debugging in ephemeral_processing.py (see also process_queue.py)
+        # for var in [
+        #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
+        #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
+        #     if var in os.environ:
+        #         del os.environ[var]
+
         for key in self.env:
             try:
                 value = self.env[key]
@@ -161,13 +168,6 @@ class GrassGisRC(ProcessLogging):
         ATTENTION: Here the TGIS_DISABLE_MAPSET_CHECK variable is set True
         to allow map registering from none-current mapsets
     """
-    # def __init__(self):
-    #
-    #     ProcessLogging.__init__(self)
-    #     self.location_name = None
-    #     self.mapset = None
-    #     self.gisdbase = ""
-    #     self.__gisrc_ile = ""
 
     def __init__(self, gisdbase, location_name, mapset):
         ProcessLogging.__init__(self)
@@ -307,6 +307,7 @@ class GrassModuleRunner(ProcessLogging):
             (stdout_buff, stderr_buff) = proc.communicate()
             stdout_buff = stdout_buff.decode()
             stderr_buff = stderr_buff.decode()
+
             self.log_debug("Return code: " + str(proc.returncode))
             self.log_debug(stderr_buff)
         except Exception:

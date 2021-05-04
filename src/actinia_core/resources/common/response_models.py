@@ -90,6 +90,10 @@ class ProcessLogModel(Schema):
     """
     type = 'object'
     properties = {
+        'id': {
+            'type': 'string',
+            'description': 'The ID of the executable'
+        },
         'executable': {
             'type': 'string',
             'description': 'The name of the executable'
@@ -205,6 +209,10 @@ class ApiInfoModel(Schema):
         'request_url': {
             'type': 'string',
             'description': 'The request URL'
+        },
+        'post_url': {
+            'type': 'string',
+            'description': 'The post URL'
         }
     }
     required = ["endpoint", "method", "path", "request_url"]
@@ -1129,6 +1137,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                status=None,
                                user_id=None,
                                resource_id=None,
+                               iteration=None,
                                process_log=None,
                                progress=None,
                                results=None,
@@ -1159,6 +1168,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
         resource_id (str): The resource id
+        iteration (int): Ther iteration of the job
         process_log (dict, str, list): The log from the running GRASS module
         progress (ProgressInfoModel): Progress information
         results (dict): The results of processing steps as Python data types
@@ -1191,6 +1201,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
     resp_dict = response_model_class(status=status,
                                      user_id=user_id,
                                      resource_id=resource_id,
+                                     # iteration=iteration,
                                      accept_timestamp=orig_time,
                                      accept_datetime=orig_datetime,
                                      timestamp=time.time(),
@@ -1215,6 +1226,8 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                      status=str(status_url))
     if api_info is not None:
         resp_dict["api_info"] = api_info
+    if iteration is not None:
+        resp_dict["iteration"] = iteration
 
     if resp_type == "pickle":
         return pickle.dumps([http_code, resp_dict])

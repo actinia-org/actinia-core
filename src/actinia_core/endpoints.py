@@ -59,7 +59,8 @@ from .resources.process_validation import SyncProcessValidationResource
 from .resources.user_management import UserListResource, UserManagementResource
 from .resources.api_log_management import APILogResource
 from .resources.user_api_key import TokenCreationResource, APIKeyCreationResource
-from .resources.resource_management import ResourceManager, ResourcesManager
+from .resources.resource_management \
+    import ResourceManager, ResourcesManager, ResourceIterationManager
 from .resources.resource_streamer import RequestStreamerResource
 from .resources.download_cache_management import SyncDownloadCacheResource
 from .resources.resource_storage_management import SyncResourceStorageResource
@@ -76,10 +77,9 @@ from .resources.process_chain_monitoring import \
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 def create_core_endpoints():
@@ -201,13 +201,25 @@ def create_core_endpoints():
     flask_api.add_resource(TokenCreationResource, '/token', )
     flask_api.add_resource(APIKeyCreationResource, '/api_key', )
     flask_api.add_resource(APILogResource, '/api_log/<string:user_id>')
+
     # Resource management
+    """
+    The endpoint '/resources/<string:user_id>/<string:resource_id>' has two
+    different answers depending on the resource_id. If the resoucre_id starts
+    with 'resoucre-id' the latest iteration of the resoucre is given back.
+    If the resocue_id is only the id then all iterations of the resource are
+    given in the response.
+    """
     flask_api.add_resource(
         ResourceManager, '/resources/<string:user_id>/<string:resource_id>')
     flask_api.add_resource(ResourcesManager, '/resources/<string:user_id>')
     flask_api.add_resource(
+        ResourceIterationManager,
+        '/resources/<string:user_id>/<string:resource_id>/<int:iteration>')
+    flask_api.add_resource(
         RequestStreamerResource,
         '/resources/<string:user_id>/<string:resource_id>/<string:file_name>')
+
     # Download and resource management
     flask_api.add_resource(SyncDownloadCacheResource, '/download_cache')
     flask_api.add_resource(SyncResourceStorageResource, '/resource_storage')

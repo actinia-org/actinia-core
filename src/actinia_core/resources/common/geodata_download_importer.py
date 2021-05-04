@@ -190,6 +190,7 @@ class GeoDataDownloadImportSupport(object):
 
                 p = Process(
                     exec_type="exec", executable=wget, executable_params=wget_params,
+                    id=f"importer_wget_{os.path.basename(source)}",
                     skip_permission_check=True)
 
                 download_commands.append(p)
@@ -202,6 +203,7 @@ class GeoDataDownloadImportSupport(object):
                     p = Process(
                         exec_type="exec", executable=copy,
                         executable_params=copy_params,
+                        id=f"importer_mv_{os.path.basename(source)}",
                         skip_permission_check=True)
                     download_commands.append(p)
             count += 1
@@ -229,6 +231,8 @@ class GeoDataDownloadImportSupport(object):
         """
         p = Process(exec_type="exec", executable="/bin/mv",
                     executable_params=[file_path, file_name],
+                    id=f"mv_{os.path.basename(file_path)}_to_"
+                       f"{os.path.basename(file_name)}",
                     skip_permission_check=True)
         return p
 
@@ -249,6 +253,7 @@ class GeoDataDownloadImportSupport(object):
                     executable_params=["input=%s" % file_path,
                                        "output=%s" % raster_name,
                                        "--q"],
+                    id=f"r_import_{os.path.basename(file_path)}",
                     skip_permission_check=True)
 
         return p
@@ -280,6 +285,7 @@ class GeoDataDownloadImportSupport(object):
         p = Process(exec_type="grass",
                     executable="v.import",
                     executable_params=exec_params,
+                    id=f"v_import_{os.path.basename(input_source)}",
                     skip_permission_check=True)
         return p
 

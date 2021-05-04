@@ -138,6 +138,7 @@ class DownloadCacheSize(EphemeralProcessing):
 
             self._run_process(Process(exec_type="exec",
                                       executable=executable,
+                                      id="compute_download_cache_size",
                                       executable_params=args))
             print("Disk usage ", self.module_output_log[0]["stdout"])
             dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
@@ -183,6 +184,7 @@ class DownloadCacheDelete(PersistentProcessing):
 
             self._run_process(Process(exec_type="exec",
                                       executable=executable,
+                                      id="delete_download_cache_directory",
                                       executable_params=args))
 
             os.mkdir(self.user_download_cache_path)

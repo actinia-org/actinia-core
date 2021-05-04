@@ -176,7 +176,7 @@ class Configuration(object):
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
         # The directory to cache downloaded data
         self.DOWNLOAD_CACHE = "/tmp/download_cache"
-        # The quota of the download cache in Gigibit
+        # The quota of the download cache in Gigabit
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
