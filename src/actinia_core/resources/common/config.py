@@ -39,6 +39,8 @@ if os.environ.get('DEFAULT_CONFIG_PATH'):
     DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
 else:
     DEFAULT_CONFIG_PATH = "/etc/default/actinia"
+if not os.path.isfile(DEFAULT_CONFIG_PATH):
+    open(DEFAULT_CONFIG_PATH, 'a').close()
 
 # Generate from GRASS_module_white_list.txt
 white_list = [
@@ -174,7 +176,7 @@ class Configuration(object):
         self.SECRET_KEY = "This is a very secret key that is used to sign tokens"
         # The directory to cache downloaded data
         self.DOWNLOAD_CACHE = "/tmp/download_cache"
-        # The quota of the download cache in Gigibit
+        # The quota of the download cache in Gigabit
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False

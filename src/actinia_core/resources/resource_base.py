@@ -46,10 +46,9 @@ from .user_auth import check_user_permissions, create_dummy_user
 from .resource_management import ResourceManager
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 class ResourceBase(Resource):
@@ -74,8 +73,7 @@ class ResourceBase(Resource):
     else:
         decorators.append(create_dummy_user)
 
-    def __init__(self):
-
+    def __init__(self, resource_id=None, iteration=None, post_url=None):
         # Configuration
         Resource.__init__(self)
 
@@ -106,8 +104,17 @@ class ResourceBase(Resource):
         self.grass_start_script = global_config.GRASS_GIS_START_SCRIPT
         self.grass_addon_path = global_config.GRASS_ADDON_PATH
 
-        # Generate the resource id
-        self.request_id, self.resource_id = self.generate_uuids()
+        # Set the resource id
+        if resource_id is None:
+            # Generate the resource id
+            self.request_id, self.resource_id = self.generate_uuids()
+        else:
+            self.resource_id = resource_id
+            self.request_id = self.generate_request_id_from_resource_id()
+
+        # set iteration and post_url
+        self.iteration = iteration
+        self.post_url = post_url
 
         # The base URL's for resources that will be streamed
         self.resource_url_base = None
@@ -132,10 +139,14 @@ class ResourceBase(Resource):
         self.response_model_class = ProcessingResponseModel
 
         # Put API information in the response for later accounting
-        self.api_info = ApiInfoModel(endpoint=request.endpoint,
-                                     method=request.method,
-                                     path=request.path,
-                                     request_url=self.request_url)
+        kwargs = {
+            'endpoint': request.endpoint,
+            'method': request.method,
+            'path': request.path,
+            'request_url': self.request_url}
+        if self.post_url is not None:
+            kwargs['post_url'] = self.post_url
+        self.api_info = ApiInfoModel(**kwargs)
 
     def create_error_response(self, message, status="error", http_code=400):
         """Create an error response, that by default sets the status to error
@@ -154,6 +165,7 @@ class ResourceBase(Resource):
             status=status,
             user_id=self.user_id,
             resource_id=self.resource_id,
+            iteration=self.iteration,
             process_log=None,
             results={},
             message=message,
@@ -181,6 +193,7 @@ class ResourceBase(Resource):
         self.create_error_response(message=message, status=status, http_code=http_code)
         self.resource_logger.commit(user_id=self.user_id,
                                     resource_id=self.resource_id,
+                                    iteration=self.iteration,
                                     document=self.response_data)
         http_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), http_code)
@@ -298,6 +311,7 @@ class ResourceBase(Resource):
             status="accepted",
             user_id=self.user_id,
             resource_id=self.resource_id,
+            iteration=self.iteration,
             process_log=None,
             results={},
             message="Resource accepted",
@@ -308,7 +322,8 @@ class ResourceBase(Resource):
             api_info=self.api_info)
 
         # Send the status to the database
-        self.resource_logger.commit(self.user_id, self.resource_id, self.response_data)
+        self.resource_logger.commit(
+            self.user_id, self.resource_id, self.iteration, self.response_data)
 
         # Return the ResourceDataContainer that includes all
         # required data for the asynchronous processing
@@ -320,6 +335,7 @@ class ResourceBase(Resource):
                                      user_group=self.user_group,
                                      user_credentials=self.user_credentials,
                                      resource_id=self.resource_id,
+                                     iteration=self.iteration,
                                      status_url=self.status_url,
                                      api_info=self.api_info,
                                      resource_url_base=self.resource_url_base,
@@ -343,6 +359,9 @@ class ResourceBase(Resource):
 
         return request_id, resource_id
 
+    def generate_request_id_from_resource_id(self):
+        return self.resource_id.replace("resource_id-", "request_id-")
+
     def wait_until_finish(self, poll_time=0.2):
         """Wait until a resource finished, terminated or failed with an error
 
@@ -360,10 +379,12 @@ class ResourceBase(Resource):
         # Wait for the async process by asking the redis database for updates
         while True:
             response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id)
+                                                     self.resource_id,
+                                                     self.iteration)
             if not response_data:
-                message = ("Unable to receive process status. User id %s resource id %s"
-                           % (self.user_id, self.resource_id))
+                message = ("Unable to receive process status. User id "
+                           "%s resource id %s and iteration %d"
+                           % (self.user_id, self.resource_id, self.iteration))
                 return make_response(message, 400)
 
             http_code, response_model = pickle.loads(response_data)

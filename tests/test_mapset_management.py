@@ -194,11 +194,11 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
                               headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        lock_status = json_load(rv.data)["process_results"]
-        self.assertFalse(lock_status)
+        # lock_status = json_load(rv.data)["process_results"]
+        # self.assertFalse(lock_status)
 
         # Lock mapset
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
@@ -211,7 +211,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
                                 headers=self.admin_auth_header)
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 

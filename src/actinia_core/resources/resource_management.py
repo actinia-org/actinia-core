@@ -27,24 +27,27 @@ processes.
 """
 
 import pickle
+import re
 from flask import g
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
+from time import sleep
 from .common.app import auth
-from .common.config import global_config
+from .common.config import global_config, DEFAULT_CONFIG_PATH
+from .common.redis_interface import enqueue_job
 from .common.resources_logger import ResourceLogger
 from .common.api_logger import log_api_call
 from .common.user import ActiniaUser
 from .common.response_models import ProcessingResponseModel, SimpleResponseModel,\
     ProcessingResponseListModel
+from .common.interim_results import InterimResult
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ResourceManagerBase(Resource):
@@ -175,7 +178,13 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        response_data = self.resource_logger.get(user_id, resource_id)
+        # the latest iteration should be given
+        if resource_id.startswith('resource_id-'):
+            _, response_data = self.resource_logger.get_latest_iteration(
+                user_id, resource_id)
+        else:
+            response_data = self.resource_logger.get_all_iteration(
+                user_id, 'resource_id-%s' % resource_id)
 
         if response_data is not None:
             http_code, response_model = pickle.loads(response_data)
@@ -183,6 +192,202 @@ class ResourceManager(ResourceManagerBase):
         else:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
+
+    def _check_possibility_of_new_iteration(self, response_model, user_id, resource_id):
+        """Check if it possible to start a new iteration of the process chain
+        of the resource_id. A new iteration is only possible if the status of
+        the resource is error or terminated, or running but the time_delta does
+        not change any more.
+
+        Args:
+            response_model (ProcessingResponseModel): The processing response
+                                                      model of the old iteration
+                                                      of the resource
+            user_id (str): The unique user name/id
+            resource_id (str): The id of the resource
+        """
+        error_msg = None
+        if response_model is None:
+            error_msg = "Resource has no response model"
+        if response_model['status'] in ['accepted', 'finished']:
+            error_msg = f"Resource is {response_model['status']} PUT not possible"
+        elif response_model['status'] in ['running']:
+            sleep(5)
+            _, response_data2 = self.resource_logger.get_latest_iteration(
+                user_id, resource_id)
+            if response_data2 is None:
+                error_msg = "Resource does not exist"
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource does not exist")), 400)
+            _, response_model2 = pickle.loads(response_data2)
+            if response_model2 is None:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error", message="Resource has no response model")), 400)
+            # check time_delta and set not running processes to error
+            if response_model['time_delta'] == response_model2['time_delta']:
+                iteration = response_model2['iteration'] if 'iteration' in \
+                    response_model2 else None
+                response_model2['status'] = 'error'
+                response_model2['message'] = "The process no longer seems to be " \
+                    "running and has therefore been set to error."
+                redis_return = self.resource_logger.commit(
+                    user_id, resource_id, iteration,
+                    pickle.dumps([200, response_model2]))
+                if redis_return is True:
+                    pass
+                else:
+                    error_msg = "Resource is running and can not be set to error"
+            else:
+                error_msg = "Resource is running no restart possible"
+        elif response_model['status'] in ['error', 'terminated']:
+            pass
+        return error_msg
+
+    def _create_ResourceDataContainer_for_resumption(self, post_url, pc_step,
+                                                     user_id, resource_id, iteration):
+        """Create the ResourceDataContainer for the resumption of the resource
+        depending on the post_url
+
+        Args:
+            post_url (str): The request url of the original resource
+            pc_step (int): The number of the process chain step where to
+                           continue the process
+            user_id (str): The unique user name/id
+            resource_id (str): The id of the resource
+            iteration (int): The number of iteration of this resource
+
+        Returns:
+            rdc (ResourceDataContainer): The data container that contains all
+                                         required variables for processing
+            processing_resource (AsyncEphemeralResource/AsyncPersistentResource/
+            AsyncEphemeralExportResource): The processing resource
+            start_job (function): The start job function of the processing_resource
+        """
+        interim_result = InterimResult(user_id, resource_id, iteration)
+        if interim_result.check_interim_result_mapset(pc_step, iteration-1) is None:
+            return None, None, None
+        processing_type = post_url.split('/')[-1]
+        location = re.findall(r'locations\/(.*?)\/', post_url)[0]
+        if processing_type.endswith('processing_async') and 'mapsets' not in post_url:
+            # /locations/<string:location_name>/processing_async
+            from .ephemeral_processing import AsyncEphemeralResource, start_job
+            processing_resource = AsyncEphemeralResource(
+                resource_id, iteration, post_url)
+            rdc = processing_resource.preprocess(location_name=location)
+        elif processing_type.endswith('processing_async') and 'mapsets' in post_url:
+            # /locations/{location_name}/mapsets/{mapset_name}/processing_async
+            from .persistent_processing import AsyncPersistentResource, start_job
+            processing_resource = AsyncPersistentResource(
+                resource_id, iteration, post_url)
+            mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
+            rdc = processing_resource.preprocess(
+                location_name=location, mapset_name=mapset)
+        elif processing_type.endswith('processing_async_export'):
+            # /locations/{location_name}/processing_async_export
+            from .ephemeral_processing_with_export import \
+                AsyncEphemeralExportResource, start_job
+            processing_resource = AsyncEphemeralExportResource(
+                resource_id, iteration, post_url)
+            rdc = processing_resource.preprocess(
+                location_name=location)
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message=f"Processing endpoint {post_url} does not support put")), 400)
+        return rdc, processing_resource, start_job
+
+    @swagger.doc({
+        'tags': ['Resource Management'],
+        'description': 'Updates/Resumes the status of a resource. '
+                       'Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'The current state of the resource',
+                'schema': ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message if the resource does not exists',
+                'schema': SimpleResponseModel
+            }
+        }
+     })
+    def put(self, user_id, resource_id):
+        """Updates/Resumes the status of a resource."""
+        global_config.read(DEFAULT_CONFIG_PATH)
+        if global_config.SAVE_INTERIM_RESULTS is not True:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Interim results are not set in the configureation")), 404)
+
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        # check if latest iteration is found
+        old_iteration, response_data = self.resource_logger.get_latest_iteration(
+            user_id, resource_id)
+        old_iteration = 1 if old_iteration is None else old_iteration
+        if response_data is None:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)
+
+        # check if a new iteration is possible
+        _, response_model = pickle.loads(response_data)
+        err_msg = self._check_possibility_of_new_iteration(
+            response_model, user_id, resource_id)
+        if err_msg is not None:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message=err_msg)), 404)
+        # get step of the process chain
+        pc_step = response_model['progress']['step'] - 1
+        for iter in range(old_iteration - 1, 0, -1):
+            if iter == 1:
+                old_response_data = self.resource_logger.get(
+                    user_id, resource_id)
+            else:
+                old_response_data = self.resource_logger.get(
+                    user_id, resource_id, iter)
+            if old_response_data is None:
+                return None
+            _, old_response_model = pickle.loads(old_response_data)
+            pc_step += old_response_model['progress']['step'] - 1
+
+        # start new iteration
+        iteration = old_iteration + 1
+
+        # use post_url if iteration > 1
+        if old_iteration and old_iteration == 1:
+            post_url = response_model['api_info']['request_url']
+        elif old_iteration and old_iteration > 1:
+            post_url = response_model['api_info']['post_url']
+        else:
+            post_url = None
+
+        rdc, processing_resource, start_job = \
+            self._create_ResourceDataContainer_for_resumption(
+                post_url, pc_step, user_id, resource_id, iteration)
+
+        # enqueue job
+        if rdc:
+            enqueue_job(processing_resource.job_timeout, start_job, rdc)
+        html_code, response_model = pickle.loads(processing_resource.response_data)
+        return make_response(jsonify(response_model), html_code)
 
     @swagger.doc({
         'tags': ['Resource Management'],
@@ -226,13 +431,16 @@ class ResourceManager(ResourceManagerBase):
         if ret:
             return ret
 
-        doc = self.resource_logger.get(user_id, resource_id)
+        if not resource_id.startswith('resource_id-'):
+            resource_id = 'resource_id-%s' % resource_id
+
+        iteration, doc = self.resource_logger.get_latest_iteration(user_id, resource_id)
 
         if doc is None:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Resource does not exist")), 400)
 
-        self.resource_logger.commit_termination(user_id, resource_id)
+        self.resource_logger.commit_termination(user_id, resource_id, iteration)
 
         return make_response(jsonify(SimpleResponseModel(
             status="accepted", message="Termination request committed")), 200)
@@ -388,5 +596,76 @@ class ResourcesManager(ResourceManagerBase):
                     termination_requests += 1
 
         return make_response(jsonify(SimpleResponseModel(
-            status="finished", message="Successfully send %i termination requests"
-                                       % termination_requests)), 200)
+            status="finished",
+            message="Successfully send %i termination requests"
+                    % termination_requests)), 200)
+
+
+class ResourceIterationManager(ResourceManagerBase):
+    """
+    This class is responsible to answer status requests
+    of asynchronous processes (resources) and
+    to request the termination of a resource with iterations
+    """
+    def __init__(self):
+
+        # Configuration
+        ResourceManagerBase.__init__(self)
+
+    @swagger.doc({
+        'tags': ['Resource Iteration Management'],
+        'description': 'Get the status of a resource with the iterations. '
+                       'Minimum required user role: user.',
+        'parameters': [
+            {
+                'name': 'user_id',
+                'description': 'The unique user name/id',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'resource_id',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'string'
+            },
+            {
+                'name': 'iteration',
+                'description': 'The id of the resource',
+                'required': True,
+                'in': 'path',
+                'type': 'integer'
+            }
+        ],
+        'responses': {
+            '200': {
+                'description': 'The current state of the resource',
+                'schema': ProcessingResponseModel
+            },
+            '400': {
+                'description': 'The error message if the resource does not exists',
+                'schema': SimpleResponseModel
+            }
+        }
+     })
+    def get(self, user_id, resource_id, iteration):
+        """Get the status of a resource of a given iteration."""
+        ret = self.check_permissions(user_id=user_id)
+        if ret:
+            return ret
+
+        if not resource_id.startswith('resource_id-'):
+            resource_id = 'resource_id-%s' % resource_id
+
+        response_data = self.resource_logger.get(
+            user_id, resource_id, int(iteration))
+
+        if response_data is not None:
+            _, tmp_response_model = pickle.loads(response_data)
+            response_model = {str(iteration): tmp_response_model}
+            return make_response(jsonify(response_model), 200)
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error", message="Resource does not exist")), 400)

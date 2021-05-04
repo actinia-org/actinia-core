@@ -157,6 +157,24 @@ class RedisResourceInterface(RedisBaseInterface):
         value = self.redis_server.get(self.resource_id_prefix + resource_id)
         return value
 
+    def get_keys_from_pattern(self, resource_id_pattern):
+        """Get all keys of a resource_id_pattern
+
+        Args:
+            resource_id_pattern (str): The pattern to the resources
+
+        Returns:
+            list:
+            The list of the matching kesy
+        """
+        values = self.redis_server.scan_iter(
+            self.resource_id_prefix + resource_id_pattern)
+        resource_keys = list()
+        for val in values:
+            resource_keys.append(val.decode("utf-8").replace(
+                self.resource_id_prefix, ''))
+        return resource_keys
+
     def get_list(self, regexpr):
         """Get a list of resource entries if exists
 

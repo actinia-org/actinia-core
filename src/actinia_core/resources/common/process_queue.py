@@ -95,6 +95,24 @@ def enqueue_job(timeout, func, *args):
     """
     process_queue.put((func, timeout, args))
 
+    # # for debugging in ephemeral_processing.py (see also grass_init.py)
+
+    # # for '/locations/<string:location_name>/processing_async'
+    # from ..ephemeral_processing import \
+    #     AsyncEphemeralResource, start_job, EphemeralProcessing
+    # processing = EphemeralProcessing(*args)
+    # processing.run()
+
+    # # for '/locations/<string:location_name>/processing_async_export'
+    # from ..ephemeral_processing_with_export import EphemeralProcessingWithExport
+    # processing = EphemeralProcessingWithExport(*args)
+    # processing.run()
+
+    # # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
+    # from ..persistent_processing import PersistentProcessing
+    # processing = PersistentProcessing(*args)
+    # processing.run()
+
 
 def stop_process_queue():
     """Destroy the process queue and terminate all running and enqueued jobs
@@ -140,6 +158,7 @@ class EnqueuedProcess(object):
         self.timeout = timeout
         self.config = args[0].config
         self.resource_id = args[0].resource_id
+        self.iteration = args[0].iteration
         self.user_id = args[0].user_id
         self.api_info = args[0].api_info
         self.resource_logger = resource_logger
@@ -215,7 +234,8 @@ class EnqueuedProcess(object):
 
             # Check if the process noticed the error already
             response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id)
+                                                     self.resource_id,
+                                                     self.iteration)
 
             if response_data is not None:
                 http_code, response_model = pickle.loads(response_data)
@@ -239,7 +259,8 @@ class EnqueuedProcess(object):
         # Get the latest response and use it as template for the resource update
         if response_data is None:
             response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id)
+                                                     self.resource_id,
+                                                     self.iteartion)
 
         # Send the termination response
         if response_data is not None:
@@ -258,6 +279,7 @@ class EnqueuedProcess(object):
             self.resource_logger.commit(
                 user_id=self.user_id,
                 resource_id=self.resource_id,
+                iteration=self.iteration,
                 document=document,
                 expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
 
