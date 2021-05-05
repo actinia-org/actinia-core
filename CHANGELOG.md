@@ -21,6 +21,19 @@ TODO https://github.com/mundialis/actinia_core/compare/0.99.28...master
 released from <branch>\
 ...
 
+## [0.99.29] - 2021-05-05
+released from master\
+### Changed
+- Update actinia-module-plugin version (#185)
+- Will include GRASS GIS version with fix for XY location (https://github.com/OSGeo/grass/pull/1564)
+
+## Warning
+Due to a conflict between 0.99.28 and actinia-module-plugin < 2.1.1, the plugin will not work as expectd. This is fixed in version `0.99.29`. Also the fix for XY location in GRASS GIS is included in alpine build.
+
+## [0.99.29.79] - 2021-05-05
+released from grass79
+### see 0.99.29
+
 
 ## [0.99.28] - 2021-05-04
 released from master
