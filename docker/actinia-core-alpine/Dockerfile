@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:latest-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0.3 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v7 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v8 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -35,7 +35,7 @@ RUN /usr/bin/python3 /root/.snap/about.py
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-RUN pip3 install --upgrade pip six grass-session
+RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass /usr/local/grass7
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
