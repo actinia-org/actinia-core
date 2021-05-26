@@ -536,42 +536,9 @@ class EphemeralProcessing(object):
         # Call the webhook after the final result was send to the database
         try:
             if final is True and self.webhook_finished is not None:
-                self.message_logger.info(
-                    "Send POST request to finished webhook url: %s"
-                    % self.webhook_finished)
-                http_code, response_model = pickle.loads(document)
-                if self.webhook_auth:
-                    # username is expected to be without colon (':')
-                    r = requests.post(
-                        self.webhook_finished, json=json.dumps(response_model),
-                        auth=HTTPBasicAuth(
-                            self.webhook_auth.split(':')[0],
-                            ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    r = requests.post(self.webhook_finished,
-                                      json=json.dumps(response_model))
-                if r.status_code not in [200, 204]:
-                    raise AsyncProcessError(
-                        "Unable to access finished webhook URL %s"
-                        % self.webhook_finished)
+                self._post_to_webhook(document, 'finished')
             elif final is False and self.webhook_update is not None:
-                self.message_logger.info(
-                    "Send POST request to update webhook url: %s" % self.webhook_update)
-                http_code, response_model = pickle.loads(document)
-                if self.webhook_auth:
-                    # username is expected to be without colon (':')
-                    r = requests.post(
-                        self.webhook_update, json=json.dumps(response_model),
-                        auth=HTTPBasicAuth(
-                            self.webhook_auth.split(':')[0],
-                            ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    r = requests.post(self.webhook_update,
-                                      json=json.dumps(response_model))
-                if r.status_code not in [200, 204]:
-                    raise AsyncProcessError(
-                        "Unable to access the update webhook URL %s"
-                        % self.webhook_update)
+                self._post_to_webhook(document, 'update')
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
@@ -581,6 +548,34 @@ class EphemeralProcessing(object):
             print(str(run_state))
             self.message_logger.error(
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
+
+    def _post_to_webhook(self, document, type):
+        """Helper method send a post request to a webhook
+
+        Args:
+            document (str): The response document
+            type (str): The webhook type: 'finished' or 'update'
+        """
+        self.message_logger.info(
+            "Send POST request to %s webhook url: %s" % (type, self.webhook_finished))
+        webhook_url = None
+        if type == 'finished':
+            webhook_url = self.webhook_finished
+        if type == 'update':
+            webhook_url = self.webhook_update
+        http_code, response_model = pickle.loads(document)
+        if self.webhook_auth:
+            # username is expected to be without colon (':')
+            r = requests.post(
+                webhook_url, json=json.dumps(response_model),
+                auth=HTTPBasicAuth(
+                    self.webhook_auth.split(':')[0],
+                    ':'.join(self.webhook_auth.split(':')[1:])))
+        else:
+            r = requests.post(webhook_url, json=json.dumps(response_model))
+        if r.status_code not in [200, 204]:
+            raise AsyncProcessError(
+                "Unable to access %s webhook URL %s" % (type, self.webhook_finished))
 
     def _get_previous_iteration_process_chain(self):
         """Helper method to check the old resource run and get the step of the
