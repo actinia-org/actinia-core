@@ -59,10 +59,8 @@ from .user_auth import check_location_mapset_module_access
 from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
 
 
 class AsyncEphemeralResource(ResourceBase):
@@ -783,6 +781,8 @@ class EphemeralProcessing(object):
             send_resource_update=self._send_resource_update)
 
     def _setup_pathes(self):
+        """Helper method to setup the pathes
+        """
         self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
         self.process_num_limit = int(
             self.user_credentials["permissions"]["process_num_limit"])
