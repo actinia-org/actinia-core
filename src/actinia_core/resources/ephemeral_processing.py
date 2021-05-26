@@ -867,62 +867,8 @@ class EphemeralProcessing(object):
             if not mapsets:
                 check_all_mapsets = True
 
-            # Global location mapset linking
-            if self.is_global_database is True:
-                # List all available mapsets in the global location
-                if os.path.isdir(self.global_location_path):
-                    if check_all_mapsets is True:
-                        mapsets = os.listdir(self.global_location_path)
-                    for mapset in mapsets:
-                        mapset_path = os.path.join(self.global_location_path, mapset)
-                        if (os.path.isdir(mapset_path)
-                                and os.access(mapset_path, os.R_OK & os.X_OK)):
-                            # Check if a WIND file exists to be sure it is a mapset
-                            if os.path.isfile(os.path.join(
-                                    mapset_path, "WIND")) is True:
-                                if mapset not in mapsets_to_link:
-                                    # Link the mapset from the global database
-                                    # only if it can be accessed
-                                    resp = check_location_mapset_module_access(
-                                        user_credentials=self.user_credentials,
-                                        config=self.config,
-                                        location_name=self.location_name,
-                                        mapset_name=mapset)
-                                    if resp is None:
-                                        mapsets_to_link.append((mapset_path, mapset))
-                            else:
-                                raise AsyncProcessError(
-                                    "Invalid mapset <%s> in location <%s>"
-                                    % (mapset, self.location_name))
-                else:
-                    raise AsyncProcessError(
-                        "Unable to access global location <%s>" % self.location_name)
-
-            # Check for leftover mapsets
-            left_over_mapsets = []
-            for mapset in mapsets:
-                if mapset not in mapsets_to_link:
-                    left_over_mapsets.append(mapset)
-
-            # List all available mapsets in the user location
-            if os.path.isdir(self.user_location_path):
-                if check_all_mapsets is True:
-                    left_over_mapsets = os.listdir(self.user_location_path)
-                for mapset in left_over_mapsets:
-                    mapset_path = os.path.join(self.user_location_path, mapset)
-                    if (os.path.isdir(mapset_path)
-                            and os.access(mapset_path, os.R_OK & os.X_OK)):
-                        # Check if a WIND file exists to be sure it is a mapset
-                        if os.path.isfile(os.path.join(mapset_path, "WIND")) is True:
-                            if mapset not in mapsets_to_link:
-                                mapsets_to_link.append((mapset_path, mapset))
-                        else:
-                            raise AsyncProcessError(
-                                "Invalid mapset <%s> in location <%s>"
-                                % (mapset, self.location_name))
-            else:
-                raise AsyncProcessError(
-                    "Unable to access user location <%s>" % self.location_name)
+            # User and global location mapset linking
+            self._link_mapsets(mapsets, mapsets_to_link, check_all_mapsets)
 
             # Check if we missed some of the required mapsets
             if check_all_mapsets is False:
@@ -949,6 +895,83 @@ class EphemeralProcessing(object):
         except Exception as e:
             raise AsyncProcessError("Unable to create a temporary GIS database"
                                     ", Exception: %s" % str(e))
+
+    def _link_mapsets(self, mapsets, mapsets_to_link, check_all_mapsets):
+        """Helper method o link locations mapsets
+
+        Args:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+            type (str): The webhook type: 'finished' or 'update'
+
+        Returns:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+        """
+        # Global location mapset linking
+        if self.is_global_database is True:
+            # List all available mapsets in the global location
+            mapsets, mapsets_to_link = self._list_all_available_mapsets(
+                self.global_location_path, mapsets,
+                check_all_mapsets, mapsets_to_link, True)
+        # Check for leftover mapsets
+        left_over_mapsets = []
+        for mapset in mapsets:
+            if mapset not in mapsets_to_link:
+                left_over_mapsets.append(mapset)
+        # List all available mapsets in the user location
+        mapsets, mapsets_to_link = self._list_all_available_mapsets(
+            self.user_location_path, left_over_mapsets,
+            check_all_mapsets, mapsets_to_link, False)
+        return mapsets, mapsets_to_link
+
+    def _list_all_available_mapsets(self, location_path, mapsets, check_all_mapsets,
+                                    mapsets_to_link, global_location=False):
+        """Helper method to list all available mapsets
+
+        Args:
+            location_path (str): Path to location (global or user)
+            mapsets (list): List of mapsets names to link
+            check_all_mapsets (bool): If set True, the mapsets list is created with
+                                      all locations on location_path
+            mapsets_to_link (list): List of mapset pathes to link
+            global_location (bool): If set True, the location/mapset access is
+                                    checked
+
+        Returns:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+        """
+        if os.path.isdir(location_path):
+            if check_all_mapsets is True:
+                mapsets = os.listdir(location_path)
+            for mapset in mapsets:
+                mapset_path = os.path.join(location_path, mapset)
+                if (os.path.isdir(mapset_path)
+                        and os.access(mapset_path, os.R_OK & os.X_OK)):
+                    # Check if a WIND file exists to be sure it is a mapset
+                    if os.path.isfile(os.path.join(
+                                mapset_path, "WIND")) is True:
+                        if mapset not in mapsets_to_link and global_location is True:
+                            # Link the mapset from the global database
+                            # only if it can be accessed
+                            resp = check_location_mapset_module_access(
+                                    user_credentials=self.user_credentials,
+                                    config=self.config,
+                                    location_name=self.location_name,
+                                    mapset_name=mapset)
+                            if resp is None:
+                                mapsets_to_link.append((mapset_path, mapset))
+                        elif mapset not in mapsets_to_link and global_location is False:
+                            mapsets_to_link.append((mapset_path, mapset))
+                    else:
+                        raise AsyncProcessError(
+                            "Invalid mapset <%s> in location <%s>"
+                            % (mapset, self.location_name))
+        else:
+            raise AsyncProcessError(
+                "Unable to access global location <%s>" % self.location_name)
+        return mapsets, mapsets_to_link
 
     def _create_grass_environment(self, grass_data_base, mapset_name="PERMANENT"):
         """Sets up the GRASS environment to run modules
