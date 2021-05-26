@@ -26,7 +26,7 @@ The full API documentation is available here: https://actinia.mundialis.de/api_d
 ## actinia command execution - actinia shell
 
 There is also an option to interactively control actinia. For details,
-see [here](https://github.com/mundialis/actinia_core/tree/master/scripts).
+see [here](https://github.com/mundialis/actinia_core/tree/main/scripts).
 
 ## Installation
 
