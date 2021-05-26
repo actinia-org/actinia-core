@@ -53,6 +53,9 @@ sudo sysctl -w vm.max_map_count=262144
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
+
+(You can also directly start here without installing actinia first. You only need to have cloned and checked out actinia_core.)
+
 ```
 docker-compose -f docker-compose-dev.yml build
 docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
