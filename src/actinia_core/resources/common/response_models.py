@@ -206,7 +206,8 @@ class LockedMapsetListResponseModel(Schema):
         }
     }
     required = ["status", "locked_mapsets_list", "message"]
-    example = {"status": "success", "locked_mapsets_list": ["utm32n/test_mapset"], "message": "test"}
+    example = {"status": "success", "locked_mapsets_list": ["utm32n/test_mapset"],
+               "message": "number of locked mapsets: 1"}
 
 
 class ApiInfoModel(Schema):
