@@ -37,7 +37,8 @@ from actinia_core.common.api_logger import log_api_call
 from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
 from actinia_core.common.response_models import ProcessingResponseModel
-from actinia_core.common.response_models import SimpleResponseModel, MapsetInfoResponseModel
+from actinia_core.common.response_models import SimpleResponseModel
+from actinia_core.common.response_models import MapsetInfoResponseModel
 from .resource_base import ResourceBase
 from .persistent_processing import PersistentProcessing
 from .mapset_management import PersistentGetProjectionRegionInfo
