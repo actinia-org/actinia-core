@@ -769,45 +769,7 @@ class EphemeralProcessing(object):
 
         # Check and create all required paths to global, user and temporary locations
         if init_grass is True:
-            self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
-            self.process_num_limit = int(
-                self.user_credentials["permissions"]["process_num_limit"])
-            # Setup the required paths
-            self.temp_grass_data_base = os.path.join(
-                self.grass_temp_database, self.temp_grass_data_base_name)
-            self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
-
-            if self.location_name:
-                self.temp_location_path = os.path.join(
-                    self.temp_grass_data_base, self.location_name)
-                self.global_location_path = os.path.join(
-                    self.grass_data_base, self.location_name)
-
-                # Create the user database path if it does not exist
-                if not os.path.exists(self.grass_user_data_base):
-                    os.mkdir(self.grass_user_data_base)
-                # Create the user group specific path, if it does not exist and set the
-                # grass user database path accordingly
-                self.grass_user_data_base = os.path.join(
-                    self.grass_user_data_base, self.user_group)
-                if not os.path.exists(self.grass_user_data_base):
-                    os.mkdir(self.grass_user_data_base)
-
-                # Create the user group specific location path, if it does not exist
-                self.user_location_path = os.path.join(
-                    self.grass_user_data_base, self.location_name)
-                if not os.path.exists(self.user_location_path):
-                    os.mkdir(self.user_location_path)
-
-                # Check if the location is located in the global database
-                self.is_global_database = False
-                location = os.path.join(self.grass_data_base, self.location_name)
-                if os.path.isdir(location):
-                    self.is_global_database = True
-
-            # Create the database, location and temporary file directories
-            os.mkdir(self.temp_grass_data_base)
-            os.mkdir(self.temp_file_path)
+            self._setup_pathes()
 
         self.proc_chain_converter = ProcessChainConverter(
             config=self.config,
@@ -819,6 +781,43 @@ class EphemeralProcessing(object):
             output_parser_list=self.output_parser_list,
             message_logger=self.message_logger,
             send_resource_update=self._send_resource_update)
+
+    def _setup_pathes(self):
+        self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
+        self.process_num_limit = int(
+            self.user_credentials["permissions"]["process_num_limit"])
+        # Setup the required paths
+        self.temp_grass_data_base = os.path.join(
+            self.grass_temp_database, self.temp_grass_data_base_name)
+        self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
+
+        if self.location_name:
+            self.temp_location_path = os.path.join(
+                self.temp_grass_data_base, self.location_name)
+            self.global_location_path = os.path.join(
+                self.grass_data_base, self.location_name)
+            # Create the user database path if it does not exist
+            if not os.path.exists(self.grass_user_data_base):
+                os.mkdir(self.grass_user_data_base)
+            # Create the user group specific path, if it does not exist and set the,
+            # grass user database path accordingly
+            self.grass_user_data_base = os.path.join(
+                self.grass_user_data_base, self.user_group)
+            if not os.path.exists(self.grass_user_data_base):
+                os.mkdir(self.grass_user_data_base)
+            # Create the user group specific location path, if it does not exist
+            self.user_location_path = os.path.join(
+                self.grass_user_data_base, self.location_name)
+            if not os.path.exists(self.user_location_path):
+                os.mkdir(self.user_location_path)
+            # Check if the location is located in the global database
+            self.is_global_database = False
+            location = os.path.join(self.grass_data_base, self.location_name)
+            if os.path.isdir(location):
+                self.is_global_database = True
+        # Create the database, location and temporary file directories
+        os.mkdir(self.temp_grass_data_base)
+        os.mkdir(self.temp_file_path)
 
     def _create_temp_database(self, mapsets=None):
         """Create a temporary gis database with location and mapsets
