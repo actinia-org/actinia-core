@@ -149,7 +149,6 @@ class RedisLockingInterface(object):
              True if resource is locked, False otherwise
 
         """
-        #import pdb; pdb.set_trace()
         return bool(self.redis_server.get(self.lock_prefix + str(resource_id)))
 
     def lock(self, resource_id, expiration=30):
