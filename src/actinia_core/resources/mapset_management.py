@@ -44,7 +44,8 @@ from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
 from .common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    RegionModel, ProcessingErrorResponseModel
+    RegionModel, ProcessingErrorResponseModel, SimpleResponseModel, \
+    LockedMapsetListResponseModel
 # from .common.response_models import MapsetInfoModel
 
 from .common.config import global_config
@@ -739,4 +740,16 @@ class MapsetLockManagementResourceAdmin(ResourceBase):
         keys_locked = redis_connection.keys("RESOURCE-LOCK*")
         keys_locked_dec = [key.decode() for key in keys_locked]
         mapsets_locked = ["/".join(key.split("/")[-2:]) for key in keys_locked_dec]
-        import pdb; pdb.set_trace()
+        try:
+            return make_response(jsonify(LockedMapsetListResponseModel(
+                status="success",
+                message="number of locked mapsets: %s" % len(mapsets_locked),
+                locked_mapsets_list=mapsets_locked)), 200)
+
+        except Exception as e:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Unable to list locked mapsets: Exception %s"
+                        % (str(e)))), 500)
+
+        # import pdb; pdb.set_trace()

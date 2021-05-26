@@ -185,6 +185,30 @@ class SimpleResponseModel(Schema):
     required = ["status", "message"]
 
 
+class LockedMapsetListResponseModel(Schema):
+    """Response schema that is used to list all locked mapsets.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the request'
+        },
+        'locked_mapsets_list': {
+            'type': 'array',
+            'items': {'type': 'string'},
+            'description': 'The names of all locked mapsets'
+        },
+        'message': {
+            'type': 'string',
+            'description': 'A simple message to describes the status of the resource'
+        }
+    }
+    required = ["status", "locked_mapsets_list", "message"]
+    example = {"status": "success", "locked_mapsets_list": ["utm32n/test_mapset"], "message": "test"}
+
+
 class ApiInfoModel(Schema):
     """Response schema that contains API information of the called endpoint.
 
