@@ -40,8 +40,8 @@ from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.resources_logger import ResourceLogger
 from actinia_core.common.api_logger import log_api_call
 from actinia_core.common.user import ActiniaUser
-from actinia_core.common.response_models import ProcessingResponseModel, SimpleResponseModel,\
-    ProcessingResponseListModel
+from actinia_core.common.response_models import ProcessingResponseModel, \
+    SimpleResponseModel, ProcessingResponseListModel
 from actinia_core.common.interim_results import InterimResult
 
 __license__ = "GPLv3"
