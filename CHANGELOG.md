@@ -15,7 +15,7 @@ Types of changes
 
 
 ## [Unreleased]
-TODO https://github.com/mundialis/actinia_core/compare/0.99.28...master
+TODO https://github.com/mundialis/actinia_core/compare/0.99.29...main
 
 ## [0.99.X] - YYYY-MM-DD
 released from <branch>\
