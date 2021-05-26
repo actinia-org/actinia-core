@@ -31,12 +31,12 @@ from flask import jsonify, make_response
 from flask_restful import reqparse
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger, Schema
-from .common.request_parser import where_parser
+from actinia_core.common.request_parser import where_parser
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError
-from .common.response_models import ProcessingResponseModel, \
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"

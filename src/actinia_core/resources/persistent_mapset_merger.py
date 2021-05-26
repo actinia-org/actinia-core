@@ -29,8 +29,8 @@ from flask import jsonify, make_response
 
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError, AsyncProcessTermination
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError, AsyncProcessTermination
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

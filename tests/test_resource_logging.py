@@ -27,8 +27,8 @@ Tests: Resource logging test case
 import unittest
 import pickle
 import uuid
-from actinia_core.resources.common.resources_logger import ResourceLogger
-from actinia_core.resources.common.app import flask_app
+from actinia_core.common.resources_logger import ResourceLogger
+from actinia_core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except:

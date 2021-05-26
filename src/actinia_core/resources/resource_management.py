@@ -34,15 +34,15 @@ from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
 from time import sleep
-from .common.app import auth
-from .common.config import global_config, DEFAULT_CONFIG_PATH
-from .common.redis_interface import enqueue_job
-from .common.resources_logger import ResourceLogger
-from .common.api_logger import log_api_call
-from .common.user import ActiniaUser
-from .common.response_models import ProcessingResponseModel, SimpleResponseModel,\
-    ProcessingResponseListModel
-from .common.interim_results import InterimResult
+from actinia_core.common.app import auth
+from actinia_core.common.config import global_config, DEFAULT_CONFIG_PATH
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.resources_logger import ResourceLogger
+from actinia_core.common.api_logger import log_api_call
+from actinia_core.common.user import ActiniaUser
+from actinia_core.common.response_models import ProcessingResponseModel, \
+    SimpleResponseModel, ProcessingResponseListModel
+from actinia_core.common.interim_results import InterimResult
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"

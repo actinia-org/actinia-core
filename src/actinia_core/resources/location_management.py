@@ -32,17 +32,18 @@ import os
 import shutil
 import pickle
 from flask_restful_swagger_2 import swagger, Schema
-from .common.app import auth
-from .common.api_logger import log_api_call
+from actinia_core.common.app import auth
+from actinia_core.common.api_logger import log_api_call
 from .user_auth import very_admin_role
 from .user_auth import check_user_permissions
-from .common.response_models import ProcessingResponseModel
-from .common.response_models import SimpleResponseModel, MapsetInfoResponseModel
+from actinia_core.common.response_models import ProcessingResponseModel
+from actinia_core.common.response_models import SimpleResponseModel
+from actinia_core.common.response_models import MapsetInfoResponseModel
 from .resource_base import ResourceBase
 from .persistent_processing import PersistentProcessing
 from .mapset_management import PersistentGetProjectionRegionInfo
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "S�ren Gebbert"

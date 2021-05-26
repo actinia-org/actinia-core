@@ -29,9 +29,9 @@ import unittest
 import signal
 import time
 import os
-from actinia_core.resources.common.config import global_config
-import actinia_core.resources.common.redis_interface as redis_interface
-from actinia_core.resources.common.app import flask_app
+from actinia_core.common.config import global_config
+import actinia_core.common.redis_interface as redis_interface
+from actinia_core.common.app import flask_app
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

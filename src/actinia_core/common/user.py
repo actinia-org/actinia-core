@@ -31,8 +31,8 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer,
                           BadSignature, SignatureExpired)
 from itsdangerous import JSONWebSignatureSerializer
-from actinia_core.resources.common.config import global_config
-from actinia_core.resources.common.redis_user import redis_user_interface
+from actinia_core.common.config import global_config
+from actinia_core.common.redis_user import redis_user_interface
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
@@ -618,7 +618,7 @@ class ActiniaUser(object):
         """Verify an API key based on the user name
 
         Returns:
-            Actinia Core_api.resources.common.user.ActiniaUser:
+            Actinia Core_api.common.user.ActiniaUser:
             A user object is success or None
         """
         s = JSONWebSignatureSerializer(global_config.SECRET_KEY)
@@ -677,7 +677,7 @@ class ActiniaUser(object):
                                       process is allowed to run
 
         Returns:
-            actinia_core_api.resources.common.user.ActiniaUser:
+            actinia_core_api.common.user.ActiniaUser:
             A new user object in case of success, or None in case of failure
 
         """

@@ -24,8 +24,8 @@
 """
 Tests: Google Big Query interface test case
 """
-from actinia_core.resources.common.google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
-from actinia_core.resources.common.config import global_config
+from actinia_core.common.google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
+from actinia_core.common.config import global_config
 import os
 import unittest
 from pprint import pprint

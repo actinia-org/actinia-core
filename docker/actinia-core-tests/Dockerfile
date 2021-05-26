@@ -30,9 +30,6 @@ RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
-COPY Makefile Makefile
-COPY tests_with_redis.sh tests_with_redis.sh
-RUN chmod a+x tests_with_redis.sh
 
 COPY requirements.txt /src/requirements.txt
 RUN pip3 install -r /src/requirements.txt
@@ -42,6 +39,7 @@ RUN pip3 install -r /src/requirements.txt
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
+RUN chmod a+x tests_with_redis.sh
 
 RUN make install
 

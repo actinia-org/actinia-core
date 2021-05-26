@@ -31,12 +31,12 @@ from flask import jsonify, make_response
 from copy import deepcopy
 import tempfile
 import pickle
-from .common.request_parser import where_parser
+from actinia_core.common.request_parser import where_parser
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError
-from .common.response_models import \
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.common.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
