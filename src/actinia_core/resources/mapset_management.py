@@ -47,6 +47,9 @@ from .common.response_models import ProcessingResponseModel, \
     RegionModel, ProcessingErrorResponseModel
 # from .common.response_models import MapsetInfoModel
 
+from .common.config import global_config
+from .common.redis_base import RedisBaseInterface
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
@@ -716,3 +719,24 @@ class PersistentMapsetUnlocker(PersistentProcessing):
             self.lock_interface.unlock(self.target_mapset_lock_id)
             self.finish_message = \
                 "Mapset <%s> successfully unlocked" % self.target_mapset_name
+
+
+class MapsetLockManagementResourceAdmin(ResourceBase):
+    """ Get all locked mapsets
+    """
+    decorators = [log_api_call, check_user_permissions,
+                  very_admin_role, auth.login_required]
+
+    def get(self):
+        redis_interface = RedisBaseInterface()
+        kwargs = dict()
+        kwargs["host"] = global_config.REDIS_SERVER_URL
+        kwargs["port"] = global_config.REDIS_SERVER_PORT
+        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+            kwargs["password"] = global_config.REDIS_SERVER_PW
+        redis_interface.connect(**kwargs)
+        redis_connection = redis_interface.redis_server
+        keys_locked = redis_connection.keys("RESOURCE-LOCK*")
+        keys_locked_dec = [key.decode() for key in keys_locked]
+        mapsets_locked = ["/".join(key.split("/")[-2:]) for key in keys_locked_dec]
+        import pdb; pdb.set_trace()
