@@ -30,9 +30,9 @@ import tempfile
 import os
 from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
-from .common.redis_interface import enqueue_job
+from actinia_core.common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-from .common.response_models import ProcessingErrorResponseModel
+from actinia_core.common.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

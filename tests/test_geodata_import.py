@@ -24,9 +24,9 @@
 """
 Tests: Geodata download import support test case
 """
-from actinia_core.resources.common.geodata_download_importer import GeoDataDownloadImportSupport
-from actinia_core.resources.common.landsat_processing_library import LandsatProcessing
-from actinia_core.resources.common.config import global_config
+from actinia_core.common.geodata_download_importer import GeoDataDownloadImportSupport
+from actinia_core.common.landsat_processing_library import LandsatProcessing
+from actinia_core.common.config import global_config
 import unittest
 import subprocess
 import os

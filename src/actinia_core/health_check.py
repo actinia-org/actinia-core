@@ -32,7 +32,7 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-from .resources.common.app import flask_app, URL_PREFIX
+from actinia_core.common.app import flask_app, URL_PREFIX
 from flask import make_response
 
 # This is a simple endpoint to check the health of the Actinia Core server
