@@ -37,8 +37,8 @@ from .resources.location_management import LocationManagementResourceAdmin
 from .resources.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
 from .resources.mapset_management import \
-    MapsetLockManagementResource, MapsetManagementResourceAdmin
-from .resources.mapset_management import MapsetLockManagementResourceAdmin
+    MapsetLockManagementResource, MapsetManagementResourceAdmin, \
+    MapsetLockManagementResourceAdmin
 from .resources.strds_management import \
     STRDSManagementResource, SyncSTRDSListerResource
 from .resources.strds_raster_management import STRDSRasterManagement

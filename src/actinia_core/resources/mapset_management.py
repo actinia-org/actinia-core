@@ -38,6 +38,8 @@ from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from .common.app import auth
 from .common.api_logger import log_api_call
+from .common.config import global_config
+from .common.redis_base import RedisBaseInterface
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions
@@ -48,8 +50,6 @@ from .common.response_models import ProcessingResponseModel, \
     LockedMapsetListResponseModel
 # from .common.response_models import MapsetInfoModel
 
-from .common.config import global_config
-from .common.redis_base import RedisBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
