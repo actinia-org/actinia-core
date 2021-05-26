@@ -1126,24 +1126,33 @@ class EphemeralProcessing(object):
         ew_res = float(region["ewres"])
 
         if num_cells > self.cell_limit:
-            # Adjust the region size
-            fak = num_cells / self.cell_limit
-            fak += 2.0
-            fak = math.sqrt(fak) + 2.0
+            self._adjust_region_size(num_cells, ns_res, ew_res)
 
-            ns_res = ns_res * fak
-            ew_res = ew_res * fak
+    def _adjust_region_size(self, num_cells, ns_res, ew_res):
+        """Helper method to adjust the region size
 
-            errorid, stdout_buff, stderr_buff = self.ginit.run_module(
+        Args:
+            num_cells (int): GRASS GIS number of cells of the region
+            ns_res (float): GRASS GIS north-south cell resolution of the region
+            ew_res (float): GRASS GIS east-west cell resolution of the region
+
+        Raises:
+            This method will raise an AsyncProcessError exception
+
+        """
+        fak = num_cells / self.cell_limit
+        fak += 2.0
+        fak = math.sqrt(fak) + 2.0
+        ns_res = ns_res * fak
+        ew_res = ew_res * fak
+        errorid, stdout_buff, stderr_buff = self.ginit.run_module(
                 "g.region", ["nsres=%f" % ns_res, "ewres=%f" % ew_res, "-g"])
-
-            self.message_logger.info(stdout_buff)
-
-            if errorid != 0:
-                raise AsyncProcessError(
+        self.message_logger.info(stdout_buff)
+        if errorid != 0:
+            raise AsyncProcessError(
                     "Unable to adjust the region settings to nsres: "
                     "%f ewres: %f error: %s" % (ns_res, ew_res, stderr_buff))
-            raise AsyncProcessError(
+        raise AsyncProcessError(
                 "Region to large, set a coarser resolution to minimum nsres: "
                 "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
 
