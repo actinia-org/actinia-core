@@ -29,10 +29,10 @@ from flask import jsonify, make_response
 
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError
 from .user_auth import check_location_mapset_module_access
-from .common.process_object import Process
+from actinia_core.common.process_object import Process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

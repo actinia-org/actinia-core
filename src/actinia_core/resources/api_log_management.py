@@ -31,10 +31,10 @@ from flask_restful import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful_swagger_2 import Schema
 
-from .common.app import auth
-from .common.api_logger import ApiLogger
-from .common.api_logger import log_api_call
-from .common.response_models import SimpleResponseModel
+from actinia_core.common.app import auth
+from actinia_core.common.api_logger import ApiLogger
+from actinia_core.common.api_logger import log_api_call
+from actinia_core.common.response_models import SimpleResponseModel
 from .user_auth import check_user_permissions
 
 __license__ = "GPLv3"

@@ -34,8 +34,8 @@ from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from .base_login import LoginBase
-from .common.user import ActiniaUser
-from .common.response_models import \
+from actinia_core.common.user import ActiniaUser
+from actinia_core.common.response_models import \
     UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
 
 

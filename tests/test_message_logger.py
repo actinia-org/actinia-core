@@ -26,8 +26,8 @@ Tests: Message logger test case
 
 """
 import unittest
-from actinia_core.resources.common.config import Configuration
-from actinia_core.resources.common.messages_logger import MessageLogger
+from actinia_core.common.config import Configuration
+from actinia_core.common.messages_logger import MessageLogger
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"

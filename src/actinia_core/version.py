@@ -37,9 +37,9 @@ import importlib
 import subprocess
 import sys
 
-from .resources.common.app import flask_app, URL_PREFIX
-from .resources.common.config import global_config
-from .resources.common.logging_interface import log
+from actinia_core.common.app import flask_app, URL_PREFIX
+from actinia_core.common.config import global_config
+from actinia_core.common.logging_interface import log
 from . import __version__
 
 

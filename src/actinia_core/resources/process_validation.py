@@ -31,12 +31,12 @@ from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
-from .common.response_models import \
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
-from .common.app import auth
-from .common.api_logger import log_api_call
-from .common.process_chain import ProcessChainModel
+from actinia_core.common.app import auth
+from actinia_core.common.api_logger import log_api_call
+from actinia_core.common.process_chain import ProcessChainModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
