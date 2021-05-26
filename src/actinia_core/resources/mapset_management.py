@@ -728,6 +728,21 @@ class MapsetLockManagementResourceAdmin(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
 
+    @swagger.doc({
+        'tags': ['Mapset Management'],
+        'description': 'Get all locked mapsets. '
+                       'Minimum required user role: admin.',
+        'responses': {
+            '200': {
+                'description': 'Get a list of locked mapsets ',
+                'schema': LockedMapsetListResponseModel
+            },
+            '500': {
+                'description': 'The error message and a detailed error log',
+                'schema': SimpleResponseModel
+            }
+        }
+    })
     def get(self):
         redis_interface = RedisBaseInterface()
         kwargs = dict()
@@ -751,5 +766,3 @@ class MapsetLockManagementResourceAdmin(ResourceBase):
                 status="error",
                 message="Unable to list locked mapsets: Exception %s"
                         % (str(e)))), 500)
-
-        # import pdb; pdb.set_trace()
