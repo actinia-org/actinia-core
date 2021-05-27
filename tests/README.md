@@ -1,17 +1,39 @@
 # Tests
 
+
+
 ## Running tests locally
 
+__If not stated otherwise, you need to be in folder `actinia_core`__
+
+When writing new tests it is useful to run tests locally and isolated. In this way it is also possible to debug interactively:
+
+1. in the `actinia_core/docker/actinia-core-tests/Dockerfile` comment out `RUN make test` (last line)
+
+2. docker build
 ```
-docker build  --file docker/actinia-core-alpine/Dockerfile  --tag actinia-core:g78-stable-alpine .
+docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
+```
+3. create local `tmp_tests` folder and fill it with
+
+- `tests/__init__.py`
+- `tests/conftest.py`
+- `tests/test_resource_base.py`
+- your new test(s)
+
+
+4. start docker container and mount your local `tmp_tests` folder
+```
+docker run -it -v /path/to/tmp_tests:/src/actinia_core/tests actinia-test:latest -i
 ```
 
-run tests inside docker
+5. to run the new test(s) run
 ```
-docker run -it --mount type=bind,source="$(pwd)"/tests,target=/src/actinia_core/tests  --mount type=bind,source="$(pwd)"/grassdb/nc_spm_08_micro,target=/actinia_core/grassdb/nc_spm_08 actinia-core:g78-stable-alpine /bin/sh
-
 make test
 ```
+
+When you are done, add your new test(s) to `actinia_core/tests`.
+
 
 ## Problems
 Redis autorization is set by `from actinia_core.common import redis_interface`:
