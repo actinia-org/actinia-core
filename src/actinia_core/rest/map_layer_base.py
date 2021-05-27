@@ -27,7 +27,7 @@ Raster layer resources
 from flask_restful_swagger_2 import Schema
 
 from flask_restful import reqparse
-from .resource_base import ResourceBase
+from actinia_core.rest.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

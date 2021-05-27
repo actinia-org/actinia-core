@@ -29,7 +29,7 @@ from flask_restful import Resource
 from actinia_core.common.app import auth
 from actinia_core.common.api_logger import log_api_call
 from actinia_core.common.messages_logger import MessageLogger
-from .user_auth import very_admin_role
+from actinia_core.rest.user_auth import very_admin_role
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
