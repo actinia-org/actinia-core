@@ -61,6 +61,7 @@ from .resource_base import ResourceBase
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class AsyncEphemeralResource(ResourceBase):
