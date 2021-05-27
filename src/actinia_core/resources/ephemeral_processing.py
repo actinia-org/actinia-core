@@ -767,7 +767,7 @@ class EphemeralProcessing(object):
 
         # Check and create all required paths to global, user and temporary locations
         if init_grass is True:
-            self._setup_pathes()
+            self._setup_paths()
 
         self.proc_chain_converter = ProcessChainConverter(
             config=self.config,
@@ -780,7 +780,7 @@ class EphemeralProcessing(object):
             message_logger=self.message_logger,
             send_resource_update=self._send_resource_update)
 
-    def _setup_pathes(self):
+    def _setup_paths(self):
         """Helper method to setup the pathes
         """
         self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
@@ -974,8 +974,11 @@ class EphemeralProcessing(object):
                             "Invalid mapset <%s> in location <%s>"
                             % (mapset, self.location_name))
         else:
-            raise AsyncProcessError(
-                "Unable to access global location <%s>" % self.location_name)
+            if global_db is True:
+                msg = "Unable to access global location <%s>" % self.location_name
+            else:
+                msg = "Unable to access user location <%s>" % self.location_name
+            raise AsyncProcessError(msg)
         return mapsets, mapsets_to_link
 
     def _create_grass_environment(self, grass_data_base, mapset_name="PERMANENT"):
