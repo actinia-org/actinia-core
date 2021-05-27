@@ -102,8 +102,6 @@ def create_core_endpoints():
     flask_api.add_resource(
         MapsetLockManagementResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
-    flask_api.add_resource(
-        AllMapsetsListingResourceAdmin, '/mapsets')
 
     # Raster management
     flask_api.add_resource(
@@ -199,6 +197,11 @@ def create_core_endpoints():
         AsyncEphemeralRasterLayerRegionExporterResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>'
         '/raster_layers/<string:raster_name>/geotiff_async_orig')
+
+    # all mapsets across all locations listing
+    flask_api.add_resource(
+        AllMapsetsListingResourceAdmin, '/mapsets')
+
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')

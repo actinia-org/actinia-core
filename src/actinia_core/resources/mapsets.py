@@ -22,7 +22,7 @@
 #######
 
 """
-Mapset resources for information across all mapsets
+Mapset resources for information across all locations
 
 * List all mapset locks
 * TODO: List all mapsets in all locations
