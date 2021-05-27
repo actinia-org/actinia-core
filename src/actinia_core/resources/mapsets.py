@@ -84,8 +84,8 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                 kwargs = dict()
                 kwargs["host"] = global_config.REDIS_SERVER_URL
                 kwargs["port"] = global_config.REDIS_SERVER_PORT
-                if (global_config.REDIS_SERVER_PW and
-                    global_config.REDIS_SERVER_PW is not None):
+                if (global_config.REDIS_SERVER_PW
+                        and global_config.REDIS_SERVER_PW is not None):
                     kwargs["password"] = global_config.REDIS_SERVER_PW
 
                 redis_interface.connect(**kwargs)
