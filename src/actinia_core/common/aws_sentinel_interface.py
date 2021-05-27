@@ -29,10 +29,34 @@ from flask.json import loads as json_loads
 from flask.json import dumps as json_dumps
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+
+
+def get_sentinel_date(product_id):
+    """Returns year month and day of a (AWS) Sentinel scene from the Sentinel product-id.
+
+        Args:
+            product_ids (str): The Sentinel product id
+
+        Returns:
+            year (str): The recording year of the Sentinel product
+            month (str): The recording month of the Sentinel product
+            day (str): The recording day of the Sentinel product
+    """
+    if "S2A_OPER" in product_id:
+        year = product_id[63:67]
+        month = product_id[67:69]
+        day = product_id[69:71]
+    else:
+        year = product_id[45:49]
+        month = product_id[49:51]
+        day = product_id[51:53]
+    if month != "10":
+        month = month.replace("0", "")
+    if day not in ["10", "20", "30"]:
+        day = day.replace("0", "")
+    return year, month, day
 
 
 class AWSSentinel2AInterface(object):
@@ -136,22 +160,9 @@ class AWSSentinel2AInterface(object):
             for product_id in product_ids:
                 product_id = product_id.replace(".SAFE", "")
 
-                if "S2A_OPER" in product_id:
-                    year = product_id[63:67]
-                    month = product_id[67:69]
-                    day = product_id[69:71]
-                else:
-                    year = product_id[45:49]
-                    month = product_id[49:51]
-                    day = product_id[51:53]
-
-                if month != "10":
-                    month = month.replace("0", "")
-                if day not in ["10", "20", "30"]:
-                    day = day.replace("0", "")
+                year, month, day = get_sentinel_date(product_id)
 
                 # Get the product info JSON file
-
                 json_url = "%(base)s/products/%(year)s/%(month)s/%(day)s/%(id)s/" \
                            "productInfo.json" % {"base": self.aws_sentinel_base_url,
                                                  "year": year,
@@ -161,7 +172,6 @@ class AWSSentinel2AInterface(object):
 
                 response = urlopen(json_url)
                 product_info = response.read()
-                # print(product_info)
 
                 try:
                     info = json_loads(product_info)
@@ -171,56 +181,94 @@ class AWSSentinel2AInterface(object):
                         "%s. Error: %s" % (json_url, product_info))
 
                 if info:
-                    scene_entry = {}
-                    scene_entry["product_id"] = product_id
-                    scene_entry["tiles"] = []
-                    tile_num = 0
-
-                    for tile in info["tiles"]:
-
-                        tile_num += 1
-                        tile_info = {}
-                        tile_info["timestamp"] = info["timestamp"]
-
-                        # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/metadata.xml
-                        # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/tileInfo.json
-                        # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/preview.jpg
-
-                        metadata_url = self.aws_sentinel_base_url + \
-                            "/" + tile["path"] + "/metadata.xml"
-                        info_url = self.aws_sentinel_base_url + \
-                            "/" + tile["path"] + "/tileInfo.json"
-                        preview_url = self.aws_sentinel_base_url + \
-                            "/" + tile["path"] + "/preview.jpg"
-
-                        tile_info["url"] = self.aws_sentinel_base_eu_central_url + \
-                            "/#" + tile["path"] + "/"
-                        tile_info["metadata"] = metadata_url
-                        tile_info["info"] = info_url
-                        tile_info["preview"] = preview_url
-
-                        public_url = self.aws_sentinel_base_url + "/" + tile["path"]
-
-                        for band in bands:
-                            tile_name = "%s_tile_%i_band_%s.jp2" % (
-                                product_id, tile_num, band)
-                            map_name = "%s_tile_%i_band_%s" % (
-                                product_id, tile_num, band)
-
-                            tile_info[band] = {}
-                            tile_info[band]["file_name"] = tile_name
-                            tile_info[band]["map_name"] = map_name
-                            tile_info[band]["public_url"] = "%s/%s.jp2" % (
-                                public_url, band)
-
-                        scene_entry["tiles"].append(tile_info)
-
+                    scene_entry = self._parse_scene_info(bands, product_id, info)
                     result.append(scene_entry)
 
             return result
 
         except Exception:
             raise
+
+    def _parse_scene_info(self, bands, product_id, info):
+        """Helpher method to parse the Sentinel-2 scene info:
+        1. Parse the product info and extract the tile urls
+        2. Create the download links for each tile based on each band
+        3. Include the tileInfo.json, xml and preview url's
+
+        Args:
+            bands (list): A list of band names
+            product_id (list): The Sentinel product id
+            info (dict): A dictionary with the informations of the Sentinel product
+
+        Returns:
+            scene_entry (dict): A dictionary that contains the time stamp, the tile
+                                names, the map names in GRASS, the aws cloud storage
+                                urls, the tile GeoJSON footprint and the XML metadata
+                                file path download url's.
+
+        Example:
+
+            {'product_id': 'S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_'
+                            '20170202T090155',
+              'tiles':[{
+                'B04': {
+                    'file_name' : 'S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_'
+                                  'V20151207T003302_20151207T003302_tile_14_band_'
+                                  'B04.jp2',
+                    'map_name'  : 'S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_'
+                                  'V20151207T003302_20151207T003302_tile_14_band_B04',
+                    'public_url': 'http://sentinel-s2-l1c.s3.amazonaws.com/tiles/57/'
+                                  'V/XE/2015/12/7/0/B04.jp2'},
+                'B08': {
+                    'file_name' : 'S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V2015'
+                                  '1207T003302_20151207T003302_tile_14_band_B08.jp2',
+                    'map_name'  : 'S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V2015'
+                                  '1207T003302_20151207T003302_tile_14_band_B08',
+                    'public_url': 'http://sentinel-s2-l1c.s3.amazonaws.com/tiles/57/'
+                                  'V/XE/2015/12/7/0/B08.jp2'},
+                'info'      : 'http://sentinel-s2-l1c.s3.amazonaws.com/tiles/57/V/'
+                              'XE/2015/12/7/0/tileInfo.json',
+                'metadata'  : 'http://sentinel-s2-l1c.s3.amazonaws.com/tiles/57/V/'
+                              'XE/2015/12/7/0/metadata.xml',
+                'preview'   : 'http://sentinel-s2-l1c.s3.amazonaws.com/tiles/57/V/'
+                              'XE/2015/12/7/0/preview.jpg',
+                'timestamp' : '2015-12-07T00:33:02.634Z',
+                'url'       : 'http://sentinel-s2-l1c.s3-website.eu-central-1.'
+                              'amazonaws.com/#tiles/57/V/XE/2015/12/7/0/'}]}
+
+        """
+        scene_entry = {}
+        scene_entry["product_id"] = product_id
+        scene_entry["tiles"] = []
+        tile_num = 0
+        for tile in info["tiles"]:
+            tile_num += 1
+            tile_info = {}
+            tile_info["timestamp"] = info["timestamp"]
+
+            # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/metadata.xml,
+            # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/tileInfo.json,
+            # http://sentinel-s2-l1c.s3.amazonaws.com/tiles/58/V/CK/2015/12/7/0/preview.jpg
+
+            metadata_url = f'{self.aws_sentinel_base_url}/{tile["path"]}/metadata.xml'
+            info_url = f'{self.aws_sentinel_base_url}/{tile["path"]}/tileInfo.json'
+            preview_url = f'{self.aws_sentinel_base_url}/{tile["path"]}/preview.jpg'
+            tile_info["url"] = f'{self.aws_sentinel_base_eu_central_url}/#{tile["path"]}/'
+
+            tile_info["metadata"] = metadata_url
+            tile_info["info"] = info_url
+            tile_info["preview"] = preview_url
+            public_url = f'{self.aws_sentinel_base_url}/{tile["path"]}'
+
+            for band in bands:
+                tile_name = f"{product_id}_tile_{tile_num}_band_{band}.jp2"
+                map_name = f"{product_id}_tile_{tile_num}_band_{band}"
+                tile_info[band] = {}
+                tile_info[band]["file_name"] = tile_name
+                tile_info[band]["map_name"] = map_name
+                tile_info[band]["public_url"] = f"{public_url}/{band}.jp2"
+            scene_entry["tiles"].append(tile_info)
+        return scene_entry
 
     def get_sentinel_tile_footprint(self, tile_entry):
         """Downloads the tileInfo.json file and extracts/returns the tile geometry
