@@ -63,12 +63,12 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                 'in': 'path',
                 'name': 'status',
                 'type': 'string',
-                'description': ('If set to "locked", all locked mapsets across'
-                                ' all locations.')
+                'description': ("If set to 'locked', list all locked mapsets across"
+                                " all locations.")
             }],
         'responses': {
             '200': {
-                'description': 'Get a list of locked mapsets ',
+                'description': 'Get a list of (locked) mapsets ',
                 'schema': LockedMapsetListResponseModel
             },
             '500': {
