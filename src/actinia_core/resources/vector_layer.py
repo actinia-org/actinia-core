@@ -31,10 +31,10 @@ from flask_restful_swagger_2 import swagger, Schema
 import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
-from .common.redis_interface import enqueue_job
-from .common.response_models import \
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
-from .common.exceptions import AsyncProcessError
+from actinia_core.common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 
 __license__ = "GPLv3"

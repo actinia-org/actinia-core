@@ -32,15 +32,15 @@ from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
-from .common.app import auth
-from .common.app import flask_api
-from .common.config import global_config
-from .common.api_logger import log_api_call
-from .common.messages_logger import MessageLogger
-from .common.resources_logger import ResourceLogger
-from .common.resource_data_container import ResourceDataContainer
-from .common.response_models import ProcessingResponseModel
-from .common.response_models import create_response_from_model, ApiInfoModel
+from actinia_core.common.app import auth
+from actinia_core.common.app import flask_api
+from actinia_core.common.config import global_config
+from actinia_core.common.api_logger import log_api_call
+from actinia_core.common.messages_logger import MessageLogger
+from actinia_core.common.resources_logger import ResourceLogger
+from actinia_core.common.resource_data_container import ResourceDataContainer
+from actinia_core.common.response_models import ProcessingResponseModel
+from actinia_core.common.response_models import create_response_from_model, ApiInfoModel
 from .resource_streamer import RequestStreamerResource
 from .user_auth import check_user_permissions, create_dummy_user
 from .resource_management import ResourceManager

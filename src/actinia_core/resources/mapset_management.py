@@ -36,16 +36,16 @@ from flask_restful_swagger_2 import swagger
 import pickle
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from .common.app import auth
-from .common.api_logger import log_api_call
-from .common.redis_interface import enqueue_job
-from .common.exceptions import AsyncProcessError
+from actinia_core.common.app import auth
+from actinia_core.common.api_logger import log_api_call
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
-from .common.response_models import ProcessingResponseModel, \
+from actinia_core.common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
     RegionModel, ProcessingErrorResponseModel
-# from .common.response_models import MapsetInfoModel
+# from actinia_core.common.response_models import MapsetInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

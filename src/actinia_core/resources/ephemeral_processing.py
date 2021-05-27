@@ -40,29 +40,28 @@ import uuid
 from flask import jsonify, make_response, json
 from requests.auth import HTTPBasicAuth
 
-from .common.process_object import Process
-from .common.grass_init import GrassInitializer
-from .common.messages_logger import MessageLogger
-from .common.redis_interface import enqueue_job
-from .common.redis_lock import RedisLockingInterface
-from .common.resources_logger import ResourceLogger
-from .common.process_chain import ProcessChainConverter
-from .common.exceptions \
+from actinia_core.common.process_object import Process
+from actinia_core.common.grass_init import GrassInitializer
+from actinia_core.common.messages_logger import MessageLogger
+from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.common.redis_lock import RedisLockingInterface
+from actinia_core.common.resources_logger import ResourceLogger
+from actinia_core.common.process_chain import ProcessChainConverter
+from actinia_core.common.exceptions \
     import AsyncProcessError, AsyncProcessTermination, RsyncError
-from .common.exceptions import AsyncProcessTimeLimit
-from .common.response_models \
+from actinia_core.common.exceptions import AsyncProcessTimeLimit
+from actinia_core.common.response_models \
     import ProcessingResponseModel, ExceptionTracebackModel
-from .common.response_models \
+from actinia_core.common.response_models \
     import create_response_from_model, ProcessLogModel, ProgressInfoModel
-from .common.interim_results import InterimResult, get_directory_size
+from actinia_core.common.interim_results import InterimResult, get_directory_size
 from .user_auth import check_location_mapset_module_access
 from .resource_base import ResourceBase
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 class AsyncEphemeralResource(ResourceBase):
@@ -536,42 +535,9 @@ class EphemeralProcessing(object):
         # Call the webhook after the final result was send to the database
         try:
             if final is True and self.webhook_finished is not None:
-                self.message_logger.info(
-                    "Send POST request to finished webhook url: %s"
-                    % self.webhook_finished)
-                http_code, response_model = pickle.loads(document)
-                if self.webhook_auth:
-                    # username is expected to be without colon (':')
-                    r = requests.post(
-                        self.webhook_finished, json=json.dumps(response_model),
-                        auth=HTTPBasicAuth(
-                            self.webhook_auth.split(':')[0],
-                            ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    r = requests.post(self.webhook_finished,
-                                      json=json.dumps(response_model))
-                if r.status_code not in [200, 204]:
-                    raise AsyncProcessError(
-                        "Unable to access finished webhook URL %s"
-                        % self.webhook_finished)
+                self._post_to_webhook(document, 'finished')
             elif final is False and self.webhook_update is not None:
-                self.message_logger.info(
-                    "Send POST request to update webhook url: %s" % self.webhook_update)
-                http_code, response_model = pickle.loads(document)
-                if self.webhook_auth:
-                    # username is expected to be without colon (':')
-                    r = requests.post(
-                        self.webhook_update, json=json.dumps(response_model),
-                        auth=HTTPBasicAuth(
-                            self.webhook_auth.split(':')[0],
-                            ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    r = requests.post(self.webhook_update,
-                                      json=json.dumps(response_model))
-                if r.status_code not in [200, 204]:
-                    raise AsyncProcessError(
-                        "Unable to access the update webhook URL %s"
-                        % self.webhook_update)
+                self._post_to_webhook(document, 'update')
         except Exception as e:
             e_type, e_value, e_tb = sys.exc_info()
             model = ExceptionTracebackModel(message=str(e_value),
@@ -581,6 +547,34 @@ class EphemeralProcessing(object):
             print(str(run_state))
             self.message_logger.error(
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
+
+    def _post_to_webhook(self, document, type):
+        """Helper method to send a post request to a webhook
+
+        Args:
+            document (str): The response document
+            type (str): The webhook type: 'finished' or 'update'
+        """
+        self.message_logger.info(
+            "Send POST request to %s webhook url: %s" % (type, self.webhook_finished))
+        webhook_url = None
+        if type == 'finished':
+            webhook_url = self.webhook_finished
+        if type == 'update':
+            webhook_url = self.webhook_update
+        http_code, response_model = pickle.loads(document)
+        if self.webhook_auth:
+            # username is expected to be without colon (':')
+            r = requests.post(
+                webhook_url, json=json.dumps(response_model),
+                auth=HTTPBasicAuth(
+                    self.webhook_auth.split(':')[0],
+                    ':'.join(self.webhook_auth.split(':')[1:])))
+        else:
+            r = requests.post(webhook_url, json=json.dumps(response_model))
+        if r.status_code not in [200, 204]:
+            raise AsyncProcessError(
+                "Unable to access %s webhook URL %s" % (type, self.webhook_finished))
 
     def _get_previous_iteration_process_chain(self):
         """Helper method to check the old resource run and get the step of the
@@ -774,45 +768,7 @@ class EphemeralProcessing(object):
 
         # Check and create all required paths to global, user and temporary locations
         if init_grass is True:
-            self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
-            self.process_num_limit = int(
-                self.user_credentials["permissions"]["process_num_limit"])
-            # Setup the required paths
-            self.temp_grass_data_base = os.path.join(
-                self.grass_temp_database, self.temp_grass_data_base_name)
-            self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
-
-            if self.location_name:
-                self.temp_location_path = os.path.join(
-                    self.temp_grass_data_base, self.location_name)
-                self.global_location_path = os.path.join(
-                    self.grass_data_base, self.location_name)
-
-                # Create the user database path if it does not exist
-                if not os.path.exists(self.grass_user_data_base):
-                    os.mkdir(self.grass_user_data_base)
-                # Create the user group specific path, if it does not exist and set the
-                # grass user database path accordingly
-                self.grass_user_data_base = os.path.join(
-                    self.grass_user_data_base, self.user_group)
-                if not os.path.exists(self.grass_user_data_base):
-                    os.mkdir(self.grass_user_data_base)
-
-                # Create the user group specific location path, if it does not exist
-                self.user_location_path = os.path.join(
-                    self.grass_user_data_base, self.location_name)
-                if not os.path.exists(self.user_location_path):
-                    os.mkdir(self.user_location_path)
-
-                # Check if the location is located in the global database
-                self.is_global_database = False
-                location = os.path.join(self.grass_data_base, self.location_name)
-                if os.path.isdir(location):
-                    self.is_global_database = True
-
-            # Create the database, location and temporary file directories
-            os.mkdir(self.temp_grass_data_base)
-            os.mkdir(self.temp_file_path)
+            self._setup_paths()
 
         self.proc_chain_converter = ProcessChainConverter(
             config=self.config,
@@ -824,6 +780,45 @@ class EphemeralProcessing(object):
             output_parser_list=self.output_parser_list,
             message_logger=self.message_logger,
             send_resource_update=self._send_resource_update)
+
+    def _setup_paths(self):
+        """Helper method to setup the pathes
+        """
+        self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
+        self.process_num_limit = int(
+            self.user_credentials["permissions"]["process_num_limit"])
+        # Setup the required paths
+        self.temp_grass_data_base = os.path.join(
+            self.grass_temp_database, self.temp_grass_data_base_name)
+        self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
+
+        if self.location_name:
+            self.temp_location_path = os.path.join(
+                self.temp_grass_data_base, self.location_name)
+            self.global_location_path = os.path.join(
+                self.grass_data_base, self.location_name)
+            # Create the user database path if it does not exist
+            if not os.path.exists(self.grass_user_data_base):
+                os.mkdir(self.grass_user_data_base)
+            # Create the user group specific path, if it does not exist and set the,
+            # grass user database path accordingly
+            self.grass_user_data_base = os.path.join(
+                self.grass_user_data_base, self.user_group)
+            if not os.path.exists(self.grass_user_data_base):
+                os.mkdir(self.grass_user_data_base)
+            # Create the user group specific location path, if it does not exist
+            self.user_location_path = os.path.join(
+                self.grass_user_data_base, self.location_name)
+            if not os.path.exists(self.user_location_path):
+                os.mkdir(self.user_location_path)
+            # Check if the location is located in the global database
+            self.is_global_database = False
+            location = os.path.join(self.grass_data_base, self.location_name)
+            if os.path.isdir(location):
+                self.is_global_database = True
+        # Create the database, location and temporary file directories
+        os.mkdir(self.temp_grass_data_base)
+        os.mkdir(self.temp_file_path)
 
     def _create_temp_database(self, mapsets=None):
         """Create a temporary gis database with location and mapsets
@@ -873,62 +868,8 @@ class EphemeralProcessing(object):
             if not mapsets:
                 check_all_mapsets = True
 
-            # Global location mapset linking
-            if self.is_global_database is True:
-                # List all available mapsets in the global location
-                if os.path.isdir(self.global_location_path):
-                    if check_all_mapsets is True:
-                        mapsets = os.listdir(self.global_location_path)
-                    for mapset in mapsets:
-                        mapset_path = os.path.join(self.global_location_path, mapset)
-                        if (os.path.isdir(mapset_path)
-                                and os.access(mapset_path, os.R_OK & os.X_OK)):
-                            # Check if a WIND file exists to be sure it is a mapset
-                            if os.path.isfile(os.path.join(
-                                    mapset_path, "WIND")) is True:
-                                if mapset not in mapsets_to_link:
-                                    # Link the mapset from the global database
-                                    # only if it can be accessed
-                                    resp = check_location_mapset_module_access(
-                                        user_credentials=self.user_credentials,
-                                        config=self.config,
-                                        location_name=self.location_name,
-                                        mapset_name=mapset)
-                                    if resp is None:
-                                        mapsets_to_link.append((mapset_path, mapset))
-                            else:
-                                raise AsyncProcessError(
-                                    "Invalid mapset <%s> in location <%s>"
-                                    % (mapset, self.location_name))
-                else:
-                    raise AsyncProcessError(
-                        "Unable to access global location <%s>" % self.location_name)
-
-            # Check for leftover mapsets
-            left_over_mapsets = []
-            for mapset in mapsets:
-                if mapset not in mapsets_to_link:
-                    left_over_mapsets.append(mapset)
-
-            # List all available mapsets in the user location
-            if os.path.isdir(self.user_location_path):
-                if check_all_mapsets is True:
-                    left_over_mapsets = os.listdir(self.user_location_path)
-                for mapset in left_over_mapsets:
-                    mapset_path = os.path.join(self.user_location_path, mapset)
-                    if (os.path.isdir(mapset_path)
-                            and os.access(mapset_path, os.R_OK & os.X_OK)):
-                        # Check if a WIND file exists to be sure it is a mapset
-                        if os.path.isfile(os.path.join(mapset_path, "WIND")) is True:
-                            if mapset not in mapsets_to_link:
-                                mapsets_to_link.append((mapset_path, mapset))
-                        else:
-                            raise AsyncProcessError(
-                                "Invalid mapset <%s> in location <%s>"
-                                % (mapset, self.location_name))
-            else:
-                raise AsyncProcessError(
-                    "Unable to access user location <%s>" % self.location_name)
+            # User and global location mapset linking
+            self._link_mapsets(mapsets, mapsets_to_link, check_all_mapsets)
 
             # Check if we missed some of the required mapsets
             if check_all_mapsets is False:
@@ -955,6 +896,91 @@ class EphemeralProcessing(object):
         except Exception as e:
             raise AsyncProcessError("Unable to create a temporary GIS database"
                                     ", Exception: %s" % str(e))
+
+    def _link_mapsets(self, mapsets, mapsets_to_link, check_all_mapsets):
+        """Helper method to link locations mapsets
+
+        Args:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+            check_all_mapsets (bool): If set True, the mapsets list is created with
+                                      all locations on location_path
+
+        Returns:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+        """
+        # Global location mapset linking
+        if self.is_global_database is True:
+            # List all available mapsets in the global location
+            mapsets, mapsets_to_link = self._list_all_available_mapsets(
+                self.global_location_path, mapsets,
+                check_all_mapsets, mapsets_to_link, True)
+        # Check for leftover mapsets
+        left_over_mapsets = []
+        for mapset in mapsets:
+            if mapset not in mapsets_to_link:
+                left_over_mapsets.append(mapset)
+        # List all available mapsets in the user location
+        mapsets, mapsets_to_link = self._list_all_available_mapsets(
+            self.user_location_path, left_over_mapsets,
+            check_all_mapsets, mapsets_to_link, False)
+        return mapsets, mapsets_to_link
+
+    def _list_all_available_mapsets(self, location_path, mapsets, check_all_mapsets,
+                                    mapsets_to_link, global_db=False):
+        """Helper method to list all available mapsets and for global database
+        it is checked if the mapset can be accessed.
+
+        Args:
+            location_path (str): Path to location (global or user)
+            mapsets (list): List of mapsets names to link.
+                            The mapsets list can be empty, if check_all_mapsets is
+                            True the list is filled with all mapsets from the
+                            location_path
+            check_all_mapsets (bool): If set True, the mapsets list is created with
+                                      all locations on location_path
+            mapsets_to_link (list): List of mapset pathes to link
+            global_db (bool): If set True, the location/mapset access is
+                                    checked
+
+        Returns:
+            mapsets (list): List of mapsets in location
+            mapsets_to_link (list): List of mapsets pathes to link
+        """
+        if os.path.isdir(location_path):
+            if check_all_mapsets is True:
+                mapsets = os.listdir(location_path)
+            for mapset in mapsets:
+                mapset_path = os.path.join(location_path, mapset)
+                if (os.path.isdir(mapset_path)
+                        and os.access(mapset_path, os.R_OK & os.X_OK)):
+                    # Check if a WIND file exists to be sure it is a mapset
+                    if os.path.isfile(os.path.join(
+                                mapset_path, "WIND")) is True:
+                        if mapset not in mapsets_to_link and global_db is True:
+                            # Link the mapset from the global database
+                            # only if it can be accessed
+                            resp = check_location_mapset_module_access(
+                                    user_credentials=self.user_credentials,
+                                    config=self.config,
+                                    location_name=self.location_name,
+                                    mapset_name=mapset)
+                            if resp is None:
+                                mapsets_to_link.append((mapset_path, mapset))
+                        elif mapset not in mapsets_to_link and global_db is False:
+                            mapsets_to_link.append((mapset_path, mapset))
+                    else:
+                        raise AsyncProcessError(
+                            "Invalid mapset <%s> in location <%s>"
+                            % (mapset, self.location_name))
+        else:
+            if global_db is True:
+                msg = "Unable to access global location <%s>" % self.location_name
+            else:
+                msg = "Unable to access user location <%s>" % self.location_name
+            raise AsyncProcessError(msg)
+        return mapsets, mapsets_to_link
 
     def _create_grass_environment(self, grass_data_base, mapset_name="PERMANENT"):
         """Sets up the GRASS environment to run modules
@@ -1109,26 +1135,35 @@ class EphemeralProcessing(object):
         ew_res = float(region["ewres"])
 
         if num_cells > self.cell_limit:
-            # Adjust the region size
-            fak = num_cells / self.cell_limit
-            fak += 2.0
-            fak = math.sqrt(fak) + 2.0
+            self._adjust_region_size(num_cells, ns_res, ew_res)
 
-            ns_res = ns_res * fak
-            ew_res = ew_res * fak
+    def _adjust_region_size(self, num_cells, ns_res, ew_res):
+        """Helper method to adjust the region size
 
-            errorid, stdout_buff, stderr_buff = self.ginit.run_module(
+        Args:
+            num_cells (int): GRASS GIS number of cells of the region
+            ns_res (float): GRASS GIS north-south cell resolution of the region
+            ew_res (float): GRASS GIS east-west cell resolution of the region
+
+        Raises:
+            This method will raise an AsyncProcessError exception
+
+        """
+        fak = num_cells / self.cell_limit
+        fak += 2.0
+        fak = math.sqrt(fak) + 2.0
+        ns_res = ns_res * fak
+        ew_res = ew_res * fak
+        errorid, stdout_buff, stderr_buff = self.ginit.run_module(
                 "g.region", ["nsres=%f" % ns_res, "ewres=%f" % ew_res, "-g"])
-
-            self.message_logger.info(stdout_buff)
-
-            if errorid != 0:
-                raise AsyncProcessError(
+        self.message_logger.info(stdout_buff)
+        if errorid != 0:
+            raise AsyncProcessError(
                     "Unable to adjust the region settings to nsres: "
                     "%f ewres: %f error: %s" % (ns_res, ew_res, stderr_buff))
-            raise AsyncProcessError(
-                "Region to large, set a coarser resolution to minimum nsres: "
-                "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
+        raise AsyncProcessError(
+            "Region too large, set a coarser resolution to minimum nsres: "
+            "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
 
     def _increment_progress(self, num=1):
         """Increment the progress step by a specific number
@@ -1220,7 +1255,7 @@ class EphemeralProcessing(object):
         return time.time() - start_time
 
     def _run_process(self, process, poll_time=0.05):
-        """Run a process (common.process_object.Process) with options and send
+        """Run a process actinia_core.common.process_object.Process) with options and send
         progress updates to the resource database.
 
         IMPORTANT: Use this method to run programs that are not GRASS modules.
@@ -1231,7 +1266,7 @@ class EphemeralProcessing(object):
         by the run() method.
 
         Args:
-            process (common.process_object.Process): The process object that
+            process actinia_core.common.process_object.Process): The process object that
                                                      should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db
@@ -1254,7 +1289,7 @@ class EphemeralProcessing(object):
         return self._run_executable(process, poll_time)
 
     def _run_module(self, process, poll_time=0.05):
-        """Run the GRASS module (common.process_object.Process) with its module
+        """Run the GRASS module actinia_core.common.process_object.Process) with its module
         options and send progress updates to the database server that manages
         the resource entries.
 
@@ -1277,7 +1312,7 @@ class EphemeralProcessing(object):
         must be adjusted.
 
         Args:
-            process (common.process_object.Process): The process object that
+            process actinia_core.common.process_object.Process): The process object that
                                                      should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db
@@ -1319,7 +1354,7 @@ class EphemeralProcessing(object):
         return self._run_executable(process, poll_time)
 
     def _run_executable(self, process, poll_time=0.005):
-        """Runs a GRASS module or a common Unix executable and sets up
+        """Runs a GRASS module or aactinia_core.common.Unix executable and sets up
         the correct handling of stdout, stderr and stdin, creates the
         process log model and returns stdout, stderr and the return code.
 
@@ -1330,7 +1365,7 @@ class EphemeralProcessing(object):
         https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
 
         Args:
-            process (common.process_object.Process): The process object that
+            process actinia_core.common.process_object.Process): The process object that
                                                      should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db
@@ -1364,7 +1399,7 @@ class EphemeralProcessing(object):
 
         # print(process)
 
-        # GRASS and common Unix executables have different run methods
+        # GRASS andactinia_core.common.Unix executables have different run methods
         if process.exec_type in "grass":
             proc = self.ginit.run_module(process.executable,
                                          process.executable_params, raw=True,

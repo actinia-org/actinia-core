@@ -33,7 +33,7 @@ from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger, Schema
 
 from .resource_management import ResourceManager
-from .common.response_models import SimpleResponseModel
+from actinia_core.common.response_models import SimpleResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"

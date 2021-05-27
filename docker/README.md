@@ -52,6 +52,9 @@ sudo sysctl -w vm.max_map_count=262144
 
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
+
+__If not stated otherwise, you need to be in folder `actinia_core/docker`__
+
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
 ```
 docker-compose -f docker-compose-dev.yml build
@@ -68,6 +71,13 @@ For debugging or if you need to start the wsgi server regularly during developme
 ```
 python3 setup.py install
 gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
+
+```
+To test your local changes, you best use the Test Dockerimage:
+```
+# changing directory is necessary to have the correct build context
+cd ..
+docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```
 
 ## Local dev-setup for actinia-core plugins

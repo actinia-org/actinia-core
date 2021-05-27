@@ -412,7 +412,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 "_run_executable\n    raise AsyncProcessError(\"Error while running "
                 "executable <%s>\" % process.executable)\n"
             ],
-            "type": "<class 'actinia_core.resources.common.exceptions."
+            "type": "<class 'actinia_core.common.exceptions."
                     "AsyncProcessError'>"
         },
         "http_code": 400,

@@ -32,11 +32,11 @@ from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from .common.redis_interface import enqueue_job
+from actinia_core.common.redis_interface import enqueue_job
 import tempfile
 import os
 import atexit
-from .common.response_models import \
+from actinia_core.common.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, \
     StringListProcessingResultResponseModel
 
