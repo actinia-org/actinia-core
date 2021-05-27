@@ -1,6 +1,6 @@
-Sentinel-2A NDVI computation ===========================
+Sentinel-2 NDVI computation ===========================
 
-The following asynchronous API call computes the NDVI of the Sentinel-2A
+The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
 **S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749**:
 
