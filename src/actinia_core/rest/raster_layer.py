@@ -34,7 +34,8 @@ from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.common.exceptions import AsyncProcessError
-from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
+from .map_layer_base import MapLayerRegionResourceBase
+from actinia_core.models.openapi.map_layer_base import SetRegionModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
