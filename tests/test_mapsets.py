@@ -42,17 +42,6 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
 
     test_mapsets = [str(uuid.uuid4()), str(uuid.uuid4())]
 
-    @classmethod
-    def setUpClass(cls):
-        # there might still be the mapset nc_spm_08/test_mapset_2 from
-        # a former test run. In this case, unlock it:
-        rv = cls.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                            headers=cls.admin_auth_header)
-        rvdata = json_load(rv.data)
-        if rv.status_code == 200 and rvdata["message"] == "Mapset lock state: True":
-            rvdel = cls.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                                      headers=cls.admin_auth_header)
-
     def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
@@ -70,19 +59,6 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
                     headers=self.admin_auth_header)
                 print(rvdel.data.decode())
 
-    def test_no_locked_mapsets(self):
-        # Test correct behaviour if no mapsets are locked
-        rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
-                             headers=self.admin_auth_header)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
-        rvdata = json_load(rv.data)
-        mapset_list = rvdata["locked_mapsets_list"]
-        message = rvdata["message"]
-        mapsets_no = int(message.split(":")[-1])
-        self.assertEqual(mapsets_no, 0, "Number of locked mapsets is not 0")
-        self.assertEqual(mapset_list, [], "locked_mapsets_list is not empty")
-
     def test_two_locked_mapsets(self):
         # Test correct behaviour if two mapsets are locked
         for mapset in self.test_mapsets:
@@ -94,18 +70,23 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         rvdata = json_load(rv.data)
-        mapset_set = set(rvdata["locked_mapsets_list"])
-        ref_set = set(["nc_spm_08/{}".format(ms) for ms in self.test_mapsets])
+        mapset_list = rvdata["locked_mapsets_list"]
+        ref_list = ["nc_spm_08/{}".format(ms) for ms in self.test_mapsets]
+        for ref_mapset in ref_list:
+            self.assertIn(ref_mapset, mapset_list, "%s is not in the list of locked mapsets" % ref_mapset)
+
         message = rvdata["message"]
         mapsets_no = int(message.split(":")[-1])
-        self.assertEqual(mapsets_no, 2, "Number of locked mapsets is not 2")
-        self.assertEqual(mapset_set, ref_set,"Names of locked mapsets do not match reference")
+        self.assertGreaterEqual(mapsets_no, 2, "Number of locked mapsets is smaller than 2")
+
+        print("Currently there are %s locked mapsets:\n %s" % (str(mapsets_no), "\n".join(mapset_list)))
 
     def test_user_error(self):
         # Test correct behaviour if user role is not admin
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
                              headers=self.user_auth_header)
         self.assertEqual(rv.status_code, 401, "Status code is not 401: %s" % rv.status_code)
+
 
 if __name__ == '__main__':
     unittest.main()
