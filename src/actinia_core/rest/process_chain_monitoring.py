@@ -30,16 +30,17 @@ import os
 import pickle
 from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 
 from actinia_core.rest.resource_management import ResourceManager
 from actinia_core.models.response_models import SimpleResponseModel
+from actinia_core.models.openapi.process_chain_monitoring import \
+     MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
 __license__ = "GPLv3"
-__author__ = "Anika Weinmann"
+__author__ = "Anika Weinmann, Carmen Tawalika"
 __copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
-__email__ = "info@mundialis.de"
 
 
 def create_scatter_plot(x, y, xlabel, ylabel, title):
@@ -65,25 +66,6 @@ def compute_mapset_size_diffs(mapset_sizes):
     for i in range(1, len(mapset_sizes)):
         diffs[i] = mapset_sizes[i] - mapset_sizes[i - 1]
     return diffs
-
-
-class MapsetSizeResponseModel(Schema):
-    """Response schema for mapset sizes of a resource
-    """
-    type = 'object'
-    properties = {
-        'status': {
-            'type': 'string',
-            'description': 'The status of the resource, values: success, error'
-        },
-        'mapset_sizes': {
-            'type': 'array',
-            'items': {"type": "integer"},
-            'description': 'The list of mapset sizes of a resource in bytes'
-        }
-    }
-    example = {"mapset_sizes": [29946, 29946], "status": "success"}
-    required = ["status", "mapset_sizes"]
 
 
 class MapsetSizeResource(ResourceManager):
@@ -225,24 +207,6 @@ class MapsetSizeDiffResource(ResourceManager):
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="Resource does not exist")), 400)
-
-
-class MaxMapsetSizeResponseModel(Schema):
-    """Response schema for maximum mapset size of a resoucre
-    """
-    type = 'object'
-    properties = {
-        'status': {
-            'type': 'string',
-            'description': 'The status of the resource, values: success, error'
-        },
-        'max_mapset_size': {
-            'type': 'integer',
-            'description': 'The maximum mapset size of a resource in bytes'
-        }
-    }
-    example = {"max_mapset_size": 29949, "status": "success"}
-    required = ["status", "max_mapset_size"]
 
 
 class MaxMapsetSizeResource(ResourceManager):

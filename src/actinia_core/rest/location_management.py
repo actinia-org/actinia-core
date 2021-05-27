@@ -122,8 +122,6 @@ class ListLocationsResource(ResourceBase):
                 status="error", message="Unable to access GRASS database.")), 405)
 
 
-
-
 class LocationManagementResourceUser(ResourceBase):
     """This class returns information about a specific location
     """
