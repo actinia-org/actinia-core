@@ -36,7 +36,7 @@ from actinia_core.common.redis_interface import enqueue_job
 import tempfile
 import os
 import atexit
-from actinia_core.common.response_models import \
+from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, \
     StringListProcessingResultResponseModel
 

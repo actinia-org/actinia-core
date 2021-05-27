@@ -35,7 +35,7 @@ from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from .base_login import LoginBase
 from actinia_core.common.user import ActiniaUser
-from actinia_core.common.response_models import \
+from actinia_core.models.response_models import \
     UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
 
 
