@@ -46,11 +46,16 @@ from actinia_core.rest.map_layer_management import RasterLayersResource
 from actinia_core.rest.map_layer_management import VectorLayersResource
 from actinia_core.rest.vector_layer import VectorLayerResource
 from actinia_core.rest.ephemeral_processing import AsyncEphemeralResource
-from actinia_core.rest.ephemeral_processing_with_export import AsyncEphemeralExportResource
-from actinia_core.rest.ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
-from actinia_core.rest.ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
-from actinia_core.rest.persistent_mapset_merger import AsyncPersistentMapsetMergerResource
-from actinia_core.rest.raster_export import AsyncEphemeralRasterLayerRegionExporterResource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportResource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportS3Resource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportGCSResource
+from actinia_core.rest.persistent_mapset_merger import \
+     AsyncPersistentMapsetMergerResource
+from actinia_core.rest.raster_export import \
+     AsyncEphemeralRasterLayerRegionExporterResource
 from actinia_core.rest.raster_export import AsyncEphemeralRasterLayerExporterResource
 from actinia_core.rest.persistent_processing import AsyncPersistentResource
 from actinia_core.rest.ephemeral_custom_processing import AsyncEphemeralCustomResource
