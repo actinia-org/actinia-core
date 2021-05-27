@@ -34,11 +34,11 @@ from .resources.common.logging_interface import log
 from .resources.location_management import \
     ListLocationsResource, LocationManagementResourceUser
 from .resources.location_management import LocationManagementResourceAdmin
+from .resources.mapsets import AllMapsetsListingResourceAdmin
 from .resources.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
 from .resources.mapset_management import \
-    MapsetLockManagementResource, MapsetManagementResourceAdmin, \
-    MapsetLockManagementResourceAdmin
+    MapsetLockManagementResource, MapsetManagementResourceAdmin
 from .resources.strds_management import \
     STRDSManagementResource, SyncSTRDSListerResource
 from .resources.strds_raster_management import STRDSRasterManagement
@@ -103,7 +103,7 @@ def create_core_endpoints():
         MapsetLockManagementResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
     flask_api.add_resource(
-        MapsetLockManagementResourceAdmin, '/locations/locks')
+        AllMapsetsListingResourceAdmin, '/mapsets')
 
     # Raster management
     flask_api.add_resource(

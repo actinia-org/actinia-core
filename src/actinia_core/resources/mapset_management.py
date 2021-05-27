@@ -38,21 +38,18 @@ from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from .common.app import auth
 from .common.api_logger import log_api_call
-from .common.config import global_config
-from .common.redis_base import RedisBaseInterface
 from .common.redis_interface import enqueue_job
 from .common.exceptions import AsyncProcessError
 from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
 from .common.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    RegionModel, ProcessingErrorResponseModel, SimpleResponseModel, \
-    LockedMapsetListResponseModel
+    RegionModel, ProcessingErrorResponseModel
 # from .common.response_models import MapsetInfoModel
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
@@ -720,49 +717,3 @@ class PersistentMapsetUnlocker(PersistentProcessing):
             self.lock_interface.unlock(self.target_mapset_lock_id)
             self.finish_message = \
                 "Mapset <%s> successfully unlocked" % self.target_mapset_name
-
-
-class MapsetLockManagementResourceAdmin(ResourceBase):
-    """ Get all locked mapsets
-    """
-    decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
-
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Get all locked mapsets. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'Get a list of locked mapsets ',
-                'schema': LockedMapsetListResponseModel
-            },
-            '500': {
-                'description': 'The error message and a detailed error log',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
-    def get(self):
-        redis_interface = RedisBaseInterface()
-        kwargs = dict()
-        kwargs["host"] = global_config.REDIS_SERVER_URL
-        kwargs["port"] = global_config.REDIS_SERVER_PORT
-        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
-            kwargs["password"] = global_config.REDIS_SERVER_PW
-        redis_interface.connect(**kwargs)
-        redis_connection = redis_interface.redis_server
-        keys_locked = redis_connection.keys("RESOURCE-LOCK*")
-        keys_locked_dec = [key.decode() for key in keys_locked]
-        mapsets_locked = ["/".join(key.split("/")[-2:]) for key in keys_locked_dec]
-        try:
-            return make_response(jsonify(LockedMapsetListResponseModel(
-                status="success",
-                message="number of locked mapsets: %s" % len(mapsets_locked),
-                locked_mapsets_list=mapsets_locked)), 200)
-
-        except Exception as e:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Unable to list locked mapsets: Exception %s"
-                        % (str(e)))), 500)
