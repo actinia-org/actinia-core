@@ -53,6 +53,8 @@ sudo sysctl -w vm.max_map_count=262144
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
 
+If desired, you can also directly start here without installing actinia first. You only need to have cloned and checked out actinia_core.
+
 __If not stated otherwise, you need to be in folder `actinia_core/docker`__
 
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
