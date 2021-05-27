@@ -33,10 +33,9 @@ from copy import deepcopy
 from .process_chain import GrassModule
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
+__copyright__ = "Copyright 2021 mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ProgressInfoModel(Schema):

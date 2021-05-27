@@ -46,6 +46,7 @@ from .common.response_models import SimpleResponseModel, \
 __license__ = "GPLv3"
 __author__ = "Julia Haas, Guido Riembauer"
 __copyright__ = "Copyright 2021 mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class AllMapsetsListingResourceAdmin(ResourceBase):
