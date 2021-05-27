@@ -35,8 +35,7 @@ import dateutil.parser as dtparser
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 GML_BODY = """<?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
@@ -72,6 +71,104 @@ def extract_sensor_id_from_scene_id(scene_id):
 
     """
     return "%s0%s" % (scene_id[0:2], scene_id[2:3])
+
+
+def get_landsat_query(scene_id, spacecraft_id):
+    """Extract the sensor id from a Landsat scene id
+
+    Args:
+        scene_id (str): The landsat scene id
+        spacecraft_id (str): The landsat spacecraft id
+
+    Returns:
+        query (str): The landsat query
+        scene_id_query (str): The scene id query
+        spacecraft_id_query (str): the spacecraft id query
+        has_where_statement (bool): If True scene_id and/or spacecraft_id is set
+                                    and a WHERE part in the query is required
+
+    """
+    has_where_statement = False
+    query = "SELECT scene_id,sensing_time,north_lat,south_lat,east_lon," \
+            "west_lon,cloud_cover,total_size FROM `bigquery-public-data" \
+            ".cloud_storage_geo_index.landsat_index` "
+
+    if scene_id:
+        scene_id_query = "scene_id = \'%s\'" % scene_id
+        has_where_statement = True
+
+    if spacecraft_id:
+        spacecraft_id_query = "spacecraft_id = \'%s\'" % spacecraft_id
+        has_where_statement = True
+    return query, scene_id_query, spacecraft_id_query, has_where_statement
+
+
+def get_sentinel_query(scene_id):
+    """Extract the sensor id from a Sentinel scene id
+
+    Args:
+        scene_id (str): The Sentinel scene id
+
+    Returns:
+        query (str): The Sentinel query
+        scene_id_query (str): The scene id query
+        has_where_statement (bool): If True scene_id is set and a WHERE part
+                                    in the query is required
+
+    """
+    # Select specific columns from the sentinel table
+    query = "SELECT product_id,sensing_time,north_lat,south_lat,east_lon," \
+            "west_lon,cloud_cover,total_size FROM `bigquery-public-data" \
+            ".cloud_storage_geo_index.sentinel_2_index` "
+
+    if scene_id:
+        scene_id_query = "product_id = \'%s\'" % scene_id
+        has_where_statement = True
+    return query, scene_id_query, has_where_statement
+
+
+def get_where_query(scene_id_query, spacecraft_id_query, temporal_query,
+                    spatial_query, cloud_cover_query):
+    """Create where query to request the satellite archive
+
+    Args:
+        scene_id_query (str): The scene id query
+        spacecraft_id_query (str): The spacecraft id query
+        temporal_query (str): The temporal query
+        spatial_query (str): The spatial query
+        cloud_cover_query (str): The cloud cover query
+
+    Returns:
+        query (str): The WHERE part of the query
+    """
+
+    query = " WHERE "
+    statement_count = 0
+
+    if scene_id_query:
+        query += f" ({scene_id_query}) "
+        statement_count += 1
+
+    if spacecraft_id_query:
+        query += f" AND ({spacecraft_id_query}) " if statement_count > 0 \
+            else f" ({spacecraft_id_query}) "
+        statement_count += 1
+
+    if temporal_query:
+        query += f" AND ({temporal_query}) " if statement_count > 0 \
+            else f" ({temporal_query}) "
+        statement_count += 1
+
+    if spatial_query:
+        query += f" AND ({spatial_query}) " if statement_count > 0 \
+            else f" ({spatial_query}) "
+        statement_count += 1
+
+    if cloud_cover_query:
+        query += f" AND ({cloud_cover_query}) " if statement_count > 0 \
+            else f" ({cloud_cover_query}) "
+        statement_count += 1
+    return query
 
 
 class GoogleSatelliteBigQueryInterface(object):
@@ -189,30 +286,13 @@ class GoogleSatelliteBigQueryInterface(object):
             spatial_query = None
             cloud_cover_query = None
             has_where_statement = False
-            statement_count = 0
 
             if satellite == "landsat":
-                query = "SELECT scene_id,sensing_time,north_lat,south_lat,east_lon," \
-                        "west_lon,cloud_cover,total_size FROM `bigquery-public-data" \
-                        ".cloud_storage_geo_index.landsat_index` "
-
-                if scene_id:
-                    scene_id_query = "scene_id = \'%s\'" % scene_id
-                    has_where_statement = True
-
-                if spacecraft_id:
-                    spacecraft_id_query = "spacecraft_id = \'%s\'" % spacecraft_id
-                    has_where_statement = True
-
+                query, scene_id_query, spacecraft_id_query, has_where_statement = \
+                    get_landsat_query(scene_id, spacecraft_id)
             else:
-                # Select specific columns from the sentinel table
-                query = "SELECT product_id,sensing_time,north_lat,south_lat,east_lon," \
-                        "west_lon,cloud_cover,total_size FROM `bigquery-public-data" \
-                        ".cloud_storage_geo_index.sentinel_2_index` "
-
-                if scene_id:
-                    scene_id_query = "product_id = \'%s\'" % scene_id
-                    has_where_statement = True
+                query, scene_id_query, has_where_statement = get_sentinel_query(
+                    scene_id)
 
             if start_time and end_time:
                 start_time = dtparser.parse(start_time)
@@ -235,39 +315,9 @@ class GoogleSatelliteBigQueryInterface(object):
                 has_where_statement = True
 
             if has_where_statement is True:
-                query += " WHERE "
-
-            if scene_id_query:
-                query += " (%s) " % scene_id_query
-                statement_count += 1
-
-            if spacecraft_id_query:
-                if statement_count > 0:
-                    query += " AND (%s) " % spacecraft_id_query
-                else:
-                    query += " (%s) " % spacecraft_id_query
-                statement_count += 1
-
-            if temporal_query:
-                if statement_count > 0:
-                    query += " AND (%s) " % temporal_query
-                else:
-                    query += " (%s) " % temporal_query
-                statement_count += 1
-
-            if spatial_query:
-                if statement_count > 0:
-                    query += " AND (%s) " % spatial_query
-                else:
-                    query += " (%s) " % spatial_query
-                statement_count += 1
-
-            if cloud_cover_query:
-                if statement_count > 0:
-                    query += " AND (%s) " % cloud_cover_query
-                else:
-                    query += " (%s) " % cloud_cover_query
-                statement_count += 1
+                query += get_where_query(
+                    scene_id_query, spacecraft_id_query, temporal_query,
+                    spatial_query, cloud_cover_query)
 
             query_results = self.bigquery_client.query(query)
             result = []
