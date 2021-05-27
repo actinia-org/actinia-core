@@ -34,6 +34,7 @@ from actinia_core.common.logging_interface import log
 from actinia_core.rest.location_management import \
     ListLocationsResource, LocationManagementResourceUser
 from actinia_core.rest.location_management import LocationManagementResourceAdmin
+from actinia_core.rest.mapsets import AllMapsetsListingResourceAdmin
 from actinia_core.rest.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
 from actinia_core.rest.mapset_management import \
@@ -106,6 +107,7 @@ def create_core_endpoints():
     flask_api.add_resource(
         MapsetLockManagementResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
+
     # Raster management
     flask_api.add_resource(
         RasterLayersResource, '/locations/<string:location_name>/mapsets/'
@@ -200,6 +202,11 @@ def create_core_endpoints():
         AsyncEphemeralRasterLayerRegionExporterResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>'
         '/raster_layers/<string:raster_name>/geotiff_async_orig')
+
+    # all mapsets across all locations listing
+    flask_api.add_resource(
+        AllMapsetsListingResourceAdmin, '/mapsets')
+
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')
