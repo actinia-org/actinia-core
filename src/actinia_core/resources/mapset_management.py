@@ -47,9 +47,8 @@ from .common.response_models import ProcessingResponseModel, \
     RegionModel, ProcessingErrorResponseModel
 # from .common.response_models import MapsetInfoModel
 
-
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
+__author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
