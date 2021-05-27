@@ -26,7 +26,7 @@ per-file-ignores =
     ./actinia_core/common/api_logger.py: F401
     ./actinia_core/common/app.py: E402, E501
     ./actinia_core/testsuite.py: F401
-    ./actinia_core/resources/ephemeral_processing.py: F401, W605
+    ./actinia_core/rest/ephemeral_processing.py: F401, W605
     ./actinia_core/common/storage_interface_gcs.py: F401
     ./actinia_core/main.py: F401
     ./actinia_core/common/process_queue.py: F401

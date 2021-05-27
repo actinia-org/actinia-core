@@ -55,8 +55,8 @@ from actinia_core.common.response_models \
 from actinia_core.common.response_models \
     import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from actinia_core.common.interim_results import InterimResult, get_directory_size
-from .user_auth import check_location_mapset_module_access
-from .resource_base import ResourceBase
+from actinia_core.rest.user_auth import check_location_mapset_module_access
+from actinia_core.rest.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
