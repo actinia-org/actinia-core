@@ -548,7 +548,7 @@ class EphemeralProcessing(object):
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
 
     def _post_to_webhook(self, document, type):
-        """Helper method send a post request to a webhook
+        """Helper method to send a post request to a webhook
 
         Args:
             document (str): The response document
@@ -897,7 +897,7 @@ class EphemeralProcessing(object):
                                     ", Exception: %s" % str(e))
 
     def _link_mapsets(self, mapsets, mapsets_to_link, check_all_mapsets):
-        """Helper method o link locations mapsets
+        """Helper method to link locations mapsets
 
         Args:
             mapsets (list): List of mapsets in location
@@ -1153,7 +1153,7 @@ class EphemeralProcessing(object):
                     "Unable to adjust the region settings to nsres: "
                     "%f ewres: %f error: %s" % (ns_res, ew_res, stderr_buff))
         raise AsyncProcessError(
-                "Region to large, set a coarser resolution to minimum nsres: "
+                "Region too large, set a coarser resolution to minimum nsres: "
                 "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
 
     def _increment_progress(self, num=1):
