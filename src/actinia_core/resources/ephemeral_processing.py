@@ -902,7 +902,8 @@ class EphemeralProcessing(object):
         Args:
             mapsets (list): List of mapsets in location
             mapsets_to_link (list): List of mapsets pathes to link
-            type (str): The webhook type: 'finished' or 'update'
+            check_all_mapsets (bool): If set True, the mapsets list is created with
+                                      all locations on location_path
 
         Returns:
             mapsets (list): List of mapsets in location
@@ -926,16 +927,20 @@ class EphemeralProcessing(object):
         return mapsets, mapsets_to_link
 
     def _list_all_available_mapsets(self, location_path, mapsets, check_all_mapsets,
-                                    mapsets_to_link, global_location=False):
-        """Helper method to list all available mapsets
+                                    mapsets_to_link, global_db=False):
+        """Helper method to list all available mapsets and for global database
+        it is checked if the mapset can be accessed.
 
         Args:
             location_path (str): Path to location (global or user)
-            mapsets (list): List of mapsets names to link
+            mapsets (list): List of mapsets names to link.
+                            The mapsets list can be empty, if check_all_mapsets is
+                            True the list is filled with all mapsets from the
+                            location_path
             check_all_mapsets (bool): If set True, the mapsets list is created with
                                       all locations on location_path
             mapsets_to_link (list): List of mapset pathes to link
-            global_location (bool): If set True, the location/mapset access is
+            global_db (bool): If set True, the location/mapset access is
                                     checked
 
         Returns:
@@ -952,7 +957,7 @@ class EphemeralProcessing(object):
                     # Check if a WIND file exists to be sure it is a mapset
                     if os.path.isfile(os.path.join(
                                 mapset_path, "WIND")) is True:
-                        if mapset not in mapsets_to_link and global_location is True:
+                        if mapset not in mapsets_to_link and global_db is True:
                             # Link the mapset from the global database
                             # only if it can be accessed
                             resp = check_location_mapset_module_access(
@@ -962,7 +967,7 @@ class EphemeralProcessing(object):
                                     mapset_name=mapset)
                             if resp is None:
                                 mapsets_to_link.append((mapset_path, mapset))
-                        elif mapset not in mapsets_to_link and global_location is False:
+                        elif mapset not in mapsets_to_link and global_db is False:
                             mapsets_to_link.append((mapset_path, mapset))
                     else:
                         raise AsyncProcessError(
@@ -1152,7 +1157,7 @@ class EphemeralProcessing(object):
             raise AsyncProcessError(
                     "Unable to adjust the region settings to nsres: "
                     "%f ewres: %f error: %s" % (ns_res, ew_res, stderr_buff))
-        raise AsyncProcessError(
+            raise AsyncProcessError(
                 "Region too large, set a coarser resolution to minimum nsres: "
                 "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
 
