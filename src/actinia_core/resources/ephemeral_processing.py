@@ -1157,9 +1157,9 @@ class EphemeralProcessing(object):
             raise AsyncProcessError(
                     "Unable to adjust the region settings to nsres: "
                     "%f ewres: %f error: %s" % (ns_res, ew_res, stderr_buff))
-            raise AsyncProcessError(
-                "Region too large, set a coarser resolution to minimum nsres: "
-                "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
+        raise AsyncProcessError(
+            "Region too large, set a coarser resolution to minimum nsres: "
+            "%f ewres: %f [num_cells: %d]" % (ns_res, ew_res, num_cells))
 
     def _increment_progress(self, num=1):
         """Increment the progress step by a specific number
