@@ -34,7 +34,7 @@ from actinia_core.common.logging_interface import log
 from actinia_core.rest.location_management import \
     ListLocationsResource, LocationManagementResourceUser
 from actinia_core.rest.location_management import LocationManagementResourceAdmin
-from actinia_core.rest.mapset import AllMapsetsListingResourceAdmin
+from actinia_core.rest.mapsets import AllMapsetsListingResourceAdmin
 from actinia_core.rest.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
 from actinia_core.rest.mapset_management import \

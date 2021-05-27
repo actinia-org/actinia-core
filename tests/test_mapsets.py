@@ -42,6 +42,17 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
 
     test_mapsets = [str(uuid.uuid4()), str(uuid.uuid4())]
 
+    @classmethod
+    def setUpClass(cls):
+        # there might still be the mapset nc_spm_08/test_mapset_2 from
+        # a former test run. In this case, unlock it:
+        rv = cls.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
+                            headers=cls.admin_auth_header)
+        rvdata = json_load(rv.data)
+        if rv.status_code == 200 and rvdata["message"] == "Mapset lock state: True":
+            rvdel = cls.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
+                                      headers=cls.admin_auth_header)
+
     def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
