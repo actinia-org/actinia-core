@@ -31,7 +31,6 @@ Mapset management resources
 
 import shutil
 from flask import jsonify, make_response
-from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 import pickle
 from actinia_core.rest.persistent_processing import PersistentProcessing
@@ -42,16 +41,17 @@ from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.exceptions import AsyncProcessError
 from actinia_core.rest.user_auth import check_user_permissions
 from actinia_core.rest.user_auth import very_admin_role
-from actinia_core.common.response_models import ProcessingResponseModel, \
+from actinia_core.models.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
     RegionModel, ProcessingErrorResponseModel
-# from actinia_core.common.response_models import MapsetInfoModel
+from actinia_core.models.openapi.mapset_management import \
+    MapsetLockManagementResponseModel
+# from actinia_core.models.response_models import MapsetInfoModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ListMapsetsResource(ResourceBase):
@@ -446,47 +446,6 @@ class PersistentMapsetDeleter(PersistentProcessing):
         else:
             raise AsyncProcessError("Mapset <%s> does not exits" %
                                     self.target_mapset_name)
-
-
-class MapsetLockManagementResponseModel(ProcessingResponseModel):
-    """The response content that is returned by the GET request
-    """
-    type = 'object'
-    properties = deepcopy(ProcessingResponseModel.properties)
-    properties["process_results"] = {}
-    properties["process_results"]["type"] = "boolean"
-    required = deepcopy(ProcessingResponseModel.required)
-    example = {
-        "accept_datetime": "2018-05-02 11:03:26.529673",
-        "accept_timestamp": 1525259006.5296717,
-        "api_info": {
-            "endpoint": "mapsetlockmanagementresource",
-            "method": "GET",
-            "path": "/locations/nc_spm_08/mapsets/PERMANENT/lock",
-            "request_url": "http://localhost:8080/locations/nc_spm_08/mapsets/"
-                           "PERMANENT/lock"
-        },
-        "datetime": "2018-05-02 11:03:26.586348",
-        "http_code": 200,
-        "message": "Mapset lock state: False",
-        "process_chain_list": [],
-        "process_log": [],
-        "process_results": False,
-        "progress": {
-            "num_of_steps": 0,
-            "step": 0
-        },
-        "resource_id": "resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf",
-        "status": "finished",
-        "time_delta": 0.056743621826171875,
-        "timestamp": 1525259006.5863316,
-        "urls": {
-            "resources": [],
-            "status": "http://localhost:8080/resources/admin/"
-                      "resource_id-162101d9-2abc-417e-83ef-dc6f52ed7aaf"
-        },
-        "user_id": "admin"
-    }
 
 
 class MapsetLockManagementResource(ResourceBase):

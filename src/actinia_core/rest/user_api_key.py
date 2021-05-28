@@ -31,18 +31,17 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 from flask_restful import reqparse
-from flask_restful_swagger_2 import Schema, swagger
+from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, g
 from .base_login import LoginBase
 from actinia_core.common.app import auth
 from actinia_core.common.api_logger import log_api_call
-
+from actinia_core.models.openapi.user_api_key import TokenResponseModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 # Create a temporal module where, order, column parser
@@ -50,28 +49,6 @@ expiration_time_parser = reqparse.RequestParser()
 expiration_time_parser.add_argument(
     'expiration_time', required=False, type=int, location='args',
     help='The expiration time in seconds for the generated token')
-
-
-class TokenResponseModel(Schema):
-    """Response schema that is used for authentication token generation.
-
-    """
-    type = 'object'
-    properties = {
-        'status': {
-            'type': 'string',
-            'description': 'The status of the resource, values: success, error'
-        },
-        'token': {
-            'type': 'string',
-            'description': 'The generated token for authentication'
-        },
-        'message': {
-            'type': 'string',
-            'description': 'The message of the token generation'
-        }
-    }
-    required = ["status", "token"]
 
 
 class APIKeyCreationResource(LoginBase):

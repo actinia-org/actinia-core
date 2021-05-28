@@ -31,7 +31,7 @@ from .renderer_base import RendererBaseResource, EphemeralRendererBase
 import tempfile
 import os
 from flask_restful_swagger_2 import swagger
-from actinia_core.common.response_models import ProcessingErrorResponseModel
+from actinia_core.models.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

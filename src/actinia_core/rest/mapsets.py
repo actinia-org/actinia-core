@@ -36,7 +36,7 @@ from actinia_core.common.app import auth
 from actinia_core.common.api_logger import log_api_call
 from actinia_core.common.config import global_config
 from actinia_core.common.redis_lock import RedisLockingInterface
-from actinia_core.common.response_models import SimpleResponseModel, \
+from actinia_core.models.response_models import SimpleResponseModel, \
      LockedMapsetListResponseModel
 from .user_auth import check_user_permissions
 from .user_auth import very_admin_role
