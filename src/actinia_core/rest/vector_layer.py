@@ -29,10 +29,10 @@ from flask_restful_swagger_2 import swagger
 import pickle
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
-from actinia_core.common.redis_interface import enqueue_job
+from actinia_core.core.redis_interface import enqueue_job
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
-from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.core.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase
 from actinia_core.models.openapi.vector_layer import \
      VectorInfoResponseModel, VectorRegionCreationModel, \

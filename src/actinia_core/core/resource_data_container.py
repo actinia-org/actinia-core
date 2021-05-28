@@ -78,7 +78,7 @@ class ResourceDataContainer(object):
             orig_time (time): The time of origin (seconds)
             orig_datetime (datetime): The datetime of origin (datetime format)
             user_credentials (dict): The user credentials dict
-            config (actinia_core.common.config.Configuration): The actinia
+            config (actinia_core.core.config.Configuration): The actinia
                                                                          configuration
             location_name (str): The name of the location to work in
             mapset_name (str): The name of the target mapset in which the

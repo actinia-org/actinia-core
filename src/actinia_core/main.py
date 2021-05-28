@@ -30,10 +30,10 @@ import os
 from .endpoints import create_endpoints
 from .health_check import health_check
 from .version import version, init_versions
-from actinia_core.common.app import flask_app
-from actinia_core.common.config import global_config, DEFAULT_CONFIG_PATH
-from actinia_core.common.redis_interface import connect, create_job_queues
-from actinia_core.common.process_queue import create_process_queue
+from actinia_core.core.app import flask_app
+from actinia_core.core.config import global_config, DEFAULT_CONFIG_PATH
+from actinia_core.core.redis_interface import connect, create_job_queues
+from actinia_core.core.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

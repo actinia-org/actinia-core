@@ -25,8 +25,8 @@
 Tests: User test case
 """
 import unittest
-from actinia_core.common.user import ActiniaUser
-from actinia_core.common.app import flask_app
+from actinia_core.core.user import ActiniaUser
+from actinia_core.core.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except:
