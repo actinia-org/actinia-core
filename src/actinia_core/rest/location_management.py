@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,14 +31,16 @@ from flask import jsonify, make_response
 import os
 import shutil
 import pickle
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from actinia_core.common.app import auth
 from actinia_core.common.api_logger import log_api_call
 from actinia_core.rest.user_auth import very_admin_role
 from actinia_core.rest.user_auth import check_user_permissions
-from actinia_core.common.response_models import ProcessingResponseModel
-from actinia_core.common.response_models import SimpleResponseModel
-from actinia_core.common.response_models import MapsetInfoResponseModel
+from actinia_core.models.response_models import ProcessingResponseModel
+from actinia_core.models.response_models import SimpleResponseModel
+from actinia_core.models.response_models import MapsetInfoResponseModel
+from actinia_core.models.openapi.location_management import LocationListResponseModel
+from actinia_core.models.openapi.location_management import ProjectionInfoModel
 from actinia_core.rest.resource_base import ResourceBase
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.mapset_management import PersistentGetProjectionRegionInfo
@@ -46,30 +48,9 @@ from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
-__author__ = "S�ren Gebbert"
-__copyright__ = "Copyright 2016, S�ren Gebbert"
-__maintainer__ = "S�ren Gebbert"
-__email__ = "soerengebbert@googlemail.com"
-
-
-class LocationListResponseModel(Schema):
-    """Response schema for location lists
-    """
-    type = 'object'
-    properties = {
-        'status': {
-            'type': 'string',
-            'description': 'The status of the resource, values: accepted, '
-                           'running, finished, terminated, error'
-        },
-        'locations': {
-            'type': 'array',
-            'items': {"type": "string"},
-            'description': 'The list of locations in the GRASS database'
-        }
-    }
-    example = {"locations": ["nc_spm_08", "latlong_wgs84", "ECAD"], "status": "success"}
-    required = ["status", "locations"]
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ListLocationsResource(ResourceBase):
@@ -139,21 +120,6 @@ class ListLocationsResource(ResourceBase):
         else:
             return make_response(jsonify(SimpleResponseModel(
                 status="error", message="Unable to access GRASS database.")), 405)
-
-
-class ProjectionInfoModel(Schema):
-    """Schema to define projection information as JSON input in POST requests
-    """
-    type = 'object'
-    properties = {
-        'epsg': {
-            'type': 'string',
-            'description': 'The EPSG code of the projection that should be used '
-                           'to create a location'
-        }
-    }
-    example = {"epsg": "4326"}
-    required = ["epsg"]
 
 
 class LocationManagementResourceUser(ResourceBase):

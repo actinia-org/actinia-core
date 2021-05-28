@@ -39,8 +39,8 @@ from actinia_core.common.api_logger import log_api_call
 from actinia_core.common.messages_logger import MessageLogger
 from actinia_core.common.resources_logger import ResourceLogger
 from actinia_core.common.resource_data_container import ResourceDataContainer
-from actinia_core.common.response_models import ProcessingResponseModel
-from actinia_core.common.response_models import create_response_from_model, ApiInfoModel
+from actinia_core.models.response_models import ProcessingResponseModel
+from actinia_core.models.response_models import create_response_from_model, ApiInfoModel
 from .resource_streamer import RequestStreamerResource
 from .user_auth import check_user_permissions, create_dummy_user
 from .resource_management import ResourceManager

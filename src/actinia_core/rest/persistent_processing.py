@@ -39,7 +39,7 @@ from actinia_core.rest.resource_base import ResourceBase
 from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.exceptions import AsyncProcessError
 from actinia_core.common.process_chain import ProcessChainModel
-from actinia_core.common.response_models import ProcessingResponseModel
+from actinia_core.models.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

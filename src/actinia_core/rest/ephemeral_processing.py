@@ -50,9 +50,9 @@ from actinia_core.common.process_chain import ProcessChainConverter
 from actinia_core.common.exceptions \
     import AsyncProcessError, AsyncProcessTermination, RsyncError
 from actinia_core.common.exceptions import AsyncProcessTimeLimit
-from actinia_core.common.response_models \
+from actinia_core.models.response_models \
     import ProcessingResponseModel, ExceptionTracebackModel
-from actinia_core.common.response_models \
+from actinia_core.models.response_models \
     import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from actinia_core.common.interim_results import InterimResult, get_directory_size
 from actinia_core.rest.user_auth import check_location_mapset_module_access
