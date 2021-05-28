@@ -62,7 +62,7 @@ from actinia_core.rest.persistent_processing import AsyncPersistentResource
 from actinia_core.rest.ephemeral_custom_processing import AsyncEphemeralCustomResource
 from actinia_core.rest.process_validation import AsyncProcessValidationResource
 from actinia_core.rest.process_validation import SyncProcessValidationResource
-from actinia_core.rest.users.user_management import \
+from actinia_core.rest.user_management import \
      UserListResource, UserManagementResource
 from actinia_core.rest.api_log_management import APILogResource
 from actinia_core.rest.user_api_key import TokenCreationResource, APIKeyCreationResource
