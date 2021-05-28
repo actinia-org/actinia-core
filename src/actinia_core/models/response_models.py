@@ -30,7 +30,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
-from .process_chain import GrassModule
+from actinia_core.common.process_chain import GrassModule
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"

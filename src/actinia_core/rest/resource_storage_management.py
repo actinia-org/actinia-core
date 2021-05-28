@@ -37,7 +37,7 @@ from .resource_base import ResourceBase
 from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.process_object import Process
 from actinia_core.common.exceptions import AsyncProcessError
-from actinia_core.common.response_models import \
+from actinia_core.models.response_models import \
     StorageResponseModel, StorageModel, ProcessingResponseModel, \
     ProcessingErrorResponseModel
 

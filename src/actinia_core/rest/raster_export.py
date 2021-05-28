@@ -33,7 +33,7 @@ from flask_restful_swagger_2 import swagger
 from .resource_base import ResourceBase
 from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from actinia_core.common.redis_interface import enqueue_job
-from actinia_core.common.response_models import \
+from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
