@@ -29,10 +29,10 @@ import os
 from functools import wraps
 
 from flask import g, abort
-from actinia_core.core.common.config import global_config
-from actinia_core.core.common.app import auth
-from actinia_core.core.common.user import ActiniaUser
-from actinia_core.core.common.messages_logger import MessageLogger
+from actinia_core.core.config import global_config
+from actinia_core.core.app import auth
+from actinia_core.core.user import ActiniaUser
+from actinia_core.core.messages_logger import MessageLogger
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -211,7 +211,7 @@ def check_location_mapset_module_access(user_credentials,
 
     Args:
         user_credentials (dict): The user credentials dictionary
-        config (actinia_core.core.common.config.Configuration): The actinia
+        config (actinia_core.core.config.Configuration): The actinia
                                                                      configuration
         location_name (str): Name of the location to access
         mapset_name (str): Name of the mapset to access

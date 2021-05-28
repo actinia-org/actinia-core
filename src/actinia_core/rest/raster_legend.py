@@ -29,7 +29,7 @@ from flask import jsonify, make_response, Response
 from flask_restful import reqparse
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.redis_interface import enqueue_job
 import tempfile
 import os
 from flask_restful_swagger_2 import swagger

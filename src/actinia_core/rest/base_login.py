@@ -26,9 +26,9 @@ Base class for user management resources
 """
 
 from flask_restful import Resource
-from actinia_core.core.common.app import auth
-from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.core.common.messages_logger import MessageLogger
+from actinia_core.core.app import auth
+from actinia_core.core.api_logger import log_api_call
+from actinia_core.core.messages_logger import MessageLogger
 from actinia_core.rest.user_auth import very_admin_role
 
 __license__ = "GPLv3"
