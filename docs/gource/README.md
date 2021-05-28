@@ -11,8 +11,8 @@ Note: Captions have to be in ascending order and with unix timestamps, separated
 
 ```
 # !!careful to not overwrite existing file!!
-# re-order on the fly from oldest to newest
-# git log --oneline  --format="%ct|%s" | tac > gource_captions.txt
+# captions sorted from oldest to newest
+# git log --oneline --reverse --format="%ct|%s" > gource_captions.txt
 ```
 
 ### Create the animation on screen

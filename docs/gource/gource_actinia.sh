@@ -1,25 +1,36 @@
 #!/bin/sh
 
-# Markus Neteler, 2021
-
+#######
+# gource animation script
 # https://github.com/acaudwell/Gource
+#
+# Copyright (c) 2021 Markus Neteler and mundialis GmbH & Co. KG
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+#######
+
+
 #
 # installation
 # dnf install gource
 #
-# prepare logs:
-## http://code.google.com/p/gource/wiki/SVN
-# git log --oneline > actinia-log.txt
-
+# preparation of logs:
 #
-# $ git log --pretty=format:user:%aN%n%at --reverse --raw --encoding=UTF-8 --no-renames --after={1.years.ago} > git.log
-# $ gource -s .001 -f 1920x1080 --auto-skip-seconds .001 --multi-sampling --stop-at-end --hide mouse,progress,files,tree,filenames,dirnames --file-idle-time 15 --max-files 0 --output-framerate 30 --output-ppm-stream - --seconds-per-day 1 git.log
-##
-# gource --hide dirnames,filenames --seconds-per-day 0.1 --auto-skip-seconds 1 -1280x720 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libx264 -preset ultrafast -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 gource.mp4
-
 # !!careful to not overwrite existing file!!
-# re-order from oldest to newest
-# git log --oneline  --format="%ct|%s" | tac > gource.captions.txt
+# captions sorted from oldest to newest
+# git log --oneline --reverse --format="%ct|%s" > gource_captions.txt
 
 ##############
 #RES="1100x900"
@@ -57,8 +68,4 @@ gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode t
 
 # make WebM film:
 #gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track --seconds-per-day 0.05 --stop-at-end --disable-progress --hide filenames -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b:v 10000K $OUTPUT.webm
-
-# play the thing:
-echo "vlc $OUTPUT.mp4"
-#vlc $OUTPUT.webm
 
