@@ -30,7 +30,7 @@ per-file-ignores =
     ./actinia_core/common/storage_interface_gcs.py: F401
     ./actinia_core/main.py: F401
     ./actinia_core/common/process_queue.py: F401
-    ./actinia_core/common/process_chain.py: W605
+    ./actinia_core/models/process_chain.py: W605
     ./actinia_core/common/interim_results.py: W605
     ./actinia_core/common/list_grass_modules.py: F821
     ./actinia_core/common/aws_sentinel_interface.py: E501

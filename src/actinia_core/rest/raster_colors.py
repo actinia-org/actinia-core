@@ -27,7 +27,7 @@ Raster colors management
 TODO: Tests required
 """
 
-from flask_restful_swagger_2 import swagger, Schema
+from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
@@ -39,44 +39,12 @@ import atexit
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, \
     StringListProcessingResultResponseModel
+from actinia_core.models.openapi.raster_colors import RasterColorModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
-
-
-class RasterColorModel(Schema):
-    """Response schema that is used in cases that no asynchronous run was performed.
-
-    """
-    description = "Set the color table for an existing raster map layer with a " \
-                  "set of rules, a specific color or an other raster map layer"
-    type = 'object'
-    properties = {
-        'rules': {
-            'type': 'array',
-            'description': 'A list of rules to set the color table of a raster '
-                           'map layer',
-            'items': {'type': "string"}
-        },
-        'color': {
-            'type': 'string',
-            'description': 'The name of a color to be set for a raster map layer'
-        },
-        'raster': {
-            'type': 'string',
-            'description': 'The name of an existing raster map layer to copy '
-                           'the color table from'
-        }
-    }
-    example = {
-        "rules": ["1 0:0:0",
-                  "default 255:255:255"],
-        "color": "ndvi",
-        "raster": "elevation@PERMANENT"
-    }
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class SyncPersistentRasterColorsResource(ResourceBase):
