@@ -23,14 +23,14 @@ exclude =
     testsuite,
 
 per-file-ignores =
-    ./actinia_core/common/api_logger.py: F401
-    ./actinia_core/common/app.py: E402, E501
+    ./actinia_core/core/common/api_logger.py: F401
+    ./actinia_core/core/common/app.py: E402, E501
     ./actinia_core/testsuite.py: F401
     ./actinia_core/rest/ephemeral_processing.py: F401, W605
-    ./actinia_core/common/storage_interface_gcs.py: F401
+    ./actinia_core/core/common/storage_interface_gcs.py: F401
     ./actinia_core/main.py: F401
-    ./actinia_core/common/process_queue.py: F401
+    ./actinia_core/core/common/process_queue.py: F401
     ./actinia_core/models/process_chain.py: W605
-    ./actinia_core/common/interim_results.py: W605
-    ./actinia_core/common/list_grass_modules.py: F821
-    ./actinia_core/common/aws_sentinel_interface.py: E501
+    ./actinia_core/core/common/interim_results.py: W605
+    ./actinia_core/core/common/list_grass_modules.py: F821
+    ./actinia_core/core/common/aws_sentinel_interface.py: E501

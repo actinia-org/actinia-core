@@ -30,11 +30,11 @@ from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
 import tempfile
 import pickle
-from actinia_core.common.request_parser import where_parser
+from actinia_core.core.common.request_parser import where_parser
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
-from actinia_core.common.redis_interface import enqueue_job
-from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.models.openapi.strds_raster_management import \

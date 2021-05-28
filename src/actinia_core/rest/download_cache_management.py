@@ -34,15 +34,15 @@ import pickle
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.resource_base import ResourceBase
-from actinia_core.common.redis_interface import enqueue_job
-from actinia_core.common.process_object import Process
-from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.process_object import Process
+from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import \
     StorageResponseModel, StorageModel, ProcessingResponseModel
-from actinia_core.common.api_logger import log_api_call
+from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.user_auth import very_admin_role
 from actinia_core.rest.user_auth import check_user_permissions
-from actinia_core.common.app import auth
+from actinia_core.core.common.app import auth
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

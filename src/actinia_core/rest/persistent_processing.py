@@ -36,9 +36,9 @@ from flask_restful_swagger_2 import swagger
 
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
 from actinia_core.rest.resource_base import ResourceBase
-from actinia_core.common.redis_interface import enqueue_job
-from actinia_core.common.exceptions import AsyncProcessError
-from actinia_core.common.process_chain import ProcessChainModel
+from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.models.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"

@@ -30,9 +30,9 @@ from flask_restful import Resource
 
 from flask_restful_swagger_2 import swagger
 
-from actinia_core.common.app import auth
-from actinia_core.common.api_logger import ApiLogger
-from actinia_core.common.api_logger import log_api_call
+from actinia_core.core.common.app import auth
+from actinia_core.core.common.api_logger import ApiLogger
+from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.models.openapi.api_log_management import ApiLogListModel
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.user_auth import check_user_permissions
