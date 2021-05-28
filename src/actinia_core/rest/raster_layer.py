@@ -41,7 +41,7 @@ from actinia_core.common.exceptions import AsyncProcessError
 from actinia_core.common.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.models.openapi.raster_layer import \
-     RasterInfoResponseModel, RasterRegionCreationModel, RasterInfoModel
+     RasterInfoResponseModel, RasterInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
@@ -174,9 +174,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
     @swagger.doc({
         'tags': ['Raster Management'],
-        'description': 'Create a new raster map layer based on a r.mapcalc expression '
-                       'in a user specific region. This method will fail if '
-                       'the map already exists. '
+        'description': 'Create a new raster map layer by uploading a GeoTIFF. '
+                       'This method will fail if the map already exists. '
                        'Minimum required user role: user.',
         'parameters': [
             {
@@ -200,17 +199,9 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                 'required': True,
                 'in': 'path',
                 'type': 'string'
-            },
-            {
-                'name': 'creation_params',
-                'description': 'Parameters to create raster map layer '
-                               'using r.mapcalc in a specific region.',
-                'required': True,
-                'in': 'body',
-                'schema': RasterRegionCreationModel
             }
         ],
-        'consumes': ['application/json'],
+        'consumes': ['Content-Type: multipart/form-data'],
         'produces': ["application/json"],
         'responses': {
             '200': {
@@ -230,8 +221,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
         allowed_extensions = ['tif', 'tiff']
 
-        content_type = request.content_type.split(';')[0]
         # TODO check if another content type can be used
+        content_type = request.content_type.split(';')[0]
         if content_type != "multipart/form-data":
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
