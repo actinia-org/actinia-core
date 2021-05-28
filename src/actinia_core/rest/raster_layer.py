@@ -24,7 +24,6 @@
 """
 Raster layer resources
 """
-from copy import deepcopy
 from flask import jsonify, make_response, request
 from flask_restful_swagger_2 import swagger
 import os
@@ -230,8 +229,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
         if 'file' not in request.files:
             return make_response(jsonify(SimpleResponseModel(
-            status="error",
-            message="No file part indicated in postbody.")), 400)
+                status="error",
+                message="No file part indicated in postbody.")), 400)
 
         # create download cache path if does not exists
         if os.path.exists(self.download_cache):
@@ -252,6 +251,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
             file_path = os.path.join(self.download_cache, filename)
             file.save(file_path)
         else:
+            os.remove(file_path)
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="File has a not allowed extension. "
@@ -416,6 +416,10 @@ class PersistentRasterCreator(PersistentProcessing):
         raster_list = self.module_output_log[0]["stdout"].split("\n")
 
         if len(raster_list[0]) > 0:
+            try:
+                os.remove(self.rdc.request_data)
+            except Exception:
+                pass
             raise AsyncProcessError("Raster layer <%s> exists." % raster_name)
 
         self._execute_process_list(pc_2)
