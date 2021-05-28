@@ -14,12 +14,12 @@ make test
 ```
 
 ## Problems
-Redis autorization is set by `from actinia_core.common import redis_interface`:
+Redis autorization is set by `from actinia_core.core import redis_interface`:
   * so this does set the password:
     ```
     import os
-    from actinia_core.common import redis_interface # PROBLEM!!!!
-    from actinia_core.common.config import global_config
+    from actinia_core.core import redis_interface # PROBLEM!!!!
+    from actinia_core.core.config import global_config
 
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
     global_config.read(custom_actinia_cfg)
@@ -28,7 +28,7 @@ Redis autorization is set by `from actinia_core.common import redis_interface`:
   * and this works fine:
     ```
     import os
-    from actinia_core.common.config import global_config
+    from actinia_core.core.config import global_config
 
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
     global_config.read(custom_actinia_cfg)
