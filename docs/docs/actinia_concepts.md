@@ -106,18 +106,18 @@ Overview table:
 +-----------+-----------+-----------+----------+-----------+-----------+
 | location/ | y         | y         | can      | has       | -         |
 | mapset    |           |           | create,  | access to |           |
-| access is |           |           |          | p         |           |
-| unlimited |           |           | modify   | ersistent |           |
-|           |           |           | and      | databases |           |
-|           |           |           | delete   | that were |           |
-|           |           |           | mapsets  | granted   |           |
-|           |           |           | in user  | by a      |           |
-|           |           |           | specific | su        |           |
-|           |           |           | d        | peradmin, |           |
-|           |           |           | atabases | defined   |           |
-|           |           |           | ,        | in redis  |           |
-|           |           |           | defined  |           |           |
+| access is |           |           | modify   | p         |           |
+| unlimited |           |           | and      | ersistent |           |
+|           |           |           | delete   | databases |           |
+|           |           |           | mapsets  | that were |           |
+|           |           |           | in user  | granted   |           |
+|           |           |           | specific | by a      |           |
+|           |           |           | d        | su        |           |
+|           |           |           | atabases | peradmin, |           |
+|           |           |           | ,        | defined   |           |
+|           |           |           | defined  | in redis  |           |
 |           |           |           | in redis |           |           |
+|           |           |           |          |           |           |
 +-----------+-----------+-----------+----------+-----------+-----------+
 | module    | y         | y         | can run  | has very  | -         |
 | access is |           |           | c        | limited   |           |
