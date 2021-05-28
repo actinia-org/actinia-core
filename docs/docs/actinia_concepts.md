@@ -18,7 +18,7 @@ spectacle tool can be used:
 
 ```bash
  # Download the latest swagger definition from the actinia service
- wget  https://actinia.mundialis.de/api/latest/swagger.json -O /tmp/actinia.json
+ wget  https://actinia.mundialis.de/latest/swagger.json -O /tmp/actinia.json
 
  # Run spectacle docker image to generate the HTML documentation
  docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
@@ -30,30 +30,29 @@ spectacle tool can be used:
 The petstore swagger UI creator[^3] can be used to show all available
 REST API calls and all response models in a convenient way.
 
-**Footnotes**
 
 User, user-roles and user-groups
 --------------------------------
 
-Actinia use the concept of users, user-roles and user-groups to manage
+Actinia uses the concept of users, user-roles and user-groups to manage
 the access to the actinia databases and API calls. A single user has
-always a specific user role and can be member of a single user-group.
+always a specific user role and can be member of one single user-group.
 
 The following user-roles are supported:
 
  1.  
 
-     superadmin
+     superadmin:
 
-     :   -   Can create, modify and delete users with all user-roles
+         -   Can create, modify and delete users with all user-roles
          -   Has access to all API calls and read/write access to all
              databases
 
  2.  
 
-     admin
+     admin:
 
-     :   -   Can create, modify and delete locations in a user specific
+         -   Can create, modify and delete locations in a user specific
              database
          -   Can access all API calls
          -   Can create, modify and delete users with the maximum
@@ -63,11 +62,11 @@ The following user-roles are supported:
 
  3.  
 
-     user
+     user:
 
-     :   -   Can run computational tasks in ephemeral and user specific
+         -   Can run computational tasks in ephemeral and user specific
              databases
-         -   Can create create, modify and delete mapsets in user
+         -   Can create, modify and delete mapsets in user
              specific databases
          -   Has limited acces to API calls
          -   Can not create, modify or delete users
@@ -76,9 +75,9 @@ The following user-roles are supported:
 
  4.  
 
-     guest
+     guest:
 
-     :   -   Has very limited access to API calls
+         -   Has very limited access to API calls
          -   Can not create, modify or delete mapsets
          -   Can not create, modify or delete users
          -   Has access to persistent databases that were granted by a
@@ -106,8 +105,8 @@ Overview table:
 |           |           | uperadmin |          |           |           |
 +-----------+-----------+-----------+----------+-----------+-----------+
 | location/ | y         | y         | can      | has       | -         |
-| mapset    |           |           | create   | access to |           |
-| access is |           |           | create,  | p         |           |
+| mapset    |           |           | create,  | access to |           |
+| access is |           |           |          | p         |           |
 | unlimited |           |           | modify   | ersistent |           |
 |           |           |           | and      | databases |           |
 |           |           |           | delete   | that were |           |
@@ -158,13 +157,13 @@ The Actinia databases
 Actinia manages GRASS GIS locations in its *persistent database*. User
 are not permitted to modify data in the actinia persistent database, but
 can access all data read-only for processing and visualization. Data in
-the persistent database can only accessed via HTTP GET API calls.
+the persistent database can only be accessed via HTTP GET API calls.
 
 The user can either process data in an *ephemeral databases*, that will
 be removed after the processing is finished, or in a *user specific
 database*. A user specific database is persistent, only visible to users
 of the same user-group and can contain any data the user has
-imported.The user can read-access all data from the persistent database
+imported. The user can read-access all data from the persistent database
 while running analysis in the ephemeral database or user specific
 database.
 
@@ -172,35 +171,37 @@ database.
 
  1.  
 
-     Persistent database
+     Persistent database:
 
-     :   -   Read only database with locations and mapsets that can be
+         -   Read only database with locations and mapsets that can be
              used as processing environment and data source
          -   Data can only be accessed using HTTP GET API calls
 
  2.  
 
-     Ephemeral database
+     Ephemeral database:
 
-     :   -   All processing is performed in ephemeral databases for
+         -   All processing is performed in ephemeral databases for
              performance and security reasons
          -   Ephemeral databases are created for all API calls and
              removed after the processing is finished
-         -   Ephemeral databases use persistent database as processing
+         -   Ephemeral databases use persistent databases as processing
              environments to access required data from mapsets in
              persistent locations
 
  3.  
 
-     User specific databases
+     User specific databases:
 
-     :   -   Persistent databases that can be created and modified by a
+         -   Persistent databases that can be created and modified by a
              specific user group
          -   The base for a location in a user specific database can be
              a location from a persistent database, however mapsets
              names must be unique.
          -   A user group can only access a single database with any
              number of locations
+
+**Footnotes**
 
 [^1]: <https://www.openapis.org/>
 
