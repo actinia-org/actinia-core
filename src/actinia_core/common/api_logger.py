@@ -43,6 +43,7 @@ except Exception:
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 def log_api_call(f):
