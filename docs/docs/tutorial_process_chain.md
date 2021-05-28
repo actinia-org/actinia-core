@@ -5,7 +5,7 @@ The actinia process chain
 -------------------------
 
 Actinia provides the **process chain** approach to specify import,
-processing and export of geo-data using the actinia GRASS GIS processing
+processing and export of geodata using the actinia GRASS GIS processing
 system. The process chain must be formulated in JSON. The processing is
 always performed in an ephemeral database. The computational environment
 is based on locations in the persistent database. If required, the
@@ -20,11 +20,13 @@ storage, outside the actinia environment. Within a process chain we have
 read only access to all raster maps of the persistent database location
 that is used as computational environment.
 
-A process chain is a list of GRASS GIS modules[^1] that will executed in
+A process chain is a list of GRASS GIS modules[^1] that will be executed in
 serial, based on the order of the list. GRASS GIS modules are specified
-as process definitions[^2] that includes the name of the command, the
+as process definitions[^2] that include the name of the command, the
 inputs[^3] and outputs[^4], including import and export definitions as
-well as the module flags. The following example defines a single process
+well as the module flags.
+
+The following example defines a single process
 that runs the GRASS GIS module *r.slope.aspect*[^5] to compute the
 *slope* for the raster map layer *elev\_ned\_30m* that is located in the
 mapset[^6] *PERMANENT*. The output of the module is named
@@ -108,7 +110,6 @@ export as GeoTiff files.
  }
 ```
 
-**Footnotes**
 
 **Output parsing**
 
@@ -604,7 +605,7 @@ Sentinel-2A NDVI process chain
 We create a process chain that computes the NDVI from a Sentinel-2A
 scene based on the bands 8 and 4 with the GRASS GIS module r.mapcalc. We
 use the latitude/longitude location **latlong\_wgs84** as processing
-environment. and the computational region of sentinel band B04 for the
+environment and the computational region of sentinel band B04 for the
 NDVI processing. Then we calculate univariate statistics for the
 Sentinel-2A scene. The computed NDVI raster layer will be exported as
 geotiff file that can be accessed via an URL.
@@ -1345,6 +1346,8 @@ The finished response should look like this:
    "user_id": "superadmin"
  }
 ```
+
+**Footnotes**
 
 [^1]: <https://grass.osgeo.org/grass-stable/manuals/index.html>
 
