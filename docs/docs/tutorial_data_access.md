@@ -12,7 +12,6 @@ line tool **curl**[^1]. **Curl** should be available on many Linux
 systems. However, tools like *postman*[^2] allow a more comfortable way
 to access actinia.
 
-**Footnotes**
 
 Using curl for HTTP requests
 ----------------------------
@@ -20,7 +19,7 @@ Using curl for HTTP requests
 We will use the Unix shell and curl to access the REST API. First open a
 shell of choice (we use bash here) and setup the login information, the
 IP address and the port on which the actinia service is running, so you
-can simply change the IP and Port if your server uses a different
+can simply change the IP and port if your server uses a different
 address:
 
 ```bash
@@ -31,7 +30,7 @@ export AUTH='-u superadmin:abcdefgh'
 Access to locations and mapsets in the persistent database
 ----------------------------------------------------------
 
-The following API call lists all available locations in the Actinia
+The following API call lists all available locations in the actinia
 persistent database:
 
 ```bash
@@ -511,12 +510,11 @@ Access to raster time-series in the persistent database
 -------------------------------------------------------
 
 Actinia supports the analysis of time-series data based on the temporal
-framework of GRASS GIS[^3],[^4]. A time-series datatype is located in
+framework of GRASS GIS[^3], [^4]. A time-series datatype is located in
 location *ECAD* with mapsets *PERMANENT*. The time-series datatype is
 called space-time raster dataset (strds) and represents a time-stamped
 series of yearly temperature and precipitation data for Europe.
 
-**Footnotes**
 
 We list all strds with the following API call:
 
@@ -795,6 +793,8 @@ section of the JSON response:
    "user_id": "superadmin"
  }
 ```
+
+**Footnotes**
 
 [^1]: <https://en.wikipedia.org/wiki/CURL>
 
