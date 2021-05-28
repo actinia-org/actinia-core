@@ -30,14 +30,14 @@ import zipfile
 import magic
 from urllib.request import urlopen
 from urllib.parse import urlsplit
-from .exceptions import AsyncProcessError
-from .process_object import Process
+from actinia_core.common.exceptions import AsyncProcessError
+from actinia_core.common.process_object import Process
+from actinia_core.common.utils import get_wget_process, get_mv_process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 # Mimetypes supported for download
 SUPPORTED_MIMETYPES = [
@@ -179,32 +179,10 @@ class GeoDataDownloadImportSupport(object):
             # Download file only if it does not exist in the download cache
             if os.path.isfile(dest) is False:
 
-                wget = "/usr/bin/wget"
-                wget_params = list()
-                wget_params.append("-t5")
-                wget_params.append("-c")
-                wget_params.append("-q")
-                wget_params.append("-O")
-                wget_params.append("%s" % source)
-                wget_params.append(url)
-
-                p = Process(
-                    exec_type="exec", executable=wget, executable_params=wget_params,
-                    id=f"importer_wget_{os.path.basename(source)}",
-                    skip_permission_check=True)
-
+                p = get_wget_process(source, url)
                 download_commands.append(p)
                 if source != dest:
-                    copy = "/bin/mv"
-                    copy_params = list()
-                    copy_params.append(source)
-                    copy_params.append(dest)
-
-                    p = Process(
-                        exec_type="exec", executable=copy,
-                        executable_params=copy_params,
-                        id=f"importer_mv_{os.path.basename(source)}",
-                        skip_permission_check=True)
+                    p = get_mv_process(source, dest)
                     download_commands.append(p)
             count += 1
 

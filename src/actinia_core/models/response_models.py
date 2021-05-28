@@ -33,10 +33,9 @@ from copy import deepcopy
 from actinia_core.common.process_chain import GrassModule
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class ProgressInfoModel(Schema):
@@ -183,6 +182,31 @@ class SimpleResponseModel(Schema):
         }
     }
     required = ["status", "message"]
+
+
+class LockedMapsetListResponseModel(Schema):
+    """Response schema that is used to list all locked mapsets.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the request'
+        },
+        'locked_mapsets_list': {
+            'type': 'array',
+            'items': {'type': 'string'},
+            'description': 'The names of all locked mapsets'
+        },
+        'message': {
+            'type': 'string',
+            'description': 'A simple message to describes the status of the resource'
+        }
+    }
+    required = ["status", "locked_mapsets_list", "message"]
+    example = {"status": "success", "locked_mapsets_list": ["utm32n/test_mapset"],
+               "message": "number of locked mapsets: 1"}
 
 
 class ApiInfoModel(Schema):
