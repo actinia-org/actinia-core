@@ -83,3 +83,17 @@ def get_mv_process(source, dest):
         id=f"importer_mv_{os.path.basename(source)}",
         skip_permission_check=True)
     return p
+
+
+def allowed_file(filename, allowed_extensions):
+    """The function checks if files has an allowed extension.
+
+    Args:
+        filename (str): The file name
+        allowed_extensions (list): The list of allowed extensions
+
+    Returns:
+        (bool): Returns True, if file extension is allowed
+    """
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in allowed_extensions

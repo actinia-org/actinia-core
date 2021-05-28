@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,23 +24,27 @@
 """
 Raster layer resources
 """
-from flask import jsonify, make_response
 from copy import deepcopy
+from flask import jsonify, make_response, request
 from flask_restful_swagger_2 import swagger, Schema
+import os
 import pickle
-from .ephemeral_processing import EphemeralProcessing
-from .persistent_processing import PersistentProcessing
+from uuid import uuid4
+from werkzeug.utils import secure_filename
+from actinia_core.rest.ephemeral_processing import EphemeralProcessing
+from actinia_core.rest.persistent_processing import PersistentProcessing
+from actinia_core.rest.map_layer_base import MapLayerRegionResourceBase, SetRegionModel
 from actinia_core.common.redis_interface import enqueue_job
 from actinia_core.common.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.common.exceptions import AsyncProcessError
-from .map_layer_base import MapLayerRegionResourceBase, SetRegionModel
+from actinia_core.common.utils import allowed_file
+from actinia_core.common.response_models import SimpleResponseModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class RasterInfoModel(Schema):
@@ -398,19 +402,56 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         }
     })
     def post(self, location_name, mapset_name, raster_name):
-        """Create a new raster layer using r.mapcalc expression in a specific
-        region and value
+        """Create a new raster layer by uploading a GeoTIFF
         """
-        rdc = self.preprocess(has_json=True, has_xml=False,
+
+        allowed_extensions = ['tif', 'tiff']
+
+        content_type = request.content_type.split(';')[0]
+        # TODO check if another content type can be used
+        if content_type != "multipart/form-data":
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Content type is not 'multipart/form-data'")), 400)
+
+        if 'file' not in request.files:
+            return make_response(jsonify(SimpleResponseModel(
+            status="error",
+            message="No file part indicated in postbody.")), 400)
+
+        # create download cache path if does not exists
+        if os.path.exists(self.download_cache):
+            pass
+        else:
+            os.mkdir(self.download_cache)
+
+        # save file from request
+        id = str(uuid4())
+        file = request.files['file']
+        if file.filename == '':
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="No selected file")), 400)
+        if allowed_file(file.filename, allowed_extensions):
+            name, extension = secure_filename(file.filename).rsplit('.', 1)
+            filename = f"{name}_{id}.{extension}"
+            file_path = os.path.join(self.download_cache, filename)
+            file.save(file_path)
+        else:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="File has a not allowed extension. "
+                        f"Please use {','.join(allowed_extensions)}.")), 400)
+
+        rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=raster_name)
         if rdc:
+            rdc.set_request_data(file_path)
             enqueue_job(self.job_timeout, start_create_job, rdc)
-            http_code, response_model = self.wait_until_finish(0.1)
-        else:
-            http_code, response_model = pickle.loads(self.response_data)
 
+        http_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), http_code)
 
 
@@ -522,16 +563,12 @@ class PersistentRasterCreator(PersistentProcessing):
         3. Setup GRASS and create the temporary mapset
         4. Execute g.list of the first process chain to check if the target
            raster exists
-        5. If the target raster does not exists then run r.mapcalc
+        5. If the target raster does not exists then run r.import
         6. Copy the local temporary mapset to the storage and merge it into the
            target mapset
         """
         self._setup()
 
-        region = None
-        if "region" in self.request_data:
-            region = self.request_data["region"]
-        expression = self.request_data["expression"]
         raster_name = self.map_name
         self.required_mapsets.append(self.target_mapset_name)
 
@@ -545,14 +582,13 @@ class PersistentRasterCreator(PersistentProcessing):
                                             process_chain=pc_1)
 
         pc_2 = {}
-        if region:
-            pc_2["1"] = {"module": "g.region", "inputs": {}, "flags": "g"}
-            for key in region:
-                value = region[key]
-                pc_2["1"]["inputs"][key] = value
-
-        pc_2["2"] = {"module": "r.mapcalc", "inputs": {
-            "expression": "%s = %s" % (raster_name, expression)}}
+        pc_2["1"] = {
+            "module": "r.import",
+            "inputs": {
+                "input": self.rdc.request_data,
+                "output": raster_name
+                }
+        }
         # Check the second process chain
         pc_2 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_2)
@@ -570,5 +606,11 @@ class PersistentRasterCreator(PersistentProcessing):
 
         self._execute_process_list(pc_2)
         self._copy_merge_tmp_mapset_to_target_mapset()
+
+        # Delete imported file
+        try:
+            os.remove(self.rdc.request_data)
+        except Exception:
+            raise AsyncProcessError("File can not be removed.")
 
         self.finish_message = "Raster layer <%s> successfully created." % raster_name
