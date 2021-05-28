@@ -53,18 +53,18 @@ processing result.
    "timestamp": 1527677539.5457737,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+     "status": "https://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
    },
    "user_id": "superadmin"
  }
 ```
 
 Request the status of the asynchronous API call by polling the status
-URL. Be aware that the resource id will change for different NDVI API
+URL. Be aware that you have to use your status url as the resource id will change for different NDVI API
 calls.
 
 ```bash
- curl ${AUTH} -X GET -i "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+ curl -L ${AUTH} -X GET -i "https://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
 ```
 
 The final result will contain a complete processing list as well as

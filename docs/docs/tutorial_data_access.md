@@ -24,9 +24,9 @@ address:
 
 ```bash
 export ACTINIA_URL=https://actinia.mundialis.de/latest
-export AUTH='-u superadmin:abcdefgh'
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
 ```
-
 Access to locations and mapsets in the persistent database
 ----------------------------------------------------------
 
