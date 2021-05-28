@@ -73,4 +73,4 @@
 1619773411|update amp to 2.1.0
 1619795988|introducing changelog
 1620113727|Job resumption (#143)
-1622108969|WIP: Conversion of Sphinx based tutorial to markdown/mkdocs (#204)
+1622108969|actinia code sprint: refactoring

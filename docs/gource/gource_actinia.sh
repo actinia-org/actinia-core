@@ -38,7 +38,7 @@ OUTPUT=actinia_gource_contribs
 # run in git directory
 gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track \
        --hide filenames --seconds-per-day 0.05 \
-       --caption-file gource.captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 4 .
+       --caption-file gource.captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 4 ../..
 
 # film creation below, we stop for now
 exit 0
