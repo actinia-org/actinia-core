@@ -31,8 +31,8 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer,
                           BadSignature, SignatureExpired)
 from itsdangerous import JSONWebSignatureSerializer
-from actinia_core.common.config import global_config
-from actinia_core.common.redis_user import redis_user_interface
+from actinia_core.core.config import global_config
+from actinia_core.core.redis_user import redis_user_interface
 
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"

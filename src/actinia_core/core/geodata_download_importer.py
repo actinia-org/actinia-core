@@ -30,9 +30,9 @@ import zipfile
 import magic
 from urllib.request import urlopen
 from urllib.parse import urlsplit
-from actinia_core.common.exceptions import AsyncProcessError
-from actinia_core.common.process_object import Process
-from actinia_core.common.utils import get_wget_process, get_mv_process
+from actinia_core.core.exceptions import AsyncProcessError
+from actinia_core.core.process_object import Process
+from actinia_core.core.utils import get_wget_process, get_mv_process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

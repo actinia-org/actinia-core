@@ -25,8 +25,8 @@
 Tests: API logging test case
 """
 import unittest
-from actinia_core.common.api_logger import ApiLogger
-from actinia_core.common.app import flask_app
+from actinia_core.core.api_logger import ApiLogger
+from actinia_core.core.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase
 except:

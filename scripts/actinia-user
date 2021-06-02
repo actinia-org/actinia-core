@@ -27,9 +27,9 @@ Purpose: Command line program to manage actinia user
          entries in the Redis database
 """
 
-from actinia_core.common.user import ActiniaUser
-from actinia_core.common.redis_user import redis_user_interface
-from actinia_core.common.config import Configuration
+from actinia_core.core.user import ActiniaUser
+from actinia_core.core.redis_user import redis_user_interface
+from actinia_core.core.config import Configuration
 import argparse
 import pprint
 import sys
@@ -69,7 +69,7 @@ def set_user_credentials(user, args, method):
     """Set the user credentials
 
     Args:
-        user (actinia.common.user.ActiniaUser()): The user object
+        user (actinia.core.user.ActiniaUser()): The user object
         args: The command line arguments
         method (str): "create", "update", "update_add",
                       "update_rm", "update_rm_location"

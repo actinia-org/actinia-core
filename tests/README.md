@@ -1,25 +1,56 @@
 # Tests
 
+
+
 ## Running tests locally
 
+__If not stated otherwise, you need to be in folder `actinia_core`__
+
+When writing new tests it is useful to run selected tests locally and isolated. In this way it is also possible to debug interactively:
+
+1. In the `actinia_core/docker/actinia-core-tests/Dockerfile` comment out `RUN make test` (last line)
+
+2. Then run `docker build`:
 ```
-docker build  --file docker/actinia-core-alpine/Dockerfile  --tag actinia-core:g78-stable-alpine .
+docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
+```
+3. Create a local `tmp_tests` folder and fill it with the files:
+
+- `tests/__init__.py`
+- `tests/conftest.py`
+- `tests/test_resource_base.py`
+- your_new_test(s).py
+
+
+4. Start the docker container and mount your local `tmp_tests` folder:
+
+```
+docker run -it -v /path/to/tmp_tests:/src/actinia_core/tests actinia-test:latest -i
+
+# If you want to run all tests from actinia_core/tests instead of selected ones you can use the following command:
+docker run -it actinia-test:latest -i
+
 ```
 
-run tests inside docker
-```
-docker run -it --mount type=bind,source="$(pwd)"/tests,target=/src/actinia_core/tests  --mount type=bind,source="$(pwd)"/grassdb/nc_spm_08_micro,target=/actinia_core/grassdb/nc_spm_08 actinia-core:g78-stable-alpine /bin/sh
+5. To execute the test(s) run:
 
+```
 make test
+
+# If you added a debugger to your test it will stop there.
+# After making changes to the test, you need to close and restart the docker container (docker run ...) before testing again.
 ```
+
+When you are done, add your new test(s) to `actinia_core/tests`. You can run the entire testsuite including your new tests by rebuilding the docker image and running the container without mounting (see 4.)
+
 
 ## Problems
-Redis autorization is set by `from actinia_core.common import redis_interface`:
+Redis autorization is set by `from actinia_core.core import redis_interface`:
   * so this does set the password:
     ```
     import os
-    from actinia_core.common import redis_interface # PROBLEM!!!!
-    from actinia_core.common.config import global_config
+    from actinia_core.core import redis_interface # PROBLEM!!!!
+    from actinia_core.core.config import global_config
 
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
     global_config.read(custom_actinia_cfg)
@@ -28,7 +59,7 @@ Redis autorization is set by `from actinia_core.common import redis_interface`:
   * and this works fine:
     ```
     import os
-    from actinia_core.common.config import global_config
+    from actinia_core.core.config import global_config
 
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
     global_config.read(custom_actinia_cfg)

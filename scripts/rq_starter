@@ -32,7 +32,7 @@ import subprocess
 import atexit
 import time
 import argparse
-from actinia_core.common.config import Configuration
+from actinia_core.core.config import Configuration
 
 __license__    = "GPLv3"
 __author__     = "Sören Gebbert"

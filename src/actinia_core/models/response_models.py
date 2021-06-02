@@ -30,7 +30,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
-from actinia_core.common.process_chain import GrassModule
+from actinia_core.core.process_chain import GrassModule
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
@@ -412,7 +412,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 "_run_executable\n    raise AsyncProcessError(\"Error while running "
                 "executable <%s>\" % process.executable)\n"
             ],
-            "type": "<class 'actinia_core.common.exceptions."
+            "type": "<class 'actinia_core.core.common.exceptions."
                     "AsyncProcessError'>"
         },
         "http_code": 400,

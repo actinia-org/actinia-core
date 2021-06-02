@@ -53,6 +53,8 @@ sudo sysctl -w vm.max_map_count=262144
 <a id="local-dev-setup"></a>
 # Local dev-setup with docker
 
+If desired, you can also directly start here without installing actinia first. You only need to have cloned and checked out the actinia_core repository.
+
 __If not stated otherwise, you need to be in folder `actinia_core/docker`__
 
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
@@ -76,9 +78,15 @@ gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:fl
 To test your local changes, you best use the Test Dockerimage:
 ```
 # changing directory is necessary to have the correct build context
-cd ..
-docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
+(cd .. && docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .)
 ```
+To dive deeper into testing + development, see the [test README](https://github.com/mundialis/actinia_core/blob/main/tests/README.md)
+
+To lint your local changes, run
+```
+(cd ../src && flake8 --config=../.flake8 --count --statistics --show-source --jobs=$(nproc) .)
+```
+
 
 ## Local dev-setup for actinia-core plugins
 To also integrate dev setup for actinia-core plugins
