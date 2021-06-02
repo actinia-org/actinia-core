@@ -104,7 +104,7 @@ class ResourceBase(Resource):
         self.grass_base_dir = global_config.GRASS_GIS_BASE
         self.grass_start_script = global_config.GRASS_GIS_START_SCRIPT
         self.grass_addon_path = global_config.GRASS_ADDON_PATH
-        self.download_cache = os.path.join(self.config.DOWNLOAD_CACHE, self.user_id)
+        self.download_cache = os.path.join(global_config.DOWNLOAD_CACHE, self.user_id)
 
         # Set the resource id
         if resource_id is None:
