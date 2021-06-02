@@ -30,11 +30,12 @@ import os
 import pickle
 from uuid import uuid4
 from werkzeug.utils import secure_filename
+
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.map_layer_base import MapLayerRegionResourceBase
-from actinia_core.core.redis_interface import enqueue_job
-from actinia_core.core.exceptions import AsyncProcessError
+from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel

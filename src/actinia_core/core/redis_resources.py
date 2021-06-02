@@ -25,7 +25,7 @@
 Redis server resource logging interface
 """
 
-from .redis_base import RedisBaseInterface
+from actinia_core.core.common.redis_base import RedisBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

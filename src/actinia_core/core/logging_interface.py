@@ -33,7 +33,7 @@ from datetime import datetime
 
 from pythonjsonlogger import jsonlogger
 
-from .config import global_config
+from actinia_core.core.common.config import global_config
 
 # unfortunately, the config is read twice because of the read call here but it
 # is needed to load the correct interface and log level at this time

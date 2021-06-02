@@ -39,8 +39,8 @@ from multiprocessing import Process, Queue
 from threading import Thread, Lock
 import logging
 import atexit
-from .resources_logger import ResourceLogger
-from .logging_interface import log
+from actinia_core.core.resources_logger import ResourceLogger
+from actinia_core.core.logging_interface import log
 
 
 has_fluent = False

@@ -29,8 +29,8 @@ import os
 import subprocess
 import shutil
 from .messages_logger import MessageLogger
-from .config import global_config, DEFAULT_CONFIG_PATH
-from .exceptions import RsyncError
+from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
+from actinia_core.core.common.exceptions import RsyncError
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"

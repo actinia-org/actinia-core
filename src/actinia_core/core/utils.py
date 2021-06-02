@@ -26,7 +26,7 @@ Utils file with common util functions
 """
 
 import os
-from .process_object import Process
+from actinia_core.core.common.process_object import Process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"

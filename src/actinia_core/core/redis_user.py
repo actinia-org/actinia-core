@@ -25,7 +25,7 @@
 Redis server user interface
 """
 
-from .redis_base import RedisBaseInterface
+from actinia_core.core.common.redis_base import RedisBaseInterface
 import pickle
 
 __license__ = "GPLv3"

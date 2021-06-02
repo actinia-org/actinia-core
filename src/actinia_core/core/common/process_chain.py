@@ -28,7 +28,7 @@ import os
 import requests
 from .process_object import Process
 from .exceptions import AsyncProcessError
-from .geodata_download_importer import GeoDataDownloadImportSupport
+from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
 from .config import global_config
 from .sentinel_processing_library import Sentinel2Processing
 from .landsat_processing_library import LandsatProcessing

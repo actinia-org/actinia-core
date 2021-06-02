@@ -33,11 +33,11 @@ from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
 from .health_check import health_check
 from .version import version
-from actinia_core.core.app import flask_app, URL_PREFIX
-from actinia_core.core import redis_interface
-from actinia_core.core.config import global_config
-from actinia_core.core.user import ActiniaUser
-from actinia_core.core.process_queue import create_process_queue
+from actinia_core.core.common.app import flask_app, URL_PREFIX
+from actinia_core.core.common import redis_interface
+from actinia_core.core.common.config import global_config
+from actinia_core.core.common.user import ActiniaUser
+from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
