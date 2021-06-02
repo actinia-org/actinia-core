@@ -122,6 +122,9 @@ class ResourceDataContainer(object):
         """
         self.user_data = user_data
 
+    def set_request_data(self, request_data):
+        self.request_data = request_data
+
     def set_storage_model_to_file(self):
         self.storage_model = "file"
 
