@@ -29,7 +29,7 @@ import os
 import signal
 import time
 from actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
-from actinia_core.core.config import global_config
+from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
 __license__ = "GPLv3"

@@ -29,10 +29,10 @@ from flask_restful_swagger_2 import swagger
 import pickle
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.resource_base import ResourceBase
-from actinia_core.core.redis_interface import enqueue_job
+from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.request_parser import glist_parser, \
      extract_glist_parameters
-from actinia_core.core.exceptions import AsyncProcessError
+from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import StringListProcessingResultResponseModel
 

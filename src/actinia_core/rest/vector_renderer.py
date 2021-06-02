@@ -31,7 +31,7 @@ import os
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
-from actinia_core.core.redis_interface import enqueue_job
+from actinia_core.core.common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
 from actinia_core.models.response_models import ProcessingErrorResponseModel
 

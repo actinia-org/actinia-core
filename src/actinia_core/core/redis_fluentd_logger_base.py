@@ -27,7 +27,7 @@ Base class for logger that uses fluentd/stdout for logging and resource storage
 import time
 import logging
 
-from .config import global_config
+from actinia_core.core.common.config import global_config
 from .logging_interface import log
 
 if global_config.LOG_INTERFACE == "fluentd":

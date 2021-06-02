@@ -40,16 +40,16 @@ import uuid
 from flask import jsonify, make_response, json
 from requests.auth import HTTPBasicAuth
 
-from actinia_core.core.process_object import Process
+from actinia_core.core.common.process_object import Process
 from actinia_core.core.grass_init import GrassInitializer
 from actinia_core.core.messages_logger import MessageLogger
-from actinia_core.core.redis_interface import enqueue_job
+from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.resources_logger import ResourceLogger
-from actinia_core.core.process_chain import ProcessChainConverter
-from actinia_core.core.exceptions \
+from actinia_core.core.common.process_chain import ProcessChainConverter
+from actinia_core.core.common.exceptions \
     import AsyncProcessError, AsyncProcessTermination, RsyncError
-from actinia_core.core.exceptions import AsyncProcessTimeLimit
+from actinia_core.core.common.exceptions import AsyncProcessTimeLimit
 from actinia_core.models.response_models \
     import ProcessingResponseModel, ExceptionTracebackModel
 from actinia_core.models.response_models \
@@ -1255,7 +1255,7 @@ class EphemeralProcessing(object):
         return time.time() - start_time
 
     def _run_process(self, process, poll_time=0.05):
-        """Run a process actinia_core.core.process_object.Process) with options and send
+        """Run a process actinia_core.core.common.process_object.Process) with options and send
         progress updates to the resource database.
 
         IMPORTANT: Use this method to run programs that are not GRASS modules.
@@ -1266,7 +1266,7 @@ class EphemeralProcessing(object):
         by the run() method.
 
         Args:
-            process actinia_core.core.process_object.Process):
+            process actinia_core.core.common.process_object.Process):
                 The process object that should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db
@@ -1289,7 +1289,7 @@ class EphemeralProcessing(object):
         return self._run_executable(process, poll_time)
 
     def _run_module(self, process, poll_time=0.05):
-        """Run the GRASS module actinia_core.core.process_object.Process) with its module
+        """Run the GRASS module actinia_core.core.common.process_object.Process) with its module
         options and send progress updates to the database server that manages
         the resource entries.
 
@@ -1312,7 +1312,7 @@ class EphemeralProcessing(object):
         must be adjusted.
 
         Args:
-            process actinia_core.core.process_object.Process):
+            process actinia_core.core.common.process_object.Process):
                 The process object that should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db
@@ -1365,7 +1365,7 @@ class EphemeralProcessing(object):
         https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
 
         Args:
-            process actinia_core.core.process_object.Process):
+            process actinia_core.core.common.process_object.Process):
                 The process object that should be executed
             poll_time (float): The time to check the process status and to send
                                updates to the resource db

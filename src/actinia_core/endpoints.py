@@ -28,8 +28,8 @@ Actinia core Endpoint definitions
 import traceback
 import sys
 from pprint import pprint
-from actinia_core.core.app import flask_api
-from actinia_core.core.config import global_config
+from actinia_core.core.common.app import flask_api
+from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
 from actinia_core.rest.location_management import \
     ListLocationsResource, LocationManagementResourceUser

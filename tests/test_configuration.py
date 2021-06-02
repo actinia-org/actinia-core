@@ -24,7 +24,7 @@
 Tests: Configuration test case
 """
 import unittest
-from actinia_core.core.config import Configuration
+from actinia_core.core.common.config import Configuration
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

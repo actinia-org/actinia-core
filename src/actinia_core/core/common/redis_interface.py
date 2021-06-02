@@ -26,8 +26,8 @@ Redis connection interface
 """
 import rq
 from redis import Redis
-from .redis_user import redis_user_interface
-from .redis_api_log import redis_api_log_interface
+from actinia_core.core.redis_user import redis_user_interface
+from actinia_core.core.redis_api_log import redis_api_log_interface
 from .config import global_config
 from .process_queue import enqueue_job as enqueue_job_local
 

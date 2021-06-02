@@ -24,8 +24,8 @@
 """
 Tests: Sentinel2 processing library test case
 """
-from actinia_core.core.sentinel_processing_library import Sentinel2Processing
-from actinia_core.core.config import global_config
+from actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
+from actinia_core.core.common.config import global_config
 import os
 import unittest
 

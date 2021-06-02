@@ -26,7 +26,7 @@ Redis base class
 """
 
 import redis
-from .logging_interface import log
+from actinia_core.core.logging_interface import log
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
