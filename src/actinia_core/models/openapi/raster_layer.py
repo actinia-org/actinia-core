@@ -27,8 +27,6 @@ Raster layer resources
 from copy import deepcopy
 from flask_restful_swagger_2 import Schema
 from actinia_core.models.response_models import ProcessingResponseModel
-from actinia_core.models.openapi.map_layer_base import SetRegionModel
-
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
