@@ -196,20 +196,3 @@ class RasterInfoResponseModel(ProcessingResponseModel):
         },
         "user_id": "user"
     }
-
-
-class RasterRegionCreationModel(Schema):
-    """Schema for random raster map layer generation using r.mapcalc in a specific region
-    """
-    type = 'object'
-    properties = {
-        'region': SetRegionModel,
-        'expression': {
-            'type': 'string',
-            'description': 'The r.mapcalc expression to create a new raster map '
-                           'layer. The expression must not contain the name of '
-                           'the new raster map layer only the statement after '
-                           'the equal operator: "a + b" instead of "c = a + b"',
-            'default': "1"
-        }
-    }

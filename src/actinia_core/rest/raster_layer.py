@@ -420,15 +420,18 @@ class PersistentRasterCreator(PersistentProcessing):
                 os.remove(self.rdc.request_data)
             except Exception:
                 pass
-            raise AsyncProcessError("Raster layer <%s> exists." % raster_name)
+            raise AsyncProcessError(
+                "Raster layer <%s> exists. Please rename it or delete the old "
+                "raster layer" % raster_name)
 
         self._execute_process_list(pc_2)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
         # Delete imported file
+        msg = ""
         try:
             os.remove(self.rdc.request_data)
         except Exception:
-            raise AsyncProcessError("File can not be removed.")
+            msg = " WARNING: Uploaded file can not be removed."
 
-        self.finish_message = "Raster layer <%s> successfully created." % raster_name
+        self.finish_message = f"Raster layer <{raster_name}> successfully created.{msg}"

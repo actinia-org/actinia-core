@@ -86,7 +86,7 @@ def get_mv_process(source, dest):
 
 
 def allowed_file(filename, allowed_extensions):
-    """The function checks if files has an allowed extension.
+    """The function checks if the file has an allowed extension.
 
     Args:
         filename (str): The file name
