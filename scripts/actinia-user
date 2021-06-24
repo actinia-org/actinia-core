@@ -27,9 +27,9 @@ Purpose: Command line program to manage actinia user
          entries in the Redis database
 """
 
-from actinia_core.core.user import ActiniaUser
+from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.redis_user import redis_user_interface
-from actinia_core.core.config import Configuration
+from actinia_core.core.common.config import Configuration
 import argparse
 import pprint
 import sys

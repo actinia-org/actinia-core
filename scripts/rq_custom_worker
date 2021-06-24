@@ -40,7 +40,7 @@ from os.path import dirname
 # https://github.com/fluent/fluent-logger-python
 import logging
 import logging.handlers
-from actinia_core.core.config import Configuration
+from actinia_core.core.common.config import Configuration
 import os
 import argparse
 import platform
