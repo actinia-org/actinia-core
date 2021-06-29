@@ -28,10 +28,10 @@ import unittest
 import time
 import datetime
 from copy import deepcopy
-from actinia_core.resources.common.process_queue import create_process_queue,\
+from actinia_core.core.common.process_queue import create_process_queue,\
     enqueue_job, stop_process_queue
-from actinia_core.resources.common.resource_data_container import ResourceDataContainer
-from actinia_core.resources.common.app import flask_app
+from actinia_core.core.resource_data_container import ResourceDataContainer
+from actinia_core.core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except:

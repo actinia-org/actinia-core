@@ -1,0 +1,76 @@
+1520853595|Initial commit
+1521027235|Python 2 to Python 3 conversion
+1521331797|Better error handling in request handling. Better process queue.
+1525289519|Documentation update
+1525337513|Added raster, vector and strds rendering with tests.
+1525805410|New list handling in config, fixed raster export post request
+1527076000|Added API version specific endpoints. All tests updated.
+1527684838|Better documentation. Landsat and Sentinel examples added.
+1530217059|Improved stdout module parser documentation and added postgis and vector layer to importer.
+1530219437|Activated postgis validation test.
+1530263315|Implemented file export and tests. Doc update.
+1530383450|Implemented webhook concept with test server and tests.
+1531097811|Added PostGIS export option using v.out.postgis for export
+1531476256|GRASS-ADDON support
+1539191703|Process queue debugging
+1544115142|Actinia Shell prototype with ephemeral mapset support
+1544488073|Added the storage of actinia processes for further modification by user python code
+1544982129|AWS tests disabled due to AWS Sentinel paywall
+1544996243|ace: updated examples to first set comp. region
+1545067706|Added new export formats
+1545079686|re-enabled all tests
+1545091361|Code cleanup, more function docs
+1545173786|more job related infos; +World Mollweide location
+1547072356|ace helper scripts for import and export (by huhabla
+1548339495|basic auth of webhook
+1548367909|Added location creation and deletion
+1553871353|let interface description be printed via process chain
+1553871591|add api docs
+1555516013|add docker setup
+1556112955|let GRASS decide to run interface description
+1557329315|switch docker build based on master instead of release
+1558258820|DOI and license badges added
+1564951487|Working versions of google-cloud-bigquery and google-cloud-storage defined
+1565276837|Enforce Python 3
+1565943645|all Sentinel-2 (A, B) are supported
+1568295263|document docker image on dockerhubp
+1569334505|List of available endpoints query added
+1569403423|optimize gunicorn startup options
+1569775671|execute tests after actinia installation
+1570701783|added api docs for user management
+1572880138|Update to new `@` URL delimiter character (#61)
+1573142622|SNAP updated to Version 7.0 (#63)
+1573540633|increase java_max_mem to avoid NullPointer exception (#64)
+1574268354|actinia docker image based on GRASS GIS 7.9 (master) (#67)
+1574272333|exporter: support attributes at raster export (GDAL RAT) (#68)
+1574955445|added band_reference and band_reference for image collections (GRASS GIS 7.9+) (#70)
+1578309648|simplified GRASS GIS Addon installation
+1578501790|fix six version for google bigquery
+1580314975|remove timeout from gc-bigquery after API change
+1580470290|Dockerfile rewrite for Alpine (#55)
+1580813599|add openeo addons in dockerfile (#80)
+1584703269|exporter: generate overviews with LZW compression (#85)
+1588156102|reorganize imports
+1588863432|finalize stdout logging
+1589968855|use actinia-gdi version 0.1.8 (26705966)
+1592476089|docker: alpine version 3.12 (#92)
+1596019902|added how to check actinia version
+1597057266|webhook status can be 200 and 204 (#100)
+1598256697|add group to copied directories (#101)
+1598277689|add colorlog to ubuntu19 requirements
+1598277967|add colorlog and psutil version
+1600420387|return codes: explanations added (#107)
+1600852482|Fix PEP8 errors and warnings (#109)
+1600947634|add COMPRESS and BIGTIFF option
+1603135266|PEP8 compatibility
+1608146489|docker: update of base image to Ubuntu 20.04 (#128)
+1608199945|Create codeql-analysis.yml
+1611163088|GitHub action: added flake8 tests (#140)
+1615282714|enhance redis connection error logging
+1616674410|ace, importer, exporter: move out to separate repos (#160)
+1617949471|GHA Tests (#166)
+1619095337|update to snap 8.0.3
+1619773411|update amp to 2.1.0
+1619795988|introducing changelog
+1620113727|Job resumption (#143)
+1622108969|actinia code sprint: refactoring

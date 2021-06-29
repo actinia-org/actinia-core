@@ -48,13 +48,35 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
                                 headers=self.user_auth_header)
         # print(rv.data)
         # Create
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/%s' % (mapset_name, raster_name),
+        postbody = {
+            "list": [
+                {
+                    "id": "set_region",
+                    "module": "g.region",
+                    "inputs": [
+                        {"param": "n", "value": "228500"},
+                        {"param": "s", "value": "215000"},
+                        {"param": "e", "value": "645000"},
+                        {"param": "w", "value": "630000"},
+                        {"param": "ewres", "value": "50"},
+                        {"param": "nsres", "value": "50"}
+                    ]
+                },
+                {
+                    "id": "create_raster",
+                    "module": "r.mapcalc",
+                    "inputs": [
+                        {"param": "expression", "value": "%s = 1" % raster_name}]
+                }
+            ],
+            "version": "1"
+        }
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/processing_async' % mapset_name,
                               headers=self.user_auth_header,
-                              data=json_dumps({"region":{"n":228500, "s":215000,
-                                                         "e":645000, "w":630000,
-                                                         "ewres": 50, "nsres": 50},
-                                               "expression": "1"}),
+                              data=json_dumps(postbody),
                               content_type="application/json")
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=200, status="finished")
         # print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)

@@ -53,20 +53,20 @@ RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=
 # Currently, ADD always breaks cache, as "download_count" increases every time
 # ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
-# Get statistics plugin (26188052 = 0.0.2)
-RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/26188052 > resp.json && \
+# Get statistics plugin (26188052 = 0.0.3)
+RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/43983719 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get satellite plugin (26187974 = 0.0.2)
-RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
+# Get satellite plugin (26187974 = 0.0.3)
+RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/43983668 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Get actinia-metadata-plugin (38726425 = 1.0.0)
 RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-module-plugin (42463042 = 2.1.1)
-RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/42463042 > resp.json && \
+# Get actinia-module-plugin (42463042 = 2.1.2)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/43983817 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins

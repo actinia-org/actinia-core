@@ -37,7 +37,7 @@ build/*
 dist/*
 sdist/*
 docs/api/*
-docs/_build/*
+docs/site/*
 cover/*
 MANIFEST
 

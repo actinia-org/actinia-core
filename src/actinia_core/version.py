@@ -29,17 +29,16 @@ Returns the version information and the roles that are activated
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 from flask import make_response, jsonify
 import importlib
 import subprocess
 import sys
 
-from .resources.common.app import flask_app, URL_PREFIX
-from .resources.common.config import global_config
-from .resources.common.logging_interface import log
+from actinia_core.core.common.app import flask_app, URL_PREFIX
+from actinia_core.core.common.config import global_config
+from actinia_core.core.logging_interface import log
 from . import __version__
 
 

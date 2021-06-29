@@ -28,50 +28,57 @@ Actinia core Endpoint definitions
 import traceback
 import sys
 from pprint import pprint
-from .resources.common.app import flask_api
-from .resources.common.config import global_config
-from .resources.common.logging_interface import log
-from .resources.location_management import \
+from actinia_core.core.common.app import flask_api
+from actinia_core.core.common.config import global_config
+from actinia_core.core.logging_interface import log
+from actinia_core.rest.location_management import \
     ListLocationsResource, LocationManagementResourceUser
-from .resources.location_management import LocationManagementResourceAdmin
-from .resources.mapset_management import \
+from actinia_core.rest.location_management import LocationManagementResourceAdmin
+from actinia_core.rest.mapsets import AllMapsetsListingResourceAdmin
+from actinia_core.rest.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
-from .resources.mapset_management import \
+from actinia_core.rest.mapset_management import \
     MapsetLockManagementResource, MapsetManagementResourceAdmin
-from .resources.strds_management import \
+from actinia_core.rest.strds_management import \
     STRDSManagementResource, SyncSTRDSListerResource
-from .resources.strds_raster_management import STRDSRasterManagement
-from .resources.raster_layer import RasterLayerResource
-from .resources.map_layer_management import RasterLayersResource
-from .resources.map_layer_management import VectorLayersResource
-from .resources.vector_layer import VectorLayerResource
-from .resources.ephemeral_processing import AsyncEphemeralResource
-from .resources.ephemeral_processing_with_export import AsyncEphemeralExportResource
-from .resources.ephemeral_processing_with_export import AsyncEphemeralExportS3Resource
-from .resources.ephemeral_processing_with_export import AsyncEphemeralExportGCSResource
-from .resources.persistent_mapset_merger import AsyncPersistentMapsetMergerResource
-from .resources.raster_export import AsyncEphemeralRasterLayerRegionExporterResource
-from .resources.raster_export import AsyncEphemeralRasterLayerExporterResource
-from .resources.persistent_processing import AsyncPersistentResource
-from .resources.ephemeral_custom_processing import AsyncEphemeralCustomResource
-from .resources.process_validation import AsyncProcessValidationResource
-from .resources.process_validation import SyncProcessValidationResource
-from .resources.user_management import UserListResource, UserManagementResource
-from .resources.api_log_management import APILogResource
-from .resources.user_api_key import TokenCreationResource, APIKeyCreationResource
-from .resources.resource_management \
+from actinia_core.rest.strds_raster_management import STRDSRasterManagement
+from actinia_core.rest.raster_layer import RasterLayerResource
+from actinia_core.rest.map_layer_management import RasterLayersResource
+from actinia_core.rest.map_layer_management import VectorLayersResource
+from actinia_core.rest.vector_layer import VectorLayerResource
+from actinia_core.rest.ephemeral_processing import AsyncEphemeralResource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportResource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportS3Resource
+from actinia_core.rest.ephemeral_processing_with_export import \
+     AsyncEphemeralExportGCSResource
+from actinia_core.rest.persistent_mapset_merger import \
+     AsyncPersistentMapsetMergerResource
+from actinia_core.rest.raster_export import \
+     AsyncEphemeralRasterLayerRegionExporterResource
+from actinia_core.rest.raster_export import AsyncEphemeralRasterLayerExporterResource
+from actinia_core.rest.persistent_processing import AsyncPersistentResource
+from actinia_core.rest.ephemeral_custom_processing import AsyncEphemeralCustomResource
+from actinia_core.rest.process_validation import AsyncProcessValidationResource
+from actinia_core.rest.process_validation import SyncProcessValidationResource
+from actinia_core.rest.user_management import \
+     UserListResource, UserManagementResource
+from actinia_core.rest.api_log_management import APILogResource
+from actinia_core.rest.user_api_key import TokenCreationResource, APIKeyCreationResource
+from actinia_core.rest.resource_management \
     import ResourceManager, ResourcesManager, ResourceIterationManager
-from .resources.resource_streamer import RequestStreamerResource
-from .resources.download_cache_management import SyncDownloadCacheResource
-from .resources.resource_storage_management import SyncResourceStorageResource
-from .resources.vector_renderer import SyncEphemeralVectorRendererResource
-from .resources.raster_legend import SyncEphemeralRasterLegendResource
-from .resources.raster_colors import SyncPersistentRasterColorsResource
-from .resources.raster_renderer import SyncEphemeralRasterRendererResource
-from .resources.raster_renderer import SyncEphemeralRasterRGBRendererResource
-from .resources.raster_renderer import SyncEphemeralRasterShapeRendererResource
-from .resources.strds_renderer import SyncEphemeralSTRDSRendererResource
-from .resources.process_chain_monitoring import \
+from actinia_core.rest.resource_streamer import RequestStreamerResource
+from actinia_core.rest.download_cache_management import SyncDownloadCacheResource
+from actinia_core.rest.resource_storage_management import SyncResourceStorageResource
+from actinia_core.rest.vector_renderer import SyncEphemeralVectorRendererResource
+from actinia_core.rest.raster_legend import SyncEphemeralRasterLegendResource
+from actinia_core.rest.raster_colors import SyncPersistentRasterColorsResource
+from actinia_core.rest.raster_renderer import SyncEphemeralRasterRendererResource
+from actinia_core.rest.raster_renderer import SyncEphemeralRasterRGBRendererResource
+from actinia_core.rest.raster_renderer import SyncEphemeralRasterShapeRendererResource
+from actinia_core.rest.strds_renderer import SyncEphemeralSTRDSRendererResource
+from actinia_core.rest.process_chain_monitoring import \
     MaxMapsetSizeResource, MapsetSizeResource, MapsetSizeRenderResource, \
     MapsetSizeDiffResource, MapsetSizeDiffRenderResource
 
@@ -101,6 +108,7 @@ def create_core_endpoints():
     flask_api.add_resource(
         MapsetLockManagementResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>/lock')
+
     # Raster management
     flask_api.add_resource(
         RasterLayersResource, '/locations/<string:location_name>/mapsets/'
@@ -195,6 +203,11 @@ def create_core_endpoints():
         AsyncEphemeralRasterLayerRegionExporterResource,
         '/locations/<string:location_name>/mapsets/<string:mapset_name>'
         '/raster_layers/<string:raster_name>/geotiff_async_orig')
+
+    # all mapsets across all locations listing
+    flask_api.add_resource(
+        AllMapsetsListingResourceAdmin, '/mapsets')
+
     # User management
     flask_api.add_resource(UserListResource, '/users')
     flask_api.add_resource(UserManagementResource, '/users/<string:user_id>')

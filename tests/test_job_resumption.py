@@ -32,9 +32,9 @@ from flask.json import loads as json_loads
 from jinja2 import Template
 from time import sleep
 
-from actinia_core.resources.common import redis_interface
-from actinia_core.resources.common.process_queue import create_process_queue
-from actinia_core.resources.common.config import global_config
+from actinia_core.core.common import redis_interface
+from actinia_core.core.common.process_queue import create_process_queue
+from actinia_core.core.common.config import global_config
 
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
