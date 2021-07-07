@@ -65,8 +65,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/release
 RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-module-plugin (42463042 = 2.1.2)
-RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/43983817 > resp.json && \
+# Get actinia-module-plugin (45775508 = 2.2.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/45775508 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
