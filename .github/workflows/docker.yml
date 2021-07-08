@@ -34,7 +34,6 @@ jobs:
         with:
           push: false
           tags: mmacata/actinia-core:latest
-          context: *
           file: docker/actinia-core-alpine/Dockerfile
           no-cache: false
       -
