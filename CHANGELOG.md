@@ -15,11 +15,72 @@ Types of changes
 
 
 ## [Unreleased]
-TODO https://github.com/mundialis/actinia_core/compare/0.99.29...main
+TODO https://github.com/mundialis/actinia_core/compare/1.0.2...main
 
-## [0.99.X] - YYYY-MM-DD
+## [1.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
+
+
+## [1.0.2.79] - 2021-07-07
+released from grass79
+See https://github.com/mundialis/actinia_core/releases/tag/1.0.2
+
+## [1.0.2] - 2021-07-07
+released from main
+### Changed
+* update actinia-module-plugin version (#228)
+
+## [1.0.1.79] - 2021-06-29
+released from grass79
+See https://github.com/mundialis/actinia_core/releases/tag/1.0.1
+
+## [1.0.1] - 2021-06-24
+released from main
+### Changed
+- update module importing in `scripts` to `core/common` folder format (https://github.com/mundialis/actinia_core/pull/224)
+
+## [1.0.0] - 2021-06-02
+released from main
+Happy Codesprint release :) https://github.com/mundialis/actinia_core/projects/1
+
+### Added
+* Get all mapsets locks (#200)
+* gource script for code development visualization (#219)
+* Local GeoTIFF import (#216)
+
+### Changed
+* rename master to main (#194)
+* Part of issue #190
+  * Move common folder one level up + use absolute imports (#199)
+  * Rename resources folder folder to rest + use absolute imports (#207)
+  * Create models folder (#208)
+  * move common to subfolder core (#215)
+  * update folders in scripts (#220)
+  * Move modules used by plugins (#221)
+  * Update plugin versions (#222)
+  * ATTENTION: the renaming of modules leads to an error with old redis resource entries, see `Unpickling of resources created with actinia < 1.0.0 fails with actinia > 1.0.0` #226
+* Part of issue #189
+  * Splitup ephemeral processing (#196)
+  * splitup methods in aws_sentinel_interface (#205)
+  * Splitup common folder (part 1) (#209)
+* change GHA on push and pr (#217)
+
+### Fixed
+* fix docker build (#187)
+* make better use of cache for test dockerimage (#198)
+* Fix docker test permissions (#201)
+* lint (#203)
+
+### Documentation
+* Conversion of Sphinx based tutorial to markdown/mkdocs (#204)
+* Documentation update (#210)
+* update docker readme (#218)
+
+
+
+-----------------------------
 
 ## [0.99.29] - 2021-05-05
 released from master\
