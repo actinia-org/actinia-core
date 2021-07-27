@@ -574,7 +574,7 @@ class EphemeralProcessing(object):
             r = requests.post(webhook_url, json=json.dumps(response_model))
         if r.status_code not in [200, 204]:
             raise AsyncProcessError(
-                "Unable to access %s webhook URL %s" % (type, self.webhook_finished))
+                "Unable to access %s webhook URL %s" % (type, webhook_url))
 
     def _get_previous_iteration_process_chain(self):
         """Helper method to check the old resource run and get the step of the
