@@ -163,9 +163,8 @@ and compile it.
 7.  Check the service with curl
 
 ```bash
- export PORT=5000
- export IP=http://localhost
+ export ACTINIA_URL=http://localhost:5000/api/v1
  export AUTH='-u superadmin:abcdefgh'
 
- curl -u superadmin:abcdefgh -X GET http://localhost:5000/locations
+ curl ${AUTH} -X GET ${ACTINIA_URL}/locations
 ```
