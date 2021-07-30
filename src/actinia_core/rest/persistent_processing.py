@@ -25,12 +25,13 @@
 Asynchronous computation in specific temporary generated and then copied
 or original mapsets
 """
-import pickle
+import fileinput
 import os
+import pickle
 import shutil
+import sqlite3
 import subprocess
 from copy import deepcopy
-import fileinput
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 
@@ -478,10 +479,20 @@ class PersistentProcessing(EphemeralProcessing):
         # if we manage to come here, the lock was correctly set
         self.target_mapset_lock_set = True
 
-    def _change_mapsetname_in_group(self, source_path, source_mapset, target_mapset):
-        group_dirs = os.listdir(source_path)
+    def _change_mapsetname_in_group(self, group_path, source_mapset, target_mapset):
+        """Replaces the mapset name in the group file
+
+        Args:
+            group_path(str): path of the group folder in the source mapset
+            source_mapset(str): name of source mapset
+            target_mapset(str): name of target mapset
+
+        Raises:
+            This method will raise an AsyncProcessError if a group has no REF file
+        """
+        group_dirs = os.listdir(group_path)
         for group_dir in group_dirs:
-            group_file = os.path.join(source_path, group_dir, "REF")
+            group_file = os.path.join(group_path, group_dir, "REF")
             if os.path.isfile(group_file):
                 for line in fileinput.input(group_file, inplace=True):
                     print(line.replace(
@@ -490,18 +501,63 @@ class PersistentProcessing(EphemeralProcessing):
                 raise AsyncProcessError("group %s has no REF file"
                                         % (group_dir))
 
+    def _change_mapsetname_in_tgis(self, tgis_path, source_mapset, target_mapset):
+        """Replaces the mapset name in the tgis sqlite.db
+
+        Args:
+            tgis_path(str): path of the tgis folder in the source mapset
+            source_mapset(str): name of source mapset
+            target_mapset(str): name of target mapset
+
+        Raises:
+            This method will raise an AsyncProcessError if a group has no REF file
+        """
+        tgis_db_path = os.path.join(tgis_path, 'sqlite.db')
+        con = sqlite3.connect(tgis_db_path)
+        cur = con.cursor()
+
+        # tables
+        table_names = [row[1] for row in cur.execute(
+            "SELECT * FROM sqlite_master where type='table'")]
+        for table_name in table_names:
+            columns = [row[0] for row in cur.execute(
+                f"SELECT * FROM {table_name}").description]
+            for col in columns:
+                cur.execute(f"UPDATE {table_name} SET {col} = REPLACE({col}, "
+                            f"'{source_mapset}', '{target_mapset}')")
+
+        # views
+        sql_script_folder = os.path.join(os.getenv("GISBASE"), "etc", "sql")
+        drop_view_sql = os.path.join(sql_script_folder, 'drop_views.sql')
+        with open(drop_view_sql, 'r') as sql:
+            sql_drop_str = sql.read()
+        cur.executescript(sql_drop_str)
+
+        view_sql_file_names = [
+            "raster_views.sql",
+            "raster3d_views.sql",
+            "vector_views.sql",
+            "strds_views.sql",
+            "str3ds_views.sql",
+            "stvds_views.sql"
+        ]
+        for view_sql_file_name in view_sql_file_names:
+            view_sql_file = os.path.join(sql_script_folder, view_sql_file_name)
+            with open(view_sql_file, 'r') as sql:
+                sql_view_str = sql.read()
+            cur.executescript(sql_view_str)
+
     def _merge_mapset_into_target(self, source_mapset, target_mapset):
         """Link the source mapset content into the target mapset
 
-        TODO: Implement support for temporal database merging
-
-        Attention: Only raster and vector layers are copied at the moment
+        Attention: Not all directories and files in the mapset are copied.
+            See list directories.
         """
         self.message_logger.info(
             "Copy source mapset <%s> content "
             "into the target mapset <%s>" % (source_mapset, target_mapset))
 
-        # Raster and vector directories
+        # Raster, vector, group and space time data set directories/files
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
@@ -514,50 +570,11 @@ class PersistentProcessing(EphemeralProcessing):
 
             if os.path.exists(source_path) is True:
                 if directory == "group":
-                    self._change_mapsetname_in_group(source_path, source_mapset, target_mapset)
-                    # group_dirs = os.listdir(source_path)
-                    # for group_dir in group_dirs:
-                    #     group_file = os.path.join(source_path, group_dir, "REF")
-                    #     if os.path.isfile(group_file):
-                    #         for line in fileinput.input(group_file, inplace=True):
-                    #             print(line.replace(
-                    #                 source_mapset, target_mapset), end='')
-                    #     else:
-                    #         raise AsyncProcessError("group %s has no REF file"
-                    #                                 % (group_dir))
+                    self._change_mapsetname_in_group(
+                        source_path, source_mapset, target_mapset)
                 if directory == "tgis":
-                    import sqlite3
-                    tgis_db_path = os.path.join(source_path, 'sqlite.db')
-                    con = sqlite3.connect(tgis_db_path)
-                    cur = con.cursor()
-
-                    # tables
-                    table_names = [row[1] for row in cur.execute("SELECT * FROM sqlite_master where type='table'")]
-                    for table_name in table_names:
-                        columns = [row[0] for row in cur.execute(f"SELECT * FROM {table_name}").description]
-                        for col in columns:
-                            cur.execute(f"UPDATE {table_name} SET {col} = REPLACE({col}, '{source_mapset}', '{target_mapset}')")
-
-                    # views
-                    sql_script_folder = os.path.join(os.getenv("GISBASE"), "etc", "sql")
-                    drop_view_sql = os.path.join(sql_script_folder, 'drop_views.sql')
-                    with open(drop_view_sql, 'r') as sql:
-                        sql_drop_str = sql.read()
-                    cur.executescript(sql_drop_str)
-
-                    view_sql_file_names = [
-                        "raster_views.sql",
-                        "raster3d_views.sql",
-                        "vector_views.sql",
-                        "strds_views.sql",
-                        "str3ds_views.sql",
-                        "stvds_views.sql"
-                    ]
-                    for view_sql_file_name in view_sql_file_names:
-                        view_sql_file = os.path.join(sql_script_folder, view_sql_file_name)
-                        with open(view_sql_file, 'r') as sql:
-                            sql_view_str = sql.read()
-                        cur.executescript(sql_view_str)
+                    self._change_mapsetname_in_tgis(
+                        source_path, source_mapset, target_mapset)
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
