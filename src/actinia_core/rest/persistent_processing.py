@@ -43,10 +43,9 @@ from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.models.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 DESCR = """Execute a user defined process chain in an existing mapset
 of the persistent user database or in a new mapset that will be
@@ -285,6 +284,7 @@ class PersistentProcessing(EphemeralProcessing):
           raised an error
 
     """
+
     def __init__(self, rdc):
         """Constructor
 
