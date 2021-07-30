@@ -478,6 +478,18 @@ class PersistentProcessing(EphemeralProcessing):
         # if we manage to come here, the lock was correctly set
         self.target_mapset_lock_set = True
 
+    def _change_mapsetname_in_group(self, source_path, source_mapset, target_mapset):
+        group_dirs = os.listdir(source_path)
+        for group_dir in group_dirs:
+            group_file = os.path.join(source_path, group_dir, "REF")
+            if os.path.isfile(group_file):
+                for line in fileinput.input(group_file, inplace=True):
+                    print(line.replace(
+                        source_mapset, target_mapset), end='')
+            else:
+                raise AsyncProcessError("group %s has no REF file"
+                                        % (group_dir))
+
     def _merge_mapset_into_target(self, source_mapset, target_mapset):
         """Link the source mapset content into the target mapset
 
@@ -493,7 +505,7 @@ class PersistentProcessing(EphemeralProcessing):
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
-                       "hist", "vector", "group"]
+                       "hist", "vector", "group", "tgis", "VAR"]
 
         for directory in directories:
             source_path = os.path.join(
@@ -502,16 +514,50 @@ class PersistentProcessing(EphemeralProcessing):
 
             if os.path.exists(source_path) is True:
                 if directory == "group":
-                    group_dirs = os.listdir(source_path)
-                    for group_dir in group_dirs:
-                        group_file = os.path.join(source_path, group_dir, "REF")
-                        if os.path.isfile(group_file):
-                            for line in fileinput.input(group_file, inplace=True):
-                                print(line.replace(
-                                    source_mapset, target_mapset), end='')
-                        else:
-                            raise AsyncProcessError("group %s has no REF file"
-                                                    % (group_dir))
+                    self._change_mapsetname_in_group(source_path, source_mapset, target_mapset)
+                    # group_dirs = os.listdir(source_path)
+                    # for group_dir in group_dirs:
+                    #     group_file = os.path.join(source_path, group_dir, "REF")
+                    #     if os.path.isfile(group_file):
+                    #         for line in fileinput.input(group_file, inplace=True):
+                    #             print(line.replace(
+                    #                 source_mapset, target_mapset), end='')
+                    #     else:
+                    #         raise AsyncProcessError("group %s has no REF file"
+                    #                                 % (group_dir))
+                if directory == "tgis":
+                    import sqlite3
+                    tgis_db_path = os.path.join(source_path, 'sqlite.db')
+                    con = sqlite3.connect(tgis_db_path)
+                    cur = con.cursor()
+
+                    # tables
+                    table_names = [row[1] for row in cur.execute("SELECT * FROM sqlite_master where type='table'")]
+                    for table_name in table_names:
+                        columns = [row[0] for row in cur.execute(f"SELECT * FROM {table_name}").description]
+                        for col in columns:
+                            cur.execute(f"UPDATE {table_name} SET {col} = REPLACE({col}, '{source_mapset}', '{target_mapset}')")
+
+                    # views
+                    sql_script_folder = os.path.join(os.getenv("GISBASE"), "etc", "sql")
+                    drop_view_sql = os.path.join(sql_script_folder, 'drop_views.sql')
+                    with open(drop_view_sql, 'r') as sql:
+                        sql_drop_str = sql.read()
+                    cur.executescript(sql_drop_str)
+
+                    view_sql_file_names = [
+                        "raster_views.sql",
+                        "raster3d_views.sql",
+                        "vector_views.sql",
+                        "strds_views.sql",
+                        "str3ds_views.sql",
+                        "stvds_views.sql"
+                    ]
+                    for view_sql_file_name in view_sql_file_names:
+                        view_sql_file = os.path.join(sql_script_folder, view_sql_file_name)
+                        with open(view_sql_file, 'r') as sql:
+                            sql_view_str = sql.read()
+                        cur.executescript(sql_view_str)
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
