@@ -24,8 +24,8 @@
 """
 Tests: AWS Sentinel interface test case
 """
-from actinia_core.resources.common.aws_sentinel_interface import AWSSentinel2AInterface
-from actinia_core.resources.common.config import global_config
+from actinia_core.core.common.aws_sentinel_interface import AWSSentinel2AInterface
+from actinia_core.core.common.config import global_config
 import unittest
 from pprint import pprint
 import magic

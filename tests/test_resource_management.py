@@ -37,7 +37,7 @@ try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-from actinia_core.resources.common.user import ActiniaUser
+from actinia_core.core.common.user import ActiniaUser
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

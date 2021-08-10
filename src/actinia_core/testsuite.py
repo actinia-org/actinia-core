@@ -33,17 +33,16 @@ from flask.json import loads as json_loads
 from werkzeug.datastructures import Headers
 from .health_check import health_check
 from .version import version
-from .resources.common.app import flask_app, URL_PREFIX
-from .resources.common import redis_interface
-from .resources.common.config import global_config
-from .resources.common.user import ActiniaUser
-from .resources.common.process_queue import create_process_queue
+from actinia_core.core.common.app import flask_app, URL_PREFIX
+from actinia_core.core.common import redis_interface
+from actinia_core.core.common.config import global_config
+from actinia_core.core.common.user import ActiniaUser
+from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 class ActiniaRequests(object):

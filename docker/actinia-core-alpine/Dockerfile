@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
-FROM mundialis/esa-snap:s1tbx-8.0.1 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v7 as build
+FROM mundialis/esa-snap:s1tbx-8.0.3 as snap
+FROM mundialis/actinia-core:alpine-build-pkgs_v8 as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
@@ -37,7 +37,7 @@ RUN /usr/bin/python3 /root/.snap/about.py
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-RUN pip3 install --upgrade pip six grass-session
+RUN pip3 install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass /usr/local/grass7
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
@@ -55,20 +55,20 @@ RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=
 # Currently, ADD always breaks cache, as "download_count" increases every time
 # ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
-# Get statistics plugin (26188052 = 0.0.2)
-RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/26188052 > resp.json && \
+# Get statistics plugin (26188052 = 0.0.3)
+RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/43983719 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get satellite plugin (26187974 = 0.0.2)
-RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/26187974 > resp.json && \
+# Get satellite plugin (26187974 = 0.0.3)
+RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/43983668 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Get actinia-metadata-plugin (38726425 = 1.0.0)
 RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-module-plugin (38733194 = 1.0.1)
-RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/38733194 > resp.json && \
+# Get actinia-module-plugin (45775508 = 2.2.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/45775508 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Install actinia-core and plugins
@@ -97,50 +97,6 @@ RUN mkdir -p /actinia_core/grassdb && \
     mkdir -p /actinia_core/workspace/download_cache && \
     mkdir -p /actinia_core/userdata && \
     ln -s /actinia_core /root/actinia
-
-# tests
-FROM actinia_installation as actinia_test
-
-WORKDIR /src/actinia_core
-COPY --from=build /src/actinia_core /src/actinia_core
-
-COPY tests_with_redis.sh tests_with_redis.sh
-COPY Makefile Makefile
-RUN chmod a+x tests_with_redis.sh
-
-# set config for test
-COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
-COPY docker/actinia-core-alpine/actinia-test.cfg /etc/default/actinia_test
-ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
-# TODO do not set DEFAULT_CONFIG_PATH if this is fixed
-ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
-
-# TODO remove if all tests are running
-RUN rm -rf tests
-COPY tests tests
-
-# install things only for tests
-RUN apk add redis
-RUN pip3 install iniconfig
-
-# add data for tests
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
-  unzip nc_spm_08_micro.zip && \
-  rm -f nc_spm_08_micro.zip && \
-  mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
-
-RUN grass -text -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
-
-RUN wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
-  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
-  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
-  mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
-RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
-
-# TODO: Postgres for tests
-# useing tests/data/poly.gpkg
-
-RUN make test
 
 # final image
 FROM actinia_installation as actinia

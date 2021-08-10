@@ -1,5 +1,5 @@
 FROM mundialis/docker-pdal:2.1.0 as pdal
-FROM mundialis/actinia-core:alpine-build-pkgs_v7
+FROM mundialis/actinia-core:alpine-build-pkgs_v8
 
 ENV SNAPPY_RUNTIME_PACKAGES="\
     python3 \
