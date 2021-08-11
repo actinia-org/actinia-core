@@ -5,14 +5,14 @@
 # latest=auto # takes care of tag latest
 
 # latest, main
+# 1.2.3, release alpine
+# 1.2, release alpine
 # g78-latest-alpine, main, docker/actinia-core-alpine/Dockerfile
 # g79-latest-alpine, grass79, docker/actinia-core-alpine/Dockerfile
 # g78-latest-ubuntu, main, docker/actinia-core-ubuntu/Dockerfile
 # g79-latest-ubuntu, grass79, docker/actinia-core-ubuntu/Dockerfile
-# 1.2.3, release alpine
-# 1.2, release alpine
 
-name: Docker build and push
+name: Docker
 
 on:
   push:
@@ -23,66 +23,91 @@ on:
     types: [published, created]
 
 jobs:
-  docker:
-    # name: docker build and push ${{ matrix.grass_version }}-latest-${{ matrix.flavor }}
+
+  # run always, take create of sha-ref, latest and release tags
+  docker-release-or-latest:
+    name: build and push release or latest
     runs-on: ubuntu-latest
-    # strategy:
-    #   matrix:
-    #     grass_version:
-    #       - g78
-    #       - g79
-    #     flavor:
-    #       - alpine
-    #       - ubuntu
-    #     # include:
-    #     #   - a: val1
-    #     #     b: type1
-    #     #   - a: val2
-    #     #     b: type2
-    #   fail-fast: false
 
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - id: meta1
-        run: |
-          tag1="mundialis/actinia-core:sha-7cc2976"
-          tag2="mundialis/actinia-core:latest"
-          tag3="mundialis/actinia-core:${{ matrix.grass_version }}-latest-${{ matrix.flavor }}"
-          # echo ${{ matrix.a }}${{ matrix.b }}
-          echo "::set-output name=tags::[$tag1, $tag2, $tag3]"
       - name: Create image and tag names
-        id: meta2
+        id: meta
         uses: docker/metadata-action@v3
         with:
-          images: mundialis/actinia-core
+          images: mmacata/actinia-core
           tags: |
             type=ref,event=tag
             type=sha
-            type=ref,event=branch
           flavor: |
             latest=auto
-      # - name: Set up QEMU
-      #   uses: docker/setup-qemu-action@v1
-      # - name: Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v1
-      # - name: Login to DockerHub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN  }}
-      # - name: Build and push
-      #   id: docker_build
-      #   uses: docker/build-push-action@v2
-      #   with:
-      #     push: false
-      #     tags: ${{ steps.meta.outputs.tags }}
-      #     context: .
-      #     file: docker/actinia-core-alpine/Dockerfile
-      #     pull: true
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          context: .
+          file: docker/actinia-core-alpine/Dockerfile
+          pull: true
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+
+  # do not run on releases, create different flavors
+  docker-g-version-flavor-matrix:
+    name: build and push ${{ matrix.grass_version }}-latest-${{ matrix.flavor }}
+    if: startsWith(github.ref, 'refs/tags/') != true
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        grass_version:
+          - g78
+          # - g79
+        flavor:
+          - alpine
+          - ubuntu
+      fail-fast: false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - id: meta
+        run: |
+          tag="mmacata/actinia-core:${{ matrix.grass_version }}-latest-${{ matrix.flavor }}"
+          echo "::set-output name=tags::$tag"
       - name: log
         run: |
-          echo ${{ steps.meta1.outputs.tags }}
-          echo ${{ steps.meta2.outputs.tags }}
-      # - name: Image digest
-      #   run: echo ${{ steps.docker_build.outputs.digest }}
+          echo ${{ steps.meta.outputs.tags }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          context: .
+          file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
+          pull: true
+
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
