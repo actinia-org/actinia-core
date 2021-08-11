@@ -28,3 +28,8 @@ r.scaleminmax,/src/openeo-addons/r.scaleminmax
 t.rast.bandcalc,/src/openeo-addons/t.rast.bandcalc
 t.rast.ndvi,/src/openeo-addons/t.rast.ndvi
 t.rast.resample,/src/openeo-addons/t.rast.resample
+t.rast.filterbands,/src/openeo-addons/t.rast.filterbands
+t.rast.hants,/src/openeo-addons/t.rast.hants
+t.rast.renamebands,/src/openeo-addons/t.rast.renamebands
+t.rast.udf,/src/openeo-addons/t.rast.udf
+v.in.geojson,/src/openeo-addons/v.in.geojson
