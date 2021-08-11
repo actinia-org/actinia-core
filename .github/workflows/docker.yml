@@ -59,6 +59,7 @@ jobs:
           tags: |
             type=ref,event=tag
             type=sha
+            type=ref,event=branch
           flavor: |
             latest=auto
       # - name: Set up QEMU
