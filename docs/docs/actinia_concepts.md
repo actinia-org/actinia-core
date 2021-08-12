@@ -85,61 +85,13 @@ The following user-roles are supported:
 
 Overview table:
 
-+-----------+-----------+-----------+----------+-----------+-----------+
-| task      | s         | admin     | user     | guest     | notes     |
-|           | uperadmin |           |          |           |           |
-+===========+===========+===========+==========+===========+===========+
-| amount    | y         | y         | limited, | limited,  | -         |
-| raster    |           |           | selected | selected  |           |
-| cells is  |           |           | via      | via redis |           |
-| unlimited |           |           | redis    |           |           |
-+-----------+-----------+-----------+----------+-----------+-----------+
-| database  | y         | only to   | limited, | limited,  | -         |
-| access is |           | p         | defined  | defined   |           |
-| unlimited |           | ersistent | in redis | in redis  |           |
-|           |           | databases |          |           |           |
-|           |           | that were |          |           |           |
-|           |           | granted   |          |           |           |
-|           |           | by a      |          |           |           |
-|           |           | s         |          |           |           |
-|           |           | uperadmin |          |           |           |
-+-----------+-----------+-----------+----------+-----------+-----------+
-| location/ | y         | y         | can      | has       | -         |
-| mapset    |           |           | create,  | access to |           |
-| access is |           |           | modify   | p         |           |
-| unlimited |           |           | and      | ersistent |           |
-|           |           |           | delete   | databases |           |
-|           |           |           | mapsets  | that were |           |
-|           |           |           | in user  | granted   |           |
-|           |           |           | specific | by a      |           |
-|           |           |           | d        | su        |           |
-|           |           |           | atabases | peradmin, |           |
-|           |           |           | ,        | defined   |           |
-|           |           |           | defined  | in redis  |           |
-|           |           |           | in redis |           |           |
-|           |           |           |          |           |           |
-+-----------+-----------+-----------+----------+-----------+-----------+
-| module    | y         | y         | can run  | has very  | -         |
-| access is |           |           | c        | limited   |           |
-| unlimited |           |           | omputati | access to |           |
-|           |           |           | onal     | API calls |           |
-|           |           |           | tasks in |           |           |
-|           |           |           | e        |           |           |
-|           |           |           | phemeral |           |           |
-|           |           |           | and user |           |           |
-|           |           |           | specific |           |           |
-|           |           |           | d        |           |           |
-|           |           |           | atabases |           |           |
-+-----------+-----------+-----------+----------+-----------+-----------+
-| get,      | y         | users     | n        | n         | Only      |
-| create,   |           | with the  |          |           | normal    |
-| delete a  |           | maximum   |          |           | users     |
-| single    |           | user-role |          |           | (r        |
-| user      |           | user of   |          |           | ole=user) |
-|           |           | the same  |          |           | can be    |
-|           |           | user      |          |           | created   |
-|           |           | group     |          |           |           |
-+-----------+-----------+-----------+----------+-----------+-----------+
+| task | superadmin | admin | user | guest |notes |
+|------|------------|-------|------|-------|------|
+| amount raster cells is unlimited | y | y | limited, selected via redis | limited, selected via redis | - |
+| database access is unlimited                              | y         | only to persistent databases that were granted by a superadmin | limited, defined in redis | limited, defined in redis | - |
+| location/mapset access is unlimited  | y | y | can create, modify and delete mapsets in user specific databases, defined in redis | has access to persistent databases that were granted by a superadmin, defined in redis | - |
+|module access is unlimited  | y | y | can run computational tasks in ephemeral and user specific databases | has very limited access to API calls | - |
+| get, create, delete a single user | y | users with the maximum user-role user of the same user group | n | n | Only normal users (role=user can be created) |
 
 In the file actinia.cfg, limits and more can be defined:
 
