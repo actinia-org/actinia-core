@@ -106,6 +106,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - id: meta
+        name: Create tag name
+        run: |
+          tag="${DOCKERHUB_REPOSITORY}:latest"
+          echo "::set-output name=tags::$tag"
+      - name: log
+        run: echo ${{ steps.meta.outputs.tags }}
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -122,7 +129,7 @@ jobs:
           push: true
           pull: true
           context: .
-          tags: ${DOCKERHUB_REPOSITORY}:latest
+          tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
