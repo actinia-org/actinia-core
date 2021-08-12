@@ -1,16 +1,22 @@
-# https://github.com/marketplace/actions/build-and-push-docker-images
-# https://github.com/marketplace/actions/docker-metadata-action
-# type=ref,event=tag # on push tag, tag = 1.2.3
-# type=sha # tag = sha-ad132f5
-# latest=auto # takes care of tag latest
-
-# latest, main
-# 1.2.3, release alpine
-# 1.2, release alpine
-# g78-latest-alpine, main, docker/actinia-core-alpine/Dockerfile
-# g79-latest-alpine, grass79, docker/actinia-core-alpine/Dockerfile
-# g78-latest-ubuntu, main, docker/actinia-core-ubuntu/Dockerfile
-# g79-latest-ubuntu, grass79, docker/actinia-core-ubuntu/Dockerfile
+# Summary:
+#
+# job docker-g-version-flavor-matrix:
+# * "g78-latest-alpine"
+# * "g78-latest-ubuntu"
+# * "g79-latest-alpine"
+# * "g79-latest-ubuntu"
+#
+# job docker-main-latest:
+# * for push to main branch, update "latest" tag
+#
+# job docker-sha-release-latest:
+# * for release, update "latest" tag
+# * git ref tag, eg. "sha-ad132f5"
+# * release tag major.minor.path, e.g. "1.2.3" (alpine g78)
+# * release tag major.minor, e.g. "1.2" (alpine g78)
+#
+# job docker-release-g79:
+# * release tag for g79, e.g. "1.2.3.79" (alpine g79)
 
 name: Docker
 
@@ -22,49 +28,13 @@ on:
   release:
     types: [published, created]
 
+env:
+    DOCKERHUB_REPOSITORY: mmacata/actinia-core
+
 jobs:
 
-  # run always, take create of sha-ref, latest and release tags
-  docker-release-or-latest:
-    name: build and push release or latest
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Create image and tag names
-        id: meta
-        uses: docker/metadata-action@v3
-        with:
-          images: mmacata/actinia-core
-          tags: |
-            type=ref,event=tag
-            type=sha
-          flavor: |
-            latest=auto
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN  }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          context: .
-          file: docker/actinia-core-alpine/Dockerfile
-          pull: true
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-
-  # do not run on releases, create different flavors
+  # only run for push to branches, do not run for releases
+  # take care of different flavors (g78-latest-alpine, g78-latest-ubuntu, ...)
   docker-g-version-flavor-matrix:
     name: build and push ${{ matrix.grass_version }}-latest-${{ matrix.flavor }}
     if: startsWith(github.ref, 'refs/tags/') != true
@@ -73,7 +43,7 @@ jobs:
       matrix:
         grass_version:
           - g78
-          # - g79
+          - g79
         flavor:
           - alpine
           - ubuntu
@@ -82,9 +52,23 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - id: meta
+      - name: Replace base images depending on version
         run: |
-          tag="mmacata/actinia-core:${{ matrix.grass_version }}-latest-${{ matrix.flavor }}"
+          if [ "${{ matrix.grass_version }}" == "g79" ] && [ "${{ matrix.flavor }}" == "alpine" ]
+          then sed -i "s+grass-py3-pdal:stable-alpine+grass-py3-pdal:latest-alpine+g" \
+            docker/actinia-core-alpine/Dockerfile
+            head -n1 docker/actinia-core-alpine/Dockerfile
+          elif [ "${{ matrix.grass_version }}" == "g79" ] && [ "${{ matrix.flavor }}" == "ubuntu" ]
+          then sed -i "s+grass-py3-pdal:stable-ubuntu+grass-py3-pdal:latest-ubuntu+g" \
+            docker/actinia-core-ubuntu/Dockerfile
+            head -n1 docker/actinia-core-ubuntu/Dockerfile
+          else
+            echo "No change of base images, use GRASS GIS 78"
+          fi
+      - id: meta
+        name: Create tag name
+        run: |
+          tag="${DOCKERHUB_REPOSITORY}:${{ matrix.grass_version }}-latest-${{ matrix.flavor }}"
           echo "::set-output name=tags::$tag"
       - name: log
         run: |
@@ -104,10 +88,127 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          context: .
-          file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
           pull: true
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
 
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  # only run for push to main branch
+  # take care of latest tag
+  docker-main-latest:
+    name: build and push latest for main branch
+    if: startsWith(github.ref, 'refs/heads/main')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          pull: true
+          context: .
+          tags: ${DOCKERHUB_REPOSITORY}:latest
+          file: docker/actinia-core-alpine/Dockerfile
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  # run always
+  # On push to branch, take care of sha-ref tag
+  # On release, take care of latest and release tags
+  docker-sha-release-latest:
+    name: build and push release or latest
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Create image and tag names
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${DOCKERHUB_REPOSITORY}
+          tags: |
+            type=ref,event=tag
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+          flavor: |
+            latest=auto
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          pull: true
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          file: docker/actinia-core-alpine/Dockerfile
+      - name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+  # run only for releases
+  # take care of tag for g79 (e.g. 1.0.3.79)
+  docker-release-g79:
+    name: build and push release g79
+    if: startsWith(github.ref, 'refs/tags/')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Replace base image
+        run: |
+          sed -i "s+grass-py3-pdal:stable-alpine+grass-py3-pdal:latest-alpine+g" \
+            docker/actinia-core-alpine/Dockerfile
+          head -n1 docker/actinia-core-alpine/Dockerfile
+      - id: meta
+        name: Create tag name
+        run: |
+          tag="${DOCKERHUB_REPOSITORY}:${GITHUB_REF##*/}.79"
+          echo "::set-output name=tags::$tag"
+      - name: log
+        run: |
+          echo ${{ steps.meta.outputs.tags }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to DockerHub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN  }}
+      - name: Build and push
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          pull: true
+          context: .
+          tags: ${{ steps.meta.outputs.tags }}
+          file: docker/actinia-core-alpine/Dockerfile
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}

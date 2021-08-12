@@ -2,16 +2,18 @@ FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0.3 as snap
 FROM mundialis/actinia-core:alpine-build-pkgs_v8 as build
 
+# based on GRASS GIS releasebranch_7_8 (grass78)
+# for latest GRASS GIS (79), change first line to
+# FROM mundialis/grass-py3-pdal:latest-alpine as grass
+
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
 
 COPY . /src/actinia_core
 
 WORKDIR /src/actinia_core
-# RUN git describe --dirty --tags --long --first-parent
-# RUN git checkout .
-RUN ls -lah
-ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.99.26
+RUN git describe --dirty --tags --long --first-parent
+RUN git checkout .
 RUN python3 setup.py sdist bdist_wheel -d /build
 # RUN pip3 wheel -r requirements.txt -w /build
 # RUN python3 -m pep517.build --out-dir /build .

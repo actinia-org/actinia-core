@@ -1,6 +1,8 @@
 FROM mundialis/grass-py3-pdal:stable-ubuntu
 
 # based on GRASS GIS releasebranch_7_8 (grass78)
+# for latest GRASS GIS (79), change base image to
+# FROM mundialis/grass-py3-pdal:latest-ubuntu
 
 LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"

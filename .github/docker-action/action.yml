@@ -1,0 +1,50 @@
+# composite run action currently not supports "uses" in steps
+# https://github.com/actions/runner/issues/646
+# keep for later, if implemented
+# can be used like this:
+      # - name: composite actions
+      #   uses: ./.github/docker-action
+      #   whith:
+      #     - tags: ${{ steps.meta.outputs.tags }}
+      #     - file: docker/Dockerfile
+
+
+name: 'Docker composite steps'
+
+inputs:
+  tags:
+    description: 'tags to push'
+    required: true
+  file:
+    description: 'Dockerfile to use'
+    required: true
+
+runs:
+  using: "composite"
+  name: QEMU, buildx, login, build and push
+  steps:
+    - name: Log tags
+      shell: sh
+      run: |
+        echo ${{ inputs.tags }}
+    - name: Set up QEMU
+      shell: sh
+      uses: docker/setup-qemu-action@v1
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN  }}
+    - name: Build and push
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        pull: true
+        context: .
+        tags: ${{ inputs.tags }}
+        file: ${{ inputs.file }}
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
