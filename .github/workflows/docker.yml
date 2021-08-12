@@ -22,14 +22,16 @@ name: Docker
 
 on:
   push:
-    branches: [main, gh-actions-docker]
+    branches: [main]
     tags: ['*.*.*']
     paths-ignore: ['docs/**']
   release:
     types: [published, created]
 
 env:
-    DOCKERHUB_REPOSITORY: mmacata/actinia-core
+    # Additionally mentioned in docker-sha-release-latest
+    # as use of variable fails there
+    DOCKERHUB_REPOSITORY: mundialis/actinia-core
 
 jobs:
 
@@ -150,7 +152,8 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ${DOCKERHUB_REPOSITORY}
+          # images: ${DOCKERHUB_REPOSITORY}
+          images: mundialis/actinia-core
           tags: |
             type=ref,event=tag
             type=semver,pattern={{major}}.{{minor}}
