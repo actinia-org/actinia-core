@@ -52,6 +52,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - name: Replace base images depending on version
         run: |
           if [ "${{ matrix.grass_version }}" == "g79" ] && [ "${{ matrix.flavor }}" == "alpine" ]
@@ -109,7 +111,7 @@ jobs:
       - id: meta
         name: Create tag name
         run: |
-          tag="${DOCKERHUB_REPOSITORY}:latest"
+          tag=${DOCKERHUB_REPOSITORY}:latest
           echo "::set-output name=tags::$tag"
       - name: log
         run: echo ${{ steps.meta.outputs.tags }}
