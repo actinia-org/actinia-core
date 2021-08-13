@@ -3,12 +3,12 @@ Introduction
 
 Actinia is a REST service to process geographical data that can be
 managed by the GRASS GIS software system. The software is designed to
-expose a GRASS GIS database and many GRASS GIS[^1] processing tool as
+expose a GRASS GIS database and many GRASS GIS[^1] processing tools as
 REST service[^2]. Hence, access to GRASS resources like raster maps,
 space-time raster datasets, processing and analysis modules are
 available via URL. In addition Actinia allows the processing of cloud
 based data, for example all Landsat 4-8 scenes as well as all
-Sentinel-2A scenes in an ephemeral databases. The computational results
+Sentinel-2A scenes in an ephemeral database. The computational results
 of ephemeral processing are available via object storage as GeoTIFF
 files.
 
@@ -20,7 +20,7 @@ computation, spatio-temporal statistical analysis and many more.
 To use actinia the user must have an understanding of the GRASS GIS
 concept[^3] of location, mapsets, raster maps, space-time datasets and
 modules. The URLs that provide access to the GRASS database reflect
-these concepts. Hence, the location, the mapset, the required raster map
+these concepts. Hence, the location, the mapset and the required raster map
 are part of the URL to access the service.
 
 What is REST?
@@ -28,7 +28,7 @@ What is REST?
 
 The Representational state transfer (REST)[^4] is an architectural style
 based on HTTP[^5] that uses GET[^6], DELETE[^7], POST[^8] and PUT[^9]
-methods to manipulate and receive resource with stateless operations.
+methods to manipulate and receive resources with stateless operations.
 
 While GET requests can be send easily from a browser, POST, PUT or
 DELETE request can not. To access the full potential of actinia you will

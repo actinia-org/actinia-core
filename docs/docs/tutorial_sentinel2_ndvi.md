@@ -1,4 +1,5 @@
-Sentinel-2 NDVI computation ===========================
+Sentinel-2 NDVI computation
+===========================
 
 The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
@@ -39,7 +40,7 @@ finished response:
 ```
 
 Poll the status of the asynchronous API call by polling the status URL.
-Be aware that the resource id will change for different NDVI API calls.
+Be aware that you have to change the status url as the resource id will change for different NDVI API calls.
 
 ```bash
  curl ${AUTH} -X GET -i http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
@@ -641,7 +642,7 @@ as well as univariate statistics of the computed NDVI scene.
  }
 ```
 
-The following URL\'s point to the resulting PNG preview image and the
+The following URLs point to the resulting PNG preview image and the
 NDVI GeoTiff file:
 
  <http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
