@@ -33,3 +33,4 @@ t.rast.hants,/src/openeo-addons/t.rast.hants
 t.rast.renamebands,/src/openeo-addons/t.rast.renamebands
 t.rast.udf,/src/openeo-addons/t.rast.udf
 v.in.geojson,/src/openeo-addons/v.in.geojson
+t.rast2strds,/src/openeo-addons/t.rast2strds
