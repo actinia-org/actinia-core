@@ -572,7 +572,8 @@ class PersistentProcessing(EphemeralProcessing):
         if con:
             con.close()
 
-    def _change_mapsetname_in_tgis(self, tgis_path, source_mapset, target_mapset, target_tgis_db):
+    def _change_mapsetname_in_tgis(self, tgis_path, source_mapset,
+                                   target_mapset, target_tgis_db):
         """Replaces the mapset name in the tgis sqlite.db
 
         Args:
