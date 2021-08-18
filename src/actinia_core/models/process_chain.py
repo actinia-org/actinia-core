@@ -184,9 +184,9 @@ class OutputParameter(IOParameterBase):
         'properties': {
             'format': {
                 'type': 'string',
-                'description': 'The format of the output file in case of raster, strds, '
-                               'vector layer or text file export. Raster layer export '
-                               'supports only GeoTiff and COG format, STRDS layer export '
+                'description': 'The format of the output file in case of raster, strds,'
+                               ' vector layer or text file export. Raster layer export '
+                               'supports only GTiff and COG format, STRDS layer export '
                                'supports only GTiff format and all other formats are '
                                'vector layer export formats. If the *PostgeSQL* format '
                                'was chosen, a postgis database string *dbstring* '
