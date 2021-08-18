@@ -25,12 +25,13 @@
 Asynchronous computation in specific temporary generated and then copied
 or original mapsets
 """
-import pickle
+import fileinput
 import os
+import pickle
 import shutil
+import sqlite3
 import subprocess
 from copy import deepcopy
-import fileinput
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 
@@ -42,10 +43,9 @@ from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.models.response_models import ProcessingResponseModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 DESCR = """Execute a user defined process chain in an existing mapset
 of the persistent user database or in a new mapset that will be
@@ -284,6 +284,7 @@ class PersistentProcessing(EphemeralProcessing):
           raised an error
 
     """
+
     def __init__(self, rdc):
         """Constructor
 
@@ -478,22 +479,151 @@ class PersistentProcessing(EphemeralProcessing):
         # if we manage to come here, the lock was correctly set
         self.target_mapset_lock_set = True
 
+    def _change_mapsetname_in_group(self, group_path, source_mapset, target_mapset):
+        """Replaces the mapset name in the group file
+
+        Args:
+            group_path(str): path of the group folder in the source mapset
+            source_mapset(str): name of source mapset
+            target_mapset(str): name of target mapset
+
+        Raises:
+            This method will raise an AsyncProcessError if a group has no REF file
+        """
+        group_dirs = os.listdir(group_path)
+        for group_dir in group_dirs:
+            group_file = os.path.join(group_path, group_dir, "REF")
+            if os.path.isfile(group_file):
+                for line in fileinput.input(group_file, inplace=True):
+                    print(line.replace(
+                        source_mapset, target_mapset), end='')
+            else:
+                raise AsyncProcessError("group %s has no REF file"
+                                        % (group_dir))
+
+    def _update_views_in_tgis(self, tgis_db_path):
+        """Update views in tgis sqlite.db
+
+        Args:
+            tgis_db_path(str): Path to the tgis sqlite.db file where the views
+                               should be updated
+        """
+        con = sqlite3.connect(tgis_db_path)
+        cur = con.cursor()
+
+        sql_script_folder = os.path.join(os.getenv("GISBASE"), "etc", "sql")
+        drop_view_sql = os.path.join(sql_script_folder, 'drop_views.sql')
+        with open(drop_view_sql, 'r') as sql:
+            sql_drop_str = sql.read()
+        cur.executescript(sql_drop_str)
+
+        view_sql_file_names = [
+            "raster_views.sql",
+            "raster3d_views.sql",
+            "vector_views.sql",
+            "strds_views.sql",
+            "str3ds_views.sql",
+            "stvds_views.sql"
+        ]
+        for view_sql_file_name in view_sql_file_names:
+            view_sql_file = os.path.join(sql_script_folder, view_sql_file_name)
+            with open(view_sql_file, 'r') as sql:
+                sql_view_str = sql.read()
+            cur.executescript(sql_view_str)
+        con.commit()
+        if con:
+            con.close()
+        del cur
+
+    def _merge_tgis_dbs(self, tgis_db_path_1, tgis_db_path_2):
+        """Merge two tgis sqlite.db files
+
+        Args:
+            tgis_db_path_1(str): path of a tgis sqlite.db file in which the
+                                 other should be merged
+            tgis_db_path_2(str): path of a tgis sqlite.db file which should be
+                                 merged in tgis_db_path_1
+        """
+        con = sqlite3.connect(tgis_db_path_1)
+        con.execute(f"ATTACH '{tgis_db_path_2}' as dba")
+        con.execute("BEGIN")
+
+        table_names1 = [row[1] for row in con.execute(
+            "SELECT * FROM sqlite_master where type='table'")]
+        table_names2 = [row[1] for row in con.execute(
+            "SELECT * FROM dba.sqlite_master where type='table'")]
+
+        # merge databases
+        for table in table_names2:
+            if table == 'tgis_metadata':
+                con.execute(f"DROP TABLE {table}")
+                con.execute(f"CREATE TABLE {table} AS "
+                            f"SELECT * FROM dba.{table}")
+                continue
+            # for example raster_register_xxx tables are not in both dbs
+            if table not in table_names1:
+                con.execute(f"CREATE TABLE {table} AS "
+                            f"SELECT * FROM dba.{table}")
+                continue
+            combine = f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
+            con.execute(combine)
+        con.commit()
+        con.execute("detach database dba")
+        if con:
+            con.close()
+
+    def _change_mapsetname_in_tgis(self, tgis_path, source_mapset,
+                                   target_mapset, target_tgis_db):
+        """Replaces the mapset name in the tgis sqlite.db
+
+        Args:
+            tgis_path(str): path of the tgis folder in the source mapset
+            source_mapset(str): name of source mapset
+            target_mapset(str): name of target mapset
+            target_tgis_db(str): path to existing tgis sqlite.db of target
+                                 mapset. None if nonexistent.
+        """
+
+        tgis_db_path = os.path.join(tgis_path, 'sqlite.db')
+
+        # tables
+        con = sqlite3.connect(tgis_db_path)
+        cur = con.cursor()
+        table_names = [row[1] for row in cur.execute(
+            "SELECT * FROM sqlite_master where type='table'")]
+        for table_name in table_names:
+            columns = [row[0] for row in cur.execute(
+                f"SELECT * FROM {table_name}").description]
+            for col in columns:
+                cur.execute(f"UPDATE {table_name} SET {col} = REPLACE({col}, "
+                            f"'{source_mapset}', '{target_mapset}')")
+        con.commit()
+        if con:
+            con.close()
+        del cur
+
+        # if there already exists a sqlite.db file then merge it
+        if target_tgis_db is not None:
+            self._merge_tgis_dbs(tgis_db_path, target_tgis_db)
+
+        # update views
+        self._update_views_in_tgis(tgis_db_path)
+
     def _merge_mapset_into_target(self, source_mapset, target_mapset):
         """Link the source mapset content into the target mapset
 
-        TODO: Implement support for temporal database merging
-
-        Attention: Only raster and vector layers are copied at the moment
+        Attention: Not all directories and files in the mapset are copied.
+            See list directories.
         """
         self.message_logger.info(
             "Copy source mapset <%s> content "
             "into the target mapset <%s>" % (source_mapset, target_mapset))
 
-        # Raster and vector directories
+        # Raster, vector, group and space time data set directories/files
         directories = ["cell", "misc", "fcell",
                        "cats", "cellhd",
                        "cell_misc", "colr", "colr2",
-                       "hist", "vector", "group"]
+                       "hist", "vector", "group", "tgis", "VAR"]
 
         for directory in directories:
             source_path = os.path.join(
@@ -502,16 +632,15 @@ class PersistentProcessing(EphemeralProcessing):
 
             if os.path.exists(source_path) is True:
                 if directory == "group":
-                    group_dirs = os.listdir(source_path)
-                    for group_dir in group_dirs:
-                        group_file = os.path.join(source_path, group_dir, "REF")
-                        if os.path.isfile(group_file):
-                            for line in fileinput.input(group_file, inplace=True):
-                                print(line.replace(
-                                    source_mapset, target_mapset), end='')
-                        else:
-                            raise AsyncProcessError("group %s has no REF file"
-                                                    % (group_dir))
+                    self._change_mapsetname_in_group(
+                        source_path, source_mapset, target_mapset)
+                if directory == "tgis":
+                    target_tgis_db = None
+                    if os.path.isdir(os.path.join(target_path, 'tgis')):
+                        target_tgis_db = os.path.join(target_path, 'tgis', 'sqlite.db')
+                    self._change_mapsetname_in_tgis(
+                        source_path, source_mapset, target_mapset,
+                        target_tgis_db)
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
