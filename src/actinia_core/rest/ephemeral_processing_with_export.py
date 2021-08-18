@@ -294,6 +294,51 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         return file_name, output_path
 
+    def _export_strds(self, strds_name, format="GTiff"):
+        """Export a specific strds layer with t.rast.export.
+
+        The result is stored in a temporary directory
+        that is located in the temporary grass database.
+
+        Args:
+            strds_name (str): The name of the strds layer
+            format (str): GTiff (only option)
+
+        Returns:
+            tuple: A tuple (file_name, output_path)
+
+        """
+        suffix = ".tar.bzip2"
+        file_name = strds_name.split("@")[0] + suffix
+        output_path = os.path.join(self.temp_file_path, file_name)
+
+        if format != 'GTiff':
+            format = 'GTiff'
+            self.message_logger.info("Only GTiff driver is supported for STRDS export.")
+
+        module_name = "t.rast.export"
+        args = [
+            "input=%s" % strds_name,
+            "format=%s" % format,
+            "output=%s" % output_path,
+            "compression=%s" % "bzip2"
+        ]
+        # optimized for GTiff
+        create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES"
+        args.append(create_opts)
+        os.environ['COMPRESS_OVERVIEW'] = "LZW"
+
+        p = Process(exec_type="grass",
+                    executable=module_name,
+                    executable_params=args,
+                    id=f"exporter_strds_{strds_name}",
+                    stdin_source=None)
+
+        self._update_num_of_steps(1)
+        self._run_module(p)
+
+        return file_name, output_path
+
     def _export_vector(self, vector_name,
                        format="GPKG",
                        additional_options=[]):
@@ -471,7 +516,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     "Resource export was terminated by user request")
 
             # Raster export
-            if resource["export"]["type"] in ["raster", "vector", "file"]:
+            if resource["export"]["type"] in ["raster", "vector", "file", "strds"]:
 
                 output_type = resource["export"]["type"]
                 output_path = None
@@ -516,6 +561,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     tmp_file = resource["tmp_file"]
                     output_name, output_path = self._export_file(
                         tmp_file=tmp_file, file_name=file_name)
+                elif output_type == "strds":
+                    message = "Export strds layer <%s> with format %s" % (
+                        file_name, resource["export"]["format"])
+                    self._send_resource_update(message)
+                    output_name, output_path = self._export_strds(
+                        strds_name=file_name,
+                        format=resource["export"]["format"])
                 else:
                     raise AsyncProcessTermination(
                         "Unknown export format %s" % output_type)
