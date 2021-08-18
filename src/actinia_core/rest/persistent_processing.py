@@ -580,9 +580,8 @@ class PersistentProcessing(EphemeralProcessing):
             tgis_path(str): path of the tgis folder in the source mapset
             source_mapset(str): name of source mapset
             target_mapset(str): name of target mapset
-
-        Raises:
-            This method will raise an AsyncProcessError if a group has no REF file
+            target_tgis_db(str): path to existing tgis sqlite.db of target
+                                 mapset. None if nonexistent.
         """
 
         tgis_db_path = os.path.join(tgis_path, 'sqlite.db')
