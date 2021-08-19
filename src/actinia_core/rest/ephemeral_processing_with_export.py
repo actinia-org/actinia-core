@@ -308,7 +308,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             tuple: A tuple (file_name, output_path)
 
         """
-        suffix = ".tar.bzip2"
+        suffix = ".tar.gz"
         file_name = strds_name.split("@")[0] + suffix
         output_path = os.path.join(self.temp_file_path, file_name)
 
