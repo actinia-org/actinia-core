@@ -321,7 +321,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             "input=%s" % strds_name,
             "format=%s" % format,
             "output=%s" % output_path,
-            "compression=%s" % "bzip2"
+            "compression=%s" % "gzip"
         ]
         # optimized for GTiff
         create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES"
