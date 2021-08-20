@@ -21,7 +21,33 @@ TODO https://github.com/mundialis/actinia_core/compare/1.0.2...main
 released from <branch>\
 ...
 
+## [1.1.0] - 2021-08-20
+released from main
+### Added
+* GHA docker (#165) -> no separate release for g79 is needed anymore!
+* Integrate tgis in mapset merge (#233)
+* Add support for STRDS export (#236)
 
+### Changed
+* cleaning documentation in actinia_core/docs/docs (#213)
+* add openeo addons (#235)
+
+### Fixed
+* fix webhook url in message (#231)
+* Fix "check service" URL in install instructions (#232)
+
+-----------------------------
+
+
+## [1.0.3.79] - 2021-07-15
+released from grass79
+See https://github.com/mundialis/actinia_core/releases/tag/1.0.3
+
+## [1.0.3] - 2021-07-15
+released from main
+### FIXED
+* update CHANGELOG + README (#229)
+* add bandref to RasterInfoModel (#230)
 
 ## [1.0.2.79] - 2021-07-07
 released from grass79
