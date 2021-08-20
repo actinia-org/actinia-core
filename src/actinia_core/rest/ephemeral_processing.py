@@ -25,6 +25,7 @@
 Base class for asynchronous processing
 """
 
+import json
 import math
 import os
 import pickle
@@ -1675,6 +1676,11 @@ class EphemeralProcessing(object):
                         row = row.strip()
                         key, value = row.split(delimiter, 1)
                         result[key.strip()] = value.strip()
+                elif "json" in format:
+                    try:
+                        result = json.loads(stdout)
+                    except Exception:
+                        result = stdout
                 else:
                     raise AsyncProcessError("Wrong stdout parser format")
 
