@@ -25,7 +25,6 @@
 Base class for asynchronous processing
 """
 
-import json
 import math
 import os
 import pickle
