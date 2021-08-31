@@ -246,7 +246,7 @@ class StdoutParser(Schema):
                               'parsed output in the result dictionary.'},
         'format': {'type': 'string',
                    'description': 'The stdout format to be parsed.',
-                   'enum': ['table', 'list', 'kv']},
+                   'enum': ['table', 'list', 'kv', 'json']},
         'delimiter': {'type': 'string',
                       'description': 'The delimiter that should be used to parse table,'
                                      ' list and key/value module output. Many GRASS '
