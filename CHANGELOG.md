@@ -21,6 +21,16 @@ TODO https://github.com/mundialis/actinia_core/compare/1.0.2...main
 released from <branch>\
 ...
 
+## [1.2.0] - 2021-09-07
+released from main
+### Added
+* Add json to stdoutParser options (#239)
+* Enhance json output (#240)
+
+### Fixed
+* Prevent duplicate workflow run for release (#238)
+
+
 ## [1.1.0] - 2021-08-20
 released from main
 ### Added
