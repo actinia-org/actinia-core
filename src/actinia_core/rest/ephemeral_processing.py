@@ -1679,7 +1679,7 @@ class EphemeralProcessing(object):
                     result = None
                     try:
                         result = {i[0]: i[1] for i in [
-                            entry.split('=') for entry in
+                            entry.split(delimiter, 1) for entry in
                             stdout.strip('\n').split('\n')]
                         }
                     except Exception:
