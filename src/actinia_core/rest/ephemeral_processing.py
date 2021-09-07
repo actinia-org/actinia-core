@@ -1676,10 +1676,20 @@ class EphemeralProcessing(object):
                         key, value = row.split(delimiter, 1)
                         result[key.strip()] = value.strip()
                 elif "json" in format:
+                    result = None
                     try:
-                        result = json.loads(stdout)
+                        result = {i[0]: i[1] for i in [
+                            entry.split(delimiter, 1) for entry in
+                            stdout.strip('\n').split('\n')]
+                        }
                     except Exception:
-                        result = stdout
+                        try:
+                            result = json.loads(stdout)
+                        except Exception:
+                            pass
+                    finally:
+                        if not result:
+                            result = stdout
                 else:
                     raise AsyncProcessError("Wrong stdout parser format")
 
