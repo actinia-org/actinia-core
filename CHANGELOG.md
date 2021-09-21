@@ -15,11 +15,15 @@ Types of changes
 
 
 ## [Unreleased]
-TODO https://github.com/mundialis/actinia_core/compare/1.0.2...main
+TODO https://github.com/mundialis/actinia_core/compare/1.2.1...main
 
 ## [1.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+## [1.2.1] - 2021-09-21
+released from main
+### Fixed
+* Add band_names property to STRDSInfoModel (#243) for g79 support
 
 ## [1.2.0] - 2021-09-07
 released from main
