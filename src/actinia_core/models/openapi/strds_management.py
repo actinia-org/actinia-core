@@ -43,6 +43,7 @@ class STRDSInfoModel(Schema):
     type = 'object'
     properties = {
         "aggregation_type": {'type': 'string'},
+        "band_names": {'type': 'string'},
         "band_reference": {'type': 'string'},
         "bottom": {'type': 'string'},
         "creation_time": {'type': 'string'},
@@ -76,6 +77,7 @@ class STRDSInfoModel(Schema):
     }
     example = {
         "aggregation_type": "None",
+        "band_names": "None",
         "band_reference": "None",
         "bottom": "0.0",
         "creation_time": "2016-08-11 16:44:29.756411",
@@ -161,6 +163,7 @@ class STRDSInfoResponseModel(ProcessingResponseModel):
         ],
         "process_results": {
             "aggregation_type": "None",
+            "band_names": "None",
             "band_reference": "None",
             "bottom": "0.0",
             "creation_time": "2017-12-29 15:58:40.020820",
