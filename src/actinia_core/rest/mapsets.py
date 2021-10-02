@@ -61,6 +61,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
         'description': 'List available or locked mapsets.',
         'parameters': [
             {
+                'in': 'path',
                 'name': 'mapsets',
                 'type': 'string',
                 'description': "List all mapsets available to the authenticated user."
