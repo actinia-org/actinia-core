@@ -36,10 +36,11 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_lock import RedisLockingInterface
+from actinia_core.core.redis_user import RedisUserInterface
 from actinia_core.models.response_models import SimpleResponseModel, \
-     LockedMapsetListResponseModel
+     MapsetListResponseModel, LockedMapsetListResponseModel
 from .user_auth import check_user_permissions
-from .user_auth import very_admin_role
+# from .user_auth import very_admin_role
 # from .common.response_models import MapsetInfoModel
 
 
@@ -53,7 +54,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
     """ Get all locked mapsets
     """
     decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
+                  auth.login_required]
 
     @swagger.doc({
         'tags': ['Mapsets'],
@@ -79,8 +80,15 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
         }
     })
     def get(self):
+
         if 'status' in request.args:
             if request.args['status'] == "locked":
+                if self.user.has_superadmin_role() is False:
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="error",
+                        message=("Unable to list locked mapsets You are not authorized for this request. "
+                                 "Minimum required user role: superadmin %s")
+                                )), 401)
                 redis_interface = RedisLockingInterface()
                 kwargs = dict()
                 kwargs["host"] = global_config.REDIS_SERVER_URL
@@ -108,5 +116,39 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                         message="Unable to list locked mapsets: Exception %s"
                                 % (str(e)))), 500)
         else:
-            # TODO: https://github.com/mundialis/actinia_core/issues/162
-            pass
+            redis_interface = RedisUserInterface()
+            kwargs = dict()
+            kwargs["host"] = global_config.REDIS_SERVER_URL
+            kwargs["port"] = global_config.REDIS_SERVER_PORT
+            if (global_config.REDIS_SERVER_PW
+                    and global_config.REDIS_SERVER_PW is not None):
+                kwargs["password"] = global_config.REDIS_SERVER_PW
+            redis_interface.connect(**kwargs)
+            redis_connection = redis_interface.redis_server
+            if "user" in request.args:
+                user = request.args["user"]
+                if self.user.has_superadmin_role() is False:
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="error",
+                        message=(f"Unable to list mapsets for user {user}: You are not authorized for this request. "
+                                 "Minimum required user role: superadmin %s")
+                                )), 401)
+            else:
+                user = self.user.get_id()
+            locs_mapsets = (redis_interface.get_credentials(user)["permissions"]
+                            ["accessible_datasets"])
+            mapsets = []
+            for location in locs_mapsets:
+                for mapset in locs_mapsets[location]:
+                    mapsets.append(f"{location}/{mapset}")
+            try:
+                return make_response(jsonify(MapsetListResponseModel(
+                    status="success",
+                    available_mapsets=mapsets,
+                    )), 200)
+
+            except Exception as e:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="Unable to list mapsets: Exception %s"
+                            % (str(e)))), 500)
