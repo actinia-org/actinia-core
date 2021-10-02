@@ -27,7 +27,6 @@ Tests: Mapset test case
 from flask.json import loads as json_load
 import uuid
 import unittest
-from actinia_core.core.common.user import ActiniaUser
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except:
@@ -43,18 +42,7 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
 
     test_mapsets = [str(uuid.uuid4()), str(uuid.uuid4())]
 
-    test_userid = f"test_user_{uuid.uuid4()}"
-
-    def setUp(self):
-        # create and lock mapsets
-        for mapset in self.test_mapsets:
-            self.create_new_mapset(mapset)
-            rvpost = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
-                                      headers=self.admin_auth_header)
-        # create new user
-        user = ActiniaUser(self.test_userid)
-
-    def tearDownClass(self):
+    def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets',
                              headers=self.user_auth_header)
@@ -70,19 +58,13 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
                     URL_PREFIX + '/locations/nc_spm_08/mapsets/%s' % mapset,
                     headers=self.admin_auth_header)
                 print(rvdel.data.decode())
-        # delete the new user
-        ActiniaUser.delete(self.test_userid)
-
-
-    # def
-    #         cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(
-    #             name="user", role="user", process_num_limit=3, process_time_limit=4,
-    #             accessible_datasets=accessible_datasets)
 
     def test_two_locked_mapsets(self):
-        import pdb; pdb.set_trace()
         # Test correct behaviour if two mapsets are locked
-
+        for mapset in self.test_mapsets:
+            self.create_new_mapset(mapset)
+            rvpost = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
+                                      headers=self.admin_auth_header)
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
                              headers=self.admin_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
