@@ -699,6 +699,28 @@ class ProcessChainConverter(object):
             if "export" in output:
                 self.resource_export_list.append(output)
 
+    def _check_stdout(self, module_descr, id):
+        """Helper method to check the stdout in the module description and addes it
+        to the output_parser_list.
+
+        Args:
+            module_descr (dict): The module description
+            id (str): The id of this process in the process chain
+        """
+        if "id" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing unique *id* in stdout parser description of process id %s"
+                    % str(id))
+        if "format" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing *format* in stdout parser description of process id %s"
+                    % str(id))
+        if "delimiter" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing *delimiter* in stdout parser description of process id %s"
+                    % str(id))
+        self.output_parser_list.append({id: module_descr["stdout"]})
+
     def _create_stdin_process(self, module_descr, id):
         """Helper methods to create stdin process.
 
