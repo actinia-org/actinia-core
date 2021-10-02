@@ -25,7 +25,7 @@
 Mapset resources for information across all locations
 
 * List all mapset locks
-* TODO: List all mapsets in all locations
+* List all mapsets in all locations available to a user
 """
 
 from flask import jsonify, make_response
@@ -58,19 +58,30 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
 
     @swagger.doc({
         'tags': ['Mapsets'],
-        'description': 'Get all locked mapsets. '
-                       'Minimum required user role: admin.',
+        'description': 'List available or locked mapsets.',
         'parameters': [
+            {
+                'name': 'mapsets',
+                'type': 'string',
+                'description': "List all mapsets available to the authenticated user."
+            },
             {
                 'in': 'path',
                 'name': 'status',
                 'type': 'string',
                 'description': ("If set to 'locked', list all locked mapsets across"
-                                " all locations.")
+                                " all locations. Minimum required user role: admin.")
+            },
+            {
+                'in': 'path',
+                'name': 'user',
+                'type': 'string',
+                'description': ("List all mapsets available to the specified user. "
+                                "Minimum required user role: admin")
             }],
         'responses': {
             '200': {
-                'description': 'Get a list of (locked) mapsets ',
+                'description': 'Returns a list of available (or locked) mapsets ',
                 'schema': LockedMapsetListResponseModel
             },
             '500': {
