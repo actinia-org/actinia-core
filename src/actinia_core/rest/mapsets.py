@@ -101,7 +101,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     return make_response(jsonify(SimpleResponseModel(
                         status="error",
                         message=("Unable to list locked mapsets You are not authorized"
-                                 "for this request. "
+                                 " for this request. "
                                  "Minimum required user role: superadmin")
                                 )), 401)
                 redis_interface = RedisLockingInterface()
@@ -139,10 +139,10 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     and global_config.REDIS_SERVER_PW is not None):
                 kwargs["password"] = global_config.REDIS_SERVER_PW
             redis_interface.connect(**kwargs)
-            redis_connection = redis_interface.redis_server
             if "user" in request.args:
                 user = request.args["user"]
                 if self.user.has_superadmin_role() is False:
+                    redis_interface.disconnect()
                     return make_response(jsonify(SimpleResponseModel(
                         status="error",
                         message=(f"Unable to list mapsets for user {user}: You are not"
@@ -153,6 +153,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                 user = self.user.get_id()
             locs_mapsets = (redis_interface.get_credentials(user)["permissions"]
                             ["accessible_datasets"])
+            redis_interface.disconnect()
             mapsets = []
             for location in locs_mapsets:
                 for mapset in locs_mapsets[location]:

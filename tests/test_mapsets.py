@@ -80,9 +80,9 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         for mapset in self.test_mapsets:
             self.create_new_mapset(mapset)
             rvpost = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
-                                      headers=self.admin_auth_header)
+                                      headers=self.root_auth_header)
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
-                             headers=self.admin_auth_header)
+                             headers=self.root_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         rvdata = json_load(rv.data)
