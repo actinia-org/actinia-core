@@ -129,7 +129,7 @@ class InterimResult(object):
                                   (with _create_temporary_grass_environment)
             interim_file_path (str): The path to the interim result temporary
                                      file path which has to be copied to the
-                                     temprary path
+                                     temporary path
                                      (with _create_temporary_grass_environment)
         """
         iterim_error = False

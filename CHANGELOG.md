@@ -129,7 +129,7 @@ released from master\
 - Will include GRASS GIS version with fix for XY location (https://github.com/OSGeo/grass/pull/1564)
 
 ## Warning
-Due to a conflict between 0.99.28 and actinia-module-plugin < 2.1.1, the plugin will not work as expectd. This is fixed in version `0.99.29`. Also the fix for XY location in GRASS GIS is included in alpine build.
+Due to a conflict between 0.99.28 and actinia-module-plugin < 2.1.1, the plugin will not work as expected. This is fixed in version `0.99.29`. Also the fix for XY location in GRASS GIS is included in alpine build.
 
 ## [0.99.29.79] - 2021-05-05
 released from grass79
@@ -296,7 +296,7 @@ released from master
 - PEP8 fixes (#113)
 - Merge Ubuntu docker folders to g78 (#116)
 - Fix docker folder names (#117)
-- update gitignore and readd ubuntu config (#118)
+- update gitignore and re-add ubuntu config (#118)
 - update snap version to 8.0 (#121)
 
 ## [0.99.12] - 2020-09-29

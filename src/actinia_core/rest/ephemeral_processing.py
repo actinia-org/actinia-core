@@ -625,7 +625,7 @@ class EphemeralProcessing(object):
             skip_permission_check (bool): If set True, the permission checks
                                           of module access and process num
                                           limits are not performed
-            old_process_chain (dict): The process chain of the previouse
+            old_process_chain (dict): The process chain of the previous
                                       resource run to be checked and converted
                                       for e.g. stdout
 
@@ -782,7 +782,7 @@ class EphemeralProcessing(object):
             send_resource_update=self._send_resource_update)
 
     def _setup_paths(self):
-        """Helper method to setup the pathes
+        """Helper method to setup the paths
         """
         self.cell_limit = int(self.user_credentials["permissions"]["cell_limit"])
         self.process_num_limit = int(
@@ -902,13 +902,13 @@ class EphemeralProcessing(object):
 
         Args:
             mapsets (list): List of mapsets in location
-            mapsets_to_link (list): List of mapsets pathes to link
+            mapsets_to_link (list): List of mapsets paths to link
             check_all_mapsets (bool): If set True, the mapsets list is created with
                                       all locations on location_path
 
         Returns:
             mapsets (list): List of mapsets in location
-            mapsets_to_link (list): List of mapsets pathes to link
+            mapsets_to_link (list): List of mapsets paths to link
         """
         # Global location mapset linking
         if self.is_global_database is True:
@@ -940,13 +940,13 @@ class EphemeralProcessing(object):
                             location_path
             check_all_mapsets (bool): If set True, the mapsets list is created with
                                       all locations on location_path
-            mapsets_to_link (list): List of mapset pathes to link
+            mapsets_to_link (list): List of mapset paths to link
             global_db (bool): If set True, the location/mapset access is
                                     checked
 
         Returns:
             mapsets (list): List of mapsets in location
-            mapsets_to_link (list): List of mapsets pathes to link
+            mapsets_to_link (list): List of mapsets paths to link
         """
         if os.path.isdir(location_path):
             if check_all_mapsets is True:
