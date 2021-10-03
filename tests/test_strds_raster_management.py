@@ -90,9 +90,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
     # ################### CREATE REGISTER ######################################
-
 
     def test_strds_creation_error(self):
 
