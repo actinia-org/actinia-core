@@ -197,8 +197,8 @@ process_chain_landsat_error_1 = {
         {"id": "importer_1",
          "module": "importer",
          "inputs": [{"import_descr": {"source": "LT52170762005240COA00-NOT",
-                                       "type": "landsat",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"}
                     ]
@@ -212,8 +212,8 @@ process_chain_landsat_error_2 = {
         {"id": "importer_1",
          "module": "importer",
          "inputs": [{"import_descr": {"source": "LT52170762005240COA00",
-                                       "type": "landsatpo",
-                                       "landsat_atcor": "dos1"},
+                                      "type": "landsatpo",
+                                      "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"}
                     ]
@@ -227,8 +227,8 @@ process_chain_landsat_error_3 = {
         {"id": "importer_1",
          "module": "importer",
          "inputs": [{"import_descr": {"source": "LT52170762005240COA00",
-                                       "type": "landsat",
-                                       "landsat_atcor": "ddos1"},
+                                      "type": "landsat",
+                                      "landsat_atcor": "ddos1"},
                      "param": "map",
                      "value": "ignored"}
                     ]

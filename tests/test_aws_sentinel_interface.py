@@ -159,7 +159,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         result = aws.get_sentinel_urls(["S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
                                         "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",
                                         "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931"],
-                                        ["B04", "B08"])
+                                       ["B04", "B08"])
         pprint(result)
 
         self.assertTrue("S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155" in result[0]["product_id"])
@@ -189,7 +189,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
             result = aws.get_sentinel_urls(["S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
                                             "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",
                                             "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931_NOPE"],
-                                            ["B04", "B08"])
+                                           ["B04", "B08"])
             pprint(result)
             self.assertTrue(False, "The error was not found")
         except Exception as e:

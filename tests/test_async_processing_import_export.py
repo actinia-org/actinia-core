@@ -40,27 +40,27 @@ __email__ = "soerengebbert@googlemail.com"
 
 process_chain_raster_import_export = {
     'list': [{'flags': 'a',
-                 'id': 'r_slope_aspect_1',
-                 'inputs': [{'import_descr': {
+              'id': 'r_slope_aspect_1',
+              'inputs': [{'import_descr': {
                      'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
                      'type': 'raster'},
                      'param': 'elevation',
                      'value': 'elev_ned_30m'},
                      {'param': 'format', 'value': 'degree'},
                      {'param': 'precision', 'value': 'DCELL'}],
-                 'module': 'r.slope.aspect',
-                 'outputs': [{'export': {'format': 'GTiff', 'type': 'raster'},
-                                'param': 'slope',
-                                'value': 'elev_ned_30m_slope'},
-                               {'export': {'format': 'GTiff', 'type': 'raster'},
-                                'param': 'aspect',
-                                'value': 'elev_ned_30m_aspect'}],
-                 'overwrite': False,
-                 'verbose': False},
-                {'exe': '/bin/cat',
-                 'id': 'cat_1',
-                 'params': [],
-                 'stdin': 'r_slope_aspect_1::stderr'}],
+              'module': 'r.slope.aspect',
+              'outputs': [{'export': {'format': 'GTiff', 'type': 'raster'},
+                           'param': 'slope',
+                           'value': 'elev_ned_30m_slope'},
+                          {'export': {'format': 'GTiff', 'type': 'raster'},
+                           'param': 'aspect',
+                           'value': 'elev_ned_30m_aspect'}],
+              'overwrite': False,
+              'verbose': False},
+             {'exe': '/bin/cat',
+              'id': 'cat_1',
+              'params': [],
+              'stdin': 'r_slope_aspect_1::stderr'}],
     'version': '1'}
 #
 # [
@@ -89,55 +89,55 @@ process_chain_raster_import_export = {
 
 process_chain_raster_import_info = {
     'list': [{'id': 'r_info',
-                 'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
-                                              'type': 'raster'},
-                             'param': 'map',
-                             'value': 'elev_ned_30m'}],
-                 'module': 'r.info',
-                 'flags': 'g'}],
+              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                                           'type': 'raster'},
+                          'param': 'map',
+                          'value': 'elev_ned_30m'}],
+              'module': 'r.info',
+              'flags': 'g'}],
     'version': '1'}
 
 process_chain_raster_import_error_no_file = {
     'list': [{'id': 'r_info',
-                 'inputs': [
+              'inputs': [
                      {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m_nope.tif',
                                        'type': 'raster'},
                       'param': 'map',
                       'value': 'elev_ned_30m'}, ],
-                 'module': 'r.info',
-                 'flags': 'g'}],
+              'module': 'r.info',
+              'flags': 'g'}],
     'version': '1'}
 
 process_chain_vector_import_info = {
     'list': [{'id': 'v_info',
-                 'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/polygon.gml',
-                                              'type': 'vector'},
-                             'param': 'map',
-                             'value': 'polygon'}],
-                 'module': 'v.info',
-                 'flags': 'g'}],
+              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/polygon.gml',
+                                           'type': 'vector'},
+                          'param': 'map',
+                          'value': 'polygon'}],
+              'module': 'v.info',
+              'flags': 'g'}],
     'version': '1'}
 
 process_chain_sentinel_import_info = {
     'list': [{'id': 'r_info',
-                 'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
-                                              'type': 'sentinel2',
-                                              'sentinel_band': 'B01'},
-                             'param': 'map',
-                             'value': 'sentinel_map'}],
-                 'module': 'r.info',
-                 'flags': 'g'}],
+              'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
+                                           'type': 'sentinel2',
+                                           'sentinel_band': 'B01'},
+                          'param': 'map',
+                          'value': 'sentinel_map'}],
+              'module': 'r.info',
+              'flags': 'g'}],
     'version': '1'}
 
 process_chain_sentinel_import_univar = {
     'list': [{'id': 'r_univar',
-                 'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
-                                              'type': 'sentinel2',
-                                              'sentinel_band': 'B01'},
-                             'param': 'map',
-                             'value': 'sentinel_map'}],
-                 'module': 'r.univar',
-                 'flags': 'g'}],
+              'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
+                                           'type': 'sentinel2',
+                                           'sentinel_band': 'B01'},
+                          'param': 'map',
+                          'value': 'sentinel_map'}],
+              'module': 'r.univar',
+              'flags': 'g'}],
     'version': '1'}
 
 # [{'module': 'r.univar',
@@ -150,25 +150,24 @@ process_chain_sentinel_import_univar = {
 
 process_chain_sentinel_import_stats = {
     'list': [{'id': 'r_stats',
-                 'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
-                                              'type': 'sentinel2',
-                                              'sentinel_band': 'B01'},
-                             'param': 'input',
-                             'value': 'sentinel_map'}],
-                 'module': 'r.stats',
-                 'flags': 'a'}],
+              'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138',
+                                           'type': 'sentinel2',
+                                           'sentinel_band': 'B01'},
+                          'param': 'input',
+                          'value': 'sentinel_map'}],
+              'module': 'r.stats',
+              'flags': 'a'}],
     'version': '1'}
 
 process_chain_sentinel_import_error = {
     'list': [{'id': 'r_stats',
-                 'inputs': [
-                     {'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE',
-                                       'type': 'sentinel2',
-                                       'sentinel_band': 'B01'},
-                      'param': 'input',
-                      'value': 'sentinel_map'}],
-                 'module': 'r.info',
-                 'flags': 'g'}],
+              'inputs': [{'import_descr': {'source': 'S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE',
+                                           'type': 'sentinel2',
+                                           'sentinel_band': 'B01'},
+                          'param': 'input',
+                          'value': 'sentinel_map'}],
+              'module': 'r.info',
+              'flags': 'g'}],
     'version': '1'}
 
 process_chain_sentinel_import_export = {

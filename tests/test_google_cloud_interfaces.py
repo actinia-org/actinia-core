@@ -146,7 +146,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
                                         "LC80440342013106LGN01",
                                         "LC80440342013154LGN00"],
-                                        ["B1", "MTL"])
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(len(result) == 3)
 
@@ -157,7 +157,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
                                         "LC80440342013106LGN01",
                                         "LC80440342013154LGN00_WRONG"],
-                                        ["B1", "MTL"])
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(len(result) == 2)
 
@@ -166,7 +166,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
     def test_query_for_landsat_scene_empty_query(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         result = gsqi.get_landsat_urls(["LE72_NOPENOPENOPE",],
-                                        ["B1", "MTL"])
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(not result)
 
