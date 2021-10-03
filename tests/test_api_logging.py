@@ -82,9 +82,9 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(size, 3, "The size method does not work %i" % size)
 
-        l = self.log.list(self.user_id, start=0, end=-1)
+        list_of_logs = self.log.list(self.user_id, start=0, end=-1)
 
-        for entry in l:
+        for entry in list_of_logs:
             self.assertEqual(entry["api_info"]["endpoint"], "endpoint")
             self.assertEqual(entry["api_info"]["method"], "GET")
 
@@ -95,9 +95,9 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(size, 2, "The size method does not work %i" % size)
 
-        l = self.log.list(self.user_id, start=0, end=-1)
+        list_of_logs = self.log.list(self.user_id, start=0, end=-1)
 
-        for entry in l:
+        for entry in list_of_logs:
             self.assertEqual(entry["api_info"]["endpoint"], "endpoint")
             self.assertEqual(entry["api_info"]["method"], "GET")
 
