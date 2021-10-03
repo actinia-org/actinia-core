@@ -143,7 +143,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     return make_response(jsonify(SimpleResponseModel(
                         status="error",
                         message=(f"Unable to list mapsets for user {user}: You are not authorized for this request. "
-                                 "Minimum required user role: superadmin %s")
+                                 "Minimum required user role: superadmin")
                                 )), 401)
             else:
                 user = self.user.get_id()
