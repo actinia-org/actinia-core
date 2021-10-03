@@ -150,25 +150,25 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                              headers=self.guest_auth_header)
         # print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         # print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
         # print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.root_auth_header)
         # print(rv.data.decode())
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     def test_user_status_requests_2(self):
         """Resource list with 2 finished, 1 terminated and 2 error resources
@@ -263,13 +263,13 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                              headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
@@ -321,19 +321,19 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                              headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         rv = self.server.get(URL_PREFIX + '/resources/%s' % user_id,
                              headers=self.root_auth_header)
@@ -466,21 +466,21 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination error
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Delete the resources
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
@@ -551,14 +551,14 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination success
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
@@ -636,21 +636,21 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                                 headers=self.guest_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test user termination error
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.user_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test admin termination error
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,
                                 headers=self.admin_auth_header)
         print(rv.data.decode())
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # Test superadmin termination success
         rv = self.server.delete(URL_PREFIX + '/resources/%s' % user_id,

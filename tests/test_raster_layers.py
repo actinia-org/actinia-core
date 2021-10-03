@@ -131,11 +131,11 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             self.create_raster_layer(new_mapset, map_name)
 
         # Delete raster layers
-        #rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
+        # rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
         #                     headers=self.user_auth_header)
-        #print(rv.data)
-        #self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        # print(rv.data)
+        # self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # List raster layer
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*' % new_mapset,

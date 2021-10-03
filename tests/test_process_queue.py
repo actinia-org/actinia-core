@@ -53,7 +53,7 @@ def job_with_exception(rdc):
 def job_short_run(rdc):
     for i in range(3):
         print("job_short_run", rdc.api_info, rdc.orig_time)
-        #time.sleep(1)
+        # time.sleep(1)
 
 
 def job_long_run(rdc):
