@@ -64,7 +64,8 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                 'in': 'path',
                 'name': 'mapsets',
                 'type': 'string',
-                'description': "List all mapsets in the global database available to the authenticated user."
+                'description': "List all mapsets in the global database available "
+                               "to the authenticated user."
             },
             {
                 'in': 'path',
@@ -78,7 +79,8 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                 'name': 'user',
                 'type': 'string',
                 'description': ("List all mapsets in the global database available "
-                                "to the specified user. Minimum required user role: admin")
+                                "to the specified user. "
+                                "Minimum required user role: admin")
             }],
         'responses': {
             '200': {
@@ -99,7 +101,8 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     return make_response(jsonify(SimpleResponseModel(
                         status="error",
                         message=("Unable to list locked mapsets You are not authorized"
-                                 "for this request. Minimum required user role: superadmin")
+                                 "for this request. "
+                                 "Minimum required user role: superadmin")
                                 )), 401)
                 redis_interface = RedisLockingInterface()
                 kwargs = dict()
