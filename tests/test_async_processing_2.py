@@ -140,6 +140,31 @@ process_chain_new = {
     ]
 }
 
+# Check if '&' in r.mapcalc expression works
+process_chain_rmapcalc = {
+    "version": 1,
+    "list": [
+        {
+            "id": "1",
+            "module": "g.region",
+            "inputs": [
+                {"param": "raster",
+                 "value": "elevation@PERMANENT"},
+                {"param": "res",
+                 "value": "10000"}
+            ],
+            "flags": "p",
+            "verbose": True
+        },
+        {
+            "id": "2",
+            "module": "r.mapcalc",
+            "inputs": [{"param": "expression",
+                        "value": "test = if(elevation>80 && elevation < 100)"}]
+        }
+    ]
+}
+
 # Import a Sentinel2A scene and compute the NDVI for a specific polygon
 process_chain_ndvi = {
     "list": [
@@ -272,6 +297,15 @@ class AsyncProcess2TestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_legacy),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
+
+    def test_async_processing_rmapcalc(self):
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_rmapcalc),
                               content_type="application/json")
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,

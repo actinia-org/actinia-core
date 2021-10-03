@@ -1101,7 +1101,7 @@ class EphemeralProcessing(object):
         if self.temp_grass_data_base is not None and \
                 os.path.exists(self.temp_grass_data_base) and \
                 os.path.isdir(self.temp_grass_data_base):
-            shutil.rmtree(self.temp_grass_data_base)
+            shutil.rmtree(self.temp_grass_data_base, ignore_errors=True)
 
     def _check_reset_region(self):
         """Check the current region settings against the user cell limit.

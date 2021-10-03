@@ -625,7 +625,7 @@ class ProcessChainConverter(object):
 
         # Check for un-allowed characters in the parameter list
         for entry in params:
-            if "&" in entry:
+            if "&" in entry and module_name != "r.mapcalc":
                 raise AsyncProcessError("Character '&' not supported in process "
                                         "description for %s" % module_name)
 
