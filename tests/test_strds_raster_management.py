@@ -93,6 +93,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     # ################### CREATE REGISTER ######################################
 
+
     def test_strds_creation_error(self):
 
         # This must fail, global mapsets are not allowed to modify
