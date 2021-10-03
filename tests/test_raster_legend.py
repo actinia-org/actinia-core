@@ -84,7 +84,7 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_5(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/legend?'
-                             'width=100&heigth=100',
+                             'width=100&height=100',
                              headers=self.user_auth_header)
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
@@ -92,7 +92,7 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_6(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/legend?'
-                             'width=100&heigth=100&range=100,120&use=105,110,115&at=0,100,0,30',
+                             'width=100&height=100&range=100,120&use=105,110,115&at=0,100,0,30',
                              headers=self.user_auth_header)
 
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)

@@ -86,7 +86,7 @@ def main():
         else:
             conf.read()
     except IOError as e:
-        print("WARNIG: unable to read config file, "
+        print("WARNING: unable to read config file, "
               "will use defaults instead, IOError: %s" % str(e))
 
     # Provide queue names to listen to as arguments to this script,
@@ -118,7 +118,7 @@ def main():
                                                   maxBytes=2000000,
                                                   backupCount=5)
         logger.addHandler(lh)
-        logger.fatal(msg="Startet rq.worker: %s\n"
+        logger.fatal(msg="Started rq.worker: %s\n"
                          "host %s port: %i \n"
                          "logging into %s" % (args.queue,
                                               conf.REDIS_QUEUE_SERVER_URL,

@@ -199,7 +199,7 @@ class AWSSentinel2AInterface(object):
         Args:
             bands (list): A list of band names
             product_id (list): The Sentinel product id
-            info (dict): A dictionary with the informations of the Sentinel product
+            info (dict): A dictionary with the information of the Sentinel product
 
         Returns:
             scene_entry (dict): A dictionary that contains the time stamp, the tile

@@ -45,7 +45,7 @@ When you are done, add your new test(s) to `actinia_core/tests`. You can run the
 
 
 ## Problems
-Redis autorization is set by `from actinia_core.core.common import redis_interface`:
+Redis authorization is set by `from actinia_core.core.common import redis_interface`:
   * so this does set the password:
     ```
     import os

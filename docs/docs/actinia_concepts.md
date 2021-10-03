@@ -68,7 +68,7 @@ The following user-roles are supported:
              databases
          -   Can create, modify and delete mapsets in user
              specific databases
-         -   Has limited acces to API calls
+         -   Has limited access to API calls
          -   Can not create, modify or delete users
          -   Has access to persistent databases that were granted by a
              superadmin

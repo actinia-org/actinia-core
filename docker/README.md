@@ -159,7 +159,7 @@ To run actinia_core in production systems, you can use the docker-compose-prod.y
 docker-compose -f docker-compose-prod.yml build
 docker-compose -f docker-compose-prod.yml up -d
 ```
-Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnarability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the build-in actinia-user cli. __Please change below username (-u) and password (-w)__:
+Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnerability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the built-in actinia-user cli. __Please change below username (-u) and password (-w)__:
 ```
 # list help about the cli tool:
 docker-compose -f docker-compose-prod.yml exec actinia \
