@@ -57,7 +57,7 @@ process_chain_short_1 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+        },
         "outputs":{
            "aspect":{
                "name":"my_aspect_1"
@@ -65,7 +65,7 @@ process_chain_short_1 = {
            "slope":{
                "name":"my_slope_1"
            }
-       },
+        },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -88,7 +88,7 @@ process_chain_short_2 = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+        },
         "outputs":{
            "aspect":{
                "name":"my_aspect_2"
@@ -96,7 +96,7 @@ process_chain_short_2 = {
            "slope":{
                "name":"my_slope_2"
            }
-       },
+        },
         "flags":"a",
         "overwrite":False,
         "verbose":True

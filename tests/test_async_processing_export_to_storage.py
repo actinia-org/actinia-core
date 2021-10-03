@@ -56,7 +56,7 @@ process_chain_long = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+        },
         "outputs":{
            "aspect":{
                "name":"my_aspect",
@@ -72,7 +72,7 @@ process_chain_long = {
                    "type":"raster"
                }
            }
-       },
+        },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -81,7 +81,7 @@ process_chain_long = {
         "module":"r.watershed",
         "inputs":{
            "elevation":"elevation@PERMANENT"
-       },
+        },
         "outputs":{
            "accumulation":{
                "name":"my_accumulation",
@@ -90,7 +90,7 @@ process_chain_long = {
                    "type":"raster"
                }
            }
-       }
+        }
     }
 }
 

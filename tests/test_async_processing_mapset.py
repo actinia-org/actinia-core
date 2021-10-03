@@ -55,7 +55,7 @@ process_chain_long = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+        },
         "outputs":{
            "aspect":{
                "name":"my_aspect"
@@ -63,7 +63,7 @@ process_chain_long = {
            "slope":{
                "name":"my_slope"
            }
-       },
+        },
         "flags":"a",
         "overwrite":False,
         "verbose":True
@@ -72,18 +72,18 @@ process_chain_long = {
         "module":"r.watershed",
         "inputs":{
            "elevation":"elevation@PERMANENT"
-       },
+        },
         "outputs":{
            "accumulation":{
                "name":"my_accumulation"
            }
-       }
+        }
     },
     4:{
         "module":"r.info",
         "inputs":{
            "map":"my_aspect"
-       },
+        },
         "flags":"gr",
         "verbose":True
     }
@@ -104,7 +104,7 @@ process_chain_short = {
            "elevation":"elevation@PERMANENT",
            "format":"degrees",
            "min_slope":"0.0"
-       },
+        },
         "outputs":{
            "aspect":{
                "name":"my_aspect_2"
@@ -112,7 +112,7 @@ process_chain_short = {
            "slope":{
                "name":"my_slope_2"
            }
-       },
+        },
         "flags":"a",
         "overwrite":False,
         "verbose":True
