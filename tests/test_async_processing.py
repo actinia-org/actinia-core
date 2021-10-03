@@ -171,7 +171,7 @@ process_chain_error_6 = {
            "aspect":{
                "name":"my_aspect"
            },
-            "slope":{
+           "slope":{
                "name":"my_slope",
                "export":{
                    "fromat":"GTiff",

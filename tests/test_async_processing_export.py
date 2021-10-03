@@ -269,7 +269,7 @@ process_chain_error_1 = {
            "aspect":{
                "name":"my_aspect"
            },
-            "slope":{
+           "slope":{
                "name":"my_slope",
                "export":{
                    "fromat":"GTiff",
@@ -295,8 +295,8 @@ process_chain_error_2 = {
         "outputs":{
            "aspect":{
                "name":"my_aspect"
-            },
-            "slope":{
+           },
+           "slope":{
                "name":"my_slope",
                "export":{
                    "format":"GTiff"
@@ -322,7 +322,7 @@ process_chain_error_3 = {
            "aspect":{
                "name":"my_aspect"
            },
-            "slope":{
+           "slope":{
                "name":"my_slope",
                "export":{
                    "format":"GTiff",
@@ -349,7 +349,7 @@ process_chain_error_4 = {
            "aspect":{
                "name":"my_aspect"
            },
-            "slope":{
+           "slope":{
                "name":"my_slope",
                "export":{
                    "format":"ASCII",
