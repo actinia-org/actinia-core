@@ -40,7 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
-    #################### LIST RASTER ##########################################
+    # ################### LIST RASTER ##########################################
 
     def create_raster_layer(self, mapset_name, raster_name):
         # Remove potentially existing raster layer
@@ -117,7 +117,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         map_list = json_loads(rv.data)["process_results"]
         self.assertTrue(len(map_list) == 0)
 
-    #################### DELETE RASTER ##########################################
+    # ################### DELETE RASTER ##########################################
 
     def test_remove_raster_layers_pattern(self):
 

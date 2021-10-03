@@ -43,7 +43,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
-    #################### COLORS ###############################################
+    # ################### COLORS ###############################################
 
     def test_raster_layer_get_colors(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/colors',

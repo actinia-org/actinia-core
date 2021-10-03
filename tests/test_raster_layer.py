@@ -44,7 +44,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     # TODO create test for CREATION (upload)
 
-    #################### INFO #################################################
+    # ################### INFO #################################################
 
     def test_raster_layer_info(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation',

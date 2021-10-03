@@ -42,7 +42,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
-    #################### IMAGE ################################################
+    # ################### IMAGE ################################################
 
     def test_raster_layer_image_no_args(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render',
@@ -101,7 +101,7 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    #################### RGB IMAGE ############################################
+    # ################### RGB IMAGE ############################################
 
     def test_raster_layer_image_rgb_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/landsat/render_rgb?'
@@ -199,7 +199,7 @@ class RasterLayerRendererTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    #################### SHADE IMAGE ##########################################
+    # ################### SHADE IMAGE ##########################################
 
     def test_raster_layer_image_shade_1(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/render_shade?'

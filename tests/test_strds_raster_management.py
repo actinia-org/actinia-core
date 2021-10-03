@@ -91,7 +91,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
 
-    #################### CREATE REGISTER ######################################
+    # ################### CREATE REGISTER ######################################
 
     def test_strds_creation_error(self):
 
@@ -188,7 +188,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    #################### LIST RASTER FROM STRDS ###############################
+    # ################### LIST RASTER FROM STRDS ###############################
 
     def test_strds_raster_layer_1(self):
         rv = self.server.get(strds_url + '/%s/raster_layers' % strds_data,
@@ -210,7 +210,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         map_list = json_loads(rv.data)["process_results"]
         self.assertEqual(len(map_list), 12)
 
-    #################### ERROR ################################################
+    # ################### ERROR ################################################
 
     def test_strds_info_error_1(self):
         # Raster does not exist

@@ -43,7 +43,7 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
-    #################### CREATION #############################################
+    # ################### CREATION #############################################
 
     def test_creation_1(self):
         # Remove potentially existing raster layer
