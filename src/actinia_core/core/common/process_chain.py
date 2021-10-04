@@ -157,38 +157,16 @@ class ProcessChainConverter(object):
 
             if "finished" in process_chain["webhooks"]:
                 self.webhook_finished = process_chain["webhooks"]["finished"]
-                # Check if thr URL exists by investigating the HTTP header
-                if "auth" in process_chain["webhooks"]:
-                    self.webhook_auth = process_chain["webhooks"]["auth"]
-                    # username is expected to be without colon (':')
-                    resp = requests.head(self.webhook_finished, auth=HTTPBasicAuth(
-                        self.webhook_auth.split(':')[0],
-                        ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    resp = requests.head(self.webhook_finished)
-                if resp.status_code != 200:
-                    raise AsyncProcessError(
-                        "The finished webhook URL %s can not be accessed."
-                        % self.webhook_finished)
+                self._check_if_webhook_exists(
+                    self.webhook_finished, process_chain, 'finished')
             else:
                 raise AsyncProcessError(
                     "The finished URL is missing in the webhooks definition.")
 
             if "update" in process_chain["webhooks"]:
                 self.webhook_update = process_chain["webhooks"]["update"]
-                # Check if thr URL exists by investigating the HTTP header
-                if "auth" in process_chain["webhooks"]:
-                    self.webhook_auth = process_chain["webhooks"]["auth"]
-                    # username is expected to be without colon (':')
-                    resp = requests.head(self.webhook_update, auth=HTTPBasicAuth(
-                        self.webhook_auth.split(':')[0],
-                        ':'.join(self.webhook_auth.split(':')[1:])))
-                else:
-                    resp = requests.head(self.webhook_update)
-                if resp.status_code != 200:
-                    raise AsyncProcessError(
-                        "The update webhook URL %s can not be accessed."
-                        % self.webhook_update)
+                self._check_if_webhook_exists(
+                    self.webhook_update, process_chain, 'update')
 
         for process_descr in process_chain["list"]:
 
@@ -211,186 +189,175 @@ class ProcessChainConverter(object):
 
         return downimp_list
 
-    def _create_download_process_list(self):
-        """This function analysis the process chain import options and creates
-        download and import commands.
+    def _get_landsat_import_download_commands(self, entry):
+        """Helper method to get the landsat import and download commands.
+
+        Args:
+            entry (dict): Entry of the import description list
 
         Returns:
-
+            landsat_commands: The landsat download and import commands
         """
+        # Check for band information
+        if "landsat_atcor" not in entry["import_descr"]:
+            raise AsyncProcessError(
+                "Atmospheric detection specification is required for Landsat "
+                "scene import")
 
-        downimp_list = []
+        atcor = entry["import_descr"]["landsat_atcor"].lower()
 
-        if self.message_logger:
-            self.message_logger.info("Creating download process "
-                                     "list for all import definitions")
+        if (atcor not in [
+                "uncorrected", "dos1", "dos2", "dos2b", "dos3", "dos4"]):
+            raise AsyncProcessError(
+                "Atmospheric detection specification is wrong for "
+                "Landsat scene import.")
 
-        for entry in self.import_descr_list:
-            if self.message_logger:
-                self.message_logger.info(entry)
+        scene = entry["import_descr"]["source"]
 
-            if "import_descr" not in entry:
-                raise AsyncProcessError(
-                    "import_descr specification is required in import definition")
+        lp = LandsatProcessing(
+            config=self.config,
+            download_cache=self.temp_file_path,
+            temp_file_path=self.temp_file_path,
+            message_logger=self.message_logger,
+            send_resource_update=self.send_resource_update,
+            scene_id=scene)
 
-            if "type" not in entry["import_descr"]:
-                raise AsyncProcessError(
-                    "Type specification is required in import definition")
+        download_commands, import_file_info = lp.get_download_process_list()
+        import_commands = lp.get_import_process_list()
+        atcor_commands = lp.get_i_landsat_toar_process_list(atcor)
+        landsat_commands = download_commands
+        landsat_commands.extend(import_commands)
+        landsat_commands.extend(atcor_commands)
 
-            if "source" not in entry["import_descr"]:
-                raise AsyncProcessError(
-                    "Source specification is required in import definition")
+        return landsat_commands
 
-            if entry["import_descr"]["type"] not in [
-                    "raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
-                raise AsyncProcessError(
-                    "Unknown type specification: %s" % entry["import_descr"]["type"])
+    def _get_sentinel_import_command(self, entry):
+        """Helper method to get the sentinel import command.
 
-            # RASTER; VECTOR, FILE
-            if entry["import_descr"]["type"].lower() == "raster" or \
-                    entry["import_descr"]["type"].lower() == "vector" or \
-                    entry["import_descr"]["type"].lower() == "file":
+        Args:
+            entry (dict): Entry of the import description list
 
-                url = entry["import_descr"]["source"]
+        Returns:
+            sentinel_commands: The sentinel import commands
+        """
+        # Check for band information
+        if "sentinel_band" not in entry["import_descr"]:
+            raise AsyncProcessError(
+                "Band specification is required for Sentinel2 scene import")
 
-                gdis = GeoDataDownloadImportSupport(
+        scene = entry["import_descr"]["source"]
+        band = entry["import_descr"]["sentinel_band"]
+
+        gqi = GoogleSatelliteBigQueryInterface(config=self.config)
+        query_result = gqi.get_sentinel_urls(
+            product_ids=[scene, ], bands=[band, ])
+        sp = Sentinel2Processing(
+            config=self.config,
+            bands=[band, ],
+            download_cache=self.temp_file_path,
+            temp_file_path=self.temp_file_path,
+            message_logger=self.message_logger,
+            send_resource_update=self.send_resource_update,
+            product_id=scene,
+            query_result=query_result)
+
+        download_commands, import_file_info = \
+            sp.get_sentinel2_download_process_list()
+        sentinel_commands = download_commands
+        import_commands = sp.get_sentinel2_import_process_list()
+        sentinel_commands.extend(import_commands)
+
+        input_file, map_name = import_file_info[band]
+        p = Process(
+            exec_type="grass",
+            executable="g.rename",
+            id=f"rename_{entry['value']}",
+            executable_params=["raster=%s,%s" % (map_name, entry["value"]), ])
+        sentinel_commands.append(p)
+
+        return sentinel_commands
+
+    def _get_postgis_import_command(self, entry):
+        """Helper method to get the import command for postgis.
+
+        Args:
+            entry (dict): Entry of the import description list
+
+        Returns:
+            import_command: The import command for postgis
+        """
+        dbstring = "%s" % entry["import_descr"]["source"]
+        vector_name = entry["value"]
+        layer = None
+        if "vector_layer" in entry["import_descr"]:
+            layer = entry["import_descr"]["vector_layer"]
+        import_command = \
+            GeoDataDownloadImportSupport.get_vector_import_command(
+                input_source=dbstring,
+                vector_name=vector_name,
+                layer_name=layer)
+        return import_command
+
+    def _get_raster_vector_file_download_import_command(self, entry):
+        """Helper method to get the download and import commands for raster/vector and files.
+
+        Args:
+            entry (dict): Entry of the import description list
+
+        Returns:
+            rvf_downimport_commands (list): The raster/vector/file download and
+                                            import commands
+        """
+        rvf_downimport_commands = list()
+        url = entry["import_descr"]["source"]
+        gdis = GeoDataDownloadImportSupport(
                     config=self.config,
                     temp_file_path=self.temp_file_path,
                     download_cache=self.temp_file_path,
                     message_logger=self.message_logger,
                     send_resource_update=self.send_resource_update,
                     url_list=[url, ])
+        download_commands, import_file_info = gdis.get_download_process_list()
+        rvf_downimport_commands.extend(download_commands)
+        map_name = entry["value"]
+        input_source = import_file_info[0][2]
+        layer = None
 
-                download_commands, import_file_info = gdis.get_download_process_list()
-                downimp_list.extend(download_commands)
-
-                map_name = entry["value"]
-                input_source = import_file_info[0][2]
-                layer = None
-                if "vector_layer" in entry["import_descr"]:
-                    layer = entry["import_descr"]["vector_layer"]
-
-                if entry["import_descr"]["type"] == "raster":
-                    import_command = \
-                        GeoDataDownloadImportSupport.get_raster_import_command(
-                            file_path=input_source,
-                            raster_name=entry["value"])
-                    downimp_list.append(import_command)
-                if entry["import_descr"]["type"] == "vector":
-                    import_command = \
-                        GeoDataDownloadImportSupport.get_vector_import_command(
-                            input_source=input_source,
-                            vector_name=map_name,
-                            layer_name=layer)
-                    downimp_list.append(import_command)
-                if entry["import_descr"]["type"] == "file":
-                    # Search for file identifiers
-                    if "$file" in map_name and "::" in map_name:
-                        file_id = map_name.split("::")[1]
-                        # Use the temporary file name as copy target
-                        if file_id in self.temporary_pc_files:
-                            rename_commands = \
-                                GeoDataDownloadImportSupport.get_file_rename_command(
-                                    import_file_info[0][2],
-                                    self.temporary_pc_files[file_id])
-                            downimp_list.append(rename_commands)
-                        else:
-                            raise AsyncProcessError(
-                                "A file id is required for a download file "
-                                "to use it in the process chain.")
-                    else:
-                        raise AsyncProcessError(
-                            "A file id is required for a download file "
-                            "to use it in the process chain.")
-
-            # POSTGIS
-            elif entry["import_descr"]["type"].lower() == "postgis":
-                dbstring = "%s" % entry["import_descr"]["source"]
-                vector_name = entry["value"]
-                layer = None
-                if "vector_layer" in entry["import_descr"]:
-                    layer = entry["import_descr"]["vector_layer"]
-
-                import_command = \
-                    GeoDataDownloadImportSupport.get_vector_import_command(
-                        input_source=dbstring,
-                        vector_name=vector_name,
-                        layer_name=layer)
-                downimp_list.append(import_command)
-
-            # SENTINEL
-            elif entry["import_descr"]["type"].lower() == "sentinel2":
-                # Check for band information
-                if "sentinel_band" not in entry["import_descr"]:
+        if "vector_layer" in entry["import_descr"]:
+            layer = entry["import_descr"]["vector_layer"]
+        if entry["import_descr"]["type"] == "raster":
+            import_command = \
+                GeoDataDownloadImportSupport.get_raster_import_command(
+                    file_path=input_source,
+                    raster_name=entry["value"])
+            rvf_downimport_commands.append(import_command)
+        if entry["import_descr"]["type"] == "vector":
+            import_command = \
+                GeoDataDownloadImportSupport.get_vector_import_command(
+                    input_source=input_source,
+                    vector_name=map_name,
+                    layer_name=layer)
+            rvf_downimport_commands.append(import_command)
+        if entry["import_descr"]["type"] == "file":
+            # Search for file identifiers
+            if "$file" in map_name and "::" in map_name:
+                file_id = map_name.split("::")[1]
+                # Use the temporary file name as copy target
+                if file_id in self.temporary_pc_files:
+                    rename_commands = \
+                        GeoDataDownloadImportSupport.get_file_rename_command(
+                            import_file_info[0][2],
+                            self.temporary_pc_files[file_id])
+                    rvf_downimport_commands.append(rename_commands)
+                else:
                     raise AsyncProcessError(
-                        "Band specification is required for Sentinel2 scene import")
-
-                scene = entry["import_descr"]["source"]
-                band = entry["import_descr"]["sentinel_band"]
-
-                gqi = GoogleSatelliteBigQueryInterface(config=self.config)
-                query_result = gqi.get_sentinel_urls(product_ids=[scene, ],
-                                                     bands=[band, ])
-                sp = Sentinel2Processing(config=self.config,
-                                         bands=[band, ],
-                                         download_cache=self.temp_file_path,
-                                         temp_file_path=self.temp_file_path,
-                                         message_logger=self.message_logger,
-                                         send_resource_update=self.send_resource_update,
-                                         product_id=scene,
-                                         query_result=query_result)
-
-                download_commands, import_file_info = \
-                    sp.get_sentinel2_download_process_list()
-                downimp_list.extend(download_commands)
-                import_commands = sp.get_sentinel2_import_process_list()
-                downimp_list.extend(import_commands)
-
-                input_file, map_name = import_file_info[band]
-                p = Process(exec_type="grass",
-                            executable="g.rename",
-                            id=f"rename_{entry['value']}",
-                            executable_params=[
-                                "raster=%s,%s" % (map_name, entry["value"]), ])
-                downimp_list.append(p)
-
-            # LANDSAT
-            elif entry["import_descr"]["type"].lower() == "landsat":
-                # Check for band information
-                if "landsat_atcor" not in entry["import_descr"]:
-                    raise AsyncProcessError(
-                        "Atmospheric detection specification is required for Landsat "
-                        "scene import")
-
-                atcor = entry["import_descr"]["landsat_atcor"].lower()
-
-                if (atcor not in [
-                        "uncorrected", "dos1", "dos2", "dos2b", "dos3", "dos4"]):
-                    raise AsyncProcessError(
-                        "Atmospheric detection specification is wrong for "
-                        "Landsat scene import.")
-
-                scene = entry["import_descr"]["source"]
-
-                lp = LandsatProcessing(config=self.config,
-                                       download_cache=self.temp_file_path,
-                                       temp_file_path=self.temp_file_path,
-                                       message_logger=self.message_logger,
-                                       send_resource_update=self.send_resource_update,
-                                       scene_id=scene)
-
-                download_commands, import_file_info = lp.get_download_process_list()
-                downimp_list.extend(download_commands)
-                import_commands = lp.get_import_process_list()
-                downimp_list.extend(import_commands)
-                atcor_commands = lp.get_i_landsat_toar_process_list(atcor)
-                downimp_list.extend(atcor_commands)
+                        "A file id is required for a download file "
+                        "to use it in the process chain.")
             else:
                 raise AsyncProcessError(
-                    "Unknown import type specification: %s"
-                    % entry["import_descr"]["type"])
-
-        return downimp_list
+                    "A file id is required for a download file "
+                    "to use it in the process chain.")
+        return rvf_downimport_commands
 
     def generate_temp_file_path(self):
         """Generate the path of a new unique temporary file that will be removed
@@ -438,38 +405,12 @@ class ProcessChainConverter(object):
 
         stdin_func = None
         if "stdin" in module_descr:
-            if "::" not in module_descr["stdin"]:
-                raise AsyncProcessError(
-                    "The stdin option in id %s misses the ::" % str(id))
-
-            object_id, method = module_descr["stdin"].split("::")
-
-            if "stdout" == method is True:
-                stdin_func = self.process_dict[object_id].stdout
-
-            elif "stderr" == method is True:
-                stdin_func = self.process_dict[object_id].stderr
-            else:
-                raise AsyncProcessError(
-                    "The stdout or stderr flag in id %s is missing" % str(id))
+            stdin_func = self._create_stdin_process(module_descr, id)
 
         # Check for stdout parser that can be of type table, list or key/value pairs
         # and store the definition in a list
         if "stdout" in module_descr:
-            if "id" not in module_descr["stdout"]:
-                raise AsyncProcessError(
-                    "Missing unique *id* in stdout parser description of process id %s"
-                    % str(id))
-            if "format" not in module_descr["stdout"]:
-                raise AsyncProcessError(
-                    "Missing *format* in stdout parser description of process id %s"
-                    % str(id))
-            if "delimiter" not in module_descr["stdout"]:
-                raise AsyncProcessError(
-                    "Missing *delimiter* in stdout parser description of process id %s"
-                    % str(id))
-
-            self.output_parser_list.append({id: module_descr["stdout"]})
+            self._check_and_get_stdout_command(module_descr, id)
 
         if "module" not in module_descr:
             raise AsyncProcessError(
@@ -478,133 +419,12 @@ class ProcessChainConverter(object):
         module_name = module_descr["module"]
 
         if "inputs" in module_descr:
-
-            if isinstance(module_descr["inputs"], list) is False:
-                raise AsyncProcessError("Inputs in the process chain definition "
-                                        "must be of type list")
-
-            for input in module_descr["inputs"]:
-
-                # Add import description to the import list
-                if "import_descr" in input:
-                    self.import_descr_list.append(input)
-
-                if "value" not in input:
-                    raise AsyncProcessError(
-                        "<value> is missing in input description of process id: %s"
-                        % id)
-
-                if "param" not in input:
-                    raise AsyncProcessError(
-                        "<param> is missing in input description of process id: %s"
-                        % id)
-
-                value = input["value"]
-                param = input["param"]
-
-                # Search for file identifiers and generate the temporary file path
-                if "$file" in value and "::" in value:
-                    file_id = value.split("::")[1]
-                    # Generate the temporary file path and store it in the dict
-                    if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = \
-                            self.generate_temp_file_path()
-
-                    param = "%s=%s" % (param, self.temporary_pc_files[file_id])
-                else:
-                    param = "%s=%s" % (param, value)
-                    # Check for mapset in input name and append it
-                    # to the list of required mapsets
-                    if "@" in str(value):
-
-                        # Mapset names are after an @ symbol
-                        # Mapsets in expressions can be detected by replacing the
-                        # symbols like *, +, :, /, {, (,},], ... by spaces and split
-                        # the string by spaces, searching in each substring for @
-
-                        symbols = ['*', '+', '-', '/', '%', '$', '!', ':', '(', ')',
-                                   '{', '}', '&', '?', '#', '=', '^', '~',
-                                   '<', '>', '\\']
-
-                        for symbol in symbols:
-                            value = value.replace(symbol, " ")
-
-                        values = value.split(" ")
-
-                        for entry in values:
-                            for subentry in entry.split(","):
-                                if "@" in subentry:
-                                    mapset = subentry.split("@")[1]
-                                    if mapset not in self.required_mapsets:
-                                        self.required_mapsets.append(mapset)
-
-                params.append(param)
+            self._add_grass_module_input_parameter_to_list(
+                module_descr, params, id)
 
         if "outputs" in module_descr:
-            for output in module_descr["outputs"]:
-
-                if "value" not in output:
-                    raise AsyncProcessError(
-                        "<value> is missing in input description of process id: %s"
-                        % id)
-
-                if "param" not in output:
-                    raise AsyncProcessError(
-                        " <param> is missing in input description of process id: %s"
-                        % id)
-
-                value = output["value"]
-                param = output["param"]
-
-                # Check the resource for potential export
-                if "export" in output:
-                    exp = output["export"]
-                    if "format" not in exp or "type" not in exp:
-                        raise AsyncProcessError(
-                            "Invalid export parameter in description of module <%s>"
-                            % module_name)
-                    if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
-                        raise AsyncProcessError(
-                            "Invalid export <format> parameter in description of "
-                            "module <%s>" % module_name)
-                    if "PostgreSQL" in exp["format"] and "dbstring" not in exp:
-                        raise AsyncProcessError(
-                            "The dbstring parameter is missing for PostgreSQL export")
-                    if (exp["type"] not in [
-                            "raster", "vector", "strds", "file", "stvds"]):
-                        raise AsyncProcessError(
-                            "Invalid export <type> parameter in description of "
-                            "module <%s>" % module_name)
-                    if ("file" in exp["type"]
-                            and ("$file" in value and "::" in value) is False):
-                        raise AsyncProcessError(
-                            "The value filed must contain a file identifier "
-                            "($file::unique_id) to export a "
-                            "file generated from module <%s> as resource."
-                            % module_name)
-
-                # Search for file identifiers and generate the temporary file path
-                if "$file" in value and "::" in value:
-                    file_id = value.split("::")[1]
-                    # Generate the temporary file path and store it in the dict
-                    if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[file_id] = self.generate_temp_file_path(
-                        )
-                    # Store the file path in the output description for export
-                    param = "%s=%s" % (param, self.temporary_pc_files[file_id])
-                    # Add the temp file path and the new file name with suffix to the
-                    # output dict
-                    if "export" in output:
-                        output["tmp_file"] = self.temporary_pc_files[file_id]
-                        output["file_name"] = "%s.%s" % (
-                            file_id, output["export"]["format"].lower())
-                else:
-                    param = "%s=%s" % (param, value)
-                params.append(param)
-
-                # save the output dict in a resource export list
-                if "export" in output:
-                    self.resource_export_list.append(output)
+            self._add_grass_module_output_parameter_to_list(
+                module_descr, params, id, module_name)
 
         if "flags" in module_descr:
             if "flags" in module_descr:
@@ -641,6 +461,32 @@ class ProcessChainConverter(object):
             return p
 
         return None
+
+    def _create_stdin_process(self, module_descr, id):
+        """Helper methods to create stdin process.
+
+        Args:
+            module_descr (dict): The module description
+            id (str): The id of this process in the process chain
+
+        Returns:
+            stdin_func(Process): An object of type Process that
+                                 contains the module name, the
+                                 parameter list and stdin definitions
+
+        """
+        if "::" not in module_descr["stdin"]:
+            raise AsyncProcessError(
+                    "The stdin option in id %s misses the ::" % str(id))
+        object_id, method = module_descr["stdin"].split("::")
+        if "stdout" == method is True:
+            stdin_func = self.process_dict[object_id].stdout
+        elif "stderr" == method is True:
+            stdin_func = self.process_dict[object_id].stderr
+        else:
+            raise AsyncProcessError(
+                    "The stdout or stderr flag in id %s is missing" % str(id))
+        return stdin_func
 
     def _create_exec_process(self, module_descr):
         """Analyse a grass process description dict and create a Process
@@ -717,127 +563,57 @@ class ProcessChainConverter(object):
 
         return p
 
-    def _process_chain_to_process_list_legacy(self, process_chain):
-        """
-        Transform a legacy module chain description into an ordered list of process runs
+    def _create_download_process_list(self):
+        """This function analysis the process chain import options and creates
+        download and import commands.
 
-        All input map layer MUST be specified with the mapset they belong to: map@mapset
-
-        Args:
-            process_chain (dict): The process chain
-
-        Return:
-             list
-             A list of ordered grass processes
-
-        Process chain input format::
-
-            {                                           # A process chain is a dict
-                                                          with entries for each module
-                                                          that should be run
-               Id:{                                     # Id must be numerical and
-                                                          indicates the process order
-                    "module":<module_name>,             # Name of the module to run
-                    "stdin":<Id::stdout | Id::stderr>   # Use the output of a specific
-                                                          module as input for this
-                                                          module
-                                                        # Id:stdout, Id:stderr are
-                                                          available
-                    "inputs":{                          # Definition of all input
-                                                          parameters as key:value pairs
-                             <parameter name>:<value>,  # e.g.: value == "raster_name@
-                                                          mapset_name" or "degree"
-                                                          or 0.0
-                             <parameter name>:<value>   # e.g.: value ==
-                                                          $file::slope_output_file
-                                                          to specify an output file
-                                                        # that name will be
-                                                          automatically generated
-                                                          by the API.
-                    },
-                    "outputs":{                         # Definition of all outputs
-                                                          using key:value pairs
-                        <parameter name>:{
-                            "name":<value>,             # Output name e.g.
-                                                          "my_aspect_map" or a
-                                                          temporary file id
-                                                        # definition: $file::id
-                                                          eg: $file::aspect_output_file
-                                                        # This file can be used in
-                                                          other module as input
-                            "export":{                  # Export options, if present
-                                                          this map will be exported
-                                "format":<value>        # Set the export format
-                                                          raster=GeoTiff (default),
-                                                          vector = shape (default)
-                                "type":<output type>,   # Output type e.g.: raster,
-                                                          vector, file, stds
-                            }
-                        },
-                        <parameter name>:{
-                            "name":<value>,             # Output name e.g.
-                                                          "my_slope_map"
-                            "export":{                  # Export options, if present
-                                                          this map will be exported
-                                "format":<value>        # Set the export format
-                                                          raster=GeoTiff (default),
-                                                          vector = shape (default)
-                                "type":<output type>,   # Output type e.g.: raster,
-                                                          vector, file, stds
-                            }
-                        }
-                    },
-                    "flags":<flags>,                    # All flags in a string e.g.:
-                                                          "ge"
-                    "overwrite":<True|False>,           # Set True to overwrite existing
-                                                          data
-                    "verbose":<True|False>              # Verbosity of the module
-                },
-               Id:{                                     # The id of an executable
-                                                          command, that is not a
-                                                          grass module
-                    "executable":<path>,                # The name and path of the
-                                                          executable e.g. /bin/cp
-                    "stdin":<Id::stdout | Id::stderr>   # Use the output of a specific
-                                                          module as input for this
-                                                          module
-                                                        # Id::stdout, Id::stderr
-                                                          are available
-                    "parameters":[<parameter>,]         # A list of strings that
-                                                          represent the parameters
-                                                          that may contain
-                                                        # temporary file definitions:
-                                                          $file::id  eg:
-                                                          $file::aspect_output_file
-               },
-                ...
-            }
+        Returns:
 
         """
-        process_list = []
 
-        keys = process_chain.keys()
-        int_keys = []
-        # Convert the keys to integer to sort correctly
-        for k in keys:
-            int_keys.append(int(k))
+        downimp_list = []
 
-        int_keys = sorted(int_keys)
-        # Re-order the process chain by integer sorting index
-        for index in int_keys:
-            program = process_chain[str(index)]
+        if self.message_logger:
+            self.message_logger.info("Creating download process "
+                                     "list for all import definitions")
 
-            if "module" in program:
-                process_list.append(
-                    self._create_module_process_legacy(str(index), program))
-            elif "executable" in program:
-                process_list.append(
-                    self._create_exec_process_legacy(str(index), program))
-            elif "evaluate" in program:
-                process_list.append(("python", program["evaluate"]))
+        for entry in self.import_descr_list:
+            if self.message_logger:
+                self.message_logger.info(entry)
 
-        return process_list
+            check_required_keys_for_download_process_chain(entry)
 
+            # RASTER; VECTOR, FILE
+            if entry["import_descr"]["type"].lower() == "raster" or \
+                    entry["import_descr"]["type"].lower() == "vector" or \
+                    entry["import_descr"]["type"].lower() == "file":
+
+                rvf_downimport_commands = \
+                    self._get_raster_vector_file_download_import_command(entry)
+                downimp_list.extend(rvf_downimport_commands)
+
+            # POSTGIS
+            elif entry["import_descr"]["type"].lower() == "postgis":
+                import_command = self._get_postgis_import_command(entry)
+                downimp_list.append(import_command)
+
+            # SENTINEL
+            elif entry["import_descr"]["type"].lower() == "sentinel2":
+                sentinel_commands = self._get_sentinel_import_command(entry)
+                downimp_list.extend(sentinel_commands)
+
+            # LANDSAT
+            elif entry["import_descr"]["type"].lower() == "landsat":
+                landsat_commands = self._get_landsat_import_download_commands(entry)
+                downimp_list.extend(landsat_commands)
+            else:
+                raise AsyncProcessError(
+                    "Unknown import type specification: %s"
+                    % entry["import_descr"]["type"])
+
+        return downimp_list
+
+    # TODO: remove legacy methods and do no use them in actinia_core
     def _create_module_process_legacy(self, id, module_descr):
         """Analyse a grass process description dict and create a Process
         that is used to execute a GRASS GIS binary.
@@ -992,6 +768,7 @@ class ProcessChainConverter(object):
 
         return p
 
+    # TODO: remove legacy methods and do no use them in actinia_core
     def _create_exec_process_legacy(self, id, module_descr):
         """Analyse a grass process description dict and create a Process
         that is used to execute a common Linux binary.
@@ -1061,6 +838,336 @@ class ProcessChainConverter(object):
         self.process_dict[id] = p
 
         return p
+
+    def _add_grass_module_input_parameter_to_list(self, module_descr, params, id):
+        """Helper method to set the input parameters of a grass module and add
+        them to the params list.
+
+        Args:
+            module_descr (dict): The module description
+            params (list): The list of the grass module inputs parameters with
+                           param=value entries (here the input parameter are
+                           added)
+            id (str): The id of this process in the process chain
+        """
+        if isinstance(module_descr["inputs"], list) is False:
+            raise AsyncProcessError("Inputs in the process chain definition "
+                                    "must be of type list")
+
+        for input in module_descr["inputs"]:
+            # Add import description to the import list
+            if "import_descr" in input:
+                self.import_descr_list.append(input)
+            if "value" not in input:
+                raise AsyncProcessError(
+                        "<value> is missing in input description of process id: %s"
+                        % id)
+            if "param" not in input:
+                raise AsyncProcessError(
+                        "<param> is missing in input description of process id: %s"
+                        % id)
+
+            value = input["value"]
+            param = input["param"]
+            # Search for file identifiers and generate the temporary file path
+            if "$file" in value and "::" in value:
+                file_id = value.split("::")[1]
+                # Generate the temporary file path and store it in the dict
+                if file_id not in self.temporary_pc_files:
+                    self.temporary_pc_files[file_id] = \
+                            self.generate_temp_file_path()
+                param = "%s=%s" % (param, self.temporary_pc_files[file_id])
+            else:
+                param = "%s=%s" % (param, value)
+                # Check for mapset in input name and append it,
+                # to the list of required mapsets
+                if "@" in str(value):
+                    # Mapset names are after an @ symbol
+                    # Mapsets in expressions can be detected by replacing the
+                    # symbols like *, +, :, /, {, (,},], ... by spaces and split
+                    # the string by spaces, searching in each substring for @
+                    symbols = ['*', '+', '-', '/', '%', '$', '!', ':', '(', ')',
+                               '{', '}', '&', '?', '#', '=', '^', '~',
+                               '<', '>', '\\']
+                    for symbol in symbols:
+                        value = value.replace(symbol, " ")
+                    values = value.split(" ")
+                    for entry in values:
+                        for subentry in entry.split(","):
+                            if "@" in subentry:
+                                mapset = subentry.split("@")[1]
+                                if mapset not in self.required_mapsets:
+                                    self.required_mapsets.append(mapset)
+            params.append(param)
+
+    def _add_grass_module_output_parameter_to_list(self, module_descr, params, id,
+                                                   module_name):
+        """Helper method to set the output parameters of a grass module and add
+        them to the params list. If export is in the output parameter the output
+        is appended to the resource_export_list.
+
+        Args:
+            module_descr (dict): The module description
+            params (list): The list of the grass module parameters with
+                           param=value entries (here the output parameter are
+                           added)
+            id (str): The id of this process in the process chain
+            module_name (str): The name of the grass module
+
+        """
+        for output in module_descr["outputs"]:
+            if "value" not in output:
+                raise AsyncProcessError(
+                        "<value> is missing in input description of process id: %s"
+                        % id)
+            if "param" not in output:
+                raise AsyncProcessError(
+                        " <param> is missing in input description of process id: %s"
+                        % id)
+
+            value = output["value"]
+            param = output["param"]
+            # Check the resource for potential export
+            if "export" in output:
+                exp = output["export"]
+                if "format" not in exp or "type" not in exp:
+                    raise AsyncProcessError(
+                            "Invalid export parameter in description of module <%s>"
+                            % module_name)
+                if exp["format"] not in SUPPORTED_EXPORT_FORMATS:
+                    raise AsyncProcessError(
+                            "Invalid export <format> parameter in description of "
+                            "module <%s>" % module_name)
+                if "PostgreSQL" in exp["format"] and "dbstring" not in exp:
+                    raise AsyncProcessError(
+                            "The dbstring parameter is missing for PostgreSQL export")
+                if (exp["type"] not in [
+                            "raster", "vector", "strds", "file", "stvds"]):
+                    raise AsyncProcessError(
+                            "Invalid export <type> parameter in description of "
+                            "module <%s>" % module_name)
+                if ("file" in exp["type"]
+                        and ("$file" in value and "::" in value) is False):
+                    raise AsyncProcessError(
+                            "The value filed must contain a file identifier "
+                            "($file::unique_id) to export a "
+                            "file generated from module <%s> as resource."
+                            % module_name)
+            # Search for file identifiers and generate the temporary file path
+            if "$file" in value and "::" in value:
+                file_id = value.split("::")[1]
+                # Generate the temporary file path and store it in the dict
+                if file_id not in self.temporary_pc_files:
+                    self.temporary_pc_files[file_id] = \
+                            self.generate_temp_file_path()
+                # Store the file path in the output description for export
+                param = "%s=%s" % (param, self.temporary_pc_files[file_id])
+                # Add the temp file path and the new file name with suffix to the,
+                # output dict
+                if "export" in output:
+                    output["tmp_file"] = self.temporary_pc_files[file_id]
+                    output["file_name"] = "%s.%s" % (
+                            file_id, output["export"]["format"].lower())
+            else:
+                param = "%s=%s" % (param, value)
+            params.append(param)
+            # save the output dict in a resource export list
+            if "export" in output:
+                self.resource_export_list.append(output)
+
+    def _check_if_webhook_exists(self, webhook_url, process_chain, type):
+        """Helper method to check if the URL of a webhook exists by investigating
+        the HTTP header
+
+        Args:
+            webhook_url (str): The webhook URL
+            process_chain (dict): The process chain
+            type (str): The webhook type: 'finished' or 'update'
+
+        Raises:
+            This method will raise an AsyncProcessError if the request to the
+            webhook url header fails.
+        """
+        if "auth" in process_chain["webhooks"]:
+            self.webhook_auth = process_chain["webhooks"]["auth"]
+            # username is expected to be without colon (':')
+            resp = requests.head(webhook_url, auth=HTTPBasicAuth(
+                self.webhook_auth.split(':')[0],
+                ':'.join(self.webhook_auth.split(':')[1:])))
+        else:
+            resp = requests.head(webhook_url)
+        if resp.status_code != 200:
+            raise AsyncProcessError(
+                        "The %s webhook URL %s can not be accessed."
+                        % (type, webhook_url))
+
+    def _check_and_get_stdout_command(self, module_descr, id):
+        """Helper method to check the stdout in the module description and add it
+        to the output_parser_list.
+
+        Args:
+            module_descr (dict): The module description
+            id (str): The id of this process in the process chain
+        """
+        if "id" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing unique *id* in stdout parser description of process id %s"
+                    % str(id))
+        if "format" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing *format* in stdout parser description of process id %s"
+                    % str(id))
+        if "delimiter" not in module_descr["stdout"]:
+            raise AsyncProcessError(
+                    "Missing *delimiter* in stdout parser description of process id %s"
+                    % str(id))
+        self.output_parser_list.append({id: module_descr["stdout"]})
+
+    def _process_chain_to_process_list_legacy(self, process_chain):
+        """
+        Transform a legacy module chain description into an ordered list of process runs
+
+        All input map layer MUST be specified with the mapset they belong to: map@mapset
+
+        Args:
+            process_chain (dict): The process chain
+
+        Return:
+             list
+             A list of ordered grass processes
+
+        Process chain input format::
+
+            {                                           # A process chain is a dict
+                                                          with entries for each module
+                                                          that should be run
+               Id:{                                     # Id must be numerical and
+                                                          indicates the process order
+                    "module":<module_name>,             # Name of the module to run
+                    "stdin":<Id::stdout | Id::stderr>   # Use the output of a specific
+                                                          module as input for this
+                                                          module
+                                                        # Id:stdout, Id:stderr are
+                                                          available
+                    "inputs":{                          # Definition of all input
+                                                          parameters as key:value pairs
+                             <parameter name>:<value>,  # e.g.: value == "raster_name@
+                                                          mapset_name" or "degree"
+                                                          or 0.0
+                             <parameter name>:<value>   # e.g.: value ==
+                                                          $file::slope_output_file
+                                                          to specify an output file
+                                                        # that name will be
+                                                          automatically generated
+                                                          by the API.
+                    },
+                    "outputs":{                         # Definition of all outputs
+                                                          using key:value pairs
+                        <parameter name>:{
+                            "name":<value>,             # Output name e.g.
+                                                          "my_aspect_map" or a
+                                                          temporary file id
+                                                        # definition: $file::id
+                                                          eg: $file::aspect_output_file
+                                                        # This file can be used in
+                                                          other module as input
+                            "export":{                  # Export options, if present
+                                                          this map will be exported
+                                "format":<value>        # Set the export format
+                                                          raster=GeoTiff (default),
+                                                          vector = shape (default)
+                                "type":<output type>,   # Output type e.g.: raster,
+                                                          vector, file, stds
+                            }
+                        },
+                        <parameter name>:{
+                            "name":<value>,             # Output name e.g.
+                                                          "my_slope_map"
+                            "export":{                  # Export options, if present
+                                                          this map will be exported
+                                "format":<value>        # Set the export format
+                                                          raster=GeoTiff (default),
+                                                          vector = shape (default)
+                                "type":<output type>,   # Output type e.g.: raster,
+                                                          vector, file, stds
+                            }
+                        }
+                    },
+                    "flags":<flags>,                    # All flags in a string e.g.:
+                                                          "ge"
+                    "overwrite":<True|False>,           # Set True to overwrite existing
+                                                          data
+                    "verbose":<True|False>              # Verbosity of the module
+                },
+               Id:{                                     # The id of an executable
+                                                          command, that is not a
+                                                          grass module
+                    "executable":<path>,                # The name and path of the
+                                                          executable e.g. /bin/cp
+                    "stdin":<Id::stdout | Id::stderr>   # Use the output of a specific
+                                                          module as input for this
+                                                          module
+                                                        # Id::stdout, Id::stderr
+                                                          are available
+                    "parameters":[<parameter>,]         # A list of strings that
+                                                          represent the parameters
+                                                          that may contain
+                                                        # temporary file definitions:
+                                                          $file::id  eg:
+                                                          $file::aspect_output_file
+               },
+                ...
+            }
+
+        """
+        process_list = []
+
+        keys = process_chain.keys()
+        int_keys = []
+        # Convert the keys to integer to sort correctly
+        for k in keys:
+            int_keys.append(int(k))
+
+        int_keys = sorted(int_keys)
+        # Re-order the process chain by integer sorting index
+        for index in int_keys:
+            program = process_chain[str(index)]
+
+            if "module" in program:
+                process_list.append(
+                    self._create_module_process_legacy(str(index), program))
+            elif "executable" in program:
+                process_list.append(
+                    self._create_exec_process_legacy(str(index), program))
+            elif "evaluate" in program:
+                process_list.append(("python", program["evaluate"]))
+
+        return process_list
+
+
+def check_required_keys_for_download_process_chain(entry):
+    """Helper function to check if the requiered keys to create the download
+    process chain are set.
+
+    Args:
+        entry (dict): Entry of the import description list
+
+    Raises:
+        If not all required keys are set an AsyncProcessError is raised
+    """
+    if "import_descr" not in entry:
+        raise AsyncProcessError(
+            "import_descr specification is required in import definition")
+    if "type" not in entry["import_descr"]:
+        raise AsyncProcessError(
+            "Type specification is required in import definition")
+    if "source" not in entry["import_descr"]:
+        raise AsyncProcessError(
+            "Source specification is required in import definition")
+    if entry["import_descr"]["type"] not in [
+            "raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
+        raise AsyncProcessError(
+            "Unknown type specification: %s" % entry["import_descr"]["type"])
 
 
 def test_process_chain():

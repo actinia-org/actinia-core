@@ -4,7 +4,7 @@
 # can be used like this:
       # - name: composite actions
       #   uses: ./.github/docker-action
-      #   whith:
+      #   with:
       #     - tags: ${{ steps.meta.outputs.tags }}
       #     - file: docker/Dockerfile
 
