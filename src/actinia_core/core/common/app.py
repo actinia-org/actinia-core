@@ -91,8 +91,8 @@ from flask import Flask
 from flask_restful_swagger_2 import Api
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Julia Haas"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 API_VERSION = "v1"
@@ -102,6 +102,8 @@ URL_PREFIX = "/api/%s" % API_VERSION
 
 
 flask_app = Flask(__name__)
+# allows endpoints with and without trailing slashes
+flask_app.url_map.strict_slashes = False
 CORS(flask_app)
 
 flask_api = Api(flask_app, prefix=URL_PREFIX,
