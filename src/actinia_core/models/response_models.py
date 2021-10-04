@@ -197,11 +197,13 @@ class MapsetListResponseModel(Schema):
         'available_mapsets': {
             'type': 'array',
             'items': {'type': 'string'},
-            'description': 'The names of all available mapsets with corresponding locations'
+            'description': ('The names of all available mapsets with'
+                            ' corresponding locations in the global database')
         }
     }
     required = ["status", "available_mapsets"]
-    example = {"status": "success", "available_mapsets": ["nc_spm_08/PERMANENT", "latlong_wgs84/PERMANENT"]}
+    example = {"status": "success", "available_mapsets":
+               ["nc_spm_08/PERMANENT", "latlong_wgs84/PERMANENT"]}
 
 
 class LockedMapsetListResponseModel(Schema):
