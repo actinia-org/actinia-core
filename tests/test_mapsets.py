@@ -41,6 +41,22 @@ __maintainer__ = "mundialis"
 class MapsetsTestCase(ActiniaResourceTestCaseBase):
 
     test_mapsets = [str(uuid.uuid4()), str(uuid.uuid4())]
+    test_user = f"test_user_{str(uuid.uuid4())}"
+    accessible_datasets = {"nc_spm_08": ["PERMANENT"],
+                           "latlong_wgs84": ["PERMANENT"]}
+    ref_mapsets = []
+    for location in accessible_datasets:
+        for mapset in accessible_datasets[location]:
+            ref_mapsets.append(f"{location}/{mapset}")
+
+    @classmethod
+    def setUpClass(cls):
+        super(ActiniaResourceTestCaseBase, cls).setUpClass()
+
+        # Create test_user
+        cls.test_user_id, cls.test_user_group, cls.test_user_auth_header = cls.create_user(
+            name=cls.test_user, role="user",
+            accessible_datasets=cls.accessible_datasets)
 
     def tearDown(self):
         # unlock and delete the test mapsets
@@ -64,9 +80,9 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         for mapset in self.test_mapsets:
             self.create_new_mapset(mapset)
             rvpost = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
-                                      headers=self.admin_auth_header)
+                                      headers=self.root_auth_header)
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
-                             headers=self.admin_auth_header)
+                             headers=self.root_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
         rvdata = json_load(rv.data)
@@ -85,6 +101,29 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         # Test correct behaviour if user role is not admin
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
                              headers=self.user_auth_header)
+        self.assertEqual(rv.status_code, 401, "Status code is not 401: %s" % rv.status_code)
+
+    def test_user_own_mapsets(self):
+        """Test if user can list available mapsets
+        """
+        rv = self.server.get(URL_PREFIX + '/mapsets', headers=self.test_user_auth_header)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        rvdata = json_load(rv.data)
+        mapsets = rvdata["available_mapsets"]
+        self.assertEqual(mapsets, self.ref_mapsets, "Mapset list is not equal to reference mapset list")
+
+    def test_superadmin_user_mapsets(self):
+        """Test if superadmin can list available mapsets from test_user
+        """
+        rv = self.server.get(URL_PREFIX + f'/mapsets?user={self.test_user}', headers=self.root_auth_header)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        rvdata = json_load(rv.data)
+        mapsets = rvdata["available_mapsets"]
+        self.assertEqual(mapsets, self.ref_mapsets, "Mapset list is not equal to reference mapset list")
+
+    def test_user_user_mapsets(self):
+        # Test if test_user can list available mapsets from user
+        rv = self.server.get(URL_PREFIX + f'/mapsets?user={self.test_user}', headers=self.user_auth_header)
         self.assertEqual(rv.status_code, 401, "Status code is not 401: %s" % rv.status_code)
 
 

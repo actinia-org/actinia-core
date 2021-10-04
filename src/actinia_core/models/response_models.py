@@ -184,6 +184,28 @@ class SimpleResponseModel(Schema):
     required = ["status", "message"]
 
 
+class MapsetListResponseModel(Schema):
+    """Response schema that is used to list all mapsets available to the user.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the request'
+        },
+        'available_mapsets': {
+            'type': 'array',
+            'items': {'type': 'string'},
+            'description': ('The names of all available mapsets with'
+                            ' corresponding locations in the global database')
+        }
+    }
+    required = ["status", "available_mapsets"]
+    example = {"status": "success", "available_mapsets":
+               ["nc_spm_08/PERMANENT", "latlong_wgs84/PERMANENT"]}
+
+
 class LockedMapsetListResponseModel(Schema):
     """Response schema that is used to list all locked mapsets.
 

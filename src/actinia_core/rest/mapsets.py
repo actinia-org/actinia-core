@@ -25,7 +25,7 @@
 Mapset resources for information across all locations
 
 * List all mapset locks
-* TODO: List all mapsets in all locations
+* List all mapsets in all locations available to a user
 """
 
 from flask import jsonify, make_response
@@ -36,10 +36,11 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_lock import RedisLockingInterface
+from actinia_core.core.redis_user import RedisUserInterface
 from actinia_core.models.response_models import SimpleResponseModel, \
-     LockedMapsetListResponseModel
+     MapsetListResponseModel, LockedMapsetListResponseModel
 from .user_auth import check_user_permissions
-from .user_auth import very_admin_role
+# from .user_auth import very_admin_role
 # from .common.response_models import MapsetInfoModel
 
 
@@ -53,23 +54,37 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
     """ Get all locked mapsets
     """
     decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
+                  auth.login_required]
 
     @swagger.doc({
         'tags': ['Mapsets'],
-        'description': 'Get all locked mapsets. '
-                       'Minimum required user role: admin.',
+        'description': 'List available or locked mapsets.',
         'parameters': [
+            {
+                'in': 'path',
+                'name': 'mapsets',
+                'type': 'string',
+                'description': "List all mapsets in the global database available "
+                               "to the authenticated user."
+            },
             {
                 'in': 'path',
                 'name': 'status',
                 'type': 'string',
-                'description': ("If set to 'locked', list all locked mapsets across"
-                                " all locations.")
+                'description': ("If set to 'locked', list all locked mapsets across "
+                                "all locations. Minimum required user role: admin.")
+            },
+            {
+                'in': 'path',
+                'name': 'user',
+                'type': 'string',
+                'description': ("List all mapsets in the global database available "
+                                "to the specified user. "
+                                "Minimum required user role: admin")
             }],
         'responses': {
             '200': {
-                'description': 'Get a list of (locked) mapsets ',
+                'description': 'Returns a list of available (or locked) mapsets ',
                 'schema': LockedMapsetListResponseModel
             },
             '500': {
@@ -79,8 +94,16 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
         }
     })
     def get(self):
+
         if 'status' in request.args:
             if request.args['status'] == "locked":
+                if self.user.has_superadmin_role() is False:
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="error",
+                        message=("Unable to list locked mapsets You are not authorized"
+                                 " for this request. "
+                                 "Minimum required user role: superadmin")
+                                )), 401)
                 redis_interface = RedisLockingInterface()
                 kwargs = dict()
                 kwargs["host"] = global_config.REDIS_SERVER_URL
@@ -108,5 +131,41 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                         message="Unable to list locked mapsets: Exception %s"
                                 % (str(e)))), 500)
         else:
-            # TODO: https://github.com/mundialis/actinia_core/issues/162
-            pass
+            redis_interface = RedisUserInterface()
+            kwargs = dict()
+            kwargs["host"] = global_config.REDIS_SERVER_URL
+            kwargs["port"] = global_config.REDIS_SERVER_PORT
+            if (global_config.REDIS_SERVER_PW
+                    and global_config.REDIS_SERVER_PW is not None):
+                kwargs["password"] = global_config.REDIS_SERVER_PW
+            redis_interface.connect(**kwargs)
+            if "user" in request.args:
+                user = request.args["user"]
+                if self.user.has_superadmin_role() is False:
+                    redis_interface.disconnect()
+                    return make_response(jsonify(SimpleResponseModel(
+                        status="error",
+                        message=(f"Unable to list mapsets for user {user}: You are not"
+                                 " authorized for this request. "
+                                 "Minimum required user role: superadmin")
+                                )), 401)
+            else:
+                user = self.user.get_id()
+            locs_mapsets = (redis_interface.get_credentials(user)["permissions"]
+                            ["accessible_datasets"])
+            redis_interface.disconnect()
+            mapsets = []
+            for location in locs_mapsets:
+                for mapset in locs_mapsets[location]:
+                    mapsets.append(f"{location}/{mapset}")
+            try:
+                return make_response(jsonify(MapsetListResponseModel(
+                    status="success",
+                    available_mapsets=mapsets,
+                    )), 200)
+
+            except Exception as e:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="Unable to list mapsets: Exception %s"
+                            % (str(e)))), 500)
