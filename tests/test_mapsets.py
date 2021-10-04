@@ -104,7 +104,8 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 401, "Status code is not 401: %s" % rv.status_code)
 
     def test_user_own_mapsets(self):
-        # Test if user can list available mapsets
+        """Test if user can list available mapsets
+        """
         rv = self.server.get(URL_PREFIX + '/mapsets', headers=self.test_user_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         rvdata = json_load(rv.data)
@@ -112,7 +113,8 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(mapsets, self.ref_mapsets, "Mapset list is not equal to reference mapset list")
 
     def test_superadmin_user_mapsets(self):
-        # Test if superadmin can list available mapsets from test_user
+        """Test if superadmin can list available mapsets from test_user
+        """
         rv = self.server.get(URL_PREFIX + f'/mapsets?user={self.test_user}', headers=self.root_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         rvdata = json_load(rv.data)
