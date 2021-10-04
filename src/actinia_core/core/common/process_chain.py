@@ -462,7 +462,6 @@ class ProcessChainConverter(object):
 
         return None
 
-
     def _create_stdin_process(self, module_descr, id):
         """Helper methods to create stdin process.
 
