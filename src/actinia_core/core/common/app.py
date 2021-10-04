@@ -102,6 +102,8 @@ URL_PREFIX = "/api/%s" % API_VERSION
 
 
 flask_app = Flask(__name__)
+# allows endpoints with and without trailing slashes
+flask_app.url_map.strict_slashes = False
 CORS(flask_app)
 
 flask_api = Api(flask_app, prefix=URL_PREFIX,
