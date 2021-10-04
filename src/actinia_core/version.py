@@ -32,6 +32,8 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "mundialis"
 
 from flask import make_response, jsonify
+import os
+import re
 import importlib
 import subprocess
 import sys
@@ -65,6 +67,54 @@ def init_versions():
     PYTHON_VERSION = sys.version.replace('\n', '- ')
 
 
+def valid_additional_version_info_key(cand):
+    """Checks whether the input is a valid key for inclusion in the version/
+    output. Keys may only contain lowercase letters and the underscore, have
+    a length between 1 and 20 and must not be any of the reserved keys which
+    we will set and populate."""
+    minlength = 1
+    maxlength = 20
+    valid_reg_ex = '^[a-z_]{' + str(minlength) + ',' + str(maxlength) + '}$'
+    reserved_keys = [
+        'grass_version', 'plugin_versions', 'plugins', 'python_version',
+        'version'
+    ]
+    return cand and cand not in reserved_keys and re.match(valid_reg_ex, cand)
+
+
+def parse_additional_version_info(env_value):
+    """Parses key:value pairs which are seperated with pipes and returns them
+    as dictionary."""
+    additional_info = {}
+    # split at pipe |
+    kvp_pairs = env_value.split("|")
+    for kvp_pair in kvp_pairs:
+        # split at colon : but only max once
+        kvp = kvp_pair.split(':', 1)
+        if len(kvp) == 2 and valid_additional_version_info_key(kvp[0]):
+            additional_info[kvp[0]] = kvp[1]
+    return additional_info
+
+
+def find_additional_version_info():
+    """If there is a ACTINIA_ADDITIONAL_VERSION_INFO environment variable,
+    we'll try to parse its value and retun more information that will eventually
+    be added to the version output"""
+    env_name = "ACTINIA_ADDITIONAL_VERSION_INFO"
+    if env_name in os.environ:
+        return parse_additional_version_info(os.environ[env_name])
+    return {}
+
+
+def find_running_since_info():
+    """If there is a ACTINIA_RUNNING_SINCE environment variable, return its
+    content"""
+    env_name = "ACTINIA_RUNNING_SINCE"
+    if env_name in os.environ:
+        return os.environ[env_name]
+    return "n/a"
+
+
 # Return the version of Actinia Core as REST API call
 @flask_app.route(URL_PREFIX + '/version')
 def version():
@@ -73,11 +123,13 @@ def version():
     Returns: Response
 
     """
-    info = {}
+    # start with any potential additional version info or an empty dictionary
+    info = find_additional_version_info()
     info['version'] = __version__
     info['plugins'] = ",".join(global_config.PLUGINS)
     info['grass_version'] = G_VERSION
     info['plugin_versions'] = PLUGIN_VERSIONS
     info['python_version'] = PYTHON_VERSION
+    info['running_since'] = find_running_since_info()
 
     return make_response(jsonify(info), 200)

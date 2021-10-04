@@ -169,7 +169,7 @@ ace location="ECAD" mapset="PERMANENT" -r
  'temperature_mean_yearly_celsius_9']
 ```
 
-## Acessing maps in a different mapset
+## Accessing maps in a different mapset
 
 Simply use `@name_of_mapset`.
 
@@ -605,7 +605,7 @@ ace location="mylatlon" create_mapset="user1"
 
 ### Installing of GRASS GIS addons (extensions)
 
-(requires elevated user priviledges)
+(requires elevated user privileges)
 
 ```bash
 # list existing addons, see also

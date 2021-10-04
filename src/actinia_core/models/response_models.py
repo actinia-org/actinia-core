@@ -1192,7 +1192,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
         resource_id (str): The resource id
-        iteration (int): Ther iteration of the job
+        iteration (int): The iteration of the job
         process_log (dict, str, list): The log from the running GRASS module
         progress (ProgressInfoModel): Progress information
         results (dict): The results of processing steps as Python data types
