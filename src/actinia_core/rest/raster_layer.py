@@ -176,7 +176,11 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         'tags': ['Raster Management'],
         'description': 'Create a new raster map layer by uploading a GeoTIFF. '
                        'This method will fail if the map already exists. '
-                       'Minimum required user role: user.',
+                       'An example request is \'curl -L -u "XXX:XXX" -X POST '
+                       '-H "Content-Type: multipart/form-data" -F '
+                       '"file=@/home/....tif" http://localhost:8088/api/v1/'
+                       'locations/nc_spm_08/mapsets/test_mapset/raster_layers/'
+                       'testraster\'. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
