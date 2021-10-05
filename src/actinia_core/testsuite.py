@@ -301,22 +301,34 @@ class ActiniaTestCaseBase(unittest.TestCase):
         time.sleep(0.4)
         return resp_data
 
-    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
+    def assertRasterInfo(self, location, mapset, raster, ref_info, header):
 
+        url = f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/raster_layers/{raster}"
+        rv = self.server.get(url, headers=header)
+        resp = json_loads(rv.data.decode())
+        info = resp["process_results"]
+        for key, val in ref_info.items():
+            self.assertIn(key, info, f"RasterInfoAssertion failed: key {key} not found")
+            self.assertEqual(val, info[key], ("RasterInfoAssertion failed:"
+                                              f" value {key}:{val} does not match reference"))
+
+    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
+        self.delete_mapset(mapset_name, location_name)
+        # Create new mapset
+        rv = self.server.post(
+            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
+            headers=self.admin_auth_header)
+        print(rv.data.decode())
+
+    def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
         # Unlock mapset for deletion
         rv = self.server.delete(
             URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
             headers=self.admin_auth_header)
         print(rv.data.decode())
 
-        # Delete any existing mapsets
+        # Delete existing mapset
         rv = self.server.delete(
-            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-            headers=self.admin_auth_header)
-        print(rv.data.decode())
-
-        # Create new mapsets
-        rv = self.server.post(
             URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
             headers=self.admin_auth_header)
         print(rv.data.decode())
