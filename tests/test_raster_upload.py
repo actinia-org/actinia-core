@@ -24,13 +24,12 @@
 """
 Tests: Upload raster via endpoint test case
 """
-from flask.json import loads as json_loads, dumps as json_dumps
 import os
 import unittest
 import requests
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except Exception:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -51,8 +50,7 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     ref_info = {'cells': '225000', 'cols': '500', 'east': '645000', 'ewres': '30',
                 'maptype': 'raster', 'max': '156.3865', 'min': '55.1736',
                 'ncats': '0', 'north': '228500', 'nsres': '30', 'rows': '450',
-                'south': '215000','west': '630000'}
-
+                'south': '215000', 'west': '630000'}
 
     @classmethod
     def setUpClass(cls):
@@ -82,12 +80,13 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_raster_userdb(self):
         """Test successful GeoTIFF upload and check against reference raster info
         """
-        url = f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/raster_layers/{self.raster}"
+        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/"
+               f"raster_layers/{self.raster}")
         multipart_form_data = {'file': open(self.local_raster, "rb")}
         rv = self.server.post(url, content_type="multipart/form-data",
                               headers=self.user_auth_header, data=multipart_form_data)
 
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.user_auth_header, http_status=200, status="finished")
 
         self.assertRasterInfo(self.location, self.tmp_mapset, self.raster,
@@ -96,13 +95,15 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_raster_globaldb_error(self):
         """Test Error if raster is uploaded to global DB
         """
-        url = f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/raster_layers/{self.raster}"
+        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
+               f"raster_layers/{self.raster}")
         multipart_form_data = {'file': open(self.local_raster, "rb")}
         rv = self.server.post(url, content_type="multipart/form-data",
                               headers=self.user_auth_header, data=multipart_form_data)
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.user_auth_header, http_status=400, status="error",
-            message_check=f"Mapset <{self.mapset}> exists in the global dataset and can not be modified.")
+            message_check=(f"Mapset <{self.mapset}> exists in the global "
+                           "dataset and can not be modified."))
 
 
 if __name__ == '__main__':

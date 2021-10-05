@@ -303,14 +303,16 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     def assertRasterInfo(self, location, mapset, raster, ref_info, header):
 
-        url = f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/raster_layers/{raster}"
+        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+               f"raster_layers/{raster}")
         rv = self.server.get(url, headers=header)
         resp = json_loads(rv.data.decode())
         info = resp["process_results"]
         for key, val in ref_info.items():
             self.assertIn(key, info, f"RasterInfoAssertion failed: key {key} not found")
-            self.assertEqual(val, info[key], ("RasterInfoAssertion failed:"
-                                              f" value {key}:{val} does not match reference"))
+            self.assertEqual(val, info[key], (
+                f"RasterInfoAssertion failed:"
+                f" value {key}:{val} does not match reference"))
 
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
         self.delete_mapset(mapset_name, location_name)
