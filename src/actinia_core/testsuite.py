@@ -32,8 +32,6 @@ import unittest
 from flask.json import loads as json_loads
 from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
-from .health_check import health_check
-from .version import version
 from actinia_core.core.common.app import flask_app, URL_PREFIX
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.config import global_config
@@ -386,5 +384,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %
+                         rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %
+                         rv.mimetype)
