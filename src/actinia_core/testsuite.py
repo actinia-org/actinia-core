@@ -355,23 +355,23 @@ class ActiniaTestCaseBase(unittest.TestCase):
                f'vector_layers/{vector}')
         rv = self.server.delete(url, headers=self.user_auth_header)
 
+        parameter["column"] = "z"
+        region["res"] = 100000
         # Create
         postbody = {
             "list": [
                 {
                     "id": "set_region",
                     "module": "g.region",
-                    "inputs": [region]
+                    "inputs": [{"param": key, "value": str(val)} for key, val
+                               in region.items()]
                 },
                 {
                     "id": "create_vector",
                     "module": "v.random",
-                    "inputs": {"column": "z",
-                               "npoints": parameter["npoints"],
-                               "zmin": parameter["zmin"],
-                               "zmax": parameter["zmax"],
-                               "seed": parameter["seed"]},
-                    "outputs": {"output": {"name": vector}},
+                    "inputs": [{"param": key, "value": str(val)} for key, val
+                               in parameter.items()],
+                    "outputs": [{"param": "output", "value": vector}],
                     "flags": "z"
                 }
             ],
@@ -383,6 +383,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
                               headers=self.user_auth_header,
                               data=json_dumps(postbody),
                               content_type="application/json")
+        import pdb; pdb.set_trace()
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
