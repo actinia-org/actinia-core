@@ -357,7 +357,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         parameter["column"] = "z"
         region["res"] = 100000
-        # Create
+        # Create processing chain for random vector creation
         postbody = {
             "list": [
                 {
@@ -383,7 +383,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
                               headers=self.user_auth_header,
                               data=json_dumps(postbody),
                               content_type="application/json")
-        import pdb; pdb.set_trace()
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
