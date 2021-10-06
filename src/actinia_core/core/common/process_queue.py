@@ -93,25 +93,26 @@ def enqueue_job(timeout, func, *args):
         *args: The function arguments, the first argument must be the
                RessourceDataContainer
     """
-    process_queue.put((func, timeout, args))
+    # process_queue.put((func, timeout, args))
 
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
+    # # only uncomment ONE of the following endpoints:
 
     # # for '/locations/<string:location_name>/processing_async'
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource, start_job, EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
-
+    #
     # # for '/locations/<string:location_name>/processing_async_export'
     # from ...rest.ephemeral_processing_with_export import EphemeralProcessingWithExport
     # processing = EphemeralProcessingWithExport(*args)
     # processing.run()
 
-    # # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
-    # from ...rest.persistent_processing import PersistentProcessing
-    # processing = PersistentProcessing(*args)
-    # processing.run()
+    # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
+    from ...rest.persistent_processing import PersistentProcessing
+    processing = PersistentProcessing(*args)
+    processing.run()
 
 
 def stop_process_queue():

@@ -231,6 +231,31 @@ class ProcessChainConverter(object):
 
         return landsat_commands
 
+    def _get_sentinel_import_command_gcs(self, entry):
+        """Helper method to get the sentinel import command using i.sentinel.
+
+        Args:
+            entry (dict): Entry of the import description list
+
+        Returns:
+            sentinel_commands: The sentinel import commands
+        """
+        sentinel_commands = []
+
+        scene = entry["import_descr"]["source"]
+
+        download_p = Process(
+            exec_type="grass",
+            executable="i.sentinel.download",
+            id=f"download_{entry['value']}",
+            executable_params=[f"query=identifier={scene}",
+                               f"output={self.temp_file_path}"])
+        sentinel_commands.append(download_p)
+
+        import pdb; pdb.set_trace()
+        # self.temp_file_path
+
+
     def _get_sentinel_import_command(self, entry):
         """Helper method to get the sentinel import command.
 
@@ -576,7 +601,7 @@ class ProcessChainConverter(object):
         if self.message_logger:
             self.message_logger.info("Creating download process "
                                      "list for all import definitions")
-
+        #import pdb; pdb.set_trace()
         for entry in self.import_descr_list:
             if self.message_logger:
                 self.message_logger.info(entry)
@@ -599,7 +624,8 @@ class ProcessChainConverter(object):
 
             # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
-                sentinel_commands = self._get_sentinel_import_command(entry)
+                #sentinel_commands = self._get_sentinel_import_command(entry)
+                sentinel_commands = self._get_sentinel_import_command_gcs(entry)
                 downimp_list.extend(sentinel_commands)
 
             # LANDSAT
