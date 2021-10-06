@@ -30,6 +30,7 @@ import requests
 import time
 import unittest
 from flask.json import loads as json_loads
+from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
 from .health_check import health_check
 from .version import version
@@ -347,3 +348,43 @@ class ActiniaTestCaseBase(unittest.TestCase):
             URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
             headers=self.admin_auth_header)
         print(rv.data.decode())
+
+    def create_vector_layer(self, location, mapset, vector, region, parameter):
+        # Remove potentially existing raster layer
+        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
+               f'vector_layers/{vector}')
+        rv = self.server.delete(url, headers=self.user_auth_header)
+
+        # Create
+        postbody = {
+            "list": [
+                {
+                    "id": "set_region",
+                    "module": "g.region",
+                    "inputs": [region]
+                },
+                {
+                    "id": "create_vector",
+                    "module": "v.random",
+                    "inputs": {"column": "z",
+                               "npoints": parameter["npoints"],
+                               "zmin": parameter["zmin"],
+                               "zmax": parameter["zmax"],
+                               "seed": parameter["seed"]},
+                    "outputs": {"output": {"name": vector}},
+                    "flags": "z"
+                }
+            ],
+            "version": "1"
+        }
+        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
+               f'processing_async')
+        rv = self.server.post(url,
+                              headers=self.user_auth_header,
+                              data=json_dumps(postbody),
+                              content_type="application/json")
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
