@@ -1,6 +1,15 @@
 Sentinel-2 NDVI computation
 ===========================
 
+We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:
+
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+```  
+
 The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
 **S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749**:
@@ -43,7 +52,7 @@ Poll the status of the asynchronous API call by polling the status URL.
 Be aware that you have to change the status url as the resource id will change for different NDVI API calls.
 
 ```bash
- curl ${AUTH} -X GET -i http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
+ curl ${AUTH} -X GET http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
 ```
 
 The final result will contain a complete processing list as well as
