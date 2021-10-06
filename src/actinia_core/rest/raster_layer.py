@@ -439,4 +439,5 @@ class PersistentRasterCreator(PersistentProcessing):
         except Exception:
             msg = " WARNING: Uploaded file can not be removed."
 
-        self.finish_message = f"Raster layer <{raster_name}> successfully imported.{msg}"
+        self.finish_message = (f"Raster layer <{raster_name}> successfully "
+                               f"imported.{msg}")

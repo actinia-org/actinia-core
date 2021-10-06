@@ -180,7 +180,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         'description': 'Create a new vector map layer by uploading a GPKG, '
                        'zipped Shapefile or GeoJSON. '
                        'This method will fail if the map already exists. '
-                       'Minimum required user role: user.',
+                       'Minimum required user role: user.'
                        'An example request is \'curl -L -u "XXX:XXX" -X POST '
                        '-H "Content-Type: multipart/form-data" -F '
                        '"file=@/home/....gpkg" http://localhost:8088/api/v1/'
@@ -282,7 +282,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
             unzip_folder = os.path.join(self.download_cache, f'unzip_{id}')
             with ZipFile(file_path, "r") as zip_ref:
                 zip_ref.extractall(unzip_folder)
-            shp_files = [entry for entry in os.listdir(unzip_folder) if entry.endswith('.shp')]
+            shp_files = [entry for entry in os.listdir(
+                unzip_folder) if entry.endswith('.shp')]
             if len(shp_files) == 0:
                 return make_response(jsonify(SimpleResponseModel(
                     status="error",
@@ -306,23 +307,6 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
         http_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), http_code)
-
-
-        # """Create a new vector map layer based on randomly generated point
-        # coordinates in a user specific region.
-        # """
-        # rdc = self.preprocess(has_json=True, has_xml=False,
-        #                       location_name=location_name,
-        #                       mapset_name=mapset_name,
-        #                       map_name=vector_name)
-        #
-        # if rdc:
-        #     enqueue_job(self.job_timeout, start_create_job, rdc)
-        #     http_code, response_model = self.wait_until_finish(0.1)
-        # else:
-        #     http_code, response_model = pickle.loads(self.response_data)
-        #
-        # return make_response(jsonify(response_model), http_code)
 
 
 def start_info_job(*args):
@@ -515,4 +499,5 @@ class PersistentVectorCreator(PersistentProcessing):
         except Exception:
             msg = " WARNING: Uploaded file can not be removed."
 
-        self.finish_message = f"Vector layer <{vector_name}> successfully imported.{msg}"
+        self.finish_message = (f"Vector layer <{vector_name}> successfully "
+                               f"imported.{msg}")

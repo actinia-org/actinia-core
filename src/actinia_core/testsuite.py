@@ -314,6 +314,19 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 f"RasterInfoAssertion failed:"
                 f" value {key}:{val} does not match reference"))
 
+    def assertVectorInfo(self, location, mapset, vector, ref_info, header):
+
+        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+               f"vector_layers/{vector}")
+        rv = self.server.get(url, headers=header)
+        resp = json_loads(rv.data.decode())
+        info = resp["process_results"]
+        for key, val in ref_info.items():
+            self.assertIn(key, info, f"VectorInfoAssertion failed: key {key} not found")
+            self.assertEqual(val, info[key], (
+                f"VectorInfoAssertion failed:"
+                f" value {key}:{val} does not match reference"))
+
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
         self.delete_mapset(mapset_name, location_name)
         # Create new mapset
