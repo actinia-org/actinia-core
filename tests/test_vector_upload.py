@@ -85,8 +85,8 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
     tmp_mapset = "mapset_upload"
     vector = "testvector"
     local_geojson = f"/tmp/{vector}.geojson"
-    gpkg_file = "tests/data/nc_test_poly.gpkg"
-    zipped_shp_file = "tests/data/nc_test_poly.zip"
+    gpkg_file = "/src/actinia_core/tests/data/nc_test_poly.gpkg"
+    zipped_shp_file = "/src/actinia_core/tests/data/nc_test_poly.zip"
 
     ref_info = {'Attributes': [{'column': 'cat', 'type': 'INTEGER'}],
                 'areas': '1', 'islands': '1', 'boundaries': '1', 'centroids': '1',
