@@ -201,8 +201,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
-            result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE",],
-                                           ["B120", "B080"])
+            aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE",],
+                                  ["B120", "B080"])
             # pprint(result)
             self.assertTrue(False, "The error was not found")
         except Exception as e:

@@ -60,7 +60,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         region_settings = json_loads(rv.data)["process_results"]["region"]
-        projection_settings = json_loads(rv.data)["process_results"]["projection"]
+        json_loads(rv.data)["process_results"]["projection"]
 
         self.assertTrue("depths" in region_settings)
         self.assertTrue("ewres" in region_settings)
