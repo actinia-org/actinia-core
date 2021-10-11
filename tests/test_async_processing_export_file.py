@@ -41,7 +41,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Module  example for r.out.ascii output file export
 file_export = {
-    "version":1,
+    "version": 1,
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
                  "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
@@ -56,7 +56,7 @@ file_export = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -65,11 +65,11 @@ file_export = {
         {
             "id": "3",
             "module": "r.out.ascii",
-            "inputs": [{"param":"input",
+            "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
                 {"export": {"type": "file", "format": "TXT"},
-                 "param":"output",
+                 "param": "output",
                  "value": "$file::out1"}
             ]
         },

@@ -87,7 +87,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_old(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
+        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -98,7 +98,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_old_geojson(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",],
+        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -112,7 +112,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_new(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",],
+        result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -123,7 +123,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_single_new_safe(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138.SAFE",],
+        result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138.SAFE", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -134,7 +134,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_singler_eplacement_bug(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001",],
+        result = aws.get_sentinel_urls(["S2A_MSIL1C_20171210T020751_N0206_R017_T50HPG_20171210T052001", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -145,7 +145,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def otest_query_for_sentinel_scenes_singler_eplacement_bug_2(self):
         aws = AWSSentinel2AInterface(global_config)
-        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030T235752_20161030T235752",],
+        result = aws.get_sentinel_urls(["S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030T235752_20161030T235752", ],
                                        ["B12", "B08"])
         pprint(result)
 
@@ -173,7 +173,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
-            result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE",],
+            result = aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE", ],
                                            ["B12", "B08"])
             pprint(result)
             self.assertTrue(False, "The error was not found")
@@ -201,7 +201,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
 
         try:
-            aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE",],
+            aws.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138_NOPE", ],
                                   ["B120", "B080"])
             # pprint(result)
             self.assertTrue(False, "The error was not found")

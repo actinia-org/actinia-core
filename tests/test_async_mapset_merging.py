@@ -42,64 +42,64 @@ __email__ = "soerengebbert@googlemail.com"
 # Module change example for r.slope.aspect with g.region adjustment
 
 process_chain_short_1 = {
-    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT",
+            "res": "1000"
         },
-        "flags":"p",
-        "verbose":True
+        "flags": "p",
+        "verbose": True
     },
-    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-           "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+           "elevation": "elevation@PERMANENT",
+           "format": "degrees",
+           "min_slope": "0.0"
         },
-        "outputs":{
-           "aspect":{
-               "name":"my_aspect_1"
+        "outputs": {
+           "aspect": {
+               "name": "my_aspect_1"
            },
-           "slope":{
-               "name":"my_slope_1"
+           "slope": {
+               "name": "my_slope_1"
            }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
     }
 }
 
 process_chain_short_2 = {
-    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT",
+            "res": "1000"
         },
-        "flags":"p",
-        "verbose":True
+        "flags": "p",
+        "verbose": True
     },
-    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-           "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+           "elevation": "elevation@PERMANENT",
+           "format": "degrees",
+           "min_slope": "0.0"
         },
-        "outputs":{
-           "aspect":{
-               "name":"my_aspect_2"
+        "outputs": {
+           "aspect": {
+               "name": "my_aspect_2"
            },
-           "slope":{
-               "name":"my_slope_2"
+           "slope": {
+               "name": "my_slope_2"
            }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
     }
 }
 

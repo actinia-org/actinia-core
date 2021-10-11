@@ -40,7 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 # param wrong
 process_chain_error_1 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -48,7 +48,7 @@ process_chain_error_1 = {
             "inputs": [
                 {"paramp": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -59,7 +59,7 @@ process_chain_error_1 = {
 
 # value wrong
 process_chain_error_2 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -67,7 +67,7 @@ process_chain_error_2 = {
             "inputs": [
                 {"param": "raster",
                  "values": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -78,7 +78,7 @@ process_chain_error_2 = {
 
 # module wrong
 process_chain_error_3 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -86,7 +86,7 @@ process_chain_error_3 = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -97,7 +97,7 @@ process_chain_error_3 = {
 
 # Id wrong
 process_chain_error_4 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "ids": "1",
@@ -105,7 +105,7 @@ process_chain_error_4 = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -116,7 +116,7 @@ process_chain_error_4 = {
 
 # Wrong mapset
 process_chain_error_5 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -124,7 +124,7 @@ process_chain_error_5 = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMAFROST"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -135,7 +135,7 @@ process_chain_error_5 = {
 
 # param missing on output
 process_chain_output_error_1 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -143,7 +143,7 @@ process_chain_output_error_1 = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -152,10 +152,10 @@ process_chain_output_error_1 = {
         {
             "id": "2",
             "module": "r.out.ascii",
-            "inputs": [{"param":"input",
+            "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"params":"output",
+                {"params": "output",
                  "value": "$file::out1"}
             ]
         }
@@ -164,7 +164,7 @@ process_chain_output_error_1 = {
 
 # value missing on output
 process_chain_output_error_2 = {
-    "version":1,
+    "version": 1,
     "list": [
         {
             "id": "1",
@@ -172,7 +172,7 @@ process_chain_output_error_2 = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -181,10 +181,10 @@ process_chain_output_error_2 = {
         {
             "id": "2",
             "module": "r.out.ascii",
-            "inputs": [{"param":"input",
+            "inputs": [{"param": "input",
                         "value": "elevation@PERMANENT"}],
             "outputs": [
-                {"param":"output",
+                {"param": "output",
                  "values": "$file::out1"}
             ]
         }
@@ -265,7 +265,7 @@ process_chain_sent_2 = {
 
 # Wrong webhook URL
 process_chain_error_webhook_finished = {
-    "version":1,
+    "version": 1,
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished_not",
                  "update": "http://0.0.0.0:5005/webhook/update"},
     "list": [
@@ -275,7 +275,7 @@ process_chain_error_webhook_finished = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",
@@ -286,7 +286,7 @@ process_chain_error_webhook_finished = {
 
 
 process_chain_error_webhook_update = {
-    "version":1,
+    "version": 1,
     "webhooks": {"finished": "http://0.0.0.0:5005/webhook/finished",
                  "update": "http://0.0.0.0:5005/webhook/update_not"},
     "list": [
@@ -296,7 +296,7 @@ process_chain_error_webhook_update = {
             "inputs": [
                 {"param": "raster",
                  "value": "elevation@PERMANENT"},
-                {"param":"res",
+                {"param": "res",
                  "value": "10000"}
             ],
             "flags": "p",

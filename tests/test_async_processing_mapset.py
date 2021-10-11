@@ -41,81 +41,81 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
-    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT"
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT"
         },
-        "flags":"p",
-        "verbose":True
+        "flags": "p",
+        "verbose": True
     },
-    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-           "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+           "elevation": "elevation@PERMANENT",
+           "format": "degrees",
+           "min_slope": "0.0"
         },
-        "outputs":{
-           "aspect":{
-               "name":"my_aspect"
+        "outputs": {
+           "aspect": {
+               "name": "my_aspect"
            },
-           "slope":{
-               "name":"my_slope"
+           "slope": {
+               "name": "my_slope"
            }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
     },
-    3:{
-        "module":"r.watershed",
-        "inputs":{
-           "elevation":"elevation@PERMANENT"
+    3: {
+        "module": "r.watershed",
+        "inputs": {
+           "elevation": "elevation@PERMANENT"
         },
-        "outputs":{
-           "accumulation":{
-               "name":"my_accumulation"
+        "outputs": {
+           "accumulation": {
+               "name": "my_accumulation"
            }
         }
     },
-    4:{
-        "module":"r.info",
-        "inputs":{
-           "map":"my_aspect"
+    4: {
+        "module": "r.info",
+        "inputs": {
+           "map": "my_aspect"
         },
-        "flags":"gr",
-        "verbose":True
+        "flags": "gr",
+        "verbose": True
     }
 }
 
 process_chain_short = {
-    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT"
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT"
         },
-        "flags":"p",
-        "verbose":True
+        "flags": "p",
+        "verbose": True
     },
-    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-           "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+           "elevation": "elevation@PERMANENT",
+           "format": "degrees",
+           "min_slope": "0.0"
         },
-        "outputs":{
-           "aspect":{
-               "name":"my_aspect_2"
+        "outputs": {
+           "aspect": {
+               "name": "my_aspect_2"
            },
-           "slope":{
-               "name":"my_slope_2"
+           "slope": {
+               "name": "my_slope_2"
            }
         },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
     }
 }
 
