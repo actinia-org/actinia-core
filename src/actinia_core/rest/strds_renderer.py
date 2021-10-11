@@ -28,10 +28,7 @@ from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
 from actinia_core.core.common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-<<<<<<< HEAD
-=======
-from tempfile import NamedTemporaryFile
->>>>>>> Use recommended way to create temporary files
+
 import os
 from flask_restful_swagger_2 import swagger
 from tempfile import NamedTemporaryFile
@@ -217,13 +214,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         options = self.rdc.user_data
         self.required_mapsets.append(self.mapset_name)
 
-<<<<<<< HEAD
         with NamedTemporaryFile(suffix=".png") as file:
             result_file = file.name
-=======
-        file = NamedTemporaryFile(suffix=".png", delete=False)
-        result_file = file.name
->>>>>>> Use recommended way to create temporary files
 
         g_region_query = self._setup_render_environment_and_region(
             options=options, result_file=result_file, legacy=False)
