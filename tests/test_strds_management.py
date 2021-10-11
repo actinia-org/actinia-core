@@ -28,7 +28,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 
 __license__ = "GPLv3"

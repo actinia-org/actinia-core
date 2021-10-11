@@ -31,7 +31,7 @@ import unittest
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except Exception:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 

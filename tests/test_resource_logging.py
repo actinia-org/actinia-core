@@ -31,7 +31,7 @@ from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"

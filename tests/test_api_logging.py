@@ -29,7 +29,7 @@ from actinia_core.core.common.api_logger import ApiLogger
 from actinia_core.core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"

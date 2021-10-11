@@ -29,7 +29,7 @@ from flask.json import loads as json_load, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
