@@ -1,6 +1,15 @@
 Sentinel-2 NDVI computation
 ===========================
 
+We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:
+
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+```  
+
 The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
 **S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749**:
@@ -33,9 +42,9 @@ finished response:
    "timestamp": 1527683143.989044,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
+     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -43,7 +52,7 @@ Poll the status of the asynchronous API call by polling the status URL.
 Be aware that you have to change the status url as the resource id will change for different NDVI API calls.
 
 ```bash
- curl ${AUTH} -X GET -i http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
+ curl ${AUTH} -X GET http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
 ```
 
 The final result will contain a complete processing list as well as
@@ -137,7 +146,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml"
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml"
        ],
        "return_code": 0,
        "run_time": 0.05118393898010254,
@@ -150,7 +159,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/T50RKR_20161206T030112_B08.jp2",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08"
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08"
        ],
        "return_code": 0,
        "run_time": 0.35857558250427246,
@@ -163,7 +172,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/T50RKR_20161206T030112_B04.jp2",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04"
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04"
        ],
        "return_code": 0,
        "run_time": 0.15271401405334473,
@@ -178,7 +187,7 @@ as well as univariate statistics of the computed NDVI scene.
          "/usr/local/bin/grass78",
          "-e",
          "-c",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
          "/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/sentinel2"
        ],
        "return_code": 0,
@@ -194,7 +203,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "v.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml",
+         "input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml",
          "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
          "--q"
        ],
@@ -250,8 +259,8 @@ as well as univariate statistics of the computed NDVI scene.
          "vrt",
          "-projwin_srs",
          "EPSG:4326",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt"
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt"
        ],
        "return_code": 0,
        "run_time": 0.05114293098449707,
@@ -264,7 +273,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt",
+         "input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt",
          "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped",
          "--q"
        ],
@@ -375,8 +384,8 @@ as well as univariate statistics of the computed NDVI scene.
          "vrt",
          "-projwin_srs",
          "EPSG:4326",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04",
-         "/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt"
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04",
+         "/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt"
        ],
        "return_code": 0,
        "run_time": 0.05096769332885742,
@@ -389,7 +398,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt",
+         "input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt",
          "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped",
          "--q"
        ],
@@ -633,20 +642,20 @@ as well as univariate statistics of the computed NDVI scene.
    "timestamp": 1527683351.8002071,
    "urls": {
      "resources": [
-       "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png",
-       "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff"
+       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png",
+       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff"
      ],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
+     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
 The following URLs point to the resulting PNG preview image and the
 NDVI GeoTiff file:
 
- <http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
- <http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
+ <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
+ <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
 
 The PNG preview should look like this:
 

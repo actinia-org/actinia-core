@@ -600,10 +600,18 @@ The result of the stdout output parsing for each module is located in
 the \"process\_results\" section of the json response.
 
 Sentinel-2A NDVI process chain
-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\-\--
+--
+
+We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:
+
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
 
 We create a process chain that computes the NDVI from a Sentinel-2A
-scene based on the bands 8 and 4 with the GRASS GIS module r.mapcalc. We
+scene based on the bands 8 and 4 with the GRASS GIS module *r.mapcalc*. We
 use the latitude/longitude location **latlong\_wgs84** as processing
 environment and the computational region of sentinel band B04 for the
 NDVI processing. Then we calculate univariate statistics for the
@@ -615,8 +623,8 @@ The following JSON code has 6 process definitions:
  1.  Import of two bands (B04 and B08) of the Sentinel-2A scene
      *S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749*
  2.  Set the computational region to imported raster layer B04
- 3.  Use r.mapcalc to compute the NDVI
- 4.  Use r.univar to compute univariate statistics of the computed NDVI
+ 3.  Use *r.mapcalc* to compute the NDVI
+ 4.  Use *r.univar* to compute univariate statistics of the computed NDVI
      raster layer
  5.  Export the computed NDVI as GeoTiff
 
@@ -696,8 +704,7 @@ Run the process chain asynchronously:
           ],
  "version": "1"}'
 
- curl ${AUTH} -X POST -i "${HOST}:${PORT}/locations/latlong_wgs84/processing_async_export" \
-      -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
+curl ${AUTH} -X POST "${ACTINIA_URL}/locations/latlong_wgs84/processing_async_export" -H "accept: application/json" -H "content-type: application/json" -d "$JSON"
 ```
 
 The response requires the polling of the status URL, since the API call
@@ -710,8 +717,8 @@ works asynchronously:
    "api_info": {
      "endpoint": "asyncephemeralexportresource",
      "method": "POST",
-     "path": "/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
+     "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
+     "request_url": "http://actinia.mundialis.de/api/v1/locations/latlong_wgs84/processing_async_export"
    },
    "datetime": "2018-05-02 21:05:34.873754",
    "http_code": 200,
@@ -724,17 +731,17 @@ works asynchronously:
    "timestamp": 1525287934.873754,
    "urls": {
      "resources": [],
-     "status": "http://localhost:5000/resources/superadmin/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
+     "status": "https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-ff5a89da-82fe-4f13-9f35-8872c4d0ccf7"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
 Poll the status of the Sentinel-2A NDVI job and view the result of the
-computation:
+computation (remember to use your own resource-id):
 
 ```bash
- curl ${AUTH} -X GET -i "${HOST}:${PORT}/resources/superadmin/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
 ```
 
 The finished response should look like this:
@@ -747,7 +754,7 @@ The finished response should look like this:
      "endpoint": "asyncephemeralexportresource",
      "method": "POST",
      "path": "/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://localhost:5000/locations/latlong_wgs84/processing_async_export"
+     "request_url": "http://actinia.mundialis.de/api/v1/locations/latlong_wgs84/processing_async_export"
    },
    "datetime": "2018-05-02 21:09:39.823857",
    "http_code": 200,
@@ -1339,11 +1346,11 @@ The finished response should look like this:
    "timestamp": 1525288179.8238533,
    "urls": {
      "resources": [
-       "http://localhost:5000/resource/superadmin/resource_id-60f3f012-4220-46ec-9110-694df49006c4/NDVI.tiff"
+       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4/NDVI.tiff"
      ],
-     "status": "http://localhost:5000/resources/superadmin/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
+     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
