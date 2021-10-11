@@ -32,6 +32,8 @@ import unittest
 from flask.json import loads as json_loads
 from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
+from .health_check import health_check
+from .version import version
 from actinia_core.core.common.app import flask_app, URL_PREFIX
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.config import global_config
