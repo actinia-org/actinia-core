@@ -52,21 +52,21 @@ process_chain = {
     2: {
         "module": "r.slope.aspect",
         "inputs": {
-           "elevation": "elevation@PERMANENT",
-           "format": "degrees",
-           "min_slope": "0.0"
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect"
-           },
-           "slope": {
-               "name": "my_slope",
-               "export": {
-                   "format": "GTiff",
-                   "type": "raster"
-               }
-           }
+            "aspect": {
+                "name": "my_aspect"
+            },
+            "slope": {
+                "name": "my_slope",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                }
+            }
         },
         "flags": "a",
         "overwrite": False,
@@ -75,22 +75,22 @@ process_chain = {
     3: {
         "module": "r.watershed",
         "inputs": {
-           "elevation": "elevation@PERMANENT"
+            "elevation": "elevation@PERMANENT"
         },
         "outputs": {
-           "accumulation": {
-               "name": "my_accumulation",
-               "export": {
-                   "format": "GTiff",
-                   "type": "raster"
-               }
-           }
+            "accumulation": {
+                "name": "my_accumulation",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                }
+            }
         }
     },
     4: {
         "module": "r.info",
         "inputs": {
-           "map": "my_aspect"
+            "map": "my_aspect"
         },
         "flags": "gr",
         "verbose": True
@@ -168,16 +168,16 @@ process_chain_error_6 = {
             "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect"
-           },
-           "slope": {
-               "name": "my_slope",
-               "export": {
-                   "fromat": "GTiff",
-                   "type": "raster"
-               }
-           }
+            "aspect": {
+                "name": "my_aspect"
+            },
+            "slope": {
+                "name": "my_slope",
+                "export": {
+                    "fromat": "GTiff",
+                    "type": "raster"
+                }
+            }
         },
         "flags": "a",
         "overwrite": False,
@@ -197,7 +197,7 @@ process_chain_region = {
     2: {
         "module": "g.region",
         "inputs": {
-           "res": "0.001"
+            "res": "0.001"
         },
         "flags": "p",
         "verbose": True
@@ -205,7 +205,7 @@ process_chain_region = {
     3: {
         "module": "r.info",
         "inputs": {
-           "map": "elevation@PERMANENT"
+            "map": "elevation@PERMANENT"
         },
         "flags": "gr",
         "verbose": True

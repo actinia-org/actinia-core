@@ -290,7 +290,7 @@ process_chain_list = {
         "module": "t.list",
         "id": "t_list_1",
         "inputs": [{"param": "type", "value": "strds"}]
-        },
+    },
         {
             "module": "t.rast.list",
             "id": "t.rast.list_1",
@@ -298,9 +298,9 @@ process_chain_list = {
                 {
                     "param": "input",
                     "value": f"modis@{mapset_name}"
-                    }
+                }
             ]
-        }
+    }
     ],
     "version": "1"
 }

@@ -52,17 +52,17 @@ process_chain_long = {
     2: {
         "module": "r.slope.aspect",
         "inputs": {
-           "elevation": "elevation@PERMANENT",
-           "format": "degrees",
-           "min_slope": "0.0"
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect"
-           },
-           "slope": {
-               "name": "my_slope"
-           }
+            "aspect": {
+                "name": "my_aspect"
+            },
+            "slope": {
+                "name": "my_slope"
+            }
         },
         "flags": "a",
         "overwrite": False,
@@ -71,18 +71,18 @@ process_chain_long = {
     3: {
         "module": "r.watershed",
         "inputs": {
-           "elevation": "elevation@PERMANENT"
+            "elevation": "elevation@PERMANENT"
         },
         "outputs": {
-           "accumulation": {
-               "name": "my_accumulation"
-           }
+            "accumulation": {
+                "name": "my_accumulation"
+            }
         }
     },
     4: {
         "module": "r.info",
         "inputs": {
-           "map": "my_aspect"
+            "map": "my_aspect"
         },
         "flags": "gr",
         "verbose": True
@@ -101,17 +101,17 @@ process_chain_short = {
     2: {
         "module": "r.slope.aspect",
         "inputs": {
-           "elevation": "elevation@PERMANENT",
-           "format": "degrees",
-           "min_slope": "0.0"
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect_2"
-           },
-           "slope": {
-               "name": "my_slope_2"
-           }
+            "aspect": {
+                "name": "my_aspect_2"
+            },
+            "slope": {
+                "name": "my_slope_2"
+            }
         },
         "flags": "a",
         "overwrite": False,

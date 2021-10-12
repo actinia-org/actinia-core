@@ -40,8 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
-strds_url = (URL_PREFIX +
-             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+strds_url = (URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds'
              % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 new_mapset = "raster_test_mapset"
@@ -95,8 +94,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     def test_strds_creation_error(self):
 
         # This must fail, global mapsets are not allowed to modify
-        rv = self.server.post(URL_PREFIX +
-                              '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
                               % {'location': location, 'mapset': strds_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
@@ -112,8 +110,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX +
-                              '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
                               % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",

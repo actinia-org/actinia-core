@@ -119,15 +119,15 @@ process_chain_3_importer = {
             "module": "g.region",
             "id": "1",
             "inputs": [
-              {
-                "import_descr": {
-                    "source": "https://storage.googleapis.com/graas-"
-                              "geodata/elev_ned_30m.tif",
-                    "type": "raster"
-                },
-                "param": "raster",
-                "value": "elev_ned_30m_new"
-              }
+                {
+                  "import_descr": {
+                      "source": "https://storage.googleapis.com/graas-"
+                      "geodata/elev_ned_30m.tif",
+                      "type": "raster"
+                  },
+                    "param": "raster",
+                    "value": "elev_ned_30m_new"
+                }
             ],
             "flags": "p"
         },
@@ -164,7 +164,7 @@ process_chain_3_importer = {
                     },
                     "param": "map",
                     "value": "geology_30m_new"
-                 }
+                }
             ]
         },
         {
@@ -216,7 +216,7 @@ process_chain_4_exporter = {
                     "value": "elevation@PERMANENT"
                 }
             ],
-            "outputs":  [
+            "outputs": [
                 {
                     "param": "output",
                     "value": "$file::export_of_2",

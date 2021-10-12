@@ -54,17 +54,17 @@ process_chain_short_1 = {
     2: {
         "module": "r.slope.aspect",
         "inputs": {
-           "elevation": "elevation@PERMANENT",
-           "format": "degrees",
-           "min_slope": "0.0"
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect_1"
-           },
-           "slope": {
-               "name": "my_slope_1"
-           }
+            "aspect": {
+                "name": "my_aspect_1"
+            },
+            "slope": {
+                "name": "my_slope_1"
+            }
         },
         "flags": "a",
         "overwrite": False,
@@ -85,17 +85,17 @@ process_chain_short_2 = {
     2: {
         "module": "r.slope.aspect",
         "inputs": {
-           "elevation": "elevation@PERMANENT",
-           "format": "degrees",
-           "min_slope": "0.0"
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
         },
         "outputs": {
-           "aspect": {
-               "name": "my_aspect_2"
-           },
-           "slope": {
-               "name": "my_slope_2"
-           }
+            "aspect": {
+                "name": "my_aspect_2"
+            },
+            "slope": {
+                "name": "my_slope_2"
+            }
         },
         "flags": "a",
         "overwrite": False,
