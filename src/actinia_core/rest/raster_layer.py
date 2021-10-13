@@ -209,12 +209,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         'produces': ["application/json"],
         'responses': {
             '200': {
-                'description': 'Raster map layer creation information',
+                'description': 'Raster map layer import information',
                 'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why raster map '
-                               'layer creation did not succeeded',
+                               'layer import failed',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -439,4 +439,5 @@ class PersistentRasterCreator(PersistentProcessing):
         except Exception:
             msg = " WARNING: Uploaded file can not be removed."
 
-        self.finish_message = f"Raster layer <{raster_name}> successfully created.{msg}"
+        self.finish_message = (f"Raster layer <{raster_name}> successfully "
+                               f"imported.{msg}")

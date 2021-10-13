@@ -24,22 +24,29 @@
 """
 Vector layer resources
 """
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request
 from flask_restful_swagger_2 import swagger
+import os
 import pickle
+from shutil import rmtree
+from uuid import uuid4
+from werkzeug.utils import secure_filename
+from zipfile import ZipFile
+
+from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_core.core.utils import allowed_file
+from actinia_core.models.response_models import \
+    ProcessingResponseModel, ProcessingErrorResponseModel, SimpleResponseModel
+from actinia_core.models.openapi.vector_layer import \
+    VectorInfoResponseModel, VectorRegionCreationModel, \
+    VectorAttributeModel, VectorInfoModel
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
-from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import \
-    ProcessingResponseModel, ProcessingErrorResponseModel
-from actinia_core.core.common.exceptions import AsyncProcessError
 from .map_layer_base import MapLayerRegionResourceBase
-from actinia_core.models.openapi.vector_layer import \
-     VectorInfoResponseModel, VectorRegionCreationModel, \
-     VectorAttributeModel, VectorInfoModel
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
@@ -170,10 +177,14 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @swagger.doc({
         'tags': ['Vector Management'],
-        'description': 'Create a new vector map layer based on randomly '
-                       'generated point coordinates in a user specific region. '
+        'description': 'Create a new vector map layer by uploading a GPKG, '
+                       'zipped Shapefile or GeoJSON. '
                        'This method will fail if the map already exists. '
-                       'Minimum required user role: user.',
+                       'An example request is \'curl -L -u "XXX:XXX" -X POST '
+                       '-H "Content-Type: multipart/form-data" -F '
+                       '"file=@/home/....gpkg" http://localhost:8088/api/v1/'
+                       'locations/nc_spm_08/mapsets/test_mapset/vector_layers/'
+                       'testvector\'. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -206,36 +217,94 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 'schema': VectorRegionCreationModel
             }
         ],
-        'consumes': ['application/json'],
+        'consumes': ['Content-Type: multipart/form-data'],
         'produces': ["application/json"],
         'responses': {
             '200': {
-                'description': 'The vector map layer information',
+                'description': 'The vector map layer import information',
                 'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why '
-                               'gathering vector map layer information did not '
-                               'succeeded',
+                               'vector map layer import failed',
                 'schema': ProcessingErrorResponseModel
             }
         }
     })
     def post(self, location_name, mapset_name, vector_name):
-        """Create a new vector map layer based on randomly generated point
-        coordinates in a user specific region.
+        """Create a new vector layer by uploading a GPKG, zipped Shapefile,
+        or GeoJSON.
         """
-        rdc = self.preprocess(has_json=True, has_xml=False,
+
+        allowed_extensions = ['gpkg', 'zip', 'json', 'geojson']
+
+        # TODO check if another content type can be used
+        content_type = request.content_type.split(';')[0]
+        if content_type != "multipart/form-data":
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="Content type is not 'multipart/form-data'")), 400)
+
+        if 'file' not in request.files:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="No file part indicated in postbody.")), 400)
+
+        # create download cache path if it does not exist
+        if os.path.exists(self.download_cache):
+            pass
+        else:
+            os.mkdir(self.download_cache)
+
+        # save file from request
+        id = str(uuid4())
+        file = request.files['file']
+        if file.filename == '':
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="No selected file")), 400)
+
+        if allowed_file(file.filename, allowed_extensions):
+            name, extension = secure_filename(file.filename).rsplit('.', 1)
+            filename = f"{name}_{id}.{extension}"
+            file_path = os.path.join(self.download_cache, filename)
+            file.save(file_path)
+        else:
+            os.remove(file_path)
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="File has a not allowed extension. "
+                        f"Please use {','.join(allowed_extensions)}.")), 400)
+
+        # Shapefile upload as zip
+        if extension == 'zip':
+            unzip_folder = os.path.join(self.download_cache, f'unzip_{id}')
+            with ZipFile(file_path, "r") as zip_ref:
+                zip_ref.extractall(unzip_folder)
+            shp_files = [entry for entry in os.listdir(
+                unzip_folder) if entry.endswith('.shp')]
+            if len(shp_files) == 0:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="No .shp file found in zip file.")), 400)
+            elif len(shp_files) > 1:
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message=f"{len(shp_files)} .shp files found in zip file."
+                            "Please put only one in the zip file.")), 400)
+            else:
+                os.remove(file_path)
+                file_path = os.path.join(unzip_folder, shp_files[0])
+
+        rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
                               mapset_name=mapset_name,
                               map_name=vector_name)
-
         if rdc:
+            rdc.set_request_data(file_path)
             enqueue_job(self.job_timeout, start_create_job, rdc)
-            http_code, response_model = self.wait_until_finish(0.1)
-        else:
-            http_code, response_model = pickle.loads(self.response_data)
 
+        http_code, response_model = pickle.loads(self.response_data)
         return make_response(jsonify(response_model), http_code)
 
 
@@ -377,15 +446,13 @@ class PersistentVectorCreator(PersistentProcessing):
         3. Setup GRASS and create the temporary mapset
         4. Execute g.list of the first process chain to check if the target
            vector exists
-        5. If the target vector does not exists then run v.random
+        5. If the target vector does not exist then run v.import
         6. Copy the local temporary mapset to the storage and merge it into the
            target mapset
         """
         self._setup()
 
         vector_name = self.map_name
-        region = self.request_data["region"]
-        parameter = self.request_data["parameter"]
         self.required_mapsets.append(self.target_mapset_name)
 
         pc_1 = {}
@@ -398,20 +465,9 @@ class PersistentVectorCreator(PersistentProcessing):
                                             process_chain=pc_1)
 
         pc_2 = {}
-        pc_2["1"] = {"module": "g.region", "inputs": {}, "flags": "g"}
-        if region:
-            for key in region:
-                value = region[key]
-                pc_2["1"]["inputs"][key] = value
-
-        pc_2["2"] = {"module": "v.random",
-                     "inputs": {"column": "z",
-                                "npoints": parameter["npoints"],
-                                "zmin": parameter["zmin"],
-                                "zmax": parameter["zmax"],
-                                "seed": parameter["seed"]},
-                     "outputs": {"output": {"name": vector_name}},
-                     "flags": "z"}
+        pc_2["1"] = {"module": "v.import",
+                     "inputs": {"input": self.rdc.request_data},
+                     "outputs": {"output": {"name": vector_name}}}
         # Check the second process chain
         self.skip_region_check = True
         pc_2 = self._validate_process_chain(skip_permission_check=True,
@@ -432,4 +488,15 @@ class PersistentVectorCreator(PersistentProcessing):
         self._execute_process_list(pc_2)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        self.finish_message = "Vector layer <%s> successfully created." % vector_name
+        # Delete imported file
+        msg = ""
+        try:
+            if self.rdc.request_data.endswith('.shp'):
+                rmtree(os.path.dirname(self.rdc.request_data), ignore_errors=True)
+            else:
+                os.remove(self.rdc.request_data)
+        except Exception:
+            msg = " WARNING: Uploaded file cannot be removed."
+
+        self.finish_message = (f"Vector layer <{vector_name}> successfully "
+                               f"imported.{msg}")

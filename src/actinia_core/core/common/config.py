@@ -69,11 +69,11 @@ white_list = [
     'r.univar', 'r.uslek', 'r.usler', 'r.viewshed', 'r.vol.dem', 'r.volume',
     'r.walk', 'r.water.outlet', 'r.watershed', 'r.what', 'r.what.color', 'r.info',
     'g.region', 'g.mapset', 'g.proj', 'g.remove', 'g.rename', 'g.version',
-    'g.list', 'g.findfile', 'g.gisenv', 'i.vi', 'v.in.ascii', 't.rast.sample',
-    'r.out.png', 'r.colors.out', 'd.rast', 'd.vect', 'd.legend', 't.rast.aggr_func',
-    'd.rast.multi', 'v.buffer', 't.rast.extract', 't.rast.mapcalc', 't.rast.series',
-    't.rast.colors', 't.info', 't.rast.list', 't.rast.univar', 'importer',
-    'exporter']
+    'g.list', 'g.findfile', 'g.gisenv', 'i.vi', 'v.in.ascii', 'v.random',
+    't.rast.sample', 'r.out.png', 'r.colors.out', 'd.rast', 'd.vect', 'd.legend',
+    't.rast.aggr_func', 'd.rast.multi', 'v.buffer', 't.rast.extract',
+    't.rast.mapcalc', 't.rast.series', 't.rast.colors', 't.info', 't.rast.list',
+    't.rast.univar', 'importer', 'exporter']
 
 
 class Configuration(object):
