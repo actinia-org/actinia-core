@@ -180,7 +180,6 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         'description': 'Create a new vector map layer by uploading a GPKG, '
                        'zipped Shapefile or GeoJSON. '
                        'This method will fail if the map already exists. '
-                       'Minimum required user role: user.'
                        'An example request is \'curl -L -u "XXX:XXX" -X POST '
                        '-H "Content-Type: multipart/form-data" -F '
                        '"file=@/home/....gpkg" http://localhost:8088/api/v1/'
@@ -233,8 +232,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         }
     })
     def post(self, location_name, mapset_name, vector_name):
-        """Create a new raster layer by uploading a GPKG, GeoJSON,
-        Shapefile (zipped)
+        """Create a new vector layer by uploading a GPKG, zipped Shapefile,
+        or GeoJSON.
         """
 
         allowed_extensions = ['gpkg', 'zip', 'json', 'geojson']
@@ -251,7 +250,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                 status="error",
                 message="No file part indicated in postbody.")), 400)
 
-        # create download cache path if does not exists
+        # create download cache path if it does not exist
         if os.path.exists(self.download_cache):
             pass
         else:
@@ -447,7 +446,7 @@ class PersistentVectorCreator(PersistentProcessing):
         3. Setup GRASS and create the temporary mapset
         4. Execute g.list of the first process chain to check if the target
            vector exists
-        5. If the target vector does not exists then run v.import
+        5. If the target vector does not exist then run v.import
         6. Copy the local temporary mapset to the storage and merge it into the
            target mapset
         """
@@ -497,7 +496,7 @@ class PersistentVectorCreator(PersistentProcessing):
             else:
                 os.remove(self.rdc.request_data)
         except Exception:
-            msg = " WARNING: Uploaded file can not be removed."
+            msg = " WARNING: Uploaded file cannot be removed."
 
         self.finish_message = (f"Vector layer <{vector_name}> successfully "
                                f"imported.{msg}")

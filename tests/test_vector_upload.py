@@ -182,7 +182,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.user_auth_header, http_status=400, status="error",
             message_check=(f"Mapset <{self.mapset}> exists in the global "
-                           "dataset and can not be modified."))
+                           "dataset and cannot be modified."))
 
 
 if __name__ == '__main__':

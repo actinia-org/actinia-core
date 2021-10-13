@@ -350,7 +350,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         print(rv.data.decode())
 
     def create_vector_layer(self, location, mapset, vector, region, parameter):
-        # Remove potentially existing raster layer
+        # Remove potentially existing vector layer
         url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
                f'vector_layers/{vector}')
         rv = self.server.delete(url, headers=self.user_auth_header)
