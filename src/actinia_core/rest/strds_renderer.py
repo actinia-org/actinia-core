@@ -28,9 +28,9 @@ from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
 from actinia_core.core.common.redis_interface import enqueue_job
 from .renderer_base import RendererBaseResource, EphemeralRendererBase
-import tempfile
 import os
 from flask_restful_swagger_2 import swagger
+from tempfile import NamedTemporaryFile
 from actinia_core.models.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
@@ -213,7 +213,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         options = self.rdc.user_data
         self.required_mapsets.append(self.mapset_name)
 
-        result_file = tempfile.mktemp(suffix=".png")
+        with NamedTemporaryFile(suffix=".png") as file:
+            result_file = file.name
 
         g_region_query = self._setup_render_environment_and_region(
             options=options, result_file=result_file, legacy=False)

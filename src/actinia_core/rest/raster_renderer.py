@@ -26,7 +26,7 @@ Raster map renderer
 
 """
 from flask_restful_swagger_2 import swagger
-import tempfile
+from tempfile import NamedTemporaryFile
 import os
 from flask import jsonify, make_response, Response
 from .ephemeral_processing import EphemeralProcessing
@@ -195,7 +195,8 @@ class EphemeralRasterRenderer(EphemeralRendererBase):
         options = self.rdc.user_data
         self.required_mapsets.append(self.mapset_name)
 
-        result_file = tempfile.mktemp(suffix=".png")
+        with NamedTemporaryFile(suffix=".png") as file:
+            result_file = file.name
 
         region_pc = self._setup_render_environment_and_region(
             options=options, result_file=result_file)
@@ -436,7 +437,8 @@ class EphemeralRasterRGBRenderer(EphemeralRendererBase):
         options = self.rdc.user_data
         self.required_mapsets.append(self.mapset_name)
 
-        result_file = tempfile.mktemp(suffix=".png")
+        with NamedTemporaryFile(suffix=".png") as file:
+            result_file = file.name
 
         region_pc = self._setup_render_environment_and_region(
             options=options, result_file=result_file)
@@ -662,7 +664,8 @@ class EphemeralRasterShadeRenderer(EphemeralRendererBase):
         options = self.rdc.user_data
         self.required_mapsets.append(self.mapset_name)
 
-        result_file = tempfile.mktemp(suffix=".png")
+        with NamedTemporaryFile(suffix=".png") as file:
+            result_file = file.name
 
         region_pc = self._setup_render_environment_and_region(
             options=options, result_file=result_file)
