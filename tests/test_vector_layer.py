@@ -31,7 +31,7 @@ import unittest
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except Exception:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
@@ -43,7 +43,7 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
-    #################### CREATION #############################################
+    # ################### CREATION #############################################
 
     def test_creation_1(self):
         # Remove potentially existing raster layer
@@ -51,8 +51,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset)
 
         # Create
-        region = {"n":228500, "s":215000, "e":645000, "w":630000}
-        parameter = {"npoints":1, "zmin":1, "zmax":1, "seed":1}
+        region = {"n": 228500, "s": 215000, "e": 645000, "w": 630000}
+        parameter = {"npoints": 1, "zmin": 1, "zmax": 1, "seed": 1}
         self.create_vector_layer(
             'nc_spm_08', new_mapset, 'test_layer', region, parameter)
         # rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/vector_layers/test_layer' % new_mapset,

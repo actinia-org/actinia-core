@@ -28,7 +28,7 @@ from flask.json import loads as json_load
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -158,7 +158,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock(False)
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                             headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
@@ -175,7 +175,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock (False)
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                             headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
@@ -192,7 +192,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock (False)
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset_2/lock',
-                              headers=self.admin_auth_header)
+                             headers=self.admin_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)

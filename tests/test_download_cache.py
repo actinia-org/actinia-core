@@ -29,7 +29,7 @@ import unittest
 import os
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -47,12 +47,12 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         global_config.DOWNLOAD_CACHE_QUOTA = 1
         try:
             os.mkdir(global_config.DOWNLOAD_CACHE)
-        except:
+        except Exception:  # more precise exception gladly accepted
             pass
 
         try:
             os.mkdir(os.path.join(global_config.DOWNLOAD_CACHE, self.admin_id))
-        except:
+        except Exception:  # more precise exception gladly accepted
             pass
 
         rv = self.server.get(URL_PREFIX + '/download_cache',

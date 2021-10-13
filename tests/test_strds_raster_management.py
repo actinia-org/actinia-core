@@ -29,7 +29,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -40,8 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
-strds_url = (URL_PREFIX +
-             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+strds_url = (URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds'
              % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 new_mapset = "raster_test_mapset"
@@ -90,14 +89,13 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
-    #################### CREATE REGISTER ######################################
+    # ################### CREATE REGISTER ######################################
 
     def test_strds_creation_error(self):
 
         # This must fail, global mapsets are not allowed to modify
-        rv = self.server.post(URL_PREFIX +
-                                '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register' % {'location': location, 'mapset': strds_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+                              % {'location': location, 'mapset': strds_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -112,9 +110,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX +
-                                '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
-                                % {'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+                              % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",
@@ -187,7 +184,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    #################### LIST RASTER FROM STRDS ###############################
+    # ################### LIST RASTER FROM STRDS ###############################
 
     def test_strds_raster_layer_1(self):
         rv = self.server.get(strds_url + '/%s/raster_layers' % strds_data,
@@ -209,7 +206,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         map_list = json_loads(rv.data)["process_results"]
         self.assertEqual(len(map_list), 12)
 
-    #################### ERROR ################################################
+    # ################### ERROR ################################################
 
     def test_strds_info_error_1(self):
         # Raster does not exist

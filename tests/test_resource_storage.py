@@ -29,7 +29,7 @@ import unittest
 import os
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -47,12 +47,12 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
         global_config.GRASS_RESOURCE_QUOTA = 1
         try:
             os.mkdir(global_config.GRASS_RESOURCE_DIR)
-        except:
+        except Exception:  # more precise exception gladly accepted
             pass
 
         try:
             os.mkdir(os.path.join(global_config.GRASS_RESOURCE_DIR, self.admin_id))
-        except:
+        except Exception:  # more precise exception gladly accepted
             pass
 
         rv = self.server.get(URL_PREFIX + '/resource_storage',

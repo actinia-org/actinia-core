@@ -28,7 +28,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -39,15 +39,14 @@ __email__ = "soerengebbert@googlemail.com"
 
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
-strds_url = (URL_PREFIX +
-             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+strds_url = (URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds'
              % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 
 
 class STRDSTestCase(ActiniaResourceTestCaseBase):
 
-    #################### LIST RASTER ##########################################
+    # ################### LIST RASTER ##########################################
 
     def test_list_strds(self):
         rv = self.server.get(strds_url,
@@ -80,7 +79,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(len(strds_list), 0)
 
-    #################### INFO #################################################
+    # ################### INFO #################################################
 
     def test_strds_info(self):
         rv = self.server.get(strds_url + '/%s' % strds_data,
@@ -93,7 +92,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(start_time, "'2015-01-01 00:00:00'")
 
-    #################### CREATE REMOVE ########################################
+    # ################### CREATE REMOVE ########################################
 
     def test_strds_create_remove(self):
 
@@ -150,7 +149,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-    #################### ERROR ################################################
+    # ################### ERROR ################################################
 
     def test_strds_info_error_1(self):
         # Raster does not exist

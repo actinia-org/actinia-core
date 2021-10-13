@@ -30,7 +30,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import requests
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -41,56 +41,56 @@ __email__ = "soerengebbert@googlemail.com"
 
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
-    1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"1000"
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT",
+            "res": "1000"
         },
-        "flags":"p",
-        "verbose":True
+        "flags": "p",
+        "verbose": True
     },
-    2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-           "elevation":"elevation@PERMANENT",
-           "format":"degrees",
-           "min_slope":"0.0"
-       },
-        "outputs":{
-           "aspect":{
-               "name":"my_aspect",
-               "export":{
-                   "format":"GTiff",
-                   "type":"raster"
-               }
-           },
-           "slope":{
-               "name":"my_slope",
-               "export":{
-                   "format":"GTiff",
-                   "type":"raster"
-               }
-           }
-       },
-        "flags":"a",
-        "overwrite":False,
-        "verbose":True
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
+        },
+        "outputs": {
+            "aspect": {
+                "name": "my_aspect",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                }
+            },
+            "slope": {
+                "name": "my_slope",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                }
+            }
+        },
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
     },
-    3:{
-        "module":"r.watershed",
-        "inputs":{
-           "elevation":"elevation@PERMANENT"
-       },
-        "outputs":{
-           "accumulation":{
-               "name":"my_accumulation",
-               "export":{
-                   "format":"GTiff",
-                   "type":"raster"
-               }
-           }
-       }
+    3: {
+        "module": "r.watershed",
+        "inputs": {
+            "elevation": "elevation@PERMANENT"
+        },
+        "outputs": {
+            "accumulation": {
+                "name": "my_accumulation",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                }
+            }
+        }
     }
 }
 

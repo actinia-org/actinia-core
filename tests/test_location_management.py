@@ -28,7 +28,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -60,7 +60,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         region_settings = json_loads(rv.data)["process_results"]["region"]
-        projection_settings = json_loads(rv.data)["process_results"]["projection"]
+        json_loads(rv.data)["process_results"]["projection"]
 
         self.assertTrue("depths" in region_settings)
         self.assertTrue("ewres" in region_settings)
@@ -70,7 +70,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
     def test_location_global_db_error(self):
         # ERROR: Try to create a location as admin that exists in the global database
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08',
-                              data=json_dumps({"epsg":"4326"}),
+                              data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
                               headers=self.admin_auth_header)
         print(rv.data)
@@ -85,7 +85,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
         # Create new location as admin
         rv = self.server.post(URL_PREFIX + '/locations/test_location',
-                              data=json_dumps({"epsg":"4326"}),
+                              data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
                               headers=self.admin_auth_header)
         print(rv.data)
@@ -94,7 +94,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Try to create a location as admin that already exists
         rv = self.server.post(URL_PREFIX + '/locations/test_location',
-                              data=json_dumps({"epsg":"4326"}),
+                              data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
                               headers=self.admin_auth_header)
         print(rv.data)
@@ -119,7 +119,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Try to create a location as user
         rv = self.server.post(URL_PREFIX + '/locations/test_location_user',
-                              data=json_dumps({"epsg":"4326"}),
+                              data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
                               headers=self.user_auth_header)
         print(rv.data)

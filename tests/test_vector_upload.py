@@ -96,7 +96,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
                 'attribute_primary_key': 'cat',
                 'bottom': '0.000000', 'top': '0.000000',
                 'east': '650847.138969129', 'north': '229690.354743444',
-                'south': '218320.766841849',  'west': '635437.747985441'}
+                'south': '218320.766841849', 'west': '635437.747985441'}
 
     @classmethod
     def setUpClass(cls):
