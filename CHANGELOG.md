@@ -20,6 +20,23 @@ TODO https://github.com/mundialis/actinia_core/compare/1.2.1...main
 ## [1.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
+## [2.0.0] - 2021-10-13
+released from main
+### Fixed
+* Fix cleanup error (#248)
+* Fix several misspelled words (#254)
+### Changed
+* Allow & in r.mapcalc processing (#253)
+* Allow endpoints with and without trailing slash (#257)
+* Test and improve actinia tutorials (#258)
+* Resolve the insecure temporary files (#262, #256)
+### Added
+* Make the version output more flexible (#252)
+* List all available mapsets (issue 162, #249)
+* Add vector upload (isse 180, #260)
+* Flake8 Linting for test folder (#255)
+
 ## [1.2.1] - 2021-09-21
 released from main
 ### Fixed
