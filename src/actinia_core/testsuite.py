@@ -297,7 +297,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
                          "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:
-            self.assertTrue(message_check in resp_data["message"])
+            self.assertTrue(message_check in resp_data["message"],
+                            (f"Message is {resp_data['message']}"))
 
         time.sleep(0.4)
         return resp_data
