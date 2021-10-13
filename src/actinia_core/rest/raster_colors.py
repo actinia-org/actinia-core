@@ -24,7 +24,7 @@
 """
 Raster colors management
 
-TODO: Tests required
+TODO: Maybe more tests required, test_raster_colors.py is in place and works
 """
 
 from flask_restful_swagger_2 import swagger
@@ -33,7 +33,7 @@ from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-import tempfile
+from tempfile import NamedTemporaryFile
 import os
 import atexit
 from actinia_core.models.response_models import \
@@ -228,10 +228,19 @@ class EphemeralRasterColorsOutput(EphemeralProcessing):
         raster_name = self.map_name
         self.required_mapsets.append(self.mapset_name)
 
-        result_file = tempfile.mktemp(suffix=".color", dir=self.temp_file_path)
+        with NamedTemporaryFile(
+                mode="w+", suffix=".color", dir=self.temp_file_path) as file:
+            result_file = file.name
 
         self.request_data = {
-            "1": {"module": "r.colors.out", "inputs": {"map": "", "rules": ""}}}
+            "1": {
+                "module": "r.colors.out",
+                "inputs": {
+                    "map": "",
+                    "rules": ""
+                }
+            }
+        }
         self.request_data["1"]["inputs"]["map"] = raster_name + "@" + self.mapset_name
         self.request_data["1"]["inputs"]["rules"] = result_file
 
@@ -240,7 +249,8 @@ class EphemeralRasterColorsOutput(EphemeralProcessing):
             skip_permission_check=True)
         self._execute_process_list(process_list)
 
-        result = open(result_file, "r").read().strip().split("\n")
+        with open(result_file, "r") as file:
+            result = file.read().strip().split("\n")
 
         self.module_results = result
 
@@ -273,15 +283,13 @@ class PersistentRasterColorsRules(PersistentProcessing):
         pc["1"]["inputs"]["map"] = raster_name + "@" + self.target_mapset_name
 
         if "rules" in options:
-            rules_file = tempfile.mktemp(suffix=".color")
-            rules = open(rules_file, "w")
+            with NamedTemporaryFile(mode="w+", delete=False, suffix=".color",
+                                    dir=self.temp_file_path) as rules:
+                for line in options["rules"]:
+                    rules.write(line + "\n")
 
-            for line in options["rules"]:
-                rules.write(line + "\n")
-            rules.close()
-
-            pc["1"]["inputs"]["rules"] = rules_file
-            atexit.register(remove_rules_file, rules_file)
+            pc["1"]["inputs"]["rules"] = rules.name
+            atexit.register(remove_rules_file, rules.name)
         else:
             for option in options:
                 pc["1"]["inputs"][option] = options[option]
