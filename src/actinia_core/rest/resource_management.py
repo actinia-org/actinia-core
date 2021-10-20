@@ -107,7 +107,7 @@ class ResourceManagerBase(Resource):
         new_user = ActiniaUser(user_id=user_id)
 
         # Check if the user exists
-        if new_user.exists() is False:
+        if new_user.exists() != 1:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="The user <%s> does not exist" % user_id)), 400)
