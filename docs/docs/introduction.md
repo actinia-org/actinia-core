@@ -36,32 +36,48 @@ need a HTTP client, that talks all HTTP communication methods.
 
 Examples
 --------
+We will use the Unix shell and curl to access the REST API. First open a
+shell of choice (we use bash here) and setup the login information, the
+IP address and the port on which the actinia service is running, so you
+can simply change the IP and port if your server uses a different
+address:
+
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+```
 
 **Data management**
 
 List all locations that are available in the actinia persistent database:
 
 ```bash
- curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H "authorization: Basic ..."
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations"
 ```
 
 List all mapsets in the location latlong\_wgs84:
 
 ```bash
- curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets" -H "authorization: Basic ..."
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets"
+```
+List all raster layers in location latlong\_wgs84 and mapset Sentinel2A:
+
+```bash
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 ```
 
 List all space-time raster datasets (STRDS) in location
-latlong\_wgs84 and mapset Sentinel\_timeseries:
+ECAD and mapset PERMANENT:
 
 ```bash
- curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds" -H "authorization: Basic ..."
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds"
 ```
 
-List all raster map layers of the STRDS:
+List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
 
 ```bash
-curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H "authorization: Basic ..."
+curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
 ```
 
 **Landsat and Sentinel-2A NDVI computation**
@@ -70,14 +86,14 @@ This API call will compute the NDVI of the top of athmosphere (TOAR)
 corrected Landsat4 scene LC80440342016259LGN00:
 
 ```bash
-curl -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI" -H "authorization: Basic ..."
+curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 ```
 
 NDVI computation of Sentinel-2A scene
 S2A\_MSIL1C\_20170212T104141\_N0204\_R008\_T31TGJ\_20170212T104138:
 
 ```bash
-curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" -H "authorization: Basic ..."
+curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
 ```
 
 The results of the asynchronous computations are available as GeoTIFF
