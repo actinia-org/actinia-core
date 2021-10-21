@@ -51,38 +51,45 @@ The full API documentation is available here: https://actinia.mundialis.de/api_d
 Examples:
 ---------
 
+To execute the examples, first setup login information, IP address and port:
+
+        export ACTINIA_URL=https://actinia.mundialis.de/latest
+        export AUTH='-u demouser:gu3st!pa55w0rd'
+
 **Data management**
 
 - List all locations that are available in the actinia persistent database:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations" -H  "authorization: Basic ..."
+        curl ${AUTH} -X GET "${ACTINIA_URL}/locations"
 
 - List all mapsets in the location latlong_wgs84:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets" -H  "authorization: Basic ..."
+        curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets"
 
-- List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
+- List all raster layers in location latlong_wgs84 and mapset Sentinel2A
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds" -H  "authorization: Basic ..."
+        curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 
-- List all raster map layers of the STRDS:
+- List all space-time raster datasets (STRDS) in location ECAD and mapset PERMANENT:
 
-        curl -X GET "https://actinia.mundialis.de/api/v1/locations/latlong_wgs84/mapsets/Sentinel_timeseries/strds/S2A_B04/raster_layers" -H  "authorization: Basic ..."
+        curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers"
+
+- List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
+
+        curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
 
 **Landsat and Sentinel2A NDVI computation**
 
 This API call will compute the NDVI of the top of atmosphere (TOAR)
 corrected Landsat4 scene LC80440342016259LGN00:
 
-    curl -X POST "https://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI" -H  "authorization: Basic ..."
+    curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 
 NDVI computation of Sentinel2A scene S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
 
-    curl -X POST "https://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138" -H  "authorization: Basic ..."
+    curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
 
 The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
-
-
 """
 
 from flask_httpauth import HTTPBasicAuth
