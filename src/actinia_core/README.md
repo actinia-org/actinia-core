@@ -67,6 +67,7 @@ actinia_core.core.common import redis_interface
 actinia_core.core.common.response_models import create_response_from_model
 actinia_core.core.common.response_models import StringListProcessingResultResponseModel
 actinia_core.core.common.user import ActiniaUser
+actinia_core.core.redis_user import RedisUserInterface
 
 __satellite, statistic__
 actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
