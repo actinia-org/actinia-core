@@ -189,6 +189,47 @@ class ProcessChainConverter(object):
 
         return downimp_list
 
+    def _get_stac_import_download_commands(self, entry):
+        """Helper method to get the stac import and download commands.
+
+        Args:
+            entry (dict): Entry of the import description list
+
+        Returns:
+            stac_commands: The stac download and import commands
+        """
+        # Check for band information
+
+        stac_source = entry["import_descr"]["source"]
+
+        if "semantic_label" in entry["import_descr"]:
+            stac_semantic_label = entry["import_descr"]["semantic_label"]
+
+        if "extent" in entry["import_descr"]:
+            if "spatial" and "temporal" not in entry["import_descr"]["extent"]:
+                raise AsyncProcessError("Unknown spatial or/and temporal parameters"
+                                        "in the process chain definition")
+
+            if "spatial" in entry["import_descr"]["extent"]:
+                if "bbox" in entry["import_descr"]["extent"]["spatial"]:
+                    stac_extent = entry["import_descr"]["extent"]
+
+            if "temporal" in entry["import_descr"]["extent"]:
+                if "interval" in entry["import_descr"]["extent"]["temporal"]:
+                    stac_extent = entry["import_descr"]["extent"]
+
+            if "filter" in entry["import_descr"]:
+                stac_filter = entry["import_descr"]["filter"]
+
+        stac_command = \
+            GeoDataDownloadImportSupport.get_stac_import_command(
+                stac_source=stac_source,
+                semantic_label=stac_semantic_label,
+                extent=stac_extent,
+                filter=stac_filter)
+        stac_command
+        raise AsyncProcessError("STAC import is comming soon")
+
     def _get_landsat_import_download_commands(self, entry):
         """Helper method to get the landsat import and download commands.
 
@@ -606,6 +647,12 @@ class ProcessChainConverter(object):
             elif entry["import_descr"]["type"].lower() == "landsat":
                 landsat_commands = self._get_landsat_import_download_commands(entry)
                 downimp_list.extend(landsat_commands)
+
+            # STAC
+            elif entry["import_descr"]["type"].lower() == "stac":
+                stac_commands = self._get_stac_import_download_commands(entry)
+                downimp_list.extend(stac_commands)
+
             else:
                 raise AsyncProcessError(
                     "Unknown import type specification: %s"
@@ -1125,6 +1172,7 @@ class ProcessChainConverter(object):
         keys = process_chain.keys()
         int_keys = []
         # Convert the keys to integer to sort correctly
+
         for k in keys:
             int_keys.append(int(k))
 
@@ -1165,7 +1213,7 @@ def check_required_keys_for_download_process_chain(entry):
         raise AsyncProcessError(
             "Source specification is required in import definition")
     if entry["import_descr"]["type"] not in [
-            "raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
+            "raster", "vector", "sentinel2", "landsat", "file", "postgis", "stac"]:
         raise AsyncProcessError(
             "Unknown type specification: %s" % entry["import_descr"]["type"])
 

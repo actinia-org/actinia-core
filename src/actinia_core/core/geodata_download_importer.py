@@ -267,6 +267,41 @@ class GeoDataDownloadImportSupport(object):
                     skip_permission_check=True)
         return p
 
+    @staticmethod
+    def get_stac_import_command(stac_source, semantic_label=None,
+                                extent=None, filter=None):
+        """Generate stac import process list that makes use of v.import
+
+        Args:
+            input_source (str): The input source can be a file path or a database string
+            stac_name (str): The name of the new vector layer
+            layer_name (str): The layer name or comma separated list of layer names
+                              that should be imported from the input source
+
+        Returns:
+            Process
+
+        """
+
+        exec_params = ["input=%s" % stac_source, "output=%s" % stac_source]
+
+        if semantic_label is not None:
+            exec_params.append("semantic_lb=%s" % semantic_label)
+
+        if extent is not None:
+            exec_params.append("extent=%s" % extent)
+
+        if filter is not None:
+            exec_params.append("extent=%s" % filter)
+
+        p = Process(exec_type="grass",
+                    executable="r.import",
+                    executable_params=exec_params,
+                    id=f"v_import_{os.path.basename(stac_source)}",
+                    skip_permission_check=True)
+
+        return p
+
     def perform_file_validation(self, filepath, mimetype=None):
         """Perform a file validation check of mimetypes and zip bombs.
         This function checks zip files and returns the file names of the
