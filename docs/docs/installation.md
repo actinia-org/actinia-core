@@ -81,13 +81,17 @@ and compile it.
  git clone https://bitbucket.org/huhabla/temporal-raster-sampling.git t.rast.sample
  cd t.rast.sample
  make
+ ``` 
+> **_HINT:_** run : `sudo apt-get install python-is-python3` If you get the error: `/usr/bin/env: ‘python’: No such file or directory
+` in the logs from `make` command.
+ ``` bash
  sudo make install
  cd ..
 
- git clone https://github.com/huhabla/t_rast_aggr_func.git t.rast.aggr_func
+ <--git clone https://github.com/huhabla/t_rast_aggr_func.git t.rast.aggr_func
  cd t.rast.aggr_func
  make
- sudo make install
+ sudo make install-->
 
  cd ../../display/
  git clone https://bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
@@ -95,6 +99,7 @@ and compile it.
  make
  sudo make install
 ```
+
 
 3.  Download the test locations and place them into a specific directory
     that will be used by actinia as persistent database:
@@ -117,34 +122,28 @@ and compile it.
  mv LL latlong_wgs84
 ```
 
-4.  Actinia Core must be run within a virtual python3 environment:
-
-```bash
- mkdir -p $HOME/actinia/workspace/tmp
-
- cd /tmp
-
- git clone https://github.com/mundialis/actinia_core.git actinia_core
- virtualenv -p python3.5 actinia_venv
- source actinia_venv/bin/activate
- cd actinia_core
- pip install -r requirements.txt
- python setup.py install
- deactivate
-```
-
-5.  GRASS GIS 7.8 requires a Python 3 environment for running, so we
+4.  Actinia Core & GRASS GIS 7.8 requires a Python 3 environment for running, so we
     create one (not needed if only Python 3 is present on the machine).
     This environment must be specified in the actinia config file:
 
 ```bash
+ mkdir -p $HOME/actinia/workspace/tmp
+ #why are we creating this folder?
+
  cd /tmp
 
- virtualenv -p python2.7 grass_venv
- source grass_venv/bin/activate
+ git clone https://github.com/mundialis/actinia_core.git actinia_core
+ virtualenv -p python3 actinia_venv
+ sudo make install
+ cd ..
+ source actinia_venv/bin/activate
  cd actinia_core
- pip install -r requirements-grass-gis.txt
+ pip install -r requirements.txt
+ python setup.py install
+ 
 ```
+
+5.  [comment]: <> (#TODO: add steps for actinia.cfg file) 
 
 6.  Make sure that a redis service is running and create a user with
     actinia-user tool
