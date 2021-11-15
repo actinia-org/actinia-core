@@ -26,6 +26,8 @@ Process chain
 """
 import os
 import requests
+
+from actinia_core.core.stac_importer_interface import STAImporter
 from .process_object import Process
 from .exceptions import AsyncProcessError
 from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
@@ -188,47 +190,6 @@ class ProcessChainConverter(object):
         downimp_list.extend(process_list)
 
         return downimp_list
-
-    def _get_stac_import_download_commands(self, entry):
-        """Helper method to get the stac import and download commands.
-
-        Args:
-            entry (dict): Entry of the import description list
-
-        Returns:
-            stac_commands: The stac download and import commands
-        """
-        # Check for band information
-
-        stac_source = entry["import_descr"]["source"]
-
-        if "semantic_label" in entry["import_descr"]:
-            stac_semantic_label = entry["import_descr"]["semantic_label"]
-
-        if "extent" in entry["import_descr"]:
-            if "spatial" and "temporal" not in entry["import_descr"]["extent"]:
-                raise AsyncProcessError("Unknown spatial or/and temporal parameters"
-                                        "in the process chain definition")
-
-            if "spatial" in entry["import_descr"]["extent"]:
-                if "bbox" in entry["import_descr"]["extent"]["spatial"]:
-                    stac_extent = entry["import_descr"]["extent"]
-
-            if "temporal" in entry["import_descr"]["extent"]:
-                if "interval" in entry["import_descr"]["extent"]["temporal"]:
-                    stac_extent = entry["import_descr"]["extent"]
-
-            if "filter" in entry["import_descr"]:
-                stac_filter = entry["import_descr"]["filter"]
-
-        stac_command = \
-            GeoDataDownloadImportSupport.get_stac_import_command(
-                stac_source=stac_source,
-                semantic_label=stac_semantic_label,
-                extent=stac_extent,
-                filter=stac_filter)
-        stac_command
-        raise AsyncProcessError("STAC import is comming soon")
 
     def _get_landsat_import_download_commands(self, entry):
         """Helper method to get the landsat import and download commands.
@@ -650,7 +611,7 @@ class ProcessChainConverter(object):
 
             # STAC
             elif entry["import_descr"]["type"].lower() == "stac":
-                stac_commands = self._get_stac_import_download_commands(entry)
+                stac_commands = STAImporter._get_stac_import_download_commands(entry)
                 downimp_list.extend(stac_commands)
 
             else:
