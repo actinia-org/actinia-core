@@ -40,59 +40,79 @@ __email__ = "info@mundialis.de"
 
 import requests
 import os
+import json
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
-from actinia_core.core.common.app import URL_PREFIX
+try:
+    from actinia_stac_plugin.core.stac_collection_id import callStacCollection
+    has_plugin = True
+except Exception:
+    has_plugin = False
 
 
-class STAImporter(object):
+class STACImporter:
 
-    def stac_import(self, stac_collecition_id, stac_name, semantic_label, bbox, filter):
+    @classmethod
+    def stac_import(self, stac_collecition_id, semantic_label, bbox, filter):
 
-        try:
-            stac_name = stac_collecition_id.split(".")[3]
-        except NameError:
-            raise AssertionError("The sourcs has not the right structure")
+        if has_plugin:
+            try:
+                stac_name = stac_collecition_id.split(".")[3]
+            except NameError:
+                raise AsyncProcessError("The source has not the right structure")
 
-        stac_root = self.get_search_root(stac_collecition_id)
+            stac_root = self.get_search_root(stac_collecition_id)
 
-        stac_filtered = self.apply_filter(stac_root, stac_name, bbox, filter)
+            stac_filtered = self.apply_filter(stac_root, stac_name, bbox, filter)
 
-        stac_result = self.get_filtered_bands(stac_filtered, semantic_label)
+            stac_result = self.get_filtered_bands(stac_filtered, semantic_label)
 
-        exec_params = ["input=%s" % stac_result[0], "output=%s" % stac_collecition_id]
+            stac_processes = []
 
-        p = Process(
-            exec_type="grass",
-            executable="r.in.gdal",
-            executable_params=exec_params,
-            id=f"r_gdal_{os.path.basename(stac_collecition_id)}",
-            skip_permission_check=True
-        )
+            for i in semantic_label:
+                # From Here Onwards, the Process build starts
+                exec_params = ["input=%s" % stac_result[semantic_label[i]],
+                               "output=%s" % stac_collecition_id]
 
-        return p
+                p = Process(
+                    exec_type="grass",
+                    executable="r.in.gdal",
+                    executable_params=exec_params,
+                    id=f"r_gdal_{os.path.basename(stac_collecition_id)}",
+                    skip_permission_check=True
+                )
 
+                stac_processes.append(p)
+        else:
+            raise AsyncProcessError("Actinia STAC plugin is not installed")
+
+        return stac_processes
+
+    @classmethod
     def get_search_root(self, stac_collecition_id):
-        stac_from_actinia = requests.get(
-            URL_PREFIX + "/stac/" + stac_collecition_id)
 
-        stac_json = stac_from_actinia.json()
+        stac_from_actinia = callStacCollection(stac_collecition_id)
+
+        stac_json = json.loads(stac_from_actinia)
+
+        print(stac_json)
 
         for item in stac_json["links"]:
             if item["rel"] == "root":
                 stac_url = item["href"]
 
-            if "?" in stac_url:
-                stac_url = stac_url.split("?")[0]
+                if "?" in stac_url:
+                    stac_url = stac_url.split("?")[0]
 
-            if stac_url.endswith("/"):
-                stac_root_search = stac_url + "search"
-            else:
-                stac_root_search = stac_url + "/search"
+                if stac_url.endswith("/"):
+                    stac_root_search = stac_url + "search"
+                else:
+                    stac_root_search = stac_url + "/search"
 
         return stac_root_search
 
+    @classmethod
     def apply_filter(self, stac_root_search, stac_name, bbox, filter):
 
         search_body = {
@@ -109,10 +129,15 @@ class STAImporter(object):
 
         full_filtered_result = stac_search.json()
 
-        return full_filtered_result
+        if full_filtered_result["features"]:
+            return full_filtered_result
+        else:
+            raise AsyncProcessError(full_filtered_result)
 
+    @classmethod
     def get_filtered_bands(self, stac_items, semantic_label):
         band_roots = {}
+
         for feature in stac_items["features"]:
             for key, value in feature["assets"].items():
                 if "eo:bands" in value:
@@ -125,7 +150,13 @@ class STAImporter(object):
                                 feature["assets"][band_name]["href"])
         return band_roots
 
-    def _get_stac_import_download_commands(self, entry):
+    @classmethod
+    def get_stac_import_download_commands(self,
+                                          entry,
+                                          config=None,
+                                          temp_file_path=None,
+                                          message_logger=None,
+                                          send_resource_update=None):
 
         """Helper method to get the stac import and download commands.
 
@@ -136,8 +167,8 @@ class STAImporter(object):
                 stac_commands: The stac download and import commands
         """
         # Check for band information
-
-        stac_source = entry["import_descr"]["source"]
+        # TODO check config, temp_file_path, message_logger, send_resource_update
+        stac_entry_source = entry["import_descr"]["source"]
 
         if "semantic_label" in entry["import_descr"]:
             stac_semantic_label = entry["import_descr"]["semantic_label"]
@@ -147,22 +178,20 @@ class STAImporter(object):
                 raise AsyncProcessError("Unknown spatial or/and temporal parameters"
                                         "in the process chain definition")
 
-            if "spatial" in entry["import_descr"]["extent"]:
-                if "bbox" in entry["import_descr"]["extent"]["spatial"]:
-                    stac_extent = entry["import_descr"]["extent"]
+            if "bbox" in entry["import_descr"]["extent"]["spatial"]:
+                stac_extent = entry["import_descr"]["extent"]
 
-                if "temporal" in entry["import_descr"]["extent"]:
-                    if "interval" in entry["import_descr"]["extent"]["temporal"]:
-                        stac_extent = entry["import_descr"]["extent"]
+            if "interval" in entry["import_descr"]["extent"]["temporal"]:
+                stac_extent = entry["import_descr"]["extent"]
 
-                if "filter" in entry["import_descr"]:
-                    stac_filter = entry["import_descr"]["filter"]
+            if "filter" in entry["import_descr"]:
+                stac_filter = entry["import_descr"]["filter"]
 
             stac_command = \
                 self.stac_import(
-                    stac_source=stac_source,
+                    stac_collecition_id=stac_entry_source,
                     semantic_label=stac_semantic_label,
-                    extent=stac_extent,
+                    bbox=stac_extent,
                     filter=stac_filter)
-            stac_command
-            raise AsyncProcessError("STAC import is comming soon")
+            return stac_command
+            # raise AsyncProcessError("STAC import is comming soon")

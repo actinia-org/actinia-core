@@ -33,7 +33,6 @@ from urllib.parse import urlsplit
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.utils import get_wget_process, get_mv_process
-from actinia_core.core.stac_importer_interface import STAImporter
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
