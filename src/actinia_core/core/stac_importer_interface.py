@@ -54,7 +54,7 @@ except Exception:
 class STACImporter:
 
     @classmethod
-    def stac_import(self, stac_collecition_id, semantic_label, bbox, filter):
+    def stac_import(self, stac_collecition_id, semantic_label, interval, bbox, filter):
 
         if has_plugin:
             try:
@@ -64,26 +64,33 @@ class STACImporter:
 
             stac_root = self.get_search_root(stac_collecition_id)
 
-            stac_filtered = self.apply_filter(stac_root, stac_name, bbox, filter)
+            stac_filtered = self.apply_filter(stac_root, stac_name,
+                                              interval, bbox, filter)
 
             stac_result = self.get_filtered_bands(stac_filtered, semantic_label)
 
             stac_processes = []
 
-            for i in semantic_label:
-                # From Here Onwards, the Process build starts
-                exec_params = ["input=%s" % stac_result[semantic_label[i]],
-                               "output=%s" % stac_collecition_id]
+            for key, value in stac_result.items():
 
-                p = Process(
-                    exec_type="grass",
-                    executable="r.in.gdal",
-                    executable_params=exec_params,
-                    id=f"r_gdal_{os.path.basename(stac_collecition_id)}",
-                    skip_permission_check=True
-                )
+                for name_id, url in value.items():
 
-                stac_processes.append(p)
+                    output_name = stac_name + "_" + key + "_" + name_id
+
+                    # From Here Onwards, the Process build starts
+                    exec_params = ["input=%s" % "/vsicurl/"+url,
+                                   "output=%s" % output_name,
+                                   "-o"]
+
+                    p = Process(
+                        exec_type="grass",
+                        executable="r.in.gdal",
+                        executable_params=exec_params,
+                        id=f"r_gdal_{os.path.basename(output_name)}",
+                        skip_permission_check=True
+                    )
+
+                    stac_processes.append(p)
         else:
             raise AsyncProcessError("Actinia STAC plugin is not installed")
 
@@ -95,8 +102,6 @@ class STACImporter:
         stac_from_actinia = callStacCollection(stac_collecition_id)
 
         stac_json = json.loads(stac_from_actinia)
-
-        print(stac_json)
 
         for item in stac_json["links"]:
             if item["rel"] == "root":
@@ -113,7 +118,7 @@ class STACImporter:
         return stac_root_search
 
     @classmethod
-    def apply_filter(self, stac_root_search, stac_name, bbox, filter):
+    def apply_filter(self, stac_root_search, stac_name, interval, bbox, filter):
 
         search_body = {
             "collections": [stac_name],
@@ -122,6 +127,8 @@ class STACImporter:
 
         search_body["bbox"] = bbox
 
+        search_body["interval"] = interval
+
         stac_search = requests.post(
             stac_root_search,
             json=search_body
@@ -129,7 +136,7 @@ class STACImporter:
 
         full_filtered_result = stac_search.json()
 
-        if full_filtered_result["features"]:
+        if "features" in full_filtered_result:
             return full_filtered_result
         else:
             raise AsyncProcessError(full_filtered_result)
@@ -145,9 +152,17 @@ class STACImporter:
                         if value["eo:bands"][0]["common_name"] in semantic_label:
                             band_name = value["eo:bands"][0]["name"]
                             if band_name not in band_roots:
-                                band_roots[band_name] = []
-                            band_roots[band_name].append(
-                                feature["assets"][band_name]["href"])
+                                band_roots[band_name] = {}
+                            feature_id = feature["id"]
+                            item_link = feature["assets"][band_name]["href"]
+                            band_roots[band_name][feature_id] = item_link
+                        elif value["eo:bands"][0]["name"] in semantic_label:
+                            band_name = value["eo:bands"][0]["name"]
+                            if band_name not in band_roots:
+                                band_roots[band_name] = {}
+                            feature_id = feature["id"]
+                            item_link = feature["assets"][band_name]["href"]
+                            band_roots[band_name][feature_id] = item_link
         return band_roots
 
     @classmethod
@@ -179,10 +194,11 @@ class STACImporter:
                                         "in the process chain definition")
 
             if "bbox" in entry["import_descr"]["extent"]["spatial"]:
-                stac_extent = entry["import_descr"]["extent"]
+                stac_extent = entry["import_descr"]["extent"]["spatial"]["bbox"][0]
 
             if "interval" in entry["import_descr"]["extent"]["temporal"]:
-                stac_extent = entry["import_descr"]["extent"]
+                interval = entry["import_descr"]["extent"]["temporal"]["interval"][0]
+                stac_interval = interval
 
             if "filter" in entry["import_descr"]:
                 stac_filter = entry["import_descr"]["filter"]
@@ -191,6 +207,7 @@ class STACImporter:
                 self.stac_import(
                     stac_collecition_id=stac_entry_source,
                     semantic_label=stac_semantic_label,
+                    interval=stac_interval,
                     bbox=stac_extent,
                     filter=stac_filter)
             return stac_command
