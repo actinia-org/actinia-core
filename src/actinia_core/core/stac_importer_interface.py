@@ -59,7 +59,7 @@ class STACImporter:
         if has_plugin:
             try:
                 stac_name = stac_collecition_id.split(".")[3]
-            except NameError:
+            except Exception:
                 raise AsyncProcessError("The source has not the right structure")
 
             stac_root = self.get_search_root(stac_collecition_id)
