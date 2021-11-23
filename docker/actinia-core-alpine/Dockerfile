@@ -1,6 +1,6 @@
 FROM mundialis/grass-py3-pdal:stable-alpine as grass
 FROM mundialis/esa-snap:s1tbx-8.0.3 as snap
-FROM mundialis/actinia-core:alpine-build-pkgs_v8 as build
+FROM mundialis/actinia-core:alpine-build-pkgs_v9 as build
 
 # based on GRASS GIS releasebranch_7_8 (grass78)
 # for latest GRASS GIS (79), change first line to
@@ -59,22 +59,31 @@ RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=
 # Currently, ADD always breaks cache, as "download_count" increases every time
 # ADD https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/latest /scratch/actinia_statistic_plugin_latest_release.json
 WORKDIR /build
-# Get statistics plugin (26188052 = 0.0.3)
-RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/43983719 > resp.json && \
+# Get statistics plugin (53929318 = 0.0.4)
+RUN curl https://api.github.com/repos/mundialis/actinia_statistic_plugin/releases/53929318 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get satellite plugin (26187974 = 0.0.3)
-RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/43983668 > resp.json && \
+# Get satellite plugin (53929219 = 0.0.4)
+RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/releases/53929219 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-metadata-plugin (38726425 = 1.0.0)
-RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/38726425 > resp.json && \
+# Get actinia-metadata-plugin (53929141 = 1.0.2)
+RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/53929141 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-module-plugin (45775508 = 2.2.0)
-RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/45775508 > resp.json && \
+# Get actinia-module-plugin (53928473 = 2.2.1)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/53928473 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+# # Get actinia-stac-plugin (53928473 = 2.2.1)
+# RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/53928473 > resp.json && \
+#     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
+#     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+# Get actinia-api (53922696 = 0.0.1)
+RUN curl https://api.github.com/repos/mundialis/actinia-api/releases/53922696 > resp.json && \
+    name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
+    cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+
 # Install actinia-core and plugins
 COPY --from=build /build/*.whl /build/
 # the problem with getting broken 20.0.1 seems to be overcome, the outcommenting

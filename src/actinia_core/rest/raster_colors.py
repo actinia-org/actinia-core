@@ -29,6 +29,8 @@ TODO: Maybe more tests required, test_raster_colors.py is in place and works
 
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
+from actinia_api.swagger2.actinia_core.schemas.raster_colors import RasterColorModel
+
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
@@ -39,7 +41,6 @@ import atexit
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, \
     StringListProcessingResultResponseModel
-from actinia_core.models.openapi.raster_colors import RasterColorModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
