@@ -28,8 +28,8 @@ finished response:
    "api_info": {
      "endpoint": "asyncephemeralsentinel2processingresource",
      "method": "POST",
-     "path": "/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-     "request_url": "http://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
+     "path": "/api/v2/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+     "request_url": "http://actinia.mundialis.de/api/v2/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
    },
    "datetime": "2018-05-30 12:25:43.989044",
    "http_code": 200,
@@ -42,7 +42,7 @@ finished response:
    "timestamp": 1527683143.989044,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
    },
    "user_id": "demouser"
  }
@@ -52,7 +52,7 @@ Poll the status of the asynchronous API call by polling the status URL.
 Be aware that you have to change the status url as the resource id will change for different NDVI API calls.
 
 ```bash
- curl ${AUTH} -X GET http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
+ curl ${AUTH} -X GET http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
 ```
 
 The final result will contain a complete processing list as well as
@@ -66,8 +66,8 @@ as well as univariate statistics of the computed NDVI scene.
    "api_info": {
      "endpoint": "asyncephemeralsentinel2processingresource",
      "method": "POST",
-     "path": "/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-     "request_url": "http://actinia.mundialis.de/api/v1/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
+     "path": "/api/v2/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+     "request_url": "http://actinia.mundialis.de/api/v2/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
    },
    "datetime": "2018-05-30 12:29:11.800608",
    "http_code": 200,
@@ -642,10 +642,10 @@ as well as univariate statistics of the computed NDVI scene.
    "timestamp": 1527683351.8002071,
    "urls": {
      "resources": [
-       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png",
-       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff"
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png",
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff"
      ],
-     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
    },
    "user_id": "demouser"
  }
@@ -654,8 +654,8 @@ as well as univariate statistics of the computed NDVI scene.
 The following URLs point to the resulting PNG preview image and the
 NDVI GeoTiff file:
 
- <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
- <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
 
 The PNG preview should look like this:
 

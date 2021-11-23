@@ -198,8 +198,8 @@ response:
    "api_info": {
      "endpoint": "asyncephemeralresource",
      "method": "POST",
-     "path": "/api/v1/locations/nc_spm_08/processing_async",
-     "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
+     "path": "/api/v2/locations/nc_spm_08/processing_async",
+     "request_url": "http://localhost/api/v2/locations/nc_spm_08/processing_async"
    },
    "datetime": "2018-06-28 14:11:03.878996",
    "http_code": 200,
@@ -590,7 +590,7 @@ response:
    "timestamp": 1530195063.878975,
    "urls": {
      "resources": [],
-     "status": "http://localhost/api/v1/resources/admin/resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561"
+     "status": "http://localhost/api/v2/resources/admin/resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561"
    },
    "user_id": "admin"
  }
@@ -717,8 +717,8 @@ works asynchronously:
    "api_info": {
      "endpoint": "asyncephemeralexportresource",
      "method": "POST",
-     "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/latlong_wgs84/processing_async_export"
+     "path": "/api/v2/locations/latlong_wgs84/processing_async_export",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/latlong_wgs84/processing_async_export"
    },
    "datetime": "2018-05-02 21:05:34.873754",
    "http_code": 200,
@@ -731,7 +731,7 @@ works asynchronously:
    "timestamp": 1525287934.873754,
    "urls": {
      "resources": [],
-     "status": "https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-ff5a89da-82fe-4f13-9f35-8872c4d0ccf7"
+     "status": "https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-ff5a89da-82fe-4f13-9f35-8872c4d0ccf7"
    },
    "user_id": "demouser"
  }
@@ -754,7 +754,7 @@ The finished response should look like this:
      "endpoint": "asyncephemeralexportresource",
      "method": "POST",
      "path": "/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/latlong_wgs84/processing_async_export"
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/latlong_wgs84/processing_async_export"
    },
    "datetime": "2018-05-02 21:09:39.823857",
    "http_code": 200,
@@ -1346,9 +1346,9 @@ The finished response should look like this:
    "timestamp": 1525288179.8238533,
    "urls": {
      "resources": [
-       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4/NDVI.tiff"
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4/NDVI.tiff"
      ],
-     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
    },
    "user_id": "demouser"
  }
