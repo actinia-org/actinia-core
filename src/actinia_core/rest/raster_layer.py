@@ -31,6 +31,7 @@ import pickle
 from uuid import uuid4
 from werkzeug.utils import secure_filename
 
+from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.map_layer_base import MapLayerRegionResourceBase
@@ -178,7 +179,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                        'This method will fail if the map already exists. '
                        'An example request is \'curl -L -u "XXX:XXX" -X POST '
                        '-H "Content-Type: multipart/form-data" -F '
-                       '"file=@/home/....tif" http://localhost:8088/api/v1/'
+                       '"file=@/home/....tif" http://localhost:8088'
+                       f'{URL_PREFIX}/'
                        'locations/nc_spm_08/mapsets/test_mapset/raster_layers/'
                        'testraster\'. Minimum required user role: user.',
         'parameters': [

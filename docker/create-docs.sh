@@ -16,7 +16,7 @@ echo "
 > build/stylesheets/actinia.css
 
 # download the json file locally
-wget -O build/actinia.json "http://127.0.0.1:8088/api/v1/swagger.json"
+wget -O build/actinia.json "http://127.0.0.1:8088/api/v2/swagger.json"
 
 # run spectacle to generate the api docs
 docker run -v $(pwd)/build:/tmp -t sourcey/spectacle \

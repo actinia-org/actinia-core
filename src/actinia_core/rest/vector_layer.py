@@ -33,6 +33,7 @@ from uuid import uuid4
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 
+from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.utils import allowed_file
@@ -182,7 +183,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                        'This method will fail if the map already exists. '
                        'An example request is \'curl -L -u "XXX:XXX" -X POST '
                        '-H "Content-Type: multipart/form-data" -F '
-                       '"file=@/home/....gpkg" http://localhost:8088/api/v1/'
+                       '"file=@/home/....gpkg" http://localhost:8088'
+                       f'{URL_PREFIX}/'
                        'locations/nc_spm_08/mapsets/test_mapset/vector_layers/'
                        'testvector\'. Minimum required user role: user.',
         'parameters': [
