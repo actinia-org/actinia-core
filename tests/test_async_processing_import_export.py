@@ -218,6 +218,87 @@ process_chain_sentinel_import_export_sentinel_ndvi = {
 
     'version': '1'}
 
+process_chain_stac_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.STAC_Others.rastercube.sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_filter_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.STAC_Others.rastercube.sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[-180, -16.369, 90, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2023-09-09", "2022-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_source_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
@@ -318,6 +399,46 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_error),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    # Test for STAC
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
+    def test_stac_import(self):
+
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
+
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
+    def test_stac_source_error_import(self):
+
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_source_error_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
+                     "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
+    def test_stac_source_filter_error_import(self):
+
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_filter_error_import),
                               content_type="application/json")
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
