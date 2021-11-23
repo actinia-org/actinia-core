@@ -413,8 +413,10 @@ class Webhooks(Schema):
         'will be used to check if the webhooks endpoints are available.'
         'The finished endpoint is mandatory, the update endpoint is optional.')
     example = {
-        'update': f'http://business-logic.company.com{URL_PREFIX}/actinia-update-webhook',
-        'finished': f'http://business-logic.company.com{URL_PREFIX}/actinia-finished-webhook'}
+        'update': f'http://business-logic.company.com{URL_PREFIX}/'
+                  'actinia-update-webhook',
+        'finished': f'http://business-logic.company.com{URL_PREFIX}/'
+                    'actinia-finished-webhook'}
 
 
 class ProcessChainModel(Schema):
@@ -527,7 +529,8 @@ class ProcessChainModel(Schema):
         }
         ],
         'webhooks': {
-            'update': f'http://business-logic.company.com{URL_PREFIX}/actinia-update-webhook',
+            'update': f'http://business-logic.company.com{URL_PREFIX}/'
+                      'actinia-update-webhook',
             'finished': f'http://business-logic.company.com{URL_PREFIX}/'
                         'actinia-finished-webhook'},
         'version': '1'}

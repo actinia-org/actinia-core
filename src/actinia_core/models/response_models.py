@@ -268,7 +268,8 @@ class ApiInfoModel(Schema):
         "endpoint": "asyncephemeralresource",
         "method": "POST",
         "path": f"{URL_PREFIX}/locations/nc_spm_08/processing_async",
-        "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/processing_async"
+        "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+                       "processing_async"
     }
 
 
@@ -842,8 +843,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": f"{URL_PREFIX}/locations/ECAD/mapsets/PERMANENT/info",
-            "request_url": f"http://localhost{URL_PREFIX}/locations/ECAD/mapsets/PERMANENT/"
-                           "info"
+            "request_url": f"http://localhost{URL_PREFIX}/locations/ECAD/"
+                           "mapsets/PERMANENT/info"
         },
         "datetime": "2018-05-02 10:53:20.392509",
         "http_code": 200,
