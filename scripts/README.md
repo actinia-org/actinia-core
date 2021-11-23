@@ -7,7 +7,7 @@ list locations, mapsets and map layer the user has access to as
 well as the creation and deletion of mapsets.
 
 The `ace` tool must be executed in an active GRASS GIS session and will use the current location
-of this session to access the actinia service. 
+of this session to access the actinia service.
 
 The current location setting can be overridden by the `location=LOCATION_NAME` option.
 All commands will be executed per default in an **ephemeral** database.
@@ -105,7 +105,7 @@ ace location="nc_spm_08" -m
 ```
 
 All following commands can be executed in any active GRASS GIS location, since
-the location name at the actinia server is explicitly provided. 
+the location name at the actinia server is explicitly provided.
 In case the location option is not provided, the active location will be used.
 The following command lists mapsets of the provided location **latlong_wgs84**:
 
@@ -204,8 +204,8 @@ ace info_job="resource_id-b1cf32e3-bf07-4b57-858e-5d6a9767dd63"
  'accept_timestamp': 1567471811.7252264,
  'api_info': {'endpoint': 'rasterlayersresource',
               'method': 'GET',
-              'path': '/api/v1/locations/nc_spm_08/mapsets/new_user_mapset/raster_layers',
-              'request_url': 'http://actinia.mundialis.de/api/v1/locations/nc_spm_08/mapsets/new_user_mapset/raster_layers'},
+              'path': '/api/v2/locations/nc_spm_08/mapsets/new_user_mapset/raster_layers',
+              'request_url': 'http://actinia.mundialis.de/api/v2/locations/nc_spm_08/mapsets/new_user_mapset/raster_layers'},
  'datetime': '2019-09-03 00:50:11.813833',
  'http_code': 200,
  'message': 'Processing successfully finished',
@@ -225,7 +225,7 @@ ace info_job="resource_id-b1cf32e3-bf07-4b57-858e-5d6a9767dd63"
  'time_delta': 0.08862900733947754,
  'timestamp': 1567471811.813823,
  'urls': {'resources': [],
-          'status': 'http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b1cf32e3-bf07-4b57-858e-5d6a9767dd63'},
+          'status': 'http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-b1cf32e3-bf07-4b57-858e-5d6a9767dd63'},
  'user_id': 'demouser'}
 ```
 
@@ -302,7 +302,7 @@ ace location="latlong_wgs84" render_raster="globcover@globcover"
 
 ## Examples for ephemeral processing
 
-Ephemeral processing is the default processing approach of actinia. Each single command 
+Ephemeral processing is the default processing approach of actinia. Each single command
 or all commands in a shell script, will be executed in an ephemeral mapset. This mapset will be removed
 after processing. The output of GRASS GIS modules can be marked for export, to store
 the computational result for download and further analysis.
@@ -316,7 +316,7 @@ in an ephemeral mapset, that has only the PERMANENT mapset in its search path:
 ace location="nc_spm_08" grass_command="g.list raster"
 
 Resource status accepted
-Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b
+Polling: https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b
 Resource poll status: finished
 Processing successfully finished
 Resource status finished
@@ -364,7 +364,7 @@ zipcodes
 zipcodes_dbl
 
 {'resources': [],
- 'status': 'https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b'}
+ 'status': 'https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-db96cd83-dbc2-40c6-b550-20e265e51c1b'}
 ```
 
 Running the module `g.region` in a new ephemeral location, to show the default region of a temporary mapset:
@@ -373,7 +373,7 @@ Running the module `g.region` in a new ephemeral location, to show the default r
 ace location="nc_spm_08" grass_command="g.region -p"
 
 Resource status accepted
-Polling: https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973
+Polling: https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973
 Resource poll status: finished
 Processing successfully finished
 Resource status finished
@@ -393,7 +393,7 @@ cols:       1630
 cells:      1010600
 
 {'resources': [],
- 'status': 'https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973'}
+ 'status': 'https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-b398b4dd-a47c-4443-a07d-7814cc737973'}
 ```
 
 ### Script examples
@@ -577,7 +577,7 @@ can be used to avoid the persistent option in each single command call:
 alias acp="ace mapset=`g.mapset -p`"
 ```
 
-We assume that in the active GRASS GIS session the 
+We assume that in the active GRASS GIS session the
 current location is **nc_spm_08** and the current mapset is **test_mapset**.
 Then the commands from above can be executed in the following way:
 

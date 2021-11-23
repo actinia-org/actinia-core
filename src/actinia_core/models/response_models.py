@@ -30,6 +30,7 @@ from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
+from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.core.common.process_chain import GrassModule
 
 __license__ = "GPLv3"
@@ -158,9 +159,9 @@ class UrlModel(Schema):
     }
     required = ["status", "resources"]
     example = {"resources": [
-        "http://localhost/api/v1/resource/user/resource_id-4846cbcc-3918-4654-"
+        f"http://localhost{URL_PREFIX}/resource/user/resource_id-4846cbcc-3918-4654-"
         "bf4d-7e1ba2b59ce6/my_slope.tiff"],
-        "status": "http://localhost/api/v1/resources/user/resource_id-"
+        "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
         "4846cbcc-3918-4654-bf4d-7e1ba2b59ce6"}
 
 
@@ -266,8 +267,9 @@ class ApiInfoModel(Schema):
     example = {
         "endpoint": "asyncephemeralresource",
         "method": "POST",
-        "path": "/api/v1//locations/nc_spm_08/processing_async",
-        "request_url": "http://localhost/api/v1/locations/nc_spm_08/processing_async"
+        "path": f"{URL_PREFIX}/locations/nc_spm_08/processing_async",
+        "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+                       "processing_async"
     }
 
 
@@ -388,7 +390,7 @@ class ProcessingResponseModel(Schema):
             "endpoint": "asyncephemeralresource",
             "method": "POST",
             "path": "/locations/nc_spm_08/processing_async",
-            "request_url": "http://localhost/api/v1/locations/nc_spm_08/"
+            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
                            "processing_async"
         },
         "datetime": "2017-05-24 22:37:21.608717",
@@ -400,7 +402,7 @@ class ProcessingResponseModel(Schema):
         "timestamp": 1495658241.608716,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/admin/resource_id-"
+            "status": f"http://localhost{URL_PREFIX}/resources/admin/resource_id-"
                       "2be8cafe-b451-46a0-be15-f61d95c5efa1"
         },
         "user_id": "admin"
@@ -421,7 +423,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
-            "request_url": "http://localhost/api/v1/locations/nc_spm_08/mapsets/"
+            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/mapsets/"
                            "PERMANENT/info"
         },
         "datetime": "2018-05-06 22:02:14.398927",
@@ -478,7 +480,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
         "timestamp": 1525636934.3989098,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/user/resource_id-"
+            "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
                       "79608249-521c-4a98-9e1f-9201f693870b"
         },
         "user_id": "user"
@@ -840,9 +842,9 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
-            "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/info",
-            "request_url": "http://localhost/api/v1/locations/ECAD/mapsets/PERMANENT/"
-                           "info"
+            "path": f"{URL_PREFIX}/locations/ECAD/mapsets/PERMANENT/info",
+            "request_url": f"http://localhost{URL_PREFIX}/locations/ECAD/"
+                           "mapsets/PERMANENT/info"
         },
         "datetime": "2018-05-02 10:53:20.392509",
         "http_code": 200,
@@ -923,7 +925,7 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525258400.392495,
         "urls": {
             "resources": [],
-            "status": "http://localhost/api/v1/resources/user/resource_id-"
+            "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
                       "2222cdb7-06f5-460d-a38f-5745a3c3b518"
         },
         "user_id": "user"

@@ -26,6 +26,7 @@ Process chain
 """
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
+from actinia_core.core.common.app import URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
@@ -412,8 +413,10 @@ class Webhooks(Schema):
         'will be used to check if the webhooks endpoints are available.'
         'The finished endpoint is mandatory, the update endpoint is optional.')
     example = {
-        'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
-        'finished': 'http://business-logic.company.com/api/v1/actinia-finished-webhook'}
+        'update': f'http://business-logic.company.com{URL_PREFIX}/'
+                  'actinia-update-webhook',
+        'finished': f'http://business-logic.company.com{URL_PREFIX}/'
+                    'actinia-finished-webhook'}
 
 
 class ProcessChainModel(Schema):
@@ -526,7 +529,8 @@ class ProcessChainModel(Schema):
         }
         ],
         'webhooks': {
-            'update': 'http://business-logic.company.com/api/v1/actinia-update-webhook',
-            'finished': 'http://business-logic.company.com/api/v1/'
+            'update': f'http://business-logic.company.com{URL_PREFIX}/'
+                      'actinia-update-webhook',
+            'finished': f'http://business-logic.company.com{URL_PREFIX}/'
                         'actinia-finished-webhook'},
         'version': '1'}

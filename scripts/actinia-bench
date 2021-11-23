@@ -37,6 +37,8 @@ __copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. K
 __maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
+URL_PREFIX = "/api/v2"
+
 PROCESS_CHAIN_ERROR={
    1:{
         "module":"g.region",
@@ -245,7 +247,7 @@ def main():
 
     parser.add_argument("-s", "--server",
                         type=str,
-                        default="http://127.0.0.1:8080/api/v1",
+                        default=f"http://127.0.0.1:8080{URL_PREFIX}",
                         required=False,
                         help="The hostname:port of the actinia server")
 

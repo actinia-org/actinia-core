@@ -12,7 +12,7 @@ docker-compose -f docker/docker-compose.yml up
 ```
 Now you have a running actinia instance locally! Check with
 ```
-curl http://127.0.0.1:8088/api/v1/version
+curl http://127.0.0.1:8088/api/v2/version
 ```
 
 * Having __trouble__? See [How to fix common startup errors](#startup-errors) below.
@@ -144,7 +144,7 @@ grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.info -g myrandom
 You now have some data which you can access through actinia. To get information
 via API, start actinia with gunicorn and run
 ```
-curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v1/locations/nc_spm_08/mapsets
+curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v2/locations/nc_spm_08/mapsets
 ```
 The folder where you downloaded the data into (`/actinia_core/grassdb`) is mounted into your docker container via the compose file, so all data is kept, even if your docker container restarts.
 
@@ -182,7 +182,7 @@ Examples:
 * https://actinia.mundialis.de/latest/version
 * https://actinia.mundialis.de/latest/health_check
 * requires authorization (actinia user):
-    * https://actinia.mundialis.de/api/v1/locations
+    * https://actinia.mundialis.de/api/v2/locations
 
 # Cloud deployment with multiple actinia_core instances
 

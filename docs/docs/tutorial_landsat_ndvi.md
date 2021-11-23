@@ -39,8 +39,8 @@ processing result.
    "api_info": {
      "endpoint": "asyncephemerallandsatprocessingresource",
      "method": "POST",
-     "path": "/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
-     "request_url": "http://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+     "path": "/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
+     "request_url": "http://actinia.mundialis.de/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
    },
    "datetime": "2018-05-30 10:52:19.545774",
    "http_code": 200,
@@ -53,7 +53,7 @@ processing result.
    "timestamp": 1527677539.5457737,
    "urls": {
      "resources": [],
-     "status": "https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+     "status": "https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
    },
    "user_id": "demouser"
  }
@@ -64,7 +64,7 @@ URL. Be aware that you have to use your status url as the resource id will chang
 calls.
 
 ```bash
- curl -L ${AUTH} -X GET "https://actinia.mundialis.de/api/v1/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+ curl -L ${AUTH} -X GET "https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
 ```
 
 The final result will contain a complete processing list as well as
@@ -78,8 +78,8 @@ as well as univariate statistics of the computed NDVI scene.
    "api_info": {
      "endpoint": "asyncephemerallandsatprocessingresource",
      "method": "POST",
-     "path": "/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
-     "request_url": "http:///actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+     "path": "/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
+     "request_url": "http:///actinia.mundialis.de/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
    },
    "datetime": "2018-05-30 11:22:58.315162",
    "http_code": 200,
@@ -659,10 +659,10 @@ as well as univariate statistics of the computed NDVI scene.
    "timestamp": 1527679378.31516,
    "urls": {
      "resources": [
-       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
-       "http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
      ],
-     "status": "http://actinia.mundialis.de/api/v1/resources/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
    },
    "user_id": "demouser"
  }
@@ -692,9 +692,9 @@ available in the *process\_results* section:
 The following links can be found in the **urls** section of the JSON
 response that point to the created resources:
 
- <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
 
- <http://actinia.mundialis.de/api/v1/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
 
 The preview image should look like this:
 
