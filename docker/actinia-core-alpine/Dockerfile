@@ -75,12 +75,12 @@ RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases
 RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/53928473 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# # Get actinia-stac-plugin (53928473 = 2.2.1)
-# RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/53928473 > resp.json && \
-#     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
-#     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-api (53922696 = 0.0.1)
-RUN curl https://api.github.com/repos/mundialis/actinia-api/releases/53922696 > resp.json && \
+# Get actinia-stac-plugin (54012264 = 0.0.1)
+RUN curl https://api.github.com/repos/mundialis/actinia-stac-plugin/releases/54012264 > resp.json && \
+    name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
+    cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
+# Get actinia-api (54010688 = 2.0.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-api/releases/54010688 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 

@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:0.99.26 as actinia_test
+FROM mundialis/actinia-core:2.0.0 as actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
@@ -26,6 +26,8 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset
   rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
+
+RUN pip3 install actinia-api@https://github.com/mundialis/actinia-api/releases/download/2.0.0/actinia_api-2.0.0-py3-none-any.whl
 
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
