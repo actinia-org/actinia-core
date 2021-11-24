@@ -32,8 +32,10 @@ import os
 import shutil
 import pickle
 from flask_restful_swagger_2 import swagger
-from actinia_api.swagger2.actinia_core.schemas.location_management import LocationListResponseModel
-from actinia_api.swagger2.actinia_core.schemas.location_management import ProjectionInfoModel
+from actinia_api.swagger2.actinia_core.schemas.location_management \
+     import LocationListResponseModel
+from actinia_api.swagger2.actinia_core.schemas.location_management \
+     import ProjectionInfoModel
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call

@@ -31,7 +31,7 @@ __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
-from flask import make_response, jsonify
+from flask import make_response, jsonify, request
 import os
 import re
 import importlib
@@ -41,6 +41,8 @@ import sys
 from actinia_core.core.common.app import flask_app, URL_PREFIX
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
+from actinia_core.models.response_models import \
+     LinkResponseModel
 from . import __version__
 
 
@@ -133,3 +135,20 @@ def version():
     info['running_since'] = find_running_since_info()
 
     return make_response(jsonify(info), 200)
+
+
+# Return a hint that this version is outdated
+@flask_app.route("/api/v1/<path:actinia_path>")
+def hint(actinia_path):
+    """Return a hint that this version is no longer installed. If an older
+    version is installed, this endpoint will be overwritten by a proxy.
+
+    Returns: Response
+
+    """
+    url = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path
+
+    return make_response(jsonify(LinkResponseModel(
+            status="Not found",
+            message="Are you looking for the current api version?",
+            links=[url]), 404))

@@ -1387,3 +1387,27 @@ class UserInfoResponseModel(Schema):
         "User id": "actinia-gdi",
         "User role": "superadmin"
     }
+
+
+class LinkResponseModel(Schema):
+    """Response schema that is used in cases that no asynchronous run was performed and the
+    generated information is very simple.
+
+    """
+    type = 'object'
+    properties = {
+        'status': {
+            'type': 'string',
+            'description': 'The status of the resource, values: accepted, running, '
+                           'finished, terminated, error'
+        },
+        'message': {
+            'type': 'string',
+            'description': 'A simple message to describes the status of the resource'
+        },
+        'links': {
+            'type': 'list',
+            'description': 'A list of related links'
+        }
+    }
+    required = ["status", "message"]
