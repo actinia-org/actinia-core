@@ -32,6 +32,9 @@ from shutil import rmtree
 from uuid import uuid4
 from werkzeug.utils import secure_filename
 from zipfile import ZipFile
+from actinia_api.swagger2.actinia_core.schemas.vector_layer import \
+    VectorInfoResponseModel, VectorRegionCreationModel, \
+    VectorAttributeModel, VectorInfoModel
 
 from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.core.common.redis_interface import enqueue_job
@@ -39,9 +42,6 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, SimpleResponseModel
-from actinia_core.models.openapi.vector_layer import \
-    VectorInfoResponseModel, VectorRegionCreationModel, \
-    VectorAttributeModel, VectorInfoModel
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
 from .map_layer_base import MapLayerRegionResourceBase

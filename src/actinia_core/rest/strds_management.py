@@ -30,6 +30,9 @@ import pickle
 from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.schemas.strds_management import \
+     STRDSCreationModel, STRDSInfoModel, STRDSInfoResponseModel
+
 from actinia_core.core.request_parser import where_parser
 from .persistent_processing import PersistentProcessing
 from .resource_base import ResourceBase
@@ -37,8 +40,6 @@ from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import ProcessingResponseModel, \
     StringListProcessingResultResponseModel, ProcessingErrorResponseModel
-from actinia_core.models.openapi.strds_management import \
-     STRDSCreationModel, STRDSInfoModel, STRDSInfoResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"

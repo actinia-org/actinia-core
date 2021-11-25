@@ -30,6 +30,8 @@ import os
 import pickle
 from uuid import uuid4
 from werkzeug.utils import secure_filename
+from actinia_api.swagger2.actinia_core.schemas.raster_layer import \
+     RasterInfoResponseModel, RasterInfoModel
 
 from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
@@ -41,8 +43,6 @@ from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.models.openapi.raster_layer import \
-     RasterInfoResponseModel, RasterInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
