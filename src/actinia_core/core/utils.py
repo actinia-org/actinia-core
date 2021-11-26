@@ -27,11 +27,31 @@ Utils file with common util functions
 
 import os
 from actinia_core.core.common.process_object import Process
+from actinia_core.core.common.exceptions import SecurityError
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
+
+
+def os_path_normpath(path_parts):
+    """The function returns a joined norm path or raises an error if it is not
+    as expected.
+
+    Args:
+        path_parts (list of strings): The parts of the path in a list
+
+    Returns:
+        path: joined normalized path
+
+    Raise:
+        raises a SecurityError if the path is not as expected
+    """
+    path = os.path.normpath(os.path.join(*path_parts))
+    if not path.startswith(path_parts[0]):
+        raise SecurityError(f"Used path '{path}' is insecure")
+    return path
 
 
 def get_wget_process(source, url):

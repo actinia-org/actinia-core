@@ -71,3 +71,11 @@ class GoogleCloudAPIError(Exception):
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
+
+
+class SecurityError(Exception):
+    """Raise this exception in case some security problem occurs
+    """
+    def __init__(self, message):
+        message = "%s:  %s" % (str(self.__class__.__name__), message)
+        Exception.__init__(self, message)
