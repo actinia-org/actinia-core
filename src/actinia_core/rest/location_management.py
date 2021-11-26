@@ -48,7 +48,7 @@ from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.utils import os_path_normpath
+from actinia_core.core.utils import ensure_valid_path
 from actinia_core.processing.common.location_management import (
     read_current_region,
     create_location,
@@ -199,11 +199,11 @@ class LocationManagementResourceAdminUser(ResourceBase):
         database.
         """
         # Delete only locations from the user database
-        location = os_path_normpath(
+        location = ensure_valid_path(
             [self.grass_user_data_base, self.user_group, location_name]
         )
-        permanent_mapset = os_path_normpath([location, "PERMANENT"])
-        wind_file = os_path_normpath([permanent_mapset, "WIND"])
+        permanent_mapset = ensure_valid_path([location, "PERMANENT"])
+        wind_file = ensure_valid_path([permanent_mapset, "WIND"])
         # Check the location path, only "valid" locations can be deleted
         if os.path.isdir(location):
             if os.path.isdir(permanent_mapset) and os.path.isfile(wind_file):
@@ -246,7 +246,7 @@ class LocationManagementResourceAdminUser(ResourceBase):
         """Create a new location based on EPSG code in the user database."""
         # Create only new locations if they did not exist in the global
         # database
-        location = os_path_normpath([self.grass_data_base, location_name])
+        location = ensure_valid_path([self.grass_data_base, location_name])
 
         # Check the location path
         if os.path.isdir(location):
@@ -256,7 +256,7 @@ class LocationManagementResourceAdminUser(ResourceBase):
             )
 
         # Check also for the user database
-        location = os_path_normpath(
+        location = ensure_valid_path(
             [self.grass_user_data_base, self.user_group, location_name]
         )
         # Check the location path
