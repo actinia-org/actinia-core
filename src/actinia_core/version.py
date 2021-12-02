@@ -49,10 +49,12 @@ from . import __version__
 G_VERSION = {}
 PLUGIN_VERSIONS = {}
 PYTHON_VERSION = ""
+API_VERSION = ""
 
 
 def init_versions():
     global PYTHON_VERSION
+    global API_VERSION
 
     g_version = subprocess.run(
         ['grass', '--tmp-location', 'epsg:4326', '--exec',
@@ -65,6 +67,10 @@ def init_versions():
     for i in global_config.PLUGINS:
         module = importlib.import_module(i)
         PLUGIN_VERSIONS[i] = module.__version__
+
+    log.debug('Detecting API versions')
+    module = importlib.import_module("actinia_api")
+    API_VERSION = module.__version__
 
     PYTHON_VERSION = sys.version.replace('\n', '- ')
 
@@ -131,6 +137,7 @@ def version():
     info['plugins'] = ",".join(global_config.PLUGINS)
     info['grass_version'] = G_VERSION
     info['plugin_versions'] = PLUGIN_VERSIONS
+    info['api_version'] = API_VERSION
     info['python_version'] = PYTHON_VERSION
     info['running_since'] = find_running_since_info()
 
