@@ -85,7 +85,7 @@ def valid_additional_version_info_key(cand):
     valid_reg_ex = '^[a-z_]{' + str(minlength) + ',' + str(maxlength) + '}$'
     reserved_keys = [
         'grass_version', 'plugin_versions', 'plugins', 'python_version',
-        'version'
+        'version', 'api_version'
     ]
     return cand and cand not in reserved_keys and re.match(valid_reg_ex, cand)
 
