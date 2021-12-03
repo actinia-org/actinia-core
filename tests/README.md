@@ -33,6 +33,9 @@ docker run -it actinia-test:latest -i
 # execute all tests
 make test
 
+# execute only integration tests (not unittests)
+make notunittest
+
 # execute only unit tests
 make unittest
 
