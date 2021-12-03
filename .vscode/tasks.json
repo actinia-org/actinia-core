@@ -1,0 +1,95 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "docker-build",
+			"label": "docker-build",
+			"platform": "python",
+			"dockerBuild": {
+				"tag": "actiniacore:latest",
+				"dockerfile": "${workspaceFolder}/docker/actinia-core-dev/Dockerfile",
+				"context": "${workspaceFolder}"
+				// "pull": true
+			}
+		},
+		{
+			"label": "start-redis",
+			"type": "shell",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis",
+			"isBackground": true,
+		},
+		{
+			"type": "docker-run",
+			"label": "docker-run: debug",
+			"dependsOn": [
+				"docker-build",
+				"start-redis"
+			],
+			"python": {
+				"module": "flask",
+				"args": [
+					"run",
+					"--no-debugger",
+					// "--no-reload",
+					"--host",
+					"0.0.0.0",
+					"--port",
+					"8088"
+				]
+			},
+			"dockerRun": {
+				"remove": true,
+				// network is needed when connecting to redis
+				// while not using docker-compose for startup
+				"network": "docker_actinia-dev",
+				"ports": [
+				  {
+					"containerPort": 8088,
+					"hostPort": 8088
+				  }
+				],
+				"volumes": [
+					// mount local source code for instant reload
+					// on changes
+					{
+				    	"localPath": "${workspaceFolder}",
+					    "containerPath": "/src/actinia_core",
+					    "permissions": "rw"
+				    },
+					// mount GRASS DBs
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/grassdb",
+					    "containerPath": "/actinia_core/grassdb",
+					    "permissions": "rw"
+				    },
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/userdata",
+					    "containerPath": "/actinia_core/userdata",
+					    "permissions": "rw"
+				    },
+					// mount other data
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/pgpass",
+					    "containerPath": "/mnt/pgpass",
+					    "permissions": "rw"
+				    },
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/geodata_dir",
+					    "containerPath": "/mnt/geodata",
+					    "permissions": "rw"
+				    },
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/workspace",
+					    "containerPath": "/actinia_core/workspace",
+					    "permissions": "rw"
+				    },
+					{
+				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/resources",
+					    "containerPath": "/actinia_core/resources",
+					    "permissions": "rw"
+				    }
+				]
+			}
+		}
+	]
+}
