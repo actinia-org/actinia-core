@@ -26,6 +26,8 @@ Process chain
 """
 import os
 import requests
+
+from actinia_core.core.stac_importer_interface import STACImporter
 from .process_object import Process
 from .exceptions import AsyncProcessError
 from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
@@ -606,6 +608,12 @@ class ProcessChainConverter(object):
             elif entry["import_descr"]["type"].lower() == "landsat":
                 landsat_commands = self._get_landsat_import_download_commands(entry)
                 downimp_list.extend(landsat_commands)
+
+            # STAC
+            elif entry["import_descr"]["type"].lower() == "stac":
+                stac_commands = STACImporter.get_stac_import_download_commands(entry)
+                downimp_list.extend(stac_commands)
+
             else:
                 raise AsyncProcessError(
                     "Unknown import type specification: %s"
@@ -1125,6 +1133,7 @@ class ProcessChainConverter(object):
         keys = process_chain.keys()
         int_keys = []
         # Convert the keys to integer to sort correctly
+
         for k in keys:
             int_keys.append(int(k))
 
@@ -1165,7 +1174,7 @@ def check_required_keys_for_download_process_chain(entry):
         raise AsyncProcessError(
             "Source specification is required in import definition")
     if entry["import_descr"]["type"] not in [
-            "raster", "vector", "sentinel2", "landsat", "file", "postgis"]:
+            "raster", "vector", "sentinel2", "landsat", "file", "postgis", "stac"]:
         raise AsyncProcessError(
             "Unknown type specification: %s" % entry["import_descr"]["type"])
 
