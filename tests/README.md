@@ -15,7 +15,7 @@ When writing new tests it is useful to run selected tests locally and isolated. 
 docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```
 3. To run only a few tests you can mark the tests for development with
-`@pytest.mark.dev` and add `import pytest` to the file.
+`@pytest.mark.dev` and add `import pytest` to the `.py` file/s with the tests you want to run.
 
 4. Start the docker container and mount your `tests` folder:
 
