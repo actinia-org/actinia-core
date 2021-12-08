@@ -12,4 +12,17 @@ sleep 10
 # run tests
 echo $ACTINIA_CUSTOM_TEST_CFG
 echo $DEFAULT_CONFIG_PATH
-python3 setup.py test
+
+if [ "$1" == "dev" ]
+then
+  echo "Executing only 'dev' tests ..."
+  python3 setup.py test --addopts "-m dev"
+elif [ "$1" == "integrationtest" ]
+then
+  python3 setup.py test --addopts "-m 'not unittest'"
+else
+  python3 setup.py test
+fi
+
+# stop redis server
+redis-cli shutdown
