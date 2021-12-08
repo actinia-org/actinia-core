@@ -28,4 +28,4 @@ devtest:
 	./tests_with_redis.sh dev
 
 integrationtest:
-	./tests_with_redis.sh notunittest
+	./tests_with_redis.sh integrationtest

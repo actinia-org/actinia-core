@@ -16,6 +16,8 @@ docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```
 3. To run only a few tests you can mark the tests for development with
 `@pytest.mark.dev` and add `import pytest` to the file.
+(For best practice examples on the use of pytest-decorators, see `unittests/test_version.py`)
+
 
 4. Start the docker container and mount your `tests` folder:
 
@@ -34,7 +36,7 @@ docker run -it actinia-test:latest -i
 make test
 
 # execute only integration tests (not unittests)
-make notunittest
+make integrationtest
 
 # execute only unit tests
 make unittest
@@ -45,8 +47,6 @@ make devtest
 # If you added a debugger to your test it will stop there.
 # After making changes to the test, you need to close and restart the docker container (docker run ...) before testing again.
 ```
-
-When you are done, add your new test(s) to `actinia_core/tests`. You can run the entire testsuite including your new tests by rebuilding the docker image and running the container without mounting (see 4.)
 
 
 ## Problems

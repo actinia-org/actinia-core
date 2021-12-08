@@ -17,7 +17,7 @@ if [ "$1" == "dev" ]
 then
   echo "Executing only 'dev' tests ..."
   python3 setup.py test --addopts "-m dev"
-elif [ "$1" == "notunittest" ]
+elif [ "$1" == "integrationtest" ]
 then
   python3 setup.py test --addopts "-m 'not unittest'"
 else
