@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "name": "Docker: Python - Flask",
+            "type": "docker",
+            "request": "launch",
+            "preLaunchTask": "docker-run: debug",
+            "python": {
+                "pathMappings": [
+                    {
+                        "localRoot": "${workspaceFolder}",
+                        "remoteRoot": "/src/actinia_core"
+                    }
+                ],
+                "projectType": "flask"
+            },
+            "dockerServerReadyAction": {
+              "action": "openExternally",
+              "pattern": "Running on (https?://\\S+|[0-9]+)",
+              "uriFormat": "%s://localhost:%s/api/v2/version"
+            }
+        }
+    ]
+}

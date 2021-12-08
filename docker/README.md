@@ -55,6 +55,8 @@ sudo sysctl -w vm.max_map_count=262144
 
 If desired, you can also directly start here without installing actinia first. You only need to have cloned and checked out the actinia_core repository.
 
+If you use [vscode](https://code.visualstudio.com/), open actinia_core as a workspace. This can be done by eg. typing `code $PATH_TO_MY_ACTINIA_CORE_CHECKOUT` in a terminal. Then press `F5` and after a few seconds, a browser window should be opened pointing to the version endpoint. For debugging tips, [read the docs](https://code.visualstudio.com/Docs/editor/debugging#_debug-actions).
+
 __If not stated otherwise, you need to be in folder `actinia_core/docker`__
 
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
