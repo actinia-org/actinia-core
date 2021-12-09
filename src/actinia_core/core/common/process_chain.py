@@ -27,7 +27,7 @@ Process chain
 import os
 import requests
 
-from actinia_core.core.stac_importer_interface import STACImporter
+from actinia_core.core.stac_importer_interface import STACImporter as STAC;
 from .process_object import Process
 from .exceptions import AsyncProcessError
 from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
@@ -611,7 +611,11 @@ class ProcessChainConverter(object):
 
             # STAC
             elif entry["import_descr"]["type"].lower() == "stac":
-                stac_commands = STACImporter.get_stac_import_download_commands(entry)
+                stac = STAC()
+                stac_commands = stac.get_stac_import_download_commands(
+                                                stac_entry=entry
+                                                )
+
                 downimp_list.extend(stac_commands)
 
             else:
