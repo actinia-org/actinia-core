@@ -206,7 +206,7 @@ class STACImporter:
                 stac_filter = stac_entry["import_descr"]["filter"]
 
             stac_command = \
-                cls._stac_import(
+                self._stac_import(
                     stac_collection_id=stac_entry_source,
                     semantic_label=stac_semantic_label,
                     interval=stac_interval,
