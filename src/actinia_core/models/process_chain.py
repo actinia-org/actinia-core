@@ -119,7 +119,8 @@ class InputParameter(IOParameterBase):
                                ' names to refer to the imported Landsat bands. '
                                'Use the file option to download any kind of files that '
                                'should be processed by a grass gis module. ',
-                'enum': ['raster', 'vector', 'landsat', 'sentinel2', 'postgis', 'file']
+                'enum': ['raster', 'vector', 'landsat', 'sentinel2',
+                         'postgis', 'file', 'stac']
             },
             'sentinel_band': {
                 'type': 'string',
@@ -143,7 +144,7 @@ class InputParameter(IOParameterBase):
                 'type': 'string',
                 'description': 'The input source that may be a landsat scene name, '
                                'a sentinel2 scene name, a postGIS database string,'
-                               ' or an URL that points '
+                               'a stac collection ID or an URL that points '
                                'to an accessible raster or vector file. '
                                'A HTTP, HTTPS or FTP connection must be '
                                'specified in case of raster or vector types. '
@@ -152,6 +153,42 @@ class InputParameter(IOParameterBase):
                                'https:// or ftp://. PostGIS vector layer can be '
                                'imported by defining a database string as source and '
                                'a layer name.',
+            },
+            'semantic_label': {
+                'type': 'string',
+                'description': 'Refers to the common names use to'
+                               'call the bands of an image,'
+                               'for example: red, blue, nir, swir'
+                               'However, this property also accept the band name'
+                               'such as B1, B8 etc. The semantic labeling should match'
+                               'the labels register in the stac collection.',
+                'example': 'red, blue, nir or B1, B2, B8A'
+            },
+            'extent': {
+                'type': 'string',
+                'description': 'Spatio-temporal constrain defined by the user'
+                               'troughout bbox and interval concept.',
+                'enum': ["spatial", "temporal"],
+                'example': {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal": {
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                }
+            },
+            'filter': {
+                'type': 'string',
+                'description': 'Constrain in any other property'
+                               'or metadata.',
+                'example': {
+                    "query": {
+                        "eo:cloud_cover": {
+                            "lt": 50
+                        }
+                    }
+                }
             },
             'basic_auth': {
                 'type': 'string',
