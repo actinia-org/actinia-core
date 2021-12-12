@@ -5,41 +5,40 @@ A local installation requires a full GRASS GIS installation. Make sure
 all requirements are fulfilled to compile GRASS GIS from the git
 repository.
 
-First install Proj4 and GRASS GIS by downloading the latest git version
-and compile it.
+These installation instructions a based on a Ubuntu Linux system (other
+operating systems and distributions are fine, too).
 
-1.  Install the latest projection library.
+
+First install PPROJ and GRASS GIS by downloading the latest packages
+and GRASS GIS git version and compile it.
+
+1.  Install the latest projection library
 
 ```bash
- cd /tmp
-
- wget http://download.osgeo.org/proj/proj-4.9.3.tar.gz
-
- tar xzvf proj-4.9.3.tar.gz
-
- cd proj-4.9.3/nad
-
- wget http://download.osgeo.org/proj/proj-datumgrid-1.8.zip
-
- unzip proj-datumgrid-1.8.zip
-
- cd ..
-
- ./configure
- make -j4
- sudo make install
+ sudo apt-get update
+ sudo apt-get install proj-bin proj-data
 ```
 
-2.  Install GRASS GIS and additional modules:
+
+2.  Set Python 3 environemtn
+
+```bash
+ # recommended to give Python3 precedence over Python2 (which is end-of-life since 2019)
+ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+```
+
+
+3.  Conmpile and install GRASS GIS and additional modules:
 
 ```bash
  cd /tmp
 
  wget https://grass.osgeo.org/grass78/source/snapshot/grass-7.8.git_src_snapshot_latest.tar.gz
  tar xzvf grass-7.8.git_src_snapshot_latest.tar.gz
- mv grass-7.8.git_src_snapshot_????_??_?? grass_master
+ mv grass-7.8.git_src_snapshot_????_??_?? grass78
+ rm -f grass-7.8.git_src_snapshot_latest.tar.gz
 
- cd grass_master
+ cd grass78
 
  export INTEL="-std=gnu99 -fexceptions -fstack-protector -m64"
  export MYCFLAGS="-Wall -ggdb -fno-fast-math -fno-common $INTEL $MYGCC"
@@ -52,10 +51,8 @@ and compile it.
  ./configure \
    --with-cxx \
    --enable-largefile \
-   --with-proj=/usr/local/lib \
-   --with-proj-share=/usr/local/share/proj \
+   --with-proj-share=/usr/share/proj \
    --with-gdal \
-   --with-python \
    --with-geos \
    --with-sqlite \
    --with-cairo --with-cairo-ldflags=-lfontconfig \
@@ -71,33 +68,32 @@ and compile it.
    --without-mysql \
    --without-odbc \
    --without-openmp \
-   --without-ffmpeg \
    --prefix=/usr/local
 
- make -j16
+ make -j8
  sudo make install
 
- cd temporal
- git clone https://bitbucket.org/huhabla/temporal-raster-sampling.git t.rast.sample
+ cd temporal/
+ git clone https://github.com/mundialis/t.rast.sample
  cd t.rast.sample
  make
- sudo make install
- cd ..
-
- git clone https://github.com/huhabla/t_rast_aggr_func.git t.rast.aggr_func
- cd t.rast.aggr_func
- make
+ cd ../..
  sudo make install
 
- cd ../../display/
- git clone https://bitbucket.org/huhabla/d_rast_multi.git d.rast.multi
+ # t.rast.udf
+ # see https://github.com/mundialis/openeo-addons
+
+ cd display/
+ git clone https://github.com/mundialis/d_rast_multi d.rast.multi
  cd d.rast.multi
  make
+ cd ../..
  sudo make install
 ```
 
-3.  Download the test locations and place them into a specific directory
-    that will be used by actinia as persistent database:
+
+4.  Download the test datasets ("locations") and place them into a
+    specific directory that will be used by actinia as a persistent database:
 
 ```bash
  mkdir -p $HOME/actinia/grassdb
@@ -117,7 +113,8 @@ and compile it.
  mv LL latlong_wgs84
 ```
 
-4.  Actinia Core must be run within a virtual python3 environment:
+
+5.  Actinia Core must be installed and run within a (virtual) Python3 environment:
 
 ```bash
  mkdir -p $HOME/actinia/workspace/tmp
@@ -125,47 +122,64 @@ and compile it.
  cd /tmp
 
  git clone https://github.com/mundialis/actinia_core.git actinia_core
- virtualenv -p python3.5 actinia_venv
- source actinia_venv/bin/activate
+ # virtualenv -p python3 actinia_venv
+ # source actinia_venv/bin/activate
  cd actinia_core
  pip install -r requirements.txt
  python setup.py install
- deactivate
+ # deactivate
 ```
 
-5.  GRASS GIS 7.8 requires a Python 3 environment for running, so we
-    create one (not needed if only Python 3 is present on the machine).
-    This environment must be specified in the actinia config file:
+
+6.  Actinia API must be installed and run within a (virtual) Python3 environment:
 
 ```bash
+ mkdir -p $HOME/actinia/workspace/tmp
+
  cd /tmp
 
- virtualenv -p python2.7 grass_venv
- source grass_venv/bin/activate
- cd actinia_core
- pip install -r requirements-grass-gis.txt
+ git clone https://github.com/mundialis/actinia-api.git actinia-api
+ # virtualenv -p python3 actinia_venv
+ # source actinia_venv/bin/activate
+ cd actinia-api
+ python setup.py install
+ # deactivate
 ```
 
-6.  Make sure that a redis service is running and create a user with
+
+7.  Make sure that a redis service is running and create a user with
     actinia-user tool
 
 ```bash
  cd /tmp
- source actinia_venv/bin/activate
 
+ # install and start redis server
+ apt-get install -y redis
+ redis-server &
+
+ # source actinia_venv/bin/activate
  # Create the superuser
  actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 100000000000 -n 1000 -t 6000
 
  # Start the actinia service with
- actinia_server --host 0.0.0.0 --port 5000
+ actinia-server --host 0.0.0.0 --port 5000
 ```
 
-7.  Check the service with curl
+
+8.  Check the service with curl
 
 ```bash
-ACTINIA_VERSION="v2"
+ ACTINIA_VERSION="v2"
  export ACTINIA_URL="http://localhost:5000/api/${ACTINIA_VERSION}"
  export AUTH='-u superadmin:abcdefgh'
 
  curl ${AUTH} -X GET ${ACTINIA_URL}/locations
 ```
+
+The `curl` command call should report back:
+
+```bash
+{"locations":["nc_spm_08","ECAD","latlong_wgs84"],"status":"success"}
+```
+
+Success!
