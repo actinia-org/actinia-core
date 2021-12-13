@@ -20,7 +20,7 @@ and GRASS GIS git version and compile it.
 ```
 
 
-2.  Set Python 3 environemtn
+2.  Set Python 3 environment
 
 ```bash
  # recommended to give Python3 precedence over Python2 (which is end-of-life since 2019)
