@@ -28,7 +28,7 @@ and GRASS GIS git version and compile it.
 ```
 
 
-3.  Conmpile and install GRASS GIS and additional modules:
+3.  Compile and install GRASS GIS and additional modules:
 
 ```bash
  cd /tmp
