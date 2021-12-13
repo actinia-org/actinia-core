@@ -5,7 +5,7 @@ A local installation requires a full GRASS GIS installation. Make sure
 all requirements are fulfilled to compile GRASS GIS from the git
 repository.
 
-These installation instructions a based on a Ubuntu Linux system (other
+These installation instructions are based on a Ubuntu Linux system (other
 operating systems and distributions are fine, too).
 
 
