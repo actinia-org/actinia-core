@@ -169,7 +169,7 @@ and GRASS GIS git version and compile it.
 8.  Check the service with curl
 
 ```bash
- ACTINIA_VERSION="v2"
+ACTINIA_VERSION="v2"
  export ACTINIA_URL="http://localhost:5000/api/${ACTINIA_VERSION}"
  export AUTH='-u superadmin:abcdefgh'
 
