@@ -35,6 +35,7 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 ```bash
 cd /tmp
 
+# fetch weekly generated latest snapshot of GRASS GIS stable
 wget https://grass.osgeo.org/grass78/source/snapshot/grass-7.8.git_src_snapshot_latest.tar.gz
 tar xzvf grass-7.8.git_src_snapshot_latest.tar.gz
 mv grass-7.8.git_src_snapshot_????_??_?? grass78
@@ -121,12 +122,9 @@ mkdir -p $HOME/actinia/workspace/tmp
 cd /tmp
 
 git clone https://github.com/mundialis/actinia_core.git actinia_core
-# virtualenv -p python3 actinia_venv
-# source actinia_venv/bin/activate
 cd actinia_core
 pip install -r requirements.txt
 python setup.py install
-# deactivate
 ```
 
 
@@ -138,11 +136,8 @@ mkdir -p $HOME/actinia/workspace/tmp
 cd /tmp
 
 git clone https://github.com/mundialis/actinia-api.git actinia-api
-# virtualenv -p python3 actinia_venv
-# source actinia_venv/bin/activate
 cd actinia-api
 python setup.py install
-# deactivate
 ```
 
 
@@ -156,7 +151,6 @@ cd /tmp
 apt-get install -y redis
 redis-server &
 
-# source actinia_venv/bin/activate
 # Create the superuser
 actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 100000000000 -n 1000 -t 6000
 
@@ -181,4 +175,4 @@ The `curl` command call should report back:
 {"locations":["nc_spm_08","ECAD","latlong_wgs84"],"status":"success"}
 ```
 
-Success!
+Success and welcome to actinia!
