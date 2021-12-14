@@ -9,7 +9,7 @@ These installation instructions are based on a Ubuntu Linux system (other
 operating systems and distributions are fine, too).
 
 
-First install PPROJ and GRASS GIS by downloading the latest packages
+First install PROJ and GRASS GIS by downloading the latest packages
 and GRASS GIS git version and compile it.
 
 1.  Install the latest projection library
@@ -21,6 +21,8 @@ and GRASS GIS git version and compile it.
 
 
 2.  Set Python 3 environment
+
+Note that this step changes `python` to point to `python3`, system-wide:
 
 ```bash
  # recommended to give Python3 precedence over Python2 (which is end-of-life since 2019)
@@ -40,13 +42,10 @@ and GRASS GIS git version and compile it.
 
  cd grass78
 
- export INTEL="-std=gnu99 -fexceptions -fstack-protector -m64"
- export MYCFLAGS="-Wall -ggdb -fno-fast-math -fno-common $INTEL $MYGCC"
- export MYLDFLAGS="-Wl,--no-undefined"
- export LD_LIBRARY_PATH="/usr/local/lib"
- export LDFLAGS="$MYLDFLAGS"
- export CFLAGS="$MYCFLAGS"
- export CXXFLAGS="$MYCXXFLAGS"
+ # production related compilation flags (no debugging enabled)
+ export CFLAGS="-O2 -std=gnu99 -fexceptions -fstack-protector -m64"
+ export CXXFLAGS="-O2"
+ export LDFLAGS="-Wl,--no-undefined -Wl,-z,now"
 
  ./configure \
    --with-cxx \
