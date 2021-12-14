@@ -33,7 +33,8 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 3.  Compile and install GRASS GIS and additional modules:
 
 ```bash
-cd /tmp
+# or some other location of your choice, /tmp will not keep data between reboots
+cd /tmp 
 
 # fetch weekly generated latest snapshot of GRASS GIS stable
 wget https://grass.osgeo.org/grass78/source/snapshot/grass-7.8.git_src_snapshot_latest.tar.gz
