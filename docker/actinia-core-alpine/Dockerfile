@@ -79,8 +79,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/5
 RUN curl https://api.github.com/repos/mundialis/actinia-stac-plugin/releases/54012264 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-api (54480911 = 2.0.1)
-RUN curl https://api.github.com/repos/mundialis/actinia-api/releases/54480911 > resp.json && \
+# Get actinia-api (55380165 = 3.0.0)
+RUN curl https://api.github.com/repos/mundialis/actinia-api/releases/55380165 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 
