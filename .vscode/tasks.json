@@ -48,6 +48,7 @@
 					"hostPort": 8088
 				  }
 				],
+				"customOptions": "--ip 172.18.0.11",
 				"volumes": [
 					// mount local source code for instant reload
 					// on changes
