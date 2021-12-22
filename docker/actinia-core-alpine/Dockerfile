@@ -71,8 +71,8 @@ RUN curl https://api.github.com/repos/mundialis/actinia_satellite_plugin/release
 RUN curl https://api.github.com/repos/mundialis/actinia-metadata-plugin/releases/53929141 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
-# Get actinia-module-plugin (54079558 = 2.2.3)
-RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/54079558 > resp.json && \
+# Get actinia-module-plugin (55823847 = 2.2.4)
+RUN curl https://api.github.com/repos/mundialis/actinia-module-plugin/releases/55823847 > resp.json && \
     name=`cat resp.json | jq '.assets[0].name' | tr -d '"'` && \
     cat resp.json | jq '.assets[0].browser_download_url' | xargs curl -L --output /build/$name && rm resp.json
 # Get actinia-stac-plugin (54012264 = 0.0.1)
