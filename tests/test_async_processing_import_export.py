@@ -32,9 +32,15 @@ try:
 except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
+try:
+    import actinia_stac_plugin
+    no_stac_plugin = False
+except Exception:
+    no_stac_plugin = True
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -218,6 +224,87 @@ process_chain_sentinel_import_export_sentinel_ndvi = {
 
     'version': '1'}
 
+process_chain_stac_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.defaultStac.rastercube.landsat-8-l1-c1",
+                "type": "stac",
+                "semantic_label": "B1",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_filter_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.STAC_Others.rastercube.sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[-180, -16.369, 90, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2023-09-09", "2022-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_source_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
@@ -318,6 +405,54 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_error),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    # Test for STAC
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_import(self):
+        """
+            Code test STAC collection importation with http reponse 200
+        """
+
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
+
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_source_error_import(self):
+        """
+            Code test STAC collection importation with http reponse 400,
+            raising error on misstructured, undefined, or missing source ID.
+        """
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_source_error_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_source_filter_error_import(self):
+        """
+            Code test STAC collection importation with http reponse 400,
+            raising error on filtering parameter such as wrong Temportal inteval
+            or wrong Spatial coordinates in bbox.
+
+        """
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_filter_error_import),
                               content_type="application/json")
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
