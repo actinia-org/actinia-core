@@ -39,6 +39,7 @@ from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
+from actinia_core.core.stac_exporter_interface import STACExporter
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -535,6 +536,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         raster_name=file_name,
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region)
+
+                    if resource["metadata"]["format"] == "STAC":
+                        properties = {}
+                        STACExporter.stac_collection_initializer()
+                        STACExporter.stac_builder(output_path, file_name,
+                                                  output_type, properties)
+
                 elif output_type == "vector":
                     if "PostgreSQL" in resource["export"]["format"]:
                         dbstring = resource["export"]["dbstring"]
