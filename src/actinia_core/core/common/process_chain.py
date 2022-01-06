@@ -185,11 +185,9 @@ class ProcessChainConverter(object):
             else:
                 raise AsyncProcessError("Unknown process description "
                                         "in the process chain definition")
-
         downimp_list = self._create_download_process_list()
         downimp_list.extend(process_list)
 
-        import pdb; pdb.set_trace()
         return downimp_list
 
     def _get_landsat_import_download_commands(self, entry):
@@ -243,21 +241,28 @@ class ProcessChainConverter(object):
         Returns:
             sentinel_commands: The sentinel import commands
         """
-        sentinel_commands = []
-
+        if "sentinel_band" not in entry["import_descr"]:
+            raise AsyncProcessError(
+                "Band specification is required for Sentinel2 scene import")
         scene = entry["import_descr"]["source"]
+        band = entry["import_descr"]["sentinel_band"]
 
-        download_p = Process(
-            exec_type="grass",
-            executable="i.sentinel.download",
-            id=f"download_{entry['value']}",
-            executable_params=[f"query=identifier={scene}",
-                               f"output={self.temp_file_path}",
-                               "datasource=GCS"])
-        sentinel_commands.append(download_p)
 
-        import pdb; pdb.set_trace()
-        # self.temp_file_path
+
+        sentinel_commands = []
+        # scene = entry["import_descr"]["source"]
+        #
+        # download_p = Process(
+        #     exec_type="grass",
+        #     executable="i.sentinel.download",
+        #     id=f"download_{entry['value']}",
+        #     executable_params=[f"query=identifier={scene}",
+        #                        f"output={self.temp_file_path}",
+        #                        "datasource=GCS"])
+        # sentinel_commands.append(download_p)
+        #
+        # import pdb; pdb.set_trace()
+        # # self.temp_file_path
         return sentinel_commands
 
 
@@ -304,6 +309,30 @@ class ProcessChainConverter(object):
             id=f"rename_{entry['value']}",
             executable_params=["raster=%s,%s" % (map_name, entry["value"]), ])
         sentinel_commands.append(p)
+
+        return sentinel_commands
+
+    def _get_sentinel_import_commands(self, entries):
+        sentinel_commands = []
+        scenes_bands = []
+        # sort by source (scene ID) and bands
+        scene_ids = []
+        for entry in entries:
+            scene_id = entry["import_descr"]["source"]
+            band = entry["import_descr"]["sentinel_band"]
+            output = entry["value"]
+            if scene_id not in scene_ids:
+                scene_ids.append(scene_id)
+                scene = {"scene_id": scene_id,
+                         "bands": [band],
+                         "outputs": [output]}
+                scenes_bands.append(scene)
+            else:
+                scindex = scene_ids.index(scene_id)
+                scenes_bands[scindex]["bands"].append(band)
+                scenes_bands[scindex]["outputs"].append(output)
+
+        # create new Sentinel2Processing_GCS object for each scene?
 
         return sentinel_commands
 
@@ -607,6 +636,7 @@ class ProcessChainConverter(object):
             self.message_logger.info("Creating download process "
                                      "list for all import definitions")
 
+        sentinel2_entries = []
         for entry in self.import_descr_list:
             if self.message_logger:
                 self.message_logger.info(entry)
@@ -630,8 +660,11 @@ class ProcessChainConverter(object):
             # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
                 #sentinel_commands = self._get_sentinel_import_command(entry)
-                sentinel_commands = self._get_sentinel_import_command_gcs(entry)
-                downimp_list.extend(sentinel_commands)
+
+                #sentinel_commands = self._get_sentinel_import_command_gcs(entry)
+                #downimp_list.extend(sentinel_commands)
+
+                sentinel2_entries.append(entry)
 
             # LANDSAT
             elif entry["import_descr"]["type"].lower() == "landsat":
@@ -652,6 +685,10 @@ class ProcessChainConverter(object):
                     "Unknown import type specification: %s"
                     % entry["import_descr"]["type"])
 
+        if len(sentinel2_entries) > 0:
+            # put all Sentinel-2 downloading together
+            sentinel_commands = self._get_sentinel_import_commands(sentinel2_entries)
+            downimp_list.extend(sentinel_commands)
         return downimp_list
 
     # TODO: remove legacy methods and do no use them in actinia_core

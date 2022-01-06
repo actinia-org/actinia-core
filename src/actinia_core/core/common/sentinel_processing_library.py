@@ -72,7 +72,7 @@ class Sentinel2Processing(object):
     """
     def __init__(self, config, product_id, query_result, bands, temp_file_path,
                  download_cache, send_resource_update, message_logger,
-                 use_google=True):
+                 use_google=True, outputs=None):
         """ A collection of functions to generate Sentinel2 related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
@@ -105,6 +105,10 @@ class Sentinel2Processing(object):
         self.timestamp = None
         self.bbox = None
         self.use_google = use_google
+        self.outputs = outputs
+
+    # def _setup_download_import_without_query(self):
+    #     "Setup the download of a scene by providing the download URLs"
 
     def _setup_download_import_google(self):
         """Setup the download, import and preprocessing of a
