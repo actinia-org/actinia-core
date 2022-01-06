@@ -76,7 +76,7 @@ __Simple log__
   "level": "INFO",
   "component": "actinia-core",
   "module": "process_queue",
-  "message": "Run process: {endpoint: asyncephemeralexportresource, method: POST, path: /api/v1/locations/latlong_wgs84/processing_async_export, request_url: http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export}",
+  "message": "Run process: {endpoint: asyncephemeralexportresource, method: POST, path: /api/v2/locations/latlong_wgs84/processing_async_export, request_url: http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export}",
   "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/process_queue.py",
   "lineno": 355,
   "processName": "Process-1",
@@ -84,7 +84,7 @@ __Simple log__
 }
 ```
 ```
-[2020-05-08 09:19:48,430] INFO      : actinia-core.process_queue -Run process: {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v1/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/process_queue.py:355]
+[2020-05-08 09:19:48,430] INFO      : actinia-core.process_queue -Run process: {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v2/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/process_queue.py:355]
 ```
 
 __Gunicorn log__
@@ -94,7 +94,7 @@ __Gunicorn log__
   "level": "INFO",
   "component": "gunicorn.access",
   "module": "glogging",
-  "message": "172.20.0.1 - actinia-gdi [06/May/2020:09:07:34 +0000] \"POST /api/v1/locations/latlong_wgs84/processing_async_export HTTP/1.1\" 200 756 \"-\" \"curl/7.58.0\"",
+  "message": "172.20.0.1 - actinia-gdi [06/May/2020:09:07:34 +0000] \"POST /api/v2/locations/latlong_wgs84/processing_async_export HTTP/1.1\" 200 756 \"-\" \"curl/7.58.0\"",
   "pathname": "/usr/lib/python3.8/site-packages/gunicorn/glogging.py",
   "lineno": 344,
   "processName": "MainProcess",
@@ -102,7 +102,7 @@ __Gunicorn log__
 }
 ```
 ```
-[2020-05-08 09:19:48,426] INFO      : gunicorn.access.glogging   -172.20.0.1 - actinia-gdi [08/May/2020:09:19:48 +0000] "POST /api/v1/locations/latlong_wgs84/processing_async_export HTTP/1.1" 200 755 "-" "curl/7.58.0" [in /usr/lib/python3.8/site-packages/gunicorn/glogging.py:344]
+[2020-05-08 09:19:48,426] INFO      : gunicorn.access.glogging   -172.20.0.1 - actinia-gdi [08/May/2020:09:19:48 +0000] "POST /api/v2/locations/latlong_wgs84/processing_async_export HTTP/1.1" 200 755 "-" "curl/7.58.0" [in /usr/lib/python3.8/site-packages/gunicorn/glogging.py:344]
 ```
 
 __messages_logger INFO__
@@ -146,17 +146,17 @@ __api_logger__
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
-    "request_url": "http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export"
+    "path": "/api/v2/locations/latlong_wgs84/processing_async_export",
+    "request_url": "http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export"
   },
-  "request_str": "<Request http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export [POST]>",
+  "request_str": "<Request http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export [POST]>",
   "user_id": "actinia-gdi",
   "status": "api_call",
   "logger": "api_logger"
 }
 ```
 ```
-[2020-05-08 09:19:48,419] INFO      : actinia-core.redis_fluentd_logger_base -{'time_stamp': '2020-05-08 09:19:48.419294', 'node': '3f3e57b7ab83', 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v1/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export'}, 'request_str': "<Request 'http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export' [POST]>", 'user_id': 'actinia-gdi', 'status': 'api_call', 'logger': 'api_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:94]
+[2020-05-08 09:19:48,419] INFO      : actinia-core.redis_fluentd_logger_base -{'time_stamp': '2020-05-08 09:19:48.419294', 'node': '3f3e57b7ab83', 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v2/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export'}, 'request_str': "<Request 'http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export' [POST]>", 'user_id': 'actinia-gdi', 'status': 'api_call', 'logger': 'api_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:94]
 ```
 
 __resources_logger "accepted"__
@@ -184,19 +184,19 @@ __resources_logger "accepted"__
   "http_code": 200,
   "urls": {
     "resources": [],
-    "status": "http://127.0.0.1:8088/api/v1/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
+    "status": "http://127.0.0.1:8088/api/v2/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
   },
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
-    "request_url": "http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export"
+    "path": "/api/v2/locations/latlong_wgs84/processing_async_export",
+    "request_url": "http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export"
   },
   "logger": "resources_logger"
 }
 ```
 ```
-[2020-05-08 09:19:48,424] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'accepted', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.4238856, 'datetime': '2020-05-08 09:19:48.423887', 'message': 'Resource accepted', 'time_delta': 0.002741098403930664, 'process_results': {}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v1/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v1/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
+[2020-05-08 09:19:48,424] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'accepted', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.4238856, 'datetime': '2020-05-08 09:19:48.423887', 'message': 'Resource accepted', 'time_delta': 0.002741098403930664, 'process_results': {}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v2/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v2/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
 ```
 
 __resources_logger "running"__
@@ -227,19 +227,19 @@ __resources_logger "running"__
   "http_code": 200,
   "urls": {
     "resources": [],
-    "status": "http://127.0.0.1:8088/api/v1/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
+    "status": "http://127.0.0.1:8088/api/v2/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
   },
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
-    "request_url": "http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export"
+    "path": "/api/v2/locations/latlong_wgs84/processing_async_export",
+    "request_url": "http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export"
   },
   "logger": "resources_logger"
 }
 ```
 ```
-[2020-05-08 09:19:48,514] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'running', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.5140734, 'datetime': '2020-05-08 09:19:48.514093', 'message': 'Checking access to URL: https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/bonn.geojson', 'time_delta': 0.09295296669006348, 'progress': {'step': 0, 'num_of_steps': 0}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v1/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v1/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
+[2020-05-08 09:19:48,514] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'running', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.5140734, 'datetime': '2020-05-08 09:19:48.514093', 'message': 'Checking access to URL: https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/bonn.geojson', 'time_delta': 0.09295296669006348, 'progress': {'step': 0, 'num_of_steps': 0}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v2/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v2/locations/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
 ```
 
 __resources_logger "error" shortened__
@@ -296,13 +296,13 @@ __resources_logger "error" shortened__
   },
   "urls": {
     "resources": [],
-    "status": "http://127.0.0.1:8088/api/v1/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
+    "status": "http://127.0.0.1:8088/api/v2/resources/actinia-gdi/resource_id-8fb3b80c-59f8-45e6-b003-04dd83af3d9d"
   },
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v1/locations/latlong_wgs84/processing_async_export",
-    "request_url": "http://127.0.0.1:8088/api/v1/locations/latlong_wgs84/processing_async_export"
+    "path": "/api/v2/locations/latlong_wgs84/processing_async_export",
+    "request_url": "http://127.0.0.1:8088/api/v2/locations/latlong_wgs84/processing_async_export"
   },
   "logger": "resources_logger"
 }

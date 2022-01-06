@@ -29,7 +29,7 @@ import uuid
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -79,8 +79,8 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         # Test correct behaviour if two mapsets are locked
         for mapset in self.test_mapsets:
             self.create_new_mapset(mapset)
-            rvpost = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
-                                      headers=self.root_auth_header)
+            self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/lock' % mapset,
+                             headers=self.root_auth_header)
         rv = self.server.get(URL_PREFIX + '/mapsets?status=locked',
                              headers=self.root_auth_header)
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)

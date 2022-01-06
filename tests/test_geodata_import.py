@@ -103,7 +103,7 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
                                             download_cache=self.cache_dir,
                                             send_resource_update=update_dummy,
                                             message_logger=MessageDummy(),
-                                            url_list=[gml,])
+                                            url_list=[gml, ])
 
         pl, import_file_info = gddl.get_download_process_list()
         self.assertTrue("xml" in import_file_info[0][0])

@@ -15,11 +15,78 @@ Types of changes
 
 
 ## [Unreleased]
-TODO https://github.com/mundialis/actinia_core/compare/1.2.1...main
+https://github.com/mundialis/actinia_core/compare/2.3.0...main
 
-## [1.X.X] - YYYY-MM-DD
+## [2.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
+
+## [2.3.0] - 2021-12-16
+released from main
+## Added
+* STAC in actinia  by @joaherrerama in https://github.com/mundialis/actinia_core/pull/275
+
+## Changed
+* Enhance dev setup by @mmacata in https://github.com/mundialis/actinia_core/pull/288
+* update actinia-api version by @mmacata in https://github.com/mundialis/actinia_core/pull/289
+
+## New Contributors
+* @joaherrerama made their first contribution in https://github.com/mundialis/actinia_core/pull/275
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.2.0...2.3.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="2.3.0" -f target_commitish=main -q .body`
+
+## [2.2.0] - 2021-12-08
+released from main
+## Fixed
+* try to fix uncontrolled data used in path by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/280
+* Add stac plugin to alpine config by @mmacata in https://github.com/mundialis/actinia_core/pull/282
+
+## Added
+* Add api_version to version endpoint by @mmacata in https://github.com/mundialis/actinia_core/pull/283
+* Enable debugging via vscode by @mmacata in https://github.com/mundialis/actinia_core/pull/284
+* New splitup in unit and integration tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/285
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.0.1...2.2.0
+
+generated with
+`gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="2.2.0" -f target_commitish=main -q .body`
+
+## [2.0.1] - 2021-11-25
+released from main
+## Fixed
+* Fix: create user endpoint by @griembauer in https://github.com/mundialis/actinia_core/pull/268
+* revision of examples in actinia documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/269
+* Using v2 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/277
+* Use separate repo for api docs by @mmacata in https://github.com/mundialis/actinia_core/pull/278
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.0.0...2.0.1
+
+(generated with
+`gh api repos/mundialis/actinia_core/releases/generate-notes             -f tag_name="2.0.1"             -f target_commitish=main             -q .body`)
+
+
+## [2.0.0] - 2021-10-13
+released from main
+### Fixed
+* Fix cleanup error (#248)
+* Fix several misspelled words (#254)
+### Changed
+* Allow & in r.mapcalc processing (#253)
+* Allow endpoints with and without trailing slash (#257)
+* Test and improve actinia tutorials (#258)
+* Resolve the insecure temporary files (#262, #256)
+### Added
+* Make the version output more flexible (#252)
+* List all available mapsets (issue 162, #249)
+* Add vector upload (isse 180, #260)
+* Flake8 Linting for test folder (#255)
+
+-----------------------------
+
+
 ## [1.2.1] - 2021-09-21
 released from main
 ### Fixed

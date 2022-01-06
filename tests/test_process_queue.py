@@ -34,7 +34,7 @@ from actinia_core.core.resource_data_container import ResourceDataContainer
 from actinia_core.core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
@@ -53,7 +53,7 @@ def job_with_exception(rdc):
 def job_short_run(rdc):
     for i in range(3):
         print("job_short_run", rdc.api_info, rdc.orig_time)
-        #time.sleep(1)
+        # time.sleep(1)
 
 
 def job_long_run(rdc):
@@ -79,10 +79,10 @@ class ProcessQueueTestCase(unittest.TestCase):
         self.rdc = ResourceDataContainer(grass_data_base="grass_data_base",
                                          grass_user_data_base="grass_user_data_base",
                                          grass_base_dir="grass_base_dir",
-                                         request_data={"request_data":None},
+                                         request_data={"request_data": None},
                                          user_id="user_id",
                                          user_group="user_group",
-                                         user_credentials={"user_credentials":None},
+                                         user_credentials={"user_credentials": None},
                                          resource_id="resource_id",
                                          status_url="status_url",
                                          api_info="api_info",

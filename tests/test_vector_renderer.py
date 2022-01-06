@@ -29,7 +29,7 @@ from pprint import pprint
 from flask.json import loads as json_load
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
@@ -42,7 +42,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
-    #################### IMAGE ################################################
+    # ################### IMAGE ################################################
 
     def test_vectorlayer_image_no_args(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/boundary_county/render',

@@ -30,7 +30,7 @@ from flask_restful import reqparse
 from .ephemeral_processing import EphemeralProcessing
 from .resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-import tempfile
+from tempfile import NamedTemporaryFile
 import os
 from flask_restful_swagger_2 import swagger
 from actinia_core.models.response_models import ProcessingErrorResponseModel
@@ -210,7 +210,8 @@ class EphemeralRasterLegend(EphemeralProcessing):
 
         options = self.rdc.user_data
 
-        result_file = tempfile.mktemp(suffix=".png")
+        with NamedTemporaryFile(suffix=".png") as file:
+            result_file = file.name
 
         os.putenv("GRASS_RENDER_IMMEDIATE", "png")
         os.putenv("GRASS_RENDER_WIDTH", str(options["width"]))

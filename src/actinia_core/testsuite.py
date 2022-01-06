@@ -30,6 +30,7 @@ import requests
 import time
 import unittest
 from flask.json import loads as json_loads
+from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
 from .health_check import health_check
 from .version import version
@@ -296,27 +297,97 @@ class ActiniaTestCaseBase(unittest.TestCase):
                          "HTML status code is wrong %i" % rv.status_code)
 
         if message_check is not None:
-            self.assertTrue(message_check in resp_data["message"])
+            self.assertTrue(message_check in resp_data["message"],
+                            (f"Message is {resp_data['message']}"))
 
         time.sleep(0.4)
         return resp_data
 
-    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
+    def assertRasterInfo(self, location, mapset, raster, ref_info, header):
 
+        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+               f"raster_layers/{raster}")
+        rv = self.server.get(url, headers=header)
+        resp = json_loads(rv.data.decode())
+        info = resp["process_results"]
+        for key, val in ref_info.items():
+            self.assertIn(key, info, f"RasterInfoAssertion failed: key {key} not found")
+            self.assertEqual(val, info[key], (
+                f"RasterInfoAssertion failed:"
+                f" value {key}:{val} does not match reference"))
+
+    def assertVectorInfo(self, location, mapset, vector, ref_info, header):
+
+        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+               f"vector_layers/{vector}")
+        rv = self.server.get(url, headers=header)
+        resp = json_loads(rv.data.decode())
+        info = resp["process_results"]
+        for key, val in ref_info.items():
+            self.assertIn(key, info, f"VectorInfoAssertion failed: key {key} not found")
+            self.assertEqual(val, info[key], (
+                f"VectorInfoAssertion failed:"
+                f" value {key}:{val} does not match reference"))
+
+    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
+        self.delete_mapset(mapset_name, location_name)
+        # Create new mapset
+        rv = self.server.post(
+            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
+            headers=self.admin_auth_header)
+        print(rv.data.decode())
+
+    def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
         # Unlock mapset for deletion
         rv = self.server.delete(
             URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
             headers=self.admin_auth_header)
         print(rv.data.decode())
 
-        # Delete any existing mapsets
+        # Delete existing mapset
         rv = self.server.delete(
             URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
             headers=self.admin_auth_header)
         print(rv.data.decode())
 
-        # Create new mapsets
-        rv = self.server.post(
-            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-            headers=self.admin_auth_header)
-        print(rv.data.decode())
+    def create_vector_layer(self, location, mapset, vector, region, parameter):
+        # Remove potentially existing vector layer
+        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
+               f'vector_layers/{vector}')
+        rv = self.server.delete(url, headers=self.user_auth_header)
+
+        parameter["column"] = "z"
+        region["res"] = 100000
+        # Create processing chain for random vector creation
+        postbody = {
+            "list": [
+                {
+                    "id": "set_region",
+                    "module": "g.region",
+                    "inputs": [{"param": key, "value": str(val)} for key, val
+                               in region.items()]
+                },
+                {
+                    "id": "create_vector",
+                    "module": "v.random",
+                    "inputs": [{"param": key, "value": str(val)} for key, val
+                               in parameter.items()],
+                    "outputs": [{"param": "output", "value": vector}],
+                    "flags": "z"
+                }
+            ],
+            "version": "1"
+        }
+        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
+               f'processing_async')
+        rv = self.server.post(url,
+                              headers=self.user_auth_header,
+                              data=json_dumps(postbody),
+                              content_type="application/json")
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %
+                         rv.status_code)
+        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %
+                         rv.mimetype)

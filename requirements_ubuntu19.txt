@@ -36,6 +36,8 @@ rq>=0.10.0
 uWSGI>=2.0.17
 wheel
 
+actinia-api@https://github.com/mundialis/actinia-api/releases/download/2.0.0/actinia_api-2.0.0-py3-none-any.whl
+
 # currently break things - TODO - needed?
 # pkg-resources==0.0.0
 # pycurl==7.43.0.1

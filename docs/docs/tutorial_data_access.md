@@ -31,7 +31,7 @@ Access to locations and mapsets in the persistent database
 ----------------------------------------------------------
 
 The following API call lists all available locations in the actinia
-persistent database:
+persistent database (the `-i` includes the HTTP response headers):
 
 ```bash
  curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations"
@@ -43,6 +43,7 @@ The output should look similar to this:
  {
    "locations": [
      "latlong_wgs84",
+     "ECAD",
      "nc_spm_08"
    ],
    "status": "success"
@@ -53,7 +54,7 @@ To show the region settings and the projection of the GRASS GIS standard
 location *nc\_spm\_08* the following REST call must be used:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/info"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/info"
 ```
 
 The JSON response is the standard response of the actinia REST API. Most
@@ -63,7 +64,9 @@ name *process\_results*. The response includes all steps that were
 executed to receive the projection information and the region
 information. It is located in the *process\_log* section of the JSON
 response. In addition API specific information as well as the processing
-time are available in the response:
+time are available in the response. To make the JSON response more readable you can use parsing-tools like jq.
+
+The output should look similar to this then:
 
 ```json
  {
@@ -72,8 +75,8 @@ time are available in the response:
    "api_info": {
      "endpoint": "locationmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v1/locations/nc_spm_08/info",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/info"
+     "path": "/api/v2/locations/nc_spm_08/info",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/info"
    },
    "datetime": "2019-08-01 20:30:05.881138",
    "http_code": 200,
@@ -151,9 +154,9 @@ time are available in the response:
    "timestamp": 1564691405.8811285,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -161,7 +164,7 @@ To list all mapsets located in the location *nc\_spm\_08* the following
 API call is used:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/mapsets"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/mapsets"
 ```
 
 The response of this synchronous call lists all mapsets of the location
@@ -174,8 +177,8 @@ in the *process\_results* section:
    "api_info": {
      "endpoint": "listmapsetsresource",
      "method": "GET",
-     "path": "/api/v1/locations/nc_spm_08/mapsets",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/mapsets"
+     "path": "/api/v2/locations/nc_spm_08/mapsets",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/mapsets"
    },
    "datetime": "2019-08-01 20:31:11.430294",
    "http_code": 200,
@@ -222,9 +225,9 @@ in the *process\_results* section:
    "timestamp": 1564691471.4302812,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -232,7 +235,7 @@ Using the following API call will show all information about the mapset
 *PERMANENT*:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/nc_spm_08/mapsets/PERMANENT/info"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/mapsets/PERMANENT/info"
 ```
 
 The response shows the region of the mapset and the projection of the
@@ -245,8 +248,8 @@ location in the *process\_results* section:
    "api_info": {
      "endpoint": "mapsetmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/nc_spm_08/mapsets/PERMANENT/info"
+     "path": "/api/v2/locations/nc_spm_08/mapsets/PERMANENT/info",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/mapsets/PERMANENT/info"
    },
    "datetime": "2019-08-01 20:31:51.810266",
    "http_code": 200,
@@ -324,9 +327,9 @@ location in the *process\_results* section:
    "timestamp": 1564691511.8102555,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -338,7 +341,7 @@ temperature) of Europe for 60 years. We list all raster layers of the
 location ECAD in mapset *PERMANENT*:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers"
 ```
 
 The response lists all raster layers of the mapset in the
@@ -351,8 +354,8 @@ The response lists all raster layers of the mapset in the
    "api_info": {
      "endpoint": "rasterlayersresource",
      "method": "GET",
-     "path": "/v1/locations/ECAD/mapsets/PERMANENT/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers"
+     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers"
    },
    "datetime": "2018-05-30 09:13:51.745702",
    "http_code": 200,
@@ -405,9 +408,9 @@ The response lists all raster layers of the mapset in the
    "timestamp": 1527671631.745685,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-114c7229-da85-4866-a33e-38172835e05f"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-114c7229-da85-4866-a33e-38172835e05f"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -415,7 +418,7 @@ Show info about the raster layer
 *temperature\_mean\_yearly\_celsius\_60*:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
 ```
 
 The response lists information about the raster layer
@@ -429,8 +432,8 @@ section:
    "api_info": {
      "endpoint": "rasterlayerresource",
      "method": "GET",
-     "path": "/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
    },
    "datetime": "2018-05-30 09:17:15.437797",
    "http_code": 200,
@@ -500,9 +503,9 @@ section:
    "timestamp": 1527671835.4377818,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -519,7 +522,7 @@ series of yearly temperature and precipitation data for Europe.
 We list all strds with the following API call:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/v1/locations/ECAD/mapsets/PERMANENT/strds"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds"
 ```
 
 We receive two strds in the *process\_results* section of the JSON
@@ -532,8 +535,8 @@ response:
    "api_info": {
      "endpoint": "syncstrdslisterresource",
      "method": "GET",
-     "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds"
+     "path": "api/v2/locations/ECAD/mapsets/PERMANENT/strds",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds"
    },
    "datetime": "2018-05-30 09:18:17.351918",
    "http_code": 200,
@@ -582,9 +585,9 @@ response:
    "timestamp": 1527671897.3519022,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -592,7 +595,7 @@ Use the following API call to receive information about the strds
 *temperature\_mean\_1950\_2013\_yearly\_celsius*.
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
 ```
 
 All relevant information about strds
@@ -606,8 +609,8 @@ All relevant information about strds
    "api_info": {
      "endpoint": "strdsmanagementresource",
      "method": "GET",
-     "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
    },
    "datetime": "2018-05-30 09:19:25.519419",
    "http_code": 200,
@@ -681,9 +684,9 @@ All relevant information about strds
    "timestamp": 1527671965.519405,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -691,7 +694,7 @@ List all raster layers that are registered in the strds
 *temperature\_mean\_1950\_2013\_yearly\_celsius* with time-stamps:
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
 ```
 
 A list of about 60 raster layers with minimum, maximum values,
@@ -705,8 +708,8 @@ section of the JSON response:
    "api_info": {
      "endpoint": "strdsrastermanagement",
      "method": "GET",
-     "path": "/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
    },
    "datetime": "2018-05-30 09:20:31.197637",
    "http_code": 200,
@@ -788,9 +791,9 @@ section of the JSON response:
    "timestamp": 1527672031.1976202,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 

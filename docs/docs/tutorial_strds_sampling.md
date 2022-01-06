@@ -9,6 +9,15 @@ dataset (STRDS) at coordinate points. The coordinates must be specified
 in JSON and must use the same coordinate reference system as the
 location that contains the STRDS.
 
+We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:
+
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+```
+
 The following example shows the synchronous API call that samples the
 STRDS *temperature\_mean\_1950\_2013\_yearly\_celsius* at three
 different coordinates.
@@ -18,8 +27,7 @@ different coordinates.
                   ["b", "9.9681980", "51.666166"],
                   ["c", "24.859647", "52.699099"]]}'
 
- curl ${AUTH} -X POST -i "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" \
-      -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
+ curl ${AUTH} -X POST "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
 ```
 
 The result of the sampling is a list of time stamped values, that are
@@ -32,8 +40,8 @@ located in the *process\_results* section of the JSON response:
    "api_info": {
      "endpoint": "syncephemeralstrdssamplingresource",
      "method": "POST",
-     "path": "/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
-     "request_url": "http://actinia.mundialis.de/api/v1/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
+     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
+     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
    },
    "datetime": "2018-05-30 10:33:24.503297",
    "http_code": 200,
@@ -153,8 +161,8 @@ located in the *process\_results* section of the JSON response:
    "timestamp": 1527676404.5032735,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```

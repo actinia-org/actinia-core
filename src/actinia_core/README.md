@@ -6,6 +6,8 @@ This mainly concerns the plugins:
 * [actinia_statistic_plugin](https://github.com/mundialis/actinia_statistic_plugin) (statistic)
 * [actinia_satallite_plugin](https://github.com/mundialis/actinia_satellite_plugin) (satellite)
 * [actinia-metadata-plugin](https://github.com/mundialis/actinia-metadata-plugin) uses no sources of actinia_core
+* [actinia-stac-plugin](https://github.com/mundialis/actinia-stac-plugin) (stac)
+* [actinia-api](https://github.com/mundialis/actinia-api) (api)
 
 The modules inside common folder are not only commonly used by actinia but also by actinia plugins.
 Some other modules outside of core folder are concerned as well.
@@ -38,6 +40,8 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
+| actinia_core.core.redis_user | RedisUserInterface |
+
 ------------
 
 ### Complete list of where modules are used and what exactly is imported
@@ -67,6 +71,7 @@ actinia_core.core.common import redis_interface
 actinia_core.core.common.response_models import create_response_from_model
 actinia_core.core.common.response_models import StringListProcessingResultResponseModel
 actinia_core.core.common.user import ActiniaUser
+actinia_core.core.redis_user import RedisUserInterface
 
 __satellite, statistic__
 actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
@@ -91,3 +96,11 @@ actinia_core.core.common.redis_interface import connect, create_job_queues
 actinia_core.core.common.response_models import SimpleResponseModel
 actinia_core.core.common.response_models import UnivarResultModel
 actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
+
+__stac__
+actinia_core.rest.resource_base import ResourceBase
+actinia_core.core.common.redis_base import RedisBaseInterface
+actinia_core.core.common.config import Configuration
+
+__api__
+actinia_core.models.response_models import ProcessingResponseModel

@@ -30,7 +30,10 @@ import os
 import pickle
 from uuid import uuid4
 from werkzeug.utils import secure_filename
+from actinia_api.swagger2.actinia_core.schemas.raster_layer import \
+     RasterInfoResponseModel, RasterInfoModel
 
+from actinia_core.core.common.app import URL_PREFIX
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.map_layer_base import MapLayerRegionResourceBase
@@ -40,8 +43,6 @@ from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.models.openapi.raster_layer import \
-     RasterInfoResponseModel, RasterInfoModel
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
@@ -176,7 +177,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         'tags': ['Raster Management'],
         'description': 'Create a new raster map layer by uploading a GeoTIFF. '
                        'This method will fail if the map already exists. '
-                       'Minimum required user role: user.',
+                       'An example request is \'curl -L -u "XXX:XXX" -X POST '
+                       '-H "Content-Type: multipart/form-data" -F '
+                       '"file=@/home/....tif" http://localhost:8088'
+                       f'{URL_PREFIX}/'
+                       'locations/nc_spm_08/mapsets/test_mapset/raster_layers/'
+                       'testraster\'. Minimum required user role: user.',
         'parameters': [
             {
                 'name': 'location_name',
@@ -205,12 +211,12 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         'produces': ["application/json"],
         'responses': {
             '200': {
-                'description': 'Raster map layer creation information',
+                'description': 'Raster map layer import information',
                 'schema': ProcessingResponseModel
             },
             '400': {
                 'description': 'The error message and a detailed log why raster map '
-                               'layer creation did not succeeded',
+                               'layer import failed',
                 'schema': ProcessingErrorResponseModel
             }
         }
@@ -435,4 +441,5 @@ class PersistentRasterCreator(PersistentProcessing):
         except Exception:
             msg = " WARNING: Uploaded file can not be removed."
 
-        self.finish_message = f"Raster layer <{raster_name}> successfully created.{msg}"
+        self.finish_message = (f"Raster layer <{raster_name}> successfully "
+                               f"imported.{msg}")

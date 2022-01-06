@@ -7,61 +7,63 @@
 #export actinia="${IP}:${PORT}"
 
 ## demo server
+export actinia_version="v2"
 export actinia="https://actinia.mundialis.de"
+export actinia_url="${actinia}/api/${actinia_version}"
 export AUTH='-u demouser:gu3st!pa55w0rd'
 
 # check actinia version
-# https://actinia.mundialis.de/api/v1/version | https://actinia.mundialis.de/latest/version
+# https://actinia.mundialis.de/api/v2/version | https://actinia.mundialis.de/latest/version
 
 #####
 # Show all locations in the GRASS database
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations_wgs84
+curl ${AUTH} -X GET -i ${actinia_url}/locations_wgs84
 
 # Create a new location based on an EPSG code
 echo '{
   "epsg": "4326"
 }' > /tmp/pc_location_epsg4326.json
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST "${actinia}/api/v1/locations/latlong_TEST" -d @/tmp/pc_location_epsg4326.json
+curl ${AUTH} -H "Content-Type: application/json" -X POST "${actinia_url}/locations/latlong_TEST" -d @/tmp/pc_location_epsg4326.json
 
 # Check if the location is listed
-curl ${AUTH} -X GET ${actinia}/api/v1/locations_wgs84
+curl ${AUTH} -X GET ${actinia_url}/locations_wgs84
 
 # Delete the new location, careful!
-curl ${AUTH} -X DELETE ${actinia}/api/v1/locations/latlong_TEST
+curl ${AUTH} -X DELETE ${actinia_url}/locations/latlong_TEST
 rm -f /tmp/pc_location_epsg4326.json
 
 # Get information of the NC location
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/info
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/info
 
 # List all mapsets in that location
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets
 
 # Create a new mapset
-curl ${AUTH} -X POST -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary # Success
+curl ${AUTH} -X POST -i ${actinia_url}/locations/nc_spm_08/mapsets/temporary # Success
 
 # Check if the new mapset is listed
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets
 
 # Get a list of all raster layers in the PERMANENT location
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers
 
 # Get a list of all raster layer using a g.list pattern
-curl ${AUTH} -X GET -i "${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*"
+curl ${AUTH} -X GET -i "${actinia_url}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers?pattern=lsat*"
 
 # Get the information about the elevation
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation
 
 # Render an image of the elevation raster layer
 curl ${AUTH} -d "n=228500&s=215000&w=630000&e=645000&ewres=50&nsres=50" \
-    -X GET ${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > elevation_NC.png
+    -X GET ${actinia_url}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/render > elevation_NC.png
 
 # Get information about the new created raster layer
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary/raster_layers/my_slope
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary/raster_layers/my_aspect
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/temporary/raster_layers/my_slope
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/temporary/raster_layers/my_aspect
 
 # Delete the temporary mapset
-curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporary # Success
+curl ${AUTH} -X DELETE -i ${actinia_url}/locations/nc_spm_08/mapsets/temporary # Success
 
 
 ###############################################################################
@@ -69,13 +71,13 @@ curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/temporar
 ###############################################################################
 
 # Get a list or raster layers from a STRDS
-curl ${AUTH} -X GET -i "${actinia}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>2013-05-01"
+curl ${AUTH} -X GET -i "${actinia_url}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers?where=start_time>2013-05-01"
 
 ###############################################################################
 ###############  Vector  ######################################################
 ###############################################################################
 
-curl ${AUTH} -X GET -i "${actinia}/api/v1/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
+curl ${AUTH} -X GET -i "${actinia_url}/locations/nc_spm_08/mapsets/PERMANENT/vector_layers/geology"
 
 
 ###############################################################################
@@ -143,11 +145,11 @@ PROCESS_CHAIN='{
 
 # Validation of process chain (using sync call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/process_chain_validation_sync
+    -d "${PROCESS_CHAIN}" ${actinia_url}/locations/nc_spm_08/process_chain_validation_sync
 
 # Start the module r.slope.aspect (using async call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/processing_async_export
+    -d "${PROCESS_CHAIN}" ${actinia_url}/locations/nc_spm_08/processing_async_export
 
 # Get status (add resource URL)
 # curl ${AUTH} -X GET -i
@@ -250,23 +252,23 @@ PROCESS_CHAIN_LONG='{
 
 # Validation of process chain (using sync call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/process_chain_validation_sync
+    -d "${PROCESS_CHAIN_LONG}" ${actinia_url}/locations/nc_spm_08/process_chain_validation_sync
 
 # Start the module r.slope.aspect (using async call)
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
-    -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/processing_async
+    -d "${PROCESS_CHAIN_LONG}" ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset/processing_async
 
 # Get status (add resource URL)
 # curl ${AUTH} -X GET -i
 
 # List all raster layer in the new mapset
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset/raster_layers
 
 # Info about my_accumulation
-curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation
+curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset/raster_layers/my_accumulation
 
 # Remove the new mapset
-curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset
+curl ${AUTH} -X DELETE -i ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset
 
 # Parallel computation
 LIST="1
@@ -276,7 +278,7 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run local process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/processing_async
+        -d "${PROCESS_CHAIN_LONG}" ${actinia_url}/locations/nc_spm_08/processing_async
 done
 
 # Export Parallel computation
@@ -289,7 +291,7 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run export process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN}" ${actinia}/api/v1/locations/nc_spm_08/processing_async_export
+        -d "${PROCESS_CHAIN}" ${actinia_url}/locations/nc_spm_08/processing_async_export
 done
 
 # New mapsets in massive parallel computation
@@ -312,22 +314,22 @@ LIST="1
 for i in ${LIST} ; do
     echo "Run new mapset process ${i}"
     curl ${AUTH} -H "Content-Type: application/json" -X POST \
-        -d "${PROCESS_CHAIN_LONG}" ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}/processing_async
+        -d "${PROCESS_CHAIN_LONG}" ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset_${i}/processing_async
 done
 
 curl ${AUTH} -X GET -i ${actinia}/locations/nc_spm_08/mapsets
 
 for i in ${LIST} ; do
     echo "Run ${i}"
-    curl ${AUTH} -X GET -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers
+    curl ${AUTH} -X GET -i ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers
     curl ${AUTH} -X GET -i ${actinia}/locations/nc_spm_08/mapsets/test_mapset_${i}/raster_layers/my_accumulation
-    curl ${AUTH} -X DELETE -i ${actinia}/api/v1/locations/nc_spm_08/mapsets/test_mapset_${i}
+    curl ${AUTH} -X DELETE -i ${actinia_url}/locations/nc_spm_08/mapsets/test_mapset_${i}
 done
 
 # Spatio-Temporal sampling
 curl ${AUTH} -H "Content-Type: application/json" -X POST \
     -d '[["a", 10.5, 52.5], ["b", 10, 52], ["c", 11, 53]]' \
-     ${actinia}/api/v1/locations/ECAD/mapsets/PERMANENT/strds/P_sum_yearly_mm/sampling_sync
+     ${actinia_url}/locations/ECAD/mapsets/PERMANENT/strds/P_sum_yearly_mm/sampling_sync
 
 
 JSON='{"bands":["B04", "B08"],
@@ -341,7 +343,7 @@ JSON='{"bands":["B04", "B08"],
 "S2B_MSIL1C_20170711T102029_N0205_R065_T32UPC_20170711T102309",
 "S2A_MSIL1C_20170706T102021_N0205_R065_T32UPC_20170706T102301"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/Sentinel2A/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/Sentinel2A/sentinel2_import
 
 
 JSON='{"bands": ["B04", "B08"],
@@ -349,7 +351,7 @@ JSON='{"bands": ["B04", "B08"],
                        "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_20151207T003302",
                        "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/sentinel2a_aws_query
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/sentinel2a_aws_query
 
 
 JSON='{"bands":["B04", "B08"],
@@ -363,7 +365,7 @@ JSON='{"bands":["B04", "B08"],
 "S2A_MSIL1C_20170208T092131_N0204_R093_T35VNC_20170208T092143",
 "S2A_MSIL1C_20170208T092131_N0204_R093_T36UUG_20170208T092143"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/sentinel2a_aws_query
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/sentinel2a_aws_query
 
 # OpenEO use cases
 JSON='{"bands":["B04", "B08"],
@@ -376,7 +378,7 @@ JSON='{"bands":["B04", "B08"],
 "S2A_MSIL1C_20170621T110651_N0205_R137_T30SUJ_20170621T111222",
 "S2A_MSIL1C_20170412T110621_N0204_R137_T30SUJ_20170412T111708"]}'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset/sentinel2_import
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset/sentinel2_import
 
 
 JSON='{
@@ -405,7 +407,7 @@ JSON='{
  "version": "1"
 }'
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_sync
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_sync
 
 
 JSON='{
@@ -436,7 +438,7 @@ JSON='{
 '
 
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_async
 
 
 JSON='{"list": [{
@@ -483,4 +485,4 @@ JSON='{"list": [{
     "version": "1"}
 '
 
-curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia}/api/v1/locations/latlong_wgs84/process_chain_validation_sync
+curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/process_chain_validation_sync

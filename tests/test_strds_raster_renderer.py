@@ -30,7 +30,7 @@ from flask.json import loads as json_load
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
@@ -42,8 +42,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 location = 'nc_spm_08'
 strds_mapset = 'modis_lst'
-strds_url = (URL_PREFIX +
-             '/locations/%(location)s/mapsets/%(mapset)s/strds'
+strds_url = (URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds'
              % {'location': location, 'mapset': strds_mapset})
 strds_data = 'LST_Day_monthly'
 
@@ -91,16 +90,14 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-
     def test_strds_render_1(self):
 
         new_mapset = "strds_render_test"
         self.create_new_mapset(new_mapset, location)
 
         # Create success
-        rv = self.server.post(URL_PREFIX +
-                                '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
-                                % {'location': location, 'mapset': new_mapset},
+        rv = self.server.post(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register'
+                              % {'location': location, 'mapset': new_mapset},
                               headers=self.admin_auth_header,
                               data=json_dumps({"temporaltype": "absolute",
                                                "title": "A nice title",

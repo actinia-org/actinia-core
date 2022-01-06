@@ -31,7 +31,7 @@ __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
-from flask import make_response, jsonify
+from flask import make_response, jsonify, request
 import os
 import re
 import importlib
@@ -41,16 +41,20 @@ import sys
 from actinia_core.core.common.app import flask_app, URL_PREFIX
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
+from actinia_core.models.response_models import \
+     LinkResponseModel
 from . import __version__
 
 
 G_VERSION = {}
 PLUGIN_VERSIONS = {}
 PYTHON_VERSION = ""
+API_VERSION = ""
 
 
 def init_versions():
     global PYTHON_VERSION
+    global API_VERSION
 
     g_version = subprocess.run(
         ['grass', '--tmp-location', 'epsg:4326', '--exec',
@@ -63,6 +67,10 @@ def init_versions():
     for i in global_config.PLUGINS:
         module = importlib.import_module(i)
         PLUGIN_VERSIONS[i] = module.__version__
+
+    log.debug('Detecting API versions')
+    module = importlib.import_module("actinia_api")
+    API_VERSION = module.__version__
 
     PYTHON_VERSION = sys.version.replace('\n', '- ')
 
@@ -77,7 +85,7 @@ def valid_additional_version_info_key(cand):
     valid_reg_ex = '^[a-z_]{' + str(minlength) + ',' + str(maxlength) + '}$'
     reserved_keys = [
         'grass_version', 'plugin_versions', 'plugins', 'python_version',
-        'version'
+        'version', 'api_version'
     ]
     return cand and cand not in reserved_keys and re.match(valid_reg_ex, cand)
 
@@ -129,7 +137,26 @@ def version():
     info['plugins'] = ",".join(global_config.PLUGINS)
     info['grass_version'] = G_VERSION
     info['plugin_versions'] = PLUGIN_VERSIONS
+    info['api_version'] = API_VERSION
     info['python_version'] = PYTHON_VERSION
     info['running_since'] = find_running_since_info()
 
     return make_response(jsonify(info), 200)
+
+
+# Return a hint that this version is outdated
+@flask_app.route("/api/v1/<path:actinia_path>")
+def hint(actinia_path):
+    """Return a hint that this version is no longer installed. If an older
+    version is installed, this endpoint will be overwritten by a proxy.
+
+    Returns: Response
+
+    """
+    url = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path
+
+    return make_response(jsonify(LinkResponseModel(
+            status="Not found",
+            message=("Are you looking for the current api version? "
+                     "Change 'v1' to 'v2' in the URL."),
+            links=[url]), 404))

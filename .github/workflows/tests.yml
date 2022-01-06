@@ -9,7 +9,7 @@ on:
 
 jobs:
 
-  alpine-tests:
+  alpine-unittests:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -18,7 +18,33 @@ jobs:
       #   path: "."
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-    - name: Test actinia
+    - name: Replace run only unittest command
+      run: |
+        sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
+    - name: Unittests of actinia
+      id: docker_build
+      uses: docker/build-push-action@v2
+      with:
+        push: false
+        tags: actinia-core-tests:alpine
+        context: .
+        file: docker/actinia-core-tests/Dockerfile
+        no-cache: true
+        # pull: true
+
+  alpine-integration-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      # with:
+      #   path: "."
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Replace run integration test command
+      run: |
+        sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
+    - name: Integration tests of actinia
       id: docker_build
       uses: docker/build-push-action@v2
       with:

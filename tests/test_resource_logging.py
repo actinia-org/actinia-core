@@ -31,7 +31,7 @@ from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.common.app import flask_app
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, global_config
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
@@ -53,7 +53,7 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         # The test user
         self.user_id = "soeren"
         self.resource_id = uuid.uuid1()
-        self.document = pickle.dumps([200, {"Status":"running", "URL":"/bla/bla"}])
+        self.document = pickle.dumps([200, {"Status": "running", "URL": "/bla/bla"}])
 
         redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
         if global_config.REDIS_SERVER_PW is not None:

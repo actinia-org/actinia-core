@@ -77,7 +77,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
         for p in result:
             print(str(p))
 
-        #self.assertTrue(len(result) == 4)
+        # self.assertTrue(len(result) == 4)
 
         # import commands
         result = gsqi.get_sentinel2_import_process_list()
@@ -85,7 +85,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
         for p in result:
             print(str(p))
 
-        #self.assertTrue(len(result) == 2 + 8 + 8)
+        # self.assertTrue(len(result) == 2 + 8 + 8)
 
         # r.mapclalc ndvi processing
         result = gsqi.get_ndvi_r_mapcalc_process_list(nir="nir", red="red", raster_result_name="ndvi")
@@ -93,7 +93,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
         for p in result:
             print(str(p))
 
-        #self.assertTrue(len(result) == 2)
+        # self.assertTrue(len(result) == 2)
 
 
 if __name__ == '__main__':

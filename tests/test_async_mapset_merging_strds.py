@@ -30,7 +30,7 @@ from flask.json import loads as json_load
 import time
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -290,7 +290,7 @@ process_chain_list = {
         "module": "t.list",
         "id": "t_list_1",
         "inputs": [{"param": "type", "value": "strds"}]
-        },
+    },
         {
             "module": "t.rast.list",
             "id": "t.rast.list_1",
@@ -298,9 +298,9 @@ process_chain_list = {
                 {
                     "param": "input",
                     "value": f"modis@{mapset_name}"
-                    }
+                }
             ]
-        }
+    }
     ],
     "version": "1"
 }
@@ -366,8 +366,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
                               data=json_dumps(process_chain_create_strds1),
                               content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
         # check if strds 'modis' is in mapset
         self.check_strds_in_mapset(['modis'])
@@ -380,15 +380,15 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
                               data=json_dumps(process_chain_create_strds1),
                               content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                              http_status=200, status="finished")
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
 
         rv2 = self.server.post(
             URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/processing_async',
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_list),
             content_type="application/json")
-        resp2 = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv2, headers=self.admin_auth_header, http_status=200, status="finished")
 
         # check if strds 'modis' is in mapset
@@ -404,7 +404,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
         rv = self.server.post(
@@ -413,7 +413,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
             data=json_dumps(process_chain_create_strds2),
             content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
         # check if strds 'modis' and 'modis2' is in mapset
@@ -430,7 +430,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
         # check if strds 'modis' is in mapset
@@ -444,7 +444,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
             data=json_dumps(process_chain_create_strds3),
             content_type="application/json")
 
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
 
         # check if strds 'modis' and 'modis2' is in mapset

@@ -138,7 +138,7 @@ class UserManagementResource(LoginBase):
         """
         user = ActiniaUser(user_id)
 
-        if user.exists() is False:
+        if user.exists() != 1:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="User <%s> does not exist" % user_id
@@ -170,14 +170,14 @@ class UserManagementResource(LoginBase):
                 'name': 'password',
                 'description': 'The password of the new user',
                 'required': True,
-                'in': 'path',
+                'in': 'query',
                 'type': 'string'
             },
             {
                 'name': 'group',
                 'description': 'The group of the new user',
                 'required': True,
-                'in': 'path',
+                'in': 'query',
                 'type': 'string'
             }
         ],
@@ -212,15 +212,13 @@ class UserManagementResource(LoginBase):
                                      type=str, help='The password of the new user')
         password_parser.add_argument('group', required=True,
                                      type=str, help='The group of the new user')
-
         args = password_parser.parse_args()
         password = args["password"]
         group = args["group"]
 
         user = ActiniaUser.create_user(user_id, group, password, "user", {})
-
         if user is not None:
-            if user.exists() is True:
+            if user.exists():
                 return make_response(jsonify(SimpleResponseModel(
                     status="success",
                     message="User %s created" % user_id
@@ -271,7 +269,7 @@ class UserManagementResource(LoginBase):
         """
         user = ActiniaUser(user_id)
 
-        if user.exists() is False:
+        if user.exists() != 1:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
                 message="Unable to delete user %s. User does not exist." % user_id

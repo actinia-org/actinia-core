@@ -28,7 +28,7 @@ from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
@@ -40,7 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
-    #################### LIST RASTER ##########################################
+    # ################### LIST RASTER ##########################################
 
     def create_raster_layer(self, mapset_name, raster_name):
         # Remove potentially existing raster layer
@@ -117,7 +117,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         map_list = json_loads(rv.data)["process_results"]
         self.assertTrue(len(map_list) == 0)
 
-    #################### DELETE RASTER ##########################################
+    # ################### DELETE RASTER ##########################################
 
     def test_remove_raster_layers_pattern(self):
 
@@ -131,11 +131,11 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             self.create_raster_layer(new_mapset, map_name)
 
         # Delete raster layers
-        #rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
+        # rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/user1/raster_layers?pattern=test_delete_layer_*',
         #                     headers=self.user_auth_header)
-        #print(rv.data)
-        #self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-        #self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
+        # print(rv.data)
+        # self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+        # self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
 
         # List raster layer
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers?pattern=test_delete_layer_*' % new_mapset,

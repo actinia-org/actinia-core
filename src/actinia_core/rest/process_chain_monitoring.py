@@ -31,11 +31,11 @@ import pickle
 from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import \
+     MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
 from actinia_core.rest.resource_management import ResourceManager
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.models.openapi.process_chain_monitoring import \
-     MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Carmen Tawalika"

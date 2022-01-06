@@ -29,7 +29,7 @@ from flask.json import loads as json_load, dumps as json_dumps
 import unittest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
@@ -44,7 +44,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     # TODO create test for CREATION (upload)
 
-    #################### INFO #################################################
+    # ################### INFO #################################################
 
     def test_raster_layer_info(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation',

@@ -30,7 +30,7 @@ from flask.json import loads as json_load
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except:
+except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 
@@ -43,7 +43,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
-    #################### COLORS ###############################################
+    # ################### COLORS ###############################################
 
     def test_raster_layer_get_colors(self):
         rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/colors',
@@ -95,7 +95,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rules = {"rules":["1 0:0:0",]}
+        rules = {"rules": ["1 0:0:0", ]}
 
         # Set the color table
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
@@ -107,7 +107,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rules = {"color":"elevation"}
+        rules = {"color": "elevation"}
 
         # Set the color table
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
@@ -119,7 +119,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        rules = {"raster":"elevation@PERMANENT"}
+        rules = {"raster": "elevation@PERMANENT"}
 
         # Set the color table
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
@@ -177,7 +177,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         #######################################################################
-        rules = {"rules":["wrong format",]}
+        rules = {"rules": ["wrong format", ]}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -192,7 +192,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("AsyncProcessError:" in log)
 
         #######################################################################
-        rules = {"rules":"blub"}
+        rules = {"rules": "blub"}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -205,7 +205,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         #######################################################################
         # Two rules
-        rules = {"color":"elevation", "raster":"elevation@PERMANENT"}
+        rules = {"color": "elevation", "raster": "elevation@PERMANENT"}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -218,7 +218,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         #######################################################################
         # Wrong format
-        rules = {"nonsense":"bla"}
+        rules = {"nonsense": "bla"}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -231,7 +231,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         #######################################################################
         # Wrong format
-        rules = [1,2,3]
+        rules = [1, 2, 3]
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -244,7 +244,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         #######################################################################
         # Raster layer not found
-        rules = {"raster":"elevation_nope@PERMANENT"}
+        rules = {"raster": "elevation_nope@PERMANENT"}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,
@@ -260,7 +260,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         #######################################################################
         # No mapset in name
-        rules = {"raster":"elevation"}
+        rules = {"raster": "elevation"}
 
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
                               headers=self.user_auth_header,

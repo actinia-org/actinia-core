@@ -101,7 +101,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
     def test_query_for_sentinel_scene_sinlge(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
         # A very small scene
-        result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",],
+        result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138", ],
                                         ["B12", "B08"])
         pprint(result)
         self.assertTrue(len(result) == 1)
@@ -134,7 +134,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_sentinel_scene_empty_query(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
-        result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170208T092131_N0204_R093_T35TLF_NOPENOPENOPE",],
+        result = gsqi.get_sentinel_urls(["S2A_MSIL1C_20170208T092131_N0204_R093_T35TLF_NOPENOPENOPE", ],
                                         ["B04", "B08"])
         pprint(result)
         self.assertTrue(not result)
@@ -146,7 +146,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
                                         "LC80440342013106LGN01",
                                         "LC80440342013154LGN00"],
-                                        ["B1", "MTL"])
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(len(result) == 3)
 
@@ -157,7 +157,7 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
         result = gsqi.get_landsat_urls(["LC80440342016259LGN00",
                                         "LC80440342013106LGN01",
                                         "LC80440342013154LGN00_WRONG"],
-                                        ["B1", "MTL"])
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(len(result) == 2)
 
@@ -165,8 +165,8 @@ class GoogleBigQueryInterfaceTestCase(unittest.TestCase):
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_query_for_landsat_scene_empty_query(self):
         gsqi = GoogleSatelliteBigQueryInterface(global_config)
-        result = gsqi.get_landsat_urls(["LE72_NOPENOPENOPE",],
-                                        ["B1", "MTL"])
+        result = gsqi.get_landsat_urls(["LE72_NOPENOPENOPE", ],
+                                       ["B1", "MTL"])
         pprint(result)
         self.assertTrue(not result)
 

@@ -25,7 +25,7 @@ url.
 
 
 ```bash
- curl ${AUTH} -X POST -i "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+ curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 ```
 
 The response contains the status URL that must be polled using a GET
@@ -39,8 +39,8 @@ processing result.
    "api_info": {
      "endpoint": "asyncephemerallandsatprocessingresource",
      "method": "POST",
-     "path": "/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
-     "request_url": "http://actinia.mundialis.de/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+     "path": "/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
+     "request_url": "http://actinia.mundialis.de/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
    },
    "datetime": "2018-05-30 10:52:19.545774",
    "http_code": 200,
@@ -53,9 +53,9 @@ processing result.
    "timestamp": 1527677539.5457737,
    "urls": {
      "resources": [],
-     "status": "https://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+     "status": "https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -64,7 +64,7 @@ URL. Be aware that you have to use your status url as the resource id will chang
 calls.
 
 ```bash
- curl -L ${AUTH} -X GET -i "https://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+ curl -L ${AUTH} -X GET "https://actinia.mundialis.de/api/v2/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
 ```
 
 The final result will contain a complete processing list as well as
@@ -78,8 +78,8 @@ as well as univariate statistics of the computed NDVI scene.
    "api_info": {
      "endpoint": "asyncephemerallandsatprocessingresource",
      "method": "POST",
-     "path": "/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
-     "request_url": "http://localhost:5000/api/v1/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+     "path": "/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI",
+     "request_url": "http:///actinia.mundialis.de/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
    },
    "datetime": "2018-05-30 11:22:58.315162",
    "http_code": 200,
@@ -139,7 +139,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B6.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B6.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B6.TIF"
        ],
        "return_code": 0,
        "run_time": 0.05022144317626953,
@@ -169,7 +169,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B7.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B7.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B7.TIF"
        ],
        "return_code": 0,
        "run_time": 0.051961421966552734,
@@ -199,7 +199,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B8.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B8.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B8.TIF"
        ],
        "return_code": 0,
        "run_time": 0.05012321472167969,
@@ -229,7 +229,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B9.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B9.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B9.TIF"
        ],
        "return_code": 0,
        "run_time": 0.05081939697265625,
@@ -259,7 +259,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B10.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B10.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B10.TIF"
        ],
        "return_code": 0,
        "run_time": 0.05163097381591797,
@@ -289,7 +289,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B11.TIF",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B11.TIF"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B11.TIF"
        ],
        "return_code": 0,
        "run_time": 0.05057358741760254,
@@ -319,7 +319,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "/bin/mv",
        "parameter": [
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_MTL.txt",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_MTL.txt"
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_MTL.txt"
        ],
        "return_code": 0,
        "run_time": 0.05015206336975098,
@@ -334,7 +334,7 @@ as well as univariate statistics of the computed NDVI scene.
          "/usr/local/bin/grass78",
          "-e",
          "-c",
-         "/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B1.TIF",
+         "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B1.TIF",
          "/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/Landsat"
        ],
        "return_code": 0,
@@ -350,7 +350,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B1.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B1.TIF",
          "output=LC80440342016259LGN00.1",
          "--q"
        ],
@@ -364,7 +364,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B2.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B2.TIF",
          "output=LC80440342016259LGN00.2",
          "--q"
        ],
@@ -378,7 +378,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B3.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B3.TIF",
          "output=LC80440342016259LGN00.3",
          "--q"
        ],
@@ -392,7 +392,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B4.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B4.TIF",
          "output=LC80440342016259LGN00.4",
          "--q"
        ],
@@ -406,7 +406,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B5.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B5.TIF",
          "output=LC80440342016259LGN00.5",
          "--q"
        ],
@@ -420,7 +420,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B6.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B6.TIF",
          "output=LC80440342016259LGN00.6",
          "--q"
        ],
@@ -434,7 +434,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B7.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B7.TIF",
          "output=LC80440342016259LGN00.7",
          "--q"
        ],
@@ -448,7 +448,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B8.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B8.TIF",
          "output=LC80440342016259LGN00.8",
          "--q"
        ],
@@ -462,7 +462,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B9.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B9.TIF",
          "output=LC80440342016259LGN00.9",
          "--q"
        ],
@@ -476,7 +476,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B10.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B10.TIF",
          "output=LC80440342016259LGN00.10",
          "--q"
        ],
@@ -490,7 +490,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "r.import",
        "parameter": [
-         "input=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_B11.TIF",
+         "input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B11.TIF",
          "output=LC80440342016259LGN00.11",
          "--q"
        ],
@@ -505,7 +505,7 @@ as well as univariate statistics of the computed NDVI scene.
        "executable": "i.landsat.toar",
        "parameter": [
          "input=LC80440342016259LGN00.",
-         "metfile=/actinia/workspace/download_cache/superadmin/LC80440342016259LGN00_MTL.txt",
+         "metfile=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_MTL.txt",
          "method=uncorrected",
          "output=LC80440342016259LGN00_TOAR.",
          "--q"
@@ -659,12 +659,12 @@ as well as univariate statistics of the computed NDVI scene.
    "timestamp": 1527679378.31516,
    "urls": {
      "resources": [
-       "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
-       "http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png",
+       "http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff"
      ],
-     "status": "http://actinia.mundialis.de/api/v1/resources/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
+     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc"
    },
-   "user_id": "superadmin"
+   "user_id": "demouser"
  }
 ```
 
@@ -692,9 +692,9 @@ available in the *process\_results* section:
 The following links can be found in the **urls** section of the JSON
 response that point to the created resources:
 
- <http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
 
- <http://actinia.mundialis.de/api/v1/resource/superadmin/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
+ <http://actinia.mundialis.de/api/v2/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
 
 The preview image should look like this:
 

@@ -31,6 +31,7 @@ import os
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.core.utils import os_path_normpath
 
 
 __license__ = "GPLv3"
@@ -83,9 +84,10 @@ class RequestStreamerResource(Resource):
         """
 
         resource_dir = global_config.GRASS_RESOURCE_DIR
-        user_export_path = os.path.join(resource_dir, user_id)
-        resource_export_path = os.path.join(user_export_path, resource_id)
-        resource_export_file_path = os.path.join(resource_export_path, file_name)
+        user_export_path = os_path_normpath([resource_dir, user_id])
+        resource_export_path = os_path_normpath([user_export_path, resource_id])
+        resource_export_file_path = os_path_normpath([resource_export_path,
+                                                      file_name])
 
         if (os.path.exists(resource_export_file_path) is True
                 and os.access(resource_export_file_path, os.R_OK) is True):
