@@ -51,3 +51,8 @@ geopandas
 
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
 # google-cloud-bigquery needs libffi-dev
+
+# required for running i.sentinel.download from GCS:
+pandas
+sentinelsat
+tqdm

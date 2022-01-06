@@ -189,6 +189,7 @@ class ProcessChainConverter(object):
         downimp_list = self._create_download_process_list()
         downimp_list.extend(process_list)
 
+        import pdb; pdb.set_trace()
         return downimp_list
 
     def _get_landsat_import_download_commands(self, entry):
@@ -251,11 +252,13 @@ class ProcessChainConverter(object):
             executable="i.sentinel.download",
             id=f"download_{entry['value']}",
             executable_params=[f"query=identifier={scene}",
-                               f"output={self.temp_file_path}"])
+                               f"output={self.temp_file_path}",
+                               "datasource=GCS"])
         sentinel_commands.append(download_p)
 
         import pdb; pdb.set_trace()
         # self.temp_file_path
+        return sentinel_commands
 
 
     def _get_sentinel_import_command(self, entry):
@@ -603,7 +606,7 @@ class ProcessChainConverter(object):
         if self.message_logger:
             self.message_logger.info("Creating download process "
                                      "list for all import definitions")
-        #import pdb; pdb.set_trace()
+
         for entry in self.import_descr_list:
             if self.message_logger:
                 self.message_logger.info(entry)
