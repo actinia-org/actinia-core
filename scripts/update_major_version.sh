@@ -46,7 +46,7 @@ sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../docker/README.md
 
 # docs
 sed -i "s+ACTINIA_VERSION=\"${OLD_VERSION}\"+ACTINIA_VERSION=\"${NEW_VERSION}\"+g" ../docs/docs/installation.md
-sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../docs/docs/tutorial_data_access.md
+sed -i "s+api/${OLD_VERSION}/+api/${NEW_VERSION}/+g" ../docs/docs/tutorial_data_access.md
 sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../docs/docs/tutorial_landsat_ndvi.md
 sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../docs/docs/tutorial_process_chain.md
 sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../docs/docs/tutorial_sentinel2_ndvi.md

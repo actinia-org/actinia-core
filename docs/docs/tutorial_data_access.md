@@ -535,7 +535,7 @@ response:
    "api_info": {
      "endpoint": "syncstrdslisterresource",
      "method": "GET",
-     "path": "api/v2/locations/ECAD/mapsets/PERMANENT/strds",
+     "path": "api/v3/locations/ECAD/mapsets/PERMANENT/strds",
      "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds"
    },
    "datetime": "2018-05-30 09:18:17.351918",
