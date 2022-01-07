@@ -28,6 +28,7 @@ from actinia_core.core.common.sentinel_processing_library import Sentinel2Proces
 from actinia_core.core.common.config import global_config
 import os
 import unittest
+import pytest
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -94,6 +95,47 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
             print(str(p))
 
         # self.assertTrue(len(result) == 2)
+
+    def test_download_import_commands_noquery(self):
+        gsqi = Sentinel2Processing(product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
+                                   bands=["B12", "B08"], download_cache="/tmp",
+                                   send_resource_update=update_dummy,
+                                   message_logger=MessageDummy())
+        # download commands
+        result, maps = gsqi.get_sentinel2_download_process_list_without_query()
+        # there should be just one command (i.sentinel.download)
+        self.assertTrue(len(result) == 1, ("Download process list consists of "
+                                           "more than one processes"))
+        self.assertEqual(result[0].executable, "i.sentinel.download",
+                         ("Download process executable is not "
+                          "i.sentinel.download"))
+        ref_params = ['datasource=GCS',
+                      ('query=identifier=S2A_MSIL1C_20170212T104141'
+                       '_N0204_R008_T31TGJ_20170212T104138'), 'output=/tmp']
+        self.assertEqual(result[0].executable_params, ref_params,
+                         ("Download process executable does not have the "
+                          "expected parameters"))
+
+        # test if mapnames are created correctly
+        refmaps = ["T31TGJ_20170212T104141_B12", "T31TGJ_20170212T104141_B08"]
+        testmaps = [maps[map][1] for map in maps]
+        self.assertEqual(refmaps, testmaps, ("Import maps "
+                         f"{','.join(refmaps)} are not created correctly."))
+        self.assertTrue("B12" in maps and "B08" in maps, ("Band"))
+
+        # import commands
+        result = gsqi.get_sentinel2_import_process_list_without_query()
+        # there should be just one command (i.sentinel.import)
+        self.assertTrue(len(result) == 1, ("Import process list consists of "
+                                           "more than one processes"))
+        self.assertEqual(result[0].executable, "i.sentinel.import",
+                         ("Import process executable is not "
+                          "i.sentinel.import"))
+        params = result[0].executable_params
+        self.assertTrue('pattern=(B12|B08)' in params, ("Import band name "
+                        "pattern is incorrect"))
+        self.assertTrue('extent=input' in params, ("Import extent is not "
+                        "set to 'input'"))
 
 
 if __name__ == '__main__':

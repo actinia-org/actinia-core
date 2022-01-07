@@ -75,7 +75,7 @@ class Sentinel2Processing(object):
 
     def __init__(self, product_id, bands, download_cache, send_resource_update,
                  message_logger, use_google=True, temp_file_path=None,
-                 config=None, query_result=None, extent=None):
+                 config=None, query_result=None, extent="input"):
         """ A collection of functions to generate Sentinel2 related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
