@@ -44,7 +44,8 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
     raster = "elev_ned_30m"
-    raster_url = f"https://storage.googleapis.com/graas-geodata/{raster}.tif"
+    raster_url = "https://apps.mundialis.de/actinia_test_datasets/" \
+        "elev_ned_30m.tif"
     local_raster = f"/tmp/{raster}.tif"
 
     ref_info = {'cells': '225000', 'cols': '500', 'east': '645000', 'ewres': '30',

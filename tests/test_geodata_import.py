@@ -96,7 +96,7 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
 
     def test_download_commands_gml(self):
 
-        gml = "https://storage.googleapis.com/graas-geodata/census_wake2000.gml"
+        gml = "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.gml"
 
         gddl = GeoDataDownloadImportSupport(config=global_config,
                                             temp_file_path="/tmp",
@@ -124,10 +124,10 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
 
         url_list = []
 
-        gml = "https://storage.googleapis.com/graas-geodata/census_wake2000.gml"
-        gml_zip = "https://storage.googleapis.com/graas-geodata/census_wake2000.zip"
-        tif = "https://storage.googleapis.com/graas-geodata/geology_30m.tif"
-        tif_zip = "https://storage.googleapis.com/graas-geodata/geology_30m.zip"
+        gml = "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.gml"
+        gml_zip = "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.zip"
+        tif = "https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif"
+        tif_zip = "https://apps.mundialis.de/actinia_test_datasets/geology_30m.zip"
 
         url_list.append(gml_zip)
         url_list.append(tif_zip)
@@ -154,12 +154,12 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
     def test_download_commands_tif(self):
 
         tif_list = []
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
-        tif_list.append("https://storage.googleapis.com/graas-geodata/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
+        tif_list.append("https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif")
 
         gddl = GeoDataDownloadImportSupport(config=global_config,
                                             temp_file_path="/tmp",

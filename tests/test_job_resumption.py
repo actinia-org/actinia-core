@@ -121,8 +121,8 @@ process_chain_3_importer = {
             "inputs": [
                 {
                   "import_descr": {
-                      "source": "https://storage.googleapis.com/graas-"
-                      "geodata/elev_ned_30m.tif",
+                      "source": "https://apps.mundialis.de/actinia_test_"
+                      "datasets/elev_ned_30m.tif",
                       "type": "raster"
                   },
                     "param": "raster",
@@ -158,8 +158,8 @@ process_chain_3_importer = {
                 },
                 {
                     "import_descr": {
-                        "source": "https://storage.googleapis.com/graas-"
-                                  "geodata/geology_30m.tif",
+                        "source": "https://apps.mundialis.de/actinia_test_"
+                                  "datasets/geology_30m.tif",
                         "type": "raster"
                     },
                     "param": "map",
