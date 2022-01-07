@@ -7,7 +7,7 @@
 #
 # PURPOSE:      This script updates the major actinia-core version in url
 #
-# COPYRIGHT:    (C) 2021 by mundialis GmbH & Co. KG
+# COPYRIGHT:    (C) 2022 by mundialis GmbH & Co. KG
 #
 #               This program is free software under the GNU General Public
 #               License (>=v3). Read the file COPYING that comes with GRASS
@@ -32,7 +32,7 @@ def hint_${OLD_VERSION}(actinia_path):\n\
 \turl = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path\n\
 \n\treturn make_response(jsonify(LinkResponseModel(\n\
 \t\t\tstatus=\"Not found\",\n\
-\t\t\tmessage=(\"Are you looking for the current api version? \"\n\
+\t\t\tmessage=(\"Are you looking for the current API version? \"\n\
 \t\t\t\t\t \"Change '${OLD_VERSION}' to '${NEW_VERSION}' in the URL.\"),\n\
 \t\t\tlinks=[url]), 404))"
 echo -e ${FUNC} | sed "s+\t+    +g" >> ../src/actinia_core/version.py

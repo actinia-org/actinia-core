@@ -157,7 +157,7 @@ def hint(actinia_path):
 
     return make_response(jsonify(LinkResponseModel(
             status="Not found",
-            message=("Are you looking for the current api version? "
+            message=("Are you looking for the current API version? "
                      "Change 'v1' to 'v3' in the URL."),
             links=[url]), 404))
 
@@ -174,6 +174,6 @@ def hint_v2(actinia_path):
 
     return make_response(jsonify(LinkResponseModel(
             status="Not found",
-            message=("Are you looking for the current api version? "
+            message=("Are you looking for the current API version? "
                      "Change 'v2' to 'v3' in the URL."),
             links=[url]), 404))
