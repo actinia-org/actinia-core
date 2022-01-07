@@ -627,8 +627,6 @@ class ProcessChainConverter(object):
 
                 rvf_downimport_commands = \
                     self._get_raster_vector_file_download_import_command(entry)
-                if isinstance(rvf_downimport_commands, AsyncProcessError):
-                    raise rvf_downimport_commands
                 downimp_list.extend(rvf_downimport_commands)
 
             # POSTGIS
