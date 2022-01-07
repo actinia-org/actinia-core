@@ -141,11 +141,11 @@ class GrassEnvironment(ProcessLogging):
 
     def set(self):
         # # for debugging in ephemeral_processing.py (see also process_queue.py)
-        for var in [
-                'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
-                'GRASS_ADDON_PATH', 'GIS_LOCK']:
-            if var in os.environ:
-                del os.environ[var]
+        # for var in [
+        #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
+        #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
+        #     if var in os.environ:
+        #         del os.environ[var]
 
         for key in self.env:
             try:

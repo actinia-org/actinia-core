@@ -27,10 +27,12 @@ Sentinel-2A processing commands
 import os
 import requests
 import dateutil.parser as dtparser
+import xml.etree.ElementTree as ET
 from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
 from .aws_sentinel_interface import AWSSentinel2AInterface
 from .exceptions import AsyncProcessError
 from .process_object import Process
+
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -70,9 +72,10 @@ def datetime_to_grass_datetime_string(dt):
 class Sentinel2Processing(object):
     """
     """
-    def __init__(self, config, product_id, query_result, bands, temp_file_path,
-                 download_cache, send_resource_update, message_logger,
-                 use_google=True, outputs=None):
+
+    def __init__(self, product_id, bands, download_cache, send_resource_update,
+                 message_logger, use_google=True, temp_file_path=None,
+                 config=None, query_result=None, extent=None):
         """ A collection of functions to generate Sentinel2 related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
@@ -89,6 +92,7 @@ class Sentinel2Processing(object):
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
+            extent: extent parameter for GRASS import
 
         """
         self.config = config
@@ -104,11 +108,43 @@ class Sentinel2Processing(object):
         self.gml_temp_file_name = None
         self.timestamp = None
         self.bbox = None
+        self.extent = extent
+        self.band_pattern = None
         self.use_google = use_google
-        self.outputs = outputs
 
-    # def _setup_download_import_without_query(self):
-    #     "Setup the download of a scene by providing the download URLs"
+    def _setup_download_import_google_without_query(self):
+        """Setup the map name info for later renaming and the band pattern for
+        importing.
+        """
+        level = self.product_id.split("_")[1]
+        tile_block = self.product_id.split("_")[-2]
+        date_block = self.product_id.split("_")[2]
+        band_pattern = "("
+        # Create file names, urls and check the download cache
+        for band in self.bands:
+            # kept here only for consistency:
+            file_path = None
+            # build the map name, here the highest possible resolution for each
+            # band is assumed
+            if band in ["B02", "B03", "B04", "B08"]:
+                res = "10"
+            elif band in ["B05", "B06", "B07", "B8A", "B11", "B12"]:
+                res = "20"
+            elif band in ["B1", "B9", "B10"]:
+                res = "60"
+            else:
+                raise AsyncProcessError(f"Band {band} is unknown. Please "
+                                        "provide band as 'BXY', e.g. "
+                                        "'B02', 'B8A', or 'B12'")
+            if level == "MSIL1C":
+                band_pattern += f"{band}|"
+                map_name = f"{tile_block}_{date_block}_{band}"
+            elif level == "MSIL2A":
+                band_pattern += f"{band}_{res}m|"
+                map_name = f"{tile_block}_{date_block}_{band}_{res}m"
+            self.import_file_info[band] = (file_path, map_name)
+        band_pattern = band_pattern[:-1] + ')'
+        self.band_pattern = band_pattern
 
     def _setup_download_import_google(self):
         """Setup the download, import and preprocessing of a
@@ -312,6 +348,45 @@ class Sentinel2Processing(object):
             return self._setup_download_import_google()
         else:
             return self._setup_download_import_aws()
+
+    def get_sentinel2_download_process_list_without_query(self):
+        """Create the process list to download sentinel2 scenes
+        from the Google Cloud Storage.
+        """
+        download_commands = []
+
+        p = Process(exec_type="grass", executable="i.sentinel.download",
+                    executable_params=["datasource=GCS",
+                                       f"query=identifier={self.product_id}",
+                                       f"output={self.user_download_cache_path}"
+                                       ],
+                    id=f"i_sentinel_download_{self.product_id}",
+                    skip_permission_check=True)
+        download_commands.append(p)
+
+        # The renaming step needs to know the map name(s). They can be put
+        # together from the filename
+        self._setup_download_import_google_without_query()
+
+        return download_commands, self.import_file_info
+
+    def get_sentinel2_import_process_list_without_query(self):
+        """Generate Sentinel2A import process list
+
+        1. Import required bands using i.sentinel.import
+        """
+        import_commands = []
+
+        p = Process(exec_type="grass", executable="i.sentinel.import",
+                    executable_params=[f"input={self.user_download_cache_path}",
+                                       f"pattern={self.band_pattern}",
+                                       f"extent={self.extent}",
+                                       "-r"
+                                       ],
+                    id=f"i_sentinel_import_{self.product_id}",
+                    skip_permission_check=True)
+        import_commands.append(p)
+        return import_commands
 
     def get_sentinel2_download_process_list(self):
         """Create the process list to download, import and preprocess

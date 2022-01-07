@@ -232,40 +232,6 @@ class ProcessChainConverter(object):
 
         return landsat_commands
 
-    def _get_sentinel_import_command_gcs(self, entry):
-        """Helper method to get the sentinel import command using i.sentinel.
-
-        Args:
-            entry (dict): Entry of the import description list
-
-        Returns:
-            sentinel_commands: The sentinel import commands
-        """
-        if "sentinel_band" not in entry["import_descr"]:
-            raise AsyncProcessError(
-                "Band specification is required for Sentinel2 scene import")
-        scene = entry["import_descr"]["source"]
-        band = entry["import_descr"]["sentinel_band"]
-
-
-
-        sentinel_commands = []
-        # scene = entry["import_descr"]["source"]
-        #
-        # download_p = Process(
-        #     exec_type="grass",
-        #     executable="i.sentinel.download",
-        #     id=f"download_{entry['value']}",
-        #     executable_params=[f"query=identifier={scene}",
-        #                        f"output={self.temp_file_path}",
-        #                        "datasource=GCS"])
-        # sentinel_commands.append(download_p)
-        #
-        # import pdb; pdb.set_trace()
-        # # self.temp_file_path
-        return sentinel_commands
-
-
     def _get_sentinel_import_command(self, entry):
         """Helper method to get the sentinel import command.
 
@@ -313,6 +279,9 @@ class ProcessChainConverter(object):
         return sentinel_commands
 
     def _get_sentinel_import_commands(self, entries):
+        """ Method to get the Sentinel download and import commands using GCS
+            without login
+        """
         sentinel_commands = []
         scenes_bands = []
         # sort by source (scene ID) and bands
@@ -320,20 +289,63 @@ class ProcessChainConverter(object):
         for entry in entries:
             scene_id = entry["import_descr"]["source"]
             band = entry["import_descr"]["sentinel_band"]
+            if "import_extent" in entry["import_descr"].keys():
+                import_extent = entry["import_descr"]["import_extent"]
+                if import_extent not in ["region", "input"]:
+                    raise AsyncProcessError(
+                        "Import parameter 'import_extent' must be either "
+                        "'input' (default) or 'region'.")
+            else:
+                import_extent = "input"
             output = entry["value"]
             if scene_id not in scene_ids:
                 scene_ids.append(scene_id)
                 scene = {"scene_id": scene_id,
                          "bands": [band],
-                         "outputs": [output]}
+                         "outputs": [output],
+                         "import_extent": import_extent}
                 scenes_bands.append(scene)
             else:
                 scindex = scene_ids.index(scene_id)
                 scenes_bands[scindex]["bands"].append(band)
                 scenes_bands[scindex]["outputs"].append(output)
+                if import_extent != scenes_bands[scindex]["import_extent"]:
+                    raise AsyncProcessError(
+                        "Import parameter 'import_extent' must be identical "
+                        "for several bands from the same scene.")
+        for scene in scenes_bands:
+            scene_id = scene["scene_id"]
+            # download_dir = os.path.join(self.temp_file_path, scene_id)
+            download_cache = f"download_cache_{scene_id}"
+            self.temporary_pc_files[download_cache] = \
+                self.generate_temp_file_path()
+            # temp_dir = f"temp_dir_{scene_id}"
+            # self.temporary_pc_files[temp_dir] = \
+            #     self.generate_temp_file_path()
+            sp = Sentinel2Processing(
+                bands=scene["bands"],
+                download_cache=self.temporary_pc_files[download_cache],
+                # temp_file_path=self.temporary_pc_files[temp_dir],
+                message_logger=self.message_logger,
+                send_resource_update=self.send_resource_update,
+                extent=scene["import_extent"],
+                product_id=scene_id)
 
-        # create new Sentinel2Processing_GCS object for each scene?
-
+            download_commands, import_file_info = \
+                sp.get_sentinel2_download_process_list_without_query()
+            scene_commands = download_commands
+            import_commands = sp.get_sentinel2_import_process_list_without_query()
+            scene_commands.extend(import_commands)
+            for idx, band in enumerate(scene["bands"]):
+                output = scene["outputs"][idx]
+                p = Process(
+                    exec_type="grass",
+                    executable="g.rename",
+                    id=f"rename_{scene_id}_{band}",
+                    executable_params=[
+                        f"raster={import_file_info[band][1]},{output}"])
+                scene_commands.append(p)
+            sentinel_commands.extend(scene_commands)
         return sentinel_commands
 
     def _get_postgis_import_command(self, entry):
@@ -660,10 +672,7 @@ class ProcessChainConverter(object):
             # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
                 #sentinel_commands = self._get_sentinel_import_command(entry)
-
-                #sentinel_commands = self._get_sentinel_import_command_gcs(entry)
                 #downimp_list.extend(sentinel_commands)
-
                 sentinel2_entries.append(entry)
 
             # LANDSAT
