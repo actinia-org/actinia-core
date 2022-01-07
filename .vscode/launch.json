@@ -17,7 +17,7 @@
             "dockerServerReadyAction": {
               "action": "openExternally",
               "pattern": "Running on (https?://\\S+|[0-9]+)",
-              "uriFormat": "%s://localhost:%s/api/v2/version"
+              "uriFormat": "%s://localhost:%s/api/v3/version"
             }
         }
     ]

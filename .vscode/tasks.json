@@ -9,7 +9,7 @@
 				"tag": "actiniacore:latest",
 				"dockerfile": "${workspaceFolder}/docker/actinia-core-dev/Dockerfile",
 				"context": "${workspaceFolder}"
-				// "pull": true
+				// "pull": true // use this when an newer image is available
 			}
 		},
 		{

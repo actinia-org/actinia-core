@@ -7,13 +7,13 @@
 #export actinia="${IP}:${PORT}"
 
 ## demo server
-export actinia_version="v2"
+export actinia_version="v3"
 export actinia="https://actinia.mundialis.de"
 export actinia_url="${actinia}/api/${actinia_version}"
 export AUTH='-u demouser:gu3st!pa55w0rd'
 
 # check actinia version
-# https://actinia.mundialis.de/api/v2/version | https://actinia.mundialis.de/latest/version
+# https://actinia.mundialis.de/api/v3/version | https://actinia.mundialis.de/latest/version
 
 #####
 # Show all locations in the GRASS database

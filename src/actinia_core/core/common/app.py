@@ -102,7 +102,7 @@ __author__ = "Sören Gebbert, Julia Haas"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
-API_VERSION = "v2"
+API_VERSION = "v3"
 
 # This is the URL prefix that must be used in the tests
 URL_PREFIX = "/api/%s" % API_VERSION

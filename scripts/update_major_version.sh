@@ -60,3 +60,6 @@ sed -i "s+/api/${OLD_VERSION}+/api/${NEW_VERSION}+g" ../scripts/actinia-bench
 sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../scripts/curl_commands.sh
 sed -i "s+actinia_version=\"${OLD_VERSION}\"+actinia_version=\"${NEW_VERSION}\"+g" ../scripts/curl_commands.sh
 sed -i "s+/api/${OLD_VERSION}/+/api/${NEW_VERSION}/+g" ../scripts/README.md
+
+# logging README
+sed -i "s+/api/${OLD_VERSION}+/api/${NEW_VERSION}+g" ../logging.md
