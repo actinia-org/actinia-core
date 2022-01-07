@@ -215,22 +215,35 @@ class GeoDataDownloadImportSupport(object):
         return p
 
     @staticmethod
-    def get_raster_import_command(file_path, raster_name):
+    def get_raster_import_command(file_path, raster_name, resample=None,
+                                  resolution=None, resolution_value=None):
         """Generate raster import process list that makes use of r.import
 
         Args:
             file_path:
             raster_name:
+            resample:
+            resolution:
+            resolution_value:
 
         Returns:
             Process
 
         """
+        executable_params = ["input=%s" % file_path,
+                             "output=%s" % raster_name,
+                             "--q"]
+
+        if resample is not None:
+            executable_params.append("resample=%s" % resample)
+        if resolution is not None:
+            executable_params.append("resolution=%s" % resolution)
+        if resolution_value is not None:
+            executable_params.append("resolution_value=%s" % resolution_value)
+
         p = Process(exec_type="grass",
                     executable="r.import",
-                    executable_params=["input=%s" % file_path,
-                                       "output=%s" % raster_name,
-                                       "--q"],
+                    executable_params=executable_params,
                     id=f"r_import_{os.path.basename(file_path)}",
                     skip_permission_check=True)
 

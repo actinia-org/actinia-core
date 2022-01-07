@@ -328,10 +328,45 @@ class ProcessChainConverter(object):
         if "vector_layer" in entry["import_descr"]:
             layer = entry["import_descr"]["vector_layer"]
         if entry["import_descr"]["type"] == "raster":
+            kwargs = {"file_path": input_source, "raster_name": entry["value"]}
+
+            if "resample" in entry["import_descr"]:
+                kwargs["resample"] = entry["import_descr"]["resample"]
+            if "resolution" in entry["import_descr"]:
+                kwargs["resolution"] = entry["import_descr"]["resolution"]
+            if "resolution_value" in entry["import_descr"]:
+                kwargs["resolution_value"] = entry["import_descr"]["resolution_value"]
+
+            if "resolution" in kwargs and kwargs["resolution"] == "value":
+                if "resolution_value" not in kwargs:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution_value> is set.")
+                if "resolution_value" in kwargs:
+                    try:
+                        float(kwargs["resolution_value"])
+                    except ValueError:
+                        raise AsyncProcessError(
+                            "Error while running executable <r.import>. Value for "
+                            "parameter <resolution_value> is not a float.")
+
+            if "resolution_value" in kwargs:
+                if "resolution" not in kwargs:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set."
+                    )
+                if "resolution" in kwargs and kwargs["resolution"] != "value":
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set to <value>."
+                    )
+
             import_command = \
                 GeoDataDownloadImportSupport.get_raster_import_command(
-                    file_path=input_source,
-                    raster_name=entry["value"])
+                    **kwargs
+                    )
             rvf_downimport_commands.append(import_command)
         if entry["import_descr"]["type"] == "vector":
             import_command = \
@@ -592,6 +627,8 @@ class ProcessChainConverter(object):
 
                 rvf_downimport_commands = \
                     self._get_raster_vector_file_download_import_command(entry)
+                if isinstance(rvf_downimport_commands, AsyncProcessError):
+                    raise rvf_downimport_commands
                 downimp_list.extend(rvf_downimport_commands)
 
             # POSTGIS
