@@ -109,4 +109,4 @@ def test_find_additional_version_info(env_value, expected):
         if 'ACTINIA_ADDITIONAL_VERSION_INFO' in os.environ:
             del os.environ['ACTINIA_ADDITIONAL_VERSION_INFO']
     test = find_additional_version_info()
-    assert test == expected +'1', "Additional version is not right"
+    assert test == expected, "Additional version is not right"

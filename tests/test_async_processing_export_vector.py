@@ -69,7 +69,7 @@ vector_layer_buffer = {
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://apps.mundialis.de/actinia_test_datasets/rio.json2",
+                "source": "https://apps.mundialis.de/actinia_test_datasets/rio.json",
                 "type": "vector"
             },
             "param": "map",
