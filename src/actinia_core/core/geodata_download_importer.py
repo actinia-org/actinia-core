@@ -35,8 +35,8 @@ from actinia_core.core.common.process_object import Process
 from actinia_core.core.utils import get_wget_process, get_mv_process
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 # Mimetypes supported for download

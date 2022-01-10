@@ -41,8 +41,8 @@ from actinia_core.models.process_chain import \
      GrassModule, StdoutParser, Executable, SUPPORTED_EXPORT_FORMATS
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Carmen Tawalika, Julia Haas, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
