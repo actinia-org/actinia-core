@@ -28,9 +28,17 @@ import os
 import unittest
 import requests
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except Exception:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Guido Riembauer"
@@ -44,8 +52,7 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
     raster = "elev_ned_30m"
-    raster_url = "https://apps.mundialis.de/actinia_test_datasets/" \
-        "elev_ned_30m.tif"
+    raster_url = additional_external_data["elev_ned_30m_tif"]
     local_raster = f"/tmp/{raster}.tif"
 
     ref_info = {'cells': '225000', 'cols': '500', 'east': '645000', 'ewres': '30',

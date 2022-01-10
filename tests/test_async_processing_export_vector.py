@@ -28,9 +28,17 @@ import pytest
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -69,7 +77,7 @@ vector_layer_buffer = {
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://apps.mundialis.de/actinia_test_datasets/rio.json",
+                "source": additional_external_data["rio_json"],
                 "type": "vector"
             },
             "param": "map",
@@ -112,7 +120,7 @@ vector_layer_clean = {
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://apps.mundialis.de/actinia_test_datasets/rio.json",
+                "source": additional_external_data["rio_json"],
                 "type": "vector"
             },
             "param": "map",
@@ -175,7 +183,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
             self.assertEqual(rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
 
-    @pytest.mark.dev
     def test_vector_buffer(self):
         rv = self.server.post(URL_PREFIX + '/locations/latlong_wgs84/processing_async_export',
                               headers=self.admin_auth_header,

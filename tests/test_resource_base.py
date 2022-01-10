@@ -33,10 +33,9 @@ from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
 
 # Create endpoints
 create_endpoints()
@@ -52,6 +51,19 @@ if "ACTINIA_SERVER_TEST" in os.environ:
 # Set this variable to use a actinia config file in a docker container
 if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
+
+additional_external_data = {
+    "rio_json": "https://apps.mundialis.de/actinia_test_datasets/rio.json",
+    "brazil_json": "https://apps.mundialis.de/actinia_test_datasets/brazil_polygon.json",
+    "elev_ned_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/elev_ned_30m.tif",
+    "elev_ned_30m_nope_tif": "https://apps.mundialis.de/actinia_test_datasets/elev_ned_30m_nope.tif",
+    "polygon_gml": "https://apps.mundialis.de/actinia_test_datasets/polygon.gml",
+    "census_wake2000_gml": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.gml",
+    "census_wake2000_zip": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.zip",
+    "geology_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif",
+    "geology_30m_zip": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.zip",
+    "pointInBonn": "https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/pointInBonn.geojson"
+}
 
 
 def setup_environment():
