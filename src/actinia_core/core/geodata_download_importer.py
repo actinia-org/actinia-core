@@ -227,7 +227,7 @@ class GeoDataDownloadImportSupport(object):
                             bicubic_f, lanczos_f (default: nearest)
             resolution (str): The resolution of the new raster layer
                               Options: estimated, value, region (default: estimated)
-            resolution_value (float): Resolution of output raster map (use with option
+            resolution_value (string): Resolution of output raster map (use with option
                                       resolution=value)
 
         Returns:
