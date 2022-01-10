@@ -220,11 +220,15 @@ class GeoDataDownloadImportSupport(object):
         """Generate raster import process list that makes use of r.import
 
         Args:
-            file_path:
-            raster_name:
-            resample:
-            resolution:
-            resolution_value:
+            file_path (str): The URL of the raster file to import
+            raster_name (str): The name of the new raster layer
+            resample (str): The resampling method to use for reprojection
+                            Options: nearest, bilinear, bicubic, lanczos, bilinear_f,
+                            bicubic_f, lanczos_f (default: nearest)
+            resolution (str): The resolution of the new raster layer
+                              Options: estimated, value, region (default: estimated)
+            resolution_value (float): Resolution of output raster map (use with option
+                                      resolution=value)
 
         Returns:
             Process
