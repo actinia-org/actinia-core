@@ -62,7 +62,7 @@ additional_external_data = {
     "census_wake2000_zip": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.zip",
     "geology_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif",
     "geology_30m_zip": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.zip",
-    "pointInBonn": "https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/pointInBonn.geojson"
+    "pointInBonn": "https://apps.mundialis.de/actinia_test_datasets/pointInBonn.geojson"
 }
 
 
