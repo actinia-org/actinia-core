@@ -24,12 +24,21 @@
 """
 Tests: AsyncProcess test case
 """
+import pytest
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -68,7 +77,7 @@ vector_layer_buffer = {
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://storage.googleapis.com/graas-geodata/rio.json",
+                "source": additional_external_data["rio_json"],
                 "type": "vector"
             },
             "param": "map",
@@ -111,7 +120,7 @@ vector_layer_clean = {
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://storage.googleapis.com/graas-geodata/rio.json",
+                "source": additional_external_data["rio_json"],
                 "type": "vector"
             },
             "param": "map",
@@ -179,7 +188,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                               headers=self.admin_auth_header,
                               data=json_dumps(vector_layer_buffer),
                               content_type="application/json")
-
         resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                               http_status=200, status="finished")
 
