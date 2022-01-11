@@ -28,9 +28,17 @@ import os
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 try:
     import actinia_stac_plugin
@@ -48,7 +56,7 @@ process_chain_raster_import_export = {
     'list': [{'flags': 'a',
               'id': 'r_slope_aspect_1',
               'inputs': [{'import_descr': {
-                  'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                  'source': additional_external_data["elev_ned_30m_tif"],
                   'type': 'raster'},
                   'param': 'elevation',
                   'value': 'elev_ned_30m'},
@@ -68,34 +76,10 @@ process_chain_raster_import_export = {
               'params': [],
               'stdin': 'r_slope_aspect_1::stderr'}],
     'version': '1'}
-#
-# [
-#     {'module' : 'r.slope.aspect',
-#      'id'     : 'r_slope_aspect_1',
-#      'inputs' : [
-#          {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
-#                            'type'  : 'raster'},
-#           'param'       : 'elevation',
-#           'value'       : 'elev_ned_30m'},
-#          {'param': 'format', 'value': 'degree'},
-#          {'param': 'precision', 'value': 'DCELL'}
-#      ],
-#      'outputs': [
-#          {'param' : 'slope', 'value': 'elev_ned_30m_slope',
-#           'export': {'format': 'GTiff', 'type': 'raster'}},
-#          {'param' : 'aspect', 'value': 'elev_ned_30m_aspect',
-#           'export': {'format': 'GTiff', 'type': 'raster'}}
-#      ]
-#     },
-#     {'exe'  : '/bin/cat',
-#      'id'   : 'cat_1',
-#      'stdin': 'r_slope_aspect_1::stderr'
-#     }
-# ]
 
 process_chain_raster_import_info = {
     'list': [{'id': 'r_info',
-              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+              'inputs': [{'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
                                            'type': 'raster'},
                           'param': 'map',
                           'value': 'elev_ned_30m'}],
@@ -106,7 +90,7 @@ process_chain_raster_import_info = {
 process_chain_raster_import_error_no_file = {
     'list': [{'id': 'r_info',
               'inputs': [
-                  {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m_nope.tif',
+                  {'import_descr': {'source': additional_external_data["elev_ned_30m_nope_tif"],
                                     'type': 'raster'},
                       'param': 'map',
                       'value': 'elev_ned_30m'}, ],
@@ -116,7 +100,7 @@ process_chain_raster_import_error_no_file = {
 
 process_chain_vector_import_info = {
     'list': [{'id': 'v_info',
-              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/polygon.gml',
+              'inputs': [{'import_descr': {'source': additional_external_data["polygon_gml"],
                                            'type': 'vector'},
                           'param': 'map',
                           'value': 'polygon'}],
@@ -183,7 +167,7 @@ process_chain_sentinel_import_export = {
                                            'sentinel_band': 'B01'},
                           'param': 'map',
                           'value': 'sentinel_map'},
-                         {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                         {'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
                                            'type': 'raster'},
                           'param': 'map',
                           'value': 'elev_ned_30m'}],

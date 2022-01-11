@@ -24,5 +24,9 @@ else
   python3 setup.py test
 fi
 
+TEST_RES=$?
+
 # stop redis server
 redis-cli shutdown
+
+return $TEST_RES
