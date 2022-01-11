@@ -537,12 +537,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region)
 
-                    if resource["metadata"]["format"] == "STAC":
-                        properties = {}
-                        STACExporter.stac_collection_initializer()
-                        STACExporter.stac_builder(output_path, file_name,
-                                                  output_type, properties)
-
                 elif output_type == "vector":
                     if "PostgreSQL" in resource["export"]["format"]:
                         dbstring = resource["export"]["dbstring"]
@@ -579,6 +573,11 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 else:
                     raise AsyncProcessTermination(
                         "Unknown export format %s" % output_type)
+
+                if resource["metadata"]["format"] == "STAC":
+                    STACExporter.stac_collection_initializer()
+                    STACExporter.stac_builder(output_path, file_name,
+                                              output_type)
 
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)
