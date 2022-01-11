@@ -39,13 +39,18 @@ __email__ = "info@mundialis.de"
 
 from datetime import datetime
 from pickle import TRUE
-import pystac
+import numpy as np
+import pyproj
+from pystac import Item, read_dict, Catalog
+from pystac.extensions.projection import ProjectionItemExt
+from shapely.ops import transform
+
 import rasterio
 from shapely.geometry import Polygon, mapping
 
-from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.exceptions import AsyncProcessTermination
-from actinia_core.core.common.process_object import Process
+# from actinia_core.core.common.app import API_VERSION
+
 try:
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
     has_plugin = True
@@ -63,13 +68,12 @@ class STACExporter:
 
         Code uses pystac as base for the creation of stac catalogs
         """
-
         redis_actinia_interface.connect()
 
         result_catalog_validation = redis_actinia_interface.exists("result-catalog")
 
         if result_catalog_validation is not TRUE:
-            results = pystac.Catalog(id="result-catalog", description="STAC catalog")
+            results = Catalog(id="result-catalog", description="STAC catalog")
 
             redis_actinia_interface.create(
                 "result-catalog",
@@ -79,20 +83,54 @@ class STACExporter:
             raise AsyncProcessTermination("result-catalog is already created")
 
     def stac_builder(self, output_path=None, filename=None,
-                     output_type=None, extra_values=None,):
+                     output_type=None):
+        """
+        This function build the STAC ITEM and implement the following extension:
+            - Projection
+            - Raster
+        Parameter:
+            Input:
+                - output_path = Path to the source 
+                - filename =  name of the source
+                - output_type =  type of object (raster, vector)
+        """
 
         if output_type == "raster":
-            bbox, geom = self._get_bbox_and_geometry(output_path)
-            item = pystac.Item(id=f"STAC-result-{filename}",
-                               geometry=geom,
-                               bbox=bbox,
-                               datetime=datetime.utcnow(),
-                               properties=self._stac_metadata(extra_values))
+
+            # Get parameters for STAC item
+            extra_values = self._get_raster_parameters(output_path)
+
+            # Checking if the imput has WGS 82 CRS
+            geom, bbox_raster = self._get_wgs84_parameters(extra_values)
+
+            # Start building the Item
+            item = Item(id=f"STAC-result-{filename}",
+                        geometry=geom,
+                        bbox=bbox_raster,
+                        datetime=datetime.utcnow(),
+                        properties={
+                            "gds": extra_values["gds"]
+                            }
+                        )
+
+            # Adding the Projection Extension
+
+            proj_ext = ProjectionItemExt(item)
+            proj_ext.apply(
+                epsg=extra_values["crs"],
+                geometry=extra_values["geometry"],
+                shape=extra_values["shape"],
+                bbox=extra_values["bbox"],
+                transform=extra_values["transform"]
+            )
+
+
+
             # Read catalog from REDIS
             catalog_dict = redis_actinia_interface.read("result-catalog")
 
             # Create Catalog Object
-            catalog = pystac.read_dict(catalog_dict)
+            catalog = read_dict(catalog_dict)
 
             # Add item to Catalog
             catalog.add_item(item)
@@ -100,12 +138,13 @@ class STACExporter:
             # Update redis catalog
             self._update_catalog_redis(catalog)
 
-    def _stac_metadata(self, properties):
+        # TODO
+        elif output_type == "vector":
+            raise AsyncProcessTermination("Still under developments")
 
-        print("here stand the metadata")
-
-    def _get_bbox_and_geometry(self, raster_path):
+    def _get_raster_parameters(self, raster_path):
         with rasterio.open(raster_path) as raster:
+            gds = np.asarray(raster.transform[:])
             bounds = raster.bounds
             bbox = [bounds.left, bounds.bottom, bounds.right, bounds.top]
             geom = Polygon([
@@ -114,8 +153,45 @@ class STACExporter:
                 [bounds.right, bounds.top],
                 [bounds.right, bounds.bottom]
             ])
+            crs = raster.crs.to_epsg()
 
-            return (bbox, mapping(geom))
+            extra_values = {
+                "gds": gds[0],
+                "crs": crs,
+                "bbox": bbox,
+                "geometry": mapping(geom),
+                "transform": gds,
+                "shape": raster.shape,
+                "datetime": "2021-12-09T16:41:39.985257Z"
+            }
+
+            return extra_values
+
+    def _get_wgs84_parameters(extra_values):
+        if extra_values["crs"] != 4326:
+            wgs84 = pyproj.CRS('EPSG:4326')
+            raster_proj = pyproj.CRS('EPSG:' + str(extra_values["crs"]))
+            project = pyproj.Transformer.from_crs(raster_proj, wgs84, always_xy=True).transform
+            geojson = Polygon(
+                    [tuple(l) for l in extra_values["geometry"]['coordinates'][0]]
+                )
+            geom = transform(project, geojson)
+            geom = mapping(geom)
+
+            def bbox(coord_list):
+                box = []
+                for i in (0, 1):
+                    res = sorted(coord_list, key=lambda x: x[i])
+                    box.append((res[0][i], res[-1][i]))
+                bbox = [box[0][0], box[1][0], box[0][1], box[1][1]]
+                return bbox
+
+            bbox_raster = bbox(list(geom["coordinates"]))
+        else:
+            geom = extra_values["geometry"]
+            bbox_raster = extra_values["bbox"]
+        
+        return geom, bbox_raster
 
     def _update_catalog_redis(catalog):
 
