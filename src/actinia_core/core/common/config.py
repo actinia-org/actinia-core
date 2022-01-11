@@ -31,8 +31,8 @@ import ast
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 if os.environ.get('DEFAULT_CONFIG_PATH'):
     DEFAULT_CONFIG_PATH = os.environ['DEFAULT_CONFIG_PATH']
@@ -225,6 +225,13 @@ class Configuration(object):
         # The Google Cloud Storage bucket to store user resources
         self.GCS_RESOURCE_BUCKET = ""
 
+        """
+        WEBHOOK
+        """
+        # Webhook finished retry
+        self.WEBHOOK_RETRIES = 3
+        self.WEBHOOK_SLEEP = 10
+
     def __str__(self):
         string = ""
         for entry in dir(self):
@@ -317,6 +324,10 @@ class Configuration(object):
                    self.GOOGLE_APPLICATION_CREDENTIALS)
         config.set('GCS', 'GCS_RESOURCE_BUCKET', self.GCS_RESOURCE_BUCKET)
         config.set('GCS', 'GOOGLE_CLOUD_PROJECT', self.GOOGLE_CLOUD_PROJECT)
+
+        config.add_section('WEBHOOK')
+        config.set('WEBHOOK', 'WEBHOOK_RETRIES', self.WEBHOOK_RETRIES)
+        config.set('WEBHOOK', 'WEBHOOK_SLEEP', self.WEBHOOK_SLEEP)
 
         with open(path, 'w') as configfile:
             config.write(configfile)
@@ -478,6 +489,14 @@ class Configuration(object):
                 if config.has_option("AWS_S3", "S3_AWS_RESOURCE_BUCKET"):
                     self.S3_AWS_RESOURCE_BUCKET = config.get(
                         "AWS_S3", "S3_AWS_RESOURCE_BUCKET")
+
+            if config.has_section("WEBHOOK"):
+                if config.has_option("WEBHOOK", "WEBHOOK_RETRIES"):
+                    self.WEBHOOK_RETRIES = config.get(
+                        "WEBHOOK", "WEBHOOK_RETRIES")
+                if config.has_option("WEBHOOK", "WEBHOOK_SLEEP"):
+                    self.WEBHOOK_SLEEP = config.get(
+                        "WEBHOOK", "WEBHOOK_SLEEP")
 
         def print_warning(cfg_section, cfg_key, file_val=None, env_val=None):
             if env_val is None:
