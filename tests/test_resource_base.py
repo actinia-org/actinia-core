@@ -35,7 +35,7 @@ from actinia_core.endpoints import create_endpoints
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 # Create endpoints
 create_endpoints()
