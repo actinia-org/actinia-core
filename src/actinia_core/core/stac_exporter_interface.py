@@ -49,7 +49,8 @@ import rasterio
 from shapely.geometry import Polygon, mapping
 
 from actinia_core.core.common.exceptions import AsyncProcessTermination
-# from actinia_core.core.common.app import API_VERSION
+from actinia_core.core.common.app import API_VERSION
+from actinia_core.version import G_VERSION
 
 try:
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
@@ -123,6 +124,10 @@ class STACExporter:
                 transform=extra_values["transform"]
             )
 
+            # Adding the Processing Extension
+
+            item = self._set_processing_extention(item)
+
             # Read catalog from REDIS
             catalog_dict = redis_actinia_interface.read("result-catalog")
 
@@ -164,7 +169,7 @@ class STACExporter:
 
             return extra_values
 
-    def _get_wgs84_parameters(extra_values):
+    def _get_wgs84_parameters(self, extra_values):
         if extra_values["crs"] != 4326:
             wgs84 = pyproj.CRS('EPSG:4326')
             raster_proj = pyproj.CRS('EPSG:' + str(extra_values["crs"]))
@@ -196,3 +201,22 @@ class STACExporter:
 
         new_catalog = catalog.to_dict()
         redis_actinia_interface.update("result-catalog", new_catalog)
+
+    # TODO Discuss if it is more convenient to implement new classes and translatesto
+    #      the implementation to a new plugin or Addon where STAC extenitions can be
+    #      customized
+
+    def _set_processing_extention(item):
+        input_item = item.to_dict()
+
+        input_item["processing:facility"] = f"Actinia Core {API_VERSION}",
+        input_item["processing:level"] = "L4"
+        input_item["processing:derived_from"] = "https://actinia.mundialis.de/"
+        input_item["processing:software"] = f" GRASS {G_VERSION}"
+        proc_schema = "https://stac-extensions.github.io/processing/v1.1.0/schema.json"
+
+        input_item["stac_extensions"].append(proc_schema)
+
+        proc_ext_item = read_dict(input_item)
+
+        return proc_ext_item
