@@ -90,11 +90,10 @@ class STACExporter:
             - Raster
         Parameter:
             Input:
-                - output_path = Path to the source 
+                - output_path = Path to the source
                 - filename =  name of the source
                 - output_type =  type of object (raster, vector)
         """
-
         if output_type == "raster":
 
             # Get parameters for STAC item
@@ -123,8 +122,6 @@ class STACExporter:
                 bbox=extra_values["bbox"],
                 transform=extra_values["transform"]
             )
-
-
 
             # Read catalog from REDIS
             catalog_dict = redis_actinia_interface.read("result-catalog")
@@ -171,9 +168,11 @@ class STACExporter:
         if extra_values["crs"] != 4326:
             wgs84 = pyproj.CRS('EPSG:4326')
             raster_proj = pyproj.CRS('EPSG:' + str(extra_values["crs"]))
-            project = pyproj.Transformer.from_crs(raster_proj, wgs84, always_xy=True).transform
+            project = pyproj.Transformer.from_crs(
+                    raster_proj, wgs84, always_xy=True
+                ).transform
             geojson = Polygon(
-                    [tuple(l) for l in extra_values["geometry"]['coordinates'][0]]
+                    [tuple(i) for i in extra_values["geometry"]['coordinates'][0]]
                 )
             geom = transform(project, geojson)
             geom = mapping(geom)
@@ -190,7 +189,7 @@ class STACExporter:
         else:
             geom = extra_values["geometry"]
             bbox_raster = extra_values["bbox"]
-        
+
         return geom, bbox_raster
 
     def _update_catalog_redis(catalog):
