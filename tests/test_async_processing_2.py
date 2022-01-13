@@ -29,9 +29,17 @@ import unittest
 from flask.json import dumps as json_dumps
 
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -180,8 +188,9 @@ process_chain_ndvi = {
                                       "sentinel_band": "B08"},
                      "param": "map",
                      "value": "B08"},
-                    {"import_descr": {"source": "https://storage.googleapis.com/graas-geodata/brazil_polygon.json",
-                                      "type": "vector"},
+                    {"import_descr": {
+                        "source": additional_external_data["brazil_json"],
+                        "type": "vector"},
                      "param": "map",
                      "value": "polygon"}]},
 
@@ -225,6 +234,7 @@ process_chain_ndvi = {
 # Import a Sentinel2A scene and compute the NDVI for a specific polygon
 # https://storage.googleapis.com/graas-geodata/rio.json
 # https://gdh-data-sandbox.ams3.digitaloceanspaces.com/rio.json
+# https://apps.mundialis.de/actinia_test_datasets/rio.json
 process_chain_ndvi_landsat = {
     "list": [
         {"id": "importer_1",
@@ -234,7 +244,7 @@ process_chain_ndvi_landsat = {
                                       "landsat_atcor": "dos1"},
                      "param": "map",
                      "value": "ignored"},
-                    {"import_descr": {"source": "https://storage.googleapis.com/graas-geodata/rio.json",
+                    {"import_descr": {"source": additional_external_data["rio_json"],
                                       "type": "vector"},
                      "param": "map",
                      "value": "polygon"}]},

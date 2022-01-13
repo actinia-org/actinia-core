@@ -37,9 +37,17 @@ from actinia_core.core.common.process_queue import create_process_queue
 from actinia_core.core.common.config import global_config
 
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
@@ -121,8 +129,7 @@ process_chain_3_importer = {
             "inputs": [
                 {
                   "import_descr": {
-                      "source": "https://storage.googleapis.com/graas-"
-                      "geodata/elev_ned_30m.tif",
+                      "source": additional_external_data["elev_ned_30m_tif"],
                       "type": "raster"
                   },
                     "param": "raster",
@@ -149,8 +156,7 @@ process_chain_3_importer = {
             "inputs": [
                 {
                     "import_descr": {
-                        "source": "https://raw.githubusercontent.com/mmacata/"
-                                  "pagestest/gh-pages/pointInBonn.geojson",
+                        "source": additional_external_data["pointInBonn"],
                         "type": "vector"
                     },
                     "param": "map",
@@ -158,8 +164,7 @@ process_chain_3_importer = {
                 },
                 {
                     "import_descr": {
-                        "source": "https://storage.googleapis.com/graas-"
-                                  "geodata/geology_30m.tif",
+                        "source": additional_external_data["geology_30m_tif"],
                         "type": "raster"
                     },
                     "param": "map",
