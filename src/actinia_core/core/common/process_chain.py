@@ -360,7 +360,8 @@ class ProcessChainConverter(object):
             if "resolution_value" in entry["import_descr"]:
                 try:
                     float(entry["import_descr"]["resolution_value"])
-                    kwargs["resolution_value"] = entry["import_descr"]["resolution_value"]
+                    kwargs["resolution_value"] = (entry["import_descr"]
+                                                  ["resolution_value"])
                 except ValueError:
                     raise AsyncProcessError(
                         "Error while running executable <r.import>. Value for "
