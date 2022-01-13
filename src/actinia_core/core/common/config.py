@@ -326,8 +326,8 @@ class Configuration(object):
         config.set('GCS', 'GOOGLE_CLOUD_PROJECT', self.GOOGLE_CLOUD_PROJECT)
 
         config.add_section('WEBHOOK')
-        config.set('WEBHOOK', 'WEBHOOK_RETRIES', self.WEBHOOK_RETRIES)
-        config.set('WEBHOOK', 'WEBHOOK_SLEEP', self.WEBHOOK_SLEEP)
+        config.set('WEBHOOK', 'WEBHOOK_RETRIES', str(self.WEBHOOK_RETRIES))
+        config.set('WEBHOOK', 'WEBHOOK_SLEEP', str(self.WEBHOOK_SLEEP))
 
         with open(path, 'w') as configfile:
             config.write(configfile)

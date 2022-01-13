@@ -25,15 +25,13 @@
 Tests: Async process test case
 """
 import unittest
-import pytest
+# import pytest
 from flask.json import loads as json_loads, dumps as json_dumps
-from flask import Flask, request, json, make_response, jsonify
 import requests
 from jinja2 import Template
-from pprint import pprint
 import os
 import time
-import subprocess
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -143,7 +141,6 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #                           content_type="application/json")
     #     self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-    @pytest.mark.dev
     def test_finished_webhook_retries(self):
         """Test the retry if the webhook can not be reached or returns a server
         error.
