@@ -41,8 +41,12 @@ from datetime import datetime
 from pickle import TRUE
 import numpy as np
 import pyproj
-from pystac import Item, read_dict, Catalog
-from pystac.extensions.projection import ProjectionItemExt
+from pystac import Item, read_dict, Catalog, Asset
+from pystac.extensions.projection import ItemProjectionExtension
+from pystac.extensions.raster import (
+    RasterExtension,
+    RasterBand
+)
 from shapely.ops import transform
 
 import rasterio
@@ -113,9 +117,25 @@ class STACExporter:
                             }
                         )
 
+            # Addin Asset and Raster Ext
+
+            asset_ = Asset(
+                href=output_path,
+                title=filename
+            )
+
+            new_bands = self._set_raster_extention(output_path)
+            RasterExtension.ext(asset_).bands = new_bands
+
+            item.add_asset(
+                key='source',
+                asset=asset_
+            )
+
             # Adding the Projection Extension
 
-            proj_ext = ProjectionItemExt(item)
+            proj_ext = ItemProjectionExtension.add_to(item)
+            proj_ext = ItemProjectionExtension.ext(item)
             proj_ext.apply(
                 epsg=extra_values["crs"],
                 geometry=extra_values["geometry"],
@@ -220,3 +240,16 @@ class STACExporter:
         proc_ext_item = read_dict(input_item)
 
         return proc_ext_item
+
+    def _set_raster_extention(self, raster_path):
+        raster_ext = []
+        with rasterio.open(raster_path) as raster:
+            band = raster.read(1)
+            pixelSizeX, pixelSizeY = raster.res
+            ras_ext = RasterBand.create(
+                    nodata=np.count_nonzero(np.isnan(band)),
+                    spatial_resolution=pixelSizeX,
+                    data_type=band.dtype
+                )
+            raster_ext.append(ras_ext)
+        return raster_ext
