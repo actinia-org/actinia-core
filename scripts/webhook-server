@@ -30,10 +30,9 @@ from pprint import pprint
 from flask import Flask, make_response, jsonify, request, json
 
 __license__    = "GPLv3"
-__author__     = "Soeren Gebbert"
-__copyright__  = "Copyright 2016-2018, Soeren Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__author__     = "Soeren Gebbert, Anika Weinmann"
+__copyright__  = "Copyright 2016-2022, mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 
 flask_app = Flask(__name__)
@@ -53,6 +52,19 @@ def update():
     return make_response(jsonify("OK"), 200)
 
 
+def shutdown_server():
+    func = request.environ.get('werkzeug.server.shutdown')
+    if func is None:
+        raise RuntimeError('Not running with the Werkzeug Server')
+    func()
+
+
+@flask_app.route('/shutdown', methods = ['GET'])
+def shutdown():
+    shutdown_server()
+    return 'Server shutting down...'
+
+
 def main():
 
     parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a two GET/POST endpoint '
@@ -66,12 +78,9 @@ def main():
     parser.add_argument("--port", type=int, required=False, default=5005,
                         help="The port that should be used for the webhook server")
 
-    parser.add_argument("--debug", type=bool, required=False, default=True,
-                        help="Set True to activate debugging")
-
     args = parser.parse_args()
 
-    flask_app.run(host=args.host, port=args.port, debug=args.debug)
+    flask_app.run(host=args.host, port=args.port)
 
 
 if __name__ == '__main__':

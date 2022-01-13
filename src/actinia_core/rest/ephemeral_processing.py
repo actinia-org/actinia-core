@@ -60,7 +60,7 @@ from actinia_core.rest.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -575,20 +575,24 @@ class EphemeralProcessing(object):
         retry = 0
         while webhook_not_reached is True and retry < webhook_retries:
             retry += 1
-            if self.webhook_auth:
-                # username is expected to be without colon (':')
-                r = requests.post(
-                    webhook_url, json=json.dumps(response_model),
-                    auth=HTTPBasicAuth(
-                        self.webhook_auth.split(':')[0],
-                        ':'.join(self.webhook_auth.split(':')[1:])))
-            else:
-                r = requests.post(webhook_url, json=json.dumps(response_model))
-            if r.status_code not in [200, 204]:
+            try:
+                if self.webhook_auth:
+                    # username is expected to be without colon (':')
+                    resp = requests.post(
+                        webhook_url, json=json.dumps(response_model),
+                        auth=HTTPBasicAuth(
+                            self.webhook_auth.split(':')[0],
+                            ':'.join(self.webhook_auth.split(':')[1:])),
+                        timeout=10)
+                else:
+                    resp = requests.post(webhook_url, json=json.dumps(response_model),
+                                         timeout=10)
+                if not (500 <= resp.status_code and resp.status_code < 600):
+                    webhook_not_reached = False
+            except Exception:
                 time.sleep(webhook_sleep)
-            else:
-                webhook_not_reached = False
-        if r.status_code not in [200, 204]:
+        if ((webhook_not_reached is False and resp.status_code not in [200, 204])
+                or webhook_not_reached is True):
             raise AsyncProcessError(
                 "Unable to access %s webhook URL %s" % (type, webhook_url))
 

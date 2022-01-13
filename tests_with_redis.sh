@@ -26,3 +26,6 @@ fi
 
 # stop redis server
 redis-cli shutdown
+
+# stop webhook server
+curl http://0.0.0.0:5005/shutdown
