@@ -81,6 +81,17 @@ def startWebhook(sleeptime=10):
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
     resp = requests.get(f'http://0.0.0.0:{port}/webhook/finished')
+    # import pdb; pdb.set_trace()
+    return resp.status_code
+
+
+def startBrokenWebhook(sleeptime=10):
+    inputlist = [
+        "python3", "/src/actinia_core/scripts/webhook-server-broken",
+        "--host", "0.0.0.0", "--port", port, "&"]
+    os.system(" ".join(inputlist))
+    time.sleep(sleeptime)
+    resp = requests.get(f'http://0.0.0.0:{port}/webhook/update')
     return resp.status_code
 
 
@@ -176,15 +187,17 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         # shutdown webhook and start broken finished webhook
         webhook_resp = requests.get('http://0.0.0.0:5006/shutdown')
         self.assertEqual(webhook_resp.status_code, 200, "Shutdown of webhook failed!")
-        broken_webhook = BrokenWebhook()
+        status_code = startBrokenWebhook(10)
+        self.assertEqual(status_code, 200, "Broken webhook server is not running")
 
         broken_server_is_running = True
         while broken_server_is_running is True:
             try:
-                requests.get(f'http://0.0.0.0:{port}/webhook/finished')
+                resp = requests.get(f'http://0.0.0.0:{port}/webhook/update')
+                if resp.status_code == 500:
+                    broken_server_is_running = False
             except Exception:
                 broken_server_is_running = False
-                del broken_webhook
 
         # restart webhook server
         status_code = startWebhook(10)

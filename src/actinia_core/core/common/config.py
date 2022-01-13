@@ -229,7 +229,7 @@ class Configuration(object):
         WEBHOOK
         """
         # Webhook finished retry
-        self.WEBHOOK_RETRIES = 3
+        self.WEBHOOK_RETRIES = 6
         self.WEBHOOK_SLEEP = 10
 
     def __str__(self):

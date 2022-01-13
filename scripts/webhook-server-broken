@@ -42,7 +42,7 @@ flask_app = Flask(__name__)
 def finished():
     if request.get_json():
         pprint(json.loads(request.get_json()))
-    return make_response(jsonify("OK"), 200)
+    shutdown_server()
 
 
 @flask_app.route('/webhook/update', methods=['GET', 'POST'])
