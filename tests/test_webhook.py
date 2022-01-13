@@ -75,17 +75,26 @@ port = "5006"
 
 
 def startWebhook(sleeptime=10):
+    """
+    Starts a webhook server which returns status code 200 for /webhook/update
+    and /webhook/finished endpoints and can be shutdown by endpoint /shutdown.
+    """
     inputlist = [
-        "/src/actinia_core/build/scripts-3.8/webhook-server",
+        "python3", "/src/actinia_core/scripts/webhook-server",
         "--host", "0.0.0.0", "--port", port, "&"]
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
     resp = requests.get(f'http://0.0.0.0:{port}/webhook/finished')
-    # import pdb; pdb.set_trace()
     return resp.status_code
 
 
 def startBrokenWebhook(sleeptime=10):
+    """
+    Starts a webhook server which returns status code 200 for /webhook/update
+    endpoint and by endpoint /webhook/finished it shuts down itself to test the
+    etries if the webhook server can not be reached or return a server error
+    code (500 - 599).
+    """
     inputlist = [
         "python3", "/src/actinia_core/scripts/webhook-server-broken",
         "--host", "0.0.0.0", "--port", port, "&"]
@@ -95,48 +104,11 @@ def startBrokenWebhook(sleeptime=10):
     return resp.status_code
 
 
-class BrokenWebhook(object):
-    """
-    Class with a broken webhook server for testsing. The finished webhook
-    return 500 to test the retries if the webhook server can not be reached or
-    return a server error code (500 - 599).
-    """
-
-    flask_app = Flask(__name__)
-
-    @flask_app.route('/webhook/finished', methods=['GET', 'POST'])
-    def finished(self):
-        if request.get_json():
-            pprint(json.loads(request.get_json()))
-
-        self.shutdown_server()
-
-    @flask_app.route('/webhook/update', methods=['GET', 'POST'])
-    def update(self):
-        if request.get_json():
-            pprint(json.loads(request.get_json()))
-        return make_response(jsonify("OK"), 200)
-
-    def run(self):
-        self.flask_app.run(host="0.0.0.0", port=port)
-
-    def shutdown_server(self):
-        func = request.environ.get('werkzeug.server.shutdown')
-        if func is None:
-            raise RuntimeError('Not running with the Werkzeug Server')
-        func()
-
-    @flask_app.route('/shutdown', methods=['GET'])
-    def shutdown(self):
-        self.shutdown_server()
-        return 'Server shutting down...'
-
-
 class WebhookTestCase(ActiniaResourceTestCaseBase):
 
     def setUp(self):
         # start a webhook server before the normal setUp
-        status_code = startWebhook()
+        status_code = startWebhook(10)
         self.assertEqual(status_code, 200, "Webhook server is not running")
         super().setUp()
 
@@ -155,9 +127,14 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         resp_data2 = json_loads(rv2.data)
         return resp_data2
 
-    # @pytest.mark.dev
+    @pytest.mark.dev
     def test_started_webhook(self):
         """Test the started webhook via a actinia process."""
+        time.sleep(10)
+        resp = None
+        while resp is None or resp.status_code != 200:
+            resp = requests.get(f'http://0.0.0.0:{port}/webhook/finished')
+            time.sleep(3)
         tm = Template(json_dumps(pc))
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
