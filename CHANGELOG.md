@@ -20,7 +20,30 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 ## [2.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+## [3.0.0] - 2022-01-13
+released from main
+## Changed
+* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296
+## Fixed
+* Fix tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/297
+* Update actinia-api version by @mmacata
 
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.3.1...3.0.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.0.0" -f target_commitish=main -q .body`
+
+## [2.3.1] - 2021-12-22
+released from main
+## Fixed
+* installation instructions: update by @neteler in https://github.com/mundialis/actinia_core/pull/287
+* update actinia-module-plugin
+
+## Added
+* Test for STAC implementation by @joaherrerama in https://github.com/mundialis/actinia_core/pull/276
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.3.0...2.3.1
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="2.3.1" -f target_commitish=main -q .body`
 
 ## [2.3.0] - 2021-12-16
 released from main
