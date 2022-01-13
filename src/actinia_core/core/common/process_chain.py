@@ -329,39 +329,51 @@ class ProcessChainConverter(object):
             layer = entry["import_descr"]["vector_layer"]
         if entry["import_descr"]["type"] == "raster":
             kwargs = {"file_path": input_source, "raster_name": entry["value"]}
+            resamp_opt = ["nearest", "bilinear", "bicubic, lanczos", "bilinear_f",
+                          "bicubic_f", "lanzcos_f"]
+            resol_opt = ["estimated", "value", "region"]
 
             if "resample" in entry["import_descr"]:
-                kwargs["resample"] = entry["import_descr"]["resample"]
-            if "resolution" in entry["import_descr"]:
-                kwargs["resolution"] = entry["import_descr"]["resolution"]
-            if "resolution_value" in entry["import_descr"]:
-                kwargs["resolution_value"] = entry["import_descr"]["resolution_value"]
+                if entry["import_descr"]["resample"] in resamp_opt:
+                    kwargs["resample"] = entry["import_descr"]["resample"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>"
+                                        " Please check if parameter"
+                                        " <resample> is set correctly.")
 
-            if "resolution" in kwargs and kwargs["resolution"] == "value":
-                if "resolution_value" not in kwargs:
+            if "resolution" in entry["import_descr"]:
+                if entry["import_descr"]["resolution"] in resol_opt:
+                    kwargs["resolution"] = entry["import_descr"]["resolution"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution> is set correctly.")
+                if kwargs["resolution"] == "value" and \
+                        "resolution_value" not in entry["import_descr"]:
                     raise AsyncProcessError(
                                         "Error while running executable <r.import>."
                                         " Please check if parameter"
                                         " <resolution_value> is set.")
-                if "resolution_value" in kwargs:
-                    try:
-                        float(kwargs["resolution_value"])
-                    except ValueError:
-                        raise AsyncProcessError(
-                            "Error while running executable <r.import>. Value for "
-                            "parameter <resolution_value> is not a float.")
 
-            if "resolution_value" in kwargs:
-                if "resolution" not in kwargs:
+            if "resolution_value" in entry["import_descr"]:
+                try:
+                    float(entry["import_descr"]["resolution_value"])
+                    kwargs["resolution_value"] = entry["import_descr"]["resolution_value"]
+                except ValueError:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Value for "
+                        "parameter <resolution_value> is not a float.")
+                if "resolution" not in entry["import_descr"]:
                     raise AsyncProcessError(
                         "Error while running executable <r.import>. Please check "
-                        "if parameter <resolution> is set."
-                    )
-                if "resolution" in kwargs and kwargs["resolution"] != "value":
+                        "if parameter <resolution> is set.")
+                if "resolution" in entry["import_descr"] and \
+                        entry["import_descr"]["resolution"] != "value":
                     raise AsyncProcessError(
                         "Error while running executable <r.import>. Please check "
-                        "if parameter <resolution> is set to <value>."
-                    )
+                        "if parameter <resolution> is set to <value>.")
 
             import_command = \
                 GeoDataDownloadImportSupport.get_raster_import_command(
