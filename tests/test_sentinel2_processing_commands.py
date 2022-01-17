@@ -61,6 +61,8 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
     urls of landsat and sentinel data
     """
 
+    tempdir = "/tmp"
+
     def setUp(self):
         pass
 
@@ -70,8 +72,10 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
     @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
     def test_download_import_commands(self):
-        gsqi = Sentinel2Processing(global_config, "S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
-                                   None, ["B12", "B08"], "/tmp", "/tmp/", update_dummy, MessageDummy())
+        gsqi = Sentinel2Processing(config=global_config, product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
+                                   query_result=None, bands=["B12", "B08"],
+                                   temp_file_path=self.tempdir, download_cache=self.tempdir,
+                                   send_resource_update=update_dummy, message_logger=MessageDummy())
         # download commands
         result, maps = gsqi.get_sentinel2_download_process_list()
         print(len(result))
@@ -98,7 +102,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
 
     def test_download_import_commands_noquery(self):
         gsqi = Sentinel2Processing(product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
-                                   bands=["B12", "B08"], download_cache="/tmp",
+                                   bands=["B12", "B08"], download_cache=self.tempdir,
                                    send_resource_update=update_dummy,
                                    message_logger=MessageDummy())
         # download commands
