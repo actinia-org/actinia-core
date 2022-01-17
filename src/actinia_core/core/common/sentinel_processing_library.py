@@ -27,7 +27,6 @@ Sentinel-2A processing commands
 import os
 import requests
 import dateutil.parser as dtparser
-import xml.etree.ElementTree as ET
 from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
 from .aws_sentinel_interface import AWSSentinel2AInterface
 from .exceptions import AsyncProcessError
@@ -75,7 +74,7 @@ class Sentinel2Processing(object):
 
     def __init__(self, product_id, bands, download_cache, send_resource_update,
                  message_logger, use_google=True, temp_file_path=None,
-                 config=None, query_result=None, extent="input"):
+                 config=None, query_result=None):
         """ A collection of functions to generate Sentinel2 related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
@@ -92,7 +91,6 @@ class Sentinel2Processing(object):
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
-            extent: extent parameter for GRASS import
 
         """
         self.config = config
@@ -108,7 +106,6 @@ class Sentinel2Processing(object):
         self.gml_temp_file_name = None
         self.timestamp = None
         self.bbox = None
-        self.extent = extent
         self.band_pattern = None
         self.use_google = use_google
 
@@ -380,7 +377,6 @@ class Sentinel2Processing(object):
         p = Process(exec_type="grass", executable="i.sentinel.import",
                     executable_params=[f"input={self.user_download_cache_path}",
                                        f"pattern={self.band_pattern}",
-                                       f"extent={self.extent}",
                                        "-r"
                                        ],
                     id=f"i_sentinel_import_{self.product_id}",

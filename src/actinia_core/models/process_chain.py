@@ -164,13 +164,6 @@ class InputParameter(IOParameterBase):
                                'the labels register in the stac collection.',
                 'example': 'red, blue, nir or B1, B2, B8A'
             },
-            'import_extent': {
-                'type': 'string',
-                'description': 'Defines the extent option for Sentinel-2 importing '
-                               'using i.sentinel.import.',
-                'enum': ['input', 'region'],
-                'example': 'input'
-            },
             'extent': {
                 'type': 'string',
                 'description': 'Spatio-temporal constrain defined by the user'

@@ -289,46 +289,27 @@ class ProcessChainConverter(object):
         for entry in entries:
             scene_id = entry["import_descr"]["source"]
             band = entry["import_descr"]["sentinel_band"]
-            if "import_extent" in entry["import_descr"].keys():
-                import_extent = entry["import_descr"]["import_extent"]
-                if import_extent not in ["region", "input"]:
-                    raise AsyncProcessError(
-                        "Import parameter 'import_extent' must be either "
-                        "'input' (default) or 'region'.")
-            else:
-                import_extent = "input"
             output = entry["value"]
             if scene_id not in scene_ids:
                 scene_ids.append(scene_id)
                 scene = {"scene_id": scene_id,
                          "bands": [band],
-                         "outputs": [output],
-                         "import_extent": import_extent}
+                         "outputs": [output]}
                 scenes_bands.append(scene)
             else:
                 scindex = scene_ids.index(scene_id)
                 scenes_bands[scindex]["bands"].append(band)
                 scenes_bands[scindex]["outputs"].append(output)
-                if import_extent != scenes_bands[scindex]["import_extent"]:
-                    raise AsyncProcessError(
-                        "Import parameter 'import_extent' must be identical "
-                        "for several bands from the same scene.")
         for scene in scenes_bands:
             scene_id = scene["scene_id"]
-            # download_dir = os.path.join(self.temp_file_path, scene_id)
             download_cache = f"download_cache_{scene_id}"
             self.temporary_pc_files[download_cache] = \
                 self.generate_temp_file_path()
-            # temp_dir = f"temp_dir_{scene_id}"
-            # self.temporary_pc_files[temp_dir] = \
-            #     self.generate_temp_file_path()
             sp = Sentinel2Processing(
                 bands=scene["bands"],
                 download_cache=self.temporary_pc_files[download_cache],
-                # temp_file_path=self.temporary_pc_files[temp_dir],
                 message_logger=self.message_logger,
                 send_resource_update=self.send_resource_update,
-                extent=scene["import_extent"],
                 product_id=scene_id)
 
             download_commands, import_file_info = \
@@ -671,8 +652,10 @@ class ProcessChainConverter(object):
 
             # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
-                #sentinel_commands = self._get_sentinel_import_command(entry)
-                #downimp_list.extend(sentinel_commands)
+                # Old style using Google Big Query. Uncomment/Comment in here
+                # to switch.
+                # sentinel_commands = self._get_sentinel_import_command(entry)
+                # downimp_list.extend(sentinel_commands)
                 sentinel2_entries.append(entry)
 
             # LANDSAT

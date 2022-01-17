@@ -134,8 +134,6 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
         params = result[0].executable_params
         self.assertTrue('pattern=(B12|B08)' in params, ("Import band name "
                         "pattern is incorrect"))
-        self.assertTrue('extent=input' in params, ("Import extent is not "
-                        "set to 'input'"))
 
 
 if __name__ == '__main__':

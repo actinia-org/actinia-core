@@ -103,14 +103,13 @@ def enqueue_job(timeout, func, *args):
     #     AsyncEphemeralResource, start_job, EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
-    #
+
     # # for '/locations/<string:location_name>/processing_async_export'
     # from ...rest.ephemeral_processing_with_export import EphemeralProcessingWithExport
     # processing = EphemeralProcessingWithExport(*args)
     # processing.run()
 
-    # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
-
+    # # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
     # from ...rest.persistent_processing import PersistentProcessing
     # processing = PersistentProcessing(*args)
     # processing.run()
