@@ -1,7 +1,7 @@
 # Actinia — The GRASS GIS REST API
 
-
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2631917.svg)](https://doi.org/10.5281/zenodo.2631917)
+Software [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5865317.svg)](https://doi.org/10.5281/zenodo.5865317)
+Article [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.2631917.svg)](https://doi.org/10.5281/zenodo.2631917)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Docker pulls](https://img.shields.io/docker/pulls/mundialis/actinia-core.svg)](https://hub.docker.com/r/mundialis/actinia-core)
 
@@ -47,25 +47,25 @@ Actinia is also available on [OSGeoLive](https://live.osgeo.org/en/overview/acti
 * List all locations that are available in the actinia persistent database:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v2/locations"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations"
 ```
 
 * List all mapsets in the location latlong_wgs84:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v2/locations/latlong_wgs84/mapsets"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets"
 ```
 
 * List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v2/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds"
 ```
 
 * List all raster map layers of the STRDS:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v2/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds/ndvi_16_5600m/raster_layers"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds/ndvi_16_5600m/raster_layers"
 ```
 
 ### Landsat and Sentinel-2 NDVI computation
@@ -73,22 +73,22 @@ curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v2/lo
 * Compute the NDVI of the top of athmosphere (TOAR) corrected Landsat4 scene LC80440342016259LGN00:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v2/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
+curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v3/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
 ```
 
 * NDVI computation of Sentinel-2A scene S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v2/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
+curl -u 'demouser:gu3st!pa55w0rd' -X POST "https://actinia.mundialis.de/api/v3/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
 ```
 
 The results of the asynchronous computations are available as GeoTIFF file in a cloud storage for download.
 
 ### List of available endpoints
 
-To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v2/swagger.json); or, to list the available endpoints on command line, run
+To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v3/swagger.json); or, to list the available endpoints on command line, run
 
 ```bash
 # sudo npm install -g json
-curl -u 'demouser:gu3st!pa55w0rd' -X GET https://actinia.mundialis.de/api/v2/swagger.json | json paths | json -ka
+curl -u 'demouser:gu3st!pa55w0rd' -X GET https://actinia.mundialis.de/api/v3/swagger.json | json paths | json -ka
 ```

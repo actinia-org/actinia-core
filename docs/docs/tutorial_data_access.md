@@ -75,8 +75,8 @@ The output should look similar to this then:
    "api_info": {
      "endpoint": "locationmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v2/locations/nc_spm_08/info",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/info"
+     "path": "/api/v3/locations/nc_spm_08/info",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/info"
    },
    "datetime": "2019-08-01 20:30:05.881138",
    "http_code": 200,
@@ -154,7 +154,7 @@ The output should look similar to this then:
    "timestamp": 1564691405.8811285,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594"
    },
    "user_id": "demouser"
  }
@@ -177,8 +177,8 @@ in the *process\_results* section:
    "api_info": {
      "endpoint": "listmapsetsresource",
      "method": "GET",
-     "path": "/api/v2/locations/nc_spm_08/mapsets",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/mapsets"
+     "path": "/api/v3/locations/nc_spm_08/mapsets",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/mapsets"
    },
    "datetime": "2019-08-01 20:31:11.430294",
    "http_code": 200,
@@ -225,7 +225,7 @@ in the *process\_results* section:
    "timestamp": 1564691471.4302812,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9"
    },
    "user_id": "demouser"
  }
@@ -248,8 +248,8 @@ location in the *process\_results* section:
    "api_info": {
      "endpoint": "mapsetmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v2/locations/nc_spm_08/mapsets/PERMANENT/info",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/nc_spm_08/mapsets/PERMANENT/info"
+     "path": "/api/v3/locations/nc_spm_08/mapsets/PERMANENT/info",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/mapsets/PERMANENT/info"
    },
    "datetime": "2019-08-01 20:31:51.810266",
    "http_code": 200,
@@ -327,7 +327,7 @@ location in the *process\_results* section:
    "timestamp": 1564691511.8102555,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a"
    },
    "user_id": "demouser"
  }
@@ -354,8 +354,8 @@ The response lists all raster layers of the mapset in the
    "api_info": {
      "endpoint": "rasterlayersresource",
      "method": "GET",
-     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers"
+     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers"
    },
    "datetime": "2018-05-30 09:13:51.745702",
    "http_code": 200,
@@ -408,7 +408,7 @@ The response lists all raster layers of the mapset in the
    "timestamp": 1527671631.745685,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-114c7229-da85-4866-a33e-38172835e05f"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-114c7229-da85-4866-a33e-38172835e05f"
    },
    "user_id": "demouser"
  }
@@ -432,8 +432,8 @@ section:
    "api_info": {
      "endpoint": "rasterlayerresource",
      "method": "GET",
-     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
    },
    "datetime": "2018-05-30 09:17:15.437797",
    "http_code": 200,
@@ -503,7 +503,7 @@ section:
    "timestamp": 1527671835.4377818,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-7d4f36ba-3410-4281-b3e4-7b4aeff5f978"
    },
    "user_id": "demouser"
  }
@@ -535,8 +535,8 @@ response:
    "api_info": {
      "endpoint": "syncstrdslisterresource",
      "method": "GET",
-     "path": "api/v2/locations/ECAD/mapsets/PERMANENT/strds",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds"
+     "path": "api/v3/locations/ECAD/mapsets/PERMANENT/strds",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds"
    },
    "datetime": "2018-05-30 09:18:17.351918",
    "http_code": 200,
@@ -585,7 +585,7 @@ response:
    "timestamp": 1527671897.3519022,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-827f9272-9aa1-467e-8eba-def7003522e3"
    },
    "user_id": "demouser"
  }
@@ -609,8 +609,8 @@ All relevant information about strds
    "api_info": {
      "endpoint": "strdsmanagementresource",
      "method": "GET",
-     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
    },
    "datetime": "2018-05-30 09:19:25.519419",
    "http_code": 200,
@@ -684,7 +684,7 @@ All relevant information about strds
    "timestamp": 1527671965.519405,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-15acb503-5ef9-4a89-89df-3a1291811a5d"
    },
    "user_id": "demouser"
  }
@@ -708,8 +708,8 @@ section of the JSON response:
    "api_info": {
      "endpoint": "strdsrastermanagement",
      "method": "GET",
-     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
    },
    "datetime": "2018-05-30 09:20:31.197637",
    "http_code": 200,
@@ -791,7 +791,7 @@ section of the JSON response:
    "timestamp": 1527672031.1976202,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-3661533a-cb2b-4875-ac7a-be97a99e90da"
    },
    "user_id": "demouser"
  }

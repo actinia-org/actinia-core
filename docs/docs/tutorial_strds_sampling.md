@@ -40,8 +40,8 @@ located in the *process\_results* section of the JSON response:
    "api_info": {
      "endpoint": "syncephemeralstrdssamplingresource",
      "method": "POST",
-     "path": "/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
-     "request_url": "http://actinia.mundialis.de/api/v2/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
+     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
+     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
    },
    "datetime": "2018-05-30 10:33:24.503297",
    "http_code": 200,
@@ -161,7 +161,7 @@ located in the *process\_results* section of the JSON response:
    "timestamp": 1527676404.5032735,
    "urls": {
      "resources": [],
-     "status": "http://actinia.mundialis.de/api/v2/resources/demouser/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
+     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-ff89db3c-1cae-44e1-adb5-35ce1ab994bc"
    },
    "user_id": "demouser"
  }

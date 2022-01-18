@@ -28,13 +28,27 @@ import os
 import unittest
 from flask.json import dumps as json_dumps
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import (
+        ActiniaResourceTestCaseBase,
+        URL_PREFIX,
+        additional_external_data
+    )
+
+try:
+    import actinia_stac_plugin
+    no_stac_plugin = False
+except Exception:
+    no_stac_plugin = True
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -42,7 +56,7 @@ process_chain_raster_import_export = {
     'list': [{'flags': 'a',
               'id': 'r_slope_aspect_1',
               'inputs': [{'import_descr': {
-                  'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                  'source': additional_external_data["elev_ned_30m_tif"],
                   'type': 'raster'},
                   'param': 'elevation',
                   'value': 'elev_ned_30m'},
@@ -62,34 +76,10 @@ process_chain_raster_import_export = {
               'params': [],
               'stdin': 'r_slope_aspect_1::stderr'}],
     'version': '1'}
-#
-# [
-#     {'module' : 'r.slope.aspect',
-#      'id'     : 'r_slope_aspect_1',
-#      'inputs' : [
-#          {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
-#                            'type'  : 'raster'},
-#           'param'       : 'elevation',
-#           'value'       : 'elev_ned_30m'},
-#          {'param': 'format', 'value': 'degree'},
-#          {'param': 'precision', 'value': 'DCELL'}
-#      ],
-#      'outputs': [
-#          {'param' : 'slope', 'value': 'elev_ned_30m_slope',
-#           'export': {'format': 'GTiff', 'type': 'raster'}},
-#          {'param' : 'aspect', 'value': 'elev_ned_30m_aspect',
-#           'export': {'format': 'GTiff', 'type': 'raster'}}
-#      ]
-#     },
-#     {'exe'  : '/bin/cat',
-#      'id'   : 'cat_1',
-#      'stdin': 'r_slope_aspect_1::stderr'
-#     }
-# ]
 
 process_chain_raster_import_info = {
     'list': [{'id': 'r_info',
-              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+              'inputs': [{'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
                                            'type': 'raster'},
                           'param': 'map',
                           'value': 'elev_ned_30m'}],
@@ -100,7 +90,7 @@ process_chain_raster_import_info = {
 process_chain_raster_import_error_no_file = {
     'list': [{'id': 'r_info',
               'inputs': [
-                  {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m_nope.tif',
+                  {'import_descr': {'source': additional_external_data["elev_ned_30m_nope_tif"],
                                     'type': 'raster'},
                       'param': 'map',
                       'value': 'elev_ned_30m'}, ],
@@ -110,7 +100,7 @@ process_chain_raster_import_error_no_file = {
 
 process_chain_vector_import_info = {
     'list': [{'id': 'v_info',
-              'inputs': [{'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/polygon.gml',
+              'inputs': [{'import_descr': {'source': additional_external_data["polygon_gml"],
                                            'type': 'vector'},
                           'param': 'map',
                           'value': 'polygon'}],
@@ -177,7 +167,7 @@ process_chain_sentinel_import_export = {
                                            'sentinel_band': 'B01'},
                           'param': 'map',
                           'value': 'sentinel_map'},
-                         {'import_descr': {'source': 'https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif',
+                         {'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
                                            'type': 'raster'},
                           'param': 'map',
                           'value': 'elev_ned_30m'}],
@@ -217,6 +207,87 @@ process_chain_sentinel_import_export_sentinel_ndvi = {
              ],
 
     'version': '1'}
+
+process_chain_stac_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.defaultStac.rastercube.landsat-8-l1-c1",
+                "type": "stac",
+                "semantic_label": "B1",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_filter_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "stac.STAC_Others.rastercube.sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[-180, -16.369, 90, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2023-09-09", "2022-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
+
+process_chain_stac_source_error_import = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "sentinel-s2-l2a",
+                "type": "stac",
+                "semantic_label": "red",
+                "extent": {
+                    "spatial": {
+                        "bbox": [[30.192, -16.369, 42.834, -0.264]]
+                    },
+                    "temporal":{
+                        "interval": [["2021-09-09", "2021-09-12"]]
+                    }
+                },
+                "filter": {}
+            },
+            "param": "map",
+            "value": "example-red"
+        }
+        ]
+    }],
+    "version": 1
+}
 
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
@@ -318,6 +389,54 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
                               data=json_dumps(process_chain_sentinel_import_error),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    # Test for STAC
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_import(self):
+        """
+            Code test STAC collection importation with http reponse 200
+        """
+
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
+
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_source_error_import(self):
+        """
+            Code test STAC collection importation with http reponse 400,
+            raising error on misstructured, undefined, or missing source ID.
+        """
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_source_error_import),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
+    def test_stac_source_filter_error_import(self):
+        """
+            Code test STAC collection importation with http reponse 400,
+            raising error on filtering parameter such as wrong Temportal inteval
+            or wrong Spatial coordinates in bbox.
+
+        """
+        endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
+        rv = self.server.post(endpoint,
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_stac_filter_error_import),
                               content_type="application/json")
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
