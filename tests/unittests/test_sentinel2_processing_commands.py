@@ -31,10 +31,9 @@ import unittest
 import pytest
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Soeren Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Guido Riembauer"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class MessageDummy(object):
@@ -71,6 +70,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
 
     @unittest.skipIf('GOOGLE_APPLICATION_CREDENTIALS' not in os.environ and 'GOOGLE_CLOUD_PROJECT' not in os.environ,
                      "Test is skipped because 'GOOGLE_APPLICATION_CREDENTIALS' and 'GOOGLE_CLOUD_PROJECT' not set")
+    @pytest.mark.unittest
     def test_download_import_commands(self):
         gsqi = Sentinel2Processing(config=global_config, product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
                                    query_result=None, bands=["B12", "B08"],
@@ -100,6 +100,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
 
         # self.assertTrue(len(result) == 2)
 
+    @pytest.mark.unittest
     def test_download_import_commands_noquery(self):
         gsqi = Sentinel2Processing(product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138",
                                    bands=["B12", "B08"], download_cache=self.tempdir,

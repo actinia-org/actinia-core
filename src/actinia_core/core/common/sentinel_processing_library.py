@@ -34,10 +34,9 @@ from .process_object import Process
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Guido Riembauer"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 
 def datetime_to_grass_datetime_string(dt):

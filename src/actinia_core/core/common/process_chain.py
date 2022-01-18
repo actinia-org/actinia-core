@@ -41,8 +41,8 @@ from actinia_core.models.process_chain import \
      GrassModule, StdoutParser, Executable, SUPPORTED_EXPORT_FORMATS
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -278,11 +278,10 @@ class ProcessChainConverter(object):
 
         return sentinel_commands
 
-    def _get_sentinel_import_commands(self, entries):
-        """ Method to get the Sentinel download and import commands using GCS
-            without login
+    def _collect_sentinel_scenes_bands(self, entries):
+        """ Helper Method to collect all individual scenes and bands from
+            different importer modules used througout the process chain
         """
-        sentinel_commands = []
         scenes_bands = []
         # sort by source (scene ID) and bands
         scene_ids = []
@@ -300,6 +299,14 @@ class ProcessChainConverter(object):
                 scindex = scene_ids.index(scene_id)
                 scenes_bands[scindex]["bands"].append(band)
                 scenes_bands[scindex]["outputs"].append(output)
+        return scenes_bands
+
+    def _get_sentinel_import_commands(self, entries):
+        """ Method to get the Sentinel download and import commands using GCS
+            without login
+        """
+        sentinel_commands = []
+        scenes_bands = self._collect_sentinel_scenes_bands(entries)
         for scene in scenes_bands:
             scene_id = scene["scene_id"]
             download_cache = f"download_cache_{scene_id}"
