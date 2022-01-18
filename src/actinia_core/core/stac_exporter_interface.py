@@ -42,11 +42,7 @@ from pickle import TRUE
 import numpy as np
 import pyproj
 from pystac import Item, read_dict, Catalog, Asset
-from pystac.extensions.projection import ItemProjectionExtension
-from pystac.extensions.raster import (
-    RasterExtension,
-    RasterBand
-)
+from pystac.extensions.projection import ProjectionItemExt
 from shapely.ops import transform
 
 import rasterio
@@ -87,8 +83,8 @@ class STACExporter:
         else:
             raise AsyncProcessTermination("result-catalog is already created")
 
-    def stac_builder(self, output_path=None, filename=None,
-                     output_type=None):
+    def stac_builder(self, output_path: str = None, filename: str = None,
+                     output_type: str = None):
         """
         This function build the STAC ITEM and implement the following extension:
             - Projection
@@ -124,25 +120,24 @@ class STACExporter:
                 title=filename
             )
 
-            new_bands = self._set_raster_extention(output_path)
-            RasterExtension.ext(asset_).bands = new_bands
-
             item.add_asset(
                 key='source',
                 asset=asset_
             )
 
             # Adding the Projection Extension
-
-            proj_ext = ItemProjectionExtension.add_to(item)
-            proj_ext = ItemProjectionExtension.ext(item)
+            proj_ext = ProjectionItemExt(item)
             proj_ext.apply(
-                epsg=extra_values["crs"],
-                geometry=extra_values["geometry"],
-                shape=extra_values["shape"],
-                bbox=extra_values["bbox"],
-                transform=extra_values["transform"]
+                    epsg=extra_values["crs"],
+                    geometry=extra_values["geometry"],
+                    shape=extra_values["shape"],
+                    bbox=extra_values["bbox"],
+                    transform=extra_values["transform"]
             )
+
+            # Adding the Raster Extension
+
+            item = self._set_raster_extention(output_path, item)
 
             # Adding the Processing Extension
 
@@ -223,7 +218,7 @@ class STACExporter:
         redis_actinia_interface.update("result-catalog", new_catalog)
 
     # TODO Discuss if it is more convenient to implement new classes and translatesto
-    #      the implementation to a new plugin or Addon where STAC extenitions can be
+    #      the implementation to a new plugin or Addon where STAC extentions can be
     #      customized
 
     def _set_processing_extention(item):
@@ -241,15 +236,23 @@ class STACExporter:
 
         return proc_ext_item
 
-    def _set_raster_extention(self, raster_path):
-        raster_ext = []
+    def _set_raster_extention(self, raster_path, item):
         with rasterio.open(raster_path) as raster:
             band = raster.read(1)
             pixelSizeX, pixelSizeY = raster.res
-            ras_ext = RasterBand.create(
-                    nodata=np.count_nonzero(np.isnan(band)),
-                    spatial_resolution=pixelSizeX,
-                    data_type=band.dtype
-                )
-            raster_ext.append(ras_ext)
-        return raster_ext
+
+            nodata = np.count_nonzero(np.isnan(band))
+            spatial_resolution = pixelSizeX
+            data_type = band.dtype
+
+            input_item = item.to_dict()
+            asset = input_item["assets"]["source"]
+            asset["raster:nodata"] = nodata
+            asset["raster:spatial_resolution"] = spatial_resolution
+            asset["raster:data_type"] = data_type
+            proc_schema = "https://stac-extensions.github.io/raster/v1.1.0/schema.json"
+            input_item["stac_extensions"].append(proc_schema)
+
+            ras_ext_item = read_dict(input_item)
+
+        return ras_ext_item

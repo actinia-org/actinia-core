@@ -31,7 +31,7 @@ uWSGI>=2.0.17
 wheel
 geopandas
 rasterio
-pystac==1.0
+pystac==0.5.6
 
 # not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
 # torch
