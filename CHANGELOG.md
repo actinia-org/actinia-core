@@ -17,14 +17,27 @@ Types of changes
 ## [Unreleased]
 https://github.com/mundialis/actinia_core/compare/2.3.0...main
 
-## [2.X.X] - YYYY-MM-DD
+## [3.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
+## [3.0.1] - 2022-01-19
+released from main
+### Added
+* CITATION.cff: citable actinia core source code with DOI by @neteler in https://github.com/mundialis/actinia_core/pull/300
+* Add software DOI badge by @neteler
+* Change actinia software DOI badge to generic DOI by @neteler
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.0.0...3.0.1
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.0.1" -f target_commitish=main -q .body`
+
+
 ## [3.0.0] - 2022-01-13
 released from main
-## Changed
+### Changed
 * Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296
-## Fixed
+### Fixed
 * Fix tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/297
 * Update actinia-api version by @mmacata
 
@@ -32,13 +45,16 @@ released from main
 
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.0.0" -f target_commitish=main -q .body`
 
+-----------------------------
+
+
 ## [2.3.1] - 2021-12-22
 released from main
-## Fixed
+### Fixed
 * installation instructions: update by @neteler in https://github.com/mundialis/actinia_core/pull/287
 * update actinia-module-plugin
 
-## Added
+### Added
 * Test for STAC implementation by @joaherrerama in https://github.com/mundialis/actinia_core/pull/276
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.3.0...2.3.1
@@ -47,10 +63,10 @@ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f t
 
 ## [2.3.0] - 2021-12-16
 released from main
-## Added
+### Added
 * STAC in actinia  by @joaherrerama in https://github.com/mundialis/actinia_core/pull/275
 
-## Changed
+### Changed
 * Enhance dev setup by @mmacata in https://github.com/mundialis/actinia_core/pull/288
 * update actinia-api version by @mmacata in https://github.com/mundialis/actinia_core/pull/289
 
@@ -63,11 +79,11 @@ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f t
 
 ## [2.2.0] - 2021-12-08
 released from main
-## Fixed
+### Fixed
 * try to fix uncontrolled data used in path by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/280
 * Add stac plugin to alpine config by @mmacata in https://github.com/mundialis/actinia_core/pull/282
 
-## Added
+### Added
 * Add api_version to version endpoint by @mmacata in https://github.com/mundialis/actinia_core/pull/283
 * Enable debugging via vscode by @mmacata in https://github.com/mundialis/actinia_core/pull/284
 * New splitup in unit and integration tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/285
@@ -79,7 +95,7 @@ generated with
 
 ## [2.0.1] - 2021-11-25
 released from main
-## Fixed
+### Fixed
 * Fix: create user endpoint by @griembauer in https://github.com/mundialis/actinia_core/pull/268
 * revision of examples in actinia documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/269
 * Using v2 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/277
