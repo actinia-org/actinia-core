@@ -6,7 +6,7 @@ abstract: "Actinia is an open source REST API for scalable, distributed, high pe
 message: "If you use this software, please cite it using the metadata from this file."
 type: software
 version: 3.0.0
-doi: "10.5281/zenodo.5865317"
+doi: "10.5281/zenodo.5864847"
 date-released: "2022-01-13"
 license: GPL-3.0
 repository-code: "https://github.com/mundialis/actinia_core"
