@@ -1,5 +1,8 @@
 Steps when releasing actinia-core:
 
+## 0. Steps for major updates
+* If the release is a major update, it needs to be prepared like described in the [WIKI](https://github.com/mundialis/actinia_core/wiki/Versioning).
+
 ## 1. Prepare release and version
 * Run in terminal
     ```
