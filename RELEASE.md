@@ -17,7 +17,7 @@ Steps when releasing actinia-core:
   "generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`" and replace `$ESTIMATED_VERSION` with the actual version.
 * DO NOT click "save" yet!!
 
-## 2. Prepate citation
+## 2. Prepare citation
 * In [CITATION.cff](https://github.com/mundialis/actinia_core/blob/main/CITATION.cff), update [version](https://github.com/mundialis/actinia_core/blob/main/CITATION.cff#L8) and [date-released](https://github.com/mundialis/actinia_core/blob/main/CITATION.cff#L10) in main branch
 
 ## 3. Release
