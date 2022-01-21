@@ -91,7 +91,7 @@ def main():
 
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
-    with Connection(Redis(conf.REDIS_QUEUE_SERVER_URL, conf.REDIS_QUEUE_SERVER_PORT)):
+    with Connection(Redis(conf.REDIS_QUEUE_SERVER_URL, conf.REDIS_QUEUE_SERVER_PORT, password=conf.REDIS_QUEUE_SERVER_PASSWORD)):
 
         logger = logging.getLogger('rq.worker')
         logger.setLevel(logging.ERROR)
@@ -119,7 +119,7 @@ def main():
                                                   backupCount=5)
         logger.addHandler(lh)
         logger.fatal(msg="Started rq.worker: %s\n"
-                         "host %s port: %i \n"
+                         "host %s port: %s \n"
                          "logging into %s" % (args.queue,
                                               conf.REDIS_QUEUE_SERVER_URL,
                                               conf.REDIS_QUEUE_SERVER_PORT,

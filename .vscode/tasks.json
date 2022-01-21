@@ -15,7 +15,7 @@
 		{
 			"label": "start-redis",
 			"type": "shell",
-			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis redis2",
 			"isBackground": true,
 		},
 		{
