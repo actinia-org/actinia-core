@@ -100,7 +100,7 @@ class STACExporter:
             # Get parameters for STAC item
             extra_values = self._get_raster_parameters(output_path)
 
-            # Checking if the imput has WGS 82 CRS
+            # Checking if the input has WGS 84 CRS
             geom, bbox_raster = self._get_wgs84_parameters(extra_values)
 
             # Start building the Item
@@ -113,8 +113,7 @@ class STACExporter:
                             }
                         )
 
-            # Addin Asset and Raster Ext
-
+            # Adding Asset and Raster Ext
             asset_ = Asset(
                 href=output_path,
                 title=filename
@@ -136,11 +135,9 @@ class STACExporter:
             )
 
             # Adding the Raster Extension
-
             item = self._set_raster_extention(output_path, item)
 
             # Adding the Processing Extension
-
             item = self._set_processing_extention(item)
 
             # Read catalog from REDIS
@@ -217,7 +214,7 @@ class STACExporter:
         new_catalog = catalog.to_dict()
         redis_actinia_interface.update("result-catalog", new_catalog)
 
-    # TODO Discuss if it is more convenient to implement new classes and translatesto
+    # TODO Discuss if it is more convenient to implement new classes and translate to
     #      the implementation to a new plugin or Addon where STAC extentions can be
     #      customized
 
