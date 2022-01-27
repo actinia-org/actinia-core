@@ -30,7 +30,7 @@ setuptools
 uWSGI>=2.0.17
 wheel
 geopandas
-rasterio
+rasterio==1.2.10
 pystac==0.5.6
 
 # not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090

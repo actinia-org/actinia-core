@@ -574,13 +574,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     raise AsyncProcessTermination(
                         "Unknown export format %s" % output_type)
 
-                if resource["metadata"]["format"] == "STAC":
-                    STACExporter.stac_collection_initializer()
-                    STACExporter.stac_builder(output_path, file_name,
-                                              output_type)
+                if "metadata" in resource:
+                    if resource["metadata"]["format"] == "STAC":
+                        STACExporter.stac_collection_initializer()
+                        STACExporter.stac_builder(output_path, file_name,
+                                                  output_type)
 
-                message = "Moving generated resources to final destination"
-                self._send_resource_update(message)
+                    message = "Moving generated resources to final destination"
+                    self._send_resource_update(message)
 
                 # Store the temporary file in the resource storage
                 # and receive the resource URL
