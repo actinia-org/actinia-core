@@ -580,8 +580,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         STACExporter.stac_builder(output_path, file_name,
                                                   output_type)
 
-                    message = "Moving generated resources to final destination"
-                    self._send_resource_update(message)
+                message = "Moving generated resources to final destination"
+                self._send_resource_update(message)
 
                 # Store the temporary file in the resource storage
                 # and receive the resource URL
