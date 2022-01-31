@@ -62,7 +62,7 @@ def shutdown_server():
 @flask_app.route('/shutdown', methods=['GET'])
 def shutdown():
     shutdown_server()
-    return 'Server shutting down...'
+    return make_response(jsonify("Server shutting down..."), 200)
 
 
 def main():

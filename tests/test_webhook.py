@@ -42,11 +42,12 @@ __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
+port = "5006"
 
 pc = {
     "version": 1,
-    "webhooks": {"finished": "http://0.0.0.0:5006/webhook/finished",
-                 "update": "http://0.0.0.0:5006/webhook/update"},
+    "webhooks": {"finished": f"http://0.0.0.0:{port}/webhook/finished",
+                 "update": f"http://0.0.0.0:{port}/webhook/update"},
     "list": [
         {
             "id": "1",
@@ -67,9 +68,6 @@ pc = {
         }
     ]
 }
-
-
-port = "5006"
 
 
 def startWebhook(sleeptime=10):
@@ -160,8 +158,9 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(status, "running", "Actinia job is not 'running'!")
 
         # shutdown webhook and start broken finished webhook
-        webhook_resp = requests.get('http://0.0.0.0:5006/shutdown')
+        webhook_resp = requests.get(f"http://0.0.0.0:{port}/shutdown")
         self.assertEqual(webhook_resp.status_code, 200, "Shutdown of webhook failed!")
+        time.sleep(2)
         status_code = startBrokenWebhook(10)
         self.assertEqual(status_code, 200, "Broken webhook server is not running")
 
