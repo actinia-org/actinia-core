@@ -283,9 +283,9 @@ process_chain_short_stac = {
                     "type": "raster"
                 },
                 "metadara": {
-                        "format": "STAC",
-                        "type": "metadata",
-                        "output_layer": "stac"
+                    "format": "STAC",
+                    "type": "metadata",
+                    "output_layer": "stac"
                 }
             }
         },
@@ -548,6 +548,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
             rv = self.server.get(url, headers=self.user_auth_header)
             self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
         time.sleep(1)
+
 
 class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
