@@ -21,6 +21,18 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 released from <branch>\
 ...
 
+## [3.1.0] - 2022-02-02
+released from main
+### Added
+* Add RELEASE.md by @mmacata in https://github.com/mundialis/actinia_core/pull/302
+* Retry webhook by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/299
+
+### Changed
+* allow '&' in parameters for more modules by @metzm in https://github.com/mundialis/actinia_core/pull/308
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.1.0" -f target_commitish=main -q .body`
+
+
 ## [3.0.1] - 2022-01-19
 released from main
 ### Added
