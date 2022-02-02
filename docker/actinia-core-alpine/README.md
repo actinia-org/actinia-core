@@ -25,10 +25,14 @@ $ docker build \
 $ docker tag actinia-core:alpine-runtime-pkgs mundialis/actinia-core:alpine-runtime-pkgs_v9
 $ docker push mundialis/actinia-core:alpine-runtime-pkgs_v9
 
-$ docker build \
+$ DOCKER_BUILDKIT=1 docker build \
+        --progress=plain \
         --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile \
-        --tag actinia-core:g78-stable-alpine .
+        --tag actinia-core:g78-stable-alpine \
+        --secret id=GITHUB_TOKEN,src=secret_t.txt \
+        --secret id=GITHUB_USERNAME,src=secret_u.txt \
+        .
 
 ```
