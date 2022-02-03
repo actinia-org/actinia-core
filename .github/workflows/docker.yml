@@ -22,7 +22,7 @@ name: Docker
 
 on:
   push:
-    branches: [main]
+    branches: [main,GHA_dockerfile]
     tags: ['*.*.*']
     paths-ignore: ['docs/**']
   release:
