@@ -21,6 +21,14 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 released from <branch>\
 ...
 
+## [3.1.1] - 2022-02-03
+released from main
+## Added
+* GHA and Dockerfile using github token by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/310
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`
+
+
 ## [3.1.0] - 2022-02-02
 released from main
 ### Added
