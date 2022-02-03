@@ -96,7 +96,10 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
-
+          # overwriting reserved secret variable
+          secrets: |
+              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
+              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -135,6 +138,10 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
+          secrets: |
+              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
+              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -178,6 +185,10 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
+          secrets: |
+              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
+              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -222,5 +233,9 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
+          secrets: |
+              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
+              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
