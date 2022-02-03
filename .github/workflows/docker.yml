@@ -22,7 +22,7 @@ name: Docker
 
 on:
   push:
-    branches: [main,GHA_dockerfile]
+    branches: [main]
     tags: ['*.*.*']
     paths-ignore: ['docs/**']
   release:
@@ -96,6 +96,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
+          # overwriting reserved secret variable
           secrets: |
               "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
               "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
@@ -137,6 +138,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
           secrets: |
               "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
               "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
@@ -183,6 +185,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
           secrets: |
               "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
               "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
@@ -230,6 +233,7 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
+          # overwriting reserved secret variable
           secrets: |
               "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
               "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
