@@ -59,7 +59,7 @@ class STACExporter:
 
     def stac_collection_initializer():
         """
-        Initilize the STAC Catalog for the different outputs in actinia
+        Initialize the STAC Catalog for the different outputs in actinia
         Catalog allows to have versability on the spatio-temporal spectrum,
         in addition the properties are independent for each item stored
 
