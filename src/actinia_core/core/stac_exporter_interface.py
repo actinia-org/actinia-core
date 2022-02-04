@@ -27,10 +27,6 @@ to export and manage the STAC items a global collection configuration
 
 """
 
-# from PyQt4.QtCore import *
-# from PyQt4.QtXml import *
-# from config import global_config
-
 __license__ = "GPLv3"
 __author__ = "Jorge Herrera"
 __copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
