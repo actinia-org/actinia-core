@@ -150,7 +150,7 @@ class STACExporter:
 
         # TODO
         elif output_type == "vector":
-            raise AsyncProcessTermination("Still under developments")
+            raise AsyncProcessTermination("Not implemented yet.")
 
     def _get_raster_parameters(self, raster_path):
         with rasterio.open(raster_path) as raster:
