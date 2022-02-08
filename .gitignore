@@ -43,16 +43,5 @@ MANIFEST
 
 # docker
 dev
+docker/actinia-core-data
 docker/redis_data/dump.rdb
-!docker/actinia-core-ubuntu/actinia.cfg
-!docker/actinia-core-dev/actinia.cfg
-!docker/actinia-core-prod/actinia.cfg
-!docker/actinia-core-alpine/actinia.cfg
-!docker/actinia-core-tests/actinia-test.cfg
-docker/build
-docker/actinia-core-data/grassdb
-docker/actinia-core-data/resources
-docker/actinia-core-data/userdata
-docker/actinia-core-data/workspace
-docker/actinia-core/snap/esa-snap_all_unix_6_0.sh
-!actinia.cfg

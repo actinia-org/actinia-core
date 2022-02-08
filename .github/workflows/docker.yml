@@ -1,10 +1,7 @@
 # Summary:
 #
 # job docker-g-version-flavor-matrix:
-# * "g78-latest-alpine"
-# * "g78-latest-ubuntu"
-# * "g79-latest-alpine"
-# * "g79-latest-ubuntu"
+# * "g80-latest-alpine"
 #
 # job docker-main-latest:
 # * for push to main branch, update "latest" tag
@@ -12,11 +9,8 @@
 # job docker-sha-release-latest:
 # * for release, update "latest" tag
 # * git ref tag, eg. "sha-ad132f5"
-# * release tag major.minor.path, e.g. "1.2.3" (alpine g78)
+# * release tag major.minor.path, e.g. "1.2.3" (alpine g80)
 # * release tag major.minor, e.g. "1.2" (alpine g78)
-#
-# job docker-release-g79:
-# * release tag for g79, e.g. "1.2.3.79" (alpine g79)
 
 name: Docker
 
@@ -44,11 +38,9 @@ jobs:
     strategy:
       matrix:
         grass_version:
-          - g78
-          - g79
+          - g80
         flavor:
           - alpine
-          - ubuntu
       fail-fast: false
 
     steps:
@@ -56,19 +48,6 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Replace base images depending on version
-        run: |
-          if [ "${{ matrix.grass_version }}" == "g79" ] && [ "${{ matrix.flavor }}" == "alpine" ]
-          then sed -i "s+grass-py3-pdal:stable-alpine+grass-py3-pdal:latest-alpine+g" \
-            docker/actinia-core-alpine/Dockerfile
-            head -n1 docker/actinia-core-alpine/Dockerfile
-          elif [ "${{ matrix.grass_version }}" == "g79" ] && [ "${{ matrix.flavor }}" == "ubuntu" ]
-          then sed -i "s+grass-py3-pdal:stable-ubuntu+grass-py3-pdal:latest-ubuntu+g" \
-            docker/actinia-core-ubuntu/Dockerfile
-            head -n1 docker/actinia-core-ubuntu/Dockerfile
-          else
-            echo "No change of base images, use GRASS GIS 78"
-          fi
       - id: meta
         name: Create tag name
         run: |
@@ -96,10 +75,6 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-${{ matrix.flavor }}/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -138,10 +113,6 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
 
@@ -185,57 +156,5 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           file: docker/actinia-core-alpine/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
-      - name: Image digest
-        run: echo ${{ steps.docker_build.outputs.digest }}
-
-  # run only for releases
-  # take care of tag for g79 (e.g. 1.0.3.79)
-  docker-release-g79:
-    name: build and push release g79
-    if: startsWith(github.ref, 'refs/tags/')
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Replace base image
-        run: |
-          sed -i "s+grass-py3-pdal:stable-alpine+grass-py3-pdal:latest-alpine+g" \
-            docker/actinia-core-alpine/Dockerfile
-          head -n1 docker/actinia-core-alpine/Dockerfile
-      - id: meta
-        name: Create tag name
-        run: |
-          tag="${DOCKERHUB_REPOSITORY}:${GITHUB_REF##*/}.79"
-          echo "::set-output name=tags::$tag"
-      - name: log
-        run: |
-          echo ${{ steps.meta.outputs.tags }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v1
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      - name: Login to DockerHub
-        uses: docker/login-action@v1
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN  }}
-      - name: Build and push
-        id: docker_build
-        uses: docker/build-push-action@v2
-        with:
-          push: true
-          pull: true
-          context: .
-          tags: ${{ steps.meta.outputs.tags }}
-          file: docker/actinia-core-alpine/Dockerfile
-          # overwriting reserved secret variable
-          secrets: |
-              "GITHUB_TOKEN=${{ secrets.TOKEN_GITHUB }}"
-              "GITHUB_USERNAME=${{ secrets.USERNAME_GITHUB }}"
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
