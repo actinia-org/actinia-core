@@ -35,14 +35,9 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
-# GRASS GIS addons BUILD
-COPY docker/grass_addons_list.csv /src/grass_addons_list.csv
-RUN while IFS=, read -r ADDON SERVER; do unset URL; test -z $SERVER || URL="url=$SERVER"; grass --tmp-location EPSG:4326 --exec g.extension -s extension=$ADDON $URL;done < /src/grass_addons_list.csv
-
 # actinia-core and actinia libs BUILD
 WORKDIR /build
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
-RUN echo ${WHEEL_NAME}
 RUN curl -L --output /build/${WHEEL_NAME} \
     https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
