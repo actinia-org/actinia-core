@@ -55,8 +55,8 @@ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f t
 
 ## [3.0.0] - 2022-01-13
 released from main
-### Changed
-* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296
+### Breaking (API)
+* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296, see also https://github.com/mundialis/actinia-api/pull/2
 ### Fixed
 * Fix tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/297
 * Update actinia-api version by @mmacata
@@ -129,6 +129,8 @@ released from main
 
 ## [2.0.0] - 2021-10-13
 released from main
+### Breaking
+* Add vector upload (isse 180, #260)
 ### Fixed
 * Fix cleanup error (#248)
 * Fix several misspelled words (#254)
@@ -140,7 +142,6 @@ released from main
 ### Added
 * Make the version output more flexible (#252)
 * List all available mapsets (issue 162, #249)
-* Add vector upload (isse 180, #260)
 * Flake8 Linting for test folder (#255)
 
 -----------------------------
@@ -211,10 +212,12 @@ released from main
 released from main
 Happy Codesprint release :) https://github.com/mundialis/actinia_core/projects/1
 
+### Breaking
+* Local GeoTIFF import (#216)
+
 ### Added
 * Get all mapsets locks (#200)
 * gource script for code development visualization (#219)
-* Local GeoTIFF import (#216)
 
 ### Changed
 * rename master to main (#194)
