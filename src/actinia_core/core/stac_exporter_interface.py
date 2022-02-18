@@ -34,19 +34,22 @@ __maintainer__ = "__mundialis__"
 __email__ = "info@mundialis.de"
 
 from datetime import datetime
-from pickle import TRUE
 import numpy as np
 import pyproj
+import json
 from pystac import Item, read_dict, Catalog, Asset
 from pystac.extensions.projection import ProjectionItemExt
 from shapely.ops import transform
-
 import rasterio
 from shapely.geometry import Polygon, mapping
+from flask import g
 
+from actinia_core.core.common.app import flask_api, flask_app
 from actinia_core.core.common.exceptions import AsyncProcessTermination
-from actinia_core.core.common.app import API_VERSION
+from actinia_core.core.common.app import URL_PREFIX, API_VERSION
 from actinia_core.version import G_VERSION
+from actinia_stac_plugin.core.common import connectRedis
+from actinia_core.rest.resource_management import ResourceManager
 
 try:
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
@@ -57,40 +60,20 @@ except Exception:
 
 class STACExporter:
 
-    def stac_collection_initializer():
-        """
-        Initialize the STAC Catalog for the different outputs in actinia
-        Catalog allows to have versability on the spatio-temporal spectrum,
-        in addition the properties are independent for each item stored
-
-        Code uses pystac as base for the creation of stac catalogs
-        """
-        redis_actinia_interface.connect()
-
-        result_catalog_validation = redis_actinia_interface.exists("result-catalog")
-
-        if result_catalog_validation is not TRUE:
-            results = Catalog(id="result-catalog", description="STAC catalog")
-
-            redis_actinia_interface.create(
-                "result-catalog",
-                results.to_dict(),
-            )
-        else:
-            raise AsyncProcessTermination("result-catalog is already created")
-
-    def stac_builder(self, output_path: str = None, filename: str = None,
-                     output_type: str = None):
+    def stac_builder(self, output_path: str, filename: str,
+                     output_type: str):
         """
         This function build the STAC ITEM and implement the following extension:
             - Projection
             - Raster
-        Parameter:
-            Input:
+            Args:
                 - output_path = Path to the source
                 - filename =  name of the source
                 - output_type =  type of object (raster, vector)
         """
+
+        self._stac_collection_initializer()
+
         if output_type == "raster":
 
             # Get parameters for STAC item
@@ -99,8 +82,10 @@ class STACExporter:
             # Checking if the input has WGS 84 CRS
             geom, bbox_raster = self._get_wgs84_parameters(extra_values)
 
+            item_name = f"item-{filename}"
+
             # Start building the Item
-            item = Item(id=f"STAC-result-{filename}",
+            item = Item(id=item_name,
                         geometry=geom,
                         bbox=bbox_raster,
                         datetime=datetime.utcnow(),
@@ -142,19 +127,71 @@ class STACExporter:
             # Create Catalog Object
             catalog = read_dict(catalog_dict)
 
-            # Add item to Catalog
-            catalog.add_item(item)
+            redis_items = self._save_items_redis(item, item_name)
 
-            # Update redis catalog
-            self._update_catalog_redis(catalog)
+            if redis_items:
+
+                # Add item to Catalog
+                catalog.add_item(item)
+
+                # Update redis catalog
+                self._update_catalog_redis(catalog)
+
+                return item.to_dict()
 
         # TODO
         elif output_type == "vector":
             raise AsyncProcessTermination("Not implemented yet.")
 
-    def _get_raster_parameters(self, raster_path):
+        return f"Output type is {output_type} and {output_path}"
+
+    @staticmethod
+    def _stac_collection_initializer():
+        """
+        Initialize the STAC Catalog for the different outputs in actinia
+        Catalog allows to have versability on the spatio-temporal spectrum,
+        in addition the properties are independent for each item stored
+
+        Code uses pystac as base for the creation of stac catalogs
+        """
+        connectRedis()
+
+        result_catalog_validation = redis_actinia_interface.exists("result-catalog")
+
+        if not result_catalog_validation:
+            results = Catalog(id="result-catalog", description="STAC catalog")
+            results.normalize_and_save(f"{URL_PREFIX}/stac/catalogs")
+
+            redis_actinia_interface.create(
+                "result-catalog",
+                results.to_dict(),
+            )
+            return "result-catalog was created"
+        else:
+            return "result-catalog is already created"
+
+    @staticmethod
+    def _save_items_redis(item, item_name):
+        try:
+            connectRedis()
+
+            exist = redis_actinia_interface.exists(item_name)
+
+            if exist:
+                redis_actinia_interface.update(item_name, item)
+                return False
+            redis_actinia_interface.create(
+                    item_name,
+                    item,
+                )
+            return True
+        except AssertionError:
+            raise AssertionError("Something went wrong")
+
+    @staticmethod
+    def _get_raster_parameters(raster_path):
         with rasterio.open(raster_path) as raster:
-            gds = np.asarray(raster.transform[:])
+            gds = raster.transform[:]
             bounds = raster.bounds
             bbox = [bounds.left, bounds.bottom, bounds.right, bounds.top]
             geom = Polygon([
@@ -177,7 +214,8 @@ class STACExporter:
 
             return extra_values
 
-    def _get_wgs84_parameters(self, extra_values):
+    @staticmethod
+    def _get_wgs84_parameters(extra_values):
         if extra_values["crs"] != 4326:
             wgs84 = pyproj.CRS('EPSG:4326')
             raster_proj = pyproj.CRS('EPSG:' + str(extra_values["crs"]))
@@ -205,15 +243,13 @@ class STACExporter:
 
         return geom, bbox_raster
 
+    @staticmethod
     def _update_catalog_redis(catalog):
 
         new_catalog = catalog.to_dict()
         redis_actinia_interface.update("result-catalog", new_catalog)
 
-    # TODO Discuss if it is more convenient to implement new classes and translate to
-    #      the implementation to a new plugin or Addon where STAC extentions can be
-    #      customized
-
+    @staticmethod
     def _set_processing_extention(item):
         input_item = item.to_dict()
 
@@ -229,14 +265,15 @@ class STACExporter:
 
         return proc_ext_item
 
-    def _set_raster_extention(self, raster_path, item):
+    @staticmethod
+    def _set_raster_extention(raster_path, item):
         with rasterio.open(raster_path) as raster:
             band = raster.read(1)
             pixelSizeX, pixelSizeY = raster.res
 
             nodata = np.count_nonzero(np.isnan(band))
             spatial_resolution = pixelSizeX
-            data_type = band.dtype
+            data_type = str(band.dtype)
 
             input_item = item.to_dict()
             asset = input_item["assets"]["source"]

@@ -576,9 +576,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
                 if "metadata" in resource:
                     if resource["metadata"]["format"] == "STAC":
-                        STACExporter.stac_collection_initializer()
-                        STACExporter.stac_builder(output_path, file_name,
-                                                  output_type)
+                        stac = STACExporter()
+                        stac_catalog = stac.stac_builder(output_path, file_name,
+                                                         output_type)
+                        self.resource_url_list.append(stac_catalog)
 
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)
