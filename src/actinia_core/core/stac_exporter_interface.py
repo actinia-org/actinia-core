@@ -36,20 +36,16 @@ __email__ = "info@mundialis.de"
 from datetime import datetime
 import numpy as np
 import pyproj
-import json
 from pystac import Item, read_dict, Catalog, Asset
 from pystac.extensions.projection import ProjectionItemExt
 from shapely.ops import transform
 import rasterio
 from shapely.geometry import Polygon, mapping
-from flask import g
 
-from actinia_core.core.common.app import flask_api, flask_app
 from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.core.common.app import URL_PREFIX, API_VERSION
 from actinia_core.version import G_VERSION
 from actinia_stac_plugin.core.common import connectRedis
-from actinia_core.rest.resource_management import ResourceManager
 
 try:
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
