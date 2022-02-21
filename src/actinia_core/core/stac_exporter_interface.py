@@ -45,9 +45,9 @@ from shapely.geometry import Polygon, mapping
 from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.core.common.app import URL_PREFIX, API_VERSION
 from actinia_core.version import G_VERSION
-from actinia_stac_plugin.core.common import connectRedis
 
 try:
+    from actinia_stac_plugin.core.common import connectRedis
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
     has_plugin = True
 except Exception:
