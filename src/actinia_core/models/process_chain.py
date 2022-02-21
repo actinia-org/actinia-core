@@ -266,6 +266,35 @@ class OutputParameter(IOParameterBase):
                     "dbstring": "PG:host=localhost dbname=postgis user=postgres",
                     "output_layer": "roads"}
     }
+    properties["metadata"] = {
+        'type': 'object',
+        'properties': {
+            'format': {
+                'type': 'string',
+                'description': 'Format of the metadata file. Only STAC is supported'
+                               'The STAC item builder works just on raster export file.'
+                               'These files are accesable through an STAC Catalog'
+                               'and each export is stored as STAC Item',
+                'enum': ['STAC']
+            },
+            'type': {
+                'type': 'string',
+                'description': 'The type of the output. in this case'
+                               'metadata es the only option currently supported',
+                'enum': ['metadata']
+            },
+            'output_layer': {
+                'type': 'string',
+                'description': 'Prefix for STAC item name and ID. If not specified, '
+                               'GRASS GIS vector map layer name is used.'
+            },
+        },
+        'description': 'The STAC file export parameter.',
+        'required': ["format", "type"],
+        'example':  {"format": "STAC",
+                     "type": "metadata",
+                     "output_layer": "stac_result"}
+    }
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
     example = {'param': 'slope',
@@ -509,6 +538,11 @@ class ProcessChainModel(Schema):
                 'id': 'exporter_1',
                 'outputs': [{'export': {'format': 'GTiff',
                                         'type': 'raster'},
+                             'metadata': {
+                                    'format': 'STAC',
+                                    'type': 'metadata',
+                                    'output_layer': 'stac_result'
+                             },
                              'param': 'map',
                              'value': 'LT52170762005240COA00_dos1.1'}]
         },
