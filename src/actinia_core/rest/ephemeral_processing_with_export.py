@@ -580,13 +580,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                     raise AsyncProcessTermination(
                         "Unknown export format %s" % output_type)
 
-                if "metadata" in resource:
-                    if resource["metadata"]["format"] == "STAC":
-                        stac = STACExporter()
-                        stac_catalog = stac.stac_builder(output_path, file_name,
-                                                         output_type)
-                        self.resource_url_list.append(stac_catalog)
-
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)
 
@@ -595,6 +588,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 if output_path is not None:
                     resource_url = self.storage_interface.store_resource(output_path)
                     self.resource_url_list.append(resource_url)
+
+                    if "metadata" in resource:
+                        if resource["metadata"]["format"] == "STAC":
+                            stac = STACExporter()
+
+                            stac_catalog = stac.stac_builder(resource_url, file_name,
+                                                             output_type)
+                            self.resource_url_list.append(stac_catalog)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses

@@ -53,11 +53,10 @@ try:
 except Exception:
     has_plugin = False
 
-
 class STACExporter:
 
-    def stac_builder(self, output_path: str, filename: str,
-                     output_type: str, resource_url: str = None):
+    def stac_builder(self, resource_url: str, filename: str,
+                     output_type: str):
         """
         This function build the STAC ITEM and implement the following extension:
             - Projection
@@ -67,6 +66,8 @@ class STACExporter:
                 - filename =  name of the source
                 - output_type =  type of object (raster, vector)
         """
+
+        output_path = self._get_source_file(resource_url)
 
         self._stac_collection_initializer()
 
@@ -92,7 +93,7 @@ class STACExporter:
 
             # Adding Asset and Raster Ext
             asset_ = Asset(
-                href=output_path,
+                href=resource_url,
                 title=filename
             )
 
@@ -142,6 +143,14 @@ class STACExporter:
         return item.to_dict()
 
     @staticmethod
+    def _get_source_file(url):
+        uri_split = url.split(API_VERSION)
+
+        source_file = f"/actinia_core{uri_split[1]}"
+
+        return source_file
+
+    @staticmethod
     def _stac_collection_initializer():
         """
         Initialize the STAC Catalog for the different outputs in actinia
@@ -156,7 +165,7 @@ class STACExporter:
 
         if not result_catalog_validation:
             results = Catalog(id="result-catalog", description="STAC catalog")
-            results.normalize_and_save(f"{URL_PREFIX}/stac/catalogs")
+            results.normalize_and_save(f"/stac/catalogs")
 
             redis_actinia_interface.create(
                 "result-catalog",
@@ -187,7 +196,6 @@ class STACExporter:
 
     @staticmethod
     def _get_raster_parameters(raster_path):
-        print(raster_path)
         with rasterio.open(raster_path) as raster:
             gds = raster.transform[:]
             bounds = raster.bounds
