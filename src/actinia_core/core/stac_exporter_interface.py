@@ -43,7 +43,7 @@ import rasterio
 from shapely.geometry import Polygon, mapping
 
 from actinia_core.core.common.exceptions import AsyncProcessTermination
-from actinia_core.core.common.app import URL_PREFIX, API_VERSION
+from actinia_core.core.common.app import API_VERSION
 from actinia_core.version import G_VERSION
 
 try:
