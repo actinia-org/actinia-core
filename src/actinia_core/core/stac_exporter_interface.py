@@ -57,7 +57,7 @@ except Exception:
 class STACExporter:
 
     def stac_builder(self, output_path: str, filename: str,
-                     output_type: str):
+                     output_type: str, resource_url: str = None):
         """
         This function build the STAC ITEM and implement the following extension:
             - Projection
@@ -139,7 +139,7 @@ class STACExporter:
         elif output_type == "vector":
             raise AsyncProcessTermination("Not implemented yet.")
 
-        return f"Output type is {output_type} and {output_path}"
+        return item.to_dict()
 
     @staticmethod
     def _stac_collection_initializer():
@@ -174,11 +174,12 @@ class STACExporter:
             exist = redis_actinia_interface.exists(item_name)
 
             if exist:
-                redis_actinia_interface.update(item_name, item)
+                redis_actinia_interface.update(item_name, item.to_dict())
                 return False
+
             redis_actinia_interface.create(
                     item_name,
-                    item,
+                    item.to_dict(),
                 )
             return True
         except AssertionError:
@@ -186,6 +187,7 @@ class STACExporter:
 
     @staticmethod
     def _get_raster_parameters(raster_path):
+        print(raster_path)
         with rasterio.open(raster_path) as raster:
             gds = raster.transform[:]
             bounds = raster.bounds
