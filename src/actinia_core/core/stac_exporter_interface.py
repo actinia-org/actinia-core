@@ -53,6 +53,7 @@ try:
 except Exception:
     has_plugin = False
 
+
 class STACExporter:
 
     def stac_builder(self, resource_url: str, filename: str,
@@ -165,7 +166,7 @@ class STACExporter:
 
         if not result_catalog_validation:
             results = Catalog(id="result-catalog", description="STAC catalog")
-            results.normalize_and_save(f"/stac/catalogs")
+            results.normalize_and_save("/stac/catalogs")
 
             redis_actinia_interface.create(
                 "result-catalog",
