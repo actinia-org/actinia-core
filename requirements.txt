@@ -14,11 +14,11 @@ google-cloud-bigquery>=0.28.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
 joblib==0.15.1
-matplotlib==3.3.4
+matplotlib>=3.3.4
 passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
-pyproj==2.6
+pyproj>=3.3.0
 python-json-logger
 python-magic>=0.4.15
 # scikit-learn
@@ -32,23 +32,12 @@ uWSGI>=2.0.17
 wheel
 geopandas
 
-# not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
-# torch
-# torchvision
-
 # geopandas installs numpy, pandas, pyproj and Shapely as dependencies.
 # we keep numpy, pandas and Shapely to it but need to pin pyproj version
 # (Min supported proj version is 7.2.0, installed is 7.0.1)
 # numpy>=1.15.4
 # pandas
 # Shapely
-
-# TODO: test because of major updates:
-# Flask-1.1.1 #https://dormousehole.readthedocs.io/en/stable/CHANGES.html
-# google_cloud_bigquery-1.23.0
-# Sphinx-2.2.2
-# redis-3.3.11
-# rq-1.1.0
 
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
 # google-cloud-bigquery needs libffi-dev
