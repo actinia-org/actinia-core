@@ -21,6 +21,20 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 released from <branch>\
 ...
 
+## [3.1.2] - 2022-02-23
+released from main
+### Changed
+* Move most docker config by @mmacata in https://github.com/mundialis/actinia_core/pull/311
+### Fixed
+* Mark breaking changes by @mmacata in https://github.com/mundialis/actinia_core/pull/312
+### Added
+* Add pipeline to add python wheel to release assets by @mmacata in https://github.com/mundialis/actinia_core/pull/313
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.1...3.1.2
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.2 -f target_commitish=main -q .body`
+ 
+ 
 ## [3.1.1] - 2022-02-03
 released from main
 ## Added
