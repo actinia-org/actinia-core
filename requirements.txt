@@ -41,3 +41,8 @@ geopandas
 
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
 # google-cloud-bigquery needs libffi-dev
+
+# To reactivate scikit-learn if needed:
+# apk add python3 musl-dev python3-dev openblas-dev build-base
+# python3 -m ensurepip && pip3 install --upgrade pip
+# pip3 install scikit-learn
