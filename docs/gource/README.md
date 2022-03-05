@@ -21,7 +21,7 @@ Note: Captions have to be in ascending order and with unix timestamps, separated
 # run in git directory
 gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track \
        --hide filenames --seconds-per-day 0.05 \
-       --caption-file gource.captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 4 ../..
+       --caption-file gource_captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 4 ../..
 ```
 
 
@@ -30,7 +30,7 @@ gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode t
 ```
 gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track \
        --hide filenames --seconds-per-day 0.05 \
-       --caption-file gource.captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 6 --output-ppm-stream - | ffmpeg -y -b:v 10000K -r 60 \
+       --caption-file gource_captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 6 --output-ppm-stream - | ffmpeg -y -b:v 10000K -r 60 \
        -f image2pipe -vcodec ppm -i - -vcodec libx264 \
        -pix_fmt yuv420p -crf 1 -threads 0 -bf 0 $OUTPUT.mp4
 ```
