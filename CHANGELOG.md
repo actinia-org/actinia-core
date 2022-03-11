@@ -21,6 +21,16 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 released from <branch>\
 ...
 
+## [3.1.3] - 2022-03-11
+released from main
+### Fixed
+* export_strds: specify path to the directory where output is written by @metzm in https://github.com/mundialis/actinia_core/pull/316
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.2...3.1.3
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body` 
+
+
 ## [3.1.2] - 2022-02-23
 released from main
 ### Changed
