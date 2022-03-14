@@ -159,7 +159,62 @@ class STACExporter:
         elif output_type == "vector":
             raise AsyncProcessTermination("Still under developments")
 
-    def _get_raster_parameters(self, raster_path):
+        return item.to_dict()
+
+    @staticmethod
+    def _get_source_file(url):
+        uri_split = url.split(API_VERSION)
+
+        source_file = f"/actinia_core{uri_split[1]}"
+
+        return source_file
+
+    @staticmethod
+    def _stac_collection_initializer():
+        """
+        Initialize the STAC Catalog for the different outputs in actinia
+        Catalog allows to have versability on the spatio-temporal spectrum,
+        in addition the properties are independent for each item stored
+
+        Code uses pystac as base for the creation of stac catalogs
+        """
+        connectRedis()
+
+        result_catalog_validation = redis_actinia_interface.exists("result-catalog")
+
+        if not result_catalog_validation:
+            results = Catalog(id="result-catalog", description="STAC catalog")
+            results.normalize_and_save("/stac/catalogs")
+
+            redis_actinia_interface.create(
+                "result-catalog",
+                results.to_dict(),
+            )
+            return "result-catalog was created"
+        else:
+            return "result-catalog is already created"
+
+    @staticmethod
+    def _save_items_redis(item, item_name):
+        try:
+            connectRedis()
+
+            exist = redis_actinia_interface.exists(item_name)
+
+            if exist:
+                redis_actinia_interface.update(item_name, item.to_dict())
+                return False
+
+            redis_actinia_interface.create(
+                    item_name,
+                    item.to_dict(),
+            )
+            return True
+        except AssertionError:
+            raise AssertionError("Something went wrong")
+
+    @staticmethod
+    def _get_raster_parameters(raster_path):
         with rasterio.open(raster_path) as raster:
             gds = np.asarray(raster.transform[:])
             bounds = raster.bounds

@@ -41,6 +41,7 @@ __email__ = "info@mundialis.de"
 import requests
 import os
 import json
+from datetime import datetime
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
@@ -142,6 +143,33 @@ class STACImporter:
 
             stac_processes = []
 
+            # Create the strds
+
+            # datetime object containing current date and time
+            now = datetime.now()
+
+            # dd/mm/YY H:M:S
+            dt_string = now.strftime("%d%m%Y%H%M%S")
+
+            t_name = f'{stac_name}{dt_string}'
+
+            exec_params = ["type=strds",
+                           "temporaltype=absolute",
+                           "output=%s" % t_name,
+                           "title=%s" % stac_name,
+                           "description=%s" % stac_collection_id
+                           ]
+
+            p = Process(
+                exec_type="grass",
+                executable="t.create",
+                executable_params=exec_params,
+                id=f"t_create_{os.path.basename(stac_name)}",
+                skip_permission_check=True
+            )
+
+            stac_processes.append(p)
+
             for key, value in stac_result.items():
 
                 for name_id, url in value.items():
@@ -151,17 +179,32 @@ class STACImporter:
                     # From Here Onwards, the Process build starts
                     exec_params = ["input=%s" % "/vsicurl/"+url,
                                    "output=%s" % output_name,
-                                   "-o"]
+                                   "extent=region"]
 
                     p = Process(
                         exec_type="grass",
-                        executable="r.in.gdal",
+                        executable="r.import",
                         executable_params=exec_params,
-                        id=f"r_gdal_{os.path.basename(output_name)}",
+                        id=f"r_import_{os.path.basename(output_name)}",
                         skip_permission_check=True
                     )
 
                     stac_processes.append(p)
+
+                    # Register the raster to the STDR
+                    exec_params2 = ["input=%s" % t_name,
+                                    "type=raster",
+                                    "maps=%s" % output_name]
+
+                    p2 = Process(
+                        exec_type="grass",
+                        executable="t.register",
+                        executable_params=exec_params2,
+                        id=f"t_register_{output_name}",
+                        skip_permission_check=True
+                    )
+
+                    stac_processes.append(p2)
         else:
             raise AsyncProcessError("Actinia STAC plugin is not installed")
 

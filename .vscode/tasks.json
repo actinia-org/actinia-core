@@ -57,6 +57,11 @@
 					    "containerPath": "/src/actinia_core",
 					    "permissions": "rw"
 				    },
+					{
+				    	"localPath": "${workspaceFolder}/../actinia-stac-plugin",
+					    "containerPath": "/src/actinia-stac-plugin",
+					    "permissions": "rw"
+				    },
 					// mount GRASS DBs
 					{
 				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/grassdb",
