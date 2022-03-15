@@ -16,7 +16,7 @@ services:
       - ../.:/src/actinia_core/.
       # - ../../actinia-metadata-plugin/:/src/actinia-metadata-plugin/.
       # - ../../actinia-module-plugin/:/src/actinia-module-plugin/.
-      - ../../actinia-stac-plugin/:/src/actinia-stac-plugin/.
+      # - ../../actinia-stac-plugin/:/src/actinia-stac-plugin/.
       # - ../../actinia-api/:/src/actinia-api/.
     ports:
       - "8088:8088"

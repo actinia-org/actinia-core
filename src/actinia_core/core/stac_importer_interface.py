@@ -41,7 +41,7 @@ __email__ = "info@mundialis.de"
 import requests
 import os
 import json
-from datetime import datetime
+from datetime import date, datetime
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
@@ -106,6 +106,7 @@ class STACImporter:
         band_roots = {}
 
         for feature in stac_items["features"]:
+            item_date = feature["properties"]["datetime"]
             for key, value in feature["assets"].items():
                 if "eo:bands" in value:
                     if "common_name" in value["eo:bands"][0]:
@@ -123,6 +124,7 @@ class STACImporter:
                             feature_id = feature["id"]
                             item_link = feature["assets"][band_name]["href"]
                             band_roots[band_name][feature_id] = item_link
+                            band_roots[band_name]["datetime"] = item_date
         return band_roots
 
     def _stac_import(self, stac_collection_id=None, semantic_label=None,
@@ -172,7 +174,7 @@ class STACImporter:
 
             for key, value in stac_result.items():
 
-                for name_id, url in value.items():
+                for name_id, url, item_date in value.items():
 
                     output_name = stac_name + "_" + key + "_" + name_id
 
@@ -194,7 +196,8 @@ class STACImporter:
                     # Register the raster to the STDR
                     exec_params2 = ["input=%s" % t_name,
                                     "type=raster",
-                                    "maps=%s" % output_name]
+                                    "maps=%s" % output_name,
+                                    "start=%s" % item_date]
 
                     p2 = Process(
                         exec_type="grass",
