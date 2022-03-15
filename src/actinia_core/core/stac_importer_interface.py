@@ -37,8 +37,6 @@ __maintainer__ = "__mundialis__"
 __email__ = "info@mundialis.de"
 
 
-from pprint import pprint
-from black import out
 import requests
 import os
 import json
@@ -181,7 +179,7 @@ class STACImporter:
                 output_name = stac_name + "_" + key + "_" + value["name_id"]
 
                 # Upload the image to GRASS
-                exec_params = ["input=%s" % "/vsicurl/"+ value["url"],
+                exec_params = ["input=%s" % "/vsicurl/" + value["url"],
                                "output=%s" % output_name,
                                "extent=region",
                                "resolution=region"]
@@ -202,7 +200,7 @@ class STACImporter:
 
                 sem_lab = Process(
                     exec_type="grass",
-                    executable="r.semantic.label",
+                    executable="r.support",
                     executable_params=exec_params_sl,
                     id=f"r_semantic_label_{output_name}",
                     skip_permission_check=True
