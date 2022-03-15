@@ -22,7 +22,7 @@
 #######
 
 """
-This code shows the STACImporter model which help actinia core
+This code shows the STACImporter model which helps actinia core
 to save and manage the STAC collections stored through the actinia STAC plugin
 """
 
@@ -180,7 +180,8 @@ class STACImporter:
                     # From Here Onwards, the Process build starts
                     exec_params = ["input=%s" % "/vsicurl/"+url,
                                    "output=%s" % output_name,
-                                   "extent=region"]
+                                   "extent=region",
+                                   "resolution=region"]
 
                     p = Process(
                         exec_type="grass",
