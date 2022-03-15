@@ -24,7 +24,6 @@
 """
 This code shows the STACImporter model which help actinia core
 to save and manage the STAC collections stored through the actinia STAC plugin
-
 """
 
 # from PyQt4.QtCore import *
@@ -41,6 +40,7 @@ __email__ = "info@mundialis.de"
 import requests
 import os
 import json
+from datetime import datetime
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
@@ -105,6 +105,7 @@ class STACImporter:
         band_roots = {}
 
         for feature in stac_items["features"]:
+            item_date = feature["properties"]["datetime"]
             for key, value in feature["assets"].items():
                 if "eo:bands" in value:
                     if "common_name" in value["eo:bands"][0]:
@@ -122,6 +123,7 @@ class STACImporter:
                             feature_id = feature["id"]
                             item_link = feature["assets"][band_name]["href"]
                             band_roots[band_name][feature_id] = item_link
+                            band_roots[band_name]["datetime"] = item_date
         return band_roots
 
     def _stac_import(self, stac_collection_id=None, semantic_label=None,
@@ -142,26 +144,69 @@ class STACImporter:
 
             stac_processes = []
 
+            # Create the strds
+
+            # datetime object containing current date and time
+            now = datetime.now()
+
+            # dd/mm/YY H:M:S
+            dt_string = now.strftime("%d%m%Y%H%M%S")
+
+            t_name = f'{stac_name}{dt_string}'
+
+            exec_params = ["type=strds",
+                           "temporaltype=absolute",
+                           "output=%s" % t_name,
+                           "title=%s" % stac_name,
+                           "description=%s" % stac_collection_id
+                           ]
+
+            p = Process(
+                exec_type="grass",
+                executable="t.create",
+                executable_params=exec_params,
+                id=f"t_create_{os.path.basename(stac_name)}",
+                skip_permission_check=True
+            )
+
+            stac_processes.append(p)
+
             for key, value in stac_result.items():
 
-                for name_id, url in value.items():
+                for name_id, url, item_date in value.items():
 
                     output_name = stac_name + "_" + key + "_" + name_id
 
                     # From Here Onwards, the Process build starts
                     exec_params = ["input=%s" % "/vsicurl/"+url,
                                    "output=%s" % output_name,
-                                   "-o"]
+                                   "extent=region"]
 
                     p = Process(
                         exec_type="grass",
-                        executable="r.in.gdal",
+                        executable="r.import",
                         executable_params=exec_params,
-                        id=f"r_gdal_{os.path.basename(output_name)}",
+                        id=f"r_import_{os.path.basename(output_name)}",
                         skip_permission_check=True
                     )
 
                     stac_processes.append(p)
+
+                    # Register the raster to the STDR
+                    exec_params2 = ["input=%s" % t_name,
+                                    "type=raster",
+                                    "maps=%s" % output_name,
+                                    "start=%s" % item_date]
+
+                    p2 = Process(
+                        exec_type="grass",
+                        executable="t.register",
+                        executable_params=exec_params2,
+                        id=f"t_register_{output_name}",
+                        skip_permission_check=True
+                    )
+
+                    stac_processes.append(p2)
         else:
             raise AsyncProcessError("Actinia STAC plugin is not installed")
 
@@ -175,10 +220,8 @@ class STACImporter:
                                           send_resource_update=None):
 
         """Helper method to get the stac import and download commands.
-
             Args:
                 stac_entry (dict): stac_entry of the import description list
-
             Returns:
                 stac_commands: The stac download and import commands
         """
