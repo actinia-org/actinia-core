@@ -37,6 +37,8 @@ __maintainer__ = "__mundialis__"
 __email__ = "info@mundialis.de"
 
 
+from pprint import pprint
+from black import out
 import requests
 import os
 import json
@@ -115,14 +117,17 @@ class STACImporter:
                                 band_roots[band_name] = {}
                             feature_id = feature["id"]
                             item_link = feature["assets"][band_name]["href"]
-                            band_roots[band_name][feature_id] = item_link
+                            band_roots[band_name]["name_id"] = feature_id
+                            band_roots[band_name]["url"] = item_link
+                            band_roots[band_name]["datetime"] = item_date
                         elif value["eo:bands"][0]["name"] in semantic_label:
                             band_name = value["eo:bands"][0]["name"]
                             if band_name not in band_roots:
                                 band_roots[band_name] = {}
                             feature_id = feature["id"]
                             item_link = feature["assets"][band_name]["href"]
-                            band_roots[band_name][feature_id] = item_link
+                            band_roots[band_name]["name_id"] = feature_id
+                            band_roots[band_name]["url"] = item_link
                             band_roots[band_name]["datetime"] = item_date
         return band_roots
 
@@ -173,41 +178,53 @@ class STACImporter:
 
             for key, value in stac_result.items():
 
-                for name_id, url, item_date in value.items():
+                output_name = stac_name + "_" + key + "_" + value["name_id"]
 
-                    output_name = stac_name + "_" + key + "_" + name_id
+                # Upload the image to GRASS
+                exec_params = ["input=%s" % "/vsicurl/"+ value["url"],
+                               "output=%s" % output_name,
+                               "extent=region",
+                               "resolution=region"]
 
-                    # From Here Onwards, the Process build starts
-                    exec_params = ["input=%s" % "/vsicurl/"+url,
-                                   "output=%s" % output_name,
-                                   "extent=region",
-                                   "resolution=region"]
-
-                    p = Process(
+                import_raster = Process(
                         exec_type="grass",
                         executable="r.import",
                         executable_params=exec_params,
-                        id=f"r_import_{os.path.basename(output_name)}",
+                        id=f"r_import_{output_name}",
                         skip_permission_check=True
                     )
 
-                    stac_processes.append(p)
+                stac_processes.append(import_raster)
 
-                    # Register the raster to the STDR
-                    exec_params2 = ["input=%s" % t_name,
+                # Setting the Semantic Label
+                exec_params_sl = ["map=%s" % output_name,
+                                  "semantic_label=%s" % key]
+
+                sem_lab = Process(
+                    exec_type="grass",
+                    executable="r.semantic.label",
+                    executable_params=exec_params_sl,
+                    id=f"r_semantic_label_{output_name}",
+                    skip_permission_check=True
+                )
+
+                stac_processes.append(sem_lab)
+
+                # Register the raster to the STDR
+                exec_params_stdr = ["input=%s" % t_name,
                                     "type=raster",
                                     "maps=%s" % output_name,
-                                    "start=%s" % item_date]
+                                    "start=%s" % value["datetime"]]
 
-                    p2 = Process(
-                        exec_type="grass",
-                        executable="t.register",
-                        executable_params=exec_params2,
-                        id=f"t_register_{output_name}",
-                        skip_permission_check=True
-                    )
+                registration = Process(
+                    exec_type="grass",
+                    executable="t.register",
+                    executable_params=exec_params_stdr,
+                    id=f"t_register_{output_name}",
+                    skip_permission_check=True
+                )
 
-                    stac_processes.append(p2)
+                stac_processes.append(registration)
         else:
             raise AsyncProcessError("Actinia STAC plugin is not installed")
 
