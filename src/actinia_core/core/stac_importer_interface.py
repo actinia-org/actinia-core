@@ -41,7 +41,7 @@ __email__ = "info@mundialis.de"
 import requests
 import os
 import json
-from datetime import date, datetime
+from datetime import datetime
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
