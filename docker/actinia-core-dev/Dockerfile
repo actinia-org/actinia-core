@@ -16,8 +16,3 @@ COPY . /src/actinia_core/
 
 WORKDIR /src/actinia_core/
 RUN pip3 install -e .
-
-# for actinia plugin development
-# RUN pip3 uninstall actinia-metadata-plugin.wsgi -y
-# RUN pip3 uninstall actinia-module-plugin.wsgi -y
-# WORKDIR /src/actinia-module-plugin
