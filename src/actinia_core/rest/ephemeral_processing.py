@@ -55,7 +55,7 @@ from actinia_core.models.response_models \
 from actinia_core.models.response_models \
     import create_response_from_model, ProcessLogModel, ProgressInfoModel
 from actinia_core.core.interim_results import InterimResult, get_directory_size
-from actinia_core.rest.user_auth import check_location_mapset_module_access
+from actinia_core.core.user_auth import check_location_mapset_module_access
 from actinia_core.rest.resource_base import ResourceBase
 
 __license__ = "GPLv3"

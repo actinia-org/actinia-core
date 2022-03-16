@@ -32,6 +32,8 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from flask import request
 from .resource_base import ResourceBase
+from actinia_core.core.user_auth import check_user_permissions
+# from actinia_core.core.user_auth import very_admin_role
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.config import global_config
@@ -39,8 +41,6 @@ from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.redis_user import RedisUserInterface
 from actinia_core.models.response_models import SimpleResponseModel, \
      MapsetListResponseModel, LockedMapsetListResponseModel
-from .user_auth import check_user_permissions
-# from .user_auth import very_admin_role
 # from .common.response_models import MapsetInfoModel
 
 
