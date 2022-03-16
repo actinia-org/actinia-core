@@ -125,8 +125,8 @@ def main():
                                               conf.REDIS_QUEUE_SERVER_PORT,
                                               log_file_name))
 
-        w = Worker([args.queue, ])
-        w.work()
+        actinia_worker = Worker([args.queue, ])
+        actinia_worker.work()
 
 
 if __name__ == '__main__':
