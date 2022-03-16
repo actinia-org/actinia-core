@@ -37,12 +37,9 @@ __maintainer__ = "__mundialis__"
 __email__ = "info@mundialis.de"
 
 
-from tkinter.messagebox import NO
 import requests
 import os
 import json
-from datetime import datetime
-
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.common.process_object import Process
 try:
@@ -260,9 +257,9 @@ class STACImporter:
             stac_filter = stac_entry["import_descr"]["filter"]
 
         if "name" in stac_entry["import_descr"]:
-                stac_name = stac_entry["import_descr"]["name"]
+            stac_name = stac_entry["import_descr"]["name"]
         else:
-            raise AsyncProcessError("A name for the")
+            raise AsyncProcessError("A name parameter is required")
 
         stac_command = \
             self._stac_import(
