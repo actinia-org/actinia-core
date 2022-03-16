@@ -181,7 +181,6 @@ def enqueue_job(timeout, func, *args):
                             global_config.REDIS_QUEUE_SERVER_PASSWORD,
                             global_config.NUMBER_OF_WORKERS)
 
-
     if (global_config.QUEUE_TYPE == "redis"):
         __enqueue_job_redis(timeout, func, *args)
     elif (global_config.QUEUE_TYPE == "local"):
