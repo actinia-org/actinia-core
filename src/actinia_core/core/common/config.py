@@ -181,6 +181,9 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
+        # Type of queue. Can be "local" or "redis". If redis is set, job can
+        # be received and executed from different actinia instances
+        self.QUEUE_TYPE = "local"
 
         """
         LOGGING
@@ -296,6 +299,7 @@ class Configuration(object):
         config.set('MISC', 'TMP_WORKDIR', self.TMP_WORKDIR)
         config.set('MISC', 'SECRET_KEY', self.SECRET_KEY)
         config.set('MISC', 'SAVE_INTERIM_RESULTS', str(self.SAVE_INTERIM_RESULTS))
+        config.set('MISC', 'QUEUE_TYPE', self.QUEUE_TYPE)
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
@@ -438,6 +442,9 @@ class Configuration(object):
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
                     self.SAVE_INTERIM_RESULTS = config.getboolean(
                         "MISC", "SAVE_INTERIM_RESULTS")
+                if config.has_option("MISC", "QUEUE_TYPE"):
+                    self.QUEUE_TYPE = config.get(
+                        "MISC", "QUEUE_TYPE")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

@@ -78,7 +78,7 @@ def __create_job_queues(host, port, password, num_of_queues):
         job_queues.append(queue)
 
 
-def __enqueue_job_subprocess(timeout, func, *args):
+def __enqueue_job_local(timeout, func, *args):
     """Execute the provided function in a subprocess
 
     Args:
@@ -182,6 +182,7 @@ def enqueue_job(timeout, func, *args):
                             global_config.NUMBER_OF_WORKERS)
 
 
-    # TODO: make configurable
-    __enqueue_job_subprocess(timeout, func, *args)
-    # __enqueue_job_redis(timeout, func, *args)
+    if (global_config.QUEUE_TYPE == "redis"):
+        __enqueue_job_redis(timeout, func, *args)
+    elif (global_config.QUEUE_TYPE == "local"):
+        __enqueue_job_local(timeout, func, *args)
