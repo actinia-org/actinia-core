@@ -33,7 +33,7 @@ from actinia_api.swagger2.actinia_core.schemas.raster_colors import RasterColorM
 
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
-from .resource_base import ResourceBase
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from tempfile import NamedTemporaryFile
 import os

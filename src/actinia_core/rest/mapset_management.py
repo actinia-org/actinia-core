@@ -37,7 +37,7 @@ from actinia_api.swagger2.actinia_core.schemas.mapset_management import \
     MapsetLockManagementResponseModel
 
 from actinia_core.rest.persistent_processing import PersistentProcessing
-from actinia_core.rest.resource_base import ResourceBase
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.redis_interface import enqueue_job

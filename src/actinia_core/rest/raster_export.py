@@ -30,7 +30,7 @@ or the raster layer region are used for export.
 from flask import jsonify, make_response
 import pickle
 from flask_restful_swagger_2 import swagger
-from .resource_base import ResourceBase
+from actinia_core.rest.base.resource_base import ResourceBase
 from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.models.response_models import \

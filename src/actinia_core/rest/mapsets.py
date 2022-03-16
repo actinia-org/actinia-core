@@ -31,7 +31,7 @@ Mapset resources for information across all locations
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from flask import request
-from .resource_base import ResourceBase
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.rest.base.user_auth import check_user_permissions
 # from actinia_core.rest.base.user_auth import very_admin_role
 from actinia_core.core.common.app import auth

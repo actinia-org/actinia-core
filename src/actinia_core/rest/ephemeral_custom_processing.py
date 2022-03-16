@@ -28,7 +28,7 @@ import pickle
 from flask import jsonify, make_response
 
 from actinia_core.rest.ephemeral_processing import EphemeralProcessing
-from actinia_core.rest.resource_base import ResourceBase
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.rest.base.user_auth import check_location_mapset_module_access
