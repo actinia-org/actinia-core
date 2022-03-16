@@ -225,11 +225,10 @@ process_chain_stac_import = {
                         "interval": [["2021-09-09", "2021-09-12"]]
                     }
                 },
-                "filter": {},
-                "name": "landsat-8-l1-c1"
+                "filter": {}
             },
             "param": "map",
-            "value": "example-red"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],
@@ -253,11 +252,10 @@ process_chain_stac_filter_error_import = {
                         "interval": [["2023-09-09", "2022-09-12"]]
                     }
                 },
-                "filter": {},
-                "name": "landsat-8-l1-c1"
+                "filter": {}
             },
             "param": "map",
-            "value": "example-red"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],
@@ -284,8 +282,7 @@ process_chain_stac_source_error_import = {
                 "filter": {}
             },
             "param": "map",
-            "value": "example-red",
-            "name": "landsat-8-l1-c1"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],

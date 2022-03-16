@@ -167,8 +167,8 @@ class STACImporter:
             stac_processes.append(p)
 
             for key, value in stac_result.items():
-
-                output_name = stac_name + "_" + key + "_" + value["name_id"]
+                item_id = value["name_id"]
+                output_name = f"{strd_name}_{item_id}_{key}"
 
                 # Upload the image to GRASS
                 exec_params = ["input=%s" % "/vsicurl/" + value["url"],
@@ -256,8 +256,8 @@ class STACImporter:
         if "filter" in stac_entry["import_descr"]:
             stac_filter = stac_entry["import_descr"]["filter"]
 
-        if "name" in stac_entry["import_descr"]:
-            stac_name = stac_entry["import_descr"]["name"]
+        if stac_entry["param"] == "map" and stac_entry["value"]:
+            stac_name = stac_entry["value"]
         else:
             raise AsyncProcessError("A name parameter is required")
 
