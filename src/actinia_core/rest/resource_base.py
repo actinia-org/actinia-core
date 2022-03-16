@@ -33,8 +33,8 @@ from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
-from actinia_core.core.user_auth import check_user_permissions
-from actinia_core.core.user_auth import create_dummy_user
+from actinia_core.rest.base.user_auth import check_user_permissions
+from actinia_core.rest.base.user_auth import create_dummy_user
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.app import flask_api
 from actinia_core.core.common.config import global_config

@@ -34,7 +34,7 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import ApiLogger
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.core.user_auth import check_user_permissions
+from actinia_core.rest.base.user_auth import check_user_permissions
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
