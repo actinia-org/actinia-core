@@ -44,8 +44,8 @@ from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.resource_data_container import ResourceDataContainer
 from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import create_response_from_model, ApiInfoModel
-from ..resource_streamer import RequestStreamerResource
-from ..resource_management import ResourceManager
+from actinia_core.rest.resource_streamer import RequestStreamerResource
+from actinia_core.rest.resource_management import ResourceManager
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
