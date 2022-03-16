@@ -37,6 +37,7 @@ __maintainer__ = "__mundialis__"
 __email__ = "info@mundialis.de"
 
 
+from tkinter.messagebox import NO
 import requests
 import os
 import json
@@ -130,7 +131,7 @@ class STACImporter:
         return band_roots
 
     def _stac_import(self, stac_collection_id=None, semantic_label=None,
-                     interval=None, bbox=None, filter=None):
+                     interval=None, bbox=None, filter=None, strd_name=None):
 
         if has_plugin:
             try:
@@ -149,19 +150,13 @@ class STACImporter:
 
             # Create the strds
 
-            # datetime object containing current date and time
-            now = datetime.now()
-
             # dd/mm/YY H:M:S
-            dt_string = now.strftime("%d%m%Y%H%M%S")
-
-            t_name = f'{stac_name}{dt_string}'
 
             exec_params = ["type=strds",
                            "temporaltype=absolute",
-                           "output=%s" % t_name,
-                           "title=%s" % stac_name,
-                           "description=%s" % stac_collection_id
+                           "output=%s" % strd_name,
+                           "title=%s" % strd_name,
+                           "description=%s" % f"{stac_collection_id}"
                            ]
 
             p = Process(
@@ -209,7 +204,7 @@ class STACImporter:
                 stac_processes.append(sem_lab)
 
                 # Register the raster to the STDR
-                exec_params_stdr = ["input=%s" % t_name,
+                exec_params_stdr = ["input=%s" % strd_name,
                                     "type=raster",
                                     "maps=%s" % output_name,
                                     "start=%s" % value["datetime"]]
@@ -261,14 +256,20 @@ class STACImporter:
                 interval = interval["temporal"]["interval"][0]
                 stac_interval = interval
 
-            if "filter" in stac_entry["import_descr"]:
-                stac_filter = stac_entry["import_descr"]["filter"]
+        if "filter" in stac_entry["import_descr"]:
+            stac_filter = stac_entry["import_descr"]["filter"]
 
-            stac_command = \
-                self._stac_import(
-                    stac_collection_id=stac_entry_source,
-                    semantic_label=stac_semantic_label,
-                    interval=stac_interval,
-                    bbox=stac_extent,
-                    filter=stac_filter)
-            return stac_command
+        if "name" in stac_entry["import_descr"]:
+                stac_name = stac_entry["import_descr"]["name"]
+        else:
+            raise AsyncProcessError("A name for the")
+
+        stac_command = \
+            self._stac_import(
+                stac_collection_id=stac_entry_source,
+                semantic_label=stac_semantic_label,
+                interval=stac_interval,
+                bbox=stac_extent,
+                filter=stac_filter,
+                strd_name=stac_name)
+        return stac_command
