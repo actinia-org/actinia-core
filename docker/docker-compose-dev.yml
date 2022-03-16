@@ -22,9 +22,28 @@ services:
       - "8088:8088"
     depends_on:
       - redis
-      - redis2
+      - redis-queue
     cap_add:
       - SYS_PTRACE
+    networks:
+    -   actinia-dev
+
+  actinia-worker:
+    build:
+      context: ..
+      dockerfile: docker/actinia-core-dev/Dockerfile
+    volumes:
+      - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
+      - ./actinia-core-data/userdata:/actinia_core/userdata
+      - ./actinia-core-data/pgpass:/mnt/pgpass:Z
+      - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
+      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
+      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
+      - ./actinia-core-data/resources:/actinia_core/resources
+      - ../.:/src/actinia_core_worker
+    depends_on:
+      - redis
+      - redis-queue
     networks:
     -   actinia-dev
 
@@ -47,10 +66,10 @@ services:
     networks:
     -   actinia-dev
 
-  redis2:
+  redis-queue:
     image: redis:5.0.4-alpine
     volumes:
-      - ./redis_data2:/data
+      - ./redis_queue_data:/data
     environment:
       - REDIS_PASS_FILE=/data/config/.redis
     command: [

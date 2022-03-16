@@ -15,7 +15,7 @@
 		{
 			"label": "start-redis",
 			"type": "shell",
-			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis redis2",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis redis-queue",
 			"isBackground": true,
 		},
 		{
@@ -64,7 +64,7 @@
 					    "permissions": "rw"
 				    },
 					{
-				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/userdata",
+					    "localPath": "${workspaceFolder}/docker/actinia-core-data/userdata",
 					    "containerPath": "/actinia_core/userdata",
 					    "permissions": "rw"
 				    },
