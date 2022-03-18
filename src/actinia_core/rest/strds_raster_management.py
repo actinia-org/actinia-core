@@ -34,7 +34,8 @@ from actinia_api.swagger2.actinia_core.schemas.strds_raster_management import \
      STRDSRasterListResponseModel, RasterListRegisterModel, STRDSRasterListEntryModel
 
 from actinia_core.core.request_parser import where_parser
-from .persistent_processing import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
+     import PersistentProcessing
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.exceptions import AsyncProcessError

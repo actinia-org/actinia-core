@@ -113,7 +113,7 @@ def enqueue_job(timeout, func, *args):
     # processing.run()
 
     # # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
-    # from ...processing.actinia_processing.persistent.persistent_processing \
+    # from ...processing.actinia_processing.ephemeral.persistent_processing \
     #     import PersistentProcessing
     # processing = PersistentProcessing(*args)
     # processing.run()

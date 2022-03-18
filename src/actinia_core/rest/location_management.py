@@ -45,7 +45,8 @@ from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.models.response_models import MapsetInfoResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.rest.persistent_processing import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
+     import PersistentProcessing
 from actinia_core.rest.mapset_management import PersistentGetProjectionRegionInfo
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.exceptions import AsyncProcessError

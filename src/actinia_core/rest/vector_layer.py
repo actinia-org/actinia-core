@@ -44,7 +44,8 @@ from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, SimpleResponseModel
 from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
      import EphemeralProcessing
-from .persistent_processing import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
+     import PersistentProcessing
 from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 
 __license__ = "GPLv3"

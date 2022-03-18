@@ -31,7 +31,8 @@ from tempfile import NamedTemporaryFile
 import os
 import atexit
 
-from actinia_core.processing.persistent_processing import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
+     import PersistentProcessing
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"

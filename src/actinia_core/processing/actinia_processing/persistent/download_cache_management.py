@@ -28,7 +28,8 @@ TODO: Tests required
 """
 
 import os
-from actinia_core.rest.persistent_processing import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
+     import PersistentProcessing
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessError
 
