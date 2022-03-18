@@ -22,7 +22,9 @@
 #######
 
 """
-Raster colors management
+Download cache management
+
+TODO: Tests required
 """
 
 from actinia_core.processing.common.utils import try_import
@@ -33,20 +35,22 @@ __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "mundialis"
 
 
-EphemeralRasterColorsOutput = try_import(
-    'actinia_core.processing.actinia_processing.ephemeral.raster_colors',
-    'EphemeralRasterColorsOutput')
+DownloadCacheSize = try_import(
+    ('actinia_core.processing.actinia_processing.ephemeral'
+     + '.download_cache_management'),
+    'DownloadCacheSize')
 
-PersistentRasterColorsRules = try_import(
-    'actinia_core.processing.actinia_processing.persistent.raster_colors',
-    'PersistentRasterColorsRules')
+DownloadCacheDelete = try_import(
+    ('actinia_core.processing.actinia_processing.persistent'
+     + '.download_cache_management'),
+    'DownloadCacheDelete')
 
 
-def start_job_colors_out(*args):
-    processing = EphemeralRasterColorsOutput(*args)
+def start_download_cache_size(*args):
+    processing = DownloadCacheSize(*args)
     processing.run()
 
 
-def start_job_from_rules(*args):
-    processing = PersistentRasterColorsRules(*args)
+def start_download_cache_remove(*args):
+    processing = DownloadCacheDelete(*args)
     processing.run()
