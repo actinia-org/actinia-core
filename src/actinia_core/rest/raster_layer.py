@@ -34,7 +34,8 @@ from actinia_api.swagger2.actinia_core.schemas.raster_layer import \
      RasterInfoResponseModel, RasterInfoModel
 
 from actinia_core.core.common.app import URL_PREFIX
-from actinia_core.rest.ephemeral_processing import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+     import EphemeralProcessing
 from actinia_core.rest.persistent_processing import PersistentProcessing
 from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job

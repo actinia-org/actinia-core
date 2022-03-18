@@ -24,7 +24,8 @@
 """
 Running a custom UNIX process outside the GRASS GIS environment
 """
-from actinia_core.rest.ephemeral_processing import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+     import EphemeralProcessing
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.rest.base.user_auth import check_location_mapset_module_access
 from actinia_core.core.common.process_object import Process

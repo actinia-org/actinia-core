@@ -28,7 +28,8 @@ TODO: Tests required
 """
 
 import os
-from actinia_core.rest.ephemeral_processing import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+     import EphemeralProcessing
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import \
