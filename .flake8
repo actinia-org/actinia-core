@@ -36,3 +36,5 @@ per-file-ignores =
     ./src/actinia_core/core/list_grass_modules.py: F821
     ./src/actinia_core/core/common/aws_sentinel_interface.py: E501
     ./tests/*: E501, F401
+    # TODO: check imports again when actinia_processing is moved
+    ./src/actinia_core/rest/raster_export.py: E501

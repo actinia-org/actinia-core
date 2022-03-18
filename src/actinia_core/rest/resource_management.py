@@ -270,13 +270,15 @@ class ResourceManager(ResourceManagerBase):
         location = re.findall(r'locations\/(.*?)\/', post_url)[0]
         if processing_type.endswith('processing_async') and 'mapsets' not in post_url:
             # /locations/<string:location_name>/processing_async
-            from .ephemeral_processing import AsyncEphemeralResource, start_job
+            from .ephemeral_processing import AsyncEphemeralResource
+            from ..processing.common.ephemeral_processing import start_job
             processing_resource = AsyncEphemeralResource(
                 resource_id, iteration, post_url)
             rdc = processing_resource.preprocess(location_name=location)
         elif processing_type.endswith('processing_async') and 'mapsets' in post_url:
             # /locations/{location_name}/mapsets/{mapset_name}/processing_async
-            from .persistent_processing import AsyncPersistentResource, start_job
+            from .persistent_processing import AsyncPersistentResource
+            from ..processing.common.persistent_processing import start_job
             processing_resource = AsyncPersistentResource(
                 resource_id, iteration, post_url)
             mapset = re.findall(r'mapsets\/(.*?)\/', post_url)[0]
@@ -285,7 +287,9 @@ class ResourceManager(ResourceManagerBase):
         elif processing_type.endswith('processing_async_export'):
             # /locations/{location_name}/processing_async_export
             from .ephemeral_processing_with_export import \
-                AsyncEphemeralExportResource, start_job
+                AsyncEphemeralExportResource
+            from ..processing.common.ephemeral_processing_with_export \
+                import start_job
             processing_resource = AsyncEphemeralExportResource(
                 resource_id, iteration, post_url)
             rdc = processing_resource.preprocess(
