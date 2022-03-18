@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,21 +27,18 @@ Raster layer resources
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.request_parser import glist_parser, \
-     extract_glist_parameters
-from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_core.core.request_parser import glist_parser
 from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import StringListProcessingResultResponseModel
+from actinia_core.processing.common.map_layer_management import \
+     list_raster_layers, remove_raster_layers, rename_raster_layers
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class MapsetLayersResource(ResourceBase):
@@ -494,142 +491,3 @@ class VectorLayersResource(MapsetLayersResource):
         that are located in a specific location/mapset
         """
         return self._delete(location_name, mapset_name)
-
-
-def list_raster_layers(*args):
-    processing = PersistentListLayers(*args)
-    processing.run()
-
-
-class PersistentListLayers(PersistentProcessing):
-    """List all map layers (raster, vector) of a specific mapset,
-     dependent on the provided type.
-    """
-
-    def __init__(self, *args):
-        PersistentProcessing.__init__(self, *args)
-        self.response_model_class = StringListProcessingResultResponseModel
-
-    def _execute(self):
-
-        self._setup()
-
-        args, layer_type = self.data
-        self.required_mapsets.append(self.target_mapset_name)
-
-        options = extract_glist_parameters(args)
-
-        pc = {"1": {"module": "g.list", "inputs": {}}}
-
-        for key in options:
-            pc["1"]["inputs"][key] = options[key]
-
-        pc["1"]["inputs"]["mapset"] = self.target_mapset_name
-        pc["1"]["inputs"]["type"] = layer_type
-
-        self.skip_region_check = True
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
-        self._create_temp_database(self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.target_mapset_name)
-
-        self._execute_process_list(process_list)
-
-        raster_layers_with_mapset = []
-        raster_layers = self.module_output_log[0]["stdout"].split()
-
-        for raster_layer in raster_layers:
-            raster_layers_with_mapset.append(raster_layer.strip())
-
-        self.module_results = raster_layers_with_mapset
-
-
-def remove_raster_layers(*args):
-    processing = PersistentRemoveLayers(*args)
-    processing.run()
-
-
-class PersistentRemoveLayers(PersistentProcessing):
-    """Remove layers in a mapset
-    """
-
-    def __init__(self, *args):
-
-        PersistentProcessing.__init__(self, *args)
-
-    def _execute(self):
-
-        self._setup()
-
-        args, layer_type = self.data
-        self.required_mapsets.append(self.target_mapset_name)
-
-        options = extract_glist_parameters(args)
-
-        pc = {"1": {"module": "g.remove", "inputs": {}, "flags": "f"}}
-        for key in options:
-            pc["1"]["inputs"][key] = options[key]
-        pc["1"]["inputs"]["type"] = layer_type
-
-        self.skip_region_check = True
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
-        self._create_temp_database(self.required_mapsets)
-        self._check_lock_target_mapset()
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.target_mapset_name)
-
-        self._execute_process_list(process_list)
-
-        if "WARNING: No data base element files found" in "\n".join(
-                self.module_output_log[0]["stderr"]):
-            raise AsyncProcessError("<%s> layer not found" % layer_type)
-
-        self.finish_message = "Successfully removed %s layers." % layer_type
-
-
-def rename_raster_layers(*args):
-    processing = PersistentRenameLayers(*args)
-    processing.run()
-
-
-class PersistentRenameLayers(PersistentProcessing):
-    """Rename raster layers in a mapset
-    """
-
-    def __init__(self, *args):
-
-        PersistentProcessing.__init__(self, *args)
-
-    def _execute(self):
-
-        self._setup()
-
-        args, layer_type = self.data
-        self.required_mapsets.append(self.target_mapset_name)
-
-        # List format must be
-        # [(a, a_new),(b, b_new),(c, c_new), ...]
-        name_list = list()
-        for old_name, new_name in self.request_data:
-            name_list.append("%s,%s" % (old_name, new_name))
-        name_string = ",".join(name_list)
-
-        pc = {"1": {"module": "g.rename", "inputs": {layer_type: name_string}}}
-
-        self.skip_region_check = True
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
-        self._create_temp_database(self.required_mapsets)
-        self._check_lock_target_mapset()
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.target_mapset_name)
-
-        self._execute_process_list(process_list)
-
-        if "WARNING: " in "\n".join(self.module_output_log[0]["stderr"]):
-            if "not found" in "\n".join(self.module_output_log[0]["stderr"]):
-                raise AsyncProcessError("Error while renaming map layers")
-
-        self.finish_message = "Successfully renamed %s layers." % layer_type
