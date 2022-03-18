@@ -77,25 +77,31 @@ def list_raster_mapsets(*args):
     processing = PersistentMapsetLister(*args)
     processing.run()
 
+
 def read_current_region(*args):
     processing = PersistentGetProjectionRegionInfo(*args)
     processing.run()
+
 
 def create_mapset(*args):
     processing = PersistentMapsetCreator(*args)
     processing.run()
 
+
 def delete_mapset(*args):
     processing = PersistentMapsetDeleter(*args)
     processing.run()
+
 
 def get_mapset_lock(*args):
     processing = PersistentGetMapsetLock(*args)
     processing.run()
 
+
 def lock_mapset(*args):
     processing = PersistentMapsetLocker(*args)
     processing.run()
+
 
 def unlock_mapset(*args):
     processing = PersistentMapsetUnlocker(*args)

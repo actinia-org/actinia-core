@@ -38,3 +38,4 @@ per-file-ignores =
     ./tests/*: E501, F401
     # TODO: check imports again when actinia_processing is moved
     ./src/actinia_core/rest/raster_export.py: E501
+    ./src/actinia_core/processing/actinia_processing/ephemeral_with_export/raster_export.py: E501

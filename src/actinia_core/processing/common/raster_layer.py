@@ -53,9 +53,11 @@ def start_info_job(*args):
     processing = EphemeralRasterInfo(*args)
     processing.run()
 
+
 def start_delete_job(*args):
     processing = PersistentRasterDeleter(*args)
     processing.run()
+
 
 def start_create_job(*args):
     processing = PersistentRasterCreator(*args)

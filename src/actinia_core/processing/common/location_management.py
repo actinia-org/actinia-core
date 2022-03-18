@@ -50,6 +50,7 @@ def create_location(*args):
     processing = PersistentLocationCreator(*args)
     processing.run()
 
+
 def read_current_region(*args):
     processing = PersistentGetProjectionRegionInfo(*args)
     processing.run()

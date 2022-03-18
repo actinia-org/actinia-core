@@ -53,9 +53,11 @@ def list_raster_layers(*args):
     processing = PersistentListLayers(*args)
     processing.run()
 
+
 def remove_raster_layers(*args):
     processing = PersistentRemoveLayers(*args)
     processing.run()
+
 
 def rename_raster_layers(*args):
     processing = PersistentRenameLayers(*args)
