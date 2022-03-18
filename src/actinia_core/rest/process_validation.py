@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,8 +29,6 @@ import pickle
 from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
-     import EphemeralProcessing
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.models.response_models import \
@@ -38,12 +36,13 @@ from actinia_core.models.response_models import \
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.process_chain import ProcessChainModel
+from actinia_core.processing.common.process_validation \
+     import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 DESCR = """Validate a process chain, check the provided sources (links)
@@ -130,28 +129,3 @@ class SyncProcessValidationResource(ResourceBase):
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
-
-
-def start_job(*args):
-    processing = ProcessValidation(*args)
-    processing.run()
-
-
-class ProcessValidation(EphemeralProcessing):
-
-    def __init__(self, *args):
-        EphemeralProcessing.__init__(self, *args)
-
-    def _execute(self):
-
-        self._setup()
-
-        process_chain = self._create_temporary_grass_environment_and_process_list()
-
-        result = []
-        for process in process_chain:
-            result.append(str(process))
-
-        self.finish_message = "Validation successful"
-
-        self.module_results = result
