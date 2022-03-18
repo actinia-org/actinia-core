@@ -33,8 +33,9 @@ from tempfile import NamedTemporaryFile
 from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
      import EphemeralProcessing
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.rest.base.renderer_base import RendererBaseResource, \
-     EphemeralRendererBase
+from actinia_core.rest.base.renderer_base import RendererBaseResource
+from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base \
+     import EphemeralRendererBase
 from actinia_core.models.response_models import ProcessingErrorResponseModel
 
 __license__ = "GPLv3"
