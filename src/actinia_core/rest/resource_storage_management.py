@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,21 +27,16 @@ Resource storage management
 TODO: Tests required
 """
 
-import os
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
-     import EphemeralProcessing
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.common.process_object import Process
-from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import \
-    StorageResponseModel, StorageModel, ProcessingResponseModel, \
+    StorageResponseModel, ProcessingResponseModel, \
     ProcessingErrorResponseModel
+from actinia_core.processing.common.resource_storage_management \
+     import start_resource_storage_size, start_resource_storage_remove
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
@@ -50,9 +45,8 @@ from actinia_core.rest.base.user_auth import check_user_permissions
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class SyncResourceStorageResource(ResourceBase):
@@ -115,86 +109,3 @@ class SyncResourceStorageResource(ResourceBase):
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
-
-
-def start_resource_storage_size(*args):
-    processing = ResourceStorageSize(*args)
-    processing.run()
-
-
-class ResourceStorageSize(EphemeralProcessing):
-    """Compute the download cache size
-    """
-
-    def __init__(self, *args):
-        EphemeralProcessing.__init__(self, *args)
-        self.response_model_class = StorageResponseModel
-        self.user_resource_storage_path = os.path.join(
-            self.config.GRASS_RESOURCE_DIR, self.user_id)
-
-    def _execute(self):
-
-        self._setup()
-
-        if (os.path.exists(self.user_resource_storage_path)
-                and os.path.isdir(self.user_resource_storage_path)):
-
-            executable = "/usr/bin/du"
-            args = ["-sb", self.user_resource_storage_path]
-
-            self._run_process(Process(exec_type="exec",
-                                      executable=executable,
-                                      id="compute_download_cache_size",
-                                      executable_params=args))
-
-            dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
-            quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024 * 1024 * 1024)
-
-            model = StorageModel(
-                used=dc_size,
-                free=quota_size - dc_size,
-                quota=quota_size,
-                free_percent=int(100 * (quota_size - dc_size) / quota_size))
-            self.module_results = model
-
-            self.finish_message = "Resource storage size successfully computed"
-        else:
-            raise AsyncProcessError(
-                "Resource storage directory <%s> does not exist."
-                % self.user_resource_storage_path)
-
-
-def start_resource_storage_remove(*args):
-    processing = ResourceStorageDelete(*args)
-    processing.run()
-
-
-class ResourceStorageDelete(PersistentProcessing):
-    """Delete the user specific resource directory
-    """
-
-    def __init__(self, *args):
-        PersistentProcessing.__init__(self, *args)
-        self.user_resource_storage_path = os.path.join(
-            self.config.GRASS_RESOURCE_DIR, self.user_id)
-
-    def _execute(self):
-
-        self._setup()
-
-        if (os.path.exists(self.user_resource_storage_path)
-                and os.path.isdir(self.user_resource_storage_path)):
-            executable = "/bin/rm"
-            args = ["-rf", self.user_resource_storage_path]
-
-            self._run_process(Process(exec_type="exec",
-                                      executable=executable,
-                                      id="delete_user_specific_resource_directory",
-                                      executable_params=args))
-
-            os.mkdir(self.user_resource_storage_path)
-            self.finish_message = "Resource storage successfully removed."
-        else:
-            raise AsyncProcessError(
-                "Resource storage directory <%s> does not exist."
-                % self.user_resource_storage_path)
