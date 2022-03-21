@@ -93,10 +93,11 @@ class STACImporter:
 
         full_filtered_result = stac_search.json()
 
-        if "features" in full_filtered_result:
+        if "features" in full_filtered_result\
+                and len(full_filtered_result["features"]) > 0:
             return full_filtered_result
         else:
-            raise AsyncProcessError(full_filtered_result)
+            raise AsyncProcessError("Not matched found")
 
     @staticmethod
     def _get_filtered_bands(stac_items, semantic_label):
@@ -107,16 +108,9 @@ class STACImporter:
             for key, value in feature["assets"].items():
                 if "eo:bands" in value:
                     if "common_name" in value["eo:bands"][0]:
-                        if value["eo:bands"][0]["common_name"] in semantic_label:
-                            band_name = value["eo:bands"][0]["name"]
-                            if band_name not in band_roots:
-                                band_roots[band_name] = {}
-                            feature_id = feature["id"]
-                            item_link = feature["assets"][band_name]["href"]
-                            band_roots[band_name]["name_id"] = feature_id
-                            band_roots[band_name]["url"] = item_link
-                            band_roots[band_name]["datetime"] = item_date
-                        elif value["eo:bands"][0]["name"] in semantic_label:
+                        if value["eo:bands"][0]["common_name"] in semantic_label\
+                                or value["eo:bands"][0]["name"] in semantic_label\
+                                or semantic_label == []:
                             band_name = value["eo:bands"][0]["name"]
                             if band_name not in band_roots:
                                 band_roots[band_name] = {}
@@ -127,7 +121,7 @@ class STACImporter:
                             band_roots[band_name]["datetime"] = item_date
         return band_roots
 
-    def _stac_import(self, stac_collection_id=None, semantic_label=None,
+    def _stac_import(self, stac_collection_id=None, semantic_label=[],
                      interval=None, bbox=None, filter=None, strd_name=None):
 
         if has_plugin:
@@ -253,13 +247,11 @@ class STACImporter:
                 interval = interval["temporal"]["interval"][0]
                 stac_interval = interval
 
+        stac_filter = {}
         if "filter" in stac_entry["import_descr"]:
             stac_filter = stac_entry["import_descr"]["filter"]
 
-        if stac_entry["param"] == "map" and stac_entry["value"]:
-            stac_name = stac_entry["value"]
-        else:
-            raise AsyncProcessError("A name parameter is required")
+        stac_name = stac_entry["value"]
 
         stac_command = \
             self._stac_import(
