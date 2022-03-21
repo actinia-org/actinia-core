@@ -29,9 +29,10 @@ Raster map renderer
 import os
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, Response
+from actinia_api.swagger2.actinia_core.apidocs import vector_renderer
+
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
-from actinia_core.models.response_models import ProcessingErrorResponseModel
 from actinia_core.processing.common.vector_renderer import start_job
 
 __license__ = "GPLv3"
@@ -44,98 +45,7 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
     """Render a vector layer with g.region/d.vect approach synchronously
     """
 
-    @swagger.doc({
-        'tags': ['Vector Management'],
-        'description': 'Render a single vector map layer. Minimum required user '
-                       'role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'vector_name',
-                'description': 'The name of the vector map layer to render',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'boundary_county'
-            },
-            {
-                'name': 'n',
-                'description': 'Northern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 's',
-                'description': 'Southern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'e',
-                'description': 'Eastern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'w',
-                'description': 'Western border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'width',
-                'description': 'Image width in pixel, default is 800',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 800
-            },
-            {
-                'name': 'height',
-                'description': 'Image height in pixel, default is 600',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 600
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(vector_renderer.get_doc)
     def get(self, location_name, mapset_name, vector_name):
         """Render a single vector map layer
         """

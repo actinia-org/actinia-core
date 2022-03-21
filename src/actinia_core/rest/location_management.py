@@ -32,18 +32,15 @@ import os
 import shutil
 import pickle
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import location_management
 from actinia_api.swagger2.actinia_core.schemas.location_management \
      import LocationListResponseModel
-from actinia_api.swagger2.actinia_core.schemas.location_management \
-     import ProjectionInfoModel
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.user_auth import very_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
-from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.models.response_models import MapsetInfoResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.utils import os_path_normpath
@@ -68,22 +65,7 @@ class ListLocationsResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc({
-        'tags': ['Location Management'],
-        'description': 'Get a list of all available locations that are located in the '
-                       'GRASS database and the user has access to. Minimum required '
-                       'user role: user.',
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of location names',
-                'schema': LocationListResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(location_management.get_doc)
     def get(self):
         """Get a list of all available locations
         """
@@ -132,33 +114,7 @@ class LocationManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Location Management'],
-        'description': 'Get the location projection and current computational '
-                       'region of the PERMANENT mapset. Minimum required user '
-                       'role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The location projection and current computational '
-                               'region of the PERMANENT mapset',
-                'schema': MapsetInfoResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(location_management.get_user_doc)
     def get(self, location_name):
         """Get the location projection and current computational region of the PERMANENT mapset
         """
@@ -185,30 +141,7 @@ class LocationManagementResourceAdmin(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Location Management'],
-        'description': 'Delete an existing location and everything inside from the '
-                       'user database. Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location to be deleted',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Success message for location deletion',
-                'schema': SimpleResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(location_management.get_admin_doc)
     def delete(self, location_name):
         """Delete an existing location and everything inside from the user database.
         """
@@ -235,38 +168,7 @@ class LocationManagementResourceAdmin(ResourceBase):
             status="error",
             message="location %s does not exists" % location_name)), 400)
 
-    @swagger.doc({
-        'tags': ['Location Management'],
-        'description': 'Create a new location based on EPSG code in the user database. '
-                       'Minimum required user role: admin.',
-        'consumes': ['application/json'],
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location to be created',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'epsg_code',
-                'description': 'The EPSG code',
-                'required': True,
-                'in': 'body',
-                'schema': ProjectionInfoModel
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Create a new location based on EPSG code',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(location_management.post_admin_doc)
     def post(self, location_name):
         """Create a new location based on EPSG code in the user database.
         """

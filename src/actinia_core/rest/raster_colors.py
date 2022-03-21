@@ -29,12 +29,9 @@ TODO: Maybe more tests required, test_raster_colors.py is in place and works
 
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
-from actinia_api.swagger2.actinia_core.schemas.raster_colors import RasterColorModel
+from actinia_api.swagger2.actinia_core.apidocs import raster_colors
 
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import \
-    ProcessingResponseModel, ProcessingErrorResponseModel, \
-    StringListProcessingResultResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.raster_colors import start_job_colors_out
 from actinia_core.processing.common.raster_colors import start_job_from_rules
@@ -49,47 +46,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
     """Manage the color table
     """
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Get the color definition of an existing raster map layer. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'raster_name',
-                'description': 'The name of the raster map layer to get the '
-                               'color table from',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'produces': ["application/json"],
-        'responses': {
-            '200': {
-                'description': 'A list of color rules',
-                'schema': StringListProcessingResultResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_colors.get_doc)
     def get(self, location_name, mapset_name, raster_name):
         """Get the color definition of an existing raster map layer.
 
@@ -108,55 +65,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Set the color definition for an existing raster map '
-                       'layer. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'raster_name',
-                'description': 'The name of the raster map layer to set the '
-                               'color table',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'color',
-                'description': 'The color definition.',
-                'required': True,
-                'in': 'body',
-                'schema': RasterColorModel
-            }
-        ],
-        'produces': ["application/json"],
-        'consumes': ["application/json"],
-        'responses': {
-            '200': {
-                'description': 'Successfuly set the color table for a raster map layer',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_colors.post_doc)
     def post(self, location_name, mapset_name, raster_name):
         """Set the color definition for an existing raster map layer.
 

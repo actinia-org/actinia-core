@@ -28,9 +28,10 @@ Raster map renderer
 from flask_restful_swagger_2 import swagger
 import os
 from flask import jsonify, make_response, Response
+from actinia_api.swagger2.actinia_core.apidocs import raster_renderer
+
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
-from actinia_core.models.response_models import ProcessingErrorResponseModel
 from actinia_core.processing.common.raster_renderer import \
     start_job, start_rgb_job, start_shade_job
 
@@ -44,98 +45,7 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
     """Render a raster image with g.region/d.rast approach synchronously
     """
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Render a raster map layer as a PNG image. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'raster_name',
-                'description': 'The name of the raster map layer to render',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'elevation'
-            },
-            {
-                'name': 'n',
-                'description': 'Northern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 's',
-                'description': 'Southern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'e',
-                'description': 'Eastern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'w',
-                'description': 'Western border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'width',
-                'description': 'Image width in pixel, default is 800',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 800
-            },
-            {
-                'name': 'height',
-                'description': 'Image height in pixel, default is 600',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 600
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_renderer.raster_render_get_doc)
     def get(self, location_name, mapset_name, raster_name):
         """Render a raster map layer as a PNG image.
         """
@@ -204,117 +114,7 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
         return options
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Render three raster map layer as composed RGB PNG image. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'landsat'
-            },
-            {
-                'name': 'red',
-                'description': 'The name of the raster map layer to render '
-                               'as color red',
-                'required': True,
-                'in': 'query',
-                'type': 'string',
-                'default': 'lsat5_1987_30'
-            },
-            {
-                'name': 'green',
-                'description': 'The name of the raster map layer to render as '
-                               'color green',
-                'required': True,
-                'in': 'query',
-                'type': 'string',
-                'default': 'lsat5_1987_20'
-            },
-            {
-                'name': 'blue',
-                'description': 'The name of the raster map layer to render as '
-                               'color blue',
-                'required': True,
-                'in': 'query',
-                'type': 'string',
-                'default': 'lsat5_1987_10'
-            },
-            {
-                'name': 'n',
-                'description': 'Northern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 's',
-                'description': 'Southern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'e',
-                'description': 'Eastern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'w',
-                'description': 'Western border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'width',
-                'description': 'Image width in pixel, default is 800',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 800
-            },
-            {
-                'name': 'height',
-                'description': 'Image height in pixel, default is 600',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 600
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The RGB composition PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_renderer.raster_rgb_render_get_doc)
     def get(self, location_name, mapset_name):
         """Render three raster map layer as composed RGB PNG image.
         """
@@ -390,108 +190,7 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         return options
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Render two raster layers as a composed shade PNG image. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'shade',
-                'description': 'The name of the raster map layer to be used '
-                               'for shading',
-                'required': True,
-                'in': 'query',
-                'type': 'string',
-                'default': 'aspect'
-            },
-            {
-                'name': 'color',
-                'description': 'The name of the raster map layer to be used for '
-                               'coloring',
-                'required': True,
-                'in': 'query',
-                'type': 'string',
-                'default': 'elevation'
-            },
-            {
-                'name': 'n',
-                'description': 'Northern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 's',
-                'description': 'Southern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'e',
-                'description': 'Eastern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'w',
-                'description': 'Western border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'width',
-                'description': 'Image width in pixel, default is 800',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 800
-            },
-            {
-                'name': 'height',
-                'description': 'Image height in pixel, default is 600',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 600
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The shade/color composition PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_renderer.raster_shade_render_get_doc)
     def get(self, location_name, mapset_name):
         """Render two raster layers as a composed shade PNG image
         """

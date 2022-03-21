@@ -30,11 +30,11 @@ TODO: Tests required
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
+from actinia_api.swagger2.actinia_core.apidocs import \
+    resource_storage_management
+
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import \
-    StorageResponseModel, ProcessingResponseModel, \
-    ProcessingErrorResponseModel
 from actinia_core.processing.common.resource_storage_management \
      import start_resource_storage_size, start_resource_storage_remove
 
@@ -54,22 +54,7 @@ class SyncResourceStorageResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Get the current size of the resource storage. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource storage',
-                'schema': StorageResponseModel
-            },
-            '400': {
-                'description': 'The error message why resource storage '
-                               'information gathering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_storage_management.get_doc)
     def get(self):
         """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -82,22 +67,7 @@ class SyncResourceStorageResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Clean the resource storage and remove all cached data. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'Processing status of resource storage deletion',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message why resource storage cleaning '
-                               'did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_storage_management.delete_doc)
     def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)

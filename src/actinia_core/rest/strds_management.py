@@ -30,14 +30,11 @@ import pickle
 from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
-from actinia_api.swagger2.actinia_core.schemas.strds_management import \
-     STRDSCreationModel, STRDSInfoResponseModel
+from actinia_api.swagger2.actinia_core.apidocs import strds_management
 
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import ProcessingResponseModel, \
-    StringListProcessingResultResponseModel, ProcessingErrorResponseModel
 from actinia_core.processing.common.strds_management import \
     list_raster_mapsets, strds_create, strds_delete, strds_info
 
@@ -52,47 +49,7 @@ class SyncSTRDSListerResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc({
-        'tags': ['STRDS Management'],
-        'description': 'Get a list of all STRDS that are located in a specific '
-                       'location/mapset. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'where',
-                'description': 'A where statement to select user specific STRDS',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of STRDS names and '
-                               'timestamps and the log of the process chain '
-                               'that was used to create the response.',
-                'schema': StringListProcessingResultResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'STRDS did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(strds_management.get_sync_doc)
     def get(self, location_name, mapset_name):
         """Get a list of all STRDS that are located in a specific location/mapset.
         """
@@ -127,48 +84,7 @@ class STRDSManagementResource(ResourceBase):
     """List all STRDS in a location/mapset
     """
 
-    @swagger.doc({
-        'tags': ['STRDS Management'],
-        'description': 'Get information about a STRDS that is located in a '
-                       'specific location/mapset. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'strds_name',
-                'description': 'The name of the STRDS',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns information about a '
-                               'specific STRDS and the log of the process chain '
-                               'that was used to create the response.',
-                'schema': STRDSInfoResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'information gathering of the STRDS did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(strds_management.get_doc)
     def get(self, location_name, mapset_name, strds_name):
         """Get information about a STRDS that is located in a specific location/mapset.
         """
@@ -184,53 +100,7 @@ class STRDSManagementResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['STRDS Management'],
-        'description': 'Delete a STRDS that is located in a specific location/mapset. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'strds_name',
-                'description': 'The name of the STRDS',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'recursive',
-                'description': 'Delete the STRDS and all registered raster map '
-                               'layer recursively',
-                'required': False,
-                'in': 'query',
-                'type': 'boolean'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Deletion of the STRDS was successfully finished.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'deletion of the STRDS did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(strds_management.delete_doc)
     def delete(self, location_name, mapset_name, strds_name):
         """Delete a STRDS that is located in a specific location/mapset.
         """
@@ -250,52 +120,7 @@ class STRDSManagementResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['STRDS Management'],
-        'description': 'Create a new STRDS in a specific location/mapset. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'strds_name',
-                'description': 'The name of the STRDS',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'metadata',
-                'description': 'Temporal type, title and description of the STRDS',
-                'required': True,
-                'in': 'body',
-                'schema': STRDSCreationModel
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Creation of the STRDS was successfully finished.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'creation of the STRDS did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(strds_management.post_doc)
     def post(self, location_name, mapset_name, strds_name):
         """Create a new STRDS in a specific location/mapset.
         """

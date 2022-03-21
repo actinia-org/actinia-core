@@ -30,10 +30,9 @@ TODO: Tests required
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
+from actinia_api.swagger2.actinia_core.apidocs import download_cache_management
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import \
-    StorageResponseModel, ProcessingResponseModel
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.user_auth import very_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
@@ -51,22 +50,7 @@ class SyncDownloadCacheResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
 
-    @swagger.doc({
-        'tags': ['Cache Management'],
-        'description': 'Get the current size of the download cache. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'The current state of the download cache',
-                'schema': StorageResponseModel
-            },
-            '400': {
-                'description': 'The error message why cache information '
-                               'gathering did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(download_cache_management.get_doc)
     def get(self):
         """Get the current size of the download cache"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -79,21 +63,7 @@ class SyncDownloadCacheResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['Cache Management'],
-        'description': 'Clean the download cache and remove all cached data. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'Processing status of cache deletion',
-                'schema': StorageResponseModel
-            },
-            '400': {
-                'description': 'The error message why cache cleaning did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(download_cache_management.delete_doc)
     def delete(self):
         """Clean the download cache and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
