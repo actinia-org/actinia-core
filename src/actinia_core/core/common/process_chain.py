@@ -41,7 +41,8 @@ from actinia_core.models.process_chain import \
      GrassModule, StdoutParser, Executable, SUPPORTED_EXPORT_FORMATS
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer"
+__author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Julia Haas," \
+             " Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
@@ -385,10 +386,58 @@ class ProcessChainConverter(object):
         if "vector_layer" in entry["import_descr"]:
             layer = entry["import_descr"]["vector_layer"]
         if entry["import_descr"]["type"] == "raster":
+            kwargs = {"file_path": input_source, "raster_name": entry["value"]}
+            resamp_opt = ["nearest", "bilinear", "bicubic, lanczos", "bilinear_f",
+                          "bicubic_f", "lanzcos_f"]
+            resol_opt = ["estimated", "value", "region"]
+
+            if "resample" in entry["import_descr"]:
+                if entry["import_descr"]["resample"] in resamp_opt:
+                    kwargs["resample"] = entry["import_descr"]["resample"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>"
+                                        " Please check if parameter"
+                                        " <resample> is set correctly.")
+
+            if "resolution" in entry["import_descr"]:
+                if entry["import_descr"]["resolution"] in resol_opt:
+                    kwargs["resolution"] = entry["import_descr"]["resolution"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution> is set correctly.")
+                if kwargs["resolution"] == "value" and \
+                        "resolution_value" not in entry["import_descr"]:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution_value> is set.")
+
+            if "resolution_value" in entry["import_descr"]:
+                try:
+                    float(entry["import_descr"]["resolution_value"])
+                    kwargs["resolution_value"] = (entry["import_descr"]
+                                                  ["resolution_value"])
+                except ValueError:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Value for "
+                        "parameter <resolution_value> is not a float.")
+                if "resolution" not in entry["import_descr"]:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set.")
+                if "resolution" in entry["import_descr"] and \
+                        entry["import_descr"]["resolution"] != "value":
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set to <value>.")
+
             import_command = \
                 GeoDataDownloadImportSupport.get_raster_import_command(
-                    file_path=input_source,
-                    raster_name=entry["value"])
+                    **kwargs
+                    )
             rvf_downimport_commands.append(import_command)
         if entry["import_descr"]["type"] == "vector":
             import_command = \
