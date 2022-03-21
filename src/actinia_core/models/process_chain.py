@@ -192,20 +192,22 @@ class InputParameter(IOParameterBase):
             },
             'resample': {
                 'type': 'string',
-                'description': 'Resampling method to use for reprojection of raster map'
-                               '(default: nearest).',
+                'description': 'Resampling method to use for reprojection of raster '
+                               'map (default: nearest).',
                 'enum': ["nearest", "bilinear", "bicubic", "lanczos", "bilinear_f",
                          "bicubic_f", "lanczos_f"]
             },
             'resolution': {
                 'type': 'string',
-                'description': 'Resolution of output raster map (default: estimated).',
+                'description': 'Resolution of output raster map. Estimated, '
+                'user-specified or current region resolution '
+                '(default: estimated).',
                 'enum': ["estimated", "value", "region"]
             },
             'resolution_value': {
                 'type': 'string',
-                'description': 'Resolution of output raster map (use with option'
-                               '"resolution": "value").',
+                'description': 'Resolution of output raster map (use with option '
+                               '"resolution": "value"). Must be convertable to float.',
                 'example': {
                             "import_descr": {
                               "source": "https://example.tiff",
