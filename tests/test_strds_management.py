@@ -26,10 +26,12 @@ Tests: STRDS test case
 """
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
+from actinia_api import URL_PREFIX
+
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
+    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, global_config, URL_PREFIX
+    from test_resource_base import ActiniaResourceTestCaseBase, global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

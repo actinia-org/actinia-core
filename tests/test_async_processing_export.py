@@ -27,10 +27,12 @@ Tests: Async Process export test case
 import unittest
 from flask.json import loads as json_loads, dumps as json_dumps
 import time
+from actinia_api import URL_PREFIX
+
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from .test_resource_base import ActiniaResourceTestCaseBase
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+    from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"

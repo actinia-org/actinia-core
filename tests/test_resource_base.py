@@ -28,7 +28,9 @@ import atexit
 import os
 import signal
 import time
-from actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
+from actinia_api import URL_PREFIX
+
+from actinia_core.testsuite import ActiniaTestCaseBase
 from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
