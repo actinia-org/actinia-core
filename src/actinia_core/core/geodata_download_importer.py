@@ -228,7 +228,8 @@ class GeoDataDownloadImportSupport(object):
             resolution (str): The resolution of the new raster layer
                               Options: estimated, value, region (default: estimated)
             resolution_value (str): Resolution of output raster map (use with option
-                                      resolution=value)
+                                    resolution=value). Must be in units of the target
+                                    coordinate reference system, not in map units.
 
         Returns:
             Process

@@ -207,7 +207,9 @@ class InputParameter(IOParameterBase):
             'resolution_value': {
                 'type': 'string',
                 'description': 'Resolution of output raster map (use with option '
-                               '"resolution": "value"). Must be convertable to float.',
+                               '"resolution": "value") in units of the target '
+                               'coordinate reference system, not in map units. Must '
+                               'be convertable to float.',
                 'example': {
                             "import_descr": {
                               "source": "https://example.tiff",
