@@ -9,13 +9,13 @@
 				"tag": "actiniacore:latest",
 				"dockerfile": "${workspaceFolder}/docker/actinia-core-dev/Dockerfile",
 				"context": "${workspaceFolder}"
-				// "pull": true
+				// "pull": true // use this when an newer image is available
 			}
 		},
 		{
 			"label": "start-redis",
 			"type": "shell",
-			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis redis-queue",
 			"isBackground": true,
 		},
 		{
@@ -64,7 +64,7 @@
 					    "permissions": "rw"
 				    },
 					{
-				    	"localPath": "${workspaceFolder}/docker/actinia-core-data/userdata",
+					    "localPath": "${workspaceFolder}/docker/actinia-core-data/userdata",
 					    "containerPath": "/actinia_core/userdata",
 					    "permissions": "rw"
 				    },

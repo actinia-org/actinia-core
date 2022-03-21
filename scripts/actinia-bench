@@ -37,7 +37,7 @@ __copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. K
 __maintainer__ = "Soeren Gebbert"
 __email__      = "soerengebbert@googlemail.com"
 
-URL_PREFIX = "/api/v2"
+URL_PREFIX = "/api/v3"
 
 PROCESS_CHAIN_ERROR={
    1:{

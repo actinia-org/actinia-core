@@ -60,7 +60,7 @@ from actinia_core.rest.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -549,7 +549,9 @@ class EphemeralProcessing(object):
                 "Unable to send webhook request. Traceback: %s" % str(run_state))
 
     def _post_to_webhook(self, document, type):
-        """Helper method to send a post request to a webhook
+        """Helper method to send a post request to a webhook.
+        The finished webhook will be retried until it is reached of the number
+        of tries is WEBHOOK_RETRIES which can be set in the config.
 
         Args:
             document (str): The response document
@@ -560,19 +562,37 @@ class EphemeralProcessing(object):
         webhook_url = None
         if type == 'finished':
             webhook_url = self.webhook_finished
+            webhook_retries = self.config.WEBHOOK_RETRIES
+            webhook_sleep = self.config.WEBHOOK_SLEEP
         if type == 'update':
             webhook_url = self.webhook_update
+            webhook_retries = 1
+            webhook_sleep = 0
+
         http_code, response_model = pickle.loads(document)
-        if self.webhook_auth:
-            # username is expected to be without colon (':')
-            r = requests.post(
-                webhook_url, json=json.dumps(response_model),
-                auth=HTTPBasicAuth(
-                    self.webhook_auth.split(':')[0],
-                    ':'.join(self.webhook_auth.split(':')[1:])))
-        else:
-            r = requests.post(webhook_url, json=json.dumps(response_model))
-        if r.status_code not in [200, 204]:
+
+        webhook_not_reached = True
+        retry = 0
+        while webhook_not_reached is True and retry < webhook_retries:
+            retry += 1
+            try:
+                if self.webhook_auth:
+                    # username is expected to be without colon (':')
+                    resp = requests.post(
+                        webhook_url, json=json.dumps(response_model),
+                        auth=HTTPBasicAuth(
+                            self.webhook_auth.split(':')[0],
+                            ':'.join(self.webhook_auth.split(':')[1:])),
+                        timeout=10)
+                else:
+                    resp = requests.post(webhook_url, json=json.dumps(response_model),
+                                         timeout=10)
+                if not (500 <= resp.status_code and resp.status_code < 600):
+                    webhook_not_reached = False
+            except Exception:
+                time.sleep(webhook_sleep)
+        if ((webhook_not_reached is False and resp.status_code not in [200, 204])
+                or webhook_not_reached is True):
             raise AsyncProcessError(
                 "Unable to access %s webhook URL %s" % (type, webhook_url))
 

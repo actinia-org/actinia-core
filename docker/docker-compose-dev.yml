@@ -14,16 +14,32 @@ services:
       - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
       - ./actinia-core-data/resources:/actinia_core/resources
       - ../.:/src/actinia_core/.
-      # - ../../actinia-metadata-plugin/:/src/actinia-metadata-plugin/.
-      # - ../../actinia-module-plugin/:/src/actinia-module-plugin/.
-      # - ../../actinia-stac-plugin/:/src/actinia-stac-plugin/.
-      # - ../../actinia-api/:/src/actinia-api/.
     ports:
       - "8088:8088"
     depends_on:
       - redis
+      - redis-queue
     cap_add:
       - SYS_PTRACE
+    networks:
+    -   actinia-dev
+
+  actinia-worker:
+    build:
+      context: ..
+      dockerfile: docker/actinia-core-dev/Dockerfile
+    volumes:
+      - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
+      - ./actinia-core-data/userdata:/actinia_core/userdata
+      - ./actinia-core-data/pgpass:/mnt/pgpass:Z
+      - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
+      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
+      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
+      - ./actinia-core-data/resources:/actinia_core/resources
+      - ../.:/src/actinia_core_worker
+    depends_on:
+      - redis
+      - redis-queue
     networks:
     -   actinia-dev
 
@@ -43,6 +59,25 @@ services:
     ]
     ports:
         - "6379:6379"
+    networks:
+    -   actinia-dev
+
+  redis-queue:
+    image: redis:5.0.4-alpine
+    volumes:
+      - ./redis_queue_data:/data
+    environment:
+      - REDIS_PASS_FILE=/data/config/.redis
+    command: [
+      "sh", "-c",
+      '
+      docker-entrypoint.sh
+      "/data/config/redis.conf"
+      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      '
+    ]
+    ports:
+        - "6377:6379"
     networks:
     -   actinia-dev
 

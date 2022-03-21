@@ -163,7 +163,7 @@ actinia-server --host 0.0.0.0 --port 5000
 8.  Check the service with curl
 
 ```bash
-ACTINIA_VERSION="v2"
+ACTINIA_VERSION="v3"
 export ACTINIA_URL="http://localhost:5000/api/${ACTINIA_VERSION}"
 export AUTH='-u superadmin:abcdefgh'
 

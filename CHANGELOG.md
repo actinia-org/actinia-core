@@ -17,17 +17,100 @@ Types of changes
 ## [Unreleased]
 https://github.com/mundialis/actinia_core/compare/2.3.0...main
 
-## [2.X.X] - YYYY-MM-DD
+## [3.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
 
+## [3.1.3] - 2022-03-11
+released from main
+### Fixed
+* export_strds: specify path to the directory where output is written by @metzm in https://github.com/mundialis/actinia_core/pull/316
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.2...3.1.3
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body` 
+
+
+## [3.1.2] - 2022-02-23
+released from main
+### Changed
+* Move most docker config by @mmacata in https://github.com/mundialis/actinia_core/pull/311
+### Fixed
+* Mark breaking changes by @mmacata in https://github.com/mundialis/actinia_core/pull/312
+### Added
+* Add pipeline to add python wheel to release assets by @mmacata in https://github.com/mundialis/actinia_core/pull/313
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.1...3.1.2
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.2 -f target_commitish=main -q .body`
+ 
+ 
+## [3.1.1] - 2022-02-03
+released from main
+## Added
+* GHA and Dockerfile using github token by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/310
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`
+
+
+## [3.1.0] - 2022-02-02
+released from main
+### Added
+* Add RELEASE.md by @mmacata in https://github.com/mundialis/actinia_core/pull/302
+* Retry webhook by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/299
+
+### Changed
+* allow '&' in parameters for more modules by @metzm in https://github.com/mundialis/actinia_core/pull/308
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.1.0" -f target_commitish=main -q .body`
+
+
+## [3.0.1] - 2022-01-19
+released from main
+### Added
+* CITATION.cff: citable actinia core source code with DOI by @neteler in https://github.com/mundialis/actinia_core/pull/300
+* Add software DOI badge by @neteler
+* Change actinia software DOI badge to generic DOI by @neteler
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.0.0...3.0.1
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.0.1" -f target_commitish=main -q .body`
+
+
+## [3.0.0] - 2022-01-13
+released from main
+### Breaking (API)
+* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296, see also https://github.com/mundialis/actinia-api/pull/2
+### Fixed
+* Fix tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/297
+* Update actinia-api version by @mmacata
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.3.1...3.0.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.0.0" -f target_commitish=main -q .body`
+
+-----------------------------
+
+
+## [2.3.1] - 2021-12-22
+released from main
+### Fixed
+* installation instructions: update by @neteler in https://github.com/mundialis/actinia_core/pull/287
+* update actinia-module-plugin
+
+### Added
+* Test for STAC implementation by @joaherrerama in https://github.com/mundialis/actinia_core/pull/276
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/2.3.0...2.3.1
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="2.3.1" -f target_commitish=main -q .body`
 
 ## [2.3.0] - 2021-12-16
 released from main
-## Added
+### Added
 * STAC in actinia  by @joaherrerama in https://github.com/mundialis/actinia_core/pull/275
 
-## Changed
+### Changed
 * Enhance dev setup by @mmacata in https://github.com/mundialis/actinia_core/pull/288
 * update actinia-api version by @mmacata in https://github.com/mundialis/actinia_core/pull/289
 
@@ -40,11 +123,11 @@ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f t
 
 ## [2.2.0] - 2021-12-08
 released from main
-## Fixed
+### Fixed
 * try to fix uncontrolled data used in path by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/280
 * Add stac plugin to alpine config by @mmacata in https://github.com/mundialis/actinia_core/pull/282
 
-## Added
+### Added
 * Add api_version to version endpoint by @mmacata in https://github.com/mundialis/actinia_core/pull/283
 * Enable debugging via vscode by @mmacata in https://github.com/mundialis/actinia_core/pull/284
 * New splitup in unit and integration tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/285
@@ -56,7 +139,7 @@ generated with
 
 ## [2.0.1] - 2021-11-25
 released from main
-## Fixed
+### Fixed
 * Fix: create user endpoint by @griembauer in https://github.com/mundialis/actinia_core/pull/268
 * revision of examples in actinia documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/269
 * Using v2 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/277
@@ -70,6 +153,8 @@ released from main
 
 ## [2.0.0] - 2021-10-13
 released from main
+### Breaking
+* Add vector upload (isse 180, #260)
 ### Fixed
 * Fix cleanup error (#248)
 * Fix several misspelled words (#254)
@@ -81,7 +166,6 @@ released from main
 ### Added
 * Make the version output more flexible (#252)
 * List all available mapsets (issue 162, #249)
-* Add vector upload (isse 180, #260)
 * Flake8 Linting for test folder (#255)
 
 -----------------------------
@@ -152,10 +236,12 @@ released from main
 released from main
 Happy Codesprint release :) https://github.com/mundialis/actinia_core/projects/1
 
+### Breaking
+* Local GeoTIFF import (#216)
+
 ### Added
 * Get all mapsets locks (#200)
 * gource script for code development visualization (#219)
-* Local GeoTIFF import (#216)
 
 ### Changed
 * rename master to main (#194)
