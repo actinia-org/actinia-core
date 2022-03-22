@@ -49,7 +49,7 @@ class SyncSTRDSListerResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc(strds_management.get_sync_doc)
+    @swagger.doc(strds_management.list_get_doc)
     def get(self, location_name, mapset_name):
         """Get a list of all STRDS that are located in a specific location/mapset.
         """
