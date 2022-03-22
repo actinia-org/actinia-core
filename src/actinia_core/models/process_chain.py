@@ -273,7 +273,7 @@ class OutputParameter(IOParameterBase):
                 'type': 'string',
                 'description': 'Format of the metadata file. Only STAC is supported'
                                'The STAC item builder works just on raster export file.'
-                               'These files are accesable through an STAC Catalog'
+                               'These files are accesible through a STAC Catalog'
                                'and each export is stored as STAC Item',
                 'enum': ['STAC']
             },
