@@ -27,16 +27,16 @@ Tests: AsyncProcess test case
 import pytest
 import unittest
 from flask.json import dumps as json_dumps
-from actinia_api import URL_PREFIX
-
 try:
     from .test_resource_base import (
         ActiniaResourceTestCaseBase,
+        URL_PREFIX,
         additional_external_data
     )
 except ModuleNotFoundError:
     from test_resource_base import (
         ActiniaResourceTestCaseBase,
+        URL_PREFIX,
         additional_external_data
     )
 

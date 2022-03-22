@@ -32,12 +32,11 @@ import unittest
 import time
 import base64
 from random import randint
-from actinia_api import URL_PREFIX
 
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 from actinia_core.core.common.user import ActiniaUser
 
 __license__ = "GPLv3"

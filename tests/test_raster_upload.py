@@ -27,16 +27,16 @@ Tests: Upload raster via endpoint test case
 import os
 import unittest
 import requests
-from actinia_api import URL_PREFIX
-
 try:
     from .test_resource_base import (
         ActiniaResourceTestCaseBase,
+        URL_PREFIX,
         additional_external_data
     )
 except Exception:
     from test_resource_base import (
         ActiniaResourceTestCaseBase,
+        URL_PREFIX,
         additional_external_data
     )
 
