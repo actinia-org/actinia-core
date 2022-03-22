@@ -93,7 +93,7 @@ class STACImporter:
 
         full_filtered_result = stac_search.json()
 
-        if "features" in full_filtered_result\
+        if "features" in full_filtered_result \
                 and len(full_filtered_result["features"]) > 0:
             return full_filtered_result
         else:
