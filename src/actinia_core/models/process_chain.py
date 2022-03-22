@@ -280,7 +280,7 @@ class OutputParameter(IOParameterBase):
             'type': {
                 'type': 'string',
                 'description': 'The type of the output. In this case'
-                               'metadata es the only option currently supported',
+                               'metadata is the only option currently supported',
                 'enum': ['metadata']
             },
             'output_layer': {
