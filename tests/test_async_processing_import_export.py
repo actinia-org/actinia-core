@@ -26,6 +26,7 @@ Tests: Async Process test case
 """
 import os
 import unittest
+import pytest
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import (
@@ -289,6 +290,17 @@ process_chain_stac_source_error_import = {
     "version": 1
 }
 
+process_chain_raster_import_resample = {
+# TODO: adapt process chain, add process results for info/r.univar etc.
+    'list': [{'id': 'r_info',
+              'inputs': [{'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
+                                           'type': 'raster'},
+                          'param': 'map',
+                          'value': 'elev_ned_30m'}],
+              'module': 'r.info',
+              'flags': 'g'}],
+    'version': '1'}
+
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
@@ -441,6 +453,22 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=400, status="error")
+
+    @pytest.mark.dev
+    def test_raster_import_resample(self):
+        """
+        Code test ...
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample),
+                              content_type="application/json")
+
+        # TODO: adapt
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=200, status="finished")
+
+
 
 
 if __name__ == '__main__':
