@@ -108,8 +108,8 @@ class STACImporter:
             for key, value in feature["assets"].items():
                 if "eo:bands" in value:
                     if "common_name" in value["eo:bands"][0]:
-                        if value["eo:bands"][0]["common_name"] in semantic_label\
-                                or value["eo:bands"][0]["name"] in semantic_label\
+                        if value["eo:bands"][0]["common_name"] in semantic_label \
+                                or value["eo:bands"][0]["name"] in semantic_label \
                                 or semantic_label == []:
                             band_name = value["eo:bands"][0]["name"]
                             if band_name not in band_roots:
