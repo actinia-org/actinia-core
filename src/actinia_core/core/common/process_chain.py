@@ -447,9 +447,10 @@ class ProcessChainConverter(object):
 
         # Check for un-allowed characters in the parameter list
         for entry in params:
-            if "&" in entry and module_name != "r.mapcalc":
-                raise AsyncProcessError("Character '&' not supported in process "
-                                        "description for %s" % module_name)
+            if "&" in entry and \
+               module_name not in ("r.mapcalc", "t.rast.mapcalc", "t.rast.algebra"):
+                raise AsyncProcessError("Character '&' not allowed in "
+                                        "parameters for %s" % module_name)
 
         if module_name != "importer" and module_name != "exporter":
             p = Process(exec_type="grass",
