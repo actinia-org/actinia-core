@@ -285,7 +285,7 @@ class OutputParameter(IOParameterBase):
             },
             'output_layer': {
                 'type': 'string',
-                'description': 'Prefix for STAC item name and ID.If not specified,'
+                'description': 'Prefix for STAC item name and ID. If not specified,'
                                'GRASS GIS map layer name is used.'
             },
         },
