@@ -20,6 +20,21 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 ## [3.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+ 
+## [3.2.0] - 2022-03-23
+released from main
+### Added
+* Reactivate redis queue by @mmacata in https://github.com/mundialis/actinia_core/pull/304
+* Importer resampling and resolution by @juleshaas in https://github.com/mundialis/actinia_core/pull/298
+
+### Fixed
+* Simplify lint workflow by @mmacata in https://github.com/mundialis/actinia_core/pull/321
+* adapt s2 importer to work without Google BigQuery by @griembauer in https://github.com/mundialis/actinia_core/pull/295
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.3...3.2.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body` 
+
 
 ## [3.1.3] - 2022-03-11
 released from main

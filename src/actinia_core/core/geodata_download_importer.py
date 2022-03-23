@@ -35,8 +35,8 @@ from actinia_core.core.common.process_object import Process
 from actinia_core.core.utils import get_wget_process, get_mv_process
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 # Mimetypes supported for download
@@ -215,22 +215,40 @@ class GeoDataDownloadImportSupport(object):
         return p
 
     @staticmethod
-    def get_raster_import_command(file_path, raster_name):
+    def get_raster_import_command(file_path, raster_name, resample=None,
+                                  resolution=None, resolution_value=None):
         """Generate raster import process list that makes use of r.import
 
         Args:
-            file_path:
-            raster_name:
+            file_path (str): The path of the raster file to import
+            raster_name (str): The name of the new raster layer
+            resample (str): The resampling method to use for reprojection
+                            Options: nearest, bilinear, bicubic, lanczos, bilinear_f,
+                            bicubic_f, lanczos_f (default: nearest)
+            resolution (str): The resolution of the new raster layer
+                              Options: estimated, value, region (default: estimated)
+            resolution_value (str): Resolution of output raster map (use with option
+                                    resolution=value). Must be in units of the target
+                                    coordinate reference system, not in map units.
 
         Returns:
             Process
 
         """
+        executable_params = ["input=%s" % file_path,
+                             "output=%s" % raster_name,
+                             "--q"]
+
+        if resample is not None:
+            executable_params.append("resample=%s" % resample)
+        if resolution is not None:
+            executable_params.append("resolution=%s" % resolution)
+        if resolution_value is not None:
+            executable_params.append("resolution_value=%s" % resolution_value)
+
         p = Process(exec_type="grass",
                     executable="r.import",
-                    executable_params=["input=%s" % file_path,
-                                       "output=%s" % raster_name,
-                                       "--q"],
+                    executable_params=executable_params,
                     id=f"r_import_{os.path.basename(file_path)}",
                     skip_permission_check=True)
 
