@@ -25,7 +25,7 @@
 Raster map renderer
 """
 from tempfile import NamedTemporaryFile
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+from actinia_core.processing.actinia_processing.ephemeral_processing \
      import EphemeralProcessing
 from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base \
      import EphemeralRendererBase

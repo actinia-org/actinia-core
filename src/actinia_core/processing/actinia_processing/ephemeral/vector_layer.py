@@ -28,7 +28,7 @@ from actinia_api.swagger2.actinia_core.schemas.vector_layer import \
     VectorInfoResponseModel, \
     VectorAttributeModel, VectorInfoModel
 
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+from actinia_core.processing.actinia_processing.ephemeral_processing \
      import EphemeralProcessing
 
 __license__ = "GPLv3"

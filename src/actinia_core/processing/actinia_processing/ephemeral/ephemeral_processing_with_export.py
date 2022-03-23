@@ -26,7 +26,7 @@ Asynchronous computation in specific temporary generated mapsets
 with export of required map layers.
 """
 import os
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+from actinia_core.processing.actinia_processing.ephemeral_processing \
      import EphemeralProcessing
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessTermination
