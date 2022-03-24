@@ -34,8 +34,7 @@ __maintainer__ = "mundialis"
 
 
 EphemeralProcessing = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral'
-     + '.ephemeral_processing'),
+    ('actinia_core.processing.actinia_processing.ephemeral_processing'),
     'EphemeralProcessing')
 
 
