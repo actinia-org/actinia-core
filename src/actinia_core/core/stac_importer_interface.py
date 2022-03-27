@@ -97,7 +97,18 @@ class STACImporter:
                 and len(full_filtered_result["features"]) > 0:
             return full_filtered_result
         else:
-            raise AsyncProcessError("Not matched found")
+            stac_search = requests.get(
+                stac_root_search,
+                json=search_body
+            )
+            full_filtered_result = stac_search.json()
+
+            if "features" in full_filtered_result \
+                    and len(full_filtered_result["features"]) > 0:
+
+                return full_filtered_result
+            else:
+                raise AsyncProcessError("Not matched found")
 
     @staticmethod
     def _get_filtered_bands(stac_items, semantic_label):
@@ -164,11 +175,15 @@ class STACImporter:
                 item_id = value["name_id"]
                 output_name = f"{strd_name}_{item_id}_{key}"
 
+                url_prefix = "/vsicurl/"
+                # Checking if the URL belongs to S3
+                if "s3:" in value["url"]:
+                    url_prefix = "/vsis3/"
+
                 # Upload the image to GRASS
-                exec_params = ["input=%s" % "/vsicurl/" + value["url"],
+                exec_params = ["input=%s" % url_prefix + value["url"],
                                "output=%s" % output_name,
-                               "extent=region",
-                               "resolution=region"]
+                               "extent=region"]
 
                 import_raster = Process(
                         exec_type="grass",
