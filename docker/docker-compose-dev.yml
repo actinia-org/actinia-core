@@ -14,7 +14,6 @@ services:
       - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
       - ./actinia-core-data/resources:/actinia_core/resources
       - ../.:/src/actinia_core/.
-      - ../../actinia-stac-plugin:/src/actinia-stac-plugin/.
     ports:
       - "8088:8088"
     depends_on:
