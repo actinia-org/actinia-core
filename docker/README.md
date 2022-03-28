@@ -73,6 +73,20 @@ To lint your local changes, run
 (cd ../src && flake8 --config=../.flake8 --count --statistics --show-source --jobs=$(nproc) .)
 ```
 
+
+## Local dev-setup with redis queue
+- change queue type to redis in `docker/actinia-core-dev/actinia.cfg`
+- start one actinia-core instance (the job receiver) as usual, eg. with vscode
+- open actinia-core on the command line and run
+`docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
+- inside this container, reinstall actinia-core and start the redis-queue-worker
+    ```
+    pip3 uninstall actinia_core
+    cd /src/actinia_core_worker && pip3 install .
+    rq_custom_worker job_queue_0 -c /etc/default/actinia
+    ```
+
+
 <a id="grass-gis"></a>
 # Testing GRASS GIS inside a container
 

@@ -256,6 +256,44 @@ process_chain_short_large_region = {
     }
 }
 
+process_chain_short_stac = {
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT"
+        },
+        "flags": "p",
+        "verbose": True
+    },
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0"
+        },
+        "outputs": {
+            "aspect": {
+                "name": "my_aspect"
+            },
+            "slope": {
+                "name": "my_slope",
+                "export": {
+                    "format": "GTiff",
+                    "type": "raster"
+                },
+                "metadara": {
+                    "format": "STAC",
+                    "type": "metadata",
+                    "output_layer": "stac"
+                }
+            }
+        },
+        "flags": "a",
+        "overwrite": False,
+        "verbose": True
+    }
+}
 # Wrong export "fromat"
 process_chain_error_1 = {
     1: {
@@ -493,6 +531,23 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
         self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
                                        message_check="AsyncProcessError:")
+
+    def test_stac_export(self):
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.user_auth_header,
+                              data=json_dumps(process_chain_short_stac),
+                              content_type="application/json")
+
+        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
+
+        # Get the exported results
+        urls = resp["urls"]["resources"]
+
+        for url in urls:
+            print(url)
+            rv = self.server.get(url, headers=self.user_auth_header)
+            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
+        time.sleep(1)
 
 
 class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):

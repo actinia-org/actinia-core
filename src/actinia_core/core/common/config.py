@@ -157,8 +157,10 @@ class Configuration(object):
         self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"
         # The port of the redis work queue server
         self.REDIS_QUEUE_SERVER_PORT = 6379
+        # The password of the redis work queue server
+        self.REDIS_QUEUE_SERVER_PASSWORD = None
         # This is the time the rq:job will be stored in the redis
-        self.REDIS_QUEUE_JOB_TTL = 0
+        self.REDIS_QUEUE_JOB_TTL = None
         # The base name of the redis worker queue, it will be extended by a
         # numerical suffix that represents the worker id/number database to
         # re-queue it, usually this is not necessary
@@ -179,6 +181,9 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
+        # Type of queue. Can be "local" or "redis". If redis is set, job can
+        # be received and executed from different actinia instances
+        self.QUEUE_TYPE = "local"
 
         """
         LOGGING
@@ -289,6 +294,8 @@ class Configuration(object):
         config.set('REDIS', 'REDIS_QUEUE_SERVER_URL', self.REDIS_QUEUE_SERVER_URL)
         config.set('REDIS', 'REDIS_QUEUE_SERVER_PORT',
                    str(self.REDIS_QUEUE_SERVER_PORT))
+        config.set('REDIS', 'REDIS_QUEUE_SERVER_PASSWORD',
+                   str(self.REDIS_QUEUE_SERVER_PASSWORD))
         config.set('REDIS', 'REDIS_QUEUE_JOB_TTL', str(self.REDIS_QUEUE_JOB_TTL))
         config.set('REDIS', 'WORKER_QUEUE_NAME', str(self.WORKER_QUEUE_NAME))
         config.set('REDIS', 'WORKER_LOGFILE', str(self.WORKER_LOGFILE))
@@ -299,6 +306,7 @@ class Configuration(object):
         config.set('MISC', 'TMP_WORKDIR', self.TMP_WORKDIR)
         config.set('MISC', 'SECRET_KEY', self.SECRET_KEY)
         config.set('MISC', 'SAVE_INTERIM_RESULTS', str(self.SAVE_INTERIM_RESULTS))
+        config.set('MISC', 'QUEUE_TYPE', self.QUEUE_TYPE)
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
@@ -419,6 +427,9 @@ class Configuration(object):
                 if config.has_option("REDIS", "REDIS_QUEUE_SERVER_PORT"):
                     self.REDIS_QUEUE_SERVER_PORT = config.get(
                         "REDIS", "REDIS_QUEUE_SERVER_PORT")
+                if config.has_option("REDIS", "REDIS_QUEUE_SERVER_PASSWORD"):
+                    self.REDIS_QUEUE_SERVER_PASSWORD = config.get(
+                        "REDIS", "REDIS_QUEUE_SERVER_PASSWORD")
                 if config.has_option("REDIS", "REDIS_QUEUE_JOB_TTL"):
                     self.REDIS_QUEUE_JOB_TTL = config.get(
                         "REDIS", "REDIS_QUEUE_JOB_TTL")
@@ -442,6 +453,9 @@ class Configuration(object):
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
                     self.SAVE_INTERIM_RESULTS = config.getboolean(
                         "MISC", "SAVE_INTERIM_RESULTS")
+                if config.has_option("MISC", "QUEUE_TYPE"):
+                    self.QUEUE_TYPE = config.get(
+                        "MISC", "QUEUE_TYPE")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

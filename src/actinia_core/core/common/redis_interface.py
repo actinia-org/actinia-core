@@ -28,6 +28,7 @@ import rq
 from redis import Redis
 from actinia_core.core.redis_user import redis_user_interface
 from actinia_core.core.redis_api_log import redis_api_log_interface
+from actinia_core.core.logging_interface import log
 from .config import global_config
 from .process_queue import enqueue_job as enqueue_job_local
 
@@ -43,7 +44,7 @@ redis_conn = None
 num_queues = None
 
 
-def create_job_queues(host, port, num_of_queues):
+def __create_job_queues(host, port, password, num_of_queues):
     """Create the job queues for asynchronous processing
 
     TODO: The redis queue approach does not work and is deactivated
@@ -60,20 +61,24 @@ def create_job_queues(host, port, num_of_queues):
     """
     # Redis work queue and connection
     global job_queues, redis_conn, num_queues
-
-    redis_conn = Redis(host=host, port=port)
+    kwargs = dict()
+    kwargs['host'] = host
+    kwargs['port'] = port
+    if password and password is not None:
+        kwargs['password'] = password
+    redis_conn = Redis(**kwargs)
     num_queues = num_of_queues
 
     for i in range(num_of_queues):
         name = "%s_%i" % (global_config.WORKER_QUEUE_NAME, i)
 
         string = "Create queue %s with server %s:%s" % (name, host, port)
-        print(string)
+        log.info(string)
         queue = rq.Queue(name, connection=redis_conn)
         job_queues.append(queue)
 
 
-def enqueue_job(timeout, func, *args):
+def __enqueue_job_local(timeout, func, *args):
     """Execute the provided function in a subprocess
 
     Args:
@@ -97,7 +102,7 @@ def enqueue_job(timeout, func, *args):
     return
 
 
-def enqueue_job_old(timeout, func, *args):
+def __enqueue_job_redis(timeout, func, *args):
     """Enqueue a job in the job queues
 
     TODO: The redis queue approach does not work and is deactivated
@@ -106,7 +111,7 @@ def enqueue_job_old(timeout, func, *args):
     to chose for each job a different queue
 
     Note:
-        The function create_job_queues() must be run
+        The function __create_job_queues() must be run
         before a job can be enqueued.
 
     Args:
@@ -125,14 +130,19 @@ def enqueue_job_old(timeout, func, *args):
     num = redis_conn.incr("actinia_worker_count", 1)
     # Compute the current
     current_queue = num % num_queues
-    print("###  Enqueue job in queue %i" % current_queue)
+    log.info("Enqueue job in queue %i" % current_queue)
+
+    # Below timeout is defined in resource_base.pyL295:
+    # int(process_time_limit * process_num_limit * 20)
+    # which is 630720000000 and raises in worker:
+    # OverflowError: Python int too large to convert to C int
     ret = job_queues[current_queue].enqueue(
         func,
         *args,
-        timeout=timeout,
+        # job_timeout=timeout,
         ttl=global_config.REDIS_QUEUE_JOB_TTL,
         result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
-    print(ret)
+    log.info(ret)
 
     return current_queue
 
@@ -159,3 +169,19 @@ def disconnect():
     """
     redis_user_interface.disconnect()
     redis_api_log_interface.disconnect()
+
+
+def enqueue_job(timeout, func, *args):
+
+    global job_queues
+
+    if job_queues == []:
+        __create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
+                            global_config.REDIS_QUEUE_SERVER_PORT,
+                            global_config.REDIS_QUEUE_SERVER_PASSWORD,
+                            global_config.NUMBER_OF_WORKERS)
+
+    if (global_config.QUEUE_TYPE == "redis"):
+        __enqueue_job_redis(timeout, func, *args)
+    elif (global_config.QUEUE_TYPE == "local"):
+        __enqueue_job_local(timeout, func, *args)

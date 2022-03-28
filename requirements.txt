@@ -30,6 +30,8 @@ setuptools
 uWSGI>=2.0.17
 wheel
 geopandas
+rasterio==1.2.10
+pystac==0.5.6
 
 # not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
 # torch
@@ -52,4 +54,11 @@ geopandas
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
 # google-cloud-bigquery needs libffi-dev
 
+<<<<<<< HEAD
 # scikit-learn
+=======
+# required for running i.sentinel.download from GCS:
+pandas
+sentinelsat
+tqdm
+>>>>>>> 9cc9e38b92258fd118f3d6ee3dc8db3494afc61f
