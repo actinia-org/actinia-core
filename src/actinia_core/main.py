@@ -32,7 +32,7 @@ from .health_check import health_check
 from .version import version, init_versions
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
-from actinia_core.core.common.redis_interface import connect, create_job_queues
+from actinia_core.core.common.redis_interface import connect
 from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
@@ -67,12 +67,6 @@ del redis_args
 
 # Create the process queue
 create_process_queue(global_config)
-
-# Disabled since the redis queue does not work in Python3
-# Create the job queue for redis
-# create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-#                  global_config.REDIS_QUEUE_SERVER_PORT,
-#                  global_config.NUMBER_OF_WORKERS)
 
 ###############################################################################
 if __name__ == '__main__':

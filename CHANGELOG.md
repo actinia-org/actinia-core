@@ -20,6 +20,65 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 ## [3.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+ 
+## [3.2.0] - 2022-03-23
+released from main
+### Added
+* Reactivate redis queue by @mmacata in https://github.com/mundialis/actinia_core/pull/304
+* Importer resampling and resolution by @juleshaas in https://github.com/mundialis/actinia_core/pull/298
+
+### Fixed
+* Simplify lint workflow by @mmacata in https://github.com/mundialis/actinia_core/pull/321
+* adapt s2 importer to work without Google BigQuery by @griembauer in https://github.com/mundialis/actinia_core/pull/295
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.3...3.2.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body` 
+
+
+## [3.1.3] - 2022-03-11
+released from main
+### Fixed
+* export_strds: specify path to the directory where output is written by @metzm in https://github.com/mundialis/actinia_core/pull/316
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.2...3.1.3
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body` 
+
+
+## [3.1.2] - 2022-02-23
+released from main
+### Changed
+* Move most docker config by @mmacata in https://github.com/mundialis/actinia_core/pull/311
+### Fixed
+* Mark breaking changes by @mmacata in https://github.com/mundialis/actinia_core/pull/312
+### Added
+* Add pipeline to add python wheel to release assets by @mmacata in https://github.com/mundialis/actinia_core/pull/313
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.1...3.1.2
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.2 -f target_commitish=main -q .body`
+ 
+ 
+## [3.1.1] - 2022-02-03
+released from main
+## Added
+* GHA and Dockerfile using github token by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/310
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`
+
+
+## [3.1.0] - 2022-02-02
+released from main
+### Added
+* Add RELEASE.md by @mmacata in https://github.com/mundialis/actinia_core/pull/302
+* Retry webhook by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/299
+
+### Changed
+* allow '&' in parameters for more modules by @metzm in https://github.com/mundialis/actinia_core/pull/308
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="3.1.0" -f target_commitish=main -q .body`
+
 
 ## [3.0.1] - 2022-01-19
 released from main
@@ -35,8 +94,8 @@ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f t
 
 ## [3.0.0] - 2022-01-13
 released from main
-### Changed
-* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296
+### Breaking (API)
+* Actinia core v3 by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/296, see also https://github.com/mundialis/actinia-api/pull/2
 ### Fixed
 * Fix tests by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/297
 * Update actinia-api version by @mmacata
@@ -109,6 +168,8 @@ released from main
 
 ## [2.0.0] - 2021-10-13
 released from main
+### Breaking
+* Add vector upload (isse 180, #260)
 ### Fixed
 * Fix cleanup error (#248)
 * Fix several misspelled words (#254)
@@ -120,7 +181,6 @@ released from main
 ### Added
 * Make the version output more flexible (#252)
 * List all available mapsets (issue 162, #249)
-* Add vector upload (isse 180, #260)
 * Flake8 Linting for test folder (#255)
 
 -----------------------------
@@ -191,10 +251,12 @@ released from main
 released from main
 Happy Codesprint release :) https://github.com/mundialis/actinia_core/projects/1
 
+### Breaking
+* Local GeoTIFF import (#216)
+
 ### Added
 * Get all mapsets locks (#200)
 * gource script for code development visualization (#219)
-* Local GeoTIFF import (#216)
 
 ### Changed
 * rename master to main (#194)
