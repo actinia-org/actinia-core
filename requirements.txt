@@ -21,6 +21,7 @@ psutil>=5.7.0
 pyproj==2.6
 python-json-logger
 python-magic>=0.4.15
+# scikit-learn
 Sphinx>=1.7.1
 threadpoolctl==2.1.0
 redis>=2.10.6
