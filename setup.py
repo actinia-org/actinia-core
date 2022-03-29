@@ -45,7 +45,7 @@ entry_points = """
 def setup_package():
     needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
     sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0', "rasterio"] + sphinx,
+    setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0', "rasterio==1.2.10"] + sphinx,
           entry_points=entry_points,
           use_pyscaffold=True,
           scripts=['scripts/actinia-user',
