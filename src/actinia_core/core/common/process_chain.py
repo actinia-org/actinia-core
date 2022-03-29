@@ -41,8 +41,9 @@ from actinia_core.models.process_chain import \
      GrassModule, StdoutParser, Executable, SUPPORTED_EXPORT_FORMATS
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Julia Haas," \
+             " Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -185,7 +186,6 @@ class ProcessChainConverter(object):
             else:
                 raise AsyncProcessError("Unknown process description "
                                         "in the process chain definition")
-
         downimp_list = self._create_download_process_list()
         downimp_list.extend(process_list)
 
@@ -279,6 +279,64 @@ class ProcessChainConverter(object):
 
         return sentinel_commands
 
+    def _collect_sentinel_scenes_bands(self, entries):
+        """ Helper Method to collect all individual scenes and bands from
+            different importer modules used througout the process chain
+        """
+        scenes_bands = []
+        # sort by source (scene ID) and bands
+        scene_ids = []
+        for entry in entries:
+            scene_id = entry["import_descr"]["source"]
+            band = entry["import_descr"]["sentinel_band"]
+            output = entry["value"]
+            if scene_id not in scene_ids:
+                scene_ids.append(scene_id)
+                scene = {"scene_id": scene_id,
+                         "bands": [band],
+                         "outputs": [output]}
+                scenes_bands.append(scene)
+            else:
+                scindex = scene_ids.index(scene_id)
+                scenes_bands[scindex]["bands"].append(band)
+                scenes_bands[scindex]["outputs"].append(output)
+        return scenes_bands
+
+    def _get_sentinel_import_commands(self, entries):
+        """ Method to get the Sentinel download and import commands using GCS
+            without login
+        """
+        sentinel_commands = []
+        scenes_bands = self._collect_sentinel_scenes_bands(entries)
+        for scene in scenes_bands:
+            scene_id = scene["scene_id"]
+            download_cache = f"download_cache_{scene_id}"
+            self.temporary_pc_files[download_cache] = \
+                self.generate_temp_file_path()
+            sp = Sentinel2Processing(
+                bands=scene["bands"],
+                download_cache=self.temporary_pc_files[download_cache],
+                message_logger=self.message_logger,
+                send_resource_update=self.send_resource_update,
+                product_id=scene_id)
+
+            download_commands, import_file_info = \
+                sp.get_sentinel2_download_process_list_without_query()
+            scene_commands = download_commands
+            import_commands = sp.get_sentinel2_import_process_list_without_query()
+            scene_commands.extend(import_commands)
+            for idx, band in enumerate(scene["bands"]):
+                output = scene["outputs"][idx]
+                p = Process(
+                    exec_type="grass",
+                    executable="g.rename",
+                    id=f"rename_{scene_id}_{band}",
+                    executable_params=[
+                        f"raster={import_file_info[band][1]},{output}"])
+                scene_commands.append(p)
+            sentinel_commands.extend(scene_commands)
+        return sentinel_commands
+
     def _get_postgis_import_command(self, entry):
         """Helper method to get the import command for postgis.
 
@@ -328,10 +386,58 @@ class ProcessChainConverter(object):
         if "vector_layer" in entry["import_descr"]:
             layer = entry["import_descr"]["vector_layer"]
         if entry["import_descr"]["type"] == "raster":
+            kwargs = {"file_path": input_source, "raster_name": entry["value"]}
+            resamp_opt = ["nearest", "bilinear", "bicubic, lanczos", "bilinear_f",
+                          "bicubic_f", "lanzcos_f"]
+            resol_opt = ["estimated", "value", "region"]
+
+            if "resample" in entry["import_descr"]:
+                if entry["import_descr"]["resample"] in resamp_opt:
+                    kwargs["resample"] = entry["import_descr"]["resample"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>"
+                                        " Please check if parameter"
+                                        " <resample> is set correctly.")
+
+            if "resolution" in entry["import_descr"]:
+                if entry["import_descr"]["resolution"] in resol_opt:
+                    kwargs["resolution"] = entry["import_descr"]["resolution"]
+                else:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution> is set correctly.")
+                if kwargs["resolution"] == "value" and \
+                        "resolution_value" not in entry["import_descr"]:
+                    raise AsyncProcessError(
+                                        "Error while running executable <r.import>."
+                                        " Please check if parameter"
+                                        " <resolution_value> is set.")
+
+            if "resolution_value" in entry["import_descr"]:
+                try:
+                    float(entry["import_descr"]["resolution_value"])
+                    kwargs["resolution_value"] = (entry["import_descr"]
+                                                  ["resolution_value"])
+                except ValueError:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Value for "
+                        "parameter <resolution_value> is not a float.")
+                if "resolution" not in entry["import_descr"]:
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set.")
+                if "resolution" in entry["import_descr"] and \
+                        entry["import_descr"]["resolution"] != "value":
+                    raise AsyncProcessError(
+                        "Error while running executable <r.import>. Please check "
+                        "if parameter <resolution> is set to <value>.")
+
             import_command = \
                 GeoDataDownloadImportSupport.get_raster_import_command(
-                    file_path=input_source,
-                    raster_name=entry["value"])
+                    **kwargs
+                    )
             rvf_downimport_commands.append(import_command)
         if entry["import_descr"]["type"] == "vector":
             import_command = \
@@ -447,9 +553,10 @@ class ProcessChainConverter(object):
 
         # Check for un-allowed characters in the parameter list
         for entry in params:
-            if "&" in entry and module_name != "r.mapcalc":
-                raise AsyncProcessError("Character '&' not supported in process "
-                                        "description for %s" % module_name)
+            if "&" in entry and \
+               module_name not in ("r.mapcalc", "t.rast.mapcalc", "t.rast.algebra"):
+                raise AsyncProcessError("Character '&' not allowed in "
+                                        "parameters for %s" % module_name)
 
         if module_name != "importer" and module_name != "exporter":
             p = Process(exec_type="grass",
@@ -579,6 +686,7 @@ class ProcessChainConverter(object):
             self.message_logger.info("Creating download process "
                                      "list for all import definitions")
 
+        sentinel2_entries = []
         for entry in self.import_descr_list:
             if self.message_logger:
                 self.message_logger.info(entry)
@@ -601,8 +709,11 @@ class ProcessChainConverter(object):
 
             # SENTINEL
             elif entry["import_descr"]["type"].lower() == "sentinel2":
-                sentinel_commands = self._get_sentinel_import_command(entry)
-                downimp_list.extend(sentinel_commands)
+                # Old style using Google Big Query. Uncomment/Comment in here
+                # to switch.
+                # sentinel_commands = self._get_sentinel_import_command(entry)
+                # downimp_list.extend(sentinel_commands)
+                sentinel2_entries.append(entry)
 
             # LANDSAT
             elif entry["import_descr"]["type"].lower() == "landsat":
@@ -623,6 +734,10 @@ class ProcessChainConverter(object):
                     "Unknown import type specification: %s"
                     % entry["import_descr"]["type"])
 
+        if len(sentinel2_entries) > 0:
+            # put all Sentinel-2 downloading together
+            sentinel_commands = self._get_sentinel_import_commands(sentinel2_entries)
+            downimp_list.extend(sentinel_commands)
         return downimp_list
 
     # TODO: remove legacy methods and do no use them in actinia_core

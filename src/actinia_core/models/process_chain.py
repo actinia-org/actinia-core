@@ -137,7 +137,7 @@ class InputParameter(IOParameterBase):
             },
             'vector_layer': {
                 'type': 'string',
-                'description': 'The name of the layer that should be imported form '
+                'description': 'The name of the layer that should be imported from '
                                'the vector file or postGIS database'
             },
             'source': {
@@ -156,18 +156,18 @@ class InputParameter(IOParameterBase):
             },
             'semantic_label': {
                 'type': 'string',
-                'description': 'Refers to the common names use to'
+                'description': 'Refers to the common names used to'
                                'call the bands of an image,'
                                'for example: red, blue, nir, swir'
-                               'However, this property also accept the band name'
+                               'However, this property also accepts the band name'
                                'such as B1, B8 etc. The semantic labeling should match'
                                'the labels register in the stac collection.',
                 'example': 'red, blue, nir or B1, B2, B8A'
             },
             'extent': {
                 'type': 'string',
-                'description': 'Spatio-temporal constrain defined by the user'
-                               'troughout bbox and interval concept.',
+                'description': 'Spatio-temporal constraint defined by the user'
+                               'throughout bbox and interval concept.',
                 'enum': ["spatial", "temporal"],
                 'example': {
                     "spatial": {
@@ -188,6 +188,36 @@ class InputParameter(IOParameterBase):
                             "lt": 50
                         }
                     }
+                }
+            },
+            'resample': {
+                'type': 'string',
+                'description': 'Resampling method to use for reprojection of raster '
+                               'map (default: nearest).',
+                'enum': ["nearest", "bilinear", "bicubic", "lanczos", "bilinear_f",
+                         "bicubic_f", "lanczos_f"]
+            },
+            'resolution': {
+                'type': 'string',
+                'description': 'Resolution of output raster map. Estimated, '
+                'user-specified or current region resolution '
+                '(default: estimated).',
+                'enum': ["estimated", "value", "region"]
+            },
+            'resolution_value': {
+                'type': 'string',
+                'description': 'Resolution of output raster map (use with option '
+                               '"resolution": "value") in units of the target '
+                               'coordinate reference system, not in map units. Must '
+                               'be convertable to float.',
+                'example': {
+                            "import_descr": {
+                              "source": "https://example.tiff",
+                              "type": "raster",
+                              "resample": "bilinear_f",
+                              "resolution": "value",
+                              "resolution_value": "100"
+                            }
                 }
             },
             'basic_auth': {
@@ -265,6 +295,22 @@ class OutputParameter(IOParameterBase):
                     "type": "vector",
                     "dbstring": "PG:host=localhost dbname=postgis user=postgres",
                     "output_layer": "roads"}
+    }
+    properties["metadata"] = {
+        'type': 'object',
+        'properties': {
+            'format': {
+                'type': 'string',
+                'description': 'Format of the metadata file. Only STAC is supported'
+                               'The STAC item builder works just on raster export file.'
+                               'These files are accesible through a STAC Catalog'
+                               'and each export is stored as STAC Item',
+                'enum': ['STAC']
+            },
+        },
+        'description': 'The STAC file export parameter.',
+        'required': ["format", "type"],
+        'example':  {"format": "STAC"}
     }
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
@@ -509,6 +555,11 @@ class ProcessChainModel(Schema):
                 'id': 'exporter_1',
                 'outputs': [{'export': {'format': 'GTiff',
                                         'type': 'raster'},
+                             'metadata': {
+                                    'format': 'STAC',
+                                    'type': 'metadata',
+                                    'output_layer': 'stac_result'
+                             },
                              'param': 'map',
                              'value': 'LT52170762005240COA00_dos1.1'}]
         },

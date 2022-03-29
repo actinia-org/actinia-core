@@ -157,6 +157,23 @@ def hint(actinia_path):
 
     return make_response(jsonify(LinkResponseModel(
             status="Not found",
-            message=("Are you looking for the current api version? "
-                     "Change 'v1' to 'v2' in the URL."),
+            message=("Are you looking for the current API version? "
+                     "Change 'v1' to 'v3' in the URL."),
+            links=[url]), 404))
+
+
+@flask_app.route("/api/v2/<path:actinia_path>")
+def hint_v2(actinia_path):
+    """Return a hint that this version is no longer installed. If an older
+    version is installed, this endpoint will be overwritten by a proxy.
+
+    Returns: Response
+
+    """
+    url = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path
+
+    return make_response(jsonify(LinkResponseModel(
+            status="Not found",
+            message=("Are you looking for the current API version? "
+                     "Change 'v2' to 'v3' in the URL."),
             links=[url]), 404))

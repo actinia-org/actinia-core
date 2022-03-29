@@ -12,7 +12,7 @@ docker-compose -f docker/docker-compose.yml up
 ```
 Now you have a running actinia instance locally! Check with
 ```
-curl http://127.0.0.1:8088/api/v2/version
+curl http://127.0.0.1:8088/api/v3/version
 ```
 
 * Having __trouble__? See [How to fix common startup errors](#startup-errors) below.
@@ -20,22 +20,6 @@ curl http://127.0.0.1:8088/api/v2/version
 * For __production deployment__, see [Production deployment](#production-deployment) below.
 
 On startup, some GRASS GIS locations are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis)  below.
-
-
-# actinia version matrix
-
-| docker image  | actinia-core                           | actinia-core-latest                      | actinia-core-dev       | actinia-core-prod           |
-|---------------|----------------------------------------|------------------------------------------|------------------------|-----------------------------|
-| base image    | mundialis/grass-py3-pdal:stable-ubuntu | mundialis/grass-py3-pdal:latest-ubuntu   | mundialis/actinia-core | mundialis/actinia-core:0.99 |
-| [dockerhub tag](https://hub.docker.com/repository/docker/mundialis/actinia-core/tags) | mundialis/actinia:stable | mundialis/actinia:latest |    |       |
-| Linux version | Ubuntu 20.04                           | Ubuntu 20.04                             |                        |                             |
-| GRASS GIS     | 7.8.x                                  | 7.9.x                                    |                        |                             |
-| GDAL          | 3.0.4                                  | 3.0.4                                    |                        |                             |
-| PROJ          | 6.3.1                                  | 6.3.1                                    |                        |                             |
-| PDAL          | 2.2.0                                  | 2.2.0                                    |                        |                             |
-| Python        | 3.8.5                                  | 3.8.5                                    |                        |                             |
-
-Latest update: 16 Dec 2020
 
 <a id="startup-errors"></a>
 # How to fix common startup errors
@@ -90,39 +74,18 @@ To lint your local changes, run
 ```
 
 
-## Local dev-setup for actinia-core plugins
-To also integrate dev setup for actinia-core plugins
-(eg. actinia-actinia-metadata-plugin or actinia-module-plugin), uninstall them
-in actinia-core-dev/Dockerfile (see outcommented code), build and run like
-described above and rebuild from your mounted source code:
-```
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+## Local dev-setup with redis queue
+- change queue type to redis in `docker/actinia-core-dev/actinia.cfg`
+- start one actinia-core instance (the job receiver) as usual, eg. with vscode
+- open actinia-core on the command line and run
+`docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
+- inside this container, reinstall actinia-core and start the redis-queue-worker
+    ```
+    pip3 uninstall actinia_core
+    cd /src/actinia_core_worker && pip3 install .
+    rq_custom_worker job_queue_0 -c /etc/default/actinia
+    ```
 
-(cd /src/actinia_core && python3 setup.py install)
-(cd /src/actinia-metadata-plugin && python3 setup.py install)
-(cd /src/actinia-module-plugin && python3 setup.py install)
-
-# you can also run tests here, eg.
-(cd /src/actinia-module-plugin && python3 setup.py test)
-
-gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
-```
-
-To avoid cache problems, remove the packaged actinia_core (already done in Dockerfile)
-```
-pip3 uninstall actinia_core -y
-```
-If you have other problems with cache, run
-```
-python3 setup.py clean --all
-```
-To reach kibana (only setup in docker-compose-dev.yml, currently outcommented), open http://127.0.0.1:5601 in your browser.
-
-If if elasticsearch is shutting down immediately (if used), check logs with
-```
-docker logs docker_elasticsearch_1
-```
 
 <a id="grass-gis"></a>
 # Testing GRASS GIS inside a container
@@ -146,60 +109,17 @@ grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.info -g myrandom
 You now have some data which you can access through actinia. To get information
 via API, start actinia with gunicorn and run
 ```
-curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v2/locations/nc_spm_08/mapsets
+curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v3/locations/nc_spm_08/mapsets
 ```
 The folder where you downloaded the data into (`/actinia_core/grassdb`) is mounted into your docker container via the compose file, so all data is kept, even if your docker container restarts.
 
 If you want to download the data not from inside the container but from your normal system, download https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz, extract it and place it into actinia-core/docker/actinia-core-data/grassdb/
 
 <a id="production-deployment"></a>
-# Production deployment
+# Production and Cloud deployment
 
-To run actinia_core in production systems, you can use the docker-compose-prod.yml. Please change before the default redis password in redis_data/config/.redis and inside the actinia.cfg. To start the server, run:
+To run actinia_core in production systems, best with multiple actinia_core instances, find more detailed information in the dedicated [actinia-docker](https://github.com/mundialis/actinia-docker) repository.
 
-```
-docker-compose -f docker-compose-prod.yml build
-docker-compose -f docker-compose-prod.yml up -d
-```
-Then actinia runs at 'http://127.0.0.1:8088' and depending on your server settings might be accessible from outside. Because of this the start.sh is overwritten to not create any user to avoid security vulnerability. You will have to use a clean redis database to avoid stored actinia credentials from previous runs. You have to create the user by yourself by using the built-in actinia-user cli. __Please change below username (-u) and password (-w)__:
-```
-# list help about the cli tool:
-docker-compose -f docker-compose-prod.yml exec actinia \
-    actinia-user --help
-
-# create a user and grant permissions to mapsets:
-docker-compose -f docker-compose-prod.yml exec actinia \
-    actinia-user create -u actinia-core -w actinia-core -r user -g user -c 100000000 -n 1000 -t 6000
-docker-compose -f docker-compose-prod.yml exec actinia \
-    actinia-user update -u actinia-core -d nc_spm_08/PERMANENT
-```
-Read more about user roles here: https://actinia.mundialis.de/tutorial/actinia_concepts.html#user-user-roles-and-user-groups
-
-# Testing the actinia server
-
-After deployment, you should be able to access the endpoints.
-
-Examples:
-
-* https://actinia.mundialis.de/latest/version
-* https://actinia.mundialis.de/latest/health_check
-* requires authorization (actinia user):
-    * https://actinia.mundialis.de/api/v2/locations
-
-# Cloud deployment with multiple actinia_core instances
-
-For cloud deployment, you can use the `docker-swarm.sh` script as a starting point.
-
-Shutdown current actinia swarm:
-```
-docker stack rm actinia_swarm
-docker swarm leave --force
-```
-Start new actinia swarm:
-```
-bash docker-swarm.sh
-```
-See the scripts for hints.
 
 # Building the API documentation
 

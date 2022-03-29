@@ -39,6 +39,7 @@ from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
+from actinia_core.core.stac_exporter_interface import STACExporter
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -69,6 +70,12 @@ The persistent database will not be modified. The ephemeral database will be
 removed after processing.
 Use the URL's provided in the finished response to download the resource that
 were specified in the process chain for export.
+
+**Note**
+
+    The endpoint allows the creation of STAC ITEMS through the
+    ACTINIA STAC PLUGIN the STAC item is stored in a dedicated
+    CATALOG following the standard from STAC specification (https://stacspec.org/)
 """
 
 
@@ -321,6 +328,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             "input=%s" % strds_name,
             "format=%s" % format,
             "output=%s" % output_path,
+            "directory=%s" % self.temp_file_path,
             "compression=%s" % "gzip"
         ]
         # optimized for GTiff
@@ -535,6 +543,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         raster_name=file_name,
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region)
+
                 elif output_type == "vector":
                     if "PostgreSQL" in resource["export"]["format"]:
                         dbstring = resource["export"]["dbstring"]
@@ -580,6 +589,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 if output_path is not None:
                     resource_url = self.storage_interface.store_resource(output_path)
                     self.resource_url_list.append(resource_url)
+
+                    if "metadata" in resource:
+                        if resource["metadata"]["format"] == "STAC":
+                            stac = STACExporter()
+
+                            stac_catalog = stac.stac_builder(resource_url, file_name,
+                                                             output_type)
+                            self.resource_url_list.append(stac_catalog)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses

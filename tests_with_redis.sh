@@ -24,5 +24,12 @@ else
   python3 setup.py test
 fi
 
+TEST_RES=$?
+
 # stop redis server
 redis-cli shutdown
+
+# stop webhook server
+curl http://0.0.0.0:5005/shutdown
+
+return $TEST_RES

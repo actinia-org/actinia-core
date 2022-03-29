@@ -10,6 +10,7 @@ max-line-length = 88
 exclude =
     .git,
     __pycache__,
+    build,
     .env,
     .eggs,
     .venv,
@@ -23,14 +24,15 @@ exclude =
     testsuite,
 
 per-file-ignores =
-    ./actinia_core/core/common/api_logger.py: F401
-    ./actinia_core/core/common/app.py: E402, E501
-    ./actinia_core/testsuite.py: F401
-    ./actinia_core/rest/ephemeral_processing.py: F401, W605
-    ./actinia_core/core/storage_interface_gcs.py: F401
-    ./actinia_core/main.py: F401
-    ./actinia_core/core/common/process_queue.py: F401
-    ./actinia_core/models/process_chain.py: W605
-    ./actinia_core/core/interim_results.py: W605
-    ./actinia_core/core/list_grass_modules.py: F821
-    ./actinia_core/core/common/aws_sentinel_interface.py: E501
+    ./src/actinia_core/core/common/api_logger.py: F401
+    ./src/actinia_core/core/common/app.py: E402, E501
+    ./src/actinia_core/testsuite.py: F401
+    ./src/actinia_core/rest/ephemeral_processing.py: F401, W605
+    ./src/actinia_core/core/storage_interface_gcs.py: F401
+    ./src/actinia_core/main.py: F401
+    ./src/actinia_core/core/common/process_queue.py: F401
+    ./src/actinia_core/models/process_chain.py: W605
+    ./src/actinia_core/core/interim_results.py: W605
+    ./src/actinia_core/core/list_grass_modules.py: F821
+    ./src/actinia_core/core/common/aws_sentinel_interface.py: E501
+    ./tests/*: E501, F401
