@@ -132,7 +132,7 @@ class STACImporter:
                             band_roots[band_name]["datetime"] = item_date
         return band_roots
 
-    def _stac_import(self, stac_collection_id=None, semantic_label=[],
+    def _stac_import(self, stac_collection_id=None, semantic_label=None,
                      interval=None, bbox=None, filter=None, strd_name=None):
 
         if has_plugin:
