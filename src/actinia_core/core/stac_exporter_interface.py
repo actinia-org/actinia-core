@@ -37,7 +37,7 @@ from datetime import datetime
 import numpy as np
 import pyproj
 from pystac import Item, read_dict, Catalog, Asset
-from pystac.extensions.projection import ProjectionItemExt
+from pystac.extensions.projection import ItemProjectionExtension as ProjectionItemExt
 from shapely.ops import transform
 import rasterio
 from shapely.geometry import Polygon, mapping
