@@ -96,6 +96,7 @@ def enqueue_job(timeout, func, *args):
     process_queue.put((func, timeout, args))
 
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
+    # # only uncomment ONE of the following endpoints:
 
     # # for '/locations/<string:location_name>/processing_async'
     # from ...rest.ephemeral_processing import \

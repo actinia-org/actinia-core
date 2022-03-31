@@ -26,10 +26,11 @@ Asynchronous computation in specific temporary generated mapsets
 with export of required map layers.
 """
 import os
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+from actinia_core.processing.actinia_processing.ephemeral_processing \
      import EphemeralProcessing
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessTermination
+from actinia_core.core.stac_exporter_interface import STACExporter
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -392,6 +393,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         raster_name=file_name,
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region)
+
                 elif output_type == "vector":
                     if "PostgreSQL" in resource["export"]["format"]:
                         dbstring = resource["export"]["dbstring"]
@@ -437,6 +439,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 if output_path is not None:
                     resource_url = self.storage_interface.store_resource(output_path)
                     self.resource_url_list.append(resource_url)
+
+                    if "metadata" in resource:
+                        if resource["metadata"]["format"] == "STAC":
+                            stac = STACExporter()
+
+                            stac_catalog = stac.stac_builder(resource_url, file_name,
+                                                             output_type)
+                            self.resource_url_list.append(stac_catalog)
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses

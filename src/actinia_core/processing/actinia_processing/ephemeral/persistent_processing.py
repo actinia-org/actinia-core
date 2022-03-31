@@ -31,7 +31,7 @@ import shutil
 import sqlite3
 import subprocess
 
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing \
+from actinia_core.processing.actinia_processing.ephemeral_processing \
      import EphemeralProcessing
 from actinia_core.core.common.exceptions import AsyncProcessError
 
