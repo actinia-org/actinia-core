@@ -37,7 +37,7 @@ from datetime import datetime
 import numpy as np
 import pyproj
 from pystac import Item, read_dict, Catalog, Asset
-from pystac.extensions.projection import ItemProjectionExtension as ProjectionItemExt
+
 from shapely.ops import transform
 import rasterio
 from shapely.geometry import Polygon, mapping
@@ -49,6 +49,8 @@ from actinia_core.version import G_VERSION
 try:
     from actinia_stac_plugin.core.common import connectRedis
     from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
+    from pystac.extensions.projection import\
+        ItemProjectionExtension as ProjectionItemExt
     has_plugin = True
 except Exception:
     has_plugin = False
