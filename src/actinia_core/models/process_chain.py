@@ -307,23 +307,10 @@ class OutputParameter(IOParameterBase):
                                'and each export is stored as STAC Item',
                 'enum': ['STAC']
             },
-            'type': {
-                'type': 'string',
-                'description': 'The type of the output. In this case'
-                               'metadata is the only option currently supported',
-                'enum': ['metadata']
-            },
-            'output_layer': {
-                'type': 'string',
-                'description': 'Prefix for STAC item name and ID. If not specified,'
-                               'GRASS GIS map layer name is used.'
-            },
         },
         'description': 'The STAC file export parameter.',
         'required': ["format", "type"],
-        'example':  {"format": "STAC",
-                     "type": "metadata",
-                     "output_layer": "stac_result"}
+        'example':  {"format": "STAC"}
     }
     required = deepcopy(IOParameterBase.required)
     description = deepcopy(IOParameterBase.description)
