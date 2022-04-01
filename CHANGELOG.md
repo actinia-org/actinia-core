@@ -15,12 +15,25 @@ Types of changes
 
 
 ## [Unreleased]
-https://github.com/mundialis/actinia_core/compare/2.3.0...main
+https://github.com/mundialis/actinia_core/compare/4.0.0...main
 
-## [3.X.X] - YYYY-MM-DD
+## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
 
+
+## [4.0.0] - 2022-04-01
+released from main
+### Changed
+* Refactor rest by @mmacata in https://github.com/mundialis/actinia_core/pull/320
+* Refactor rest - part 2 by @mmacata in https://github.com/mundialis/actinia_core/pull/322
+* Move apidocs by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/337
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.3.0...4.0.0
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.0.0 -f target_commitish=main -q .body`
+ 
+-----------------------------
+ 
 ## [3.3.0] - 2022-03-31
 released from main
 ### Added
