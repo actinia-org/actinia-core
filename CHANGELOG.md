@@ -29,6 +29,8 @@ released from main
 * Refactor rest - part 2 by @mmacata in https://github.com/mundialis/actinia_core/pull/322
 * Move apidocs by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/337
 
+This is a major release because it breaks the actinia python API. Plugins were already adjusted accordingly. The HTTP REST API is not affected and moved (with this release completely) to [actinia-api](https://github.com/mundialis/actinia-api).
+
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.3.0...4.0.0
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.0.0 -f target_commitish=main -q .body`
  
