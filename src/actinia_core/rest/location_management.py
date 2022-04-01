@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,15 +45,14 @@ from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.models.response_models import MapsetInfoResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.rest.persistent_processing import PersistentProcessing
-from actinia_core.rest.mapset_management import PersistentGetProjectionRegionInfo
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.core.utils import os_path_normpath
+from actinia_core.processing.common.location_management import \
+     read_current_region, create_location
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -299,54 +298,3 @@ class LocationManagementResourceAdmin(ResourceBase):
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
-
-
-def create_location(*args):
-    processing = PersistentLocationCreator(*args)
-    processing.run()
-
-
-class PersistentLocationCreator(PersistentProcessing):
-    """Create a new location based on EPSG code
-    """
-
-    def __init__(self, *args):
-        PersistentProcessing.__init__(self, *args)
-
-    def _execute(self):
-
-        new_location = self.location_name
-
-        self.location_name = self.config.GRASS_DEFAULT_LOCATION
-
-        self._setup()
-
-        epsg_code = self.request_data["epsg"]
-
-        self._create_temp_database()
-
-        pc = {"1": {"module": "g.proj",
-                    "inputs": {"epsg": epsg_code,
-                               "location": new_location},
-                    "flags": "t"}}
-
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
-
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name="PERMANENT")
-
-        self._execute_process_list(process_list)
-
-        if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
-            shutil.move(os.path.join(self.temp_grass_data_base,
-                        new_location), self.grass_user_data_base)
-        else:
-            raise AsyncProcessError("Unable to create location <%s>" % new_location)
-
-        self.finish_message = "Location <%s> successfully created" % new_location
-
-
-def read_current_region(*args):
-    processing = PersistentGetProjectionRegionInfo(*args)
-    processing.run()

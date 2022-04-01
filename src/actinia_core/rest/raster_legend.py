@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,22 +25,21 @@
 Raster map renderer
 """
 
+import os
 from flask import jsonify, make_response, Response
 from flask_restful import reqparse
-from .ephemeral_processing import EphemeralProcessing
+from flask_restful_swagger_2 import swagger
+
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from tempfile import NamedTemporaryFile
-import os
-from flask_restful_swagger_2 import swagger
 from actinia_core.models.response_models import ProcessingErrorResponseModel
+from actinia_core.processing.common.raster_legend import start_job
 
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class SyncEphemeralRasterLegendResource(ResourceBase):
@@ -187,50 +186,3 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
                     os.remove(result_file)
                     return Response(image, mimetype='image/png')
         return make_response(jsonify(response_model), http_code)
-
-
-def start_job(*args):
-    processing = EphemeralRasterLegend(*args)
-    processing.run()
-
-
-class EphemeralRasterLegend(EphemeralProcessing):
-
-    def __init__(self, *args):
-
-        EphemeralProcessing.__init__(self, *args)
-
-    def _execute(self, skip_permission_check=True):
-        """Render the raster legend with d.legend
-        """
-        self._setup()
-
-        self.required_mapsets.append(self.mapset_name)
-        raster_name = self.map_name
-
-        options = self.rdc.user_data
-
-        with NamedTemporaryFile(suffix=".png") as file:
-            result_file = file.name
-
-        os.putenv("GRASS_RENDER_IMMEDIATE", "png")
-        os.putenv("GRASS_RENDER_WIDTH", str(options["width"]))
-        os.putenv("GRASS_RENDER_HEIGHT", str(options["height"]))
-        os.putenv("GRASS_RENDER_TRANSPARENT", "TRUE")
-        os.putenv("GRASS_RENDER_TRUECOLOR", "TRUE")
-        os.putenv("GRASS_RENDER_FILE", result_file)
-        os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
-
-        pc = {}
-        pc["1"] = {"module": "d.legend", "inputs": {
-            "raster": raster_name + "@" + self.mapset_name}}
-        for key in options:
-            if key not in ["width", "height"]:
-                value = options[key]
-                pc["1"]["inputs"][key] = value
-
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            process_chain=pc, skip_permission_check=True)
-        self._execute_process_list(process_list)
-
-        self.module_results = result_file

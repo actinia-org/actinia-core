@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,16 +31,16 @@ from flask import jsonify, make_response
 import pickle
 from flask_restful_swagger_2 import swagger
 from actinia_core.rest.base.resource_base import ResourceBase
-from .ephemeral_processing_with_export import EphemeralProcessingWithExport
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel
+from actinia_core.processing.common.raster_export \
+    import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
@@ -187,65 +187,3 @@ class AsyncEphemeralRasterLayerRegionExporterResource(
         map specific region.
         """
         return self._execute(location_name, mapset_name, raster_name, True)
-
-
-def start_job(*args):
-    processing = EphemeralRasterLayerExporter(*args)
-    processing.run()
-
-
-class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
-    """Export a raster layer from a specific mapset as geotiff file.
-
-    The region of the raster layer can be used for export. In this case a
-    temporary mapset will be created to modify the region settings safely.
-    Hence, this works also in write protected mapsets.
-    """
-    def __init__(self, rdc):
-        """Setup the variables of this class
-
-        Args:
-            rdc (ResourceDataContainer): The data container that contains all
-                                         required variables for processing
-
-        """
-
-        EphemeralProcessingWithExport.__init__(self, rdc)
-
-        self.raster_name = self.map_name
-        self.use_raster_region = self.rdc.user_data
-
-    def _execute(self):
-        """Overwrite this function in subclasses
-
-        - Create the resource directory
-        - Initialize and create the temporal database and mapset
-        - Export the raster layer
-        - Cleanup
-
-        """
-        # Setup the user credentials and logger
-        self._setup()
-
-        # Create and check the resource directory
-        self.storage_interface.setup()
-
-        # Check if we have access and create the temporary storage
-        self.required_mapsets.append(self.mapset_name)
-        self._create_temporary_grass_environment(source_mapset_name="PERMANENT")
-
-        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will
-        # be fixed in GDAL 3.1.4
-        # use r.out.gdal -c to avoid the bug
-        format = "COG"
-        from osgeo import gdal
-        if "COG" not in [
-                gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
-            format = "GTiff"
-
-        export_dict = {"name": self.raster_name + "@" + self.mapset_name,
-                       "export": {"format": format,
-                                  "type": "raster"}}
-
-        self.resource_export_list.append(export_dict)
-        self._export_resources(self.use_raster_region)

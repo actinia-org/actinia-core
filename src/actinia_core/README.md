@@ -7,6 +7,7 @@ This mainly concerns the plugins:
 * [actinia_satallite_plugin](https://github.com/mundialis/actinia_satellite_plugin) (satellite)
 * [actinia-metadata-plugin](https://github.com/mundialis/actinia-metadata-plugin) uses no sources of actinia_core
 * [actinia-stac-plugin](https://github.com/mundialis/actinia-stac-plugin) (stac)
+* [actinia-tiling-plugin](https://github.com/mundialis/actinia-tiling-plugin) (tiling TODO: add imports)
 * [actinia-api](https://github.com/mundialis/actinia-api) (api)
 
 The modules inside common folder are not only commonly used by actinia but also by actinia plugins.
@@ -21,10 +22,14 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
 | actinia_core.health_check | health_check |
 | actinia_core.version | version |
-| actinia_core.rest.ephemeral_processing | EphemeralProcessing |
-| actinia_core.rest.ephemeral_processing_with_export | start_job, SCHEMA_DOC, EphemeralProcessingWithExport |
-| actinia_core.rest.persistent_processing | PersistentProcessing, start_job, SCHEMA_DOC |
-| actinia_core.rest.resource_base | ResourceBase |
+| actinia_core.processing.actinia_processing.ephemeral_processing | EphemeralProcessing |
+| actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export | EphemeralProcessingWithExport |
+| actinia_core.processing.common.ephemeral_processing_with_export | start_job |
+| actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
+| actinia_core.processing.actinia_processing.ephemeral.persistent_processing | PersistentProcessing |
+| actinia_core.processing.common.persistent_processing | start_job |
+| actinia_core.rest.persistent_processing | SCHEMA_DOC |
+| actinia_core.rest.base.resource_base | ResourceBase |
 | actinia_core.core.common.api_logger | log_api_call |
 | actinia_core.core.common.app | auth, flask_api, flask_app, URL_PREFIX |
 | actinia_core.core.common.aws_sentinel_interface | AWSSentinel2AInterface |
@@ -48,19 +53,19 @@ Some other modules outside of core folder are concerned as well.
 
 __amp, satellite, statistic__
 actinia_core.endpoints import create_endpoints
-actinia_core.rest.resource_base import ResourceBase
+actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.app import flask_app
 actinia_core.core.common.config import global_config
 actinia_core.core.common.redis_interface import enqueue_job
 actinia_core.core.common.response_models import ProcessingResponseModel
 
 __amp, statistic__
-actinia_core.rest.ephemeral_processing import EphemeralProcessing
+actinia_core.processing.actinia_processing.ephemeral_processing import EphemeralProcessing
 
 __actinia-module-plugin__
-actinia_core.rest.ephemeral_processing_with_export import start_job
+actinia_core.processing.common.ephemeral_processing_with_export import start_job
 actinia_core.rest.ephemeral_processing_with_export import SCHEMA_DOC
-actinia_core.rest.persistent_processing import start_job
+actinia_core.processing.common.persistent_processing import start_job
 actinia_core.rest.persistent_processing import SCHEMA_DOC
 actinia_core.core.common.app import URL_PREFIX
 actinia_core.core.common.config import Configuration
@@ -84,7 +89,7 @@ actinia_core.core.common.response_models import ProcessingErrorResponseModel
 __satellite__
 actinia_core.health_check import health_check
 actinia_core.version import version
-actinia_core.rest.ephemeral_processing_with_export import EphemeralProcessingWithExport
+actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import EphemeralProcessingWithExport
 actinia_core.rest.persistent_processing import PersistentProcessing
 actinia_core.core.common.aws_sentinel_interface import AWSSentinel2AInterface
 actinia_core.core.common.config import DEFAULT_CONFIG_PATH
@@ -98,7 +103,7 @@ actinia_core.core.common.response_models import UnivarResultModel
 actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
 
 __stac__
-actinia_core.rest.resource_base import ResourceBase
+actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.redis_base import RedisBaseInterface
 actinia_core.core.common.config import Configuration
 
