@@ -20,7 +20,18 @@ https://github.com/mundialis/actinia_core/compare/2.3.0...main
 ## [3.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
- 
+
+## [3.3.0] - 2022-03-31
+released from main
+### Added
+* Stac result export by @joaherrerama in https://github.com/mundialis/actinia_core/pull/290
+* Stac result export by @joaherrerama in https://github.com/mundialis/actinia_core/pull/334
+* Pystac issue by @joaherrerama in https://github.com/mundialis/actinia_core/pull/335
+* Pystac Issue changing name of the function by @joaherrerama in https://github.com/mundialis/actinia_core/pull/336
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.2.0...3.3.0
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.3.0 -f target_commitish=main -q .body` 
+
 ## [3.2.0] - 2022-03-23
 released from main
 ### Added
