@@ -31,6 +31,7 @@ Mapset resources for information across all locations
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from flask import request
+from actinia_api.swagger2.actinia_core.apidocs import mapsets
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.rest.base.user_auth import check_user_permissions
 # from actinia_core.rest.base.user_auth import very_admin_role
@@ -41,7 +42,6 @@ from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.redis_user import RedisUserInterface
 from actinia_core.models.response_models import SimpleResponseModel, \
      MapsetListResponseModel, LockedMapsetListResponseModel
-# from .common.response_models import MapsetInfoModel
 
 
 __license__ = "GPLv3"
@@ -56,43 +56,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   auth.login_required]
 
-    @swagger.doc({
-        'tags': ['Mapsets'],
-        'description': 'List available or locked mapsets.',
-        'parameters': [
-            {
-                'in': 'path',
-                'name': 'mapsets',
-                'type': 'string',
-                'description': "List all mapsets in the global database available "
-                               "to the authenticated user."
-            },
-            {
-                'in': 'path',
-                'name': 'status',
-                'type': 'string',
-                'description': ("If set to 'locked', list all locked mapsets across "
-                                "all locations. Minimum required user role: admin.")
-            },
-            {
-                'in': 'path',
-                'name': 'user',
-                'type': 'string',
-                'description': ("List all mapsets in the global database available "
-                                "to the specified user. "
-                                "Minimum required user role: admin")
-            }],
-        'responses': {
-            '200': {
-                'description': 'Returns a list of available (or locked) mapsets ',
-                'schema': LockedMapsetListResponseModel
-            },
-            '500': {
-                'description': 'The error message and a detailed error log',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapsets.get_doc)
     def get(self):
 
         if 'status' in request.args:

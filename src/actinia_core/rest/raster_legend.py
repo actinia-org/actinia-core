@@ -29,10 +29,10 @@ import os
 from flask import jsonify, make_response, Response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import raster_legend
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import ProcessingErrorResponseModel
 from actinia_core.processing.common.raster_legend import start_job
 
 
@@ -114,49 +114,7 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         return options
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Render the legend of a raster map layer as a PNG image. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'raster_name',
-                'description': 'The name of the raster map layer of which the '
-                               'legend should be rendered',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'elevation'
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why legend '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(raster_legend.get_doc)
     def get(self, location_name, mapset_name, raster_name):
         """Render the legend of a raster map layer as a PNG image.
         """

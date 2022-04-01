@@ -31,7 +31,7 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.rest.persistent_processing | SCHEMA_DOC |
 | actinia_core.rest.base.resource_base | ResourceBase |
 | actinia_core.core.common.api_logger | log_api_call |
-| actinia_core.core.common.app | auth, flask_api, flask_app, URL_PREFIX |
+| actinia_core.core.common.app | auth, flask_api, flask_app |
 | actinia_core.core.common.aws_sentinel_interface | AWSSentinel2AInterface |
 | actinia_core.core.common.config | global_config, Configuration, DEFAULT_CONFIG_PATH |
 | actinia_core.core.common.exceptions | AsyncProcessError |
@@ -47,6 +47,7 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.user | ActiniaUser |
 | actinia_core.core.redis_user | RedisUserInterface |
 
+URL_PREFIX moved to actinia_api
 ------------
 
 ### Complete list of where modules are used and what exactly is imported
@@ -67,7 +68,7 @@ actinia_core.processing.common.ephemeral_processing_with_export import start_job
 actinia_core.rest.ephemeral_processing_with_export import SCHEMA_DOC
 actinia_core.processing.common.persistent_processing import start_job
 actinia_core.rest.persistent_processing import SCHEMA_DOC
-actinia_core.core.common.app import URL_PREFIX
+actinia_api import URL_PREFIX
 actinia_core.core.common.config import Configuration
 actinia_core.core.common.process_chain import GrassModule
 /# from actinia_core.core.common.process_queue import create_process_queue

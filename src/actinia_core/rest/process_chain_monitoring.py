@@ -31,6 +31,7 @@ import pickle
 from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import process_chain_monitoring
 from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import \
      MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
@@ -77,37 +78,7 @@ class MapsetSizeResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Process Chain Monitoring'],
-        'description': 'Get the mapset sizes of a resource. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': MapsetSizeResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exist',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(process_chain_monitoring.mapset_size_get_doc)
     def get(self, user_id, resource_id):
         """Get the sizes of mapset of a resource."""
 
@@ -147,37 +118,7 @@ class MapsetSizeDiffResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Process Chain Monitoring'],
-        'description': 'Get the step-by-step mapset size differences of a '
-                       'resource. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': MapsetSizeResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exists',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(process_chain_monitoring.mapset_sizediff_get_doc)
     def get(self, user_id, resource_id):
         """Get the step-by-step mapset size differences of a resource."""
 
@@ -218,37 +159,7 @@ class MaxMapsetSizeResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Process Chain Monitoring'],
-        'description': 'Get the maximum mapset size of a resource. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': MaxMapsetSizeResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exist',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(process_chain_monitoring.mapset_maxsize_get_doc)
     def get(self, user_id, resource_id):
         """Get the maximum size of mapset of a resource."""
 
@@ -289,37 +200,7 @@ class MapsetSizeRenderResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Process Chain Monitoring'],
-        'description': 'Render the mapset sizes of a resource. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeed',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(process_chain_monitoring.mapset_render_sizes_get_doc)
     def get(self, user_id, resource_id):
         """Render the mapset sizes of a resource."""
 
@@ -378,37 +259,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Process Chain Monitoring'],
-        'description': 'Render the step-by-step mapset size differences of a '
-                       'resource. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeed',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(process_chain_monitoring.mapset_render_sizediff_get_doc)
     def get(self, user_id, resource_id):
         """Render the step-by-step mapset size differences of a resource."""
 

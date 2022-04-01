@@ -28,13 +28,11 @@ with export of required map layers.
 import pickle
 from flask import jsonify, make_response
 
-from copy import deepcopy
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import \
+    ephemeral_processing_with_export
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.common.process_chain import ProcessChainModel
-from actinia_core.models.response_models import \
-    ProcessingResponseModel, ProcessingErrorResponseModel
 from actinia_core.processing.common.ephemeral_processing_with_export \
      import start_job
 
@@ -45,73 +43,6 @@ __maintainer__ = "mundialis"
 __email__ = "info@mundialis.de"
 
 
-DESCR = """Execute a user defined process chain in an ephemeral database
-and provide the generated resources as downloadable files via URL's.
-Minimum required user role: user.
-
-The process chain is executed asynchronously. The provided status URL
-in the response must be polled to gain information about the processing
-progress and finishing status.
-
-**Note**
-
-    Make sure that the process chain definition identifies all raster, vector or
-    space-time datasets correctly with name and mapset: name@mapset if you use
-    data from other mapsets in the specified location.
-
-    All required mapsets will be identified by analysing the input parameter
-    of all module descriptions in the provided process chain
-    and mounted read-only into the ephemeral database that is used for processing.
-
-The persistent database will not be modified. The ephemeral database will be
-removed after processing.
-Use the URL's provided in the finished response to download the resource that
-were specified in the process chain for export.
-
-**Note**
-
-    The endpoint allows the creation of STAC ITEMS through the
-    ACTINIA STAC PLUGIN the STAC item is stored in a dedicated
-    CATALOG following the standard from STAC specification (https://stacspec.org/)
-"""
-
-
-SCHEMA_DOC = {
-    'tags': ['Processing'],
-    'description': DESCR,
-    'consumes': ['application/json'],
-    'parameters': [
-        {
-            'name': 'location_name',
-            'description': 'The location name that contains the data that should '
-                           'be processed',
-            'required': True,
-            'in': 'path',
-            'type': 'string',
-            'default': 'nc_spm_08'
-        },
-        {
-            'name': 'process_chain',
-            'description': 'The process chain that should be executed',
-            'required': True,
-            'in': 'body',
-            'schema': ProcessChainModel
-        }
-    ],
-    'responses': {
-        '200': {
-            'description': 'The result of the process chain execution',
-            'schema': ProcessingResponseModel
-        },
-        '400': {
-            'description': 'The error message and a detailed log why process '
-                           'chain execution did not succeeded',
-            'schema': ProcessingErrorResponseModel
-        }
-    }
-}
-
-
 class AsyncEphemeralExportResource(ResourceBase):
     """
     This class represents a resource that runs asynchronous processing tasks in
@@ -120,7 +51,7 @@ class AsyncEphemeralExportResource(ResourceBase):
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(ephemeral_processing_with_export.post_doc)
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing results for download.
@@ -144,7 +75,7 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(ephemeral_processing_with_export.post_doc)
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset and
         store the processing result in an Amazon S3 bucket
@@ -167,7 +98,7 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(ephemeral_processing_with_export.post_doc)
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing result in an Google cloud storage bucket

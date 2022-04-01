@@ -32,8 +32,10 @@ __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-from actinia_core.core.common.app import flask_app, URL_PREFIX
 from flask import make_response
+from actinia_api import URL_PREFIX
+
+from actinia_core.core.common.app import flask_app
 
 # This is a simple endpoint to check the health of the Actinia Core server
 # This is needed by Google load balancer

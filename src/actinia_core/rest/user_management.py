@@ -33,6 +33,8 @@ TODO: Implement POST full permission creation
 from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import user_management
+
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.core.common.user import ActiniaUser
 from actinia_core.models.response_models import \
@@ -53,17 +55,7 @@ class UserListResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['User Management'],
-        'description': 'Get a list of all users. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of user names.',
-                'schema': UserListResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_management.user_list_get_doc)
     def get(self):
         """List all users in the database
 
@@ -96,32 +88,7 @@ class UserManagementResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['User Management'],
-        'description': 'Get information about the group, role and permissions '
-                       'of a certain user. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'user',
-                'description': 'The unique name of the user',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns information about a '
-                               'certain user.',
-                'schema': UserInfoResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_management.user_get_doc)
     def get(self, user_id):
         """Return the credentials of a single user
 
@@ -154,44 +121,7 @@ class UserManagementResource(LoginBase):
             user_group=credentials["user_group"]
         )), 200)
 
-    @swagger.doc({
-        'tags': ['User Management'],
-        'description': 'Creates a new user in the database. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique name of the user',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'password',
-                'description': 'The password of the new user',
-                'required': True,
-                'in': 'query',
-                'type': 'string'
-            },
-            {
-                'name': 'group',
-                'description': 'The group of the new user',
-                'required': True,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the status of user creation.',
-                'schema': SimpleResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_management.user_post_doc)
     def post(self, user_id):
         """Create a user in the database
 
@@ -229,30 +159,7 @@ class UserManagementResource(LoginBase):
             message="Unable to create user %s" % user_id
         )), 400)
 
-    @swagger.doc({
-        'tags': ['User Management'],
-        'description': 'Deletes a user. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique name of the user',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the status of user deletion.',
-                'schema': SimpleResponseModel
-            },
-            '400': {
-                'description': 'The error message',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_management.user_delete_doc)
     def delete(self, user_id):
         """Delete a specific user
 

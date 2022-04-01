@@ -27,11 +27,10 @@ Raster layer resources
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
+from actinia_api.swagger2.actinia_core.apidocs import map_layer_management
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.request_parser import glist_parser
-from actinia_core.models.response_models import ProcessingResponseModel
-from actinia_core.models.response_models import StringListProcessingResultResponseModel
 from actinia_core.processing.common.map_layer_management import \
      list_raster_layers, remove_raster_layers, rename_raster_layers
 
@@ -182,151 +181,21 @@ class RasterLayersResource(MapsetLayersResource):
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="raster")
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Get a list of raster map layer names that are located '
-                       'in a specific location/mapset.'
-                       ' Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the raster '
-                               'map layers should be listed',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'pattern',
-                'description': 'A parameter passed to g.list for raster map'
-                               ' layer selection, eg.: http://<url>?pattern="*"',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of raster map layers '
-                               'and the log of the process chain that was used to '
-                               'create the response.',
-                'schema': StringListProcessingResultResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'raster map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.raster_get_doc)
     def get(self, location_name, mapset_name):
         """Get a list of raster map layer names that are located in a specific
         location/mapset
         """
         return self._get(location_name, mapset_name)
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Rename a single raster map layer or a list of raster '
-                       'map layers that are located in a specific location/mapset. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the raster '
-                               'map layers should be renamed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'rename_list',
-                'description': 'A list of raster name tuples [(a, a_new),'
-                               '(b, b_new),(c, c_new), ...]',
-                'required': True,
-                'in': 'body',
-                'schema': {"type": "string"}
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the log of the process '
-                               'chain that was used to create the response.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'raster map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.raster_put_doc)
     def put(self, location_name, mapset_name):
         """Rename a single raster map layer or a list of raster map layers that
         are located in a specific location/mapset
         """
         return self._put(location_name, mapset_name)
 
-    @swagger.doc({
-        'tags': ['Raster Management'],
-        'description': 'Delete a single raster map layer or a list of raster '
-                       'map layer names that are located in a specific '
-                       'location/mapset. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the raster map '
-                               'layers should be deleted',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'pattern',
-                'description': 'A parameter passed for g.remove to remove a list '
-                               'of raster map layers, to remove all eg.: '
-                               'http://<url>?pattern="*"',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the log of the process chain '
-                               'that was used to create the response.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why deletion of '
-                               'raster map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.raster_delete_doc)
     def delete(self, location_name, mapset_name):
         """Delete a single raster map layer or a list of raster map layer names
         that are located in a specific location/mapset
@@ -340,152 +209,21 @@ class VectorLayersResource(MapsetLayersResource):
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="vector")
 
-    @swagger.doc({
-        'tags': ['Vector Management'],
-        'description': 'Get a list of vector map layer names that are located '
-                       'in a specific location/mapset.'
-                       ' Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the vector map '
-                               'layers should be listed',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'pattern',
-                'description': 'A parameter passed to g.list for vector map'
-                               ' layer selection, eg.: http://<url>?pattern="*"',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of vector map layers '
-                               'and the log of the process chain that was used '
-                               'to create the response.',
-                'schema': StringListProcessingResultResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'vector map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.vector_get_doc)
     def get(self, location_name, mapset_name):
         """Get a list of vector map layer names that are located in a specific
         location/mapset
         """
         return self._get(location_name, mapset_name)
 
-    @swagger.doc({
-        'tags': ['Vector Management'],
-        'description': 'Rename a single vector map layer or a list of vector '
-                       'map layers that are located in a specific '
-                       'location/mapset. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the vector '
-                               'map layers should be renamed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'rename_list',
-                'description': 'A list of vector name tuples [(a, a_new),'
-                               '(b, b_new),(c, c_new), ...]',
-                'required': True,
-                'in': 'body',
-                'schema': {"type": "string"}
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the log of the process chain '
-                               'that was used to create the response.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'vector map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.vector_put_doc)
     def put(self, location_name, mapset_name):
         """Rename a single vector map layer or a list of vector map layers that
         are located in a specific location/mapset
         """
         return self._put(location_name, mapset_name)
 
-    @swagger.doc({
-        'tags': ['Vector Management'],
-        'description': 'Delete a single vector map layer or a list of vector '
-                       'map layer names that are located in a specific '
-                       'location/mapset. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location that should be accessed',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset from which the vector '
-                               'map layers should be deleted',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'pattern',
-                'description': 'A parameter passed for g.remove to remove a '
-                               'list of vector map layers, to remove all eg.: '
-                               'http://<url>?pattern="*"',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns the log '
-                               'of the process chain that was used to create '
-                               'the response.',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why deletion of '
-                               'vector map layers did not succeeded',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(map_layer_management.vector_delete_doc)
     def delete(self, location_name, mapset_name):
         """Delete a single vector map layer or a list of vector map layer names
         that are located in a specific location/mapset

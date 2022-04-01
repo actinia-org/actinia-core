@@ -26,14 +26,12 @@ Asynchronous computation in specific temporary generated and then copied
 or original mapsets
 """
 import pickle
-from copy import deepcopy
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
+from actinia_api.swagger2.actinia_core.apidocs import persistent_processing
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.common.process_chain import ProcessChainModel
-from actinia_core.models.response_models import ProcessingResponseModel
 from actinia_core.processing.common.persistent_processing import start_job
 
 __license__ = "GPLv3"
@@ -41,90 +39,13 @@ __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
-DESCR = """Execute a user defined process chain in an existing mapset
-of the persistent user database or in a new mapset that will be
-created by this request in the persistent user database.
-
-The process chain is executed asynchronously. The provided status URL
-in the response must be polled to gain information about the processing
-progress and finishing status.
-
-**Note**
-
-    Space-time dataset processing can only be performed in a new mapset
-    that is created by this resource call, since merging of temporal databases
-    of different mapsets is not supported yet.
-
-The mapset that is used for processing will be locked until the process
-chain execution finished (successfully or not), even if the mapset is be
-created by the request.
-Other requests on the locked mapset will abort with a mapset lock error.
-
-The persistent user database will not be modified if
-the process chain does not run successfully. The processing is performed
-in an ephemeral database and then merged or copied into the persistent user database.
-
-**Note**
-
-    Make sure that the process chain definition identifies all raster, vector or
-    space time datasets correctly with name and mapset: name@mapset.
-
-    All required mapsets will be identified by analysing the input parameter
-    of all module descriptions in the provided process chain
-    and mounted into the ephemeral database that is used for processing.
-
-"""
-
-
-SCHEMA_DOC = {
-    'tags': ['Processing'],
-    'description': DESCR,
-    'consumes': ['application/json'],
-    'parameters': [
-        {
-            'name': 'location_name',
-            'description': 'The location name',
-            'required': True,
-            'in': 'path',
-            'type': 'string',
-            'default': 'nc_spm_08'
-        },
-        {
-            'name': 'mapset_name',
-            'description': 'The name of an existing mapset or a new mapset that '
-                           'should be created',
-            'required': True,
-            'in': 'path',
-            'type': 'string'
-        },
-        {
-            'name': 'process_chain',
-            'description': 'The process chain that should be executed',
-            'required': True,
-            'in': 'body',
-            'schema': ProcessChainModel
-        }
-    ],
-    'responses': {
-        '200': {
-            'description': 'The result of the process chain execution',
-            'schema': ProcessingResponseModel
-        },
-        '400': {
-            'description': 'The error message and a detailed log why process '
-                           'chain execution did not succeed',
-            'schema': ProcessingResponseModel
-        }
-    }
-}
-
 
 class AsyncPersistentResource(ResourceBase):
 
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(persistent_processing.post_doc)
     def post(self, location_name, mapset_name):
         """Execute a user defined process chain that creates a new mapset or
         runs in an existing one.

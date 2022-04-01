@@ -34,13 +34,15 @@ from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
 from flask_restful import reqparse
 from time import sleep
+from actinia_api.swagger2.actinia_core.apidocs import resource_management
+
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.user import ActiniaUser
-from actinia_core.models.response_models import ProcessingResponseModel, \
+from actinia_core.models.response_models import \
     SimpleResponseModel, ProcessingResponseListModel
 from actinia_core.core.interim_results import InterimResult
 
@@ -140,37 +142,7 @@ class ResourceManager(ResourceManagerBase):
         # Configuration
         ResourceManagerBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Get the status of a resource. Minimum required user '
-                       'role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exists',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_management.resource_get_doc)
     def get(self, user_id, resource_id):
         """Get the status of a resource."""
 
@@ -300,37 +272,7 @@ class ResourceManager(ResourceManagerBase):
                 message=f"Processing endpoint {post_url} does not support put")), 400)
         return rdc, processing_resource, start_job
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Updates/Resumes the status of a resource. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exists',
-                'schema': SimpleResponseModel
-            }
-        }
-     })
+    @swagger.doc(resource_management.resource_put_doc)
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
         global_config.read(DEFAULT_CONFIG_PATH)
@@ -393,41 +335,7 @@ class ResourceManager(ResourceManagerBase):
         html_code, response_model = pickle.loads(processing_resource.response_data)
         return make_response(jsonify(response_model), html_code)
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Request the termination of a resource. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Returned if termination request of the resource '
-                               'was successfully committed. '
-                               'Be aware that this does not mean, that the '
-                               'resource was successfully terminated.',
-                'schema': SimpleResponseModel
-            },
-            '400': {
-                'description': 'The error message why resource storage '
-                               'information gathering did not succeeded',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_management.resource_delete_doc)
     def delete(self, user_id, resource_id):
         """Request the termination of a resource."""
 
@@ -489,47 +397,7 @@ class ResourcesManager(ResourceManagerBase):
 
         return parsed_list
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Get a list of resources that have been generated by the '
-                       'specified user. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'num',
-                'description': 'The maximum number of jobs that should be returned',
-                'required': False,
-                'in': 'query',
-                'type': 'integer'
-            },
-            {
-                'name': 'type',
-                'description': 'The type of job that should be returned: '
-                               'accepted, running, error, terminated, finished',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Returned a list of resources that have been '
-                               'generated by the specified user.',
-                'schema': ProcessingResponseListModel
-            },
-            '401': {
-                'description': 'The error message why resource gathering did '
-                               'not succeeded',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_management.resources_get_doc)
     def get(self, user_id):
         """Get a list of resources that have been generated by the specified user."""
 
@@ -555,33 +423,7 @@ class ResourcesManager(ResourceManagerBase):
         return make_response(jsonify(ProcessingResponseListModel(
             resource_list=response_list)), 200)
 
-    @swagger.doc({
-        'tags': ['Resource Management'],
-        'description': 'Terminate all accepted and running resources of the specified '
-                       'user. Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Termination requests have been successfully '
-                               'committed. Be aware that does not mean, that '
-                               'the resources have been successfully terminated.',
-                'schema': SimpleResponseModel
-            },
-            '401': {
-                'description': 'The error message why the resource termination '
-                               'did not succeeded',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(resource_management.resources_delete_doc)
     def delete(self, user_id):
         """Terminate all accepted and running resources of the specified user."""
 
@@ -616,44 +458,7 @@ class ResourceIterationManager(ResourceManagerBase):
         # Configuration
         ResourceManagerBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Resource Iteration Management'],
-        'description': 'Get the status of a resource with the iterations. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'resource_id',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'iteration',
-                'description': 'The id of the resource',
-                'required': True,
-                'in': 'path',
-                'type': 'integer'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current state of the resource',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message if the resource does not exists',
-                'schema': SimpleResponseModel
-            }
-        }
-     })
+    @swagger.doc(resource_management.resource_iteration_get_doc)
     def get(self, user_id, resource_id, iteration):
         """Get the status of a resource of a given iteration."""
         ret = self.check_permissions(user_id=user_id)

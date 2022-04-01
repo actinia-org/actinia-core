@@ -33,6 +33,7 @@ TODO: Implement POST full permission creation
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, g
+from actinia_api.swagger2.actinia_core.apidocs import user_api_key
 from actinia_api.swagger2.actinia_core.schemas.user_api_key import TokenResponseModel
 
 from actinia_core.rest.base.base_login import LoginBase
@@ -59,22 +60,7 @@ class APIKeyCreationResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Authentication Management'],
-        'description': 'Create an API key for permanent authentication. '
-                       'API keys have no expiration time. '
-                       'Minimum required user role: admin.',
-        'responses': {
-            '200': {
-                'description': 'The API key generation response',
-                'schema': TokenResponseModel
-            },
-            '400': {
-                'description': 'The error message in case of failure',
-                'schema': TokenResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_api_key.apikey_get_doc)
     def get(self):
         """Create an API key for permanent authentication."""
 
@@ -96,32 +82,7 @@ class TokenCreationResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Authentication Management'],
-        'description': 'Create an authentication token. Tokens have an '
-                       'expiration time. The default expiration time is one day '
-                       '(86400s). maximum length is 365 days. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'expiration_time',
-                'description': 'The expiration time in seconds for the generated token',
-                'required': False,
-                'in': 'query',
-                'type': 'integer',
-                'default': 86400
-            }],
-        'responses': {
-            '200': {
-                'description': 'The token generation response',
-                'schema': TokenResponseModel
-            },
-            '400': {
-                'description': 'The error message in case of failure',
-                'schema': TokenResponseModel
-            }
-        }
-    })
+    @swagger.doc(user_api_key.token_get_doc)
     def get(self):
         """Create an authentication token."""
 

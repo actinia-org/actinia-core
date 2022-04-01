@@ -28,7 +28,9 @@ from flask import g
 from flask import jsonify, make_response
 from flask_restful import Resource
 from flask_restful_swagger_2 import swagger
-from actinia_api.swagger2.actinia_core.schemas.api_log_management import ApiLogListModel
+from actinia_api.swagger2.actinia_core.apidocs import api_log_management
+from actinia_api.swagger2.actinia_core.schemas.api_log_management import \
+    ApiLogListModel
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import ApiLogger
@@ -61,36 +63,7 @@ class APILogResource(Resource):
         self.user_id = g.user.get_id()
         self.user_role = g.user.get_role()
 
-    @swagger.doc({
-        'tags': ['API Log'],
-        'description': 'Get a list of all API calls that have been called by the '
-                       'provided user. Admin and superadmin roles can list API '
-                       'calls from any user. A user role can only list API calls '
-                       'from itself. '
-                       'Minimum required user role: user.',
-
-        'parameters': [
-            {
-                'name': 'user_id',
-                'description': 'The unique user name/id',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Returned a list of all API calls that have been '
-                               'called by the provided user.',
-                'schema': ApiLogListModel
-            },
-            '400': {
-                'description': 'The error message why API log gathering did not '
-                               'succeeded',
-                'schema': SimpleResponseModel
-            }
-        }
-    })
+    @swagger.doc(api_log_management.get_doc)
     def get(self, user_id):
         """Get a list of all API calls that have been called by the provided user."""
 

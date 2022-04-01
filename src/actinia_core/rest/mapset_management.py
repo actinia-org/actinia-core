@@ -32,8 +32,7 @@ Mapset management resources
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from actinia_api.swagger2.actinia_core.schemas.mapset_management import \
-    MapsetLockManagementResponseModel
+from actinia_api.swagger2.actinia_core.apidocs import mapset_management
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.app import auth
@@ -41,10 +40,6 @@ from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.rest.base.user_auth import very_admin_role
-from actinia_core.models.response_models import ProcessingResponseModel, \
-    StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    ProcessingErrorResponseModel
-# from actinia_core.models.response_models import MapsetInfoModel
 from actinia_core.processing.common.mapset_management import \
      list_raster_mapsets, read_current_region, create_mapset, \
      delete_mapset, get_mapset_lock, lock_mapset, unlock_mapset
@@ -60,35 +55,7 @@ class ListMapsetsResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Get a list of all mapsets that are located in a '
-                       'specific location. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'This response returns a list of mapset names '
-                               'and the log of the process chain that was used '
-                               'to create the response.',
-                'schema': StringListProcessingResultResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed log why listing of '
-                               'mapsets did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.get_doc)
     def get(self, location_name):
         """Get a list of all mapsets that are located in a specific location.
         """
@@ -111,41 +78,7 @@ class MapsetManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Get the current computational region of the mapset and the '
-                       'projection of the location as WKT string. Minimum required '
-                       'user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'The current computational region of the '
-                               'mapset and the projection of the location',
-                'schema': MapsetInfoResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.get_user_doc)
     def get(self, location_name, mapset_name):
         """Get the current computational region of the mapset and the projection
         of the location as WKT string.
@@ -170,37 +103,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Create a new mapset in an existing location. Minimum '
-                       'required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Success message for mapset creation',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.get_admin_doc)
     def post(self, location_name, mapset_name):
         """Create a new mapset in an existing location.
         """
@@ -228,36 +131,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
         """
         pass
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Delete an existing mapset. Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Success message for mapset deletion',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.delete_admin_doc)
     def delete(self, location_name, mapset_name):
         """Delete an existing mapset.
         """
@@ -276,40 +150,7 @@ class MapsetLockManagementResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   very_admin_role, auth.login_required]
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Get the location/mapset lock status. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Get the location/mapset lock status, either '
-                               '"True" or "None"',
-                'schema': MapsetLockManagementResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.get_lock_doc)
     def get(self, location_name, mapset_name):
         """Get the location/mapset lock status.
         """
@@ -321,42 +162,7 @@ class MapsetLockManagementResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Create a location/mapset lock. A location/mapset lock can '
-                       'be created so that no operation can be performed on it '
-                       'until it is unlocked. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Success message if the location/mapset was '
-                               'locked successfully',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.post_lock_doc)
     def post(self, location_name, mapset_name):
         """Create a location/mapset lock.
         """
@@ -368,42 +174,7 @@ class MapsetLockManagementResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc({
-        'tags': ['Mapset Management'],
-        'description': 'Delete a location/mapset lock. A location/mapset lock '
-                       'can be deleted so that operation can be performed on '
-                       'it until it is locked. '
-                       'Minimum required user role: admin.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The name of the location',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            }
-        ],
-        'responses': {
-            '200': {
-                'description': 'Success message if the location/mapset was '
-                               'unlocked successfully',
-                'schema': ProcessingResponseModel
-            },
-            '400': {
-                'description': 'The error message and a detailed error log',
-                'schema': ProcessingResponseModel
-            }
-        }
-    })
+    @swagger.doc(mapset_management.delete_lock_doc)
     def delete(self, location_name, mapset_name):
         """Delete a location/mapset lock.
         """

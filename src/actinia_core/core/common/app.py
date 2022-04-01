@@ -97,15 +97,12 @@ from flask_cors import CORS
 from flask import Flask
 from flask_restful_swagger_2 import Api
 
+from actinia_api import API_VERSION, URL_PREFIX
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
-
-API_VERSION = "v3"
-
-# This is the URL prefix that must be used in the tests
-URL_PREFIX = "/api/%s" % API_VERSION
 
 
 flask_app = Flask(__name__)

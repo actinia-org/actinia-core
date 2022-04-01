@@ -26,16 +26,14 @@ Compute areal categorical statistics on a raster map layer based on an input pol
 """
 
 import pickle
-from copy import deepcopy
 from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
+from actinia_api.swagger2.actinia_core.apidocs import process_validation
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.models.response_models import \
-    ProcessingResponseModel, ProcessingErrorResponseModel
+
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.core.common.process_chain import ProcessChainModel
 from actinia_core.processing.common.process_validation \
      import start_job
 
@@ -45,55 +43,11 @@ __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG
 __maintainer__ = "mundialis"
 
 
-DESCR = """Validate a process chain, check the provided sources (links)
-and the mapsets. The list of processes that were checked by Actinia are returned in the
-JSON response.
-"""
-
-
-SCHEMA_DOC = {
-    'tags': ['Processing'],
-    'description': DESCR,
-    'consumes': ['application/json'],
-    'parameters': [
-        {
-            'name': 'location_name',
-            'description': 'The location name that contains the data that '
-                           'should be used in the process chain',
-            'required': True,
-            'in': 'path',
-            'type': 'string',
-            'default': 'nc_spm_08'
-        },
-        {
-            'name': 'process_chain',
-            'description': 'The process chain that should be validated',
-            'required': True,
-            'in': 'body',
-            'schema': ProcessChainModel
-        }
-    ],
-    'responses': {
-        '200': {
-            'description': 'The result of the process chain validation. '
-                           'A list of processes that will be executed by '
-                           'Actinia Core',
-            'schema': ProcessingResponseModel
-        },
-        '400': {
-            'description': 'The error message and a detailed log why process '
-                           'chain validation did not succeeded',
-            'schema': ProcessingErrorResponseModel
-        }
-    }
-}
-
-
 class AsyncProcessValidationResource(ResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(process_validation.post_doc)
     def post(self, location_name):
         """Validate a process chain asynchronously, check the provided sources
         and the mapsets."""
@@ -113,7 +67,7 @@ class SyncProcessValidationResource(ResourceBase):
 
     decorators = [log_api_call, auth.login_required]
 
-    @swagger.doc(deepcopy(SCHEMA_DOC))
+    @swagger.doc(process_validation.post_doc)
     def post(self, location_name):
         """Validate a process chain synchronously, check the provided sources
         and the mapsets."""

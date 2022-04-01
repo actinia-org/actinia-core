@@ -29,7 +29,8 @@ from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
 import os
 from flask_restful_swagger_2 import swagger
-from actinia_core.models.response_models import ProcessingErrorResponseModel
+from actinia_api.swagger2.actinia_core.apidocs import strds_renderer
+
 from actinia_core.processing.common.strds_renderer import start_job
 
 __license__ = "GPLv3"
@@ -40,116 +41,7 @@ __maintainer__ = "mundialis"
 
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
-    @swagger.doc({
-        'tags': ['STRDS Management'],
-        'description': 'Render the raster map layers of a specific STRDS as a '
-                       'single image. All raster layers are rendered in order '
-                       'of their time stamps, from past to future. '
-                       'Minimum required user role: user.',
-        'parameters': [
-            {
-                'name': 'location_name',
-                'description': 'The location name',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'nc_spm_08'
-            },
-            {
-                'name': 'mapset_name',
-                'description': 'The name of the mapset that contains the '
-                               'required raster map layer',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'PERMANENT'
-            },
-            {
-                'name': 'strds_name',
-                'description': 'The name of the STRDS to render',
-                'required': True,
-                'in': 'path',
-                'type': 'string',
-                'default': 'elevation'
-            },
-            {
-                'name': 'n',
-                'description': 'Northern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 's',
-                'description': 'Southern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'e',
-                'description': 'Eastern border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'w',
-                'description': 'Western border',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'double'
-            },
-            {
-                'name': 'width',
-                'description': 'Image width in pixel, default is 800',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 800
-            },
-            {
-                'name': 'height',
-                'description': 'Image height in pixel, default is 600',
-                'required': False,
-                'in': 'query',
-                'type': 'number',
-                'format': 'integer',
-                'default': 600
-            },
-            {
-                'name': 'start_time',
-                'description': 'Raster map layers that have equal or greater '
-                               'the start time will be rendered',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            },
-            {
-                'name': 'end_time',
-                'description': 'Raster map layers that have equal or lower the '
-                               'end time will be rendered',
-                'required': False,
-                'in': 'query',
-                'type': 'string'
-            }
-        ],
-        'produces': ["image/png"],
-        'responses': {
-            '200': {
-                'description': 'The PNG image'},
-            '400': {
-                'description': 'The error message and a detailed log why '
-                               'rendering did not succeeded',
-                'schema': ProcessingErrorResponseModel
-            }
-        }
-    })
+    @swagger.doc(strds_renderer.get_doc)
     def get(self, location_name, mapset_name, strds_name):
         """Render the raster map layers of a specific STRDS as a single image.
         """

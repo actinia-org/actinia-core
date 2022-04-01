@@ -3,6 +3,8 @@ FROM mundialis/actinia-core:2.0.0 as actinia_test
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
 
+ENV ACTINIA_API_VERSION 3.1.0
+
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
 # TODO do not set DEFAULT_CONFIG_PATH if this is fixed
@@ -27,7 +29,7 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
 
-RUN pip3 install actinia-api@https://github.com/mundialis/actinia-api/releases/download/2.0.0/actinia_api-2.0.0-py3-none-any.whl
+RUN pip3 install actinia-api@https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
