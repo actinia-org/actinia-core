@@ -26,8 +26,8 @@ Render base classes
 """
 
 from flask_restful import reqparse
-from .ephemeral_processing import EphemeralProcessing
-from .resource_base import ResourceBase
+from actinia_core.rest.ephemeral_processing import EphemeralProcessing
+from actinia_core.rest.base.resource_base import ResourceBase
 import os
 
 __license__ = "GPLv3"

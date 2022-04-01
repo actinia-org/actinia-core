@@ -44,7 +44,7 @@ from actinia_core.models.response_models import \
     ProcessingResponseModel, ProcessingErrorResponseModel, SimpleResponseModel
 from .ephemeral_processing import EphemeralProcessing
 from .persistent_processing import PersistentProcessing
-from .map_layer_base import MapLayerRegionResourceBase
+from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
