@@ -17,7 +17,7 @@ on:
 jobs:
   deploy:
 
-    runs-on: ubuntu-latest
+    runs-on: alpine-latest
 
     steps:
       - uses: actions/checkout@v2
@@ -27,7 +27,8 @@ jobs:
       #     python-version: '3.x'
       - name: Install dependencies
         run: |
-          sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
+          # sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
+          apk update && apk add python3 python3-pip python3-venv libgdal-dev -y
           pip3 install gdal
           pip3 install rasterio==1.2.10
           # apt install git python3-venv -y
