@@ -21,15 +21,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
       - name: Install dependencies
         run: |
           export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get update && sudo apt-get install python3 python3-pip libgdal-dev -y
-          pip3 install rasterio==1.2.10
+          sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
           pip3 install build
       - name: Build package
         run: python3 -m build --outdir build .
