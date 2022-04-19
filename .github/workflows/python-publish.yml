@@ -27,7 +27,7 @@ jobs:
       #     python-version: '3.x'
       - name: Install dependencies
         run: |
-          apt-get update && apt-get install python3 python3-pip python3-venv libgdal-dev -y
+          sudo apt-get update && apt-get install python3 python3-pip python3-venv libgdal-dev -y
           pip3 install gdal
           pip3 install rasterio==1.2.10
           # apt install git python3-venv -y
