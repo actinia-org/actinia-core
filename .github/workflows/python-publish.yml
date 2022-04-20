@@ -19,14 +19,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.x'
       - name: Install dependencies
         run: |
-          python -m pip install --upgrade pip
-          pip install build
+          # noninteractive is necessary to install libgdal-dev
+          # which is needed for python gdal which is
+          # required by rasterio
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
+          pip3 install build
       - name: Build package
         run: python3 -m build --outdir build .
       - name: Release
