@@ -70,7 +70,7 @@ class ActiniaUser(object):
                                                     "landsat"],
                                       "ECAD": ["PERMANENT"],
                                       "latlong_wgs84": ["PERMANENT"]},
-                 accessible_modules=global_config.MODULE_WHITE_LIST,
+                 accessible_modules=global_config.MODULE_ALLOW_LIST,
                  cell_limit=global_config.MAX_CELL_LIMIT,
                  process_num_limit=global_config.PROCESS_NUM_LIMIT,
                  process_time_limit=global_config.PROCESS_TIME_LIMT):
@@ -658,7 +658,7 @@ class ActiniaUser(object):
                                                        "landsat"],
                                          "ECAD": ["PERMANENT"],
                                          "latlong_wgs84": ["PERMANENT"]},
-                    accessible_modules=global_config.MODULE_WHITE_LIST,
+                    accessible_modules=global_config.MODULE_ALLOW_LIST,
                     cell_limit=global_config.MAX_CELL_LIMIT,
                     process_num_limit=global_config.PROCESS_NUM_LIMIT,
                     process_time_limit=global_config.PROCESS_TIME_LIMT):

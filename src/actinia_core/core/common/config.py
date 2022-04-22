@@ -41,40 +41,54 @@ else:
 if not os.path.isfile(DEFAULT_CONFIG_PATH):
     open(DEFAULT_CONFIG_PATH, 'a').close()
 
-# Generate from GRASS_module_white_list.txt
-white_list = [
-    'r.blend', 'r.buffer', 'r.buffer.lowmem', 'r.carve', 'r.category', 'r.circle',
-    'r.clump', 'r.coin', 'r.colors', 'r.composite', 'r.compress', 'r.contour',
-    'r.cost', 'r.covar', 'r.cross', 'r.describe', 'r.distance', 'r.drain',
-    'r.fill.dir', 'r.fillnulls', 'r.flow', 'r.grow', 'r.grow.distance', 'r.gwflow',
-    'r.his', 'r.horizon', 'r.kappa', 'r.lake', 'r.latlong', 'r.li.cwed',
-    'r.li.dominance', 'r.li.edgedensity', 'r.li.mpa', 'r.li.mps', 'r.li.padcv',
-    'r.li.padrange', 'r.li.padsd', 'r.li.patchdensity', 'r.li.patchnum',
-    'r.li.pielou', 'r.li.renyi', 'r.li.richness', 'r.li.shannon', 'r.li.shape',
-    'r.li.simpson', 'r.mapcalc', 'r.mask', 'r.mfilter', 'r.mode', 'r.neighbors',
-    'r.null', 'r.param.scale', 'r.patch', 'r.plane', 'r.profile', 'r.proj',
-    'r.quant', 'r.quantile', 'r.random', 'r.random.cells', 'r.random.surface',
-    'r.reclass', 'r.reclass.area', 'r.recode', 'r.region', 'r.regression.line',
+allow_list = [
+    'd.legend', 'd.rast', 'd.rast.multi', 'd.vect', 'exporter', 'g.findfile',
+    'g.gisenv', 'g.list', 'g.mapset', 'g.proj', 'g.region', 'g.remove',
+    'g.rename', 'g.version', 'i.atcorr', 'i.cluster', 'i.colors.enhance',
+    'i.gensig', 'i.group', 'i.landsat.toar', 'i.maxlik', 'i.pansharpen',
+    'i.segment', 'i.tasscap', 'i.vi', 'importer', 'r.blend', 'r.buffer',
+    'r.buffer.lowmem', 'r.carve', 'r.category', 'r.circle', 'r.clump',
+    'r.coin', 'r.colors', 'r.colors.out', 'r.composite', 'r.compress',
+    'r.contour', 'r.cost', 'r.covar', 'r.cross', 'r.describe', 'r.distance',
+    'r.drain', 'r.fill.dir', 'r.fillnulls', 'r.flow', 'r.grow',
+    'r.grow.distance', 'r.gwflow', 'r.his', 'r.horizon', 'r.info', 'r.kappa',
+    'r.lake', 'r.latlong', 'r.li.cwed', 'r.li.dominance', 'r.li.edgedensity',
+    'r.li.mpa', 'r.li.mps', 'r.li.padcv', 'r.li.padrange', 'r.li.padsd',
+    'r.li.patchdensity', 'r.li.patchnum', 'r.li.pielou', 'r.li.renyi',
+    'r.li.richness', 'r.li.shannon', 'r.li.shape', 'r.li.simpson', 'r.mapcalc',
+    'r.mask', 'r.mfilter', 'r.mode', 'r.neighbors', 'r.null', 'r.out.png',
+    'r.param.scale', 'r.patch', 'r.plane', 'r.profile', 'r.proj', 'r.quant',
+    'r.quantile', 'r.random', 'r.random.cells', 'r.random.surface', 'r.reclass',
+    'r.reclass.area', 'r.recode', 'r.region', 'r.regression.line',
     'r.regression.multi', 'r.regression.series', 'r.relief', 'r.report',
-    'r.resamp.bspline', 'r.resamp.filter', 'r.resamp.interp', 'r.resample',
-    'r.resamp.rst', 'r.resamp.stats', 'r.rescale', 'r.rescale.eq', 'r.rgb', 'r.ros',
-    'r.series', 'r.series.accumulate', 'r.series.interp', 'r.shade',
+    'r.resamp.bspline', 'r.resamp.filter', 'r.resamp.interp', 'r.resamp.rst',
+    'r.resamp.stats', 'r.resample', 'r.rescale', 'r.rescale.eq', 'r.rgb',
+    'r.ros', 'r.series', 'r.series.accumulate', 'r.series.interp', 'r.shade',
     'r.sim.sediment', 'r.sim.water', 'r.slope.aspect', 'r.solute.transport',
     'r.spread', 'r.spreadpath', 'r.statistics', 'r.stats', 'r.stats.quantile',
     'r.stats.zonal', 'r.stream.extract', 'r.sun', 'r.sunhours', 'r.sunmask',
     'r.support', 'r.support.stats', 'r.surf.area', 'r.surf.contour',
-    'r.surf.fractal', 'r.surf.gauss', 'r.surf.idw', 'r.surf.random', 'r.terraflow',
-    'r.texture', 'r.thin', 'r.tile', 'r.tileset', 'r.timestamp', 'r.topidx',
-    'r.topmodel', 'r.to.rast3', 'r.to.rast3elev', 'r.to.vect', 'r.transect',
-    'r.univar', 'r.uslek', 'r.usler', 'r.viewshed', 'r.vol.dem', 'r.volume',
-    'r.walk', 'r.water.outlet', 'r.watershed', 'r.what', 'r.what.color', 'r.info',
-    'g.region', 'g.mapset', 'g.proj', 'g.remove', 'g.rename', 'g.version',
-    'g.list', 'g.findfile', 'g.gisenv', 'i.vi', 'v.in.ascii', 'v.random',
-    't.rast.sample', 'r.out.png', 'r.colors.out', 'd.rast', 'd.vect', 'd.legend',
-    't.rast.aggr_func', 'd.rast.multi', 'v.buffer', 't.rast.extract',
-    't.rast.mapcalc', 't.rast.series', 't.rast.colors', 't.info', 't.rast.list',
-    't.rast.univar', 'importer', 'exporter']
-
+    'r.surf.fractal', 'r.surf.gauss', 'r.surf.idw', 'r.surf.random',
+    'r.terraflow', 'r.texture', 'r.thin', 'r.tile', 'r.tileset', 'r.timestamp',
+    'r.to.rast3', 'r.to.rast3elev', 'r.to.vect', 'r.topidx', 'r.topmodel',
+    'r.transect', 'r.univar', 'r.uslek', 'r.usler', 'r.viewshed', 'r.vol.dem',
+    'r.volume', 'r.walk', 'r.water.outlet', 'r.watershed', 'r.what',
+    'r.what.color', 't.create', 't.info', 't.list', 't.rast.accdetect',
+    't.rast.accumulate', 't.rast.aggr_func', 't.rast.aggregate',
+    't.rast.aggregate.ds', 't.rast.algebra', 't.rast.colors', 't.rast.extract',
+    't.rast.gapfill', 't.rast.list', 't.rast.mapcalc', 't.rast.sample',
+    't.rast.series', 't.rast.univar', 't.rast.what', 't.register', 't.remove',
+    't.unregister', 'v.buffer', 'v.clean', 'v.db.select', 'v.db.univar',
+    'v.db.update', 'v.dissolve', 'v.in.ascii', 'v.overlay', 'v.patch',
+    'v.random', 'v.rast.stats', 'v.select', 'v.what.rast', 'v.what.strds'
+]
+# GRASS ADDON: maybe not installed:
+# * r.regression.series
+# * r.vol.dem
+# * d.rast.multi (https://github.com/mundialis/d_rast_multi)
+# * t.rast.aggr_func (https://github.com/mundialis/openeo-addons/tree/master/
+#           t.rast.udf)
+# * t.rast.sample (https://github.com/mundialis/t.rast.sample)
 
 class Configuration(object):
 
@@ -110,6 +124,9 @@ class Configuration(object):
             self.GRASS_GIS_BASE, "gui", "wxpython", "xml", "module_items.xml")
         # The path to the activation script of the python2 venv (old)
         self.GRASS_VENV = "%s/src/actinia/grass_venv/bin/activate_this.py" % home
+        # ADDITIONAL_ALLOWED_MODULES: modules to extend MODULE_ALLOW_LIST
+        # e.g. ['i.cutlines', 'r.learn.ml2']
+        self.ADDITIONAL_ALLOWED_MODULES = []
 
         """
         LIMITS
@@ -213,7 +230,7 @@ class Configuration(object):
         self.DEFAULT_USER_GROUP = "group"
 
         # Not in config file
-        self.MODULE_WHITE_LIST = white_list  # The default white list of GRASS modules
+        self.MODULE_ALLOW_LIST = allow_list  # The default allow list of GRASS modules
 
         # AWS S3 ADMIN CREDENTIALS
         self.S3_AWS_ACCESS_KEY_ID = ""
@@ -382,6 +399,13 @@ class Configuration(object):
                         "GRASS", "GRASS_MODULES_XML_PATH")
                 if config.has_option("GRASS", "GRASS_VENV"):
                     self.GRASS_VENV = config.get("GRASS", "GRASS_VENV")
+                if config.has_option("MANAGEMENT", "ADDITIONAL_ALLOWED_MODULES"):
+                    self.ADDITIONAL_ALLOWED_MODULES = \
+                        ast.literal_eval(config.get(
+                            "MANAGEMENT", "ADDITIONAL_ALLOWED_MODULES"))
+                    self.MODULE_ALLOW_LIST.extend(
+                        self.ADDITIONAL_ALLOWED_MODULES)
+                    self.MODULE_ALLOW_LIST = list(set(self.MODULE_ALLOW_LIST))
 
             if config.has_section("LIMITS"):
                 if config.has_option("LIMITS", "MAX_CELL_LIMIT"):
