@@ -90,6 +90,7 @@ allow_list = [
 #           t.rast.udf)
 # * t.rast.sample (https://github.com/mundialis/t.rast.sample)
 
+
 class Configuration(object):
 
     def __init__(self):
