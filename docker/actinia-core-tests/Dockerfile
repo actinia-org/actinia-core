@@ -34,6 +34,8 @@ RUN pip3 install actinia-api@https://github.com/mundialis/actinia-api/releases/d
 
 # install GRASS addons required for tests
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
+  extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
 
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia

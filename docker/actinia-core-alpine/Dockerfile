@@ -29,11 +29,16 @@ USER root
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
-RUN ln -s /usr/local/grass /usr/local/grass7
+RUN ln -s /usr/local/grass /usr/local/grass8
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
+
+# install GRASS GIS addon d.rast.multi, because it is needed for STRDS render
+# endpoint
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
+  extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
 
 # actinia-core and actinia libs BUILD
 WORKDIR /build
