@@ -92,7 +92,7 @@ To lint your local changes, run
 
 Inside the container, you can run GRASS GIS with:
 ```
-# Download GRASS GIS test data and put it into a directory
+# Download GRASS GIS test data and put it into a directory (nc_spm_08_grass7 works also for GRASS GIS 8)
 cd /actinia_core/grassdb
 wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz && \
      tar xzvf nc_spm_08_grass7.tar.gz && \
