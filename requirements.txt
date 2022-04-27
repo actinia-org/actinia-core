@@ -10,7 +10,7 @@ flask-restful-swagger-2
 Flask-Cors>=3.0.3
 fluent-logger>=0.9.4
 google-cloud>=0.32.0
-google-cloud-bigquery>=0.28.0
+google-cloud-bigquery<=3.0.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
 joblib==0.15.1
@@ -18,7 +18,7 @@ matplotlib==3.3.4
 passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
-pyproj==2.6
+pyproj>=3.3.0
 python-json-logger
 python-magic>=0.4.15
 # scikit-learn
@@ -33,10 +33,10 @@ wheel
 geopandas
 rasterio==1.2.10
 pystac==0.5.6
-
-# not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
-# torch
-# torchvision
+# required for running i.sentinel.download from GCS:
+pandas
+sentinelsat
+tqdm
 
 # geopandas installs numpy, pandas, pyproj and Shapely as dependencies.
 # we keep numpy, pandas and Shapely to it but need to pin pyproj version
@@ -45,17 +45,10 @@ pystac==0.5.6
 # pandas
 # Shapely
 
-# TODO: test because of major updates:
-# Flask-1.1.1 #https://dormousehole.readthedocs.io/en/stable/CHANGES.html
-# google_cloud_bigquery-1.23.0
-# Sphinx-2.2.2
-# redis-3.3.11
-# rq-1.1.0
-
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
 # google-cloud-bigquery needs libffi-dev
 
-# required for running i.sentinel.download from GCS:
-pandas
-sentinelsat
-tqdm
+# To reactivate scikit-learn if needed:
+# apk add python3 musl-dev python3-dev openblas-dev build-base
+# python3 -m ensurepip && pip3 install --upgrade pip
+# pip3 install scikit-learn
