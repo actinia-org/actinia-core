@@ -19,17 +19,7 @@ Some other modules outside of core folder are concerned as well.
 | module | import|
 | - | - |
 | actinia_core.endpoints | create_endpoints |
-| actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
 | actinia_core.health_check | health_check |
-| actinia_core.version | version |
-| actinia_core.processing.actinia_processing.ephemeral_processing | EphemeralProcessing |
-| actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export | EphemeralProcessingWithExport |
-| actinia_core.processing.common.ephemeral_processing_with_export | start_job |
-| actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
-| actinia_core.processing.actinia_processing.ephemeral.persistent_processing | PersistentProcessing |
-| actinia_core.processing.common.persistent_processing | start_job |
-| actinia_core.rest.persistent_processing | SCHEMA_DOC |
-| actinia_core.rest.base.resource_base | ResourceBase |
 | actinia_core.core.common.api_logger | log_api_call |
 | actinia_core.core.common.app | auth, flask_api, flask_app |
 | actinia_core.core.common.aws_sentinel_interface | AWSSentinel2AInterface |
@@ -37,7 +27,7 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.exceptions | AsyncProcessError |
 | actinia_core.core.common.google_satellite_bigquery_interface | GoogleSatelliteBigQueryInterface |
 | actinia_core.core.common.landsat_processing_library | LandsatProcessing, SCENE_BANDS, extract_sensor_id_from_scene_id, RASTER_SUFFIXES |
-| actinia_core.core.common.process_chain | GrassModule |
+| actinia_core.core.common.process_chain | GrassModule, ProcessChainConverter |
 | actinia_core.core.common.process_object | Process |
 | actinia_core.core.common.process_queue | create_process_queue |
 | actinia_core.core.common.redis_base | RedisBaseInterface |
@@ -45,7 +35,21 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
+| actinia_core.models.process_chain | IOParameterBase |
+| actinia_core.models.response_models | ProcessingErrorResponseModel, ProcessingResponseModel |
+| actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export | EphemeralProcessingWithExport |
+| actinia_core.processing.actinia_processing.ephemeral.persistent_processing | PersistentProcessing |
+| actinia_core.processing.actinia_processing.ephemeral_processing | EphemeralProcessing |
+| actinia_core.processing.actinia_processing.persistent.mapset_management | PersistentMapsetDeleter, PersistentMapsetUnlocker |
+| actinia_core.processing.common.ephemeral_processing_with_export | start_job |
+| actinia_core.processing.common.persistent_processing | start_job |
 | actinia_core.core.redis_user | RedisUserInterface |
+| actinia_core.rest.base.resource_base | ResourceBase |
+| actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
+| actinia_core.rest.persistent_processing | SCHEMA_DOC |
+| actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
+| actinia_core.version | version |
+
 
 URL_PREFIX moved to actinia_api
 ------------
