@@ -13,6 +13,7 @@ google-cloud>=0.32.0
 google-cloud-bigquery<=3.0.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
+itsdangerous<=2.0.0
 joblib==0.15.1
 matplotlib==3.3.4
 passlib>=1.7.1
