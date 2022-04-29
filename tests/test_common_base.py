@@ -64,8 +64,8 @@ def setup_environment():
     # GRASS
 
     # Setup the test environment
-    global_config.GRASS_GIS_BASE = "/usr/local/grass78/"
-    global_config.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass78"
+    global_config.GRASS_GIS_BASE = "/usr/local/grass80/"
+    global_config.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass80"
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
     # global_config.GRASS_DATABASE = "%s/actinia/grass_test_db" % home
 

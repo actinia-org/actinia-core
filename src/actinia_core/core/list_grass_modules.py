@@ -87,7 +87,7 @@ class GrassModuleReader(object):
                 keywords = self.xml.readElementText()
 
         if module and keywords and description:
-            if module in global_config.MODULE_WHITE_LIST:
+            if module in global_config.MODULE_ALLOW_LIST:
                 # First and second keyword must exist
                 key_list = str(keywords).split(",")
                 first_key = key_list[0]

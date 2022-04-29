@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:2.0.0 as actinia_test
+FROM mundialis/actinia-core:4.0.0 as actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
@@ -29,7 +29,13 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
 
+# install actinia-api
 RUN pip3 install actinia-api@https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
+
+# install GRASS addons required for tests
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
+  extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
 
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia

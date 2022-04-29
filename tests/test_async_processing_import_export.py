@@ -228,7 +228,7 @@ process_chain_stac_import = {
                 "filter": {}
             },
             "param": "map",
-            "value": "example-red"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],
@@ -255,7 +255,7 @@ process_chain_stac_filter_error_import = {
                 "filter": {}
             },
             "param": "map",
-            "value": "example-red"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],
@@ -282,7 +282,7 @@ process_chain_stac_source_error_import = {
                 "filter": {}
             },
             "param": "map",
-            "value": "example-red"
+            "value": "landsat-8-l1-c1"
         }
         ]
     }],

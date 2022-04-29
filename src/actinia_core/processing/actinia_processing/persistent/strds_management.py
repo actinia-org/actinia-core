@@ -147,7 +147,7 @@ class PersistentSTRDSDeleter(PersistentProcessing):
         pc = {"1": {"module": "t.remove",
                     "inputs": {"type": "strds",
                                "inputs": self.map_name},
-                    "flags": ""}}
+                    "flags": "f"}}
 
         if args and "recursive" in args and args["recursive"] is True:
             pc["1"]["flags"] = "rf"

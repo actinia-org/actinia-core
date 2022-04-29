@@ -36,6 +36,11 @@ RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python3 --version
 
+# install GRASS GIS addon d.rast.multi, because it is needed for STRDS render
+# endpoint
+RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
+  extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
+
 # actinia-core and actinia libs BUILD
 WORKDIR /build
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
