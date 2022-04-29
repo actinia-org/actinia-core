@@ -4,7 +4,7 @@ FROM mundialis/grass-py3-pdal:releasebranch_8_0-alpine as grass
 FROM build-base as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de"
+LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
 COPY . /src/actinia_core
 
