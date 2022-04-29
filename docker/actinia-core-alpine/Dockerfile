@@ -1,5 +1,5 @@
 FROM mundialis/actinia:alpine-dependencies-v1 as build-base
-FROM mundialis/grass-py3-pdal:releasebranch_8_0-alpine as grass
+FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 
 FROM build-base as build
 
