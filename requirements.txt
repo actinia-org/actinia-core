@@ -3,25 +3,25 @@
 boto3>=1.6.6
 colorlog>=4.2.1
 docutils==0.15
-Flask>=0.12.3
+# Flask>=0.12.3
+Flask==1.1.4 # TODO: remove when #345 is fixed
 Flask-HTTPAuth>=3.2.3
 Flask-RESTful>=0.3.6
 flask-restful-swagger-2
 Flask-Cors>=3.0.3
 fluent-logger>=0.9.4
 google-cloud>=0.32.0
-google-cloud-bigquery>=0.28.0
+google-cloud-bigquery<=3.0.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
 joblib==0.15.1
+MarkupSafe==2.0.1 # TODO: remove when #345 is fixed
 matplotlib==3.3.4
 passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
-pyproj==2.6
 python-json-logger
 python-magic>=0.4.15
-# scikit-learn
 Sphinx>=1.7.1
 threadpoolctl==2.1.0
 redis>=2.10.6
@@ -33,10 +33,10 @@ wheel
 geopandas
 rasterio==1.2.10
 pystac==0.5.6
-
-# not yet ready for py3.8 https://github.com/pytorch/pytorch/issues/29090
-# torch
-# torchvision
+# required for running i.sentinel.download from GCS:
+pandas
+sentinelsat
+tqdm
 
 # geopandas installs numpy, pandas, pyproj and Shapely as dependencies.
 # we keep numpy, pandas and Shapely to it but need to pin pyproj version
@@ -45,17 +45,7 @@ pystac==0.5.6
 # pandas
 # Shapely
 
-# TODO: test because of major updates:
-# Flask-1.1.1 #https://dormousehole.readthedocs.io/en/stable/CHANGES.html
-# google_cloud_bigquery-1.23.0
-# Sphinx-2.2.2
-# redis-3.3.11
-# rq-1.1.0
-
+# scikit-learn hints:
+# not installed with pip, but with apk in
+# actinia-docker/actinia-alpine/Dockerfile_alpine_dependencies
 # TODO: remove threadpoolctl and joblib if not needed anymore for scikit-learn
-# google-cloud-bigquery needs libffi-dev
-
-# required for running i.sentinel.download from GCS:
-pandas
-sentinelsat
-tqdm
