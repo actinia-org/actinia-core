@@ -11,7 +11,7 @@ $ docker build \
         --pull \
         --no-cache \
         --file docker/actinia-core-alpine/Dockerfile \
-        --tag actinia-core:g78-stable-alpine \
+        --tag actinia-core:latest \
         .
 
 ```

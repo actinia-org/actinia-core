@@ -1,8 +1,10 @@
-FROM mundialis/grass-py3-pdal:releasebranch_8_0-alpine as grass
-FROM mundialis/actinia-core:alpine-build-pkgs_v9 as build
+FROM mundialis/actinia:alpine-dependencies-v1 as build-base
+FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
+
+FROM build-base as build
 
 LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
-LABEL maintainer="tawalika@mundialis.de,bettge@mundialis.de,neteler@mundialis.de,soerengebbert@gmail.com"
+LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
 COPY . /src/actinia_core
 
@@ -14,7 +16,7 @@ RUN git checkout .
 RUN python3 setup.py sdist bdist_wheel -d /build
 
 
-FROM mundialis/actinia-core:alpine-runtime-pkgs_v7 as actinia_installation
+FROM mundialis/actinia:alpine-dependencies-v1 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
@@ -29,7 +31,6 @@ USER root
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
 RUN pip3 install --upgrade pip six grass-session --ignore-installed six
-RUN ln -s /usr/local/grass /usr/local/grass8
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
