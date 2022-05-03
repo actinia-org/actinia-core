@@ -331,7 +331,7 @@ as well as univariate statistics of the computed NDVI scene.
      {
        "executable": "python3",
        "parameter": [
-         "/usr/local/bin/grass78",
+         "/usr/local/bin/grass",
          "-e",
          "-c",
          "/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B1.TIF",

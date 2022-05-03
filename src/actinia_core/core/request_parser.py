@@ -101,11 +101,11 @@ def extract_start_script_parameters(args):
     that were created with the start_script_parser.
 
     Args:
-        args (dict): The argument dictionary with grass78 options
+        args (dict): The argument dictionary with grass start script options
 
     Returns:
          list:
-         A List of grass78 parameter
+         A list of grass start script parameters
     """
     options = []
     if "epsg" in args:

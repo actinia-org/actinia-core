@@ -37,12 +37,12 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 cd /tmp 
 
 # fetch weekly generated latest snapshot of GRASS GIS stable
-wget https://grass.osgeo.org/grass78/source/snapshot/grass-7.8.git_src_snapshot_latest.tar.gz
-tar xzvf grass-7.8.git_src_snapshot_latest.tar.gz
-mv grass-7.8.git_src_snapshot_????_??_?? grass78
-rm -f grass-7.8.git_src_snapshot_latest.tar.gz
+wget https://grass.osgeo.org/grass80/source/snapshot/grass-8.0.git_src_snapshot_latest.tar.gz
+tar xzvf grass-8.0.git_src_snapshot_latest.tar.gz
+mv grass-8.0.git_src_snapshot_????_??_?? grass
+rm -f grass-8.0.git_src_snapshot_latest.tar.gz
 
-cd grass78
+cd grass
 
 # production related compilation flags (no debugging enabled)
 export CFLAGS="-O2 -std=gnu99 -fexceptions -fstack-protector -m64"
