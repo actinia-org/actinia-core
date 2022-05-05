@@ -292,14 +292,24 @@ process_chain_stac_source_error_import = {
 
 process_chain_raster_import_resample = {
 # TODO: adapt process chain, add process results for info/r.univar etc.
-    'list': [{'id': 'r_info',
-              'inputs': [{'import_descr': {'source': additional_external_data["elev_ned_30m_tif"],
-                                           'type': 'raster'},
-                          'param': 'map',
-                          'value': 'elev_ned_30m'}],
-              'module': 'r.info',
-              'flags': 'g'}],
-    'version': '1'}
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": "https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/mangkawuk_srtmgl1_v003_30m.tiff",
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution": "value",
+                "resolution_value": "100"
+                },
+            "param": "map",
+            "value": "name_of_map"
+        }
+        ]
+    }],
+    "version": 1
+}
 
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
@@ -465,10 +475,12 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
                               content_type="application/json")
 
         # TODO: adapt
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                       http_status=200, status="finished")
+        # self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+        #                                http_status=200, status="finished")
 
+        # resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
+        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
 
 
 if __name__ == '__main__':
