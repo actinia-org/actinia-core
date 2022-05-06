@@ -98,7 +98,7 @@ def very_admin_role(f):
     """Verify if the user has admin rights
 
     This decorator function verifies if the role of
-    of the login user is "admin"  or superadmin.
+    of the login user is "admin" or "superadmin".
 
     It will abort with a 401 response if the user is not admin
 
@@ -116,6 +116,36 @@ def very_admin_role(f):
 
         if g.user.get_role() != "admin" and g.user.get_role() != "superadmin":
             abort(401)
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def very_admin_role_or_own_user(f):
+    """Verify if the user has admin rights or requests his own user
+
+    This decorator function verifies if the role of
+    of the login user is "admin" or "superadmin"
+    or the user request the own user.
+
+    It will abort with a 401 response if the user is not admin and the user
+    is not the own user
+
+    Args:
+        f (function): The function to wrap
+
+    Returns:
+        function: The decorator functions
+
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            abort(401)
+
+        if g.user.get_role() != "admin" and g.user.get_role() != "superadmin":
+            if g.user.user_id != kwargs["user_id"]:
+                abort(401)
 
         return f(*args, **kwargs)
     return decorated_function

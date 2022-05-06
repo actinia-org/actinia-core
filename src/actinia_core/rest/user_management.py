@@ -30,12 +30,15 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 
-from flask import jsonify, make_response
+from flask import jsonify, make_response, request
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
 from actinia_core.rest.base.base_login import LoginBase
+from actinia_core.rest.base.user_auth import very_admin_role, very_admin_role_or_own_user
+from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.core.common.app import auth
 from actinia_core.core.common.user import ActiniaUser
 from actinia_core.models.response_models import \
     UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
@@ -85,15 +88,17 @@ class UserManagementResource(LoginBase):
 
     """
 
-    def __init__(self):
-        LoginBase.__init__(self)
+    # Authorization is required for all resources
+    # API logging is required for all resources
+    decorators = [log_api_call, auth.login_required]
 
     @swagger.doc(user_management.user_get_doc)
+    @very_admin_role_or_own_user
     def get(self, user_id):
         """Return the credentials of a single user
 
         These methods work only if the
-        authorized user has an admin role.
+        authorized user has an admin role or requests her/his own user.
 
         Args:
             user_id (str): The unique name of the user
@@ -122,6 +127,7 @@ class UserManagementResource(LoginBase):
         )), 200)
 
     @swagger.doc(user_management.user_post_doc)
+    @very_admin_role
     def post(self, user_id):
         """Create a user in the database
 
@@ -136,12 +142,25 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+
         # Password parser
         password_parser = reqparse.RequestParser()
-        password_parser.add_argument('password', required=True,
-                                     type=str, help='The password of the new user')
-        password_parser.add_argument('group', required=True,
-                                     type=str, help='The group of the new user')
+        password_parser.add_argument(
+            'password',
+            required=True,
+            type=str,
+            location='args',
+            dest='password',
+            help='The password of the new user cannot be converted.'
+        )
+        password_parser.add_argument(
+            'group',
+            required=True,
+            type=str,
+            location='args',
+            dest='group',
+            help='The group of the new user cannot be converted.'
+        )
         args = password_parser.parse_args()
         password = args["password"]
         group = args["group"]
@@ -160,6 +179,7 @@ class UserManagementResource(LoginBase):
         )), 400)
 
     @swagger.doc(user_management.user_delete_doc)
+    @very_admin_role
     def delete(self, user_id):
         """Delete a specific user
 
