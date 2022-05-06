@@ -67,7 +67,7 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
                 self.assertEqual(
                     rv2.status_code,
                     200,
-                    "Deleting of user does not worked %s" % user_id
+                    "Deleting of user %s does not work" % user_id
                 )
         super(ActiniaUserTestCase, self).tearDown()
 
