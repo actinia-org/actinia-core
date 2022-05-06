@@ -100,7 +100,7 @@ def check_admin_role(f):
     This decorator function verifies if the role of
     of the login user is "admin" or "superadmin".
 
-    It will abort with a 401 response if the user is not admin
+    It will abort with a 401 response if the user is not admin or superadmin
 
     Args:
         f (function): The function to wrap
