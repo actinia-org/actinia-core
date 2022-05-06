@@ -94,7 +94,7 @@ def create_dummy_user(f):
     return decorated_function
 
 
-def very_admin_role(f):
+def check_admin_role(f):
     """Verify if the user has admin rights
 
     This decorator function verifies if the role of
@@ -121,7 +121,7 @@ def very_admin_role(f):
     return decorated_function
 
 
-def very_admin_role_or_own_user(f):
+def check_admin_role_or_own_userid(f):
     """Verify if the user has admin rights or requests his own user
 
     This decorator function verifies if the role of

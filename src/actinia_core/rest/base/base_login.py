@@ -29,7 +29,7 @@ from flask_restful import Resource
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.messages_logger import MessageLogger
-from actinia_core.rest.base.user_auth import very_admin_role
+from actinia_core.rest.base.user_auth import check_admin_role
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -44,7 +44,7 @@ class LoginBase(Resource):
     """
     # Authorization is required for all resources
     # API logging is required for all resources
-    decorators = [log_api_call, very_admin_role, auth.login_required]
+    decorators = [log_api_call, check_admin_role, auth.login_required]
 
     def __init__(self):
         Resource.__init__(self)

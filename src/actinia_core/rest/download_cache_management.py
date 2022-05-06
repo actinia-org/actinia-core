@@ -34,7 +34,7 @@ from actinia_api.swagger2.actinia_core.apidocs import download_cache_management
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.rest.base.user_auth import very_admin_role
+from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.core.common.app import auth
 from actinia_core.processing.common.download_cache_management \
@@ -48,7 +48,7 @@ __maintainer__ = "mundialis"
 
 class SyncDownloadCacheResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
+                  check_admin_role, auth.login_required]
 
     @swagger.doc(download_cache_management.get_doc)
     def get(self):

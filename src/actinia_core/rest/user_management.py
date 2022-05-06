@@ -37,8 +37,8 @@ from actinia_api.swagger2.actinia_core.apidocs import user_management
 
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.rest.base.user_auth import (
-    very_admin_role,
-    very_admin_role_or_own_user
+    check_admin_role,
+    check_admin_role_or_own_userid
 )
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.app import auth
@@ -96,7 +96,7 @@ class UserManagementResource(LoginBase):
     decorators = [log_api_call, auth.login_required]
 
     @swagger.doc(user_management.user_get_doc)
-    @very_admin_role_or_own_user
+    @check_admin_role_or_own_userid
     def get(self, user_id):
         """Return the credentials of a single user
 
@@ -130,7 +130,7 @@ class UserManagementResource(LoginBase):
         )), 200)
 
     @swagger.doc(user_management.user_post_doc)
-    @very_admin_role
+    @check_admin_role
     def post(self, user_id):
         """Create a user in the database
 
@@ -145,6 +145,14 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+
+        user = ActiniaUser(user_id)
+
+        if user.exists() == 1:
+            return make_response(jsonify(SimpleResponseModel(
+                status="error",
+                message="User allready <%s> not exist" % user_id
+            )), 400)
 
         # Password parser
         password_parser = reqparse.RequestParser()
@@ -182,7 +190,7 @@ class UserManagementResource(LoginBase):
         )), 400)
 
     @swagger.doc(user_management.user_delete_doc)
-    @very_admin_role
+    @check_admin_role
     def delete(self, user_id):
         """Delete a specific user
 
