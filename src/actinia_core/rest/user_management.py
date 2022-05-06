@@ -30,13 +30,16 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 
-from flask import jsonify, make_response, request
+from flask import jsonify, make_response
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
 from actinia_core.rest.base.base_login import LoginBase
-from actinia_core.rest.base.user_auth import very_admin_role, very_admin_role_or_own_user
+from actinia_core.rest.base.user_auth import (
+    very_admin_role,
+    very_admin_role_or_own_user
+)
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.user import ActiniaUser
