@@ -145,6 +145,32 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         print("DELETE /users/thomas", rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
+    def test_get_own_user(self):
+        """
+        Also users and guests should be allowed to request their own user.
+        :return:
+        """
+        # user
+        rv = self.server.get(
+            URL_PREFIX + '/users/%s' % self.user,
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            f"HTML status code is wrong {rv.status_code} for get user of a "
+            "user."
+        )
+        # guest
+        rv = self.server.get(
+            URL_PREFIX + '/users/%s' % self.guest,
+            headers=self.guest_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            f"HTML status code is wrong {rv.status_code} for get user of a "
+            "user."
+        )
+
     def test_token_generation_admin(self):
 
         rv = self.server.get(URL_PREFIX + '/token', headers=self.admin_auth_header)
