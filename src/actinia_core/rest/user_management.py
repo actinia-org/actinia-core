@@ -151,7 +151,7 @@ class UserManagementResource(LoginBase):
         if user.exists() == 1:
             return make_response(jsonify(SimpleResponseModel(
                 status="error",
-                message="User <%s>  already exists" % user_id
+                message="User <%s> already exists" % user_id
             )), 400)
 
         # Password parser
