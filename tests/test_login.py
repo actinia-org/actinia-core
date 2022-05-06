@@ -113,7 +113,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         create_user_url = f"{URL_PREFIX}/users/{new_user_id}?" \
             f"password={new_password}&group={new_group}"
         rv = self.server.post(create_user_url, headers=self.admin_auth_header)
-        # print("POST /users/thomas", rv.data)
         self.assertEqual(
             rv.status_code,
             201,
@@ -127,7 +126,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
 
         # Try to create the user again which should fail
         rv = self.server.post(create_user_url, headers=self.admin_auth_header)
-        # print("POST /users/thomas", rv.data)
         self.assertEqual(
             rv.status_code,
             400,
@@ -143,7 +141,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(
             URL_PREFIX + f"/users/{new_user_id}", headers=self.admin_auth_header
         )
-        # print("GET /users/thomas", rv.data)
         self.assertEqual(
             rv.status_code,
             200,
@@ -161,7 +158,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.get(
             URL_PREFIX + '/users/admin', headers=self.admin_auth_header
         )
-        # print("GET /users/admin", rv.data)
         self.assertEqual(
             rv.status_code,
             200,
@@ -180,7 +176,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + '/users/%s' % new_user_id,
             headers=self.admin_auth_header
         )
-        # print("DELETE /users/thomas", rv.data)
         self.assertEqual(
             rv.status_code,
             200,
