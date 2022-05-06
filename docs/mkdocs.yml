@@ -26,3 +26,14 @@ docs_dir:  docs
 theme:     readthedocs
 # https://github.com/mkdocs/mkdocs/issues/991
 use_directory_urls: true
+nav:
+  - Home: 'index.md'
+  - Introduction: 'introduction.md'
+  - Installation: 'installation.md'
+  - Actinia database access: 'tutorial_data_access.md'
+  - Time-series sampling: 'tutorial_strds_sampling.md'
+  - Landsat NDVI computation: 'tutorial_landsat_ndvi.md'
+  - Sentinel-2A NDVI computation: 'tutorial_sentinel2_ndvi.md'
+  - User defined processing: 'tutorial_process_chain.md'
+  - License: 'license.md'
+  - Authors: 'authors.md'
