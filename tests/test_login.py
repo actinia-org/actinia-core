@@ -141,7 +141,7 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
 
         # Get the new user entry
         rv = self.server.get(
-            URL_PREFIX + '/users/thomas', headers=self.admin_auth_header
+            URL_PREFIX + f"/users/{new_user_id}", headers=self.admin_auth_header
         )
         # print("GET /users/thomas", rv.data)
         self.assertEqual(
