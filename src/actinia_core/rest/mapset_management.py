@@ -39,7 +39,7 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.user_auth import check_user_permissions
-from actinia_core.rest.base.user_auth import very_admin_role
+from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.processing.common.mapset_management import \
      list_raster_mapsets, read_current_region, create_mapset, \
      delete_mapset, get_mapset_lock, lock_mapset, unlock_mapset
@@ -98,7 +98,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
     This is only allowed for administrators
     """
     decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
+                  check_admin_role, auth.login_required]
 
     def __init__(self):
         ResourceBase.__init__(self)
@@ -148,7 +148,7 @@ class MapsetLockManagementResource(ResourceBase):
     """Lock a mapset
     """
     decorators = [log_api_call, check_user_permissions,
-                  very_admin_role, auth.login_required]
+                  check_admin_role, auth.login_required]
 
     @swagger.doc(mapset_management.get_lock_doc)
     def get(self, location_name, mapset_name):

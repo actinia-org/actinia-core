@@ -27,6 +27,7 @@ Tests: Actinia user test case
 from flask.json import loads as json_load
 from werkzeug.datastructures import Headers
 import unittest
+import pytest
 import base64
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
@@ -48,15 +49,47 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
     as user with an admin role.
     """
 
+    created_users = list()
+
+    def tearDown(self):
+        # delete user
+        rv = self.server.get(
+            URL_PREFIX + '/users', headers=self.admin_auth_header
+        )
+        self.assertEqual(rv.status_code, 200, "Getting user list failed!")
+        user_list = json_load(rv.data)["user_list"]
+        for user_id in set(self.created_users):
+            if user_id in user_list:
+                delete_user_url = f"{URL_PREFIX}/users/{user_id}"
+                rv2 = self.server.delete(
+                    delete_user_url, headers=self.admin_auth_header
+                )
+                self.assertEqual(
+                    rv2.status_code,
+                    200,
+                    "Deleting of user %s does not work" % user_id
+                )
+        super(ActiniaUserTestCase, self).tearDown()
+
     def test_list_users(self):
         """
         List all users in the database
         :return:
         """
-        rv = self.server.get(URL_PREFIX + '/users', headers=self.admin_auth_header)
+        rv = self.server.get(
+            URL_PREFIX + '/users', headers=self.admin_auth_header
+        )
         print("GET /users", rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code
+        )
+        self.assertEqual(
+            rv.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % rv.mimetype
+        )
 
         users = ""
         if "guest" in json_load(rv.data)["user_list"]:
@@ -64,53 +97,90 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(users, "guest", "Wrong user listed")
 
-    # TODO get this running
-    # def test_create_get_delete_user(self):
-    #     """
-    #     Create a new user, access it as admin and as normal user and delete it
-    #     :return:
-    #     """
-    #
-    #     # Create a new user
-    #     new_user_id = "thomas"
-    #     new_group = "test"
-    #     new_password = "12345"
-    #
-    #     rv = self.server.post(URL_PREFIX + '/users/%s?password=%s&group=%s' % (new_user_id, new_password, new_group),
-    #                           headers=self.admin_auth_header)
-    #     print("POST /users/thomas", rv.data)
-    #     self.assertEqual(rv.status_code, 201, "HTML status code is wrong %i"%rv.status_code)
-    #     self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-    #
-    #     # Try to create the user again which should fail
-    #     rv = self.server.post(URL_PREFIX + '/users/%s?password=%s&group=%s' % (new_user_id, new_password, new_group),
-    #                           headers=self.admin_auth_header)
-    #     print("POST /users/thomas", rv.data)
-    #     self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i"%rv.status_code)
-    #     self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-    #
-    #     # Get the new user entry
-    #     rv = self.server.get(URL_PREFIX + '/users/thomas', headers=self.admin_auth_header)
-    #     #print("GET /users/thomas", rv.data)
-    #     self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-    #     self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-    #
-    #     self.assertEquals(json_load(rv.data)["User id"], new_user_id)
-    #     self.assertEquals(json_load(rv.data)["User role"], "user")
-    #
-    #     # Get the admin user entry
-    #     rv = self.server.get(URL_PREFIX + '/users/admin', headers=self.admin_auth_header)
-    #     #print("GET /users/admin", rv.data)
-    #     self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
-    #     self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s"%rv.mimetype)
-    #
-    #     self.assertEquals(json_load(rv.data)["User id"], "admin")
-    #     self.assertEquals(json_load(rv.data)["User role"], "admin")
-    #
-    #     # Delete the user as admin
-    #     rv = self.server.delete(URL_PREFIX + '/users/%s' % new_user_id, headers=self.admin_auth_header)
-    #     print("DELETE /users/thomas", rv.data)
-    #     self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i"%rv.status_code)
+    @pytest.mark.dev
+    def test_create_get_delete_user(self):
+        """
+        Create a new user, access it as admin and as normal user and delete it
+        :return:
+        """
+
+        # Create a new user
+        new_user_id = "thomas"
+        new_group = "test"
+        new_password = "12345"
+        self.created_users.append(new_user_id)
+
+        create_user_url = f"{URL_PREFIX}/users/{new_user_id}?" \
+            f"password={new_password}&group={new_group}"
+        rv = self.server.post(create_user_url, headers=self.admin_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            201,
+            "HTML status code is wrong %i" % rv.status_code
+        )
+        self.assertEqual(
+            rv.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % rv.mimetype
+        )
+
+        # Try to create the user again which should fail
+        rv = self.server.post(create_user_url, headers=self.admin_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            f"HTML status code is wrong {rv.status_code}"
+        )
+        self.assertEqual(
+            rv.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % rv.mimetype
+        )
+
+        # Get the new user entry
+        rv = self.server.get(
+            URL_PREFIX + f"/users/{new_user_id}", headers=self.admin_auth_header
+        )
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code
+        )
+        self.assertEqual(
+            rv.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % rv.mimetype
+        )
+        self.assertEquals(json_load(rv.data)["user_id"], new_user_id)
+        self.assertEquals(json_load(rv.data)["user_role"], "user")
+
+        # Get the admin user entry
+        rv = self.server.get(
+            URL_PREFIX + '/users/admin', headers=self.admin_auth_header
+        )
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code
+        )
+        self.assertEqual(
+            rv.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % rv.mimetype
+        )
+        self.assertEquals(json_load(rv.data)["user_id"], "admin")
+        self.assertEquals(json_load(rv.data)["user_role"], "admin")
+
+        # Delete the user as admin
+        rv = self.server.delete(
+            URL_PREFIX + '/users/%s' % new_user_id,
+            headers=self.admin_auth_header
+        )
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code
+        )
 
     def test_create_get_delete_user_unprivileged(self):
         """
@@ -122,6 +192,7 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         new_user_id = "thomas"
         new_group = "test"
         new_password = "12345"
+        self.created_users.append(new_user_id)
 
         # Now try to create a new user with the thomas account which should fail!
         new_auth_header = Headers()
@@ -144,6 +215,58 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
                                 headers=new_auth_header)
         print("DELETE /users/thomas", rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
+
+    def test_get_own_userid(self):
+        """
+        Also users and guests should be allowed to request their own user.
+        :return:
+        """
+        # user requests other user (should fail)
+        rv = self.server.get(
+            URL_PREFIX + '/users/admin',
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            401,
+            f"HTML status code is wrong {rv.status_code} for get other user")
+        # user requests own user
+        rv = self.server.get(
+            URL_PREFIX + '/users/user',
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            f"HTML status code is wrong {rv.status_code} for get user from a "
+            "user."
+        )
+        # guest requests other user (should fail)
+        rv = self.server.get(
+            URL_PREFIX + '/users/user',
+            headers=self.guest_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            401,
+            f"HTML status code is wrong {rv.status_code} for get other user")
+        # guest requests own user
+        rv = self.server.get(
+            URL_PREFIX + '/users/guest',
+            headers=self.guest_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            f"HTML status code is wrong {rv.status_code} for get user from a "
+            "guest."
+        )
+        # admin requests other user
+        rv = self.server.get(
+            URL_PREFIX + '/users/user',
+            headers=self.admin_auth_header)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            f"HTML status code is wrong {rv.status_code} for get user from a "
+            "admin."
+        )
 
     def test_token_generation_admin(self):
 
