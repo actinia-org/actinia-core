@@ -101,7 +101,7 @@ class UserManagementResource(LoginBase):
         """Return the credentials of a single user
 
         These methods work only if the
-        authorized user has an admin role or requests her/his own user.
+        authorized user has an admin role or requests the own user ID.
 
         Args:
             user_id (str): The unique name of the user

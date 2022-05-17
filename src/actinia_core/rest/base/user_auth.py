@@ -122,14 +122,14 @@ def check_admin_role(f):
 
 
 def check_admin_role_or_own_userid(f):
-    """Verify if the user has admin rights or requests his own user
+    """Verify if the user has admin rights or requests own user ID
 
     This decorator function verifies if the role
     of the login user is "admin" or "superadmin"
-    or the user request the own user.
+    or the user request the own user ID.
 
     It will abort with a 401 response if the user is not admin and the user
-    is not the own user
+    is not the own user ID
 
     Args:
         f (function): The function to wrap
