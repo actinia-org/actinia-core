@@ -554,7 +554,8 @@ class ProcessChainConverter(object):
         # Check for un-allowed characters in the parameter list
         for entry in params:
             if "&" in entry and \
-               module_name not in ("r.mapcalc", "t.rast.mapcalc", "t.rast.algebra", "t.rast.bandcalc"):
+               module_name not in ("r.mapcalc", "t.rast.mapcalc",
+                                   "t.rast.algebra", "t.rast.bandcalc"):
                 raise AsyncProcessError("Character '&' not allowed in "
                                         "parameters for %s" % module_name)
 
