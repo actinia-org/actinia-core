@@ -21,6 +21,24 @@ https://github.com/mundialis/actinia_core/compare/4.0.0...main
 released from <branch>\
 ...
 
+## [4.0.1] - 2022-05-20
+released from main
+### Fixed
+* Fix wheel build in gha by @mmacata in https://github.com/mundialis/actinia_core/pull/338
+* STAC Importer Issues by @joaherrerama in https://github.com/mundialis/actinia_core/pull/318
+* allow character "&" for t.rast.bandcalc by @metzm in https://github.com/mundialis/actinia_core/pull/351
+### Added
+* Add imported modules from actinia-tiling-plugin by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/342
+* Add more modules and configuration to add additinal modules in config by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/341
+* Prepare docker alpine to 3.15 by @mmacata in https://github.com/mundialis/actinia_core/pull/343
+* Docker alpine3.15 update part 2 by @mmacata in https://github.com/mundialis/actinia_core/pull/346
+* Use versionless GRASS GIS (8) instead of hardcoded grass7x by @neteler in https://github.com/mundialis/actinia_core/pull/347
+* Allow a user and guest to request his own user (breaking change) by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/348
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.0.0...4.0.1
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.0.1" -f target_commitish=main -q .body`
+
+-----------------------------
 
 ## [4.0.0] - 2022-04-01
 released from main
