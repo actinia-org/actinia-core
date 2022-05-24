@@ -26,7 +26,6 @@ Tests: Async Process test case
 """
 import os
 import unittest
-import pytest
 from flask.json import dumps as json_dumps
 try:
     from .test_resource_base import (
@@ -48,10 +47,10 @@ except Exception:
     no_stac_plugin = True
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Julia Haas"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
+__email__ = "info@mundialis.de"
 
 process_chain_raster_import_export = {
     "list": [{"flags": "a",
@@ -291,15 +290,12 @@ process_chain_stac_source_error_import = {
 }
 
 process_chain_raster_import_resample_resolution = {
-# TODO: import elevation data into different location so that r.import uses r.proj
-# instead of r.in.gdal
-# or use different data (e.g. mangkawuk)
     "list": [{
         "id": "importer_1",
         "module": "importer",
         "inputs": [{
             "import_descr": {
-                "source": "https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/mangkawuk_srtmgl1_v003_30m.tiff",
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
                 "type": "raster",
                 "resample": "bilinear_f",
                 "resolution": "value",
@@ -313,13 +309,9 @@ process_chain_raster_import_resample_resolution = {
     "version": 1
 }
 
-
 process_chain_raster_import_resample_resolution_info = {
-# TODO: import elevation data into different location so that r.import uses r.proj
-# instead of r.in.gdal
-# or use different data (e.g. mangkawuk)
     "list": [{"id": "r_info",
-              "inputs": [{"import_descr": {"source": "https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/mangkawuk_srtmgl1_v003_30m.tiff",
+              "inputs": [{"import_descr": {"source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
                                            "type": "raster",
                                            "resample": "bilinear_f",
                                            "resolution": "value",
@@ -333,23 +325,123 @@ process_chain_raster_import_resample_resolution_info = {
     "version": "1"
 }
 
-# process_chain_raster_import_resample_resolution_error = {
-# # TODO: import into different mapset so that r.import uses r.proj instead of r.in.gdal
-# # or use different data (e.g. mangkawuk)
-# # TODO: add PC for testing error messages
-#     "list": [{"id": "r_info",
-#               "inputs": [{"import_descr": {"source": additional_external_data["elev_ned_30m_tif"],
-#                                            "type": "raster",
-#                                            "resample": "bilinear_f",
-#                                            "resolution": "value",
-#                                            "resolution_value": "100"},
-#                           "param": "map",
-#                           "value": "elev_ned_100m"}],
-#               "module": "r.info",
-#               "flags": "g",
-#               "stdout": {"id": "r_info", "format": "kv", "delimiter": "="}
-#               }],
-#     "version": "1"}
+process_chain_raster_import_resample_resolution_error_resamp = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinea",
+                "resolution": "value",
+                "resolution_value": "100"
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
+
+process_chain_raster_import_resample_resolution_error_resol = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution": "values",
+                "resolution_value": "100"
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
+
+process_chain_raster_import_resample_resolution_error_val_missing = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution": "value",
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
+
+process_chain_raster_import_resample_resolution_error_val_not_float = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution": "value",
+                "resolution_value": "not float"
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
+
+process_chain_raster_import_resample_resolution_error_resol_not_set = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution_value": "100"
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
+
+process_chain_raster_import_resample_resolution_error_resol_not_val = {
+    "list": [{
+        "id": "importer_1",
+        "module": "importer",
+        "inputs": [{
+            "import_descr": {
+                "source": additional_external_data["mangkawuk_srtmgl1_v003_30m_tif"],
+                "type": "raster",
+                "resample": "bilinear_f",
+                "resolution": "estimated",
+                "resolution_value": "100"
+                },
+            "param": "map",
+            "value": "mangkawuk_srtmgl1_v003_100m"
+        }
+        ]
+        }],
+    "version": 1
+}
 
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
@@ -504,8 +596,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=400, status="error")
 
-
-    @pytest.mark.dev
     def test_raster_import_resample_resolution(self):
         """
         Code test raster import with set resampling and resolution with http reponse 200
@@ -518,8 +608,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
                                        http_status=200, status="finished")
 
-
-    @pytest.mark.dev
     def test_raster_import_resample_resolution_info(self):
         """
         Code test resampling and resolution values for raster import with set
@@ -534,9 +622,9 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
         resample_val = "resample=bilinear_f"
         resolution_val = "100"
-        
+
         r_info_results = resp["process_results"]["r_info"]
-        r_import_process_log = resp["process_log"][1]  # TODO: better way to check if resampling was really done
+        r_import_process_log = resp["process_log"][1]
 
         self.assertEqual(r_info_results["ewres"], resolution_val,
                          "'ewres' does not match set resolution")
@@ -545,34 +633,83 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(r_import_process_log["parameter"][3], resample_val,
                          "'resampling method' does not match set resampling method %s" % resample_val)
 
+    def test_raster_import_resample_resolution_error_resamp(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        resample value not in options
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_resamp),
+                              content_type="application/json")
 
-    # TODO: add test for errorneous request
-    # @pytest.mark.dev
-    # def test_raster_import_resample_resolution_error(self):
-    #     """
-    #     Code test resampling and resolution values for raster import with set
-    #     resampling and resolution
-    #     """
-    #     rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
-    #                           headers=self.admin_auth_header,
-    #                           data=json_dumps(process_chain_raster_import_resample_resolution_info),
-    #                           content_type="application/json")
-    #
-    #     resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
-    #
-    #     # test resolution and resampling
-    #     resample_val = "resample=bilinear_f"
-    #     resolution_val = "100"
-    #
-    #     r_info_results = resp["process_results"]["r_info"]
-    #     r_import_process_log = resp["process_log"][1]  #TODO: better way to check if resampling was really done
-    #
-    #     self.assertEqual(r_info_results["ewres"], resolution_val,
-    #                      "'ewres' does not match set resolution")
-    #     self.assertEqual(r_info_results["nsres"], resolution_val,
-    #                      "'nsres' does not match set resolution %s" % resolution_val)
-    #     self.assertEqual(r_import_process_log["parameter"][3], resample_val,
-    #                      "'resampling method' does not match set resampling method %s" % resample_val)
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    def test_raster_import_resample_resolution_error_resol(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        resolution value not in options
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_resol),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    def test_raster_import_resample_resolution_error_val_missing(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        key "value" missing when resolution set to value
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_val_missing),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    def test_raster_import_resample_resolution_error_val_not_float(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        value for "value" not convertible to float
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_val_not_float),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    def test_raster_import_resample_resolution_error_resol_not_set(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        resolution not set, when value set
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_resol_not_set),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
+
+    def test_raster_import_resample_resolution_error_resol_not_val(self):
+        """
+        Code test raster import with set resampling and resolution with http reponse 400,
+        resoltuion not set to "value", when value set
+        """
+        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
+                              headers=self.admin_auth_header,
+                              data=json_dumps(process_chain_raster_import_resample_resolution_error_resol_not_val),
+                              content_type="application/json")
+
+        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
+                                       http_status=400, status="error")
 
 
 if __name__ == '__main__':

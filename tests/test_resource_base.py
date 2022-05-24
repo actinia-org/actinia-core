@@ -62,7 +62,8 @@ additional_external_data = {
     "census_wake2000_zip": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.zip",
     "geology_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif",
     "geology_30m_zip": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.zip",
-    "pointInBonn": "https://apps.mundialis.de/actinia_test_datasets/pointInBonn.geojson"
+    "pointInBonn": "https://apps.mundialis.de/actinia_test_datasets/pointInBonn.geojson",
+    "mangkawuk_srtmgl1_v003_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/mangkawuk_srtmgl1_v003_30m.tiff"
 }
 
 
