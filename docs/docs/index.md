@@ -34,7 +34,7 @@ The full API documentation is available here: <https://actinia.mundialis.de/api_
 * Time-series sampling 
     * Sampling of a STRDS with vector points 
 * Landsat NDVI computation 
-* Sentinel-2A NDVI computation 
+* Sentinel-2 NDVI computation 
 * User defined processing  
     * The actinia process chain 
     * Sentinel-2A NDVI process chain 
