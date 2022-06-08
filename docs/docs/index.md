@@ -22,6 +22,7 @@ The full API documentation is available here: <https://actinia.mundialis.de/api_
 * Introduction
     * What is REST?
     * Examples
+* Actinia concepts
     * Actinia REST API documentation
     * User, user-roles and user-groups
     * The Actinia databases 

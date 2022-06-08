@@ -30,6 +30,7 @@ extra_css: [extra.css]
 nav:
   - Home: 'index.md'
   - Introduction: 'introduction.md'
+  - Actinia concepts: 'actinia_concepts.md'
   - Installation: 'installation.md'
   - Actinia database access: 'tutorial_data_access.md'
   - Time-series sampling: 'tutorial_strds_sampling.md'
