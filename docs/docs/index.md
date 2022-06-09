@@ -17,7 +17,8 @@ example all Landsat 4-8 scenes as well as all Sentinel-2 scenes in an
 ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
-The full API documentation is available here: <https://actinia.mundialis.de/api_docs/>
+The full API documentation is available here: <https://actinia.mundialis.de/api_docs/>.
+The source code is available here: <https://github.com/mundialis/actinia_core>.
 
 * Introduction
     * What is REST?
