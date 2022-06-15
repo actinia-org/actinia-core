@@ -350,12 +350,14 @@ class PersistentProcessing(EphemeralProcessing):
                             f"SELECT * FROM dba.{table}")
                 continue
             # for example raster_register_xxx tables are not in both dbs
-            if table not in table_names1:
-                con.execute(f"CREATE TABLE {table} AS "
-                            f"SELECT * FROM dba.{table}")
-                continue
-            combine = f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
-            con.execute(combine)
+            if table in table_names1:
+                # drop table so that raster can also be unregistered
+                con.execute(f"DROP TABLE {table}")
+            con.execute(f"CREATE TABLE {table} AS "
+                        f"SELECT * FROM dba.{table}")
+        for table in table_names1:
+            if table not in table_names2:
+                con.execute(f"DROP TABLE {table}")
         con.commit()
         con.execute("detach database dba")
         if con:
