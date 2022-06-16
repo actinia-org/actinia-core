@@ -28,7 +28,6 @@ import unittest
 from flask.json import dumps as json_dumps
 from flask.json import loads as json_load
 import time
-import pytest
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -375,7 +374,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         # check if correct maps are listed i strds 'modis'
         self.check_modis_strds(self.raster_dict_modis, 'modis')
 
-    @pytest.mark.dev
     def test_create_strds_in_persistent_user_db_and_list_it(self):
         rv = self.server.post(URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/processing_async',
                               headers=self.admin_auth_header,
@@ -398,7 +396,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         # check if correct maps are listed i strds 'modis'
         self.check_modis_strds(self.raster_dict_modis, 'modis')
 
-    @pytest.mark.dev
     def test_create_strds_in_persistent_user_db_2(self):
 
         rv = self.server.post(
@@ -426,7 +423,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         self.check_modis_strds(self.raster_dict_modis, 'modis')
         self.check_modis_strds(self.raster_dict_modis2, 'modis2')
 
-    @pytest.mark.dev
     def test_create_strds_in_persistent_user_db_3(self):
 
         rv = self.server.post(
