@@ -26,7 +26,6 @@ STRDS map layer management
 
 TODO: Integrate into the ephemeral process chain approach
 """
-import os
 
 from actinia_api.swagger2.actinia_core.schemas.strds_management import \
      STRDSInfoModel, STRDSInfoResponseModel

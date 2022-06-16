@@ -153,14 +153,6 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
     def _execute(self):
         self._setup()
 
-        input_file = tempfile.NamedTemporaryFile(
-            dir=self.temp_file_path, delete=True, mode="w")
-
-        # for map_name in self.request_data:
-        #     line = "%s\n" % map_name
-        #     input_file.write(line)
-        # input_file.flush()
-
         pc = {
             "version": 1,
             "list": [{
@@ -184,13 +176,9 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
         self._create_temporary_grass_environment(
             source_mapset_name=self.target_mapset_name)
         self._lock_temp_mapset()
-        # self._create_temp_database(mapsets=self.required_mapsets)
-        # self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-        #                                mapset_name=self.mapset_name)
 
         self._execute_process_list(process_list)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        # input_file.close()
         self.finish_message = f"Raster maps <{self.request_data}> " \
             f"successfully unregistered from {self.map_name}"

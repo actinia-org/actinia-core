@@ -348,23 +348,30 @@ class PersistentProcessing(EphemeralProcessing):
                     deleted_keys = list()
                     for p_key in primary_key_vals:
                         if p_key not in deleted_keys:
-                            new_p_key = p_key.replace(source_mapset, target_mapset)
-                            if source_mapset in p_key and new_p_key in primary_key_vals:
+                            new_p_key = p_key.replace(
+                                source_mapset, target_mapset)
+                            if (source_mapset in p_key and
+                                    new_p_key in primary_key_vals):
                                 deleted_keys.append(new_p_key)
-                                delete_old_entry = f"DELETE FROM {table_name} WHERE {primary_key}='{new_p_key}'"
+                                delete_old_entry = f"DELETE FROM {table_name}" \
+                                    f" WHERE {primary_key}='{new_p_key}'"
                                 cur.execute(delete_old_entry)
                                 old_row = [row for row in cur.execute(
-                                    f"SELECT * FROM {table_name} WHERE {primary_key}='{p_key}'")][0]
+                                    f"SELECT * FROM {table_name} WHERE "
+                                    f"{primary_key}='{p_key}'")][0]
                                 new_row = list()
                                 for old_v, col in zip(old_row, columns):
-                                    if col not in skip_columns and isinstance(old_v, str):
-                                        new_v = old_v.replace(source_mapset, target_mapset)
+                                    if (col not in skip_columns and
+                                            isinstance(old_v, str)):
+                                        new_v = old_v.replace(
+                                            source_mapset, target_mapset)
                                     elif old_v is None:
                                         new_v == "NULL"
                                     else:
                                         new_v = old_v
                                     new_row.append(new_v)
-                                insert_statment = f"INSERT INTO {table_name} {tuple(columns)} VALUES {tuple(new_row)}"
+                                insert_statment = f"INSERT INTO {table_name}" \
+                                    f" {tuple(columns)} VALUES {tuple(new_row)}"
                                 cur.execute(insert_statment)
                             else:
                                 cur.execute(update_statement)
