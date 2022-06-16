@@ -109,6 +109,7 @@ class GrassEnvironment(ProcessLogging):
         self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
         self.env["GISRC"] = os.path.join(gisrc_path, "gisrc")
         self.env["LD_LIBRARY_PATH"] = str(os.path.join(self.env["GISBASE"], "lib"))
+        # import pdb; pdb.set_trace()
         self.env["GRASS_VERSION"] = "7.7.svn"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
         self.env["GRASS_ADDON_BASE"] = grass_addon_path
@@ -140,12 +141,12 @@ class GrassEnvironment(ProcessLogging):
                     % str(e))
 
     def set(self):
-        # # for debugging in ephemeral_processing.py (see also process_queue.py)
-        # for var in [
-        #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
-        #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
-        #     if var in os.environ:
-        #         del os.environ[var]
+        # for debugging in ephemeral_processing.py (see also process_queue.py)
+        for var in [
+                'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
+                'GRASS_ADDON_PATH', 'GIS_LOCK']:
+            if var in os.environ:
+                del os.environ[var]
 
         for key in self.env:
             try:

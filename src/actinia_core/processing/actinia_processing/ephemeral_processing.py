@@ -32,6 +32,7 @@ import requests
 import shutil
 import subprocess
 import sys
+import sqlite3
 import tempfile
 import time
 import traceback
@@ -892,6 +893,8 @@ class EphemeralProcessing(object):
             "Initlialize GRASS grass_data_base: %s; location: %s; mapset: %s"
             % (grass_data_base, self.location_name, mapset_name))
 
+        # import pdb; pdb.set_trace()
+
         self.ginit = GrassInitializer(grass_data_base=grass_data_base,
                                       grass_base_dir=self.config.GRASS_GIS_BASE,
                                       location_name=self.location_name,
@@ -1399,10 +1402,12 @@ class EphemeralProcessing(object):
                                        mapset_name="PERMANENT")
 
         # Create the temporary mapset and switch into it
-        self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name,
-                                      source_mapset_name=source_mapset_name,
-                                      interim_result_mapset=interim_result_mapset,
-                                      interim_result_file_path=interim_result_file_path)
+        self._create_temporary_mapset(
+            temp_mapset_name=self.temp_mapset_name,
+            source_mapset_name=source_mapset_name,
+            interim_result_mapset=interim_result_mapset,
+            interim_result_file_path=interim_result_file_path
+        )
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses.

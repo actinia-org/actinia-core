@@ -98,6 +98,10 @@ def enqueue_job(timeout, func, *args):
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
     # # only uncomment ONE of the following endpoints:
 
+    # from actinia_core.processing.actinia_processing.persistent.strds_management import PersistentSTRDSDeleter
+    # processing = PersistentSTRDSDeleter(*args)
+    # processing.run()
+
     # # for '/locations/<string:location_name>/processing_async'
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource
@@ -236,6 +240,8 @@ class EnqueuedProcess(object):
         or "timeout".
 
         """
+        # TODO IMPROVE!!!
+        # import pdb; pdb.set_trace()
         if self.process.exitcode is not None and self.process.exitcode != 0:
 
             # Check if the process noticed the error already
