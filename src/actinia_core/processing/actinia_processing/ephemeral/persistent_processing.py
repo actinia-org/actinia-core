@@ -324,53 +324,52 @@ class PersistentProcessing(EphemeralProcessing):
             con.close()
         del cur
 
-    def _merge_tgis_dbs(self, tgis_db_path_1, tgis_db_path_2):
-        """Merge two tgis sqlite.db files
-
-        Args:
-            tgis_db_path_1(str): path of a tgis sqlite.db file in which the
-                                 other should be merged
-            tgis_db_path_2(str): path of a tgis sqlite.db file which should be
-                                 merged in tgis_db_path_1
-        """
-        con = sqlite3.connect(tgis_db_path_1)
-        con.execute(f"ATTACH '{tgis_db_path_2}' as dba")
-        con.execute("BEGIN")
-
-        table_names1 = [row[1] for row in con.execute(
-            "SELECT * FROM sqlite_master where type='table'")]
-        table_names2 = [row[1] for row in con.execute(
-            "SELECT * FROM dba.sqlite_master where type='table'")]
-
-        # merge databases
-        for table in table_names2:
-            if table == 'tgis_metadata':
-                con.execute(f"DROP TABLE {table}")
-                con.execute(f"CREATE TABLE {table} AS "
-                            f"SELECT * FROM dba.{table}")
-                continue
-            # for example raster_register_xxx tables are not in both dbs
-            if table not in table_names1:
-                con.execute(f"CREATE TABLE {table} AS "
-                            f"SELECT * FROM dba.{table}")
-                continue
-            combine = f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
-            con.execute(combine)
-        con.commit()
-        con.execute("detach database dba")
-        if con:
-            con.close()
-
     def _change_mapsetname_in_tgistable(
             self, cur, table_name,
             source_mapset, target_mapset, skip_columns=[]):
         columns = [row[0] for row in cur.execute(
             f"SELECT * FROM {table_name}").description]
+
+        # find PRIMARY KEY
+        selection = [row[1] for row in cur.execute(
+            f"PRAGMA table_info({table_name})") if row[-1] == 1]
+        if len(selection) == 0:
+            primary_key = ""
+        else:
+            primary_key = selection[0]
+
         for col in columns:
             if col not in skip_columns:
-                cur.execute(
-                    f"UPDATE {table_name} SET {col} = REPLACE({col}, "
-                    f"'{source_mapset}', '{target_mapset}')")
+                update_statement = f"UPDATE {table_name} SET {col} = " \
+                    f"REPLACE({col}, '{source_mapset}', '{target_mapset}')"
+                if col == primary_key:
+                    primary_key_vals = [row[0] for row in cur.execute(
+                        f"SELECT {primary_key} FROM {table_name}")]
+                    deleted_keys = list()
+                    for p_key in primary_key_vals:
+                        if p_key not in deleted_keys:
+                            new_p_key = p_key.replace(source_mapset, target_mapset)
+                            if source_mapset in p_key and new_p_key in primary_key_vals:
+                                deleted_keys.append(new_p_key)
+                                delete_old_entry = f"DELETE FROM {table_name} WHERE {primary_key}='{new_p_key}'"
+                                cur.execute(delete_old_entry)
+                                old_row = [row for row in cur.execute(
+                                    f"SELECT * FROM {table_name} WHERE {primary_key}='{p_key}'")][0]
+                                new_row = list()
+                                for old_v, col in zip(old_row, columns):
+                                    if col not in skip_columns and isinstance(old_v, str):
+                                        new_v = old_v.replace(source_mapset, target_mapset)
+                                    elif old_v is None:
+                                        new_v == "NULL"
+                                    else:
+                                        new_v = old_v
+                                    new_row.append(new_v)
+                                insert_statment = f"INSERT INTO {table_name} {tuple(columns)} VALUES {tuple(new_row)}"
+                                cur.execute(insert_statment)
+                            else:
+                                cur.execute(update_statement)
+                else:
+                    cur.execute(update_statement)
 
     def _change_mapsetname_in_tgis(self, tgis_path, source_mapset,
                                    target_mapset, target_tgis_db):
@@ -398,13 +397,6 @@ class PersistentProcessing(EphemeralProcessing):
         if con:
             con.close()
         del cur
-
-        # # if there already exists a sqlite.db file then merge it
-        # if target_tgis_db is not None:
-        #     import pdb; pdb.set_trace()
-        #     self._copy_folder(tgis_db_path, target_tgis_db)
-        #     import pdb; pdb.set_trace()
-        #     # self._merge_tgis_dbs(tgis_db_path, target_tgis_db)
 
         # update views
         self._update_views_in_tgis(tgis_db_path)
@@ -444,7 +436,6 @@ class PersistentProcessing(EphemeralProcessing):
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
-                import pdb; pdb.set_trace()
                 self._copy_folder(
                     source_path, target_path,
                     msg="merge mapsets. Error in linking")
@@ -733,12 +724,6 @@ class PersistentProcessing(EphemeralProcessing):
                 temp_mapset_name=self.target_mapset_name,
                 interim_result_mapset=interim_result_mapset,
                 interim_result_file_path=interim_result_file_path)
-            # tgis_path = os.path.join(
-            #     self.user_location_path, self.target_mapset_name, "tgis")
-            # if os.path.isdir(tgis_path):
-            #     import pdb; pdb.set_trace()
-            #     self._copy_folder(
-            #         tgis_path, os.path.join(self.temp_mapset_path, "tgis"))
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset

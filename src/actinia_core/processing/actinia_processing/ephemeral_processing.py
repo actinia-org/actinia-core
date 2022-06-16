@@ -893,8 +893,6 @@ class EphemeralProcessing(object):
             "Initlialize GRASS grass_data_base: %s; location: %s; mapset: %s"
             % (grass_data_base, self.location_name, mapset_name))
 
-        # import pdb; pdb.set_trace()
-
         self.ginit = GrassInitializer(grass_data_base=grass_data_base,
                                       grass_base_dir=self.config.GRASS_GIS_BASE,
                                       location_name=self.location_name,

@@ -240,8 +240,6 @@ class EnqueuedProcess(object):
         or "timeout".
 
         """
-        # TODO IMPROVE!!!
-        # import pdb; pdb.set_trace()
         if self.process.exitcode is not None and self.process.exitcode != 0:
 
             # Check if the process noticed the error already
