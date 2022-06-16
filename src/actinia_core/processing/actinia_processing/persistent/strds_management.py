@@ -123,7 +123,7 @@ class PersistentSTRDSInfo(PersistentProcessing):
                 "id": f"strds_info_{self.unique_id}",
                 "inputs": [
                     {"param": "type", "value": "strds"},
-                    {"param": "input", "value": "self.map_name"}
+                    {"param": "input", "value": self.map_name}
                 ],
                 "flags": "g"
             }]
