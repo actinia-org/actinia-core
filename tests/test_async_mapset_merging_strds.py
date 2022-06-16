@@ -424,6 +424,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
 
         # check if strds 'modis' and 'modis2' is in mapset
+        import pdb; pdb.set_trace()
         self.check_strds_in_mapset(['modis', 'modis2'])
         # check if correct maps are listed in strds 'modis' and 'modis2'
         self.check_modis_strds(self.raster_dict_modis, 'modis')
