@@ -156,23 +156,41 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
         input_file = tempfile.NamedTemporaryFile(
             dir=self.temp_file_path, delete=True, mode="w")
 
-        for map_name in self.request_data:
-            line = "%s\n" % map_name
-            input_file.write(line)
-        input_file.flush()
+        # for map_name in self.request_data:
+        #     line = "%s\n" % map_name
+        #     input_file.write(line)
+        # input_file.flush()
 
-        pc = {"1": {"module": "t.unregister",
-                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
-                               "type": "raster",
-                               "file": input_file.name}}}
+        pc = {
+            "version": 1,
+            "list": [{
+                "id": f"strds_unregister_raster_{self.unique_id}",
+                "module": "t.unregister",
+                "inputs": [
+                    {"param": "input", "value": f"{self.map_name}"},
+                    {"param": "type", "value": "raster"},
+                    {"param": "maps", "value": ",".join(self.request_data)}
+                ]
+            }]
+        }
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)
         self._check_lock_target_mapset()
-        self._create_temp_database(mapsets=self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.target_mapset_name)
+        # Init GRASS environment and create the temporary mapset
+        self._create_temporary_grass_environment(
+            source_mapset_name=self.target_mapset_name)
+        self._lock_temp_mapset()
+        # self._create_temp_database(mapsets=self.required_mapsets)
+        # self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
+        #                                mapset_name=self.mapset_name)
 
         self._execute_process_list(process_list)
+        self._copy_merge_tmp_mapset_to_target_mapset()
 
-        input_file.close()
+        # input_file.close()
+        self.finish_message = f"Raster maps <{self.request_data}> " \
+            f"successfully unregistered from {self.map_name}"

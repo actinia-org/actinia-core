@@ -98,8 +98,8 @@ def enqueue_job(timeout, func, *args):
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
     # # only uncomment ONE of the following endpoints:
 
-    # from actinia_core.processing.actinia_processing.persistent.strds_management import PersistentSTRDSDeleter
-    # processing = PersistentSTRDSDeleter(*args)
+    # from actinia_core.processing.actinia_processing.persistent.strds_raster_management import PersistentRasterSTRDSUnregisterer
+    # processing = PersistentRasterSTRDSUnregisterer(*args)
     # processing.run()
 
     # # for '/locations/<string:location_name>/processing_async'

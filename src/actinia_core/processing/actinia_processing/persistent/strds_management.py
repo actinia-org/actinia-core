@@ -190,7 +190,6 @@ class PersistentSTRDSDeleter(PersistentProcessing):
         self._lock_temp_mapset()
 
         self._execute_process_list(process_list)
-        # self.temp_mapset_path = os.path.join(self.temp_location_path, self.temp_mapset_name)
         self._copy_merge_tmp_mapset_to_target_mapset()
         self.finish_message = "STRDS <%s> successfully deleted" % self.map_name
 
