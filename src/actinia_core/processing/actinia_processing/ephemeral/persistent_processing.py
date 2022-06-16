@@ -449,6 +449,29 @@ class PersistentProcessing(EphemeralProcessing):
                         "Unable to merge mapsets. Error in linking:"
                         " stdout: %s stderr: %s" % (stdout_buff, stderr_buff))
 
+    def _copy_folder(
+            self, source_path, target_path,
+            msg="temporary mapset to original location"):
+        try:
+            stdout = subprocess.PIPE
+            stderr = subprocess.PIPE
+            p = subprocess.Popen(["/bin/cp", "-fr",
+                                  "%s" % source_path,
+                                  "%s" % target_path],
+                                 stdout=stdout,
+                                 stderr=stderr)
+            (stdout_buff, stderr_buff) = p.communicate()
+            if p.returncode != 0:
+                raise AsyncProcessError(
+                    f"Unable to copy {msg}. Copy error "
+                    "stdout: %s stderr: %s returncode: %i" % (stdout_buff,
+                                                              stderr_buff,
+                                                              p.returncode))
+        except Exception as e:
+            raise AsyncProcessError(
+                f"Unable to copy {msg}. Exception %s" % str(e))
+
+
     def _copy_merge_tmp_mapset_to_target_mapset(self):
         """Copy the temporary mapset into the original location
 
@@ -493,25 +516,7 @@ class PersistentProcessing(EphemeralProcessing):
 
         self._send_resource_update(message)
 
-        try:
-            stdout = subprocess.PIPE
-            stderr = subprocess.PIPE
-            p = subprocess.Popen(["/bin/cp", "-fr",
-                                  "%s" % source_path,
-                                  "%s" % target_path],
-                                 stdout=stdout,
-                                 stderr=stderr)
-            (stdout_buff, stderr_buff) = p.communicate()
-            if p.returncode != 0:
-                raise AsyncProcessError(
-                    "Unable to copy temporary mapset to "
-                    "original location. Copy error "
-                    "stdout: %s stderr: %s returncode: %i" % (stdout_buff,
-                                                              stderr_buff,
-                                                              p.returncode))
-        except Exception as e:
-            raise AsyncProcessError("Unable to copy temporary mapset to "
-                                    "original location. Exception %s" % str(e))
+        self._copy_folder(source_path, target_path)
 
         # Merge the temp mapset into the target mapset in case the target already exists
         if self.target_mapset_exists is True:
@@ -619,6 +624,12 @@ class PersistentProcessing(EphemeralProcessing):
                 temp_mapset_name=self.target_mapset_name,
                 interim_result_mapset=interim_result_mapset,
                 interim_result_file_path=interim_result_file_path)
+            tgis_path = os.path.join(
+                self.user_location_path, self.target_mapset_name, "tgis")
+            # import pdb; pdb.set_trace()
+            if os.path.isdir(tgis_path):
+                self._copy_folder(
+                    tgis_path, os.path.join(self.temp_mapset_path, "tgis"))
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset

@@ -52,27 +52,36 @@ class PersistentSTRDSLister(PersistentProcessing):
 
         self._setup()
 
-        pc = {"1": {"module": "t.list",
-                    "inputs": {"type": "strds",
-                               "column": "name"}}}
+        pc = {
+            "version": 1,
+            "list": [{
+                "module": "t.list",
+                "id": f"list_strds_{self.unique_id}",
+                "inputs": [
+                    {"param": "type", "value": "strds"},
+                    {"param": "column", "value": "name"}
+                ]
+            }]
+        }
 
         # Make sure that only the current mapset is used for strds listing
         has_where = False
 
         if self.rdc.user_data:
-            for option in self.rdc.user_data:
-                if self.rdc.user_data[option] is not None:
+            for option, val in self.rdc.user_data.items():
+                if val is not None:
                     if "where" in option:
-                        select = self.rdc.user_data[option] + \
-                            " AND mapset = \'%s\'" % self.mapset_name
-                        pc["1"]["inputs"]["where"] = select
+                        select = f"{val} AND mapset = \'{self.mapset_name}\'"
+                        pc["list"][0]["inputs"].append(
+                            {"param": "where", "value": select})
                         has_where = True
                     else:
-                        pc["1"]["inputs"][option] = self.rdc.user_data[option]
+                        pc["list"][0]["inputs"].append(
+                            {"param": option, "value": val})
 
         if has_where is False:
-            select = "mapset=\'%s\'" % self.mapset_name
-            pc["1"]["inputs"]["where"] = select
+            select = f"mapset=\'{self.mapset_name}\'"
+            pc["list"][0]["inputs"].append({"param": "where", "value": select})
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)
@@ -177,21 +186,38 @@ class PersistentSTRDSCreator(PersistentProcessing):
         self._setup()
         self.required_mapsets.append(self.target_mapset_name)
 
-        pc_1 = {}
-        pc_1["1"] = {"module": "t.list", "inputs": {
-            "type": "strds",
-            "where": "id = \'%s@%s\'" % (self.map_name, self.target_mapset_name)}}
+        pc_1 = {"version": 1}
+        pc_1["list"] = [{
+            "id": f"list_strds_{self.unique_id}",
+            "module": "t.list",
+            "inputs": [
+                {
+                    "param": "type",
+                    "value": "strds"
+                },
+                {
+                    "param": "where",
+                    "value": f"id = \'{self.map_name}@"
+                             f"{self.target_mapset_name}\'"
+                },
+            ]
+        }]
         # Check the first process chain
         pc_1 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_1)
 
-        pc_2 = {"1": {"module": "t.create",
-                      "inputs": {"type": "strds",
-                                 "output": self.map_name}}}
-
+        pc_2 = {
+            "version": 1,
+            "list": [{
+                "id": f"create_strds_{self.unique_id}",
+                "module": "t.create",
+                "inputs": [{"param": "type", "value": "strds"}],
+                "outputs": [{"param": "output", "value": self.map_name}]
+            }]
+        }
         if self.request_data:
-            for key in self.request_data:
-                pc_2["1"]["inputs"][key] = self.request_data[key]
+            for key, val in self.request_data.items():
+                pc_2["list"][0]["inputs"].append({"param": key, "value": val})
 
         pc_2 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_2)
