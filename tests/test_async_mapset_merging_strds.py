@@ -400,7 +400,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
     @pytest.mark.dev
     def test_create_strds_in_persistent_user_db_2(self):
-        import pdb; pdb.set_trace()
 
         rv = self.server.post(
             URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/processing_async',
@@ -419,12 +418,9 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
-        import pdb; pdb.set_trace()
         rv_test = self.server.get(URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/strds'
 
-
         # check if strds 'modis' and 'modis2' is in mapset
-        import pdb; pdb.set_trace()
         self.check_strds_in_mapset(['modis', 'modis2'])
         # check if correct maps are listed in strds 'modis' and 'modis2'
         self.check_modis_strds(self.raster_dict_modis, 'modis')
