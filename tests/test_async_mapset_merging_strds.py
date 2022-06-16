@@ -418,7 +418,7 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
         self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=200, status="finished")
-        rv_test = self.server.get(URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/strds'
+        self.server.get(URL_PREFIX + f'/locations/nc_spm_08/mapsets/{self.user_mapset}/strds')
 
         # check if strds 'modis' and 'modis2' is in mapset
         self.check_strds_in_mapset(['modis', 'modis2'])
