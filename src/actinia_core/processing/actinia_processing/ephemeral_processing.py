@@ -32,7 +32,6 @@ import requests
 import shutil
 import subprocess
 import sys
-import sqlite3
 import tempfile
 import time
 import traceback
