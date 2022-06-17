@@ -41,9 +41,6 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
 
-# TODO remove
-COPY t.unregister.py /usr/local/grass82/scripts/t.unregister
-
 COPY requirements.txt /src/requirements.txt
 RUN pip3 install -r /src/requirements.txt
 
