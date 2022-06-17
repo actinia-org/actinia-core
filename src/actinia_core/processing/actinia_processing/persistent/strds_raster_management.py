@@ -153,6 +153,11 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
     def _execute(self):
         self._setup()
 
+        maps = [
+            map if "@" in map else f"{map}@{mapset}"
+            for map, mapset in zip(
+                self.request_data, [self.mapset_name]*len(self.request_data))
+        ]
         pc = {
             "version": 1,
             "list": [{
@@ -161,7 +166,7 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
                 "inputs": [
                     {"param": "input", "value": f"{self.map_name}"},
                     {"param": "type", "value": "raster"},
-                    {"param": "maps", "value": ",".join(self.request_data)}
+                    {"param": "maps", "value": ",".join(maps)}
                 ]
             }]
         }
