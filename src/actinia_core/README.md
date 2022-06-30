@@ -31,7 +31,7 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.process_object | Process |
 | actinia_core.core.common.process_queue | create_process_queue |
 | actinia_core.core.common.redis_base | RedisBaseInterface |
-| actinia_core.core.common.redis_interface | full import! TODO check what is used. Else: connect, create_job_queues, enqueue_job |
+| actinia_core.core.common.redis_interface | connect, disconnect, create_job_queues, enqueue_job |
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
@@ -82,7 +82,7 @@ actinia_core.core.common.config import Configuration
 actinia_core.core.common.process_chain import GrassModule
 /# from actinia_core.core.common.process_queue import create_process_queue
 actinia_core.core.common.redis_base import RedisBaseInterface
-actinia_core.core.common import redis_interface
+actinia_core.core.common.redis_interface import enqueue_job, connect, disconnect
 actinia_core.core.common.response_models import create_response_from_model
 actinia_core.core.common.response_models import StringListProcessingResultResponseModel
 actinia_core.core.common.user import ActiniaUser
