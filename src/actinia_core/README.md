@@ -19,7 +19,6 @@ Some other modules outside of core folder are concerned as well.
 | module | import|
 | - | - |
 | actinia_core.endpoints | create_endpoints |
-| actinia_core.health_check | health_check |
 | actinia_core.core.common.api_logger | log_api_call |
 | actinia_core.core.common.app | auth, flask_api, flask_app |
 | actinia_core.core.common.aws_sentinel_interface | AWSSentinel2AInterface |
@@ -31,7 +30,7 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.process_object | Process |
 | actinia_core.core.common.process_queue | create_process_queue |
 | actinia_core.core.common.redis_base | RedisBaseInterface |
-| actinia_core.core.common.redis_interface | connect, disconnect, create_job_queues, enqueue_job |
+| actinia_core.core.common.redis_interface | connect, disconnect, enqueue_job |
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
@@ -48,7 +47,6 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
 | actinia_core.rest.persistent_processing | SCHEMA_DOC |
 | actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
-| actinia_core.version | version |
 
 
 URL_PREFIX moved to actinia_api
@@ -101,8 +99,6 @@ actinia_core.core.common.response_models import ProcessingErrorResponseModel
 
 __satellite__
 ```
-actinia_core.health_check import health_check
-actinia_core.version import version
 actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import EphemeralProcessingWithExport
 actinia_core.rest.persistent_processing import PersistentProcessing
 actinia_core.core.common.aws_sentinel_interface import AWSSentinel2AInterface
@@ -111,7 +107,7 @@ actinia_core.core.common.google_satellite_bigquery_interface import GoogleSatell
 actinia_core.core.common.landsat_processing_library import LandsatProcessing, SCENE_BANDS, extract_sensor_id_from_scene_id, RASTER_SUFFIXES
 actinia_core.core.common.process_object import Process
 actinia_core.core.common.process_queue import create_process_queue
-actinia_core.core.common.redis_interface import connect, create_job_queues
+actinia_core.core.common.redis_interface import connect
 actinia_core.core.common.response_models import SimpleResponseModel
 actinia_core.core.common.response_models import UnivarResultModel
 actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
