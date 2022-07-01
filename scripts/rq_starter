@@ -59,7 +59,7 @@ def create_workers(config_file):
     global worker_pids
 
     for i in range(conf.NUMBER_OF_WORKERS):
-        name = "%s_%i"%(conf.WORKER_QUEUE_NAME, i)
+        name = "%s_%i"%(conf.WORKER_QUEUE_PREFIX, i)
         print("Start worker queue", name)
         args = ["rq_custom_worker", name]
         proc = subprocess.Popen(args)
