@@ -486,7 +486,7 @@ class Configuration(object):
             if config.has_section("QUEUE"):
                 if config.has_option("QUEUE", "NUMBER_OF_WORKERS"):
                     self.NUMBER_OF_WORKERS = config.getint(
-                    "QUEUE", "NUMBER_OF_WORKERS")
+                        "QUEUE", "NUMBER_OF_WORKERS")
                 if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_URL"):
                     self.REDIS_QUEUE_SERVER_URL = config.get(
                         "QUEUE", "REDIS_QUEUE_SERVER_URL")
@@ -500,7 +500,8 @@ class Configuration(object):
                     self.REDIS_QUEUE_JOB_TTL = config.get(
                         "QUEUE", "REDIS_QUEUE_JOB_TTL")
                 if config.has_option("QUEUE", "WORKER_QUEUE_PREFIX"):
-                    self.WORKER_QUEUE_PREFIX = config.get("QUEUE", "WORKER_QUEUE_PREFIX")
+                    self.WORKER_QUEUE_PREFIX = config.get(
+                        "QUEUE", "WORKER_QUEUE_PREFIX")
                 if config.has_option("QUEUE", "QUEUE_TYPE"):
                     self.QUEUE_TYPE = config.get(
                         "QUEUE", "QUEUE_TYPE")
