@@ -13,6 +13,7 @@ RUN pip3 uninstall actinia-core -y
 RUN pip3 uninstall actinia_core -y
 
 COPY docker/actinia-core-dev/actinia.cfg /etc/default/actinia
+COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv
 COPY . /src/actinia_core/
 
 RUN git config --global --add safe.directory /src/actinia*

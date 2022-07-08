@@ -46,11 +46,24 @@ from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.utils import os_path_normpath
 from actinia_core.processing.common.location_management import \
      read_current_region, create_location
+from actinia_core.core.common.endpoint_config import check_endpoint
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
+
+
+# class conditional_decorator(object):
+#     def __init__(self, dec, condition):
+#         self.decorator = dec
+#         self.condition = condition
+#
+#     def __call__(self, func):
+#         if not self.condition:
+#             # Return the function unchanged, not decorated.
+#             return func
+#         return self.decorator(func)
 
 
 class ListLocationsResource(ResourceBase):
@@ -65,7 +78,10 @@ class ListLocationsResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc(location_management.get_doc)
+    # @check_endpoint
+    @swagger.doc(check_endpoint(location_management.get_doc, "get"))
+    # @swagger.doc(location_management.get_doc if check_endpoint() else False)
+    # @swagger.doc(location_management.get_doc if check_endpoint(func: func()) else False)
     def get(self):
         """Get a list of all available locations
         """
@@ -114,7 +130,12 @@ class LocationManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(location_management.get_user_doc)
+    @swagger.doc(check_endpoint(location_management.get_user_doc, "get"))
+    # @check_endpoint
+    # @swagger.doc(location_management.get_user_doc if check_endpoint() else False)
+    # @swagger.doc(location_management.get_user_doc)
+    # @conditional_decorator(lambda func: swagger.doc(location_management.get_user_doc)(func), True)
+    # @endpoint_decorator(lambda func: swagger.doc(location_management.get_user_doc)(func), "LocationManagementResourceUser", "GET")
     def get(self, location_name):
         """Get the location projection and current computational region of the PERMANENT mapset
         """
