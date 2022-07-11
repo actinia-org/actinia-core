@@ -38,6 +38,10 @@ from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.processing.common.mapset_management import \
@@ -55,7 +59,8 @@ class ListMapsetsResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc(mapset_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", mapset_management.get_doc))
     def get(self, location_name):
         """Get a list of all mapsets that are located in a specific location.
         """
@@ -78,7 +83,8 @@ class MapsetManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(mapset_management.get_user_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", mapset_management.get_user_doc))
     def get(self, location_name, mapset_name):
         """Get the current computational region of the mapset and the projection
         of the location as WKT string.
@@ -103,7 +109,8 @@ class MapsetManagementResourceAdmin(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(mapset_management.get_admin_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", mapset_management.get_admin_doc))
     def post(self, location_name, mapset_name):
         """Create a new mapset in an existing location.
         """
@@ -131,7 +138,8 @@ class MapsetManagementResourceAdmin(ResourceBase):
         """
         pass
 
-    @swagger.doc(mapset_management.delete_admin_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", mapset_management.delete_admin_doc))
     def delete(self, location_name, mapset_name):
         """Delete an existing mapset.
         """
@@ -150,7 +158,8 @@ class MapsetLockManagementResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   check_admin_role, auth.login_required]
 
-    @swagger.doc(mapset_management.get_lock_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", mapset_management.get_lock_doc))
     def get(self, location_name, mapset_name):
         """Get the location/mapset lock status.
         """
@@ -162,7 +171,8 @@ class MapsetLockManagementResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(mapset_management.post_lock_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", mapset_management.post_lock_doc))
     def post(self, location_name, mapset_name):
         """Create a location/mapset lock.
         """
@@ -174,7 +184,8 @@ class MapsetLockManagementResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(mapset_management.delete_lock_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", mapset_management.delete_lock_doc))
     def delete(self, location_name, mapset_name):
         """Delete a location/mapset lock.
         """

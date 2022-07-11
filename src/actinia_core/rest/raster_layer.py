@@ -32,12 +32,16 @@ from uuid import uuid4
 from werkzeug.utils import secure_filename
 from actinia_api.swagger2.actinia_core.apidocs import raster_layer
 
-from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.processing.common.raster_layer import \
      start_info_job, start_delete_job, start_create_job
+from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
@@ -49,7 +53,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
     """Return information about a specific raster layer as JSON
     """
 
-    @swagger.doc(raster_layer.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", raster_layer.get_doc))
     def get(self, location_name, mapset_name, raster_name):
         """Get information about an existing raster map layer.
         """
@@ -65,7 +70,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(raster_layer.delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", raster_layer.delete_doc))
     def delete(self, location_name, mapset_name, raster_name):
         """Delete an existing raster map layer.
         """
@@ -81,7 +87,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(raster_layer.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", raster_layer.post_doc))
     def post(self, location_name, mapset_name, raster_name):
         """Create a new raster layer by uploading a GeoTIFF
         """

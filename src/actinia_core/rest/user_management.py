@@ -35,6 +35,10 @@ from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.rest.base.user_auth import (
     check_admin_role,
@@ -61,7 +65,8 @@ class UserListResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc(user_management.user_list_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", user_management.user_list_get_doc))
     def get(self):
         """List all users in the database
 
@@ -95,7 +100,8 @@ class UserManagementResource(LoginBase):
     # API logging is required for all resources
     decorators = [log_api_call, auth.login_required]
 
-    @swagger.doc(user_management.user_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", user_management.user_get_doc))
     @check_admin_role_or_own_userid
     def get(self, user_id):
         """Return the credentials of a single user
@@ -129,7 +135,8 @@ class UserManagementResource(LoginBase):
             user_group=credentials["user_group"]
         )), 200)
 
-    @swagger.doc(user_management.user_post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", user_management.user_post_doc))
     @check_admin_role
     def post(self, user_id):
         """Create a user in the database
@@ -189,7 +196,8 @@ class UserManagementResource(LoginBase):
             message="Unable to create user %s" % user_id
         )), 400)
 
-    @swagger.doc(user_management.user_delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", user_management.user_delete_doc))
     @check_admin_role
     def delete(self, user_id):
         """Delete a specific user

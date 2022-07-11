@@ -35,6 +35,10 @@ from actinia_api.swagger2.actinia_core.apidocs import process_chain_monitoring
 from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import \
      MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.resource_management import ResourceManager
 from actinia_core.models.response_models import SimpleResponseModel
 
@@ -78,7 +82,9 @@ class MapsetSizeResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc(process_chain_monitoring.mapset_size_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", process_chain_monitoring.mapset_size_get_doc))
     def get(self, user_id, resource_id):
         """Get the sizes of mapset of a resource."""
 
@@ -118,7 +124,9 @@ class MapsetSizeDiffResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc(process_chain_monitoring.mapset_sizediff_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", process_chain_monitoring.mapset_sizediff_get_doc))
     def get(self, user_id, resource_id):
         """Get the step-by-step mapset size differences of a resource."""
 
@@ -159,7 +167,9 @@ class MaxMapsetSizeResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc(process_chain_monitoring.mapset_maxsize_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", process_chain_monitoring.mapset_maxsize_get_doc))
     def get(self, user_id, resource_id):
         """Get the maximum size of mapset of a resource."""
 
@@ -200,7 +210,9 @@ class MapsetSizeRenderResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc(process_chain_monitoring.mapset_render_sizes_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", process_chain_monitoring.mapset_render_sizes_get_doc))
     def get(self, user_id, resource_id):
         """Render the mapset sizes of a resource."""
 
@@ -259,7 +271,9 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         # Configuration
         ResourceManager.__init__(self)
 
-    @swagger.doc(process_chain_monitoring.mapset_render_sizediff_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", process_chain_monitoring.mapset_render_sizediff_get_doc))
     def get(self, user_id, resource_id):
         """Render the step-by-step mapset size differences of a resource."""
 

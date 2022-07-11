@@ -32,12 +32,17 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from flask import request
 from actinia_api.swagger2.actinia_core.apidocs import mapsets
+
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.rest.base.user_auth import check_user_permissions
 # from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.config import global_config
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.redis_user import RedisUserInterface
 from actinia_core.models.response_models import SimpleResponseModel, \
@@ -56,7 +61,8 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   auth.login_required]
 
-    @swagger.doc(mapsets.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", mapsets.get_doc))
     def get(self):
 
         if 'status' in request.args:

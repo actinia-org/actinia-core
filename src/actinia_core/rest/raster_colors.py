@@ -32,6 +32,10 @@ from flask import jsonify, make_response
 from actinia_api.swagger2.actinia_core.apidocs import raster_colors
 
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.raster_colors import start_job_colors_out
 from actinia_core.processing.common.raster_colors import start_job_from_rules
@@ -46,7 +50,8 @@ class SyncPersistentRasterColorsResource(ResourceBase):
     """Manage the color table
     """
 
-    @swagger.doc(raster_colors.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", raster_colors.get_doc))
     def get(self, location_name, mapset_name, raster_name):
         """Get the color definition of an existing raster map layer.
 
@@ -65,7 +70,8 @@ class SyncPersistentRasterColorsResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(raster_colors.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", raster_colors.post_doc))
     def post(self, location_name, mapset_name, raster_name):
         """Set the color definition for an existing raster map layer.
 

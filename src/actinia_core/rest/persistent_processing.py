@@ -30,8 +30,12 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import persistent_processing
 
-from actinia_core.rest.base.resource_base import ResourceBase
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.persistent_processing import start_job
 
 __license__ = "GPLv3"
@@ -45,7 +49,8 @@ class AsyncPersistentResource(ResourceBase):
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
-    @swagger.doc(persistent_processing.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", persistent_processing.post_doc))
     def post(self, location_name, mapset_name):
         """Execute a user defined process chain that creates a new mapset or
         runs in an existing one.

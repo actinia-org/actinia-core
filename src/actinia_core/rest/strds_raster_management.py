@@ -31,9 +31,13 @@ from flask import jsonify, make_response
 import pickle
 from actinia_api.swagger2.actinia_core.apidocs import strds_raster_management
 
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
+from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.processing.common.strds_raster_management import \
     unregister_raster, register_raster, list_raster_strds
 
@@ -47,7 +51,8 @@ class STRDSRasterManagement(ResourceBase):
     """Manage raster layer in a space time raster dataset
     """
 
-    @swagger.doc(strds_raster_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", strds_raster_management.get_doc))
     def get(self, location_name, mapset_name, strds_name):
         """Get a list of all raster map layers that are registered in a STRDS
         """
@@ -67,7 +72,8 @@ class STRDSRasterManagement(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(strds_raster_management.put_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("put", strds_raster_management.put_doc))
     def put(self, location_name, mapset_name, strds_name):
         """Register raster map layers in a STRDS located in a specific
         location/mapset.
@@ -85,7 +91,8 @@ class STRDSRasterManagement(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(strds_raster_management.delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", strds_raster_management.delete_doc))
     def delete(self, location_name, mapset_name, strds_name):
         """Unregister raster map layers from a STRDS located in a specific
         location/mapset.

@@ -33,6 +33,10 @@ from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from actinia_api.swagger2.actinia_core.apidocs import vector_layer
 
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
@@ -50,7 +54,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
     """Manage a vector map layer
     """
 
-    @swagger.doc(vector_layer.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", vector_layer.get_doc))
     def get(self, location_name, mapset_name, vector_name):
         """Get information about an existing vector map layer.
         """
@@ -67,7 +72,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(vector_layer.delete_dop)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", vector_layer.delete_dop))
     def delete(self, location_name, mapset_name, vector_name):
         """Delete an existing vector map layer.
         """
@@ -84,7 +90,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(vector_layer.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", vector_layer.post_doc))
     def post(self, location_name, mapset_name, vector_name):
         """Create a new vector layer by uploading a GPKG, zipped Shapefile,
         or GeoJSON.

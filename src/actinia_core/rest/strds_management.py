@@ -32,6 +32,10 @@ from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import strds_management
 
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
@@ -49,7 +53,8 @@ class SyncSTRDSListerResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc(strds_management.list_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", strds_management.list_get_doc))
     def get(self, location_name, mapset_name):
         """Get a list of all STRDS that are located in a specific location/mapset.
         """
@@ -84,7 +89,8 @@ class STRDSManagementResource(ResourceBase):
     """List all STRDS in a location/mapset
     """
 
-    @swagger.doc(strds_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", strds_management.get_doc))
     def get(self, location_name, mapset_name, strds_name):
         """Get information about a STRDS that is located in a specific location/mapset.
         """
@@ -100,7 +106,8 @@ class STRDSManagementResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(strds_management.delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", strds_management.delete_doc))
     def delete(self, location_name, mapset_name, strds_name):
         """Delete a STRDS that is located in a specific location/mapset.
         """
@@ -120,7 +127,8 @@ class STRDSManagementResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(strds_management.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", strds_management.post_doc))
     def post(self, location_name, mapset_name, strds_name):
         """Create a new STRDS in a specific location/mapset.
         """

@@ -52,13 +52,14 @@ else:
     endpoints_dict = None
 
 
-def check_endpoint(method, api_doc):
-    endpoint_class = sys._getframe().f_back.f_code.co_name
+def check_endpoint(method, api_doc=None, endpoint_class=None):
+    if endpoint_class is None:
+        endpoint_class = sys._getframe().f_back.f_code.co_name
     method_upper = method.upper()
     if (endpoints_dict is None or
         (endpoint_class in endpoints_dict and
          method_upper in endpoints_dict[endpoint_class])):
-        return api_doc
+        return api_doc if api_doc is not None else True
     else:
         return False
 
@@ -67,14 +68,11 @@ def endpoint_decorator():
 
     def decorator(func):
         endpoint_class, method = func.__qualname__.split(".")
-        method_upper = method.upper()
 
         @wraps(func)
         def wrapper(*args, **kwargs):
 
-            if (endpoints_dict is None or
-                (endpoint_class in endpoints_dict and
-                 method_upper in endpoints_dict[endpoint_class])):
+            if check_endpoint(method, endpoint_class=endpoint_class):
                 result = func(*args, **kwargs)
                 return result
             else:

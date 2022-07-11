@@ -31,8 +31,13 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import \
     ephemeral_processing_with_export
-from actinia_core.rest.base.resource_base import ResourceBase
+
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.ephemeral_processing_with_export \
      import start_job
 
@@ -51,7 +56,9 @@ class AsyncEphemeralExportResource(ResourceBase):
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
-    @swagger.doc(ephemeral_processing_with_export.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "post", ephemeral_processing_with_export.post_doc))
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing results for download.
@@ -75,7 +82,9 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(ephemeral_processing_with_export.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "post", ephemeral_processing_with_export.post_doc))
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset and
         store the processing result in an Amazon S3 bucket
@@ -98,7 +107,9 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(ephemeral_processing_with_export.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "post", ephemeral_processing_with_export.post_doc))
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing result in an Google cloud storage bucket
