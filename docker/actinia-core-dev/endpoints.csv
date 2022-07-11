@@ -3,7 +3,7 @@ LocationManagementResourceUser;GET
 ListMapsetsResource;GET
 MapsetManagementResourceUser;GET
 RasterLayersResource;GET
-RasterLayerResource;GET
+RasterLayerResource;GET,POST
 SyncEphemeralRasterRendererResource;GET
 SyncSTRDSListerResource;GET
 STRDSManagementResource;GET

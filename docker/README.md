@@ -86,6 +86,15 @@ To lint your local changes, run
     rq_custom_worker job_queue_0 -c /etc/default/actinia
     ```
 
+## Local dev-setup with configured endpoints
+- add a endpoints configuration csv file like `docker/actinia-core-dev/endpoints.csv`
+  with all desired endpoints including method:
+  ```
+  Class_of_the_endpoint;method1,method2
+  Class_of_the_endpoint2;method1
+  ```
+- and add the file in the `docker/actiia-core-dev/Dockerfile` with e.g. `COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv`
+- then build and run actinia dev-setup as normally
 
 <a id="grass-gis"></a>
 # Testing GRASS GIS inside a container

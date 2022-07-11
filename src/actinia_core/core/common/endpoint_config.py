@@ -29,6 +29,7 @@ import csv
 from flask import jsonify
 from flask import make_response
 from functools import wraps
+import os
 import sys
 
 from actinia_core.core.common.config import global_config
@@ -41,7 +42,8 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
-if global_config.ENDPOINTS_CONFIG is not None:
+if (global_config.ENDPOINTS_CONFIG is not None and
+        os.path.isfile(global_config.ENDPOINTS_CONFIG)):
     with open(global_config.ENDPOINTS_CONFIG, mode="r") as inp:
         reader = csv.reader(inp, delimiter=';')
         endpoints_dict = {
