@@ -45,7 +45,9 @@ if global_config.ENDPOINTS_CONFIG is not None:
     with open(global_config.ENDPOINTS_CONFIG, mode="r") as inp:
         reader = csv.reader(inp, delimiter=';')
         endpoints_dict = {
-            row[0]: [method.upper() for method in row[1].split(",")] for row in reader if len(row) == 2}
+            row[0]: [
+                method.upper() for method in row[1].split(",")
+            ] for row in reader if len(row) == 2}
 else:
     endpoints_dict = None
 
@@ -53,7 +55,6 @@ else:
 def check_endpoint(method, api_doc):
     endpoint_class = sys._getframe().f_back.f_code.co_name
     method_upper = method.upper()
-    print(f"Check endpoint {endpoint_class} {method_upper}")
     if (endpoints_dict is None or
         (endpoint_class in endpoints_dict and
          method_upper in endpoints_dict[endpoint_class])):
@@ -77,10 +78,10 @@ def endpoint_decorator():
                 result = func(*args, **kwargs)
                 return result
             else:
-                return make_response(
-                    "Not Found. The requested URL is not configured on "
-                    "the server.",
-                    404)
+                return make_response(jsonify(SimpleResponseModel(
+                    status="error",
+                    message="Not Found. The requested URL is not configured on"
+                            " the server.")), 404)
         return wrapper
 
     return decorator
