@@ -50,7 +50,7 @@ else:
     endpoints_dict = None
 
 
-def check_endpoint(api_doc, method):
+def check_endpoint(method, api_doc):
     endpoint_class = sys._getframe().f_back.f_code.co_name
     method_upper = method.upper()
     print(f"Check endpoint {endpoint_class} {method_upper}")
@@ -61,134 +61,26 @@ def check_endpoint(api_doc, method):
     else:
         return False
 
-# def check_endpoint(func):
-# # def check_endpoint(endpoint_class, method):
-#     def check(self, *args, **kwargs):
-#         endpoint_class = type(self).__name__
-#         method = func.__name__
-#         print(f"Check endpoint {endpoint_class} {method}")
-#         return (endpoints_dict is None or
-#                 (endpoint_class in endpoints_dict and
-#                  method in endpoints_dict[endpoint_class]))
-#     return check
 
+def endpoint_decorator():
 
-# class endpoint_decorator(object):
-#     def __init__(self, dec, endpoint_class, method, *args):
-#         self.decorator = dec
-#         self.endpoint_class = endpoint_class
-#         self.method = method
-#         self.args = args
-#
-#     def __call__(self, func):
-#         print(self.endpoint_class)
-#         if (endpoints_dict is None or
-#                 (self.endpoint_class in endpoints_dict and
-#                  self.method in endpoints_dict[self.endpoint_class])):
-#             return self.decorator(func)
-#         else:
-#             # Return the function unchanged, not decorated.
-#             # Return the function without api docs
-#             # TODO return 404
-#             print(f"NOT FOUND! {self.endpoint_class} - {self.method}")
-#             def not_found(*arg):
-#                 message = {
-#                     'status': 404,
-#                     'message': 'Not Found',
-#                 }
-#                 resp = jsonify(message)
-#                 resp.status_code = 404
-#                 return resp
-#             return not_found(self.args)
+    def decorator(func):
+        endpoint_class, method = func.__qualname__.split(".")
+        method_upper = method.upper()
 
-
-# class endpoint_decorator(object):
-#     def __init__(self, dec, endpoint_class, method, *args):
-#         self.decorator = dec
-#         self.endpoint_class = endpoint_class
-#         self.method = method
-#         self.args = args
-#
-#     def __call__(self, func, *args, **kwargs):
-#         print(self.endpoint_class)
-#         if (endpoints_dict is None or
-#                 (self.endpoint_class in endpoints_dict and
-#                  self.method in endpoints_dict[self.endpoint_class])):
-#             return func(*args, **kwargs)
-#         else:
-#             # Return the function unchanged, not decorated.
-#             # Return the function without api docs
-#             # TODO return 404
-#             print(f"NOT FOUND! {self.endpoint_class} - {self.method}")
-#             def not_found():
-#                 res = (jsonify(SimpleResponseModel(
-#                     status=404,
-#                     message='Error'
-#                 )))
-#                 return make_response("test", 404)
-#             return not_found()
-
-# class endpoint_decorator(object):
-#     def __init__(self, dec, endpoint_class, method, *args):
-#         self.decorator = dec
-#         self.endpoint_class = endpoint_class
-#         self.method = method
-#         self.args = args
-#
-#     def __call__(self, func, *args, **kwargs):
-#         @wraps(func)
-#         def wrapper(*args, **kwargs):
-#             def not_found():
-#                 # res = (jsonify(SimpleResponseModel(
-#                 #     status=404,
-#                 #     message='Error'
-#                 # )))
-#                 return make_response("test", 404)
-#
-#             if (endpoints_dict is None or
-#                     (self.endpoint_class in endpoints_dict and
-#                      self.method in endpoints_dict[self.endpoint_class])):
-#                 print("endpoint_decorator: IF")
-#                 result = self.decorator(func(*args, **kwargs))
-#                 return result
-#             else:
-#                 print(f"NOT FOUND! {self.endpoint_class} - {self.method}")
-#                 result = not_found()
-#                 return result
-#         return wrapper
-
-
-class endpoint_decorator(object):
-    def __init__(self, dec, api_desc, endpoint_class, method, *args):
-        self.decorator = dec
-        self.api_desc = api_desc
-        self.endpoint_class = endpoint_class
-        self.method = method
-        self.args = args
-        print("INIT", self.endpoint_class)
-        self.decorator(api_desc)
-        # return result
-
-    def __call__(self, func, *args, **kwargs):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            print(self.endpoint_class)
-            # def not_found():
-            #     # res = (jsonify(SimpleResponseModel(
-            #     #     status=404,
-            #     #     message='Error'
-            #     # )))
-            #     return make_response("test", 404)
 
-            if True:
-            # if (endpoints_dict is None or
-            #         (self.endpoint_class in endpoints_dict and
-            #          self.method in endpoints_dict[self.endpoint_class])):
-                print("endpoint_decorator: IF")
-                result = self.decorator(func(*args, **kwargs))
+            if (endpoints_dict is None or
+                (endpoint_class in endpoints_dict and
+                 method_upper in endpoints_dict[endpoint_class])):
+                result = func(*args, **kwargs)
                 return result
             else:
-                print(f"NOT FOUND! {self.endpoint_class} - {self.method}")
-            #     result = not_found()
-            #     return result
+                return make_response(
+                    "Not Found. The requested URL is not configured on "
+                    "the server.",
+                    404)
         return wrapper
+
+    return decorator
