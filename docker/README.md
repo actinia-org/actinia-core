@@ -93,7 +93,8 @@ To lint your local changes, run
   Class_of_the_endpoint;method1,method2
   Class_of_the_endpoint2;method1
   ```
-- and add the file in the `docker/actiia-core-dev/Dockerfile` with e.g. `COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv`
+- make sure that the file is added in the `docker/actiia-core-dev/Dockerfile` with e.g. `COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv`
+- add `endpoints_config = /etc/default/actinia_endpoints.csv` to the `API` section in the `docker/actinia-core-dev/actinia.cfg` file
 - then build and run actinia dev-setup as normally
 
 <a id="grass-gis"></a>
