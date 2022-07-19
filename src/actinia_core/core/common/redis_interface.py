@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,118 +33,12 @@ from .config import global_config
 from .process_queue import enqueue_job as enqueue_job_local
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Carmen Tawalika"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
-# Job handling
 job_queues = []
 redis_conn = None
-num_queues = None
-
-
-def __create_job_queues(host, port, password, num_of_queues):
-    """Create the job queues for asynchronous processing
-
-    TODO: The redis queue approach does not work and is deactivated
-
-    Note:
-        Make sure that the global configuration was updated
-        before calling this function.
-
-    Args:
-        host: The hostname of the redis server
-        port: The port of the redis server
-        num_of_queues: The number of queues that should be created
-
-    """
-    # Redis work queue and connection
-    global job_queues, redis_conn, num_queues
-    kwargs = dict()
-    kwargs['host'] = host
-    kwargs['port'] = port
-    if password and password is not None:
-        kwargs['password'] = password
-    redis_conn = Redis(**kwargs)
-    num_queues = num_of_queues
-
-    for i in range(num_of_queues):
-        name = "%s_%i" % (global_config.WORKER_QUEUE_NAME, i)
-
-        string = "Create queue %s with server %s:%s" % (name, host, port)
-        log.info(string)
-        queue = rq.Queue(name, connection=redis_conn)
-        job_queues.append(queue)
-
-
-def __enqueue_job_local(timeout, func, *args):
-    """Execute the provided function in a subprocess
-
-    Args:
-        func: The function to call from the subprocess
-        *args: The function arguments
-
-    Returns:
-        int:
-        The current queue index
-
-    """
-    enqueue_job_local(timeout, func, *args)
-    return
-
-    # Just i case the current process queue does not work
-    # Then use the most simple solution by just starting the process
-    from multiprocessing import Process
-    p = Process(target=func, args=args)
-    p.start()
-
-    return
-
-
-def __enqueue_job_redis(timeout, func, *args):
-    """Enqueue a job in the job queues
-
-    TODO: The redis queue approach does not work and is deactivated
-
-    The enqueue function uses a redis incr approach
-    to chose for each job a different queue
-
-    Note:
-        The function __create_job_queues() must be run
-        before a job can be enqueued.
-
-    Args:
-        func: The function to call from the subprocess
-        *args: The function arguments
-
-    Returns:
-        int:
-        The current queue index
-
-    """
-
-    global job_queues, redis_conn, num_queues
-
-    # Increase the counter
-    num = redis_conn.incr("actinia_worker_count", 1)
-    # Compute the current
-    current_queue = num % num_queues
-    log.info("Enqueue job in queue %i" % current_queue)
-
-    # Below timeout is defined in resource_base.pyL295:
-    # int(process_time_limit * process_num_limit * 20)
-    # which is 630720000000 and raises in worker:
-    # OverflowError: Python int too large to convert to C int
-    ret = job_queues[current_queue].enqueue(
-        func,
-        *args,
-        # job_timeout=timeout,
-        ttl=global_config.REDIS_QUEUE_JOB_TTL,
-        result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
-    log.info(ret)
-
-    return current_queue
 
 
 def connect(host, port, pw=None):
@@ -171,17 +65,91 @@ def disconnect():
     redis_api_log_interface.disconnect()
 
 
+def __create_job_queue(queue_name):
+    """Create a single job queue for asynchronous processing
+
+    Args:
+        queue_name: The name of the queue
+
+    """
+    # Redis work queue and connection
+    global job_queues, redis_conn
+
+    host = global_config.REDIS_QUEUE_SERVER_URL
+    port = global_config.REDIS_QUEUE_SERVER_PORT
+    password = global_config.REDIS_QUEUE_SERVER_PASSWORD
+
+    kwargs = dict()
+    kwargs['host'] = host
+    kwargs['port'] = port
+    if password and password is not None:
+        kwargs['password'] = password
+    redis_conn = Redis(**kwargs)
+
+    string = "Create queue %s with server %s:%s" % (queue_name, host, port)
+    log.info(string)
+    queue = rq.Queue(queue_name, connection=redis_conn)
+    job_queues.append(queue)
+
+
+def __enqueue_job_redis(queue, timeout, func, *args):
+    """Enqueue a job in the job queues
+
+    Args:
+        func: The function to call from the subprocess
+        *args: The function arguments
+    """
+
+    log.info("Enqueue job in queue %s" % queue.name)
+    # Below timeout is defined in resource_base.pyL295:
+    # int(process_time_limit * process_num_limit * 20)
+    # which is 630720000000 and raises in worker:
+    # OverflowError: Python int too large to convert to C int
+    ret = queue.enqueue(
+        func,
+        *args,
+        # job_timeout=timeout,
+        ttl=global_config.REDIS_QUEUE_JOB_TTL,
+        result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
+    log.info(ret)
+
+
 def enqueue_job(timeout, func, *args):
+    """Write the provided function in a queue
 
-    global job_queues
+    Args:
+        timeout: The timeout of the process
+        func: The function to call from the subprocess/worker
+        *args: The function arguments
+    """
+    global job_queues, redis_conn
+    num_queues = global_config.NUMBER_OF_WORKERS
 
-    if job_queues == []:
-        __create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-                            global_config.REDIS_QUEUE_SERVER_PORT,
-                            global_config.REDIS_QUEUE_SERVER_PASSWORD,
-                            global_config.NUMBER_OF_WORKERS)
+    if (global_config.QUEUE_TYPE == "per_job"):
+        resource_id = args[0].resource_id
+        queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
+        __create_job_queue(queue_name)
+        for i in job_queues:
+            if i.name == queue_name:
+                __enqueue_job_redis(i, timeout, func, *args)
 
-    if (global_config.QUEUE_TYPE == "redis"):
-        __enqueue_job_redis(timeout, func, *args)
+    elif (global_config.QUEUE_TYPE == "redis"):
+        if job_queues == []:
+            for i in range(num_queues):
+                queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, i)
+                __create_job_queue(queue_name)
+        # The redis incr approach is used here
+        # to chose for each job a different queue
+        num = redis_conn.incr("actinia_worker_count", 1)
+        current_queue = num % num_queues
+        __enqueue_job_redis(job_queues[current_queue], timeout, func, *args)
+
     elif (global_config.QUEUE_TYPE == "local"):
-        __enqueue_job_local(timeout, func, *args)
+        # __enqueue_job_local(timeout, func, *args)
+        enqueue_job_local(timeout, func, *args)
+        return
+        # Just in case the current process queue does not work
+        # Then use the most simple solution by just starting the process
+        from multiprocessing import Process
+        p = Process(target=func, args=args)
+        p.start()

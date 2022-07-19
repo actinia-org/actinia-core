@@ -182,10 +182,45 @@ class Configuration(object):
         # The base name of the redis worker queue, it will be extended by a
         # numerical suffix that represents the worker id/number database to
         # re-queue it, usually this is not necessary
-        self.WORKER_QUEUE_NAME = "job_queue"
+        self.WORKER_QUEUE_PREFIX = "job_queue"
         # The base name of the redis worker queue logfile, it will be extended
         # by a numerical suffix that represents the worker id/number
         self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home
+
+        """
+        QUEUE
+        """
+        # The number of queues that process jobs
+        self.NUMBER_OF_WORKERS = 3
+        # The hostname of the redis work queue server
+        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"
+        # The port of the redis work queue server
+        self.REDIS_QUEUE_SERVER_PORT = 6379
+        # The password of the redis work queue server
+        self.REDIS_QUEUE_SERVER_PASSWORD = None
+        # This is the time the rq:job will be stored in redis
+        self.REDIS_QUEUE_JOB_TTL = None
+        # The prefix for the name of the redis worker queue.
+        # It will be extended by a numerical suffix that represents
+        # the worker id/number database to re-queue it, usually this is not
+        # necessary. If QUEUE_TYPE = per_job, it is extended by the
+        # resource_id of the job.
+        self.WORKER_QUEUE_PREFIX = "job_queue"
+        # Type of queue.
+        # "local":  Single queue for all jobs, processed by same actinia
+        #           instance via multiprocessing.
+        # "redis":  Number of queues is equal to number of workers as set
+        #           in config NUMBER_OF_WORKERS, processed by different
+        #           actinia instances (actinia worker).
+        # "per_job": Separate queue for each job, config for NUMBER_OF_WORKERS
+        #           is ignored. Processed by different actinia instance
+        #           (actinia worker). Resource_id will be added to above
+        #           WORKER_QUEUE_PREFIX.
+        # future ideas
+        # - redis separate queue per user
+        # - redis separate queue per process type
+        # - redis separate queue per ressource consumption
+        self.QUEUE_TYPE = "local"
 
         """
         MISC
@@ -293,7 +328,6 @@ class Configuration(object):
         config.set('LIMITS', 'MAX_CELL_LIMIT', str(self.MAX_CELL_LIMIT))
         config.set('LIMITS', 'PROCESS_TIME_LIMT', str(self.PROCESS_TIME_LIMT))
         config.set('LIMITS', 'PROCESS_NUM_LIMIT', str(self.PROCESS_NUM_LIMIT))
-        config.set('LIMITS', 'NUMBER_OF_WORKERS', str(self.NUMBER_OF_WORKERS))
 
         config.add_section('API')
         config.set('API', 'CHECK_CREDENTIALS', str(self.CHECK_CREDENTIALS))
@@ -309,14 +343,18 @@ class Configuration(object):
         config.set('REDIS', 'REDIS_SERVER_PW', str(self.REDIS_SERVER_PW))
         config.set('REDIS', 'REDIS_RESOURCE_EXPIRE_TIME',
                    str(self.REDIS_RESOURCE_EXPIRE_TIME))
-        config.set('REDIS', 'REDIS_QUEUE_SERVER_URL', self.REDIS_QUEUE_SERVER_URL)
-        config.set('REDIS', 'REDIS_QUEUE_SERVER_PORT',
-                   str(self.REDIS_QUEUE_SERVER_PORT))
-        config.set('REDIS', 'REDIS_QUEUE_SERVER_PASSWORD',
-                   str(self.REDIS_QUEUE_SERVER_PASSWORD))
-        config.set('REDIS', 'REDIS_QUEUE_JOB_TTL', str(self.REDIS_QUEUE_JOB_TTL))
-        config.set('REDIS', 'WORKER_QUEUE_NAME', str(self.WORKER_QUEUE_NAME))
         config.set('REDIS', 'WORKER_LOGFILE', str(self.WORKER_LOGFILE))
+
+        config.add_section('QUEUE')
+        config.set('QUEUE', 'NUMBER_OF_WORKERS', str(self.NUMBER_OF_WORKERS))
+        config.set('QUEUE', 'REDIS_QUEUE_SERVER_URL', self.REDIS_QUEUE_SERVER_URL)
+        config.set('QUEUE', 'REDIS_QUEUE_SERVER_PORT',
+                   str(self.REDIS_QUEUE_SERVER_PORT))
+        config.set('QUEUE', 'REDIS_QUEUE_SERVER_PASSWORD',
+                   str(self.REDIS_QUEUE_SERVER_PASSWORD))
+        config.set('QUEUE', 'REDIS_QUEUE_JOB_TTL', str(self.REDIS_QUEUE_JOB_TTL))
+        config.set('QUEUE', 'WORKER_QUEUE_PREFIX', str(self.WORKER_QUEUE_PREFIX))
+        config.set('QUEUE', 'QUEUE_TYPE', self.QUEUE_TYPE)
 
         config.add_section('MISC')
         config.set('MISC', 'DOWNLOAD_CACHE', self.DOWNLOAD_CACHE)
@@ -324,7 +362,6 @@ class Configuration(object):
         config.set('MISC', 'TMP_WORKDIR', self.TMP_WORKDIR)
         config.set('MISC', 'SECRET_KEY', self.SECRET_KEY)
         config.set('MISC', 'SAVE_INTERIM_RESULTS', str(self.SAVE_INTERIM_RESULTS))
-        config.set('MISC', 'QUEUE_TYPE', self.QUEUE_TYPE)
 
         config.add_section('LOGGING')
         config.set('LOGGING', 'LOG_INTERFACE', self.LOG_INTERFACE)
@@ -417,9 +454,6 @@ class Configuration(object):
                 if config.has_option("LIMITS", "PROCESS_NUM_LIMIT"):
                     self.PROCESS_NUM_LIMIT = config.getint(
                         "LIMITS", "PROCESS_NUM_LIMIT")
-                if config.has_option("LIMITS", "NUMBER_OF_WORKERS"):
-                    self.NUMBER_OF_WORKERS = config.getint(
-                        "LIMITS", "NUMBER_OF_WORKERS")
 
             if config.has_section("API"):
                 if config.has_option("API", "CHECK_CREDENTIALS"):
@@ -446,22 +480,31 @@ class Configuration(object):
                 if config.has_option("REDIS", "REDIS_RESOURCE_EXPIRE_TIME"):
                     self.REDIS_RESOURCE_EXPIRE_TIME = config.getint(
                         "REDIS", "REDIS_RESOURCE_EXPIRE_TIME")
-                if config.has_option("REDIS", "REDIS_QUEUE_SERVER_URL"):
-                    self.REDIS_QUEUE_SERVER_URL = config.get(
-                        "REDIS", "REDIS_QUEUE_SERVER_URL")
-                if config.has_option("REDIS", "REDIS_QUEUE_SERVER_PORT"):
-                    self.REDIS_QUEUE_SERVER_PORT = config.get(
-                        "REDIS", "REDIS_QUEUE_SERVER_PORT")
-                if config.has_option("REDIS", "REDIS_QUEUE_SERVER_PASSWORD"):
-                    self.REDIS_QUEUE_SERVER_PASSWORD = config.get(
-                        "REDIS", "REDIS_QUEUE_SERVER_PASSWORD")
-                if config.has_option("REDIS", "REDIS_QUEUE_JOB_TTL"):
-                    self.REDIS_QUEUE_JOB_TTL = config.get(
-                        "REDIS", "REDIS_QUEUE_JOB_TTL")
-                if config.has_option("REDIS", "WORKER_QUEUE_NAME"):
-                    self.WORKER_QUEUE_NAME = config.get("REDIS", "WORKER_QUEUE_NAME")
                 if config.has_option("REDIS", "WORKER_LOGFILE"):
                     self.WORKER_LOGFILE = config.get("REDIS", "WORKER_LOGFILE")
+
+            if config.has_section("QUEUE"):
+                if config.has_option("QUEUE", "NUMBER_OF_WORKERS"):
+                    self.NUMBER_OF_WORKERS = config.getint(
+                        "QUEUE", "NUMBER_OF_WORKERS")
+                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_URL"):
+                    self.REDIS_QUEUE_SERVER_URL = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_URL")
+                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_PORT"):
+                    self.REDIS_QUEUE_SERVER_PORT = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_PORT")
+                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_PASSWORD"):
+                    self.REDIS_QUEUE_SERVER_PASSWORD = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_PASSWORD")
+                if config.has_option("QUEUE", "REDIS_QUEUE_JOB_TTL"):
+                    self.REDIS_QUEUE_JOB_TTL = config.get(
+                        "QUEUE", "REDIS_QUEUE_JOB_TTL")
+                if config.has_option("QUEUE", "WORKER_QUEUE_PREFIX"):
+                    self.WORKER_QUEUE_PREFIX = config.get(
+                        "QUEUE", "WORKER_QUEUE_PREFIX")
+                if config.has_option("QUEUE", "QUEUE_TYPE"):
+                    self.QUEUE_TYPE = config.get(
+                        "QUEUE", "QUEUE_TYPE")
 
             if config.has_section("MISC"):
                 if config.has_option("MISC", "DOWNLOAD_CACHE"):
@@ -478,9 +521,6 @@ class Configuration(object):
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
                     self.SAVE_INTERIM_RESULTS = config.getboolean(
                         "MISC", "SAVE_INTERIM_RESULTS")
-                if config.has_option("MISC", "QUEUE_TYPE"):
-                    self.QUEUE_TYPE = config.get(
-                        "MISC", "QUEUE_TYPE")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):
