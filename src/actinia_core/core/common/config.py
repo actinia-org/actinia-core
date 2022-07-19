@@ -203,7 +203,7 @@ class Configuration(object):
         # The prefix for the name of the redis worker queue.
         # It will be extended by a numerical suffix that represents
         # the worker id/number database to re-queue it, usually this is not
-        # necessary. If QUEUE_TYPE = perjob, it is extended by the
+        # necessary. If QUEUE_TYPE = per_job, it is extended by the
         # resource_id of the job.
         self.WORKER_QUEUE_PREFIX = "job_queue"
         # Type of queue.
