@@ -212,7 +212,7 @@ class Configuration(object):
         # "redis":  Number of queues is equal to number of workers as set
         #           in config NUMBER_OF_WORKERS, processed by different
         #           actinia instances (actinia worker).
-        # "perjob": Separate queue for each job, config for NUMBER_OF_WORKERS
+        # "per_job": Separate queue for each job, config for NUMBER_OF_WORKERS
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). Resource_id will be added to above
         #           WORKER_QUEUE_PREFIX.

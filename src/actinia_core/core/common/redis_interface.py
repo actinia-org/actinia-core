@@ -125,7 +125,7 @@ def enqueue_job(timeout, func, *args):
     global job_queues, redis_conn
     num_queues = global_config.NUMBER_OF_WORKERS
 
-    if (global_config.QUEUE_TYPE == "perjob"):
+    if (global_config.QUEUE_TYPE == "per_job"):
         resource_id = args[0].resource_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
         __create_job_queue(queue_name)
