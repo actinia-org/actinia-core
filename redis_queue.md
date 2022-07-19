@@ -7,7 +7,7 @@
 redis_queue_server_url = redis-queue
 redis_queue_server_password = pass
 worker_prefix = job_queue
-queue_type = perjob
+queue_type = per_job
 ```
 or
 ```
