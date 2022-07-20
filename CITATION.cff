@@ -5,9 +5,9 @@ title: actinia-core
 abstract: Actinia is an open source REST API for scalable, distributed, high performance processing of geographical data.
 message: If you use this software, please cite it using the metadata from this file.
 type: software
-version: 4.0.1
+version: 4.1.0
 doi: 10.5281/zenodo.5864847
-date-released: 2022-05-20
+date-released: 2022-07-20
 license: GPL-3.0
 repository-code: https://github.com/mundialis/actinia_core
 keywords:
@@ -56,3 +56,7 @@ authors:
     email: neteler@mundialis.de
     affiliation: mundialis GmbH & Co. KG
     orcid: https://orcid.org/0000-0003-1916-1966
+  - given-names: Momen
+    family-names: Mawad
+    email: mawad@mundialis.de
+    affiliation: mundialis GmbH & Co. KG
