@@ -36,7 +36,7 @@ services:
       - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
       - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
       - ./actinia-core-data/resources:/actinia_core/resources
-      - ../.:/src/actinia_core_worker
+      - ../.:/src/actinia_core/.
     depends_on:
       - redis
       - redis-queue

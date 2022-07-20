@@ -82,7 +82,7 @@ To lint your local changes, run
 - inside this container, reinstall actinia-core and start the redis-queue-worker
     ```
     pip3 uninstall actinia_core
-    cd /src/actinia_core_worker && pip3 install .
+    cd /src/actinia_core && pip3 install .
     rq_custom_worker job_queue_0 -c /etc/default/actinia
     ```
 
