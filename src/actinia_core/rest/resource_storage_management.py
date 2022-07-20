@@ -40,7 +40,7 @@ from actinia_core.processing.common.resource_storage_management \
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

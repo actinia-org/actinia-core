@@ -33,7 +33,7 @@ from werkzeug.utils import secure_filename
 from zipfile import ZipFile
 from actinia_api.swagger2.actinia_core.apidocs import vector_layer
 
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

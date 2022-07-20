@@ -31,7 +31,7 @@ from flask import jsonify, make_response
 import pickle
 from actinia_api.swagger2.actinia_core.apidocs import strds_raster_management
 
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

@@ -3,6 +3,7 @@ docker
 !docker/actinia-core-alpine/start.sh
 !docker/actinia-core-alpine/actinia.cfg
 !docker/actinia-core-dev/actinia.cfg
+!docker/actinia-core-dev/endpoints.csv
 !docker/actinia-core-tests/actinia-test.cfg
 .github
 .travis

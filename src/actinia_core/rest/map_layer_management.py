@@ -30,7 +30,7 @@ import pickle
 from actinia_api.swagger2.actinia_core.apidocs import map_layer_management
 
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

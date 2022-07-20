@@ -39,7 +39,7 @@ from actinia_api.swagger2.actinia_core.schemas.user_api_key import TokenResponse
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

@@ -35,7 +35,7 @@ from actinia_api.swagger2.actinia_core.apidocs import process_chain_monitoring
 from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import \
      MapsetSizeResponseModel, MaxMapsetSizeResponseModel
 
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

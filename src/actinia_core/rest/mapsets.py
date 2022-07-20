@@ -39,7 +39,7 @@ from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.config import global_config
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )

@@ -31,7 +31,7 @@ from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, Response
 from actinia_api.swagger2.actinia_core.apidocs import vector_renderer
 
-from actinia_core.core.common.endpoint_config import (
+from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )
