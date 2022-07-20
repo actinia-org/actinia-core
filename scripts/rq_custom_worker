@@ -76,6 +76,10 @@ def main():
                         type=str,
                         required=False,
                         help="The path to the Actinia Core configuration file")
+    parser.add_argument('-q', "--quit",
+                        action='store_true',
+                        required=False,
+                        help="Wether or not the worker should exit when the queue is emptied.")
 
     args = parser.parse_args()
 
@@ -126,8 +130,10 @@ def main():
                                               log_file_name))
 
         actinia_worker = Worker([args.queue, ])
-        actinia_worker.work()
-
+        if bool(args.quit) is True:
+            actinia_worker.work(burst=True)
+        else:
+            actinia_worker.work()
 
 if __name__ == '__main__':
     main()
