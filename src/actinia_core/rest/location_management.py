@@ -38,6 +38,10 @@ from actinia_api.swagger2.actinia_core.schemas.location_management \
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.models.response_models import SimpleResponseModel
@@ -65,7 +69,8 @@ class ListLocationsResource(ResourceBase):
     """
     layer_type = None
 
-    @swagger.doc(location_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", location_management.get_doc))
     def get(self):
         """Get a list of all available locations
         """
@@ -114,7 +119,8 @@ class LocationManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(location_management.get_user_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", location_management.get_user_doc))
     def get(self, location_name):
         """Get the location projection and current computational region of the PERMANENT mapset
         """
@@ -141,7 +147,8 @@ class LocationManagementResourceAdmin(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(location_management.get_admin_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("delete", location_management.get_admin_doc))
     def delete(self, location_name):
         """Delete an existing location and everything inside from the user database.
         """
@@ -168,7 +175,8 @@ class LocationManagementResourceAdmin(ResourceBase):
             status="error",
             message="location %s does not exists" % location_name)), 400)
 
-    @swagger.doc(location_management.post_admin_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", location_management.post_admin_doc))
     def post(self, location_name):
         """Create a new location based on EPSG code in the user database.
         """

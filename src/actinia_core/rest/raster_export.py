@@ -31,8 +31,13 @@ from flask import jsonify, make_response
 import pickle
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import raster_export
-from actinia_core.rest.base.resource_base import ResourceBase
+
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.raster_export \
     import start_job
 
@@ -51,7 +56,8 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(raster_export.post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", raster_export.post_doc))
     def post(self, location_name, mapset_name, raster_name):
         """Export an existing raster map layer as GeoTiff.
         """
@@ -83,7 +89,8 @@ class AsyncEphemeralRasterLayerRegionExporterResource(
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @swagger.doc(raster_export.region_post_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("post", raster_export.region_post_doc))
     def post(self, location_name, mapset_name, raster_name):
         """Export an existing raster map layer as GeoTiff using the raster
         map specific region.

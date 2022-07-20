@@ -31,6 +31,10 @@ from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response, Response
 from actinia_api.swagger2.actinia_core.apidocs import vector_renderer
 
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
 from actinia_core.processing.common.vector_renderer import start_job
@@ -45,7 +49,8 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
     """Render a vector layer with g.region/d.vect approach synchronously
     """
 
-    @swagger.doc(vector_renderer.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", vector_renderer.get_doc))
     def get(self, location_name, mapset_name, vector_name):
         """Render a single vector map layer
         """

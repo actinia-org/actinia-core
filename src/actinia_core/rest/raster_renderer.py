@@ -30,6 +30,10 @@ import os
 from flask import jsonify, make_response, Response
 from actinia_api.swagger2.actinia_core.apidocs import raster_renderer
 
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
 from actinia_core.processing.common.raster_renderer import \
@@ -45,7 +49,8 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
     """Render a raster image with g.region/d.rast approach synchronously
     """
 
-    @swagger.doc(raster_renderer.raster_render_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", raster_renderer.raster_render_get_doc))
     def get(self, location_name, mapset_name, raster_name):
         """Render a raster map layer as a PNG image.
         """
@@ -114,7 +119,9 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
         return options
 
-    @swagger.doc(raster_renderer.raster_rgb_render_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", raster_renderer.raster_rgb_render_get_doc))
     def get(self, location_name, mapset_name):
         """Render three raster map layer as composed RGB PNG image.
         """
@@ -190,7 +197,9 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         return options
 
-    @swagger.doc(raster_renderer.raster_shade_render_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "get", raster_renderer.raster_shade_render_get_doc))
     def get(self, location_name, mapset_name):
         """Render two raster layers as a composed shade PNG image
         """

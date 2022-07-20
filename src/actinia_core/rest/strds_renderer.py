@@ -31,6 +31,10 @@ import os
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import strds_renderer
 
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.processing.common.strds_renderer import start_job
 
 __license__ = "GPLv3"
@@ -41,7 +45,8 @@ __maintainer__ = "mundialis"
 
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
-    @swagger.doc(strds_renderer.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", strds_renderer.get_doc))
     def get(self, location_name, mapset_name, strds_name):
         """Render the raster map layers of a specific STRDS as a single image.
         """

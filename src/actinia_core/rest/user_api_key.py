@@ -39,6 +39,10 @@ from actinia_api.swagger2.actinia_core.schemas.user_api_key import TokenResponse
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
@@ -60,7 +64,8 @@ class APIKeyCreationResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc(user_api_key.apikey_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", user_api_key.apikey_get_doc))
     def get(self):
         """Create an API key for permanent authentication."""
 
@@ -82,7 +87,8 @@ class TokenCreationResource(LoginBase):
     def __init__(self):
         LoginBase.__init__(self)
 
-    @swagger.doc(user_api_key.token_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", user_api_key.token_get_doc))
     def get(self):
         """Create an authentication token."""
 

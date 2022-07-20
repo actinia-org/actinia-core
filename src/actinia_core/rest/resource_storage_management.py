@@ -40,6 +40,10 @@ from actinia_core.processing.common.resource_storage_management \
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 
@@ -54,7 +58,8 @@ class SyncResourceStorageResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   check_admin_role, auth.login_required]
 
-    @swagger.doc(resource_storage_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", resource_storage_management.get_doc))
     def get(self):
         """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
@@ -67,7 +72,9 @@ class SyncResourceStorageResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    @swagger.doc(resource_storage_management.delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "delete", resource_storage_management.delete_doc))
     def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)

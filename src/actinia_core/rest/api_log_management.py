@@ -35,6 +35,10 @@ from actinia_api.swagger2.actinia_core.schemas.api_log_management import \
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import ApiLogger
 from actinia_core.core.common.api_logger import log_api_call
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.user_auth import check_user_permissions
 
@@ -63,7 +67,8 @@ class APILogResource(Resource):
         self.user_id = g.user.get_id()
         self.user_role = g.user.get_role()
 
-    @swagger.doc(api_log_management.get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", api_log_management.get_doc))
     def get(self, user_id):
         """Get a list of all API calls that have been called by the provided user."""
 

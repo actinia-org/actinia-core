@@ -28,9 +28,14 @@ from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
 from actinia_api.swagger2.actinia_core.apidocs import map_layer_management
-from actinia_core.rest.base.resource_base import ResourceBase
+
 from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.rest.base.endpoint_config import (
+    check_endpoint,
+    endpoint_decorator
+)
 from actinia_core.core.request_parser import glist_parser
+from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.map_layer_management import \
      list_raster_layers, remove_raster_layers, rename_raster_layers
 
@@ -181,21 +186,25 @@ class RasterLayersResource(MapsetLayersResource):
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="raster")
 
-    @swagger.doc(map_layer_management.raster_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", map_layer_management.raster_get_doc))
     def get(self, location_name, mapset_name):
         """Get a list of raster map layer names that are located in a specific
         location/mapset
         """
         return self._get(location_name, mapset_name)
 
-    @swagger.doc(map_layer_management.raster_put_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("put", map_layer_management.raster_put_doc))
     def put(self, location_name, mapset_name):
         """Rename a single raster map layer or a list of raster map layers that
         are located in a specific location/mapset
         """
         return self._put(location_name, mapset_name)
 
-    @swagger.doc(map_layer_management.raster_delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "delete", map_layer_management.raster_delete_doc))
     def delete(self, location_name, mapset_name):
         """Delete a single raster map layer or a list of raster map layer names
         that are located in a specific location/mapset
@@ -209,21 +218,25 @@ class VectorLayersResource(MapsetLayersResource):
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="vector")
 
-    @swagger.doc(map_layer_management.vector_get_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("get", map_layer_management.vector_get_doc))
     def get(self, location_name, mapset_name):
         """Get a list of vector map layer names that are located in a specific
         location/mapset
         """
         return self._get(location_name, mapset_name)
 
-    @swagger.doc(map_layer_management.vector_put_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint("put", map_layer_management.vector_put_doc))
     def put(self, location_name, mapset_name):
         """Rename a single vector map layer or a list of vector map layers that
         are located in a specific location/mapset
         """
         return self._put(location_name, mapset_name)
 
-    @swagger.doc(map_layer_management.vector_delete_doc)
+    @endpoint_decorator()
+    @swagger.doc(check_endpoint(
+        "delete", map_layer_management.vector_delete_doc))
     def delete(self, location_name, mapset_name):
         """Delete a single vector map layer or a list of vector map layer names
         that are located in a specific location/mapset

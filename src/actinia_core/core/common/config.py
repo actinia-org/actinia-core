@@ -158,6 +158,8 @@ class Configuration(object):
         self.FORCE_HTTPS_URLS = False
         # PLUGINS: e.g. ["actinia_satellite_plugin", "actinia_statistic_plugin"]
         self.PLUGINS = []
+        # ENDPOINTS_CONFIG: configuration csv file for endpoints
+        self.ENDPOINTS_CONFIG = None
 
         """
         REDIS
@@ -336,6 +338,7 @@ class Configuration(object):
         config.set('API', 'LOGIN_REQUIRED', str(self.LOGIN_REQUIRED))
         config.set('API', 'FORCE_HTTPS_URLS', str(self.FORCE_HTTPS_URLS))
         config.set('API', 'PLUGINS', str(self.PLUGINS))
+        config.set('API', 'ENDPOINTS_CONFIG', str(self.ENDPOINTS_CONFIG))
 
         config.add_section('REDIS')
         config.set('REDIS', 'REDIS_SERVER_URL', self.REDIS_SERVER_URL)
@@ -469,6 +472,8 @@ class Configuration(object):
                     self.FORCE_HTTPS_URLS = config.getboolean("API", "FORCE_HTTPS_URLS")
                 if config.has_option("API", "PLUGINS"):
                     self.PLUGINS = ast.literal_eval(config.get("API", "PLUGINS"))
+                if config.has_option("API", "ENDPOINTS_CONFIG"):
+                    self.ENDPOINTS_CONFIG = config.get("API", "ENDPOINTS_CONFIG")
 
             if config.has_section("REDIS"):
                 if config.has_option("REDIS", "REDIS_SERVER_URL"):
