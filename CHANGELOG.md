@@ -21,6 +21,27 @@ https://github.com/mundialis/actinia_core/compare/4.0.0...main
 released from <branch>\
 ...
 
+ ## [4.1.0] - 2022-07-20
+released from main
+### Changed
+- Actinia Tutorials Update by @Momen-Mawad in https://github.com/mundialis/actinia_core/pull/350
+
+### Added
+- Tests for importer: parameters resample and resolution by @juleshaas in https://github.com/mundialis/actinia_core/pull/349
+- Enable separate redis queue per job by @mmacata in https://github.com/mundialis/actinia_core/pull/355
+- Endpoint configuration by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/357
+
+### Fixed
+- Fix dev setup by @mmacata in https://github.com/mundialis/actinia_core/pull/352
+- docs: actinia concepts got lost by @metzm in https://github.com/mundialis/actinia_core/pull/353
+
+## New Contributors
+* @Momen-Mawad made their first contribution in https://github.com/mundialis/actinia_core/pull/350
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.0.1...4.1.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.1.0" -f target_commitish=main -q .body`
+ 
 ## [4.0.1] - 2022-05-20
 released from main
 ### Fixed
