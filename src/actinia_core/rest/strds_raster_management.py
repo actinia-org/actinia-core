@@ -33,7 +33,8 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_raster_management
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.request_parser import where_parser
@@ -51,9 +52,10 @@ class STRDSRasterManagement(ResourceBase):
     """Manage raster layer in a space time raster dataset
     """
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_raster_management.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, location_name, mapset_name, strds_name, queue_type_overwrite=None):
         """Get a list of all raster map layers that are registered in a STRDS
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -65,7 +67,9 @@ class STRDSRasterManagement(ResourceBase):
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, list_raster_strds, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_strds, rdc,
+                queue_type_overwrite=queue_type_overwrite)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -91,9 +95,10 @@ class STRDSRasterManagement(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_raster_management.delete_doc))
-    def delete(self, location_name, mapset_name, strds_name):
+    def delete(self, location_name, mapset_name, strds_name, queue_type_overwrite=None):
         """Unregister raster map layers from a STRDS located in a specific
         location/mapset.
         """
@@ -103,7 +108,9 @@ class STRDSRasterManagement(ResourceBase):
                               map_name=strds_name)
 
         if rdc:
-            enqueue_job(self.job_timeout, unregister_raster, rdc)
+            enqueue_job(
+                self.job_timeout, unregister_raster, rdc,
+                queue_type_overwrite=queue_type_overwrite)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

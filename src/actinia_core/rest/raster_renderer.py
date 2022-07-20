@@ -32,7 +32,8 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_renderer
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
@@ -49,9 +50,10 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
     """Render a raster image with g.region/d.rast approach synchronously
     """
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_renderer.raster_render_get_doc))
-    def get(self, location_name, mapset_name, raster_name):
+    def get(self, location_name, mapset_name, raster_name, queue_type_overwrite=None):
         """Render a raster map layer as a PNG image.
         """
         parser = self.create_parser()
@@ -68,7 +70,9 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
 
         rdc.set_user_data(options)
 
-        enqueue_job(self.job_timeout, start_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_job, rdc,
+            queue_type_overwrite=queue_type_overwrite)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:
@@ -119,10 +123,11 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
         return options
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint(
         "get", raster_renderer.raster_rgb_render_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, location_name, mapset_name, queue_type_overwrite=None):
         """Render three raster map layer as composed RGB PNG image.
         """
 
@@ -149,7 +154,9 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
 
         rdc.set_user_data(rgb_options)
 
-        enqueue_job(self.job_timeout, start_rgb_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_rgb_job, rdc,
+            queue_type_overwrite=queue_type_overwrite)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:
@@ -197,10 +204,11 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         return options
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint(
         "get", raster_renderer.raster_shade_render_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, location_name, mapset_name, queue_type_overwrite=None):
         """Render two raster layers as a composed shade PNG image
         """
         parser = self.create_parser()
@@ -223,7 +231,9 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
 
         rdc.set_user_data(options)
 
-        enqueue_job(self.job_timeout, start_shade_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_shade_job, rdc,
+            queue_type_overwrite=queue_type_overwrite)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:

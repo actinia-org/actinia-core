@@ -33,7 +33,8 @@ from actinia_api.swagger2.actinia_core.apidocs import vector_renderer
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
@@ -49,9 +50,10 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
     """Render a vector layer with g.region/d.vect approach synchronously
     """
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", vector_renderer.get_doc))
-    def get(self, location_name, mapset_name, vector_name):
+    def get(self, location_name, mapset_name, vector_name, queue_type_overwrite=None):
         """Render a single vector map layer
         """
         parser = self.create_parser()
@@ -68,7 +70,9 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
 
         rdc.set_user_data(options)
 
-        enqueue_job(self.job_timeout, start_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_job, rdc,
+            queue_type_overwrite=queue_type_overwrite)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:

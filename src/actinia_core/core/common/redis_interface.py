@@ -114,7 +114,7 @@ def __enqueue_job_redis(queue, timeout, func, *args):
     log.info(ret)
 
 
-def enqueue_job(timeout, func, *args):
+def enqueue_job(timeout, func, *args, queue_type_overwrite):
     """Write the provided function in a queue
 
     Args:
@@ -124,8 +124,11 @@ def enqueue_job(timeout, func, *args):
     """
     global job_queues, redis_conn
     num_queues = global_config.NUMBER_OF_WORKERS
+    queue_type = global_config.QUEUE_TYPE
+    if queue_type_overwrite:
+        queue_type = queue_type_overwrite
 
-    if (global_config.QUEUE_TYPE == "per_job"):
+    if (queue_type == "per_job"):
         resource_id = args[0].resource_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
         __create_job_queue(queue_name)
@@ -133,7 +136,7 @@ def enqueue_job(timeout, func, *args):
             if i.name == queue_name:
                 __enqueue_job_redis(i, timeout, func, *args)
 
-    elif (global_config.QUEUE_TYPE == "redis"):
+    elif (queue_type == "redis"):
         if job_queues == []:
             for i in range(num_queues):
                 queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, i)
@@ -144,7 +147,7 @@ def enqueue_job(timeout, func, *args):
         current_queue = num % num_queues
         __enqueue_job_redis(job_queues[current_queue], timeout, func, *args)
 
-    elif (global_config.QUEUE_TYPE == "local"):
+    elif (queue_type == "local"):
         # __enqueue_job_local(timeout, func, *args)
         enqueue_job_local(timeout, func, *args)
         return

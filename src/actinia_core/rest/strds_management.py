@@ -34,7 +34,8 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_management
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
@@ -53,9 +54,10 @@ class SyncSTRDSListerResource(ResourceBase):
     """
     layer_type = None
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.list_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, location_name, mapset_name, queue_type_overwrite=None):
         """Get a list of all STRDS that are located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -66,7 +68,9 @@ class SyncSTRDSListerResource(ResourceBase):
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_mapsets, rdc,
+                queue_type_overwrite=queue_type_overwrite)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -89,9 +93,10 @@ class STRDSManagementResource(ResourceBase):
     """List all STRDS in a location/mapset
     """
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, location_name, mapset_name, strds_name, queue_type_overwrite=None):
         """Get information about a STRDS that is located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -99,16 +104,19 @@ class STRDSManagementResource(ResourceBase):
                               mapset_name=mapset_name,
                               map_name=strds_name)
         if rdc:
-            enqueue_job(self.job_timeout, strds_info, rdc)
+            enqueue_job(
+                self.job_timeout, strds_info, rdc,
+                queue_type_overwrite=queue_type_overwrite)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_management.delete_doc))
-    def delete(self, location_name, mapset_name, strds_name):
+    def delete(self, location_name, mapset_name, strds_name, queue_type_overwrite=None):
         """Delete a STRDS that is located in a specific location/mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -120,7 +128,9 @@ class STRDSManagementResource(ResourceBase):
             args = recursive_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, strds_delete, rdc)
+            enqueue_job(
+                self.job_timeout, strds_delete, rdc,
+                queue_type_overwrite=queue_type_overwrite)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

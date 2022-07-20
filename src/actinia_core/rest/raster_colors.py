@@ -34,7 +34,8 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_colors
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.raster_colors import start_job_colors_out
@@ -50,9 +51,10 @@ class SyncPersistentRasterColorsResource(ResourceBase):
     """Manage the color table
     """
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_colors.get_doc))
-    def get(self, location_name, mapset_name, raster_name):
+    def get(self, location_name, mapset_name, raster_name, queue_type_overwrite=None):
         """Get the color definition of an existing raster map layer.
 
         Args:
@@ -66,7 +68,9 @@ class SyncPersistentRasterColorsResource(ResourceBase):
                               mapset_name=mapset_name,
                               map_name=raster_name)
 
-        enqueue_job(self.job_timeout, start_job_colors_out, rdc)
+        enqueue_job(
+            self.job_timeout, start_job_colors_out, rdc,
+            queue_type_overwrite=queue_type_overwrite)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 

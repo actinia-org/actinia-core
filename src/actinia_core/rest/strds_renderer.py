@@ -33,7 +33,8 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_renderer
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
+    check_queue_type_overwrite
 )
 from actinia_core.processing.common.strds_renderer import start_job
 
@@ -45,9 +46,10 @@ __maintainer__ = "mundialis"
 
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
+    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_renderer.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, location_name, mapset_name, strds_name, queue_type_overwrite=None):
         """Render the raster map layers of a specific STRDS as a single image.
         """
         parser = self.create_parser()
@@ -64,7 +66,9 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
 
         rdc.set_user_data(options)
 
-        enqueue_job(self.job_timeout, start_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_job, rdc,
+            queue_type_overwrite=queue_type_overwrite)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:
