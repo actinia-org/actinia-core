@@ -66,7 +66,9 @@ class SyncSTRDSListerResource(ResourceBase):
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_mapsets, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -99,7 +101,9 @@ class STRDSManagementResource(ResourceBase):
                               mapset_name=mapset_name,
                               map_name=strds_name)
         if rdc:
-            enqueue_job(self.job_timeout, strds_info, rdc)
+            enqueue_job(
+                self.job_timeout, strds_info, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -120,7 +124,9 @@ class STRDSManagementResource(ResourceBase):
             args = recursive_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, strds_delete, rdc)
+            enqueue_job(
+                self.job_timeout, strds_delete, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

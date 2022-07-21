@@ -65,7 +65,9 @@ class SyncResourceStorageResource(ResourceBase):
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
-            enqueue_job(self.job_timeout, start_resource_storage_size, rdc)
+            enqueue_job(
+                self.job_timeout, start_resource_storage_size, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -80,7 +82,9 @@ class SyncResourceStorageResource(ResourceBase):
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
-            enqueue_job(self.job_timeout, start_resource_storage_remove, rdc)
+            enqueue_job(
+                self.job_timeout, start_resource_storage_remove, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

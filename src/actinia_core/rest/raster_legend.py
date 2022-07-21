@@ -137,7 +137,9 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         rdc.set_user_data(options)
 
-        enqueue_job(self.job_timeout, start_job, rdc)
+        enqueue_job(
+            self.job_timeout, start_job, rdc,
+            queue_type_overwrite=True)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:

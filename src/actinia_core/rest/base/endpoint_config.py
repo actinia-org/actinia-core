@@ -67,6 +67,9 @@ def check_endpoint(method, api_doc=None, endpoint_class=None):
 
 
 def endpoint_decorator():
+    """Check whether an endpoint allowlist should be used to
+    allow only the provided list of endpoints and hide all others.
+    """
 
     def decorator(func):
         endpoint_class, method = func.__qualname__.split(".")
@@ -85,3 +88,20 @@ def endpoint_decorator():
         return wrapper
 
     return decorator
+
+
+# def check_queue_type_overwrite():
+#     """Always use local queue for synchronous requests to respond in time.
+#     Decorator is used here so it is more easy to change later.
+#     """
+
+#     def decorator(func):
+
+#         @wraps(func)
+#         def wrapper(*args, **kwargs):
+#             result = func(*args, **kwargs, queue_type_overwrite='local')
+#             return result
+
+#         return wrapper
+
+#     return decorator

@@ -63,7 +63,9 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                               mapset_name=mapset_name,
                               map_name=raster_name)
         if rdc:
-            enqueue_job(self.job_timeout, start_info_job, rdc)
+            enqueue_job(
+                self.job_timeout, start_info_job, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.02)
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -72,7 +74,8 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", raster_layer.delete_doc))
-    def delete(self, location_name, mapset_name, raster_name):
+    def delete(
+            self, location_name, mapset_name, raster_name):
         """Delete an existing raster map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -80,7 +83,9 @@ class RasterLayerResource(MapLayerRegionResourceBase):
                               mapset_name=mapset_name,
                               map_name=raster_name)
         if rdc:
-            enqueue_job(self.job_timeout, start_delete_job, rdc)
+            enqueue_job(
+                self.job_timeout, start_delete_job, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.1)
         else:
             http_code, response_model = pickle.loads(self.response_data)

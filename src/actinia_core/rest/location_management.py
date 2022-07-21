@@ -128,7 +128,9 @@ class LocationManagementResourceUser(ResourceBase):
                               location_name=location_name,
                               mapset_name="PERMANENT")
         if rdc:
-            enqueue_job(self.job_timeout, read_current_region, rdc)
+            enqueue_job(
+                self.job_timeout, read_current_region, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

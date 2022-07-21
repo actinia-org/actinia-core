@@ -65,7 +65,9 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                               map_name=vector_name)
 
         if rdc:
-            enqueue_job(self.job_timeout, start_info_job, rdc)
+            enqueue_job(
+                self.job_timeout, start_info_job, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.02)
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -74,7 +76,8 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", vector_layer.delete_dop))
-    def delete(self, location_name, mapset_name, vector_name):
+    def delete(
+            self, location_name, mapset_name, vector_name):
         """Delete an existing vector map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -83,7 +86,9 @@ class VectorLayerResource(MapLayerRegionResourceBase):
                               map_name=vector_name)
 
         if rdc:
-            enqueue_job(self.job_timeout, start_delete_job, rdc)
+            enqueue_job(
+                self.job_timeout, start_delete_job, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.1)
         else:
             http_code, response_model = pickle.loads(self.response_data)

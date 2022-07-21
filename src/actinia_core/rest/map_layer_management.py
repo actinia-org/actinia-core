@@ -93,7 +93,9 @@ class MapsetLayersResource(ResourceBase):
         if rdc:
             args = glist_parser.parse_args()
             rdc.set_user_data((args, self.layer_type))
-            enqueue_job(self.job_timeout, list_raster_layers, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_layers, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -123,7 +125,9 @@ class MapsetLayersResource(ResourceBase):
         if rdc:
             args = glist_parser.parse_args()
             rdc.set_user_data((args, self.layer_type))
-            enqueue_job(self.job_timeout, remove_raster_layers, rdc)
+            enqueue_job(
+                self.job_timeout, remove_raster_layers, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
