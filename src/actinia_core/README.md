@@ -34,8 +34,13 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
-| actinia_core.models.process_chain | IOParameterBase |
-| actinia_core.models.response_models | ProcessingErrorResponseModel, ProcessingResponseModel |
+| actinia_core.core.messages_logger | MessageLogger |
+| actinia_core.core.resource_data_container | ResourceDataContainer |
+| actinia_core.core.resources_logger | ResourceLogger |
+| actinia_core.endpoints | create_endpoints |
+| actinia_core.models.process_chain | IOParameterBase, ProcessChainModel |
+| actinia_core.models.response_models | ApiInfoModel, create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, UrlModel |
+| actinia_core.processing.actinia_processing.ephemeral_processing | EphemeralProcessing |
 | actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export | EphemeralProcessingWithExport |
 | actinia_core.processing.actinia_processing.ephemeral.persistent_processing | PersistentProcessing |
 | actinia_core.processing.actinia_processing.ephemeral_processing | EphemeralProcessing |
@@ -44,8 +49,10 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.processing.common.persistent_processing | start_job |
 | actinia_core.core.redis_user | RedisUserInterface |
 | actinia_core.rest.base.resource_base | ResourceBase |
+| actinia_core.rest.base.user_auth | create_dummy_user |
 | actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
 | actinia_core.rest.persistent_processing | SCHEMA_DOC |
+| actinia_core.rest.resource_management | ResourceManagerBase |
 | actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
 
 
@@ -138,5 +145,31 @@ actinia_core.processing.actinia_processing.ephemeral.persistent_processing impor
 actinia_core.processing.actinia_processing.persistent.mapset_management import PersistentMapsetDeleter
 actinia_core.processing.actinia_processing.persistent.mapset_management import PersistentMapsetUnlocker
 actinia_core.rest.base.resource_base import ResourceBase
+actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
+```
+
+__parallel__
+```
+actinia_core.core.common.app import auth
+actinia_core.core.common.config import global_config
+actinia_core.core.common.redis_interface import enqueue_job
+actinia_core.core.messages_logger import MessageLogger
+actinia_core.core.resource_data_container import ResourceDataContainer
+actinia_core.core.resources_logger import ResourceLogger
+actinia_core.models.process_chain import ProcessChainModel
+actinia_core.models.response_models import ApiInfoModel
+actinia_core.models.response_models import create_response_from_model
+actinia_core.models.response_models import ProcessingResponseModel
+actinia_core.models.response_models import SimpleResponseModel
+actinia_core.models.response_models import UrlModel
+actinia_core.processing.actinia_processing.ephemeral_processing import EphemeralProcessing
+actinia_core.rest.base.resource_base import ResourceBase
+actinia_core.rest.base.user_auth import create_dummy_user
+actinia_core.rest.resource_management import ResourceManagerBase
+
+# tests
+actinia_core.core.common.config import global_config
+actinia_core.core.common.user import ActiniaUser
+actinia_core.endpoints import create_endpoints
 actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 ```
