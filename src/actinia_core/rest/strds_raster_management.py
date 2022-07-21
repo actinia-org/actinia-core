@@ -65,7 +65,9 @@ class STRDSRasterManagement(ResourceBase):
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
-            enqueue_job(self.job_timeout, list_raster_strds, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_strds, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -103,7 +105,9 @@ class STRDSRasterManagement(ResourceBase):
                               map_name=strds_name)
 
         if rdc:
-            enqueue_job(self.job_timeout, unregister_raster, rdc)
+            enqueue_job(
+                self.job_timeout, unregister_raster, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

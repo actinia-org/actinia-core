@@ -223,6 +223,9 @@ class Configuration(object):
         # - redis separate queue per process type
         # - redis separate queue per ressource consumption
         self.QUEUE_TYPE = "local"
+        # Separate configuration for queue_type for synchronous requests which
+        # might not want to be queued.
+        self.QUEUE_TYPE_OVERWRITE = "local"
 
         """
         MISC
@@ -236,9 +239,6 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
-        # Type of queue. Can be "local" or "redis". If redis is set, job can
-        # be received and executed from different actinia instances
-        self.QUEUE_TYPE = "local"
 
         """
         LOGGING
@@ -358,6 +358,7 @@ class Configuration(object):
         config.set('QUEUE', 'REDIS_QUEUE_JOB_TTL', str(self.REDIS_QUEUE_JOB_TTL))
         config.set('QUEUE', 'WORKER_QUEUE_PREFIX', str(self.WORKER_QUEUE_PREFIX))
         config.set('QUEUE', 'QUEUE_TYPE', self.QUEUE_TYPE)
+        config.set('QUEUE', 'QUEUE_TYPE_OVERWRITE', self.QUEUE_TYPE_OVERWRITE)
 
         config.add_section('MISC')
         config.set('MISC', 'DOWNLOAD_CACHE', self.DOWNLOAD_CACHE)
@@ -510,6 +511,9 @@ class Configuration(object):
                 if config.has_option("QUEUE", "QUEUE_TYPE"):
                     self.QUEUE_TYPE = config.get(
                         "QUEUE", "QUEUE_TYPE")
+                if config.has_option("QUEUE", "QUEUE_TYPE_OVERWRITE"):
+                    self.QUEUE_TYPE_OVERWRITE = config.get(
+                        "QUEUE", "QUEUE_TYPE_OVERWRITE")
 
             if config.has_section("MISC"):
                 if config.has_option("MISC", "DOWNLOAD_CACHE"):

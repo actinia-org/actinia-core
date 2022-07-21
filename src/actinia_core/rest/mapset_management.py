@@ -59,6 +59,7 @@ class ListMapsetsResource(ResourceBase):
     """
     layer_type = None
 
+    # @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_doc))
     def get(self, location_name):
@@ -68,7 +69,9 @@ class ListMapsetsResource(ResourceBase):
                               location_name=location_name,
                               mapset_name="PERMANENT")
         if rdc:
-            enqueue_job(self.job_timeout, list_raster_mapsets, rdc)
+            enqueue_job(
+                self.job_timeout, list_raster_mapsets, rdc,
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -93,7 +96,9 @@ class MapsetManagementResourceUser(ResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name)
 
-        enqueue_job(self.job_timeout, read_current_region, rdc)
+        enqueue_job(
+            self.job_timeout, read_current_region, rdc,
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -147,7 +152,9 @@ class MapsetManagementResourceAdmin(ResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name)
 
-        enqueue_job(self.job_timeout, delete_mapset, rdc)
+        enqueue_job(
+            self.job_timeout, delete_mapset, rdc,
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -167,7 +174,9 @@ class MapsetLockManagementResource(ResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name)
 
-        enqueue_job(self.job_timeout, get_mapset_lock, rdc)
+        enqueue_job(
+            self.job_timeout, get_mapset_lock, rdc,
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -193,6 +202,8 @@ class MapsetLockManagementResource(ResourceBase):
                               location_name=location_name,
                               mapset_name=mapset_name)
 
-        enqueue_job(self.job_timeout, unlock_mapset, rdc)
+        enqueue_job(
+            self.job_timeout, unlock_mapset, rdc,
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)

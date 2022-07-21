@@ -66,7 +66,9 @@ class SyncPersistentRasterColorsResource(ResourceBase):
                               mapset_name=mapset_name,
                               map_name=raster_name)
 
-        enqueue_job(self.job_timeout, start_job_colors_out, rdc)
+        enqueue_job(
+            self.job_timeout, start_job_colors_out, rdc,
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
