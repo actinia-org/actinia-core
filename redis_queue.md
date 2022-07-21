@@ -32,6 +32,8 @@ rq_custom_worker $QUEUE_NAME -c /etc/default/actinia
 ## Redis Details
 
 ```
+redis-cli -a 'pass'
+
 127.0.0.1:6379> KEYS *
 3) "actinia_worker_count"
 9) "rq:workers"
