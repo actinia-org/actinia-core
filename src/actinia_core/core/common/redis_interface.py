@@ -114,7 +114,7 @@ def __enqueue_job_redis(queue, timeout, func, *args):
     log.info(ret)
 
 
-def enqueue_job(timeout, func, *args, queue_type_overwrite):
+def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     """Write the provided function in a queue
 
     Args:
