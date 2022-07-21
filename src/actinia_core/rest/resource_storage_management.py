@@ -42,8 +42,7 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
@@ -59,35 +58,33 @@ class SyncResourceStorageResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   check_admin_role, auth.login_required]
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", resource_storage_management.get_doc))
-    def get(self, queue_type_overwrite=None):
+    def get(self):
         """Get the current size of the resource storage"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
             enqueue_job(
                 self.job_timeout, start_resource_storage_size, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint(
         "delete", resource_storage_management.delete_doc))
-    def delete(self, queue_type_overwrite=None):
+    def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
             enqueue_job(
                 self.job_timeout, start_resource_storage_remove, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

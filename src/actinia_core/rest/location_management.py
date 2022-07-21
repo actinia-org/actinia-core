@@ -40,8 +40,7 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
@@ -120,10 +119,9 @@ class LocationManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", location_management.get_user_doc))
-    def get(self, location_name, queue_type_overwrite=None):
+    def get(self, location_name):
         """Get the location projection and current computational region of the PERMANENT mapset
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -132,7 +130,7 @@ class LocationManagementResourceUser(ResourceBase):
         if rdc:
             enqueue_job(
                 self.job_timeout, read_current_region, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

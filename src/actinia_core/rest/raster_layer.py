@@ -35,8 +35,7 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_layer
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
@@ -54,10 +53,9 @@ class RasterLayerResource(MapLayerRegionResourceBase):
     """Return information about a specific raster layer as JSON
     """
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_layer.get_doc))
-    def get(self, location_name, mapset_name, raster_name, queue_type_overwrite=None):
+    def get(self, location_name, mapset_name, raster_name):
         """Get information about an existing raster map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -67,18 +65,17 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         if rdc:
             enqueue_job(
                 self.job_timeout, start_info_job, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.02)
         else:
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", raster_layer.delete_doc))
     def delete(
-            self, location_name, mapset_name, raster_name, queue_type_overwrite=None):
+            self, location_name, mapset_name, raster_name):
         """Delete an existing raster map layer.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -88,7 +85,7 @@ class RasterLayerResource(MapLayerRegionResourceBase):
         if rdc:
             enqueue_job(
                 self.job_timeout, start_delete_job, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish(0.1)
         else:
             http_code, response_model = pickle.loads(self.response_data)

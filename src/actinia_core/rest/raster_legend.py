@@ -33,8 +33,7 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_legend
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.resource_base import ResourceBase
@@ -119,10 +118,9 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         return options
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_legend.get_doc))
-    def get(self, location_name, mapset_name, raster_name, queue_type_overwrite=None):
+    def get(self, location_name, mapset_name, raster_name):
         """Render the legend of a raster map layer as a PNG image.
         """
         parser = self.create_parser()
@@ -141,7 +139,7 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         enqueue_job(
             self.job_timeout, start_job, rdc,
-            queue_type_overwrite=queue_type_overwrite)
+            queue_type_overwrite=True)
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:

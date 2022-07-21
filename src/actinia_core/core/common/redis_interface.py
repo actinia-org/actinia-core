@@ -126,7 +126,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     num_queues = global_config.NUMBER_OF_WORKERS
     queue_type = global_config.QUEUE_TYPE
     if queue_type_overwrite:
-        queue_type = queue_type_overwrite
+        queue_type = global_config.QUEUE_TYPE_OVERWRITE
 
     if (queue_type == "per_job"):
         resource_id = args[0].resource_id

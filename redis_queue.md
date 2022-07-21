@@ -25,7 +25,7 @@ docker-compose -f actinia-docker/docker-compose-dev-rq.yml run --rm --service-po
 - inside container, start worker listening to specified queue
 ```
 QUEUE_NAME=job_queue_0
-rq_custom_worker $QUEUE_NAME -c /etc/default/actinia
+rq_custom_worker $QUEUE_NAME -c /etc/default/actinia --quit
 ```
 
 

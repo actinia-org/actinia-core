@@ -32,8 +32,7 @@ from actinia_api.swagger2.actinia_core.apidocs import map_layer_management
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.core.request_parser import glist_parser
 from actinia_core.rest.base.resource_base import ResourceBase
@@ -53,8 +52,7 @@ class MapsetLayersResource(ResourceBase):
         ResourceBase.__init__(self)
         self.layer_type = layer_type
 
-    @check_queue_type_overwrite()
-    def _get(self, location_name, mapset_name, queue_type_overwrite=None):
+    def _get(self, location_name, mapset_name):
         """Return a collection of all available layers
         in the provided mapset.
 
@@ -97,15 +95,14 @@ class MapsetLayersResource(ResourceBase):
             rdc.set_user_data((args, self.layer_type))
             enqueue_job(
                 self.job_timeout, list_raster_layers, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
 
         return make_response(jsonify(response_model), http_code)
 
-    @check_queue_type_overwrite()
-    def _delete(self, location_name, mapset_name, queue_type_overwrite=None):
+    def _delete(self, location_name, mapset_name):
         """Remove a list of layers identified by a pattern
 
         The g.remove "pattern" parameters must be provided::
@@ -130,7 +127,7 @@ class MapsetLayersResource(ResourceBase):
             rdc.set_user_data((args, self.layer_type))
             enqueue_job(
                 self.job_timeout, remove_raster_layers, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

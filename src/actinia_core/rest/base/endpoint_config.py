@@ -90,18 +90,18 @@ def endpoint_decorator():
     return decorator
 
 
-def check_queue_type_overwrite():
-    """Always use local queue for synchronous requests to respond in time.
-    Decorator is used here so it is more easy to change later.
-    """
+# def check_queue_type_overwrite():
+#     """Always use local queue for synchronous requests to respond in time.
+#     Decorator is used here so it is more easy to change later.
+#     """
 
-    def decorator(func):
+#     def decorator(func):
 
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            result = func(*args, **kwargs, queue_type_overwrite='local')
-            return result
+#         @wraps(func)
+#         def wrapper(*args, **kwargs):
+#             result = func(*args, **kwargs, queue_type_overwrite='local')
+#             return result
 
-        return wrapper
+#         return wrapper
 
-    return decorator
+#     return decorator

@@ -40,8 +40,7 @@ from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator,
-    check_queue_type_overwrite
+    endpoint_decorator
 )
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.rest.base.user_auth import check_admin_role
@@ -60,10 +59,10 @@ class ListMapsetsResource(ResourceBase):
     """
     layer_type = None
 
-    @check_queue_type_overwrite()
+    # @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_doc))
-    def get(self, location_name, queue_type_overwrite=None):
+    def get(self, location_name):
         """Get a list of all mapsets that are located in a specific location.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -72,7 +71,7 @@ class ListMapsetsResource(ResourceBase):
         if rdc:
             enqueue_job(
                 self.job_timeout, list_raster_mapsets, rdc,
-                queue_type_overwrite=queue_type_overwrite)
+                queue_type_overwrite=True)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -87,10 +86,9 @@ class MapsetManagementResourceUser(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_user_doc))
-    def get(self, location_name, mapset_name, queue_type_overwrite=None):
+    def get(self, location_name, mapset_name):
         """Get the current computational region of the mapset and the projection
         of the location as WKT string.
         """
@@ -100,7 +98,7 @@ class MapsetManagementResourceUser(ResourceBase):
 
         enqueue_job(
             self.job_timeout, read_current_region, rdc,
-            queue_type_overwrite=queue_type_overwrite)
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -145,10 +143,9 @@ class MapsetManagementResourceAdmin(ResourceBase):
         """
         pass
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_admin_doc))
-    def delete(self, location_name, mapset_name, queue_type_overwrite=None):
+    def delete(self, location_name, mapset_name):
         """Delete an existing mapset.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -157,7 +154,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
 
         enqueue_job(
             self.job_timeout, delete_mapset, rdc,
-            queue_type_overwrite=queue_type_overwrite)
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -168,10 +165,9 @@ class MapsetLockManagementResource(ResourceBase):
     decorators = [log_api_call, check_user_permissions,
                   check_admin_role, auth.login_required]
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_lock_doc))
-    def get(self, location_name, mapset_name, queue_type_overwrite=None):
+    def get(self, location_name, mapset_name):
         """Get the location/mapset lock status.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -180,7 +176,7 @@ class MapsetLockManagementResource(ResourceBase):
 
         enqueue_job(
             self.job_timeout, get_mapset_lock, rdc,
-            queue_type_overwrite=queue_type_overwrite)
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
@@ -197,10 +193,9 @@ class MapsetLockManagementResource(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_lock_doc))
-    def delete(self, location_name, mapset_name, queue_type_overwrite=None):
+    def delete(self, location_name, mapset_name):
         """Delete a location/mapset lock.
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
@@ -209,6 +204,6 @@ class MapsetLockManagementResource(ResourceBase):
 
         enqueue_job(
             self.job_timeout, unlock_mapset, rdc,
-            queue_type_overwrite=queue_type_overwrite)
+            queue_type_overwrite=True)
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
