@@ -1358,8 +1358,11 @@ The finished response should look like this:
 
 [^1]: <https://grass.osgeo.org/grass-stable/manuals/index.html>
 
-[^2]: <https://actinia.mundialis.de/api_docs/#/definitions/GrassModule>
+[^2]: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get>
 
+<!---
+for 3 and 4, use https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Processing ?
+--->
 [^3]: <https://actinia.mundialis.de/api_docs/#/definitions/InputParameter>
 
 [^4]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>

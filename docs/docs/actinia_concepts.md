@@ -9,9 +9,12 @@ as swagger[^2]. The JSON definition of the API can be accessed here:
 
  <https://actinia.mundialis.de/latest/swagger.json>
 
+<!---
+commented out because of 502 Bad Gateway
 The full API documentation is available here:
 
  <https://actinia.mundialis.de/api_docs/>
+--->
 
 To generate a readable documentation out of the swagger.json file, the
 spectacle tool can be used:
