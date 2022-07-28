@@ -150,7 +150,7 @@ class LocationManagementResourceAdmin(ResourceBase):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("delete", location_management.get_admin_doc))
+    @swagger.doc(check_endpoint("delete", location_management.delete_admin_doc))
     def delete(self, location_name):
         """Delete an existing location and everything inside from the user database.
         """

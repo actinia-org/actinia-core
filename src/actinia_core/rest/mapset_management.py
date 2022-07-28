@@ -124,7 +124,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("post", mapset_management.get_admin_doc))
+    @swagger.doc(check_endpoint("post", mapset_management.post_user_doc))
     def post(self, location_name, mapset_name):
         """Create a new mapset in an existing location.
         """
@@ -153,7 +153,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
         pass
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("delete", mapset_management.delete_admin_doc))
+    @swagger.doc(check_endpoint("delete", mapset_management.delete_user_doc))
     def delete(self, location_name, mapset_name):
         """Delete an existing mapset
         """
