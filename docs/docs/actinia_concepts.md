@@ -9,6 +9,10 @@ as swagger[^2]. The JSON definition of the API can be accessed here:
 
  <https://actinia.mundialis.de/latest/swagger.json>
 
+A nicely rendered ReDoc version is available here:
+
+ <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>
+
 <!---
 commented out because of 502 Bad Gateway
 The full API documentation is available here:
