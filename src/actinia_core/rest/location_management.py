@@ -139,7 +139,7 @@ class LocationManagementResourceUser(ResourceBase):
 
 
 class LocationManagementResourceAdmin(ResourceBase):
-    """This class manages the creation, deletion and modification of a mapsets
+    """This class manages the creation, deletion and modification of locations
 
     This is only allowed for administrators
     """

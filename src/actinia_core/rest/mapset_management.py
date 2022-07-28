@@ -43,13 +43,22 @@ from actinia_core.rest.base.endpoint_config import (
     endpoint_decorator
 )
 from actinia_core.rest.base.user_auth import check_user_permissions
-from actinia_core.rest.base.user_auth import check_admin_role
-from actinia_core.processing.common.mapset_management import \
-     list_raster_mapsets, read_current_region, create_mapset, \
-     delete_mapset, get_mapset_lock, lock_mapset, unlock_mapset
+from actinia_core.rest.base.user_auth import (
+    check_admin_role,
+    check_user_role
+)
+from actinia_core.processing.common.mapset_management import (
+     list_raster_mapsets,
+     read_current_region,
+     create_mapset,
+     delete_mapset,
+     get_mapset_lock,
+     lock_mapset,
+     unlock_mapset
+)
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Julia Haas"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
@@ -80,7 +89,7 @@ class ListMapsetsResource(ResourceBase):
 
 
 class MapsetManagementResourceUser(ResourceBase):
-    """This class returns information about a mapsets
+    """This class returns information about a mapset
     """
 
     def __init__(self):
@@ -104,12 +113,12 @@ class MapsetManagementResourceUser(ResourceBase):
 
 
 class MapsetManagementResourceAdmin(ResourceBase):
-    """This class manages the creation, deletion and modification of a mapsets
+    """This class manages the creation, deletion and modification of mapsets
 
-    This is only allowed for administrators
+    This is allowed for administrators and users
     """
     decorators = [log_api_call, check_user_permissions,
-                  check_admin_role, auth.login_required]
+                  check_user_role, auth.login_required]
 
     def __init__(self):
         ResourceBase.__init__(self)
@@ -146,7 +155,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_admin_doc))
     def delete(self, location_name, mapset_name):
-        """Delete an existing mapset.
+        """Delete an existing mapset
         """
         rdc = self.preprocess(has_json=False, has_xml=False,
                               location_name=location_name,
