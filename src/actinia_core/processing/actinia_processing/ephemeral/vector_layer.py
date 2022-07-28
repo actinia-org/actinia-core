@@ -63,7 +63,7 @@ class EphemeralVectorInfo(EphemeralProcessing):
             "module": "v.info",
             "inputs": {"map": vector_name + "@" + self.mapset_name},
             "flags": "h"}
-        
+
         pc["3"] = {
             "module": "v.db.connect",
             "inputs": {"map": vector_name + "@" + self.mapset_name},
