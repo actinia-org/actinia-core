@@ -21,7 +21,7 @@ are available via object storage as GeoTIFF files.
 
 ## API documentation
 
-The full API documentation is available here: https://actinia.mundialis.de/api_docs/
+The full API documentation is available [here](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json)
 
 ## actinia command execution - actinia shell
 
