@@ -4,7 +4,7 @@ Landsat NDVI computation
 Actinia provides several API calls to compute satellite specific
 parameters:
 
- <https://actinia.mundialis.de/api_docs/#tag-Satellite-Image-Algorithms>
+ <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms>
 
  We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
  address:

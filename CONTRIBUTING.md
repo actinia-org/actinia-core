@@ -82,9 +82,8 @@ Note that not all feature requests are accepted.
 
 actinia is in dire need of better documentation. Any contributions of documentation
 are greatly appreciated. The actinia documentation is available on
-[actinia.mundialis.de](https://actinia.mundialis.de/api_docs/).
-The website is generated with [Sphinx](http://www.sphinx-doc.org/en/stable/). Contributions
-to the documentation should be made as [Pull Requests](https://github.com/mundialis/actinia_core/pulls)
+[actinia.mundialis.de](https://actinia.mundialis.de/).
+Contributions to the documentation should be made as [Pull Requests](https://github.com/mundialis/actinia_core/pulls)
 on GitHub.
 
 ## Code contributions

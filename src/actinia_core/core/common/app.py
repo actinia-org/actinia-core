@@ -45,7 +45,7 @@ time series data located in a persistent GRASS GIS database.
 Sentinel2A scenes in an ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
-The full API documentation is available here: https://actinia.mundialis.de/api_docs/
+The full API documentation is available here: https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json
 
 
 Examples:
