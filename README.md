@@ -20,6 +20,10 @@ Sentinel-2 scenes in an ephemeral databases. The computational results of epheme
 are available via object storage as GeoTIFF files.
 
 ## API documentation
+<!---
+a more complete API documentation generated with Spinx was here: https://actinia.mundialis.de/api_docs
+but no longer exists
+--->
 
 The full API documentation is available [here](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json)
 

@@ -23,13 +23,13 @@ that is used as computational environment.
 A process chain is a list of GRASS GIS modules[^1] that will be executed in
 serial, based on the order of the list. GRASS GIS modules are specified
 as process definitions[^2] that include the name of the command, the
-inputs[^3] and outputs[^4], including import and export definitions as
+inputs and outputs], including import and export definitions as
 well as the module flags.
 
 The following example defines a single process
-that runs the GRASS GIS module *r.slope.aspect*[^5] to compute the
+that runs the GRASS GIS module *r.slope.aspect*[^3] to compute the
 *slope* for the raster map layer *elev\_ned\_30m* that is located in the
-mapset[^6] *PERMANENT*. The output of the module is named
+mapset[^4] *PERMANENT*. The output of the module is named
 *elev\_ned\_30m\_slope* and should be exported as a GeoTiff file.
 
 ```json
@@ -62,7 +62,7 @@ The actinia process chain supports the specification of URL\'s to raster
 layers in the input definition. The following process chain imports a
 raster map layer that is located in an object storage with the name
 *elev\_ned\_30m\_new* and sets the computational region for the
-following processing step with the GRASS GIS module *g.region*[^7]. Then
+following processing step with the GRASS GIS module *g.region*[^5]. Then
 slope and aspect are computed with *r.slope.aspect* and specified for
 export as GeoTiff files.
 
@@ -1361,14 +1361,14 @@ The finished response should look like this:
 [^2]: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get>
 
 <!---
-for 3 and 4, use https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Processing ?
+https://actinia.mundialis.de/api_docs/ is no longer generated
+
+[^x]: <https://actinia.mundialis.de/api_docs/#/definitions/InputParameter>
+
+[^x]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>
 --->
-[^3]: <https://actinia.mundialis.de/api_docs/#/definitions/InputParameter>
+[^3]: <https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html>
 
-[^4]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>
+[^4]: <https://grass.osgeo.org/grass-stable/manuals/grass_database.html>
 
-[^5]: <https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html>
-
-[^6]: <https://grass.osgeo.org/grass-stable/manuals/grass_database.html>
-
-[^7]: <https://grass.osgeo.org/grass-stable/manuals/g.region.html>
+[^5]: <https://grass.osgeo.org/grass-stable/manuals/g.region.html>
