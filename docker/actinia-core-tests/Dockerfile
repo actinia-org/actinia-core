@@ -3,7 +3,7 @@ FROM mundialis/actinia-core:4.0.0 as actinia_test
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
 
-ENV ACTINIA_API_VERSION 3.1.0
+ENV ACTINIA_API_VERSION 3.2.0
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
