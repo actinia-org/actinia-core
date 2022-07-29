@@ -266,7 +266,7 @@ class EnqueuedProcess(object):
         if response_data is None:
             response_data = self.resource_logger.get(self.user_id,
                                                      self.resource_id,
-                                                     self.iteartion)
+                                                     self.iteration)
 
         # Send the termination response
         if response_data is not None:
