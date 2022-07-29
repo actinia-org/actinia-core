@@ -35,10 +35,9 @@ from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.messages_logger import MessageLogger
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__author__ = "Sören Gebbert, Julia Haas"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 @auth.verify_password
@@ -97,7 +96,7 @@ def create_dummy_user(f):
 def check_admin_role(f):
     """Verify if the user has admin rights
 
-    This decorator function verifies if the role of
+    This decorator function verifies if the role
     of the login user is "admin" or "superadmin".
 
     It will abort with a 401 response if the user is not admin or superadmin
@@ -115,6 +114,35 @@ def check_admin_role(f):
             abort(401)
 
         if g.user.get_role() != "admin" and g.user.get_role() != "superadmin":
+            abort(401)
+
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+def check_user_role(f):
+    """Verify if the user has user or admin rights
+
+    This decorator function verifies if the role
+    of the login user is "user", "admin" or "superadmin".
+
+    It will abort with a 401 response if the user is not user,
+    admin or superadmin
+
+    Args:
+        f (function): The function to wrap
+
+    Returns:
+        function: The decorator functions
+
+    """
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if g.user is None:
+            abort(401)
+
+        allowed_roles = ["user", "admin", "superadmin"]
+        if g.user.get_role() not in allowed_roles:
             abort(401)
 
         return f(*args, **kwargs)

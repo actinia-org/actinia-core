@@ -107,13 +107,13 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_creation_and_deletion_unprivileged(self):
         # Create new mapsets as unprivileged user
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
-                              headers=self.user_auth_header)
+                              headers=self.guest_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
         # Delete mapset as unprivileged user
         rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/test_mapset',
-                                headers=self.user_auth_header)
+                                headers=self.guest_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
 
