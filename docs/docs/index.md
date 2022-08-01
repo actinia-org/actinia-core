@@ -35,6 +35,10 @@ The source code is available here: <https://github.com/mundialis/actinia_core>.
     * Access to raster time-series in the persistent database
 * Time-series sampling
     * Sampling of a STRDS with vector points
+<!---
+* Landsat NDVI computation
+* Sentinel-2 NDVI computation
+-->
 * User defined processing  
     * The actinia process chain
     * Sentinel-2A NDVI process chain
