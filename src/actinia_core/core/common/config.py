@@ -221,7 +221,7 @@ class Configuration(object):
         # future ideas
         # - redis separate queue per user
         # - redis separate queue per process type
-        # - redis separate queue per ressource consumption
+        # - redis separate queue per resource consumption
         self.QUEUE_TYPE = "local"
         # Separate configuration for queue_type for synchronous requests which
         # might not want to be queued.

@@ -907,7 +907,7 @@ module_list = {
             'g.proj': {
                 'keywords': 'general,projection,create location',
                 'description': 'Prints or modifies GRASS projection information '
-                               'files (in various co-ordinate system descriptions). '
+                               'files (in various coordinate system descriptions). '
                                'Can also be used to create new GRASS locations.',
                 'module': 'g.proj'
             }

@@ -92,7 +92,7 @@ def valid_additional_version_info_key(cand):
 
 
 def parse_additional_version_info(env_value):
-    """Parses key:value pairs which are seperated with pipes and returns them
+    """Parses key:value pairs which are separated with pipes and returns them
     as dictionary."""
     additional_info = {}
     # split at pipe |
@@ -107,7 +107,7 @@ def parse_additional_version_info(env_value):
 
 def find_additional_version_info():
     """If there is a ACTINIA_ADDITIONAL_VERSION_INFO environment variable,
-    we'll try to parse its value and retun more information that will eventually
+    we'll try to parse its value and return more information that will eventually
     be added to the version output"""
     env_name = "ACTINIA_ADDITIONAL_VERSION_INFO"
     if env_name in os.environ:

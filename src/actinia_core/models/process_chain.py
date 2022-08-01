@@ -209,7 +209,7 @@ class InputParameter(IOParameterBase):
                 'description': 'Resolution of output raster map (use with option '
                                '"resolution": "value") in units of the target '
                                'coordinate reference system, not in map units. Must '
-                               'be convertable to float.',
+                               'be convertible to float.',
                 'example': {
                             "import_descr": {
                               "source": "https://example.tiff",
@@ -303,7 +303,7 @@ class OutputParameter(IOParameterBase):
                 'type': 'string',
                 'description': 'Format of the metadata file. Only STAC is supported'
                                'The STAC item builder works just on raster export file.'
-                               'These files are accesible through a STAC Catalog'
+                               'These files are accessible through a STAC Catalog'
                                'and each export is stored as STAC Item',
                 'enum': ['STAC']
             },
