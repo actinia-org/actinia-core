@@ -598,7 +598,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution(self):
         """
-        Test raster import by setting resampling and resolution, with http response 200
+        Test raster import with defined resampling method and defined resolution method, with http response 200
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
@@ -635,7 +635,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resamp(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         resample value not in options
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -648,7 +648,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         resolution value not in options
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -661,7 +661,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_val_missing(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         key "value" missing when resolution set to value
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -674,7 +674,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_val_not_float(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         value for "value" not convertible to float
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -687,7 +687,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol_not_set(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         resolution not set when value set
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -700,7 +700,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol_not_val(self):
         """
-        Test raster import by setting resampling and resolution, with http response 400,
+        Test raster import with defined resampling method and defined resolution method, with http response 400,
         resolution not set to "value" when value set
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
