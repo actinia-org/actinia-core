@@ -552,7 +552,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
     def test_stac_import(self):
         """
-            Code test STAC collection importation with http reponse 200
+            Test of STAC collection import with http response 200
         """
 
         endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
@@ -567,8 +567,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
     def test_stac_source_error_import(self):
         """
-            Code test STAC collection importation with http reponse 400,
-            raising error on misstructured, undefined, or missing source ID.
+            Test of STAC collection import with http response 400,
+            raising error on wrongly structured, undefined, or missing source ID.
         """
         endpoint = URL_PREFIX + '/locations/nc_spm_08/processing_async_export'
         rv = self.server.post(endpoint,
@@ -582,7 +582,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     @unittest.skipIf(no_stac_plugin, "STAC Plugin not installed")
     def test_stac_source_filter_error_import(self):
         """
-            Code test STAC collection importation with http reponse 400,
+            Test of STAC collection import with http response 400,
             raising error on filtering parameter such as wrong temporal interval
             or wrong Spatial coordinates in bbox.
 
@@ -598,7 +598,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 200
+        Test raster import by setting resampling and resolution, with http response 200
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
@@ -610,8 +610,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_info(self):
         """
-        Code test resampling and resolution values for raster import with set
-        resampling and resolution
+        Test resampling and resolution values for raster import by retrieving
+        resampling and resolution info
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
@@ -635,7 +635,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resamp(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
+        Test raster import by setting resampling and resolution, with http response 400,
         resample value not in options
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -648,7 +648,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
+        Test raster import by setting resampling and resolution, with http response 400,
         resolution value not in options
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -661,7 +661,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_val_missing(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
+        Test raster import by setting resampling and resolution, with http response 400,
         key "value" missing when resolution set to value
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -674,7 +674,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_val_not_float(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
+        Test raster import by setting resampling and resolution, with http response 400,
         value for "value" not convertible to float
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
@@ -687,8 +687,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol_not_set(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
-        resolution not set, when value set
+        Test raster import by setting resampling and resolution, with http response 400,
+        resolution not set when value set
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,
@@ -700,8 +700,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_resample_resolution_error_resol_not_val(self):
         """
-        Code test raster import with set resampling and resolution with http reponse 400,
-        resoltuion not set to "value", when value set
+        Test raster import by setting resampling and resolution, with http response 400,
+        resolution not set to "value" when value set
         """
         rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
                               headers=self.admin_auth_header,

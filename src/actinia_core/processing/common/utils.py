@@ -57,7 +57,7 @@ def try_import(actinia_module, actinia_class):
         imported_class = getattr(imported_module, actinia_class)
         return imported_class
     except ImportError as e:
-        # ModuleNotFoundError is a subclass and catched here as well.
+        # ModuleNotFoundError is a subclass and caught here as well.
         if (global_config.QUEUE_TYPE == "local"):
             e.msg += (" - No actinia_processing found but required "
                       + "for local queue!")

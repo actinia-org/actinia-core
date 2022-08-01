@@ -281,7 +281,7 @@ class ProcessChainConverter(object):
 
     def _collect_sentinel_scenes_bands(self, entries):
         """ Helper Method to collect all individual scenes and bands from
-            different importer modules used througout the process chain
+            different importer modules used throughout the process chain
         """
         scenes_bands = []
         # sort by source (scene ID) and bands
@@ -1275,7 +1275,7 @@ class ProcessChainConverter(object):
 
 
 def check_required_keys_for_download_process_chain(entry):
-    """Helper function to check if the requiered keys to create the download
+    """Helper function to check if the required keys to create the download
     process chain are set.
 
     Args:
