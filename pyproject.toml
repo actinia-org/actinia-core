@@ -10,7 +10,7 @@ readme = "README.md"
 authors = [{ name = "mundialis" }]
 license = { file = "LICENSE.txt" }
 classifiers = [
-    "License :: GPL 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
 ]
 keywords = ["processing", "earth observation", "grass gis"]
