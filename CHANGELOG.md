@@ -20,8 +20,29 @@ https://github.com/mundialis/actinia_core/compare/4.0.0...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+ 
+## [4.2.0] - 2022-08-03
+released from main
+### Added
+* Add option to shutdown worker when queue is empty by @mmacata in https://github.com/mundialis/actinia_core/pull/358
+* Add dependencies for actinia-parallel-plugin by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/356
+* Allow users with role user to create and delete own mapsets by @juleshaas in https://github.com/mundialis/actinia_core/pull/365
 
- ## [4.1.0] - 2022-07-20
+### Changed
+* Always use local queue for sync requests by @mmacata in https://github.com/mundialis/actinia_core/pull/361
+* Actinia docs: Update tutorial for running S-2 NDVI example by @griembauer in https://github.com/mundialis/actinia_core/pull/363
+
+### Fixed
+* Sync config by @mmacata in https://github.com/mundialis/actinia_core/pull/360
+* docs: replace broken api docs links by @metzm in https://github.com/mundialis/actinia_core/pull/362
+* actinia tests: fix test descriptions by @neteler in https://github.com/mundialis/actinia_core/pull/371
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.1.0...4.2.0
+
+generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.2.0" -f target_commitish=main -q .body
+
+
+## [4.1.0] - 2022-07-20
 released from main
 ### Changed
 - Actinia Tutorials Update by @Momen-Mawad in https://github.com/mundialis/actinia_core/pull/350
