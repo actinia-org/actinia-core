@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "actinia-core"
-version = "4.1.0"
+version = "4.2.0"
 description = "Actinia Core is an open source REST API for scalable, distributed, high performance processing of geographical data that uses mainly GRASS GIS for computational tasks"
 readme = "README.md"
 authors = [{ name = "mundialis" }]
@@ -15,11 +15,7 @@ classifiers = [
 ]
 keywords = ["processing", "earth observation", "grass gis"]
 dependencies = [
-    "actinia-api @ https://github.com/mundialis/actinia-api/releases/download/3.2.0/actinia_api-3.2.0-py3-none-any.whl",
-    "actinia-module-plugin @ https://github.com/mundialis/actinia-module-plugin/releases/download/2.3.1/actinia_module_plugin.wsgi-2.3.1-py2.py3-none-any.whl",
-    "actinia-metadata-plugin @ https://github.com/mundialis/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
-    "actinia-satellite-plugin @ https://github.com/mundialis/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
-    "actinia-statistic-plugin @ https://github.com/mundialis/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
+    "actinia-api==3.2.0",
     "Flask==1.1.4",
     "click<8.0,>=5.1",
     "Jinja2<3.0,>=2.10.1",
@@ -61,8 +57,14 @@ dependencies = [
 requires-python = ">=3.8"
 
 [project.optional-dependencies]
-plugins = []
+plugins = [
+    # "actinia-module-plugin @ https://github.com/mundialis/actinia-module-plugin/releases/download/2.3.1/actinia_module_plugin.wsgi-2.3.1-py2.py3-none-any.whl",
+    # "actinia-metadata-plugin @ https://github.com/mundialis/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
+    # "actinia-satellite-plugin @ https://github.com/mundialis/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
+    # "actinia-statistic-plugin @ https://github.com/mundialis/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
+]
 
 [project.urls]
 Homepage = "https://github.com/mundialis/actinia_core"
 Tutorial = "https://mundialis.github.io/actinia_core"
+API_Docs = "https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json"
