@@ -170,7 +170,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
     def test_location_creation_and_deletion_as_guest(self):
 
-        # ERROR: Try to create a location as user
+        # ERROR: Try to create a location as guest
         rv = self.server.post(URL_PREFIX + '/locations/test_location_user',
                               data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
@@ -179,7 +179,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
-        # ERROR: Delete should fail since the user is not authorized
+        # ERROR: Delete should fail since the guest user is not authorized
         rv = self.server.delete(URL_PREFIX + '/locations/test_location_user',
                                 headers=self.guest_auth_header)
         print(rv.data)
