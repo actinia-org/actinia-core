@@ -42,7 +42,7 @@ from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator
 )
-from actinia_core.rest.base.user_auth import check_admin_role
+from actinia_core.rest.base.user_auth import check_user_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
@@ -52,7 +52,7 @@ from actinia_core.processing.common.location_management import \
      read_current_region, create_location
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
@@ -138,19 +138,19 @@ class LocationManagementResourceUser(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
 
-class LocationManagementResourceAdmin(ResourceBase):
+class LocationManagementResourceAdminUser(ResourceBase):
     """This class manages the creation, deletion and modification of locations
 
-    This is only allowed for administrators
+    This is only allowed for administrators and users
     """
     decorators = [log_api_call, check_user_permissions,
-                  check_admin_role, auth.login_required]
+                  check_user_role, auth.login_required]
 
     def __init__(self):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("delete", location_management.delete_admin_doc))
+    @swagger.doc(check_endpoint("delete", location_management.delete_user_doc))
     def delete(self, location_name):
         """Delete an existing location and everything inside from the user database.
         """
@@ -178,7 +178,7 @@ class LocationManagementResourceAdmin(ResourceBase):
             message="location %s does not exists" % location_name)), 400)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("post", location_management.post_admin_doc))
+    @swagger.doc(check_endpoint("post", location_management.post_user_doc))
     def post(self, location_name):
         """Create a new location based on EPSG code in the user database.
         """

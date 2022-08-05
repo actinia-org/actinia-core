@@ -32,8 +32,8 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -117,18 +117,71 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
     def test_location_creation_and_deletion_as_user(self):
 
+        # Delete a potentially existing location
+        rv = self.server.delete(URL_PREFIX + '/locations/test_location',
+                                headers=self.user_auth_header)
+
+        # Create new location as user
+        rv = self.server.post(URL_PREFIX + '/locations/test_location',
+                              data=json_dumps({"epsg": "4326"}),
+                              content_type="application/json",
+                              headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code, 200,
+            "Location creation by user: HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(
+            rv.mimetype, "application/json",
+            "Location creation by user: Wrong mimetype %s" % rv.mimetype)
+
+        # ERROR: Try to create a location as user that already exists
+        rv = self.server.post(
+            URL_PREFIX + '/locations/test_location',
+            data=json_dumps({"epsg": "4326"}),
+            content_type="application/json",
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code, 400,
+            "Location recreation by user: HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(
+            rv.mimetype, "application/json",
+            "Location recreation by user: Wrong mimetype %s" % rv.mimetype)
+
+        # Delete location
+        rv = self.server.delete(
+            URL_PREFIX + '/locations/test_location',
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code, 200,
+            "Location deletion by user: HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(
+            rv.mimetype, "application/json",
+            "Location deletion by user: Wrong mimetype %s" % rv.mimetype)
+
+        # ERROR: Delete should fail, since location does not exists
+        rv = self.server.delete(
+            URL_PREFIX + '/locations/test_location',
+            headers=self.user_auth_header)
+        self.assertEqual(
+            rv.status_code, 400,
+            "Location redeletion by user: HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(
+            rv.mimetype, "application/json",
+            "Location redeletion by user: Wrong mimetype %s" % rv.mimetype)
+
+    def test_location_creation_and_deletion_as_guest(self):
+
         # ERROR: Try to create a location as user
         rv = self.server.post(URL_PREFIX + '/locations/test_location_user',
                               data=json_dumps({"epsg": "4326"}),
                               content_type="application/json",
-                              headers=self.user_auth_header)
+                              headers=self.guest_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
         # ERROR: Delete should fail since the user is not authorized
         rv = self.server.delete(URL_PREFIX + '/locations/test_location_user',
-                                headers=self.user_auth_header)
+                                headers=self.guest_auth_header)
         print(rv.data)
         self.assertEqual(rv.status_code, 401, "HTML status code is wrong %i" % rv.status_code)
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
