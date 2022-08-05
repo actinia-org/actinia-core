@@ -33,7 +33,8 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
 from actinia_core.rest.location_management import \
     ListLocationsResource, LocationManagementResourceUser
-from actinia_core.rest.location_management import LocationManagementResourceAdmin
+from actinia_core.rest.location_management import \
+    LocationManagementResourceAdminUser
 from actinia_core.rest.mapsets import AllMapsetsListingResourceAdmin
 from actinia_core.rest.mapset_management import \
     ListMapsetsResource, MapsetManagementResourceUser
@@ -94,7 +95,7 @@ def create_core_endpoints():
     flask_api.add_resource(ListLocationsResource, '/locations')
     flask_api.add_resource(LocationManagementResourceUser,
                            '/locations/<string:location_name>/info')
-    flask_api.add_resource(LocationManagementResourceAdmin,
+    flask_api.add_resource(LocationManagementResourceAdminUser,
                            '/locations/<string:location_name>')
     # Mapset management
     flask_api.add_resource(ListMapsetsResource,
