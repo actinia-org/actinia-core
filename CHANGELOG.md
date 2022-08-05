@@ -21,6 +21,14 @@ https://github.com/mundialis/actinia_core/compare/4.0.0...main
 released from <branch>\
 ...
  
+## [4.2.1] - 2022-08-05
+released from main
+### Fixed
+* Allow users to create and delete mapsets by @juleshaas and @anikaweinmann in https://github.com/mundialis/actinia_core/pull/374
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.0...4.2.1
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.2.1" -f target_commitish=main -q .body" 
+ 
 ## [4.2.0] - 2022-08-03
 released from main
 ### Added
