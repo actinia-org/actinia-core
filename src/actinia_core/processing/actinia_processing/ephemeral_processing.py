@@ -40,6 +40,7 @@ import uuid
 from flask import json
 from requests.auth import HTTPBasicAuth
 
+from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.grass_init import GrassInitializer
 from actinia_core.core.messages_logger import MessageLogger
@@ -126,7 +127,11 @@ class EphemeralProcessing(object):
         # rdc = ResourceDataContainer()
 
         self.rdc = rdc
-        self.config = self.rdc.config
+        if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG_PATH):
+            self.config = global_config.read(DEFAULT_CONFIG_PATH)
+        else:
+            self.config = self.rdc.config
+
         self.data = self.rdc.user_data
         self.grass_temp_database = self.config.GRASS_TMP_DATABASE
 
