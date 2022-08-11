@@ -4,18 +4,30 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "actinia-core"
-version = "4.2.0"
+version = "4.1.99"
 description = "Actinia Core is an open source REST API for scalable, distributed, high performance processing of geographical data that uses mainly GRASS GIS for computational tasks"
 readme = "README.md"
-authors = [{ name = "mundialis" }]
-license = { file = "LICENSE.txt" }
+authors = [
+    { name = "Anika Weinmann"},
+    { name = "Carmen Tawalika"},
+    { name = "Guido Riembauer"},
+    { name = "Jorge A. Herrera Maldonado"},
+    { name = "Julia Haas"},
+    { name = "Marc Jansen"},
+    { name = "Markus Metz"},
+    { name = "Markus Neteler"},
+    { name = "Momen Mawad"},
+    { name = "Sören Gebbert"}
+    { name = "and more"}
+]
 classifiers = [
     "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
     "Programming Language :: Python :: 3",
 ]
+requires-python = ">=3.8"
 keywords = ["processing", "earth observation", "grass gis"]
 dependencies = [
-    "actinia-api==3.3.0",
+    "actinia-api==3.3.1",
     "Flask==1.1.4",
     "click<8.0,>=5.1",
     "Jinja2<3.0,>=2.10.1",
@@ -31,7 +43,7 @@ dependencies = [
     "google-cloud-bigquery<=3.0.0",
     "google-cloud-storage>=1.6.0",
     "gunicorn>=19.9.0",
-    "joblib==0.15.1",
+    "joblib==1.1.0",
     "MarkupSafe==2.0.1",
     "matplotlib==3.3.4",
     "passlib>=1.7.1",
@@ -54,7 +66,6 @@ dependencies = [
     "sentinelsat",
     "tqdm",
 ]
-requires-python = ">=3.8"
 
 [project.optional-dependencies]
 plugins = [
@@ -63,6 +74,12 @@ plugins = [
     # "actinia-satellite-plugin @ https://github.com/mundialis/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
     # "actinia-statistic-plugin @ https://github.com/mundialis/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
 ]
+
+[project.scripts]
+actinia-user = "actinia_core.cli.actinia_user:main"
+actinia-worker = "actinia_core.cli.rq_custom_worker:main"
+actinia-server = "actinia_core.cli.actinia_server:main"
+webhook-server = "actinia_core.cli.webhook_server:main"
 
 [project.urls]
 Homepage = "https://github.com/mundialis/actinia_core"
