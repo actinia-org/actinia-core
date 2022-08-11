@@ -1,20 +1,20 @@
 name: Upload Python Package
 
-on:
-  push:
-    branches: [ pypi ]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [ pypi ]
-
 # on:
 #   release:
 #     types: [published]
 
+on:
+  push:
+    branches: [ pypi ]
+  pull_request:
+    branches: [ pypi ]
+
 jobs:
+
   deploy:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - uses: actions/checkout@v2
