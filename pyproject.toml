@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "actinia-core"
-version = "4.1.99"
+version = "4.1.89"
 description = "Actinia Core is an open source REST API for scalable, distributed, high performance processing of geographical data that uses mainly GRASS GIS for computational tasks"
 readme = "README.md"
 authors = [
@@ -17,7 +17,7 @@ authors = [
     { name = "Markus Metz"},
     { name = "Markus Neteler"},
     { name = "Momen Mawad"},
-    { name = "Sören Gebbert"}
+    { name = "Sören Gebbert"},
     { name = "and more"}
 ]
 classifiers = [
