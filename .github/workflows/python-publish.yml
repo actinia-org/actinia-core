@@ -8,7 +8,7 @@ on:
   push:
     branches: [ pypi ]
   pull_request:
-    branches: [ pypi ]
+    branches: [ main ]
 
 jobs:
   deploy:
