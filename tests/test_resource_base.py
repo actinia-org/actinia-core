@@ -28,13 +28,15 @@ import atexit
 import os
 import signal
 import time
-from actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
+from actinia_core.testsuite import ActiniaTestCaseBase
 from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 # Create endpoints
@@ -52,18 +54,18 @@ if "ACTINIA_SERVER_TEST" in os.environ:
 if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
     custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
 
+base_url_data = "https://apps.mundialis.de/actinia_test_datasets"
 additional_external_data = {
-    "rio_json": "https://apps.mundialis.de/actinia_test_datasets/rio.json",
-    "brazil_json": "https://apps.mundialis.de/actinia_test_datasets/brazil_polygon.json",
-    "elev_ned_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/elev_ned_30m.tif",
-    "elev_ned_30m_nope_tif": "https://apps.mundialis.de/actinia_test_datasets/elev_ned_30m_nope.tif",
-    "polygon_gml": "https://apps.mundialis.de/actinia_test_datasets/polygon.gml",
-    "census_wake2000_gml": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.gml",
-    "census_wake2000_zip": "https://apps.mundialis.de/actinia_test_datasets/census_wake2000.zip",
-    "geology_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.tif",
-    "geology_30m_zip": "https://apps.mundialis.de/actinia_test_datasets/geology_30m.zip",
-    "pointInBonn": "https://apps.mundialis.de/actinia_test_datasets/pointInBonn.geojson",
-    "mangkawuk_srtmgl1_v003_30m_tif": "https://apps.mundialis.de/actinia_test_datasets/mangkawuk_srtmgl1_v003_30m.tiff"
+    "rio_json": f"{base_url_data}/rio.json",
+    "brazil_json": f"{base_url_data}/brazil_polygon.json",
+    "elev_ned_30m_tif": f"{base_url_data}/elev_ned_30m.tif",
+    "elev_ned_30m_nope_tif": f"{base_url_data}/elev_ned_30m_nope.tif",
+    "polygon_gml": f"{base_url_data}/polygon.gml",
+    "census_wake2000_gml": f"{base_url_data}/census_wake2000.gml",
+    "census_wake2000_zip": f"{base_url_data}/census_wake2000.zip",
+    "geology_30m_tif": f"{base_url_data}/geology_30m.tif",
+    "geology_30m_zip": f"{base_url_data}/geology_30m.zip",
+    "pointInBonn": f"{base_url_data}/pointInBonn.geojson",
 }
 
 
@@ -87,9 +89,12 @@ def setup_environment():
 
     if server_test is False and custom_actinia_cfg is False:
         # Start the redis server for user and logging management
-        redis_pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server",
-                              "common/redis.conf",
-                              "--port %i" % global_config.REDIS_SERVER_PORT)
+        redis_pid = os.spawnl(
+            os.P_NOWAIT,
+            "/usr/bin/redis-server",
+            "common/redis.conf",
+            "--port %i" % global_config.REDIS_SERVER_PORT,
+        )
         time.sleep(1)
 
     if server_test is False and custom_actinia_cfg is not False:

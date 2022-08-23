@@ -6,7 +6,7 @@
 # F821 undefined name 'QFile'
 # W605 invalid escape sequence '\<'
 
-max-line-length = 88
+# max-line-length = 88
 exclude =
     .git,
     __pycache__,
@@ -36,7 +36,8 @@ per-file-ignores =
     ./src/actinia_core/core/interim_results.py: W605
     ./src/actinia_core/core/list_grass_modules.py: F821
     ./src/actinia_core/core/common/aws_sentinel_interface.py: E501
-    ./tests/*: E501, F401
+    ./tests/test_async_processing_import_export.py: F401
+    # ./tests/*: E501, F401
     # TODO: check imports again when actinia_processing is moved
     ./src/actinia_core/rest/raster_export.py: E501
     ./src/actinia_core/processing/actinia_processing/ephemeral_with_export/raster_export.py: E501
