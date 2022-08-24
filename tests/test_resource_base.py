@@ -28,7 +28,7 @@ import atexit
 import os
 import signal
 import time
-from actinia_core.testsuite import ActiniaTestCaseBase
+from actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
@@ -66,6 +66,8 @@ additional_external_data = {
     "geology_30m_tif": f"{base_url_data}/geology_30m.tif",
     "geology_30m_zip": f"{base_url_data}/geology_30m.zip",
     "pointInBonn": f"{base_url_data}/pointInBonn.geojson",
+    "mangkawuk_srtmgl1_v003_30m_tif": f"{base_url_data}/mangkawuk_srtmgl1_v003"
+    "_30m.tiff",
 }
 
 

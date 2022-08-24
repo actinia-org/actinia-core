@@ -38,5 +38,6 @@ per-file-ignores =
     ./src/actinia_core/main.py: F401
     ./src/actinia_core/models/process_chain.py: W605
     ./tests/test_async_processing_import_export.py: F401
+    ./tests/test_resource_base.py: F401
     # TODO: check imports again when actinia_processing is moved
     ./src/actinia_core/rest/raster_export.py: E501
