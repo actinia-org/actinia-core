@@ -636,7 +636,7 @@ module_list = {
         "volume": {
             "r.volume": {
                 "keywords": "raster,volume,clumps",
-                "description": "Calculates the volume of data \"clumps\". "
+                "description": 'Calculates the volume of data "clumps". '
                 "Optionally produces a GRASS vector points map containing the "
                 "calculated centroids of these clumps.",
                 "module": "r.volume",

@@ -56,7 +56,6 @@ strds_data = "LST_Day_monthly"
 
 
 class STRDSTestCase(ActiniaResourceTestCaseBase):
-
     def test_list_strds(self):
         rv = self.server.get(strds_url, headers=self.user_auth_header)
         print(rv.data)

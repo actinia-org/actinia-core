@@ -224,7 +224,7 @@ class LocationManagementResourceAdminUser(ResourceBase):
                             SimpleResponseModel(
                                 status="error",
                                 message="Unable to delete location "
-                                        f"{location_name} Exception {e}",
+                                f"{location_name} Exception {e}",
                             )
                         ),
                         500,

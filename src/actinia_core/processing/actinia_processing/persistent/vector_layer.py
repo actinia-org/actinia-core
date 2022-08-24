@@ -29,8 +29,8 @@ from shutil import rmtree
 
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
-        PersistentProcessing,
-    )
+    PersistentProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"

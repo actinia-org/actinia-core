@@ -263,7 +263,7 @@ class PersistentGetMapsetLock(PersistentProcessing):
                 f"Unable to get lock status of mapset <{self.mapset_name}>"
                 f" in location <{self.location_name}>: Mapset does not "
                 "exist"
-                )
+            )
         else:
             self.module_results = self.lock_interface.get(
                 self.target_mapset_lock_id

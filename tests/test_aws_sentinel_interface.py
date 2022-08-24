@@ -117,8 +117,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
         self.assertTrue(
             "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_"
-            "20151207T003302"
-            in result[0]["product_id"]
+            "20151207T003302" in result[0]["product_id"]
         )
         self.validate_result(result, ["B12", "B08"])
 
@@ -141,8 +140,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
         self.assertTrue(
             "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207"
-            "T003302_20151207T003302"
-            in result[0]["product_id"]
+            "T003302_20151207T003302" in result[0]["product_id"]
         )
 
         for tile in result[0]["tiles"]:
@@ -235,8 +233,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
 
         self.assertTrue(
             "S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030"
-            "T235752_20161030T235752"
-            in result[0]["product_id"]
+            "T235752_20161030T235752" in result[0]["product_id"]
         )
         self.validate_result(result, ["B12", "B08"])
 
@@ -265,8 +262,7 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         )
         self.assertTrue(
             "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207T003302_"
-            "20151207T003302"
-            in result[1]["product_id"]
+            "20151207T003302" in result[1]["product_id"]
         )
         self.assertTrue(
             "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931"

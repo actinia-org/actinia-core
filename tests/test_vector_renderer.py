@@ -44,7 +44,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
-
     def test_vectorlayer_image_no_args(self):
         rv = self.server.get(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/vector_layers"

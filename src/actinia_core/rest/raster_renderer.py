@@ -152,7 +152,7 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             required=True,
             type=str,
             help="The name of the raster layer associated with the color "
-                 "green",
+            "green",
         )
         parser.add_argument(
             "blue",

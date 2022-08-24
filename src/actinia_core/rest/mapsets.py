@@ -121,7 +121,7 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                             SimpleResponseModel(
                                 status="error",
                                 message="Unable to list locked mapsets: "
-                                        f"Exception {e}",
+                                f"Exception {e}",
                             )
                         ),
                         500,

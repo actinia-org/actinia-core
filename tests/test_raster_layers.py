@@ -42,7 +42,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
-
     def create_raster_layer(self, mapset_name, raster_name):
         # Remove potentially existing raster layer
         rv = self.server.delete(

@@ -463,7 +463,7 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 '  File "/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/'
                 "site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-"
                 'py3.5.egg/actinia_core/resources/ephemeral_processing.py", '
-                'line 1063, in _run_executable\n    raise AsyncProcessError('
+                "line 1063, in _run_executable\n    raise AsyncProcessError("
                 '"Error while running executable <%s>" % process.executable)\n'
             ],
             "type": "<class 'actinia_core.core.common.exceptions."

@@ -45,7 +45,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
-
     def test_raster_layer_get_colors(self):
         rv = self.server.get(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"

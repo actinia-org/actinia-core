@@ -43,7 +43,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLegendTestCase(ActiniaResourceTestCaseBase):
-
     def test_raster_legend_no_args(self):
         rv = self.server.get(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"

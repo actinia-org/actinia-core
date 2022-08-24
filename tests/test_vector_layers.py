@@ -42,7 +42,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class VectorLayersTestCase(ActiniaResourceTestCaseBase):
-
     def test_list_vector_layers(self):
         rv = self.server.get(
             URL_PREFIX

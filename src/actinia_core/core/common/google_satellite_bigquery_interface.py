@@ -784,7 +784,7 @@ class GoogleSatelliteBigQueryInterface(object):
                 "SELECT granule_id,product_id,sensing_Time,datatake_identifier"
                 ",base_url FROM `bigquery-public-data.cloud_storage_geo_index"
                 ".sentinel_2_index` "
-                "WHERE product_id IN (\"%s\");" % "\",\"".join(product_ids)
+                'WHERE product_id IN ("%s");' % '","'.join(product_ids)
             )
 
             rows = list(self.bigquery_client.query(query))  # API request

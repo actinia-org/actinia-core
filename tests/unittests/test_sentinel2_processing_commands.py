@@ -82,7 +82,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
         gsqi = Sentinel2Processing(
             config=global_config,
             product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_"
-                       "20170212T104138",
+            "20170212T104138",
             query_result=None,
             bands=["B12", "B08"],
             temp_file_path=self.tempdir,
@@ -120,7 +120,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
     def test_download_import_commands_noquery(self):
         gsqi = Sentinel2Processing(
             product_id="S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_"
-                       "20170212T104138",
+            "20170212T104138",
             bands=["B12", "B08"],
             download_cache=self.tempdir,
             send_resource_update=update_dummy,
