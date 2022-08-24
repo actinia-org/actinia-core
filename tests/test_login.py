@@ -27,7 +27,6 @@ Tests: Actinia user test case
 from flask.json import loads as json_load
 from werkzeug.datastructures import Headers
 import unittest
-import pytest
 import base64
 
 try:
@@ -98,7 +97,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
 
         self.assertEqual(users, "guest", "Wrong user listed")
 
-    @pytest.mark.dev
     def test_create_get_delete_user(self):
         """
         Create a new user, access it as admin and as normal user and delete it

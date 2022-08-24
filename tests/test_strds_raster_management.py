@@ -211,7 +211,7 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         # Check strds
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/%(location)s/mapsets/{new_mapset}/strds/"
+            f"{URL_PREFIX}/locations/{location}/mapsets/{new_mapset}/strds/"
             "test_strds_register",
             headers=self.admin_auth_header,
         )
