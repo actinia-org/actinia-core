@@ -30,33 +30,42 @@ TODO: Tests required
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import swagger
 import pickle
-from actinia_api.swagger2.actinia_core.apidocs import \
-    resource_storage_management
+from actinia_api.swagger2.actinia_core.apidocs import (
+    resource_storage_management,
+)
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.processing.common.resource_storage_management \
-     import start_resource_storage_size, start_resource_storage_remove
+from actinia_core.processing.common.resource_storage_management import (
+    start_resource_storage_size,
+    start_resource_storage_remove,
+)
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class SyncResourceStorageResource(ResourceBase):
 
-    decorators = [log_api_call, check_user_permissions,
-                  check_admin_role, auth.login_required]
+    decorators = [
+        log_api_call,
+        check_user_permissions,
+        check_admin_role,
+        auth.login_required,
+    ]
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", resource_storage_management.get_doc))
@@ -66,8 +75,11 @@ class SyncResourceStorageResource(ResourceBase):
 
         if rdc:
             enqueue_job(
-                self.job_timeout, start_resource_storage_size, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                start_resource_storage_size,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -75,16 +87,20 @@ class SyncResourceStorageResource(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "delete", resource_storage_management.delete_doc))
+    @swagger.doc(
+        check_endpoint("delete", resource_storage_management.delete_doc)
+    )
     def delete(self):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
             enqueue_job(
-                self.job_timeout, start_resource_storage_remove, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                start_resource_storage_remove,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

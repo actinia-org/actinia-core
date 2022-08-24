@@ -64,13 +64,14 @@ class ProgressInfoModel(Schema):
         "sub_step": {
             "type": "integer",
             "format": "int64",
-            "description": "The current sub step of the current processing step",
+            "description": "The current sub step of the current processing "
+            "step",
         },
         "num_of_sub_steps": {
             "type": "integer",
             "format": "int32",
-            "description": "The total number of sub steps of the current processing "
-            "step",
+            "description": "The total number of sub steps of the current "
+            "processing step",
         },
     }
     required = ["step", "num_of_steps"]
@@ -82,12 +83,13 @@ class ProcessLogModel(Schema):
     """This class defines the model for Unix process information.
 
     Each time a Unix process
-    is invoked, this model must be used to inform the user of the return process
-    state. Each process has parameters, stdout/stderr output and a return value.
-    This model is not designed to inform about running processes, but about
-    finished processes. The return_code of 0 indicates that it ran successfully.
-    A negative value -N indicates that the child was terminated by signal N
-    (POSIX only; see also https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
+    is invoked, this model must be used to inform the user of the return
+    process state. Each process has parameters, stdout/stderr output and a
+    return value. This model is not designed to inform about running processes,
+    but about finished processes. The return_code of 0 indicates that it ran
+    successfully. A negative value -N indicates that the child was terminated
+    by signal N (POSIX only; see also
+    https://en.wikipedia.org/wiki/Signal_(IPC)#Default_action).
     """
 
     type = "object"
@@ -109,7 +111,8 @@ class ProcessLogModel(Schema):
         "stderr": {
             "type": "array",
             "items": {"type": "string"},
-            "description": "The stderr output of the executable as list of strings",
+            "description": "The stderr output of the executable as list of "
+            "strings",
         },
         "return_code": {
             "type": "number",
@@ -154,8 +157,8 @@ class UrlModel(Schema):
         "resources": {
             "type": "array",
             "items": {"type": "string"},
-            "description": "A list of URLs to generated resources, that may be GeoTiff "
-            "files, vector files, ASCII files or png images",
+            "description": "A list of URLs to generated resources, that may "
+            "be GeoTiff files, vector files, ASCII files or png images",
         },
     }
     required = ["status", "resources"]
@@ -170,8 +173,9 @@ class UrlModel(Schema):
 
 
 class SimpleResponseModel(Schema):
-    """Response schema that is used in cases that no asynchronous run was performed and the
-    generated information is very simple.
+    """
+    Response schema that is used in cases that no asynchronous run was
+    performed and the generated information is very simple.
 
     """
 
@@ -179,19 +183,22 @@ class SimpleResponseModel(Schema):
     properties = {
         "status": {
             "type": "string",
-            "description": "The status of the resource, values: accepted, running, "
-            "finished, terminated, error",
+            "description": "The status of the resource, values: accepted, "
+            "running, finished, terminated, error",
         },
         "message": {
             "type": "string",
-            "description": "A simple message to describes the status of the resource",
+            "description": "A simple message to describes the status of the "
+            "resource",
         },
     }
     required = ["status", "message"]
 
 
 class MapsetListResponseModel(Schema):
-    """Response schema that is used to list all mapsets available to the user."""
+    """
+    Response schema that is used to list all mapsets available to the user.
+    """
 
     type = "object"
     properties = {
@@ -234,7 +241,8 @@ class LockedMapsetListResponseModel(Schema):
         },
         "message": {
             "type": "string",
-            "description": "A simple message to describes the status of the resource",
+            "description": "A simple message to describes the status of the "
+            "resource",
         },
     }
     required = ["status", "locked_mapsets_list", "message"]
@@ -282,8 +290,9 @@ class ApiInfoModel(Schema):
 
 
 class ExceptionTracebackModel(Schema):
-    """Response schema that contains python3 exception information of the called endpoint
-    in case an exception was raised.
+    """
+    Response schema that contains python3 exception information of the called
+    endpoint in case an exception was raised.
 
     This information is required to debug the REST API.
     """
@@ -341,23 +350,26 @@ class ProcessingResponseModel(Schema):
         "process_chain_list": {
             "type": "array",
             "items": GrassModule,
-            "description": "The list of GRASS modules that were used in the processing",
+            "description": "The list of GRASS modules that were used in the "
+            "processing",
         },
         "process_results": {
             "type": "string",
-            "description": "An arbitrary class that stores the processing results",
+            "description": "An arbitrary class that stores the processing "
+            "results",
         },
         "progress": ProgressInfoModel,
         "message": {
             "type": "string",
-            "description": "Message for the user, maybe status, finished or error "
-            "message",
+            "description": "Message for the user, maybe status, finished or "
+            "error message",
         },
         "exception": ExceptionTracebackModel,
         "accept_timestamp": {
             "type": "number",
             "format": "double",
-            "description": "The acceptance timestamp in seconds of the response",
+            "description": "The acceptance timestamp in seconds of the "
+            "response",
         },
         "accept_datetime": {
             "type": "string",
@@ -376,8 +388,8 @@ class ProcessingResponseModel(Schema):
         },
         "datetime": {
             "type": "string",
-            "description": "The current timestamp of the response in human readable "
-            "format",
+            "description": "The current timestamp of the response in human "
+            "readable format",
         },
         "http_code": {
             "type": "number",
@@ -417,15 +429,16 @@ class ProcessingResponseModel(Schema):
         "timestamp": 1495658241.608716,
         "urls": {
             "resources": [],
-            "status": f"http://localhost{URL_PREFIX}/resources/admin/resource_id-"
-            "2be8cafe-b451-46a0-be15-f61d95c5efa1",
+            "status": f"http://localhost{URL_PREFIX}/resources/admin/"
+            "resource_id-2be8cafe-b451-46a0-be15-f61d95c5efa1",
         },
         "user_id": "admin",
     }
 
 
 class ProcessingErrorResponseModel(ProcessingResponseModel):
-    """Response schema that returns error messages from a failed process execution
+    """
+    Response schema that returns error messages from a failed process execution
     that includes debug information (python traceback) and process logs.
     """
 
@@ -439,24 +452,26 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
             "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
-            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/mapsets/"
-            "PERMANENT/info",
+            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+            "mapsets/PERMANENT/info",
         },
         "datetime": "2018-05-06 22:02:14.398927",
         "exception": {
-            "message": "AsyncProcessError:  Error while running executable <g.region>",
+            "message": "AsyncProcessError:  Error while running executable "
+            "<g.region>",
             "traceback": [
                 '  File "/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/'
-                "site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-py3.5.egg/"
-                'actinia_core/resources/ephemeral_processing.py", line 1063, in '
-                '_run_executable\n    raise AsyncProcessError("Error while running '
-                'executable <%s>" % process.executable)\n'
+                "site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-"
+                'py3.5.egg/actinia_core/resources/ephemeral_processing.py", '
+                'line 1063, in _run_executable\n    raise AsyncProcessError('
+                '"Error while running executable <%s>" % process.executable)\n'
             ],
             "type": "<class 'actinia_core.core.common.exceptions."
             "AsyncProcessError'>",
         },
         "http_code": 400,
-        "message": "AsyncProcessError:  Error while running executable <g.region>",
+        "message": "AsyncProcessError:  Error while running executable "
+        "<g.region>",
         "process_chain_list": [
             {
                 "1": {"flags": "ug3", "module": "g.region"},
@@ -471,8 +486,8 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 "run_time": 0.05020904541015625,
                 "stderr": [
                     "ERROR: MAPSET PERMANE not found at /home/soeren/actinia/"
-                    "workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba0b8b/"
-                    "nc_spm_08",
+                    "workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba"
+                    "0b8b/nc_spm_08",
                     "",
                 ],
                 "stdout": "",
@@ -485,8 +500,8 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
         "timestamp": 1525636934.3989098,
         "urls": {
             "resources": [],
-            "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
-            "79608249-521c-4a98-9e1f-9201f693870b",
+            "status": f"http://localhost{URL_PREFIX}/resources/user/"
+            "resource_id-79608249-521c-4a98-9e1f-9201f693870b",
         },
         "user_id": "user",
     }
@@ -510,8 +525,8 @@ class StorageModel(Schema):
     """This class defines the model to inform about available storage
     that is used for caching or user specific resource storage.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel
-    derivative.
+    It is used as schema to define the *process_result* in a
+    ProcessingResponseModel derivative.
     """
 
     type = "object"
@@ -541,10 +556,11 @@ class StorageModel(Schema):
 
 
 class UnivarResultModel(Schema):
-    """Response schema for the result of univariate computations of raster layers.
+    """
+    Response schema for the result of univariate computations of raster layers.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel
-    derivative.
+    It is used as schema to define the *process_result* in a
+    ProcessingResponseModel derivative.
     """
 
     type = "object"
@@ -602,16 +618,17 @@ class UnivarResultModel(Schema):
             "format": "double",
         },
     }
-    # If a map is empty, r.univar will return nothing, hence no required variables
+    # If a map is empty, r.univar will return nothing, hence no required
+    # variables
     # required = ['name', 'cells', 'coeff_var', 'max', 'mean', 'mean_of_abs',
-    #            'min', 'n', 'null_cells', 'range', 'stddev', 'sum', 'variance']
+    #            'min','n', 'null_cells', 'range', 'stddev', 'sum', 'variance']
 
 
 class CategoricalStatisticsResultModel(Schema):
     """Response schema for the result of r.stats computations of raster layers.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel
-    derivative.
+    It is used as schema to define the *process_result* in a
+    ProcessingResponseModel derivative.
     """
 
     type = "object"
@@ -643,8 +660,8 @@ class CategoricalStatisticsResultModel(Schema):
 class RegionModel(Schema):
     """Output of GRASS GIS module g.region -gu3
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel
-    derivative.
+    It is used as schema to define the *process_result* in a
+    ProcessingResponseModel derivative.
 
     GRASS 7.8.dev (latlong_wgs84):~ > g.region -gu3
     projection=3
@@ -781,8 +798,8 @@ class RegionModel(Schema):
 class MapsetInfoModel(Schema):
     """Schema for projection and region information from a specific mapset.
 
-    It is used as schema to define the *process_result* in a ProcessingResponseModel
-    derivative.
+    It is used as schema to define the *process_result* in a
+    ProcessingResponseModel derivative.
     """
 
     type = "object"
@@ -796,9 +813,9 @@ class MapsetInfoModel(Schema):
     required = ["projection", "region"]
 
     example = {
-        "projection": 'PROJCS["NAD83(HARN) / North Carolina",GEOGCS["NAD83(HARN)",'
-        'DATUM["NAD83_High_Accuracy_Reference_Network",SPHEROID["GRS'
-        '1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],'
+        "projection": 'PROJCS["NAD83(HARN) / North Carolina",GEOGCS['
+        '"NAD83(HARN)",DATUM["NAD83_High_Accuracy_Reference_Network",'
+        'SPHEROID["GRS1980",6378137,298.257222101,AUTHORITY["EPSG","7019"]],'
         'TOWGS84[0,0,0,0,0,0,0],AUTHORITY["EPSG","6152"]],PRIMEM['
         '"Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",'
         '0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY['
@@ -839,8 +856,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
     """Response schema that includes projection and region information
     about a specific mapset as processing results.
 
-    This schema is a derivative of the ProcessingResponseModel that defines a different
-    *process_results* schema.
+    This schema is a derivative of the ProcessingResponseModel that defines a
+    different *process_results* schema.
     """
 
     type = "object"
@@ -921,8 +938,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "timestamp": 1525258400.392495,
         "urls": {
             "resources": [],
-            "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
-            "2222cdb7-06f5-460d-a38f-5745a3c3b518",
+            "status": f"http://localhost{URL_PREFIX}/resources/user/"
+            "resource_id-2222cdb7-06f5-460d-a38f-5745a3c3b518",
         },
         "user_id": "user",
     }
@@ -931,8 +948,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
 class RasterAreaStatsResponseModel(ProcessingResponseModel):
     """Response schema for a list of categorical statistics.
 
-    This schema is a derivative of the ProcessingResponseModel that defines a different
-    *process_results* schema.
+    This schema is a derivative of the ProcessingResponseModel that defines a
+    different *process_results* schema.
     """
 
     type = "object"
@@ -945,10 +962,11 @@ class RasterAreaStatsResponseModel(ProcessingResponseModel):
 
 
 class AreaUnivarResultModel(Schema):
-    """Response schema for the result of univariate computations of raster layers
-    based on a vector area.
+    """Response schema for the result of univariate computations of raster
+    layers based on a vector area.
 
-    It is used as schema to define the process_result in a  ProcessingResponseModel.
+    It is used as schema to define the process_result in a
+    ProcessingResponseModel.
 
     cat
     fid
@@ -974,8 +992,8 @@ class AreaUnivarResultModel(Schema):
         },
         "cat": {
             "type": "string",
-            "description": "The category id from the polygon of the vector map "
-            "layer used for area stats computation",
+            "description": "The category id from the polygon of the vector map"
+            " layer used for area stats computation",
         },
         "raster_number": {
             "type": "number",
@@ -1024,8 +1042,8 @@ class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
     """Response schema for resources that generate area univariate result lists
      as processing results.
 
-    This schema is a derivative of the ProcessingResponseModel that defines a different
-    *process_results* schema.
+    This schema is a derivative of the ProcessingResponseModel that defines a
+    different *process_results* schema.
     """
 
     type = "object"
@@ -1041,8 +1059,8 @@ class RasterAreaUnivarStatsResponseModel(ProcessingResponseModel):
 class StorageResponseModel(ProcessingResponseModel):
     """Response schema for storage management calls.
 
-    This schema is a derivative of the ProcessingResponseModel that defines a different
-    *process_results* schema.
+    This schema is a derivative of the ProcessingResponseModel that defines a
+    different *process_results* schema.
     """
 
     type = "object"
@@ -1097,8 +1115,8 @@ class StringListProcessingResultResponseModel(ProcessingResponseModel):
     """Response schema for resources that generate string list
      as processing results.
 
-    This schema is a derivative of the ProcessingResponseModel that defines a different
-    *process_results* schema.
+    This schema is a derivative of the ProcessingResponseModel that defines a
+    different *process_results* schema.
     """
 
     type = "object"
@@ -1189,14 +1207,16 @@ def create_response_from_model(
     This function is used to create almost all responses of Actinia Core
 
     Args:
-        response_model_class (class): The response model class that must be applied.
-                                      By default this is the ProcessingResponseModel
-                                      class, that is the base for all responses that
-                                      involve executables in Actinia Core. All classes
+        response_model_class (class): The response model class that must be
+                                      applied. By default this is the
+                                      ProcessingResponseModel class, that is
+                                      the base for all responses that involve
+                                      executables in Actinia Core. All classes
                                       that are accepted must be derived from
                                       ProcessingResponseModel and specify the
-                                      "process_results" field. By default a string
-                                      is required as data type for "process_results".
+                                      "process_results" field. By default a
+                                      string is required as data type for
+                                      "process_results".
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
         resource_id (str): The resource id
@@ -1204,7 +1224,8 @@ def create_response_from_model(
         process_log (dict, str, list): The log from the running GRASS module
         progress (ProgressInfoModel): Progress information
         results (dict): The results of processing steps as Python data types
-        message (str): The message from the running GRASS module or an error message
+        message (str): The message from the running GRASS module or an error
+                       message
         http_code (int): The HTTP status code
         status_url (str): The url of this request
         orig_time (time): The time of origin (seconds)
@@ -1306,13 +1327,13 @@ class UserInfoResponseModel(Schema):
             "properties": {
                 "cell_limit": {
                     "type": "string",
-                    "description": "The limit of number of raster cells the user "
-                    "is allowed to process",
+                    "description": "The limit of number of raster cells the "
+                    "user is allowed to process",
                 },
                 "process_num_limit": {
                     "type": "string",
-                    "description": "The limit of number of processes the user is "
-                    "allowed to integrate into one process chain",
+                    "description": "The limit of number of processes the user "
+                    "is allowed to integrate into one process chain",
                 },
                 "process_time_limit": {
                     "type": "string",
@@ -1321,8 +1342,8 @@ class UserInfoResponseModel(Schema):
                 "accessible_datasets": {
                     "type": "object",
                     "properties": {},
-                    "description": "The persistent GRASS GIS databases the user is "
-                    "allowed to use. Contains one object for each "
+                    "description": "The persistent GRASS GIS databases the "
+                    "user is allowed to use. Contains one object for each "
                     "location name with an array of strings containing "
                     "all allowed mapset names. See example for more "
                     "information.",
@@ -1330,7 +1351,8 @@ class UserInfoResponseModel(Schema):
                 "accessible_modules": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "description": "The GRASS GIS modules the user is allowed to use",
+                    "description": "The GRASS GIS modules the user is allowed"
+                    " to use",
                 },
             },
             "description": "The names of all users",
@@ -1371,8 +1393,8 @@ class UserInfoResponseModel(Schema):
 
 
 class LinkResponseModel(Schema):
-    """Response schema that is used in cases that no asynchronous run was performed and the
-    generated information is very simple.
+    """Response schema that is used in cases that no asynchronous run was
+    performed and the generated information is very simple.
 
     """
 
@@ -1380,12 +1402,13 @@ class LinkResponseModel(Schema):
     properties = {
         "status": {
             "type": "string",
-            "description": "The status of the resource, values: accepted, running, "
-            "finished, terminated, error",
+            "description": "The status of the resource, values: accepted, "
+            "running, finished, terminated, error",
         },
         "message": {
             "type": "string",
-            "description": "A simple message to describes the status of the resource",
+            "description": "A simple message to describes the status of the "
+            "resource",
         },
         "links": {"type": "list", "description": "A list of related links"},
     }

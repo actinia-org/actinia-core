@@ -57,8 +57,8 @@ class IOParameterBase(Schema):
     properties = {
         "param": {
             "type": "string",
-            "description": "The name of a GRASS GIS module parameter like *map* "
-            "or *elevation*. ",
+            "description": "The name of a GRASS GIS module parameter like "
+            "*map* or *elevation*. ",
         },
         "value": {
             "type": "string",
@@ -82,13 +82,13 @@ class IOParameterBase(Schema):
     }
     description = (
         "Parameter definition of a GRASS GIS module that should be executed "
-        "in the actinia environment. Parameters can be of type input or output. "
-        "A GRASS GIS module will be usually called like: "
+        "in the actinia environment. Parameters can be of type input or "
+        "output. A GRASS GIS module will be usually called like: "
         "<p>g.region raster=elevation30m@PERMANENT</p> "
         "The GRASS GIS module *g.region* parameter *raster* has the value "
         "*elevation30m@PERMANENT*. "
-        "This is reflected by the *param* and *value* properties that can specify "
-        "input and output "
+        "This is reflected by the *param* and *value* properties that can "
+        "specify input and output "
         "parameters."
     )
     required = ["param", "value"]
@@ -97,19 +97,20 @@ class IOParameterBase(Schema):
 
 class InputParameter(IOParameterBase):
     """
-    This is the import definition of a input parameter of a GRASS GIS module definition
+    This is the import definition of a input parameter of a GRASS GIS module
+    definition
     """
 
     properties = deepcopy(IOParameterBase.properties)
     properties["import_descr"] = {
         "type": "object",
-        "description": "Definition of sources to be imported as raster or vector "
-        "map layer.",
+        "description": "Definition of sources to be imported as raster or "
+        "vector map layer.",
         "properties": {
             "type": {
                 "type": "string",
-                "description": "The type of the input that should be downloaded "
-                "and imported. In case of raster or vector types "
+                "description": "The type of the input that should be "
+                "downloaded and imported. In case of raster or vector types "
                 "a download URL must be provided as source using "
                 "http, https or ftp protocols. In case of sentinel2 "
                 " scenes the scene name and the band must be provided. "
@@ -145,8 +146,8 @@ class InputParameter(IOParameterBase):
             },
             "sentinel_band": {
                 "type": "string",
-                "description": "The band of the sentinel2 scene that should be "
-                "imported",
+                "description": "The band of the sentinel2 scene that should be"
+                " imported",
                 "enum": [
                     "B01",
                     "B02",
@@ -165,8 +166,8 @@ class InputParameter(IOParameterBase):
             },
             "landsat_atcor": {
                 "type": "string",
-                "description": "The atmospheric correction that should be applied to "
-                "the landsat scene",
+                "description": "The atmospheric correction that should be "
+                "applied to the landsat scene",
                 "enum": [
                     "uncorrected",
                     "dos1",
@@ -178,13 +179,13 @@ class InputParameter(IOParameterBase):
             },
             "vector_layer": {
                 "type": "string",
-                "description": "The name of the layer that should be imported from "
-                "the vector file or postGIS database",
+                "description": "The name of the layer that should be imported "
+                "from the vector file or postGIS database",
             },
             "source": {
                 "type": "string",
-                "description": "The input source that may be a landsat scene name, "
-                "a sentinel2 scene name, a postGIS database string,"
+                "description": "The input source that may be a landsat scene "
+                "name, a sentinel2 scene name, a postGIS database string,"
                 "a stac collection ID or an URL that points "
                 "to an accessible raster or vector file. "
                 "A HTTP, HTTPS or FTP connection must be "
@@ -223,8 +224,8 @@ class InputParameter(IOParameterBase):
             },
             "resample": {
                 "type": "string",
-                "description": "Resampling method to use for reprojection of raster "
-                "map (default: nearest).",
+                "description": "Resampling method to use for reprojection of "
+                "raster map (default: nearest).",
                 "enum": [
                     "nearest",
                     "bilinear",
@@ -244,8 +245,8 @@ class InputParameter(IOParameterBase):
             },
             "resolution_value": {
                 "type": "string",
-                "description": "Resolution of output raster map (use with option "
-                '"resolution": "value") in units of the target '
+                "description": "Resolution of output raster map (use with "
+                'option "resolution": "value") in units of the target '
                 "coordinate reference system, not in map units. Must "
                 "be convertible to float.",
                 "example": {
@@ -260,9 +261,9 @@ class InputParameter(IOParameterBase):
             },
             "basic_auth": {
                 "type": "string",
-                "description": "User name and password for basic HTTP, HTTPS and FTP "
-                "authentication of the source connection. The user name "
-                "and password must be separated by a colon: "
+                "description": "User name and password for basic HTTP, HTTPS "
+                "and FTP authentication of the source connection. The user "
+                "name and password must be separated by a colon: "
                 "username:password",
             },
         },
@@ -291,10 +292,10 @@ class OutputParameter(IOParameterBase):
         "properties": {
             "format": {
                 "type": "string",
-                "description": "The format of the output file in case of raster, strds,"
-                " vector layer or text file export. Raster layer export "
-                "supports only GTiff and COG format, STRDS layer export "
-                "supports only GTiff format and all other formats are "
+                "description": "The format of the output file in case of "
+                "raster, strds, vector layer or text file export. Raster layer"
+                " export supports only GTiff and COG format, STRDS layer "
+                "export supports only GTiff format and all other formats are "
                 "vector layer export formats. If the *PostgeSQL* format "
                 "was chosen, a postgis database string *dbstring* "
                 "must be provided  so that the GRASS GIS module "
@@ -319,13 +320,13 @@ class OutputParameter(IOParameterBase):
             },
             "dbstring": {
                 "type": "string",
-                "description": "The database string to be used to connect to a "
-                "PostgreSQL database for vector export.",
+                "description": "The database string to be used to connect to a"
+                " PostgreSQL database for vector export.",
             },
             "output_layer": {
                 "type": "string",
-                "description": "Name for output PostgreSQL layer. If not specified, "
-                "GRASS GIS vector map layer name is used.",
+                "description": "Name for output PostgreSQL layer. If not "
+                "specified, GRASS GIS vector map layer name is used.",
             },
         },
         "description": "The raster, vector or text file export parameter.",
@@ -342,7 +343,8 @@ class OutputParameter(IOParameterBase):
         "properties": {
             "format": {
                 "type": "string",
-                "description": "Format of the metadata file. Only STAC is supported"
+                "description": "Format of the metadata file. Only STAC is "
+                "supported. "
                 "The STAC item builder works just on raster export file."
                 "These files are accessible through a STAC Catalog"
                 "and each export is stored as STAC Item",
@@ -388,22 +390,24 @@ class StdoutParser(Schema):
     }
     required = ["id", "format", "delimiter"]
     description = (
-        "Use this parameter to automatically parse the output of GRASS GIS modules "
-        "and convert the output into tables, lists or key/value pairs in the result "
-        "section of the response."
+        "Use this parameter to automatically parse the output of GRASS GIS "
+        "modules and convert the output into tables, lists or key/value pairs "
+        "in the result section of the response."
         "If the property type is set to *table*, *list* or *kv* then "
         "the stdout of the current command will be parsed and "
         "the result of the parse operation will be added to the "
         "result dictionary using the provided id as key. GRASS GIS modules "
         "produce regular output. Many modules have the flag *-g* to "
-        "create key value pairs as stdout output. Other create a list of values "
-        "or a table with/without header."
+        "create key value pairs as stdout output. Other create a list of "
+        "values or a table with/without header."
     )
     example = {"id": "stats", "format": "table", "delimiter": "|"}
 
 
 class GrassModule(Schema):
-    """The definition of a GRASS GIS module and its inputs, outputs and flags"""
+    """
+    The definition of a GRASS GIS module and its inputs, outputs and flags
+    """
 
     type = "object"
     properties = {
@@ -430,7 +434,8 @@ class GrassModule(Schema):
         "outputs": {
             "type": "array",
             "items": OutputParameter,
-            "description": "A list of output parameters of a GRASS GIS module.",
+            "description": "A list of output parameters of a GRASS GIS "
+            "module.",
         },
         "flags": {
             "type": "string",
@@ -468,12 +473,13 @@ class GrassModule(Schema):
     }
     required = ["id", "module"]
     description = (
-        "The definition of a single GRASS GIS module and its inputs, outputs and flags."
-        " This module will be run in a location/mapset environment and is part of a "
-        "process chain. The stdout and stderr output of modules that were run before "
-        "this module in the process chain can be used as stdin for this module. The "
-        "stdout of a module can be automatically transformed in list, table or "
-        "key/value JSON representations in the HTTP response."
+        "The definition of a single GRASS GIS module and its inputs, outputs "
+        "and flags. This module will be run in a location/mapset environment "
+        "and is part of a process chain. The stdout and stderr output of "
+        "modules that were run before this module in the process chain can be "
+        "used as stdin for this module. The stdout of a module can be "
+        "automatically transformed in list, table or key/value JSON "
+        "representations in the HTTP response."
     )
     example = {
         "module": "r.slope.aspect",
@@ -508,8 +514,8 @@ class Executable(Schema):
     properties = {
         "id": {
             "type": "string",
-            "description": "A unique id to identify the executable in the process "
-            "chain to reference its stdout and stderr output as "
+            "description": "A unique id to identify the executable in the "
+            "process chain to reference its stdout and stderr output as "
             "stdin in other modules.",
         },
         "exe": {
@@ -524,8 +530,8 @@ class Executable(Schema):
         },
         "stdin": {
             "type": "string",
-            "description": "Use the output of a GRASS GIS module or executable "
-            "in of the process chain as input for this module. "
+            "description": "Use the output of a GRASS GIS module or executable"
+            " in of the process chain as input for this module. "
             "Refer to the module/executable output as id::stderr "
             'or id::stdout, the "id" is the unique identifier '
             "of a GRASS GIS module.",
@@ -548,8 +554,8 @@ class Webhooks(Schema):
     properties = {
         "update": {
             "type": "string",
-            "description": "Specify a HTTP(S) GET/POST endpoint that should be "
-            "called when a status update is available while the "
+            "description": "Specify a HTTP(S) GET/POST endpoint that should be"
+            " called when a status update is available while the "
             "process chain is executed. The actinia JSON status "
             "response will be send as JSON content to the POST "
             "endpoint for each status update until the process "
@@ -571,13 +577,14 @@ class Webhooks(Schema):
     }
     required = ["finished"]
     description = (
-        "Specify HTTP(S) GET/POST endpoints that should be called when the process "
-        "chain was executed successful or unsuccessfully (finished) or when a "
-        "status/progress update is available (update). The actinia JSON response "
-        "will be send as JSON content to the POST endpoints after processing "
-        "finished or the status was updated. The GET endpoints, that must "
-        "be available by the same URL as the POST endpoints (update/finished),"
-        "will be used to check if the webhooks endpoints are available."
+        "Specify HTTP(S) GET/POST endpoints that should be called when the "
+        "process chain was executed successful or unsuccessfully (finished) or"
+        " when a status/progress update is available (update). The actinia "
+        "JSON response will be send as JSON content to the POST endpoints "
+        "after processing finished or the status was updated. The GET "
+        "endpoints, that must be available by the same URL as the POST "
+        "endpoints (update/finished), will be used to check if the webhooks "
+        "endpoints are available. "
         "The finished endpoint is mandatory, the update endpoint is optional."
     )
     example = {
@@ -603,8 +610,8 @@ class ProcessChainModel(Schema):
         "list": {
             "type": "array",
             "items": GrassModule,
-            "description": "A list of process definitions that should be executed "
-            "in the order provided by the list.",
+            "description": "A list of process definitions that should be "
+            "executed in the order provided by the list.",
         },
         "webhooks": Webhooks,
     }
@@ -617,8 +624,8 @@ class ProcessChainModel(Schema):
                 "inputs": [
                     {
                         "import_descr": {
-                            "source": "https://storage.googleapis.com/graas-geodata/"
-                            "elev_ned_30m.tif",
+                            "source": "https://storage.googleapis.com/"
+                            "graas-geodata/elev_ned_30m.tif",
                             "type": "raster",
                         },
                         "param": "raster",

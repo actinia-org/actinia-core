@@ -28,17 +28,19 @@ import os
 from shutil import rmtree
 
 from actinia_core.core.common.exceptions import AsyncProcessError
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+        PersistentProcessing,
+    )
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class PersistentVectorDeleter(PersistentProcessing):
-
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
 
@@ -53,28 +55,37 @@ class PersistentVectorDeleter(PersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         pc = {}
-        pc["1"] = {"module": "g.remove", "inputs": {"type": "vector",
-                                                    "name": vector_name},
-                   "flags": "f"}
+        pc["1"] = {
+            "module": "g.remove",
+            "inputs": {"type": "vector", "name": vector_name},
+            "flags": "f",
+        }
 
         self.skip_region_check = True
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
         self._check_lock_target_mapset()
-        self._create_grass_environment(grass_data_base=self.grass_user_data_base,
-                                       mapset_name=self.target_mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.grass_user_data_base,
+            mapset_name=self.target_mapset_name,
+        )
 
         self._execute_process_list(process_list)
 
         if "WARNING: No data base element files found" in "\n".join(
-                self.module_output_log[0]["stderr"]):
-            raise AsyncProcessError("Vector layer <%s> not found" % (vector_name))
+            self.module_output_log[0]["stderr"]
+        ):
+            raise AsyncProcessError(
+                "Vector layer <%s> not found" % (vector_name)
+            )
 
-        self.finish_message = "Vector layer <%s> successfully removed." % vector_name
+        self.finish_message = (
+            "Vector layer <%s> successfully removed." % vector_name
+        )
 
 
 class PersistentVectorCreator(PersistentProcessing):
-
     def __init__(self, *args):
 
         PersistentProcessing.__init__(self, *args)
@@ -82,8 +93,9 @@ class PersistentVectorCreator(PersistentProcessing):
     def _execute(self):
         """Create a specific vector layer
 
-        This approach is complex, since the vector generation is performed in a local
-        temporary mapset that is later merged into the target mapset. Workflow:
+        This approach is complex, since the vector generation is performed in a
+        local temporary mapset that is later merged into the target mapset.
+        Workflow:
 
         1. Check the process chain
         2. Lock the temp and target mapsets
@@ -100,27 +112,37 @@ class PersistentVectorCreator(PersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         pc_1 = {}
-        pc_1["1"] = {"module": "g.list", "inputs": {"type": "vector",
-                                                    "pattern": vector_name,
-                                                    "mapset": self.target_mapset_name}}
+        pc_1["1"] = {
+            "module": "g.list",
+            "inputs": {
+                "type": "vector",
+                "pattern": vector_name,
+                "mapset": self.target_mapset_name,
+            },
+        }
         # Check the first process chain
         self.skip_region_check = True
-        pc_1 = self._validate_process_chain(skip_permission_check=True,
-                                            process_chain=pc_1)
+        pc_1 = self._validate_process_chain(
+            skip_permission_check=True, process_chain=pc_1
+        )
 
         pc_2 = {}
-        pc_2["1"] = {"module": "v.import",
-                     "inputs": {"input": self.rdc.request_data},
-                     "outputs": {"output": {"name": vector_name}}}
+        pc_2["1"] = {
+            "module": "v.import",
+            "inputs": {"input": self.rdc.request_data},
+            "outputs": {"output": {"name": vector_name}},
+        }
         # Check the second process chain
         self.skip_region_check = True
-        pc_2 = self._validate_process_chain(skip_permission_check=True,
-                                            process_chain=pc_2)
+        pc_2 = self._validate_process_chain(
+            skip_permission_check=True, process_chain=pc_2
+        )
 
         self._check_lock_target_mapset()
         self._lock_temp_mapset()
         self._create_temporary_grass_environment(
-            source_mapset_name=self.target_mapset_name)
+            source_mapset_name=self.target_mapset_name
+        )
         self._execute_process_list(pc_1)
 
         # check if vector exists
@@ -135,12 +157,15 @@ class PersistentVectorCreator(PersistentProcessing):
         # Delete imported file
         msg = ""
         try:
-            if self.rdc.request_data.endswith('.shp'):
-                rmtree(os.path.dirname(self.rdc.request_data), ignore_errors=True)
+            if self.rdc.request_data.endswith(".shp"):
+                rmtree(
+                    os.path.dirname(self.rdc.request_data), ignore_errors=True
+                )
             else:
                 os.remove(self.rdc.request_data)
         except Exception:
             msg = " WARNING: Uploaded file cannot be removed."
 
-        self.finish_message = (f"Vector layer <{vector_name}> successfully "
-                               f"imported.{msg}")
+        self.finish_message = (
+            f"Vector layer <{vector_name}> successfully " f"imported.{msg}"
+        )

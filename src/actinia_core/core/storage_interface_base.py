@@ -28,15 +28,16 @@ from abc import ABCMeta, abstractmethod
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class ResourceStorageBase(object):
-    """Abstract storage base class of generated resources
+    """Abstract storage base class of generated resources"""
 
-    """
     __metaclass__ = ABCMeta
 
     def __init__(self, user_id, resource_id, config):
@@ -56,8 +57,7 @@ class ResourceStorageBase(object):
 
     @abstractmethod
     def setup(self):
-        """Setup the resource storage
-        """
+        """Setup the resource storage"""
         pass
 
     @abstractmethod
@@ -86,6 +86,5 @@ class ResourceStorageBase(object):
 
     @abstractmethod
     def remove_resources(self):
-        """Remove all stored resources
-        """
+        """Remove all stored resources"""
         pass

@@ -1,12 +1,11 @@
 [flake8]
 
 # E402 module level import not at top of file
-# E501 line too long (104 > 88 characters)
+# E501 line too long (80 > 79 characters)
 # F401 '.health_check.health_check' imported but unused
 # F821 undefined name 'QFile'
 # W605 invalid escape sequence '\<'
 
-# max-line-length = 88
 exclude =
     .git,
     __pycache__,
@@ -25,19 +24,19 @@ exclude =
 
 per-file-ignores =
     ./src/actinia_core/core/common/api_logger.py: F401
-    ./src/actinia_core/core/common/app.py: E402, E501
-    ./src/actinia_core/testsuite.py: F401
-    ./src/actinia_core/rest/ephemeral_processing.py: W605
-    ./src/actinia_core/processing/actinia_processing/ephemeral_processing.py: F401
-    ./src/actinia_core/core/storage_interface_gcs.py: F401
-    ./src/actinia_core/main.py: F401
+    ./src/actinia_core/core/common/app.py: E402
     ./src/actinia_core/core/common/process_queue.py: F401
-    ./src/actinia_core/models/process_chain.py: W605
     ./src/actinia_core/core/interim_results.py: W605
     ./src/actinia_core/core/list_grass_modules.py: F821
-    ./src/actinia_core/core/common/aws_sentinel_interface.py: E501
+    ./src/actinia_core/testsuite.py: F401
+    ./src/actinia_core/rest/ephemeral_processing.py: W605
+    ./src/actinia_core/processing/actinia_processing/ephemeral_renderer_base/*: E501
+    ./src/actinia_core/processing/actinia_processing/ephemeral_with_export/raster_export.py: E501
+    ./src/actinia_core/processing/actinia_processing/persistent/*: E501
+    ./src/actinia_core/processing/actinia_processing/ephemeral_processing.py: F401, E501
+    ./src/actinia_core/rest/process_chain_monitoring.py: E501
+    ./src/actinia_core/main.py: F401
+    ./src/actinia_core/models/process_chain.py: W605
     ./tests/test_async_processing_import_export.py: F401
-    # ./tests/*: E501, F401
     # TODO: check imports again when actinia_processing is moved
     ./src/actinia_core/rest/raster_export.py: E501
-    ./src/actinia_core/processing/actinia_processing/ephemeral_with_export/raster_export.py: E501

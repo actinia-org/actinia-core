@@ -27,7 +27,9 @@ Sentinel-2A processing commands
 import os
 import requests
 import dateutil.parser as dtparser
-from .google_satellite_bigquery_interface import GoogleSatelliteBigQueryInterface
+from .google_satellite_bigquery_interface import (
+    GoogleSatelliteBigQueryInterface,
+)
 from .aws_sentinel_interface import AWSSentinel2AInterface
 from .exceptions import AsyncProcessError
 from .process_object import Process
@@ -35,16 +37,30 @@ from .process_object import Process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Guido Riembauer"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 def datetime_to_grass_datetime_string(dt):
-    """Convert a python datetime object into a GRASS datetime string
-    """
+    """Convert a python datetime object into a GRASS datetime string"""
     # GRASS datetime month names
-    month_names = ["", "jan", "feb", "mar", "apr", "may", "jun",
-                   "jul", "aug", "sep", "oct", "nov", "dec"]
+    month_names = [
+        "",
+        "jan",
+        "feb",
+        "mar",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec",
+    ]
 
     # Check for time zone info in the datetime object
     if dt.tzinfo is not None:
@@ -55,26 +71,44 @@ def datetime_to_grass_datetime_string(dt):
         else:
             tz = tz.seconds / 60
 
-        string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (dt.day,
-                                                        month_names[dt.month],
-                                                        dt.year, dt.hour,
-                                                        dt.minute, dt.second,
-                                                        tz)
+        string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (
+            dt.day,
+            month_names[dt.month],
+            dt.year,
+            dt.hour,
+            dt.minute,
+            dt.second,
+            tz,
+        )
     else:
-        string = "%.2i %s %.4i %.2i:%.2i:%.2i" % (dt.day, month_names[
-            dt.month], dt.year, dt.hour, dt.minute, dt.second)
+        string = "%.2i %s %.4i %.2i:%.2i:%.2i" % (
+            dt.day,
+            month_names[dt.month],
+            dt.year,
+            dt.hour,
+            dt.minute,
+            dt.second,
+        )
 
     return string
 
 
 class Sentinel2Processing(object):
-    """
-    """
+    """"""
 
-    def __init__(self, product_id, bands, download_cache, send_resource_update,
-                 message_logger, use_google=True, temp_file_path=None,
-                 config=None, query_result=None):
-        """ A collection of functions to generate Sentinel2 related import and
+    def __init__(
+        self,
+        product_id,
+        bands,
+        download_cache,
+        send_resource_update,
+        message_logger,
+        use_google=True,
+        temp_file_path=None,
+        config=None,
+        query_result=None,
+    ):
+        """A collection of functions to generate Sentinel2 related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
 
@@ -84,9 +118,9 @@ class Sentinel2Processing(object):
                               downloaded
             query_result (dict): The result of the BigQuery request
             bands (list): A list of band names
-            temp_file_path: The path to the temporary directory to store temporary
-                            files. It is assumed that this path is available when
-                            the generated commands are executed.
+            temp_file_path: The path to the temporary directory to store
+                            temporary files. It is assumed that this path is
+                            available when the generated commands are executed.
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
@@ -129,9 +163,11 @@ class Sentinel2Processing(object):
             elif band in ["B1", "B9", "B10"]:
                 res = "60"
             else:
-                raise AsyncProcessError(f"Band {band} is unknown. Please "
-                                        "provide band as 'BXY', e.g. "
-                                        "'B02', 'B8A', or 'B12'")
+                raise AsyncProcessError(
+                    f"Band {band} is unknown. Please "
+                    "provide band as 'BXY', e.g. "
+                    "'B02', 'B8A', or 'B12'"
+                )
             if level == "MSIL1C":
                 band_pattern += f"{band}|"
                 map_name = f"{tile_block}_{date_block}_{band}"
@@ -139,7 +175,7 @@ class Sentinel2Processing(object):
                 band_pattern += f"{band}_{res}m|"
                 map_name = f"{tile_block}_{date_block}_{band}_{res}m"
             self.import_file_info[band] = (file_path, map_name)
-        band_pattern = band_pattern[:-1] + ')'
+        band_pattern = band_pattern[:-1] + ")"
         self.band_pattern = band_pattern
 
     def _setup_download_import_google(self):
@@ -157,24 +193,34 @@ class Sentinel2Processing(object):
         """
 
         if self.query_result is None:
-            self.query_interface = GoogleSatelliteBigQueryInterface(self.config)
+            self.query_interface = GoogleSatelliteBigQueryInterface(
+                self.config
+            )
             try:
                 self.query_result = self.query_interface.get_sentinel_urls(
-                    [self.product_id, ], self.bands)
+                    [
+                        self.product_id,
+                    ],
+                    self.bands,
+                )
             except Exception as e:
-                raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
-                                        "in Google BigQuery Sentinel-2 database. "
-                                        "Error: %s" % (self.product_id, str(e)))
+                raise AsyncProcessError(
+                    "Error in querying Sentinel-2 product <%s> "
+                    "in Google BigQuery Sentinel-2 database. "
+                    "Error: %s" % (self.product_id, str(e))
+                )
 
             if not self.query_result:
                 raise AsyncProcessError(
                     "Unable to find Sentinel-2 product <%s> "
-                    "in Google BigQuery Sentinel-2 database" % self.product_id)
+                    "in Google BigQuery Sentinel-2 database" % self.product_id
+                )
 
         if self.product_id not in self.query_result:
             raise AsyncProcessError(
                 "Unable to find Sentinel-2 product <%s> "
-                "in Google BigQuery Sentinel-2 database" % self.product_id)
+                "in Google BigQuery Sentinel-2 database" % self.product_id
+            )
 
         # Switch into the tempfile directory
         os.chdir(self.temp_file_path)
@@ -190,18 +236,27 @@ class Sentinel2Processing(object):
         # The file name is the product id that will also be copied into the
         # download cache
         self.gml_cache_file_name = os.path.join(
-            self.user_download_cache_path, self.product_id + ".gml")
+            self.user_download_cache_path, self.product_id + ".gml"
+        )
 
-        self.import_file_info["footprint"] = (self.gml_cache_file_name, self.product_id)
+        self.import_file_info["footprint"] = (
+            self.gml_cache_file_name,
+            self.product_id,
+        )
 
         if os.path.exists(self.gml_cache_file_name) is False:
             gml_temp_file_name = os.path.join(
-                self.temp_file_path, self.product_id + ".gml")
+                self.temp_file_path, self.product_id + ".gml"
+            )
             gml_file = open(gml_temp_file_name, "w")
             gml_file.write(gml_footprint)
             gml_file.close()
-            copy_file_list.append((gml_temp_file_name, self.gml_cache_file_name))
-            self.message_logger.info((gml_temp_file_name, self.gml_cache_file_name))
+            copy_file_list.append(
+                (gml_temp_file_name, self.gml_cache_file_name)
+            )
+            self.message_logger.info(
+                (gml_temp_file_name, self.gml_cache_file_name)
+            )
 
         # Create file names, urls and check the download cache
         for band in self.bands:
@@ -225,21 +280,26 @@ class Sentinel2Processing(object):
                 url_list.append(public_url)
                 copy_file_list.append((temp_file, file_path))
 
-        # Check the urls for access. If all files are already in the download cache,
-        # then nothing needs to be downloaded and checked.
+        # Check the urls for access. If all files are already in the download
+        # cache, then nothing needs to be downloaded and checked.
         for url in url_list:
             # Send a resource update
-            self.send_resource_update(message="Checking access to URL: %s" % url)
+            self.send_resource_update(
+                message="Checking access to URL: %s" % url
+            )
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" % (
-                resp.status_code, resp.text, resp.headers))
+            self.message_logger.info(
+                "%i %s %s" % (resp.status_code, resp.text, resp.headers)
+            )
 
             if resp.status_code != 200:
                 raise AsyncProcessError(
                     "Scene <%s> is not available. "
-                    "The URL <%s> can not be accessed." % (self.product_id, url))
+                    "The URL <%s> can not be accessed."
+                    % (self.product_id, url)
+                )
 
         return url_list, copy_file_list
 
@@ -258,19 +318,29 @@ class Sentinel2Processing(object):
             self.query_interface = AWSSentinel2AInterface(self.config)
             try:
                 self.query_result = self.query_interface.get_sentinel_urls(
-                    [self.product_id, ], self.bands)
+                    [
+                        self.product_id,
+                    ],
+                    self.bands,
+                )
             except Exception as e:
-                raise AsyncProcessError("Error in querying Sentinel-2 product <%s> "
-                                        "in AWS Sentinel-2 database. "
-                                        "Error: %s" % (self.product_id, str(e)))
+                raise AsyncProcessError(
+                    "Error in querying Sentinel-2 product <%s> "
+                    "in AWS Sentinel-2 database. "
+                    "Error: %s" % (self.product_id, str(e))
+                )
 
             if not self.query_result:
-                raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                        "in AWS Sentinel-2 database" % self.product_id)
+                raise AsyncProcessError(
+                    "Unable to find Sentinel-2 product <%s> "
+                    "in AWS Sentinel-2 database" % self.product_id
+                )
 
         if self.product_id not in self.query_result:
-            raise AsyncProcessError("Unable to find Sentinel-2 product <%s> "
-                                    "in AWS Sentinel-2 database" % self.product_id)
+            raise AsyncProcessError(
+                "Unable to find Sentinel-2 product <%s> "
+                "in AWS Sentinel-2 database" % self.product_id
+            )
 
         # Switch into the tempfile directory
         os.chdir(self.temp_file_path)
@@ -286,18 +356,27 @@ class Sentinel2Processing(object):
         # The file name is the product id that will also be copied into the
         # download cache
         self.gml_cache_file_name = os.path.join(
-            self.user_download_cache_path, self.product_id + ".gml")
+            self.user_download_cache_path, self.product_id + ".gml"
+        )
 
-        self.import_file_info["footprint"] = (self.gml_cache_file_name, self.product_id)
+        self.import_file_info["footprint"] = (
+            self.gml_cache_file_name,
+            self.product_id,
+        )
 
         if os.path.exists(self.gml_cache_file_name) is False:
             gml_temp_file_name = os.path.join(
-                self.temp_file_path, self.product_id + ".gml")
+                self.temp_file_path, self.product_id + ".gml"
+            )
             gml_file = open(gml_temp_file_name, "w")
             gml_file.write(gml_footprint)
             gml_file.close()
-            copy_file_list.append((gml_temp_file_name, self.gml_cache_file_name))
-            self.message_logger.info((gml_temp_file_name, self.gml_cache_file_name))
+            copy_file_list.append(
+                (gml_temp_file_name, self.gml_cache_file_name)
+            )
+            self.message_logger.info(
+                (gml_temp_file_name, self.gml_cache_file_name)
+            )
 
         # Create file names, urls and check the download cache
         for band in self.bands:
@@ -321,21 +400,26 @@ class Sentinel2Processing(object):
                 url_list.append(public_url)
                 copy_file_list.append((temp_file, file_path))
 
-        # Check the urls for access. If all files are already in the download cache,
-        # then nothing needs to be downloaded and checked.
+        # Check the urls for access. If all files are already in the download
+        # cache, then nothing needs to be downloaded and checked.
         for url in url_list:
             # Send a resource update
-            self.send_resource_update(message="Checking access to URL: %s" % url)
+            self.send_resource_update(
+                message="Checking access to URL: %s" % url
+            )
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
-            self.message_logger.info("%i %s %s" % (
-                resp.status_code, resp.text, resp.headers))
+            self.message_logger.info(
+                "%i %s %s" % (resp.status_code, resp.text, resp.headers)
+            )
 
             if resp.status_code != 200:
                 raise AsyncProcessError(
                     "Scene <%s> is not available. "
-                    "The URL <%s> can not be accessed." % (self.product_id, url))
+                    "The URL <%s> can not be accessed."
+                    % (self.product_id, url)
+                )
 
         return url_list, copy_file_list
 
@@ -351,13 +435,17 @@ class Sentinel2Processing(object):
         """
         download_commands = []
 
-        p = Process(exec_type="grass", executable="i.sentinel.download",
-                    executable_params=["datasource=GCS",
-                                       f"query=identifier={self.product_id}",
-                                       f"output={self.user_download_cache_path}"
-                                       ],
-                    id=f"i_sentinel_download_{self.product_id}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="i.sentinel.download",
+            executable_params=[
+                "datasource=GCS",
+                f"query=identifier={self.product_id}",
+                f"output={self.user_download_cache_path}",
+            ],
+            id=f"i_sentinel_download_{self.product_id}",
+            skip_permission_check=True,
+        )
         download_commands.append(p)
 
         # The renaming step needs to know the map name(s). They can be put
@@ -373,13 +461,17 @@ class Sentinel2Processing(object):
         """
         import_commands = []
 
-        p = Process(exec_type="grass", executable="i.sentinel.import",
-                    executable_params=[f"input={self.user_download_cache_path}",
-                                       f"pattern={self.band_pattern}",
-                                       "-r"
-                                       ],
-                    id=f"i_sentinel_import_{self.product_id}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="i.sentinel.import",
+            executable_params=[
+                f"input={self.user_download_cache_path}",
+                f"pattern={self.band_pattern}",
+                "-r",
+            ],
+            id=f"i_sentinel_import_{self.product_id}",
+            skip_permission_check=True,
+        )
         import_commands.append(p)
         return import_commands
 
@@ -417,14 +509,18 @@ class Sentinel2Processing(object):
             wget_params.append("-q")
             wget_params.append(url)
 
-            p = Process(exec_type="exec", executable=wget,
-                        executable_params=wget_params,
-                        id=f"wget_{url.split('/')[-1]}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="exec",
+                executable=wget,
+                executable_params=wget_params,
+                id=f"wget_{url.split('/')[-1]}",
+                skip_permission_check=True,
+            )
 
             download_commands.append(p)
 
-        # Create the commands to move the downloaded files to the download cache
+        # Create the commands to move the downloaded files to the download
+        # cache
         for source, dest in copy_file_list:
             if source != dest:
                 copy = "/bin/mv"
@@ -432,10 +528,13 @@ class Sentinel2Processing(object):
                 copy_params.append(source)
                 copy_params.append(dest)
 
-                p = Process(exec_type="exec", executable=copy,
-                            executable_params=copy_params,
-                            id=f"mv_{os.path.basename(dest)}",
-                            skip_permission_check=True)
+                p = Process(
+                    exec_type="exec",
+                    executable=copy,
+                    executable_params=copy_params,
+                    id=f"mv_{os.path.basename(dest)}",
+                    skip_permission_check=True,
+                )
                 download_commands.append(p)
 
         return download_commands, self.import_file_info
@@ -466,23 +565,33 @@ class Sentinel2Processing(object):
 
         import_commands = []
 
-        p = Process(exec_type="grass", executable="v.import",
-                    executable_params=["input=%s" % self.gml_cache_file_name,
-                                       "output=%s" % self.product_id,
-                                       "--q"],
-                    id=f"v_import_{self.product_id}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="v.import",
+            executable_params=[
+                "input=%s" % self.gml_cache_file_name,
+                "output=%s" % self.product_id,
+                "--q",
+            ],
+            id=f"v_import_{self.product_id}",
+            skip_permission_check=True,
+        )
         import_commands.append(p)
 
         dt = dtparser.parse(self.timestamp.split(".")[0])
         timestamp = datetime_to_grass_datetime_string(dt)
 
         # Attach a the time stamp
-        p = Process(exec_type="grass", executable="v.timestamp",
-                    executable_params=["map=%s" % self.product_id,
-                                       "date=%s" % timestamp],
-                    id=f"v_timestamp_{self.product_id}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="v.timestamp",
+            executable_params=[
+                "map=%s" % self.product_id,
+                "date=%s" % timestamp,
+            ],
+            id=f"v_timestamp_{self.product_id}",
+            skip_permission_check=True,
+        )
         import_commands.append(p)
 
         # Import and update
@@ -510,64 +619,97 @@ class Sentinel2Processing(object):
             gdal_translate_params.append(input_file)
             gdal_translate_params.append(cropped_input_file)
 
-            p = Process(exec_type="exec", executable=gdal_translate,
-                        executable_params=gdal_translate_params,
-                        id=f"gdal_translate_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="exec",
+                executable=gdal_translate,
+                executable_params=gdal_translate_params,
+                id=f"gdal_translate_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="r.import",
-                        executable_params=["input=%s" % cropped_input_file,
-                                           "output=%s" % temp_map_name,
-                                           "--q"],
-                        id=f"r_import_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="r.import",
+                executable_params=[
+                    "input=%s" % cropped_input_file,
+                    "output=%s" % temp_map_name,
+                    "--q",
+                ],
+                id=f"r_import_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="g.region",
-                        executable_params=["align=%s" % temp_map_name,
-                                           "vector=%s" % self.product_id,
-                                           "-g"],
-                        id=f"set_g_region_to_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="g.region",
+                executable_params=[
+                    "align=%s" % temp_map_name,
+                    "vector=%s" % self.product_id,
+                    "-g",
+                ],
+                id=f"set_g_region_to_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="r.mask",
-                        executable_params=["vector=%s" % self.product_id],
-                        id=f"r_mask_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="r.mask",
+                executable_params=["vector=%s" % self.product_id],
+                id=f"r_mask_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="r.mapcalc",
-                        executable_params=["expression=%s = float(%s)" % (
-                            map_name, temp_map_name)],
-                        id=f"create_float_rastermap_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="r.mapcalc",
+                executable_params=[
+                    "expression=%s = float(%s)" % (map_name, temp_map_name)
+                ],
+                id=f"create_float_rastermap_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="r.timestamp",
-                        executable_params=["map=%s" % map_name, "date=%s" % timestamp],
-                        id=f"r_timestamp_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="r.timestamp",
+                executable_params=["map=%s" % map_name, "date=%s" % timestamp],
+                id=f"r_timestamp_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="g.remove",
-                        executable_params=["type=raster",
-                                           "name=%s" % temp_map_name,
-                                           "-f"],
-                        id=f"remove_tmp_map_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="g.remove",
+                executable_params=[
+                    "type=raster",
+                    "name=%s" % temp_map_name,
+                    "-f",
+                ],
+                id=f"remove_tmp_map_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
-            p = Process(exec_type="grass", executable="r.mask",
-                        executable_params=["-r"],
-                        id=f"remove_mask_{self.product_id}",
-                        skip_permission_check=True)
+            p = Process(
+                exec_type="grass",
+                executable="r.mask",
+                executable_params=["-r"],
+                id=f"remove_mask_{self.product_id}",
+                skip_permission_check=True,
+            )
             import_commands.append(p)
 
         return import_commands
 
-    def get_ndvi_r_mapcalc_process_list(self, red, nir, raster_result_name="ndvi"):
+    def get_ndvi_r_mapcalc_process_list(
+        self, red, nir, raster_result_name="ndvi"
+    ):
         """Create NDVI r.mapcalc command and set the color table accordingly
 
         NDVI formular: (nir - red) / (nir + red)
@@ -584,23 +726,26 @@ class Sentinel2Processing(object):
 
         ndvi_commands = []
 
-        p = Process(exec_type="grass",
-                    executable="r.mapcalc",
-                    executable_params=[
-                        "expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
-                        "(float(%(nir)s) + float(%(red)s))" % {
-                            "ndvi": raster_result_name,
-                            "nir": nir,
-                            "red": red}],
-                    id=f"compute_NDVI_{raster_result_name}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="r.mapcalc",
+            executable_params=[
+                "expression=%(ndvi)s = (float(%(nir)s) - float(%(red)s))/"
+                "(float(%(nir)s) + float(%(red)s))"
+                % {"ndvi": raster_result_name, "nir": nir, "red": red}
+            ],
+            id=f"compute_NDVI_{raster_result_name}",
+            skip_permission_check=True,
+        )
         ndvi_commands.append(p)
 
-        p = Process(exec_type="grass",
-                    executable="r.colors",
-                    executable_params=["color=ndvi", "map=%s" % raster_result_name],
-                    id=f"set_color_{raster_result_name}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="r.colors",
+            executable_params=["color=ndvi", "map=%s" % raster_result_name],
+            id=f"set_color_{raster_result_name}",
+            skip_permission_check=True,
+        )
         ndvi_commands.append(p)
 
         return ndvi_commands

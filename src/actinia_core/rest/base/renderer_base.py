@@ -30,61 +30,62 @@ from actinia_core.rest.base.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 REGION_PARAMETERS = {
-    'parameters': [
+    "parameters": [
         {
-            'name': 'n',
-            'description': 'Northern border',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
+            "name": "n",
+            "description": "Northern border",
+            "required": False,
+            "in": "query",
+            "type": "double",
         },
         {
-            'name': 's',
-            'description': 'Southern border',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
+            "name": "s",
+            "description": "Southern border",
+            "required": False,
+            "in": "query",
+            "type": "double",
         },
         {
-            'name': 'e',
-            'description': 'Eastern border',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
+            "name": "e",
+            "description": "Eastern border",
+            "required": False,
+            "in": "query",
+            "type": "double",
         },
         {
-            'name': 'w',
-            'description': 'Western border',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
+            "name": "w",
+            "description": "Western border",
+            "required": False,
+            "in": "query",
+            "type": "double",
         },
         {
-            'name': 'width',
-            'description': 'Image width',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
+            "name": "width",
+            "description": "Image width",
+            "required": False,
+            "in": "query",
+            "type": "double",
         },
         {
-            'name': 'height',
-            'description': 'Image height',
-            'required': False,
-            'in': 'query',
-            'type': 'double'
-        }
+            "name": "height",
+            "description": "Image height",
+            "required": False,
+            "in": "query",
+            "type": "double",
+        },
     ]
 }
 
 
 class RendererBaseResource(ResourceBase):
-    """Base class for render resources
-    """
+    """Base class for render resources"""
 
     def create_parser(self):
         """Create the render option arguments
@@ -106,29 +107,53 @@ class RendererBaseResource(ResourceBase):
         """
         parser = reqparse.RequestParser()
         parser.add_argument(
-            'n', type=float, location='args',
-            help='Northern border must be specified as double value')
+            "n",
+            type=float,
+            location="args",
+            help="Northern border must be specified as double value",
+        )
         parser.add_argument(
-            'e', type=float, location='args',
-            help='Eastern border must be specified as double value')
+            "e",
+            type=float,
+            location="args",
+            help="Eastern border must be specified as double value",
+        )
         parser.add_argument(
-            'w', type=float, location='args',
-            help='Western border must be specified as double value')
+            "w",
+            type=float,
+            location="args",
+            help="Western border must be specified as double value",
+        )
         parser.add_argument(
-            's', type=float, location='args',
-            help='Southern border must be specified as double value')
+            "s",
+            type=float,
+            location="args",
+            help="Southern border must be specified as double value",
+        )
         parser.add_argument(
-            'width', type=float, location='args',
-            help='Image width must be specified as double value')
+            "width",
+            type=float,
+            location="args",
+            help="Image width must be specified as double value",
+        )
         parser.add_argument(
-            'height', type=float, location='args',
-            help='Image height must be specified as double value')
+            "height",
+            type=float,
+            location="args",
+            help="Image height must be specified as double value",
+        )
         parser.add_argument(
-            'start_time', type=str, location='args',
-            help='Start time for STRDS raster map layer selection')
+            "start_time",
+            type=str,
+            location="args",
+            help="Start time for STRDS raster map layer selection",
+        )
         parser.add_argument(
-            'end_time', type=str, location='args',
-            help='Start time for STRDS raster map layer selection')
+            "end_time",
+            type=str,
+            location="args",
+            help="Start time for STRDS raster map layer selection",
+        )
 
         return parser
 
@@ -161,18 +186,22 @@ class RendererBaseResource(ResourceBase):
         if "width" in args and args["width"] is not None:
             if args["width"] < 1:
                 return self.get_error_response(
-                    message="Width must be larger than 0")
+                    message="Width must be larger than 0"
+                )
             if args["width"] > 10000:
                 return self.get_error_response(
-                    message="Width can not be larger than 10000")
+                    message="Width can not be larger than 10000"
+                )
             options["width"] = args["width"]
         if "height" in args and args["height"] is not None:
             if args["height"] < 1:
                 return self.get_error_response(
-                    message="Height must be larger than 0")
+                    message="Height must be larger than 0"
+                )
             if args["height"] > 10000:
                 return self.get_error_response(
-                    "Height can not be larger than 10000")
+                    "Height can not be larger than 10000"
+                )
             options["height"] = args["height"]
         if "start_time" in args and args["start_time"] is not None:
             options["start_time"] = args["start_time"]

@@ -31,7 +31,9 @@ from actinia_core.core.common.exceptions import SecurityError
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -75,9 +77,12 @@ def get_wget_process(source, url):
     wget_params.append(url)
 
     p = Process(
-        exec_type="exec", executable=wget, executable_params=wget_params,
+        exec_type="exec",
+        executable=wget,
+        executable_params=wget_params,
         id=f"importer_wget_{os.path.basename(source)}",
-        skip_permission_check=True)
+        skip_permission_check=True,
+    )
     return p
 
 
@@ -98,10 +103,12 @@ def get_mv_process(source, dest):
     copy_params.append(dest)
 
     p = Process(
-        exec_type="exec", executable=copy,
+        exec_type="exec",
+        executable=copy,
         executable_params=copy_params,
         id=f"importer_mv_{os.path.basename(source)}",
-        skip_permission_check=True)
+        skip_permission_check=True,
+    )
     return p
 
 
@@ -115,5 +122,7 @@ def allowed_file(filename, allowed_extensions):
     Returns:
         (bool): Returns True, if file extension is allowed
     """
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in allowed_extensions
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower() in allowed_extensions
+    )

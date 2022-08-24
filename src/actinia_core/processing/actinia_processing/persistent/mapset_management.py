@@ -30,22 +30,26 @@ Mapset management resources
 """
 
 import shutil
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+    PersistentProcessing,
+)
 from actinia_core.core.common.exceptions import AsyncProcessError
-from actinia_core.models.response_models import \
-    StringListProcessingResultResponseModel, MapsetInfoResponseModel, \
-    RegionModel
+from actinia_core.models.response_models import (
+    StringListProcessingResultResponseModel,
+    MapsetInfoResponseModel,
+    RegionModel,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class PersistentMapsetLister(PersistentProcessing):
-    """List all mapsets in a location
-    """
+    """List all mapsets in a location"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -56,13 +60,20 @@ class PersistentMapsetLister(PersistentProcessing):
         # Create the temporary database and link all available mapsets into is
         self._create_temp_database()
 
-        pc = {"1": {"module": "g.mapsets", "inputs": {"separator": "newline"},
-                    "flags": "l"}}
+        pc = {
+            "1": {
+                "module": "g.mapsets",
+                "inputs": {"separator": "newline"},
+                "flags": "l",
+            }
+        }
 
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name="PERMANENT")
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base, mapset_name="PERMANENT"
+        )
 
         self._execute_process_list(process_list)
 
@@ -76,13 +87,32 @@ class PersistentMapsetLister(PersistentProcessing):
 
 
 class PersistentGetProjectionRegionInfo(PersistentProcessing):
-    """Read the current region and projection information
-    """
+    """Read the current region and projection information"""
 
-    integer_values = ["projection", "zone", "rows", "rows3",
-                      "cols", "cols3", "depths", "cells", "cells3"]
-    float_values = ["n", "s", "e", "w", "t", "b", "nsres",
-                    "nsres3", "ewres", "ewres3", "tbres"]
+    integer_values = [
+        "projection",
+        "zone",
+        "rows",
+        "rows3",
+        "cols",
+        "cols3",
+        "depths",
+        "cells",
+        "cells3",
+    ]
+    float_values = [
+        "n",
+        "s",
+        "e",
+        "w",
+        "t",
+        "b",
+        "nsres",
+        "nsres3",
+        "ewres",
+        "ewres3",
+        "tbres",
+    ]
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -92,18 +122,21 @@ class PersistentGetProjectionRegionInfo(PersistentProcessing):
 
         self._setup()
 
-        pc = {"1": {"module": "g.region",
-                    "flags": "ug3"},
-              "2": {"module": "g.proj",
-                    "flags": "fw"}}
+        pc = {
+            "1": {"module": "g.region", "flags": "ug3"},
+            "2": {"module": "g.proj", "flags": "fw"},
+        }
 
         # Do not check the region size
         self.skip_region_check = True
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
         self._create_temp_database(self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.target_mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.target_mapset_name,
+        )
 
         self._execute_process_list(process_list)
 
@@ -118,16 +151,19 @@ class PersistentGetProjectionRegionInfo(PersistentProcessing):
                 if key in self.float_values:
                     mapset_region[key] = float(value)
 
-        self.module_results = dict(region=RegionModel(**mapset_region),
-                                   projection=self.module_output_log[1]["stdout"])
+        self.module_results = dict(
+            region=RegionModel(**mapset_region),
+            projection=self.module_output_log[1]["stdout"],
+        )
 
-        # self.module_results = MapsetInfoModel(region=RegionModel(**mapset_region),
-        #                             projection=self.module_output_log[1]["stdout"])
+        # self.module_results = MapsetInfoModel(
+        #     region=RegionModel(**mapset_region),
+        #     projection=self.module_output_log[1]["stdout"]
+        # )
 
 
 class PersistentMapsetCreator(PersistentProcessing):
-    """Create a mapset in an existing location
-    """
+    """Create a mapset in an existing location"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -138,13 +174,14 @@ class PersistentMapsetCreator(PersistentProcessing):
         # Create temporary database
         self._create_temp_database()
 
-        pc = {"1": {"module": "g.mapsets",
-                    "flags": "l"}}
+        pc = {"1": {"module": "g.mapsets", "flags": "l"}}
 
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name="PERMANENT")
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base, mapset_name="PERMANENT"
+        )
 
         self._execute_process_list(process_list)
 
@@ -155,23 +192,28 @@ class PersistentMapsetCreator(PersistentProcessing):
             mapset_list.append(mapset.strip())
 
         if self.target_mapset_name in mapset_list:
-            raise AsyncProcessError("Mapset <%s> exists." % self.target_mapset_name)
+            raise AsyncProcessError(
+                "Mapset <%s> exists." % self.target_mapset_name
+            )
 
-        # Create the new temporary mapset and merge it into the user database location
+        # Create the new temporary mapset and merge it into the user database
+        # location
         self._check_lock_target_mapset()
         self.required_mapsets = ["PERMANENT"]
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name)
         self._copy_merge_tmp_mapset_to_target_mapset()
 
-        self.finish_message = \
+        self.finish_message = (
             "Mapset <%s> successfully created." % self.target_mapset_name
+        )
 
 
 class PersistentMapsetDeleter(PersistentProcessing):
     """Delete a mapset from a location
 
     1. Create temporary database
-    2. Check if PERMANENT mapset or global mapset which are not allowed to be deleted
+    2. Check if PERMANENT mapset or global mapset which are not allowed to be
+       deleted
     3. Check if the mapset exists
     """
 
@@ -186,25 +228,29 @@ class PersistentMapsetDeleter(PersistentProcessing):
         # self.lock_interface.unlock(self.target_mapset_lock_id)
 
         if "PERMANENT" == self.target_mapset_name:
-            raise AsyncProcessError("The PERMANENT mapset can not be deleted. "
-                                    "You must remove the location to get rid of it.")
+            raise AsyncProcessError(
+                "The PERMANENT mapset can not be deleted. "
+                "You must remove the location to get rid of it."
+            )
 
         # Delete existing mapset
         self._check_lock_target_mapset()
-        # The variable self.orig_mapset_path is set by _check_lock_target_mapset()
+        # The variable self.orig_mapset_path is set by
+        # _check_lock_target_mapset()
         if self.target_mapset_exists is True:
             shutil.rmtree(self.orig_mapset_path)
             self.lock_interface.unlock(self.target_mapset_lock_id)
-            self.finish_message = \
+            self.finish_message = (
                 "Mapset <%s> successfully removed." % self.target_mapset_name
+            )
         else:
-            raise AsyncProcessError("Mapset <%s> does not exits" %
-                                    self.target_mapset_name)
+            raise AsyncProcessError(
+                "Mapset <%s> does not exits" % self.target_mapset_name
+            )
 
 
 class PersistentGetMapsetLock(PersistentProcessing):
-    """Get the mapset lock status
-    """
+    """Get the mapset lock status"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -214,19 +260,21 @@ class PersistentGetMapsetLock(PersistentProcessing):
         self._check_target_mapset_exists()
         if self.target_mapset_exists is False:
             raise AsyncProcessError(
-                ("Unable to get lock status of mapset <%s> in location <%s>:"
-                 " Mapset does not exist")
-                % (self.mapset_name, self.location_name))
+                f"Unable to get lock status of mapset <{self.mapset_name}>"
+                f" in location <{self.location_name}>: Mapset does not "
+                "exist"
+                )
         else:
             self.module_results = self.lock_interface.get(
-                self.target_mapset_lock_id)
+                self.target_mapset_lock_id
+            )
             self.finish_message = "Mapset lock state: %s" % str(
-                self.module_results)
+                self.module_results
+            )
 
 
 class PersistentMapsetLocker(PersistentProcessing):
-    """Lock a mapset
-    """
+    """Lock a mapset"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -237,21 +285,23 @@ class PersistentMapsetLocker(PersistentProcessing):
         if self.target_mapset_exists is False:
             raise AsyncProcessError(
                 "Unable to lock mapset <%s>. Mapset doesn not exists."
-                % self.target_mapset_name)
+                % self.target_mapset_name
+            )
 
-        self.finish_message = \
+        self.finish_message = (
             "Mapset <%s> successfully locked" % self.target_mapset_name
+        )
 
     def _final_cleanup(self):
-        """Final cleanup called in the run function at the very end of processing
+        """
+        Final cleanup called in the run function at the very end of processing
         """
         # Clean up and remove the temporary files
         self._cleanup()
 
 
 class PersistentMapsetUnlocker(PersistentProcessing):
-    """Unlock a locked mapset
-    """
+    """Unlock a locked mapset"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -261,10 +311,14 @@ class PersistentMapsetUnlocker(PersistentProcessing):
         self._check_target_mapset_exists()
         if self.target_mapset_exists is False:
             raise AsyncProcessError(
-                ("Unable to unlock mapset <%s> in location <%s>:"
-                 " Mapset does not exist")
-                % (self.mapset_name, self.location_name))
+                (
+                    "Unable to unlock mapset <%s> in location <%s>:"
+                    " Mapset does not exist"
+                )
+                % (self.mapset_name, self.location_name)
+            )
         else:
             self.lock_interface.unlock(self.target_mapset_lock_id)
-            self.finish_message = \
+            self.finish_message = (
                 "Mapset <%s> successfully unlocked" % self.target_mapset_name
+            )

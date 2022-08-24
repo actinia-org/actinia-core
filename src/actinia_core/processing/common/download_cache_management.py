@@ -31,19 +31,27 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 DownloadCacheSize = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral'
-     + '.download_cache_management'),
-    'DownloadCacheSize')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral"
+        + ".download_cache_management"
+    ),
+    "DownloadCacheSize",
+)
 
 DownloadCacheDelete = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.download_cache_management'),
-    'DownloadCacheDelete')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".download_cache_management"
+    ),
+    "DownloadCacheDelete",
+)
 
 
 def start_download_cache_size(*args):
