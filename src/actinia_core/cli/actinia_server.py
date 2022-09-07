@@ -31,23 +31,21 @@ the uwsgi application server.
 import argparse
 import os
 from actinia_core.endpoints import create_endpoints
-from actinia_core.health_check import health_check
-from actinia_core.version import version
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.redis_interface import connect
 from actinia_core.core.common.process_queue import create_process_queue
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis"
 
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start actinia server. A running redis server is required.')
+    parser = argparse.ArgumentParser(
+        description='Start actinia server. A running redis server is required.')
 
     parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
                         help="The IP address that should be used for the server")
@@ -60,7 +58,8 @@ def main():
 
     args = parser.parse_args()
 
-    if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(DEFAULT_CONFIG_PATH):
+    if (os.path.exists(DEFAULT_CONFIG_PATH) is True and
+            os.path.isfile(DEFAULT_CONFIG_PATH)):
         global_config.read(DEFAULT_CONFIG_PATH)
 
     # Create the endpoints based on the global config
@@ -75,7 +74,6 @@ def main():
 
     connect(*redis_args)
     del redis_args
-
 
     # Create the process queue
     create_process_queue(global_config)

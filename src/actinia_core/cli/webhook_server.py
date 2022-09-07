@@ -29,9 +29,9 @@ import argparse
 from pprint import pprint
 from flask import Flask, make_response, jsonify, request, json
 
-__license__    = "GPLv3"
-__author__     = "Soeren Gebbert, Anika Weinmann"
-__copyright__  = "Copyright 2016-2022, mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Soeren Gebbert, Anika Weinmann"
+__copyright__ = "Copyright 2016-2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
@@ -67,16 +67,19 @@ def shutdown():
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a two GET/POST endpoint '
-                                                 'which returns HTTP code 200 if called. The endpoints are: '
-                                                 ' - /webhook/finished for finished callbacks '
-                                                 ' - /webhook/update for status update callbacks')
+    parser = argparse.ArgumentParser(
+        description='Start a REST webhook server that exposes a two GET/POST endpoint '
+                    'which returns HTTP code 200 if called. The endpoints are: '
+                    ' - /webhook/finished for finished callbacks '
+                    ' - /webhook/update for status update callbacks')
 
-    parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
-                        help="The IP address that should be used for the webhook server")
+    parser.add_argument(
+        "--host", type=str, required=False, default="0.0.0.0",
+        help="The IP address that should be used for the webhook server")
 
-    parser.add_argument("--port", type=int, required=False, default=5005,
-                        help="The port that should be used for the webhook server")
+    parser.add_argument(
+        "--port", type=int, required=False, default=5005,
+        help="The port that should be used for the webhook server")
 
     args = parser.parse_args()
 

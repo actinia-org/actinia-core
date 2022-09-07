@@ -25,16 +25,16 @@
 """
 Redis Queue server custom worker
 """
-import sys
 from rq import Connection, Worker
 from redis import Redis
-import actinia_core
 # We need to append the path to the actinia_core package, since
 # flask API does not send the correct module and package paths
 # to the worker, so the workers are unable to de-serialize
 # that object that are required by the asynchronous process classes.
-from os.path import dirname
 
+# import sys
+# import actinia_core
+# from os.path import dirname
 # sys.path.append(dirname(actinia_core.__file__))
 # Integrate the fluentd logger into the logging infrastructure
 # https://github.com/fluent/fluent-logger-python
@@ -51,35 +51,38 @@ try:
     from fluent import handler
 
     has_fluent = True
-except:
+except Exception:
     print("Fluent is not available")
     has_fluent = False
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Start a single Actinia Core '
-                                                 'custom worker listening to a specific queue.'
-                                                 'It uses the logfile settings that are specified '
-                                                 'in the default Actinia Core configuration file'
-                                                 'or a file specified by an optional path.')
+    parser = argparse.ArgumentParser(
+        description='Start a single Actinia Core '
+                    'custom worker listening to a specific queue.'
+                    'It uses the logfile settings that are specified '
+                    'in the default Actinia Core configuration file'
+                    'or a file specified by an optional path.')
 
-    parser.add_argument("queue",
-                        type=str,
-                        help="The name of the queue that should be listen to by the worker")
-    parser.add_argument("-c", "--config",
-                        type=str,
-                        required=False,
-                        help="The path to the Actinia Core configuration file")
-    parser.add_argument('-q', "--quit",
-                        action='store_true',
-                        required=False,
-                        help="Wether or not the worker should exit when the queue is emptied.")
+    parser.add_argument(
+        "queue",
+        type=str,
+        help="The name of the queue that should be listen to by the worker")
+    parser.add_argument(
+        "-c", "--config",
+        type=str,
+        required=False,
+        help="The path to the Actinia Core configuration file")
+    parser.add_argument(
+        '-q', "--quit",
+        action='store_true',
+        required=False,
+        help="Wether or not the worker should exit when the queue is emptied.")
 
     args = parser.parse_args()
 
@@ -95,7 +98,9 @@ def main():
 
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
-    with Connection(Redis(conf.REDIS_QUEUE_SERVER_URL, conf.REDIS_QUEUE_SERVER_PORT, password=conf.REDIS_QUEUE_SERVER_PASSWORD)):
+    with Connection(Redis(
+            conf.REDIS_QUEUE_SERVER_URL, conf.REDIS_QUEUE_SERVER_PORT,
+            password=conf.REDIS_QUEUE_SERVER_PASSWORD)):
 
         logger = logging.getLogger('rq.worker')
         logger.setLevel(logging.ERROR)
@@ -134,6 +139,7 @@ def main():
             actinia_worker.work(burst=True)
         else:
             actinia_worker.work()
+
 
 if __name__ == '__main__':
     main()
