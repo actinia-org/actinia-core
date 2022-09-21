@@ -327,6 +327,10 @@ class ProcessingResponseModel(Schema):
             'type': 'string',
             'description': 'The unique resource id'
         },
+        'queue': {
+            'type': 'string',
+            'description': 'The name of the queue where the job is queued'
+        },
         'process_log': {
             'type': 'array',
             'items': ProcessLogModel,
@@ -1186,6 +1190,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
                                status=None,
                                user_id=None,
                                resource_id=None,
+                               queue=None,
                                iteration=None,
                                process_log=None,
                                progress=None,
@@ -1217,6 +1222,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
         status (str): One of: accepted, running, finished, error
         user_id (str): The user id
         resource_id (str): The resource id
+        queue (str): The name of the queue
         iteration (int): The iteration of the job
         process_log (dict, str, list): The log from the running GRASS module
         progress (ProgressInfoModel): Progress information
@@ -1250,6 +1256,7 @@ def create_response_from_model(response_model_class=ProcessingResponseModel,
     resp_dict = response_model_class(status=status,
                                      user_id=user_id,
                                      resource_id=resource_id,
+                                     queue=str(queue),
                                      # iteration=iteration,
                                      accept_timestamp=orig_time,
                                      accept_datetime=orig_datetime,
