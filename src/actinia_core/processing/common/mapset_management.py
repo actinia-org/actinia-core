@@ -33,44 +33,67 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 PersistentMapsetLister = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentMapsetLister')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentMapsetLister",
+)
 
 PersistentGetProjectionRegionInfo = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentGetProjectionRegionInfo')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentGetProjectionRegionInfo",
+)
 
 PersistentMapsetCreator = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentMapsetCreator')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentMapsetCreator",
+)
 
 PersistentMapsetDeleter = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentMapsetDeleter')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentMapsetDeleter",
+)
 
 PersistentGetMapsetLock = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentGetMapsetLock')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentGetMapsetLock",
+)
 
 PersistentMapsetLocker = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentMapsetLocker')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentMapsetLocker",
+)
 
 PersistentMapsetUnlocker = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.mapset_management'),
-    'PersistentMapsetUnlocker')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".mapset_management"
+    ),
+    "PersistentMapsetUnlocker",
+)
 
 
 def list_raster_mapsets(*args):

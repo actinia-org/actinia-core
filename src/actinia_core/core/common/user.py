@@ -28,27 +28,29 @@ TODO: User update must be implemented
 """
 
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (TimedJSONWebSignatureSerializer,
-                          BadSignature, SignatureExpired)
+from itsdangerous import (
+    TimedJSONWebSignatureSerializer,
+    BadSignature,
+    SignatureExpired,
+)
 from itsdangerous import JSONWebSignatureSerializer
 from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_user import redis_user_interface
 
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-USER_ROLES = ["superadmin",
-              "admin",
-              "user",
-              "guest"]
+USER_ROLES = ["superadmin", "admin", "user", "guest"]
 
 
 class ActiniaUserError(Exception):
-    """Raise this exception in case a user creation error happens
-    """
+    """Raise this exception in case a user creation error happens"""
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
@@ -64,30 +66,37 @@ class ActiniaUser(object):
 
     db = redis_user_interface
 
-    def __init__(self, user_id, user_group=None, user_role=None,
-                 accessible_datasets={"nc_spm_08": ["PERMANENT",
-                                                    "user1",
-                                                    "landsat"],
-                                      "ECAD": ["PERMANENT"],
-                                      "latlong_wgs84": ["PERMANENT"]},
-                 accessible_modules=global_config.MODULE_ALLOW_LIST,
-                 cell_limit=global_config.MAX_CELL_LIMIT,
-                 process_num_limit=global_config.PROCESS_NUM_LIMIT,
-                 process_time_limit=global_config.PROCESS_TIME_LIMT):
+    def __init__(
+        self,
+        user_id,
+        user_group=None,
+        user_role=None,
+        accessible_datasets={
+            "nc_spm_08": ["PERMANENT", "user1", "landsat"],
+            "ECAD": ["PERMANENT"],
+            "latlong_wgs84": ["PERMANENT"],
+        },
+        accessible_modules=global_config.MODULE_ALLOW_LIST,
+        cell_limit=global_config.MAX_CELL_LIMIT,
+        process_num_limit=global_config.PROCESS_NUM_LIMIT,
+        process_time_limit=global_config.PROCESS_TIME_LIMT,
+    ):
         """Constructor
 
-        Initialize and create a user object. To commit a new user to the database,
-        set all required permissions and call the commit() function.
+        Initialize and create a user object. To commit a new user to the
+        database, set all required permissions and call the commit() function.
 
         To read the data of an existing user, simple initialize the constructor
         with the user_id and call read_from_db().
 
         Args:
-            user_id (str): The id (name, email, ..) of the user that must be unique
+            user_id (str): The id (name, email, ..) of the user that must be
+                           unique
             user_group (str): The group of the user
             user_role (str): The user role (superadmin, admin, user, guest)
             accessible_datasets (dict): Dict of location:mapset lists
-            accessible_modules (list): A list of modules that are allowed to use
+            accessible_modules (list): A list of modules that are allowed to
+                                       use
             cell_limit (int): Maximum number of cells to process
             process_num_limit (int): The maximum number of processes the user
                                      is allowed to run in a single chain
@@ -121,14 +130,15 @@ class ActiniaUser(object):
             self.set_process_time_limit(process_time_limit)
 
     def _generate_permission_dict(self):
-        """Create the permission dictionary
-        """
+        """Create the permission dictionary"""
 
-        self.permissions = {"accessible_datasets": self.accessible_datasets,
-                            "accessible_modules": self.accessible_modules,
-                            "cell_limit": self.cell_limit,
-                            "process_num_limit": self.process_num_limit,
-                            "process_time_limit": self.process_time_limit}
+        self.permissions = {
+            "accessible_datasets": self.accessible_datasets,
+            "accessible_modules": self.accessible_modules,
+            "cell_limit": self.cell_limit,
+            "process_num_limit": self.process_num_limit,
+            "process_time_limit": self.process_time_limit,
+        }
 
     def read_from_db(self):
 
@@ -161,7 +171,9 @@ class ActiniaUser(object):
         """
         if role not in USER_ROLES:
             raise ActiniaUserError(
-                "Unsupported user role <%s> supported are %s" % (role, str(USER_ROLES)))
+                "Unsupported user role <%s> supported are %s"
+                % (role, str(USER_ROLES))
+            )
         self.user_role = role
 
     def has_guest_role(self):
@@ -206,7 +218,8 @@ class ActiniaUser(object):
     def add_accessible_dataset(self, location_name, mapset_list):
         """Add a dataset to the accessible datasets
 
-        If the dataset exists, the mapsets will be extended by the provided list
+        If the dataset exists, the mapsets will be extended by the provided
+        list
 
         Args:
             location_name (str): Location name
@@ -364,7 +377,7 @@ class ActiniaUser(object):
                 continue
             string += entry + ": " + str(creds[entry]) + "\n"
 
-        return(string)
+        return string
 
     def exists(self):
         """Check if the user exists
@@ -515,9 +528,10 @@ class ActiniaUser(object):
             str:
             The auth token
         """
-        s = TimedJSONWebSignatureSerializer(global_config.SECRET_KEY,
-                                            expires_in=expiration)
-        return s.dumps({'user_id': self.user_id})
+        s = TimedJSONWebSignatureSerializer(
+            global_config.SECRET_KEY, expires_in=expiration
+        )
+        return s.dumps({"user_id": self.user_id})
 
     def commit(self):
         """Commit the user to the database
@@ -544,11 +558,13 @@ class ActiniaUser(object):
 
         self._generate_permission_dict()
 
-        ret = self.db.add(user_id=self.user_id,
-                          user_group=self.user_group,
-                          password_hash=self.password_hash,
-                          user_role=self.user_role,
-                          permissions=self.permissions)
+        ret = self.db.add(
+            user_id=self.user_id,
+            user_group=self.user_group,
+            password_hash=self.password_hash,
+            user_role=self.user_role,
+            permissions=self.permissions,
+        )
         return ret
 
     def update(self):
@@ -574,11 +590,13 @@ class ActiniaUser(object):
 
         self._generate_permission_dict()
 
-        ret = self.db.update(user_id=self.user_id,
-                             user_group=self.user_group,
-                             password_hash=self.password_hash,
-                             user_role=self.user_role,
-                             permissions=self.permissions)
+        ret = self.db.update(
+            user_id=self.user_id,
+            user_group=self.user_group,
+            password_hash=self.password_hash,
+            user_role=self.user_role,
+            permissions=self.permissions,
+        )
         return ret
 
     def hash_password(self, password):
@@ -640,32 +658,35 @@ class ActiniaUser(object):
         try:
             data = s.loads(token)
         except SignatureExpired:
-            return None    # valid token, but expired
+            return None  # valid token, but expired
         except BadSignature:
-            return None    # invalid token
-        user = ActiniaUser(data['user_id'])
+            return None  # invalid token
+        user = ActiniaUser(data["user_id"])
         if user.exists():
             return user
         return None
 
     @staticmethod
-    def create_user(user_id,
-                    user_group,
-                    password,
-                    user_role="user",
-                    accessible_datasets={"nc_spm_08": ["PERMANENT",
-                                                       "user1",
-                                                       "landsat"],
-                                         "ECAD": ["PERMANENT"],
-                                         "latlong_wgs84": ["PERMANENT"]},
-                    accessible_modules=global_config.MODULE_ALLOW_LIST,
-                    cell_limit=global_config.MAX_CELL_LIMIT,
-                    process_num_limit=global_config.PROCESS_NUM_LIMIT,
-                    process_time_limit=global_config.PROCESS_TIME_LIMT):
+    def create_user(
+        user_id,
+        user_group,
+        password,
+        user_role="user",
+        accessible_datasets={
+            "nc_spm_08": ["PERMANENT", "user1", "landsat"],
+            "ECAD": ["PERMANENT"],
+            "latlong_wgs84": ["PERMANENT"],
+        },
+        accessible_modules=global_config.MODULE_ALLOW_LIST,
+        cell_limit=global_config.MAX_CELL_LIMIT,
+        process_num_limit=global_config.PROCESS_NUM_LIMIT,
+        process_time_limit=global_config.PROCESS_TIME_LIMT,
+    ):
         """Create a new user object and initialize it
 
         Args:
-            user_id (str): The id (name, email, ..) of the user that must be unique
+            user_id (str): The id (name, email, ..) of the user that must be
+                           unique
             user_group (str): The group of the user
             user_role (str): The password
             accessible_datasets (dict): The user role (admin, user, guest)
@@ -681,14 +702,16 @@ class ActiniaUser(object):
             A new user object in case of success, or None in case of failure
 
         """
-        user = ActiniaUser(user_id=user_id,
-                           user_group=user_group,
-                           user_role=user_role,
-                           accessible_datasets=accessible_datasets,
-                           accessible_modules=accessible_modules,
-                           cell_limit=cell_limit,
-                           process_num_limit=process_num_limit,
-                           process_time_limit=process_time_limit)
+        user = ActiniaUser(
+            user_id=user_id,
+            user_group=user_group,
+            user_role=user_role,
+            accessible_datasets=accessible_datasets,
+            accessible_modules=accessible_modules,
+            cell_limit=cell_limit,
+            process_num_limit=process_num_limit,
+            process_time_limit=process_time_limit,
+        )
         user.hash_password(password)
 
         if user.commit() is True:

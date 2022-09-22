@@ -31,24 +31,35 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 PersistentRasterSTRDSLister = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_raster_management'),
-    'PersistentRasterSTRDSLister')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_raster_management"
+    ),
+    "PersistentRasterSTRDSLister",
+)
 
 PersistentRasterSTRDSRegisterer = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_raster_management'),
-    'PersistentRasterSTRDSRegisterer')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_raster_management"
+    ),
+    "PersistentRasterSTRDSRegisterer",
+)
 
 PersistentRasterSTRDSUnregisterer = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_raster_management'),
-    'PersistentRasterSTRDSUnregisterer')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_raster_management"
+    ),
+    "PersistentRasterSTRDSUnregisterer",
+)
 
 
 def list_raster_strds(*args):

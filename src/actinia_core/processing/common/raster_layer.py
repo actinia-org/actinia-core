@@ -29,24 +29,32 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 EphemeralRasterInfo = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral'
-     + '.raster_layer'),
-    'EphemeralRasterInfo')
+    ("actinia_core.processing.actinia_processing.ephemeral" + ".raster_layer"),
+    "EphemeralRasterInfo",
+)
 
 PersistentRasterDeleter = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.raster_layer'),
-    'PersistentRasterDeleter')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".raster_layer"
+    ),
+    "PersistentRasterDeleter",
+)
 
 PersistentRasterCreator = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.raster_layer'),
-    'PersistentRasterCreator')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".raster_layer"
+    ),
+    "PersistentRasterCreator",
+)
 
 
 def start_info_job(*args):

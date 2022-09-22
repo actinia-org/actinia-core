@@ -25,7 +25,7 @@ a more complete API documentation generated with Spinx was here: https://actinia
 but no longer exists
 --->
 
-The full API documentation is available [here](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json)
+The full API documentation is available [here](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json&nocors)
 
 ## actinia command execution - actinia shell
 

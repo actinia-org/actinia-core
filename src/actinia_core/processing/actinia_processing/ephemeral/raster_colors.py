@@ -28,17 +28,19 @@ TODO: Maybe more tests required, test_raster_colors.py is in place and works
 """
 
 from tempfile import NamedTemporaryFile
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralRasterColorsOutput(EphemeralProcessing):
-
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
 
@@ -50,24 +52,24 @@ class EphemeralRasterColorsOutput(EphemeralProcessing):
         self.required_mapsets.append(self.mapset_name)
 
         with NamedTemporaryFile(
-                mode="w+", suffix=".color", dir=self.temp_file_path) as file:
+            mode="w+", suffix=".color", dir=self.temp_file_path
+        ) as file:
             result_file = file.name
 
         self.request_data = {
-            "1": {
-                "module": "r.colors.out",
-                "inputs": {
-                    "map": "",
-                    "rules": ""
-                }
-            }
+            "1": {"module": "r.colors.out", "inputs": {"map": "", "rules": ""}}
         }
-        self.request_data["1"]["inputs"]["map"] = raster_name + "@" + self.mapset_name
+        self.request_data["1"]["inputs"]["map"] = (
+            raster_name + "@" + self.mapset_name
+        )
         self.request_data["1"]["inputs"]["rules"] = result_file
 
         # Run the selected modules
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            skip_permission_check=True)
+        process_list = (
+            self._create_temporary_grass_environment_and_process_list(
+                skip_permission_check=True
+            )
+        )
         self._execute_process_list(process_list)
 
         with open(result_file, "r") as file:

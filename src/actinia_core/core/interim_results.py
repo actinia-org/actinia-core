@@ -62,8 +62,7 @@ def get_directory_size(directory):
 
 
 class InterimResult(object):
-    """This class manages the interim results
-    """
+    """This class manages the interim results"""
 
     def __init__(self, user_id, resource_id, iteration):
         """Init method for InterimResult class
@@ -76,7 +75,8 @@ class InterimResult(object):
         global_config.read(DEFAULT_CONFIG_PATH)
         self.logger = MessageLogger()
         self.user_resource_interim_storage_path = os.path.join(
-            global_config.GRASS_RESOURCE_DIR, user_id, "interim")
+            global_config.GRASS_RESOURCE_DIR, user_id, "interim"
+        )
         self.saving_interim_results = global_config.SAVE_INTERIM_RESULTS
         self.resource_id = resource_id
         self.iteration = iteration if iteration is not None else 1
@@ -136,29 +136,43 @@ class InterimResult(object):
         if self.saving_interim_results is False:
             iterim_error = True
             msg = "Saving iterim results is not configured"
-        if os.path.isdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id)):
-            interim_folder = os.listdir(os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id))
+        if os.path.isdir(
+            os.path.join(
+                self.user_resource_interim_storage_path, self.resource_id
+            )
+        ):
+            interim_folder = os.listdir(
+                os.path.join(
+                    self.user_resource_interim_storage_path, self.resource_id
+                )
+            )
         else:
             iterim_error = True
             msg = "No interim results saved in previous iteration"
 
-        if (iterim_error is False
-                and (self._get_step_folder_name(pc_step) not in interim_folder
-                     or self._get_step_tmpdir_name(pc_step) not in interim_folder)):
+        if iterim_error is False and (
+            self._get_step_folder_name(pc_step) not in interim_folder
+            or self._get_step_tmpdir_name(pc_step) not in interim_folder
+        ):
             iterim_error = True
-            msg = f"No interim results saved in previous iteration for step {pc_step}"
+            msg = (
+                "No interim results saved in previous iteration for "
+                f"step {pc_step}"
+            )
         if iterim_error is True:
             self.logger.error(msg)
             return None
 
         interim_mapset = os.path.join(
-            self.user_resource_interim_storage_path, self.resource_id,
-            self._get_step_folder_name(pc_step))
+            self.user_resource_interim_storage_path,
+            self.resource_id,
+            self._get_step_folder_name(pc_step),
+        )
         interim_file_path = os.path.join(
-            self.user_resource_interim_storage_path, self.resource_id,
-            self._get_step_tmpdir_name(pc_step))
+            self.user_resource_interim_storage_path,
+            self.resource_id,
+            self._get_step_tmpdir_name(pc_step),
+        )
 
         return interim_mapset, interim_file_path
 
@@ -169,19 +183,20 @@ class InterimResult(object):
             folder2 (str): Path to another folder
 
         Returns:
-            (bool): A boolean "True" if the sha512sums of the folder are the same
-                    otherwise "False" (also if one of the folder does not exist)
+            (bool): A boolean "True" if the sha512sums of the folder are the
+                    same otherwise "False" (also if one of the folder does not
+                    exist)
         """
         for folder in [folder1, folder2]:
             if not os.path.isdir(folder):
-                self.logger.error(
-                    f"<{folder}> is no folder")
+                self.logger.error(f"<{folder}> is no folder")
                 return False
 
         # get sha512sum of the folder
         cur_working_dir = os.getcwd()
-        sha512sum_cmd = "find . -type f -exec sha512sum {} \; | " + \
-                        "sort -k 2 | sha512sum"
+        sha512sum_cmd = (
+            "find . -type f -exec sha512sum {} \; | " + "sort -k 2 | sha512sum"
+        )
         sha512sums = list()
         for folder in [folder1, folder2]:
             os.chdir(folder)
@@ -200,7 +215,8 @@ class InterimResult(object):
         """Using rsync to update the mapset folder.
         Args:
             src (str): Path of the source mapset
-            dest (str): Path to destination mapset (where to rsync the src mapset)
+            dest (str): Path to destination mapset (where to rsync the src
+                        mapset)
 
         Returns:
             (str): "success" if the rsync has worked otherwise "error"
@@ -212,33 +228,36 @@ class InterimResult(object):
             "--partial",
             "--progress",
             "--times",
-            "--exclude", ".gislock",
+            "--exclude",
+            ".gislock",
             "--delete",
             src + os.sep,
-            dest]
+            dest,
+        ]
         p_rsync = subprocess.Popen(
-            rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            rsync_cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         _, rsync_err = p_rsync.communicate()
 
-        if rsync_err.decode('utf-8') != '':
-            return 'error'
+        if rsync_err.decode("utf-8") != "":
+            return "error"
 
         # remove .gislock
-        gislock_file = os.path.join(dest, '.gislock')
+        gislock_file = os.path.join(dest, ".gislock")
         if os.path.isfile(gislock_file):
             os.remove(gislock_file)
-        return 'success'
+        return "success"
 
     def _saving_folder(self, src, dest, old_dest, progress_step):
         """Saves the src folder to the dest folder by copying the directory or
         rsyncing it
         """
         # check if directory has changed
-        same_dir = self._compare_sha512sums_of_folders(
-            old_dest, src)
+        same_dir = self._compare_sha512sums_of_folders(old_dest, src)
         if same_dir is True:
             self.logger.info(
-                "Sha512sums of maspsets are equal; renaming interim result")
+                "Sha512sums of maspsets are equal; renaming interim result"
+            )
             os.rename(old_dest, dest)
             return
 
@@ -250,16 +269,16 @@ class InterimResult(object):
         if size_curr_step > size_prev_step * 0.9:
             self.logger.info("Copy old interim result")
             shutil.copytree(old_dest, dest)
-        self.logger.info(
-            "Rsync mapset %s to interim result" % src)
+        self.logger.info("Rsync mapset %s to interim result" % src)
         rsync_status = self.rsync_mapsets(src, dest)
-        if rsync_status == 'success':
+        if rsync_status == "success":
             shutil.rmtree(old_dest)
         else:
-            raise RsyncError(
-                "Error while rsyncing of step %d" % progress_step)
+            raise RsyncError("Error while rsyncing of step %d" % progress_step)
 
-    def save_interim_results(self, progress_step, temp_mapset_path, temp_file_path):
+    def save_interim_results(
+        self, progress_step, temp_mapset_path, temp_file_path
+    ):
         """Saves the temporary mapset to the
         `user_resource_interim_storage_path` by copying the directory or
         rsyncing it
@@ -267,15 +286,18 @@ class InterimResult(object):
 
         if self.old_pc_step is not None:
             progress_step += self.old_pc_step
-        self.logger.info(
-            "Saving interim results of step %d" % progress_step)
+        self.logger.info("Saving interim results of step %d" % progress_step)
         dest_base_path = self.user_resource_interim_storage_path
         dest_mapset = os.path.join(
-            dest_base_path, self.resource_id,
-            self._get_step_folder_name(progress_step))
+            dest_base_path,
+            self.resource_id,
+            self._get_step_folder_name(progress_step),
+        )
         dest_tmpdir = os.path.join(
-            dest_base_path, self.resource_id,
-            self._get_step_tmpdir_name(progress_step))
+            dest_base_path,
+            self.resource_id,
+            self._get_step_tmpdir_name(progress_step),
+        )
 
         if progress_step == 1:
             # copy temp mapset for first step
@@ -283,18 +305,25 @@ class InterimResult(object):
             shutil.copytree(temp_file_path, dest_tmpdir)
             self.logger.info(
                 "Maspset %s and temp_file_path %s are copied"
-                % (temp_mapset_path, temp_file_path))
+                % (temp_mapset_path, temp_file_path)
+            )
         else:
             old_dest_mapset = os.path.join(
-                dest_base_path, self.resource_id,
-                self._get_step_folder_name(progress_step - 1))
+                dest_base_path,
+                self.resource_id,
+                self._get_step_folder_name(progress_step - 1),
+            )
             old_dest_tmpdir = os.path.join(
-                dest_base_path, self.resource_id,
-                self._get_step_tmpdir_name(progress_step - 1))
+                dest_base_path,
+                self.resource_id,
+                self._get_step_tmpdir_name(progress_step - 1),
+            )
 
             # saving mapset
             self._saving_folder(
-                temp_mapset_path, dest_mapset, old_dest_mapset, progress_step)
+                temp_mapset_path, dest_mapset, old_dest_mapset, progress_step
+            )
             # saving temporary file path
             self._saving_folder(
-                temp_file_path, dest_tmpdir, old_dest_tmpdir, progress_step)
+                temp_file_path, dest_tmpdir, old_dest_tmpdir, progress_step
+            )

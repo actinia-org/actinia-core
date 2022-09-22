@@ -26,15 +26,18 @@ Asynchronous computation in specific temporary generated mapsets
 with export of required map layers.
 """
 import os
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.core.stac_exporter_interface import STACExporter
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 __email__ = "info@mundialis.de"
 
@@ -44,12 +47,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
     This class processes GRASS data on the local machine in an temporary mapset
     and copies the exported results to a dedicated storage location.
 
-    The temporary mapset will be removed by this class when the processing finished
-    and the results are stored in the dedicated storage location.
+    The temporary mapset will be removed by this class when the processing
+    finished and the results are stored in the dedicated storage location.
 
     TODO: Implement the export of arbitrary files that were generated in the
           processing of the process chain
     """
+
     def __init__(self, rdc):
         """
         Setup the variables of this class
@@ -63,10 +67,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         # Create the storage interface to store the exported resources
         self.storage_interface = rdc.create_storage_interface()
 
-    def _export_raster(self, raster_name,
-                       format="COG",
-                       additional_options=[],
-                       use_raster_region=False):
+    def _export_raster(
+        self,
+        raster_name,
+        format="COG",
+        additional_options=[],
+        use_raster_region=False,
+    ):
         """Export a specific raster layer with r.out.gdal as GeoTiff.
 
         The result is stored in a temporary directory
@@ -81,7 +88,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             raster_name (str): The name of the raster layer
             format (str): COG (default; requires GDAL >= 3.1 on server), GTiff
             additional_options (list): Unused
-            use_raster_region (bool): Use the region of the raster layer for export
+            use_raster_region (bool): Use the region of the raster layer for
+                                      export
 
         Returns:
             tuple: A tuple (file_name, output_path)
@@ -97,36 +105,46 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         if use_raster_region is True:
 
-            p = Process(exec_type="grass",
-                        executable="g.region",
-                        executable_params=["raster=%s" % raster_name, "-g"],
-                        id=f"exporter_region_{raster_name}",
-                        stdin_source=None)
+            p = Process(
+                exec_type="grass",
+                executable="g.region",
+                executable_params=["raster=%s" % raster_name, "-g"],
+                id=f"exporter_region_{raster_name}",
+                stdin_source=None,
+            )
 
             self._update_num_of_steps(1)
             self._run_module(p)
 
-        if format == 'COG':
+        if format == "COG":
             # check if GDAL has COG driver
             from osgeo import gdal
-            driver_list = [gdal.GetDriver(
-                i).ShortName for i in range(gdal.GetDriverCount())]
-            if 'COG' not in driver_list:
-                format = 'GTiff'
-                self.message_logger.info("COG driver not available, using GTiff driver")
+
+            driver_list = [
+                gdal.GetDriver(i).ShortName
+                for i in range(gdal.GetDriverCount())
+            ]
+            if "COG" not in driver_list:
+                format = "GTiff"
+                self.message_logger.info(
+                    "COG driver not available, using GTiff driver"
+                )
 
         # Save the file in the temporary directory of the temporary gisdb
         output_path = os.path.join(self.temp_file_path, file_name)
 
         module_name = "r.out.gdal"
         args = [
-            "-fmt", "input=%s" % raster_name, "format=%s" %
-            format, "output=%s" % output_path]
+            "-fmt",
+            "input=%s" % raster_name,
+            "format=%s" % format,
+            "output=%s" % output_path,
+        ]
         create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW"
 
         if format == "GTiff":
             # generate overviews with compression:
-            os.environ['COMPRESS_OVERVIEW'] = "LZW"
+            os.environ["COMPRESS_OVERVIEW"] = "LZW"
             args.append("overviews=5")
             create_opts += ",TILED=YES"
 
@@ -140,11 +158,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         if additional_options:
             args.extend(additional_options)
 
-        p = Process(exec_type="grass",
-                    executable=module_name,
-                    executable_params=args,
-                    id=f"exporter_raster_{raster_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="grass",
+            executable=module_name,
+            executable_params=args,
+            id=f"exporter_raster_{raster_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_module(p)
@@ -169,9 +189,11 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         file_name = strds_name.split("@")[0] + suffix
         output_path = os.path.join(self.temp_file_path, file_name)
 
-        if format != 'GTiff':
-            format = 'GTiff'
-            self.message_logger.info("Only GTiff driver is supported for STRDS export.")
+        if format != "GTiff":
+            format = "GTiff"
+            self.message_logger.info(
+                "Only GTiff driver is supported for STRDS export."
+            )
 
         module_name = "t.rast.export"
         args = [
@@ -179,28 +201,32 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             "format=%s" % format,
             "output=%s" % output_path,
             "directory=%s" % self.temp_file_path,
-            "compression=%s" % "gzip"
+            "compression=%s" % "gzip",
         ]
         # optimized for GTiff
         create_opts = "createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES"
         args.append(create_opts)
-        os.environ['COMPRESS_OVERVIEW'] = "LZW"
+        os.environ["COMPRESS_OVERVIEW"] = "LZW"
 
-        p = Process(exec_type="grass",
-                    executable=module_name,
-                    executable_params=args,
-                    id=f"exporter_strds_{strds_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="grass",
+            executable=module_name,
+            executable_params=args,
+            id=f"exporter_strds_{strds_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_module(p)
 
         return file_name, output_path
 
-    def _export_vector(self, vector_name,
-                       format="GPKG",
-                       additional_options=[]):
-        """Export a specific vector layer with v.out.ogr using a specific output format
+    def _export_vector(
+        self, vector_name, format="GPKG", additional_options=[]
+    ):
+        """
+        Export a specific vector layer with v.out.ogr using a specific output
+        format
 
         The result is stored in a temporary directory
         that is located in the temporary grass database.
@@ -209,7 +235,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         Args:
             vector_name (str): The name of the raster layer
-            format (str): GPKG (default), GML, GeoJSON, ESRI_Shapefile, SQLite, CSV
+            format (str): GPKG (default), GML, GeoJSON, ESRI_Shapefile, SQLite,
+                          CSV
             additional_options (list): Unused
 
         Returns:
@@ -237,47 +264,59 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         # Remove a potential mapset
         file_name = vector_name.split("@")[0] + prefix
         archive_name = file_name + ".zip"
-        # switch into the temporary working directory to use relative path for zip
+        # switch into the temporary working directory to use relative path for
+        # zip
         os.chdir(self.temp_file_path)
 
         module_name = "v.out.ogr"
-        args = ["-e", "input=%s" % vector_name, "format=%s" % format,
-                "output=%s" % file_name]
+        args = [
+            "-e",
+            "input=%s" % vector_name,
+            "format=%s" % format,
+            "output=%s" % file_name,
+        ]
 
         if additional_options:
             args.extend(additional_options)
 
         # Export
-        p = Process(exec_type="grass",
-                    executable=module_name,
-                    executable_params=args,
-                    id=f"exporter_vector_{vector_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="grass",
+            executable=module_name,
+            executable_params=args,
+            id=f"exporter_vector_{vector_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_module(p)
 
         # Compression
-        compressed_output_path = os.path.join(self.temp_file_path, archive_name)
+        compressed_output_path = os.path.join(
+            self.temp_file_path, archive_name
+        )
 
         executable = "/usr/bin/zip"
         args = ["-r", archive_name, file_name]
 
-        p = Process(exec_type="exec",
-                    executable=executable,
-                    executable_params=args,
-                    id=f"exporter_zip_{vector_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="exec",
+            executable=executable,
+            executable_params=args,
+            id=f"exporter_zip_{vector_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_process(p)
 
         return archive_name, compressed_output_path
 
-    def _export_postgis(self, vector_name, dbstring,
-                        output_layer=None,
-                        additional_options=[]):
-        """Export a specific vector layer with v.out.postgis to a PostGIS database
+    def _export_postgis(
+        self, vector_name, dbstring, output_layer=None, additional_options=[]
+    ):
+        """
+        Export a specific vector layer with v.out.postgis to a PostGIS database
 
         Args:
             vector_name (str): The name of the raster layer
@@ -301,11 +340,13 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             args.extend(additional_options)
 
         # Export
-        p = Process(exec_type="grass",
-                    executable=module_name,
-                    executable_params=args,
-                    id=f"exporter_postgis_{vector_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="grass",
+            executable=module_name,
+            executable_params=args,
+            id=f"exporter_postgis_{vector_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_module(p)
@@ -319,7 +360,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         The output file will always be compressed using zip
 
         Args:
-            tmp_file (str): The name of the temporary file generated by a module
+            tmp_file (str): The name of the temporary file generated by a
+                            module
             file_name (str): The file name to be used for export
 
         Returns:
@@ -331,20 +373,25 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
         # Export the file
         archive_name = file_name + ".zip"
-        # switch into the temporary working directory to use relative path for zip
+        # switch into the temporary working directory to use relative path for
+        # zip
         os.chdir(self.temp_file_path)
 
         # Compression
-        compressed_output_path = os.path.join(self.temp_file_path, archive_name)
+        compressed_output_path = os.path.join(
+            self.temp_file_path, archive_name
+        )
 
         executable = "/usr/bin/zip"
         args = ["-r", archive_name, tmp_file]
 
-        p = Process(exec_type="exec",
-                    executable=executable,
-                    executable_params=args,
-                    id=f"exporter_file_{file_name}",
-                    stdin_source=None)
+        p = Process(
+            exec_type="exec",
+            executable=executable,
+            executable_params=args,
+            id=f"exporter_file_{file_name}",
+            stdin_source=None,
+        )
 
         self._update_num_of_steps(1)
         self._run_process(p)
@@ -352,7 +399,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         return archive_name, compressed_output_path
 
     def _export_resources(self, use_raster_region=False):
-        """Export all resources that were listed in the process chain description.
+        """
+        Export all resources that were listed in the process chain description.
 
         Save all exported files in a temporary directory first, then copy the
         data to its destination after the export is finished.
@@ -364,17 +412,26 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         for resource in self.resource_export_list:
 
-            # print("Check for termination %i"
-            # % self.resource_logger.get_termination(self.user_id, self.resource_id))
-
             # Check for termination requests between the exports
-            if bool(self.resource_logger.get_termination(
-                    self.user_id, self.resource_id, self.iteration)) is True:
+            if (
+                bool(
+                    self.resource_logger.get_termination(
+                        self.user_id, self.resource_id, self.iteration
+                    )
+                )
+                is True
+            ):
                 raise AsyncProcessTermination(
-                    "Resource export was terminated by user request")
+                    "Resource export was terminated by user request"
+                )
 
             # Raster export
-            if resource["export"]["type"] in ["raster", "vector", "file", "strds"]:
+            if resource["export"]["type"] in [
+                "raster",
+                "vector",
+                "file",
+                "strds",
+            ]:
 
                 output_type = resource["export"]["type"]
                 output_path = None
@@ -387,12 +444,15 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
                 if output_type == "raster":
                     message = "Export raster layer <%s> with format %s" % (
-                        file_name, resource["export"]["format"])
+                        file_name,
+                        resource["export"]["format"],
+                    )
                     self._send_resource_update(message)
                     output_name, output_path = self._export_raster(
                         raster_name=file_name,
                         format=resource["export"]["format"],
-                        use_raster_region=use_raster_region)
+                        use_raster_region=use_raster_region,
+                    )
 
                 elif output_type == "vector":
                     if "PostgreSQL" in resource["export"]["format"]:
@@ -401,35 +461,47 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         if "output_layer" in resource["export"]:
                             output_layer = resource["export"]["output_layer"]
 
-                        message = "Export vector layer <%s> to PostgreSQL database" % (
-                            file_name)
+                        message = (
+                            "Export vector layer <%s> to PostgreSQL database"
+                            % (file_name)
+                        )
                         self._send_resource_update(message)
                         self._export_postgis(
-                            vector_name=file_name, dbstring=dbstring,
-                            output_layer=output_layer)
+                            vector_name=file_name,
+                            dbstring=dbstring,
+                            output_layer=output_layer,
+                        )
                         # continue
                     else:
                         message = "Export vector layer <%s> with format %s" % (
-                            file_name, resource["export"]["format"])
+                            file_name,
+                            resource["export"]["format"],
+                        )
                         self._send_resource_update(message)
                         output_name, output_path = self._export_vector(
                             vector_name=file_name,
-                            format=resource["export"]["format"])
+                            format=resource["export"]["format"],
+                        )
                 elif output_type == "file":
                     file_name = resource["file_name"]
                     tmp_file = resource["tmp_file"]
                     output_name, output_path = self._export_file(
-                        tmp_file=tmp_file, file_name=file_name)
+                        tmp_file=tmp_file, file_name=file_name
+                    )
                 elif output_type == "strds":
                     message = "Export strds layer <%s> with format %s" % (
-                        file_name, resource["export"]["format"])
+                        file_name,
+                        resource["export"]["format"],
+                    )
                     self._send_resource_update(message)
                     output_name, output_path = self._export_strds(
                         strds_name=file_name,
-                        format=resource["export"]["format"])
+                        format=resource["export"]["format"],
+                    )
                 else:
                     raise AsyncProcessTermination(
-                        "Unknown export format %s" % output_type)
+                        "Unknown export format %s" % output_type
+                    )
 
                 message = "Moving generated resources to final destination"
                 self._send_resource_update(message)
@@ -437,15 +509,18 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 # Store the temporary file in the resource storage
                 # and receive the resource URL
                 if output_path is not None:
-                    resource_url = self.storage_interface.store_resource(output_path)
+                    resource_url = self.storage_interface.store_resource(
+                        output_path
+                    )
                     self.resource_url_list.append(resource_url)
 
                     if "metadata" in resource:
                         if resource["metadata"]["format"] == "STAC":
                             stac = STACExporter()
 
-                            stac_catalog = stac.stac_builder(resource_url, file_name,
-                                                             output_type)
+                            stac_catalog = stac.stac_builder(
+                                resource_url, file_name, output_type
+                            )
                             self.resource_url_list.append(stac_catalog)
 
     def _execute(self, skip_permission_check=False):
@@ -474,7 +549,8 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         self._export_resources()
 
     def _final_cleanup(self):
-        """Overwrite this function in subclasses to perform the final cleanup
+        """
+        Overwrite this function in subclasses to perform the final cleanup
         """
         # Clean up and remove the temporary gisdbase
         self._cleanup()
