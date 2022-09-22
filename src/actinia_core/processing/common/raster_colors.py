@@ -29,17 +29,21 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 EphemeralRasterColorsOutput = try_import(
-    'actinia_core.processing.actinia_processing.ephemeral.raster_colors',
-    'EphemeralRasterColorsOutput')
+    "actinia_core.processing.actinia_processing.ephemeral.raster_colors",
+    "EphemeralRasterColorsOutput",
+)
 
 PersistentRasterColorsRules = try_import(
-    'actinia_core.processing.actinia_processing.persistent.raster_colors',
-    'PersistentRasterColorsRules')
+    "actinia_core.processing.actinia_processing.persistent.raster_colors",
+    "PersistentRasterColorsRules",
+)
 
 
 def start_job_colors_out(*args):

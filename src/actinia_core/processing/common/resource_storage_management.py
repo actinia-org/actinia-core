@@ -31,19 +31,27 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 ResourceStorageSize = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral'
-     + '.resource_storage_management'),
-    'ResourceStorageSize')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral"
+        + ".resource_storage_management"
+    ),
+    "ResourceStorageSize",
+)
 
 ResourceStorageDelete = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.resource_storage_management'),
-    'ResourceStorageDelete')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".resource_storage_management"
+    ),
+    "ResourceStorageDelete",
+)
 
 
 def start_resource_storage_size(*args):

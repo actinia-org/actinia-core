@@ -26,43 +26,123 @@ Landsat processing commands
 """
 import os
 from .process_object import Process
-from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
+from actinia_core.core.geodata_download_importer import (
+    GeoDataDownloadImportSupport,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-SUPPORTED_MIMETYPES = ["application/zip", "application/tiff", "application/gml"]
+SUPPORTED_MIMETYPES = [
+    "application/zip",
+    "application/tiff",
+    "application/gml",
+]
 
 SCENE_SUFFIXES = {
     "LT04": [
-        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF",
-        "_B7.TIF", "_MTL.txt"],
+        "_B1.TIF",
+        "_B2.TIF",
+        "_B3.TIF",
+        "_B4.TIF",
+        "_B5.TIF",
+        "_B6.TIF",
+        "_B7.TIF",
+        "_MTL.txt",
+    ],
     "LT05": [
-        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF",
-        "_B7.TIF", "_MTL.txt"],
+        "_B1.TIF",
+        "_B2.TIF",
+        "_B3.TIF",
+        "_B4.TIF",
+        "_B5.TIF",
+        "_B6.TIF",
+        "_B7.TIF",
+        "_MTL.txt",
+    ],
     "LE07": [
-        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6_VCID_2.TIF",
-        "_B6_VCID_1.TIF", "_B7.TIF", "_B8.TIF", "_MTL.txt"],
+        "_B1.TIF",
+        "_B2.TIF",
+        "_B3.TIF",
+        "_B4.TIF",
+        "_B5.TIF",
+        "_B6_VCID_2.TIF",
+        "_B6_VCID_1.TIF",
+        "_B7.TIF",
+        "_B8.TIF",
+        "_MTL.txt",
+    ],
     "LC08": [
-        "_B1.TIF", "_B2.TIF", "_B3.TIF", "_B4.TIF", "_B5.TIF", "_B6.TIF", "_B7.TIF",
-        "_B8.TIF", "_B9.TIF", "_B10.TIF", "_B11.TIF", "_MTL.txt"]}
+        "_B1.TIF",
+        "_B2.TIF",
+        "_B3.TIF",
+        "_B4.TIF",
+        "_B5.TIF",
+        "_B6.TIF",
+        "_B7.TIF",
+        "_B8.TIF",
+        "_B9.TIF",
+        "_B10.TIF",
+        "_B11.TIF",
+        "_MTL.txt",
+    ],
+}
 
 RASTER_SUFFIXES = {
     "LT04": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
     "LT05": [".1", ".2", ".3", ".4", ".5", ".6", ".7"],
     "LE07": [".1", ".2", ".3", ".4", ".5", ".61", ".62", ".7", ".8"],
-    "LC08": [".1", ".2", ".3", ".4", ".5", ".6", ".7", ".8", ".9", ".10", ".11"]}
+    "LC08": [
+        ".1",
+        ".2",
+        ".3",
+        ".4",
+        ".5",
+        ".6",
+        ".7",
+        ".8",
+        ".9",
+        ".10",
+        ".11",
+    ],
+}
 
 
-SCENE_BANDS = {"LT04": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
-               "LT05": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
-               "LE07": ["B1", "B2", "B3", "B4", "B5", "B6_VCID_2",
-                        "B6_VCID_1", "B7", "B8", "MTL"],
-               "LC08": ["B1", "B2", "B3", "B4", "B5", "B6", "B7",
-                        "B8", "B9", "B10", "B11", "MTL"]}
+SCENE_BANDS = {
+    "LT04": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+    "LT05": ["B1", "B2", "B3", "B4", "B5", "B6", "B7", "MTL"],
+    "LE07": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6_VCID_2",
+        "B6_VCID_1",
+        "B7",
+        "B8",
+        "MTL",
+    ],
+    "LC08": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B5",
+        "B6",
+        "B7",
+        "B8",
+        "B9",
+        "B10",
+        "B11",
+        "MTL",
+    ],
+}
 
 
 def extract_sensor_id_from_scene_id(scene_id):
@@ -76,7 +156,7 @@ def extract_sensor_id_from_scene_id(scene_id):
         The sencor id
 
     """
-    return scene_id.split('_')[0]
+    return scene_id.split("_")[0]
 
 
 def scene_id_to_google_url(scene_id, suffix):
@@ -98,21 +178,34 @@ def scene_id_to_google_url(scene_id, suffix):
 
     # Create the download URL components from the Landsat scene id
     landsat_sensor_id = extract_sensor_id_from_scene_id(scene_id)
-    path = scene_id.split('_')[2][:3]
-    row = scene_id.split('_')[2][3:]
+    path = scene_id.split("_")[2][:3]
+    row = scene_id.split("_")[2][3:]
 
     url = (
-        "https://storage.googleapis.com/gcp-public-data-landsat/%s/01/%s/%s/%s/%s%s"
-        % (landsat_sensor_id, path, row, scene_id, scene_id, suffix))
+        "https://storage.googleapis.com/gcp-public-data-landsat/"
+        f"{landsat_sensor_id}/01/{path}/{row}/{scene_id}/{scene_id}{suffix}"
+    )
     return url
 
 
 def datetime_to_grass_datetime_string(dt):
-    """Convert a python datetime object into a GRASS datetime string
-    """
+    """Convert a python datetime object into a GRASS datetime string"""
     # GRASS datetime month names
-    month_names = ["", "jan", "feb", "mar", "apr", "may", "jun",
-                   "jul", "aug", "sep", "oct", "nov", "dec"]
+    month_names = [
+        "",
+        "jan",
+        "feb",
+        "mar",
+        "apr",
+        "may",
+        "jun",
+        "jul",
+        "aug",
+        "sep",
+        "oct",
+        "nov",
+        "dec",
+    ]
 
     # Check for time zone info in the datetime object
     if dt.tzinfo is not None:
@@ -123,33 +216,51 @@ def datetime_to_grass_datetime_string(dt):
         else:
             tz = tz.seconds / 60
 
-        string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (dt.day,
-                                                        month_names[dt.month],
-                                                        dt.year, dt.hour,
-                                                        dt.minute, dt.second,
-                                                        tz)
+        string = "%.2i %s %.2i %.2i:%.2i:%.2i %+.4i" % (
+            dt.day,
+            month_names[dt.month],
+            dt.year,
+            dt.hour,
+            dt.minute,
+            dt.second,
+            tz,
+        )
     else:
-        string = "%.2i %s %.4i %.2i:%.2i:%.2i" % (dt.day, month_names[
-            dt.month], dt.year, dt.hour, dt.minute, dt.second)
+        string = "%.2i %s %.4i %.2i:%.2i:%.2i" % (
+            dt.day,
+            month_names[dt.month],
+            dt.year,
+            dt.hour,
+            dt.minute,
+            dt.second,
+        )
 
     return string
 
 
 class LandsatProcessing(GeoDataDownloadImportSupport):
-    """
-    """
-    def __init__(self, config, scene_id, temp_file_path,
-                 download_cache, send_resource_update, message_logger):
-        """ A collection of functions to generate Landsat4-8 scene related import
-        and processing commands. Each function returns a process chain that can
-        be executed by the async processing classes.
+    """"""
+
+    def __init__(
+        self,
+        config,
+        scene_id,
+        temp_file_path,
+        download_cache,
+        send_resource_update,
+        message_logger,
+    ):
+        """A collection of functions to generate Landsat4-8 scene related
+        import and processing commands. Each function returns a process chain
+        that can be executed by the async processing classes.
 
         Args:
             config: The Actinia Core configuration object
-            scene_id (str): The scene id for which all bands should be downloaded
-            temp_file_path: The path to the temporary directory to store temporary
-                            files. It is assumed that this path is available when
-                            the generated commands are executed.
+            scene_id (str): The scene id for which all bands should be
+                            downloaded
+            temp_file_path: The path to the temporary directory to store
+                            temporary files. It is assumed that this path is
+                            available when the generated commands are executed.
             download_cache (str): The path to the download cache
             send_resource_update: The function to call for resource updates
             message_logger: The message logger to be used
@@ -157,8 +268,14 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         """
 
         GeoDataDownloadImportSupport.__init__(
-            self, config, temp_file_path, download_cache,
-            send_resource_update, message_logger, None)
+            self,
+            config,
+            temp_file_path,
+            download_cache,
+            send_resource_update,
+            message_logger,
+            None,
+        )
 
         self.scene_id = scene_id
         self.landsat_sensor_id = None
@@ -168,17 +285,18 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         self.ndvi_name = None
 
     def _setup(self):
-        """Setup the download of the required Landsat scene from the Google Cloud
+        """
+        Setup the download of the required Landsat scene from the Google Cloud
         Storage.
 
         Check the download cache if the file already exists, to avoid redundant
-        downloads. The downloaded files will be stored in a temporary directory.
-        After the download of all files completes, the downloaded files will be
-        moved to the download cache. This avoids broken files in case a download
-        was interrupted or stopped by termination.
+        downloads. The downloaded files will be stored in a temporary
+        directory. After the download of all files completes, the downloaded
+        files will be moved to the download cache. This avoids broken files in
+        case a download was interrupted or stopped by termination.
 
-        This method uses wget to gather the landsat scenes from the Google Cloud Storage
-        landsat archive using public https address.
+        This method uses wget to gather the landsat scenes from the Google
+        Cloud Storage landsat archive using public https address.
         """
 
         GeoDataDownloadImportSupport._setup(self)
@@ -208,12 +326,16 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         for file_path in self.file_list:
             if "_MTL.TXT" not in file_path.upper():
                 raster_name = "%s%s" % (
-                    self.scene_id, RASTER_SUFFIXES[self.landsat_sensor_id][count])
+                    self.scene_id,
+                    RASTER_SUFFIXES[self.landsat_sensor_id][count],
+                )
                 self.raster_names.append(raster_name)
                 self.band_raster_names[
-                    SCENE_BANDS[self.landsat_sensor_id][count]] = raster_name
-                p = self.get_raster_import_command(file_path=file_path,
-                                                   raster_name=raster_name)
+                    SCENE_BANDS[self.landsat_sensor_id][count]
+                ] = raster_name
+                p = self.get_raster_import_command(
+                    file_path=file_path, raster_name=raster_name
+                )
                 import_commands.append(p)
                 count += 1
 
@@ -231,56 +353,96 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
 
         toar_commands = []
 
-        p = Process(exec_type="grass", executable="i.landsat.toar",
-                    executable_params=[
-                        "input=%s." % self.scene_id,
-                        "metfile=%s_%s" % (
-                            os.path.join(
-                                self.user_download_cache_path, self.scene_id),
-                            "MTL.txt"),
-                        "method=%s" % option,
-                        "output=%s_%s." % (self.scene_id, atcor_method),
-                        "--q"],
-                    id=f"top_of_atmosphere_{self.scene_id}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="i.landsat.toar",
+            executable_params=[
+                "input=%s." % self.scene_id,
+                "metfile=%s_%s"
+                % (
+                    os.path.join(self.user_download_cache_path, self.scene_id),
+                    "MTL.txt",
+                ),
+                "method=%s" % option,
+                "output=%s_%s." % (self.scene_id, atcor_method),
+                "--q",
+            ],
+            id=f"top_of_atmosphere_{self.scene_id}",
+            skip_permission_check=True,
+        )
         toar_commands.append(p)
         return toar_commands
 
     def get_i_vi_process_list(self, atcor_method, processing_method):
 
-        self.ndvi_name = "%s_%s_%s" % (self.scene_id, atcor_method, processing_method)
+        self.ndvi_name = "%s_%s_%s" % (
+            self.scene_id,
+            atcor_method,
+            processing_method,
+        )
 
         ndvi_commands = []
 
         ivi = "i.vi"
         ivi_params = list()
         if self.landsat_sensor_id == "LC08":
-            ivi_params.append("red=%s_%s%s" % (self.scene_id, atcor_method, ".4"))
-            ivi_params.append("nir=%s_%s%s" % (self.scene_id, atcor_method, ".5"))
-            ivi_params.append("green=%s_%s%s" % (self.scene_id, atcor_method, ".3"))
-            ivi_params.append("blue=%s_%s%s" % (self.scene_id, atcor_method, ".2"))
-            ivi_params.append("band5=%s_%s%s" % (self.scene_id, atcor_method, ".7"))
-            ivi_params.append("band7=%s_%s%s" % (self.scene_id, atcor_method, ".8"))
+            ivi_params.append(
+                "red=%s_%s%s" % (self.scene_id, atcor_method, ".4")
+            )
+            ivi_params.append(
+                "nir=%s_%s%s" % (self.scene_id, atcor_method, ".5")
+            )
+            ivi_params.append(
+                "green=%s_%s%s" % (self.scene_id, atcor_method, ".3")
+            )
+            ivi_params.append(
+                "blue=%s_%s%s" % (self.scene_id, atcor_method, ".2")
+            )
+            ivi_params.append(
+                "band5=%s_%s%s" % (self.scene_id, atcor_method, ".7")
+            )
+            ivi_params.append(
+                "band7=%s_%s%s" % (self.scene_id, atcor_method, ".8")
+            )
         else:
-            ivi_params.append("red=%s_%s%s" % (self.scene_id, atcor_method, ".3"))
-            ivi_params.append("nir=%s_%s%s" % (self.scene_id, atcor_method, ".4"))
-            ivi_params.append("green=%s_%s%s" % (self.scene_id, atcor_method, ".2"))
-            ivi_params.append("blue=%s_%s%s" % (self.scene_id, atcor_method, ".1"))
-            ivi_params.append("band5=%s_%s%s" % (self.scene_id, atcor_method, ".5"))
-            ivi_params.append("band7=%s_%s%s" % (self.scene_id, atcor_method, ".7"))
+            ivi_params.append(
+                "red=%s_%s%s" % (self.scene_id, atcor_method, ".3")
+            )
+            ivi_params.append(
+                "nir=%s_%s%s" % (self.scene_id, atcor_method, ".4")
+            )
+            ivi_params.append(
+                "green=%s_%s%s" % (self.scene_id, atcor_method, ".2")
+            )
+            ivi_params.append(
+                "blue=%s_%s%s" % (self.scene_id, atcor_method, ".1")
+            )
+            ivi_params.append(
+                "band5=%s_%s%s" % (self.scene_id, atcor_method, ".5")
+            )
+            ivi_params.append(
+                "band7=%s_%s%s" % (self.scene_id, atcor_method, ".7")
+            )
 
         ivi_params.append("viname=%s" % processing_method.lower())
         ivi_params.append("output=%s" % self.ndvi_name)
 
-        p = Process(exec_type="grass", executable=ivi, executable_params=ivi_params,
-                    id=f"i_vi_{processing_method.lower()}_{self.ndvi_name}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable=ivi,
+            executable_params=ivi_params,
+            id=f"i_vi_{processing_method.lower()}_{self.ndvi_name}",
+            skip_permission_check=True,
+        )
         ndvi_commands.append(p)
 
-        p = Process(exec_type="grass", executable="r.colors",
-                    executable_params=["map=%s" % self.ndvi_name, "color=ndvi"],
-                    id=f"set_colors_{processing_method.lower()}_{self.ndvi_name}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="r.colors",
+            executable_params=["map=%s" % self.ndvi_name, "color=ndvi"],
+            id=f"set_colors_{processing_method.lower()}_{self.ndvi_name}",
+            skip_permission_check=True,
+        )
         ndvi_commands.append(p)
 
         return ndvi_commands

@@ -29,7 +29,9 @@ from actinia_core.core.common.redis_base import RedisBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -96,7 +98,8 @@ class RedisResourceInterface(RedisBaseInterface):
                |-----------------------------------> Set termination entry
                |                |                         |
                |           Request status ---------> Read termination entry
-               |           Terminate job  ---------> Update entry set terminated
+               |           Terminate job  ---------> Update entry set
+                                                     terminated
                |                |                         |
                |---------> Status?                        |
                |           Request status ---------> Read entry
@@ -124,25 +127,30 @@ class RedisResourceInterface(RedisBaseInterface):
         Args:
             resource_id (str): The unique id of the resource
             resource_entry (str): The entry that should be put in the database
-            expiration (int): The time in seconds when this resource should expire
+            expiration (int): The time in seconds when this resource should
+                              expire
 
         """
-        return self.redis_server.setex(self.resource_id_prefix + resource_id,
-                                       expiration, resource_entry)
+        return self.redis_server.setex(
+            self.resource_id_prefix + resource_id, expiration, resource_entry
+        )
 
     def set_termination(self, resource_id, expiration=3600):
         """Set or update a resource termination entry
 
-        The running job will check for termination periodically and will terminate
-        the job if an entry exists.
+        The running job will check for termination periodically and will
+        terminate the job if an entry exists.
 
         Args:
-            resource_id (str): The unique id of the resource that should be terminated
-            expiration (int): The time in seconds when this resource should expire
+            resource_id (str): The unique id of the resource that should be
+                               terminated
+            expiration (int): The time in seconds when this resource should
+                              expire
 
         """
         return self.redis_server.setex(
-            self.resource_id_termination_prefix + resource_id, expiration, 1)
+            self.resource_id_termination_prefix + resource_id, expiration, 1
+        )
 
     def get(self, resource_id):
         """Get the resource entry if exists
@@ -168,11 +176,13 @@ class RedisResourceInterface(RedisBaseInterface):
             The list of the matching kesy
         """
         values = self.redis_server.scan_iter(
-            self.resource_id_prefix + resource_id_pattern)
+            self.resource_id_prefix + resource_id_pattern
+        )
         resource_keys = list()
         for val in values:
-            resource_keys.append(val.decode("utf-8").replace(
-                self.resource_id_prefix, ''))
+            resource_keys.append(
+                val.decode("utf-8").replace(self.resource_id_prefix, "")
+            )
         return resource_keys
 
     def get_list(self, regexpr):
@@ -206,8 +216,11 @@ class RedisResourceInterface(RedisBaseInterface):
             bool:
             True or False
         """
-        return bool(self.redis_server.get(
-            self.resource_id_termination_prefix + resource_id))
+        return bool(
+            self.redis_server.get(
+                self.resource_id_termination_prefix + resource_id
+            )
+        )
 
     def get_termination_list(self, regexpr):
         """Get a list of termination resource entries if exists
@@ -220,7 +233,8 @@ class RedisResourceInterface(RedisBaseInterface):
             A list of resource entries
         """
         term_key_list = self.redis_server.keys(
-            self.resource_id_termination_prefix + regexpr)
+            self.resource_id_termination_prefix + regexpr
+        )
 
         resource_list = []
         if term_key_list:
@@ -246,7 +260,8 @@ class RedisResourceInterface(RedisBaseInterface):
 
         """
         return self.redis_server.delete(
-            self.resource_id_termination_prefix + resource_id)
+            self.resource_id_termination_prefix + resource_id
+        )
 
 
 # Create the Redis interface instance
@@ -336,13 +351,14 @@ def test_resource_entries(r):
         raise Exception("set_termination does not work")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import signal
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
+        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+    )
 
     time.sleep(1)
 

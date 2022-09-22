@@ -29,23 +29,28 @@ import redis
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
-__credits__ = ["Thünen Institutes of Climate-Smart Agriculture",
-               "https://www.ti.bund.de/en/ak/"]
+__credits__ = [
+    "Thünen Institutes of Climate-Smart Agriculture",
+    "https://www.ti.bund.de/en/ak/",
+]
 
 
 class RedisLockingInterface(object):
     """
     The Redis locking database interface
     """
+
     # Redis LUA script to lock e resource
-    # Two keys must be provided, the name of the resource and the expiration time
-    # in seconds
+    # Two keys must be provided, the name of the resource and the expiration
+    # time in seconds
     # lock_resource("location/mapset", 30)
-    # Return 1 for success and 0 for unable to acquire lock because resource-lock
-    # already exists
+    # Return 1 for success and 0 for unable to acquire lock because
+    # resource-lock already exists
     lua_lock_resource = """
     local value_exists = redis.call('EXISTS', KEYS[1])
     if value_exists == 0 then
@@ -56,8 +61,8 @@ class RedisLockingInterface(object):
     """
 
     # LUA script to extend the lock valid time
-    # Two keys must be provided, the name of the resource and the expiration time
-    # in seconds
+    # Two keys must be provided, the name of the resource and the expiration
+    # time in seconds
     # extend_resource_lock("user/location/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
@@ -82,7 +87,8 @@ class RedisLockingInterface(object):
     end
     """
 
-    # Locks are Key-Value pairs in the Redis database using SET and DEl for management
+    # Locks are Key-Value pairs in the Redis database using SET and DEl for
+    # management
     lock_prefix = "RESOURCE-LOCK::"
 
     def __init__(self):
@@ -102,32 +108,34 @@ class RedisLockingInterface(object):
 
         """
         kwargs = dict()
-        kwargs['host'] = host
-        kwargs['port'] = port
+        kwargs["host"] = host
+        kwargs["port"] = port
         if password and password is not None:
-            kwargs['password'] = password
+            kwargs["password"] = password
         self.connection_pool = redis.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = redis.StrictRedis(connection_pool=self.connection_pool)
+        self.redis_server = redis.StrictRedis(
+            connection_pool=self.connection_pool
+        )
 
         # Register the resource lock scripts in Redis
         self.call_lock_resource = self.redis_server.register_script(
-            self.lua_lock_resource)
+            self.lua_lock_resource
+        )
         self.call_extend_resource_lock = self.redis_server.register_script(
-            self.lua_extend_resource_lock)
+            self.lua_extend_resource_lock
+        )
         self.call_unlock_resource = self.redis_server.register_script(
-            self.lua_unlock_resource)
+            self.lua_unlock_resource
+        )
 
     def disconnect(self):
         self.connection_pool.disconnect()
 
     """
-    ########################## LOCK ###########################################
-    """
-
-    """
-    The lock mechanism can be used to avoid concurrent access to GRASS GIS mapsets
-    by several processes. A mapset has a unique id:
+    LOCK
+    The lock mechanism can be used to avoid concurrent access to GRASS GIS
+    mapsets by several processes. A mapset has a unique id:
 
         location/mapset
 
@@ -163,17 +171,17 @@ class RedisLockingInterface(object):
         Args:
             resource_id (str): Name of the resource to lock, for example
                                "location/mapset"
-            expiration (int): The time in seconds for which the lock is acquired
+            expiration (int): The time in seconds for which the lock is
+                              acquired
 
         Returns:
              int:
-             1 for success and 0 if unable to acquire lock because resource-lock
-             already exists
+             1 for success and 0 if unable to acquire lock because
+             resource-lock already exists
 
         """
 
         keys = [self.lock_prefix + str(resource_id), expiration]
-        # print("Lock", expiration, self.lock_prefix + str(resource_id), str(self))
         return self.call_lock_resource(keys=keys)
 
     def extend(self, resource_id, expiration=30):
@@ -184,14 +192,15 @@ class RedisLockingInterface(object):
         in the Redis database.
 
         Args:
-            resource_id (str): Name of the resource to extent the lock, for example
-                               "location/mapset"
-            expiration (int): The time in seconds for which the lock is acquired
+            resource_id (str): Name of the resource to extent the lock, for
+                               example "location/mapset"
+            expiration (int): The time in seconds for which the lock is
+                              acquired
 
         Returns:
             int:
-            1 for success and 0 if unable to extent the lock because resource does
-            not exists
+            1 for success and 0 if unable to extent the lock because resource
+            does not exists
 
         """
         keys = [self.lock_prefix + str(resource_id), expiration]
@@ -207,15 +216,17 @@ class RedisLockingInterface(object):
         in the Redis database.
 
         Args:
-            resource_id (str): Name of the resource to remove the lock, for example
-                               "location/mapset"
+            resource_id (str): Name of the resource to remove the lock, for
+                               example "location/mapset"
 
         Returns:
             int:
             1 for success and 0 if unable to unlock
 
         """
-        keys = [self.lock_prefix + str(resource_id), ]
+        keys = [
+            self.lock_prefix + str(resource_id),
+        ]
         # print("UnLock", self.lock_prefix + str(resource_id), str(self))
         return self.call_unlock_resource(keys=keys)
 
@@ -262,12 +273,14 @@ def test_locking(r):
         raise Exception("extend_resource_lock does not work")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import signal
     import time
 
-    pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
+    pid = os.spawnl(
+        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+    )
 
     time.sleep(1)
 

@@ -29,19 +29,21 @@ TODO: Integrate into the ephemeral process chain approach
 
 import os
 import shutil
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+    PersistentProcessing,
+)
 from actinia_core.core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class PersistentLocationCreator(PersistentProcessing):
-    """Create a new location based on EPSG code
-    """
+    """Create a new location based on EPSG code"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -58,23 +60,36 @@ class PersistentLocationCreator(PersistentProcessing):
 
         self._create_temp_database()
 
-        pc = {"1": {"module": "g.proj",
-                    "inputs": {"epsg": epsg_code,
-                               "location": new_location},
-                    "flags": "t"}}
+        pc = {
+            "1": {
+                "module": "g.proj",
+                "inputs": {"epsg": epsg_code, "location": new_location},
+                "flags": "t",
+            }
+        }
 
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
 
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name="PERMANENT")
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base, mapset_name="PERMANENT"
+        )
 
         self._execute_process_list(process_list)
 
-        if os.path.isdir(os.path.join(self.temp_grass_data_base, new_location)):
-            shutil.move(os.path.join(self.temp_grass_data_base,
-                        new_location), self.grass_user_data_base)
+        if os.path.isdir(
+            os.path.join(self.temp_grass_data_base, new_location)
+        ):
+            shutil.move(
+                os.path.join(self.temp_grass_data_base, new_location),
+                self.grass_user_data_base,
+            )
         else:
-            raise AsyncProcessError("Unable to create location <%s>" % new_location)
+            raise AsyncProcessError(
+                "Unable to create location <%s>" % new_location
+            )
 
-        self.finish_message = "Location <%s> successfully created" % new_location
+        self.finish_message = (
+            "Location <%s> successfully created" % new_location
+        )
