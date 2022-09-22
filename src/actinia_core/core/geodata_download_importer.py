@@ -391,7 +391,7 @@ class GeoDataDownloadImportSupport(object):
                     "Compression ratio is larger than 10000."
                 )
 
-            if total_sum > 2**32:
+            if total_sum > 2 ** 32:
                 raise AsyncProcessError(
                     "Files larger than 4GB are not supported in zip files."
                 )

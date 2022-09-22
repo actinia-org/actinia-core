@@ -344,7 +344,7 @@ class ProcessingResponseModel(Schema):
         },
         "queue": {
             "type": "string",
-            "description": "The name of the queue in which the job is queued"
+            "description": "The name of the queue in which the job is queued",
         },
         "process_log": {
             "type": "array",

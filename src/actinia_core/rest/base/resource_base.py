@@ -128,10 +128,12 @@ class ResourceBase(Resource):
             self.request_id = self.generate_request_id_from_resource_id()
 
         if global_config.QUEUE_TYPE == "per_job":
-            self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX,
-                                    self.resource_id,)
+            self.queue = "%s_%s" % (
+                global_config.WORKER_QUEUE_PREFIX,
+                self.resource_id,
+            )
         elif global_config.QUEUE_TYPE == "redis":
-            self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, 'count')
+            self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, "count")
         else:
             self.queue = "local"
 
