@@ -129,6 +129,9 @@ class ResourceDataContainer(object):
     def set_request_data(self, request_data):
         self.request_data = request_data
 
+    def set_queue_name(self, queue_name):
+        self.queue = queue_name
+
     def set_storage_model_to_file(self):
         self.storage_model = "file"
 

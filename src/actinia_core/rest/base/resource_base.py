@@ -127,6 +127,16 @@ class ResourceBase(Resource):
             self.resource_id = resource_id
             self.request_id = self.generate_request_id_from_resource_id()
 
+        if global_config.QUEUE_TYPE == "per_job":
+            self.queue = "%s_%s" % (
+                global_config.WORKER_QUEUE_PREFIX,
+                self.resource_id,
+            )
+        elif global_config.QUEUE_TYPE == "redis":
+            self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, "count")
+        else:
+            self.queue = "local"
+
         # set iteration and post_url
         self.iteration = iteration
         self.post_url = post_url
@@ -186,6 +196,7 @@ class ResourceBase(Resource):
             status=status,
             user_id=self.user_id,
             resource_id=self.resource_id,
+            queue=self.queue,
             iteration=self.iteration,
             process_log=None,
             results={},
@@ -360,6 +371,7 @@ class ResourceBase(Resource):
             status="accepted",
             user_id=self.user_id,
             resource_id=self.resource_id,
+            queue=self.queue,
             iteration=self.iteration,
             process_log=None,
             results={},

@@ -127,6 +127,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     global job_queues, redis_conn
     num_queues = global_config.NUMBER_OF_WORKERS
     queue_type = global_config.QUEUE_TYPE
+    queue_name = "local"
     if queue_type_overwrite:
         queue_type = global_config.QUEUE_TYPE_OVERWRITE
 
@@ -136,6 +137,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         __create_job_queue(queue_name)
         for i in job_queues:
             if i.name == queue_name:
+                args[0].set_queue_name(queue_name)
                 __enqueue_job_redis(i, timeout, func, *args)
 
     elif queue_type == "redis":
@@ -147,10 +149,12 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         # to chose for each job a different queue
         num = redis_conn.incr("actinia_worker_count", 1)
         current_queue = num % num_queues
+        args[0].set_queue_name(job_queues[current_queue].name)
         __enqueue_job_redis(job_queues[current_queue], timeout, func, *args)
 
     elif queue_type == "local":
         # __enqueue_job_local(timeout, func, *args)
+        args[0].set_queue_name(queue_name)
         enqueue_job_local(timeout, func, *args)
         return
         # Just in case the current process queue does not work
