@@ -24,7 +24,6 @@
 """
 Tests: AsyncProcess test case
 """
-import pytest
 import unittest
 from flask.json import dumps as json_dumps
 try:

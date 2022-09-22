@@ -24,6 +24,7 @@
 """
 Tests: STRDS test case
 """
+
 from pprint import pprint
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
@@ -90,7 +91,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     # ################### CREATE REGISTER ######################################
-
     def test_strds_creation_error(self):
 
         # This must fail, global mapsets are not allowed to modify
@@ -148,34 +148,34 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         min_min = json_loads(rv.data)["process_results"]["min_min"]
         max_max = json_loads(rv.data)["process_results"]["max_max"]
         num_maps = json_loads(rv.data)["process_results"]["number_of_maps"]
-        self.assertEqual(min_min, "1.0")
-        self.assertEqual(max_max, "3.0")
-        self.assertEqual(num_maps, "3")
+        self.assertEqual(min_min, "1.0", "min_min values is wrong")
+        self.assertEqual(max_max, "3.0", "max_max values is wrong")
+        self.assertEqual(num_maps, "3", "number_of_maps values is wrong")
 
         # Unregister the raster layers
         raster_layers = ["test_layer_1", "test_layer_2", "test_layer_3"]
 
-        rv = self.server.delete(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register/raster_layers" % {'location': location, 'mapset': new_mapset},
-                                data=json_dumps(raster_layers),
-                                content_type="application/json",
-                                headers=self.user_auth_header)
-        pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        rv2 = self.server.delete(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register/raster_layers" % {'location': location, 'mapset': new_mapset},
+                                 data=json_dumps(raster_layers),
+                                 content_type="application/json",
+                                 headers=self.user_auth_header)
+        pprint(json_loads(rv2.data))
+        self.assertEqual(rv2.status_code, 200, "HTML status code is wrong %i" % rv2.status_code)
+        self.assertEqual(rv2.mimetype, "application/json", "Wrong mimetype %s" % rv2.mimetype)
 
         # Check strds
-        rv = self.server.get(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register" % {'location': location, 'mapset': new_mapset},
-                             headers=self.user_auth_header)
-        pprint(json_loads(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        rv3 = self.server.get(URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register" % {'location': location, 'mapset': new_mapset},
+                              headers=self.user_auth_header)
+        pprint(json_loads(rv3.data))
+        self.assertEqual(rv3.status_code, 200, "HTML status code is wrong %i" % rv3.status_code)
+        self.assertEqual(rv3.mimetype, "application/json", "Wrong mimetype %s" % rv3.mimetype)
 
-        min_min = json_loads(rv.data)["process_results"]["min_min"]
-        max_max = json_loads(rv.data)["process_results"]["max_max"]
-        num_maps = json_loads(rv.data)["process_results"]["number_of_maps"]
-        self.assertEqual(min_min, "None")
-        self.assertEqual(max_max, "None")
-        self.assertEqual(num_maps, "0")
+        min_min = json_loads(rv3.data)["process_results"]["min_min"]
+        max_max = json_loads(rv3.data)["process_results"]["max_max"]
+        num_maps = json_loads(rv3.data)["process_results"]["number_of_maps"]
+        self.assertEqual(min_min, "None", "min_min values is not None")
+        self.assertEqual(max_max, "None", "max_max values is not None")
+        self.assertEqual(num_maps, "0", "number_of_maps values is not 0")
 
         # Delete the strds
         rv = self.server.delete(URL_PREFIX + '/locations/%(location)s/mapsets/%(mapset)s/strds/test_strds_register' % {'location': location, 'mapset': new_mapset},
@@ -185,7 +185,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
 
     # ################### LIST RASTER FROM STRDS ###############################
-
     def test_strds_raster_layer_1(self):
         rv = self.server.get(strds_url + '/%s/raster_layers' % strds_data,
                              headers=self.user_auth_header)

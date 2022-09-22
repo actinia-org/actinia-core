@@ -1399,10 +1399,12 @@ class EphemeralProcessing(object):
                                        mapset_name="PERMANENT")
 
         # Create the temporary mapset and switch into it
-        self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name,
-                                      source_mapset_name=source_mapset_name,
-                                      interim_result_mapset=interim_result_mapset,
-                                      interim_result_file_path=interim_result_file_path)
+        self._create_temporary_mapset(
+            temp_mapset_name=self.temp_mapset_name,
+            source_mapset_name=source_mapset_name,
+            interim_result_mapset=interim_result_mapset,
+            interim_result_file_path=interim_result_file_path
+        )
 
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses.

@@ -26,6 +26,7 @@ STRDS map layer management
 
 TODO: Integrate into the ephemeral process chain approach
 """
+
 from actinia_api.swagger2.actinia_core.schemas.strds_management import \
      STRDSInfoModel, STRDSInfoResponseModel
 
@@ -35,8 +36,9 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import \
     StringListProcessingResultResponseModel
 
+
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
@@ -52,27 +54,36 @@ class PersistentSTRDSLister(PersistentProcessing):
 
         self._setup()
 
-        pc = {"1": {"module": "t.list",
-                    "inputs": {"type": "strds",
-                               "column": "name"}}}
+        pc = {
+            "version": 1,
+            "list": [{
+                "module": "t.list",
+                "id": f"list_strds_{self.unique_id}",
+                "inputs": [
+                    {"param": "type", "value": "strds"},
+                    {"param": "column", "value": "name"}
+                ]
+            }]
+        }
 
         # Make sure that only the current mapset is used for strds listing
         has_where = False
 
         if self.rdc.user_data:
-            for option in self.rdc.user_data:
-                if self.rdc.user_data[option] is not None:
+            for option, val in self.rdc.user_data.items():
+                if val is not None:
                     if "where" in option:
-                        select = self.rdc.user_data[option] + \
-                            " AND mapset = \'%s\'" % self.mapset_name
-                        pc["1"]["inputs"]["where"] = select
+                        select = f"{val} AND mapset = \'{self.mapset_name}\'"
+                        pc["list"][0]["inputs"].append(
+                            {"param": "where", "value": select})
                         has_where = True
                     else:
-                        pc["1"]["inputs"][option] = self.rdc.user_data[option]
+                        pc["list"][0]["inputs"].append(
+                            {"param": option, "value": val})
 
         if has_where is False:
-            select = "mapset=\'%s\'" % self.mapset_name
-            pc["1"]["inputs"]["where"] = select
+            select = f"mapset=\'{self.mapset_name}\'"
+            pc["list"][0]["inputs"].append({"param": "where", "value": select})
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)
@@ -104,10 +115,18 @@ class PersistentSTRDSInfo(PersistentProcessing):
 
         self._setup()
 
-        pc = {"1": {"module": "t.info",
-                    "inputs": {"type": "strds",
-                               "input": self.map_name},
-                    "flags": "g"}}
+        pc = {
+            "version": 1,
+            "list": [{
+                "module": "t.info",
+                "id": f"strds_info_{self.unique_id}",
+                "inputs": [
+                    {"param": "type", "value": "strds"},
+                    {"param": "input", "value": self.map_name}
+                ],
+                "flags": "g"
+            }]
+        }
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)
@@ -143,25 +162,34 @@ class PersistentSTRDSDeleter(PersistentProcessing):
         self.required_mapsets.append(self.target_mapset_name)
 
         args = self.rdc.user_data
-
-        pc = {"1": {"module": "t.remove",
-                    "inputs": {"type": "strds",
-                               "inputs": self.map_name},
-                    "flags": "f"}}
-
+        flags = "f"
         if args and "recursive" in args and args["recursive"] is True:
-            pc["1"]["flags"] = "rf"
+            flags = "rf"
+
+        pc = {
+            "version": 1,
+            "list": [{
+                "id": f"remove_strds_{self.unique_id}",
+                "module": "t.remove",
+                "inputs": [
+                    {"param": "type", "value": "strds"},
+                    {"param": "inputs", "value": self.map_name}
+                ],
+                "flags": flags}]
+        }
 
         process_list = self._validate_process_chain(skip_permission_check=True,
                                                     process_chain=pc)
-
-        self._create_temp_database()
         self._check_lock_target_mapset()
-
         self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
                                        mapset_name=self.target_mapset_name)
+        # Init GRASS environment and create the temporary mapset
+        self._create_temporary_grass_environment(
+            source_mapset_name=self.target_mapset_name)
+        self._lock_temp_mapset()
 
         self._execute_process_list(process_list)
+        self._copy_merge_tmp_mapset_to_target_mapset()
         self.finish_message = "STRDS <%s> successfully deleted" % self.map_name
 
 
@@ -177,21 +205,38 @@ class PersistentSTRDSCreator(PersistentProcessing):
         self._setup()
         self.required_mapsets.append(self.target_mapset_name)
 
-        pc_1 = {}
-        pc_1["1"] = {"module": "t.list", "inputs": {
-            "type": "strds",
-            "where": "id = \'%s@%s\'" % (self.map_name, self.target_mapset_name)}}
+        pc_1 = {"version": 1}
+        pc_1["list"] = [{
+            "id": f"list_strds_{self.unique_id}",
+            "module": "t.list",
+            "inputs": [
+                {
+                    "param": "type",
+                    "value": "strds"
+                },
+                {
+                    "param": "where",
+                    "value": f"id = \'{self.map_name}@"
+                             f"{self.target_mapset_name}\'"
+                },
+            ]
+        }]
         # Check the first process chain
         pc_1 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_1)
 
-        pc_2 = {"1": {"module": "t.create",
-                      "inputs": {"type": "strds",
-                                 "output": self.map_name}}}
-
+        pc_2 = {
+            "version": 1,
+            "list": [{
+                "id": f"create_strds_{self.unique_id}",
+                "module": "t.create",
+                "inputs": [{"param": "type", "value": "strds"}],
+                "outputs": [{"param": "output", "value": self.map_name}]
+            }]
+        }
         if self.request_data:
-            for key in self.request_data:
-                pc_2["1"]["inputs"][key] = self.request_data[key]
+            for key, val in self.request_data.items():
+                pc_2["list"][0]["inputs"].append({"param": key, "value": val})
 
         pc_2 = self._validate_process_chain(skip_permission_check=True,
                                             process_chain=pc_2)
