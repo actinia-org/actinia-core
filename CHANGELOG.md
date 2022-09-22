@@ -21,6 +21,25 @@ https://github.com/mundialis/actinia_core/compare/4.0.0...main
 released from <branch>\
 ...
  
+## [4.3.0] - 2022-09-22
+released from main
+### Added
+* Black by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/378
+* Add job queue name to response by @mmacata in https://github.com/mundialis/actinia_core/pull/380
+
+### Fixed
+* Fix install description by @mmacata in https://github.com/mundialis/actinia_core/pull/375
+* small typo by @linakrisztian in https://github.com/mundialis/actinia_core/pull/367
+* Fix redoc rendering by @ninsbl in https://github.com/mundialis/actinia_core/pull/379
+
+## New Contributors
+* @linakrisztian made their first contribution in https://github.com/mundialis/actinia_core/pull/367
+* @ninsbl made their first contribution in https://github.com/mundialis/actinia_core/pull/379
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.1...4.3.0
+
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.3.0 -f target_commitish=main -q .body"
+ 
 ## [4.2.1] - 2022-08-05
 released from main
 ### Fixed
