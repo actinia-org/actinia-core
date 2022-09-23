@@ -137,6 +137,7 @@ class UserManagementResource(LoginBase):
                             JSON payload containing the credentials
                             of the user
         """
+        # TODO
         user = ActiniaUser(user_id)
 
         if user.exists() != 1:
@@ -182,6 +183,7 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+        # TODO
 
         user = ActiniaUser(user_id)
 
@@ -258,6 +260,7 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+        # TODO
         user = ActiniaUser(user_id)
 
         if user.exists() != 1:

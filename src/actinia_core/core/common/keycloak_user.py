@@ -190,21 +190,7 @@ class ActiniaKeycloakUser(ActiniaUserBase):
         """
         return user_id in self.group_members
 
-    # def read_from_db(self):
-    #
-    #     creds = self.db.get_credentials(self.user_id)
-    #     self.user_role = self.get_role()
-    #     self.user_group = self.get_group()
-    #     self.password_hash = self.get_password_hash()
-    #
-    #     self.permissions = creds["permissions"]
-    #     self.cell_limit = creds["permissions"]["cell_limit"]
-    #     self.accessible_datasets = creds["permissions"]["accessible_datasets"]
-    #     self.accessible_modules = creds["permissions"]["accessible_modules"]
-    #     self.process_num_limit = creds["permissions"]["process_num_limit"]
-    #     self.process_time_limit = creds["permissions"]["process_time_limit"]
-
-    # def exists(self):
+    # def exists(self):  # rest/user_management ???
     #     """Check if the user exists
     #
     #     Returns:
