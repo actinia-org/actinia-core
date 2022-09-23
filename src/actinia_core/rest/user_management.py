@@ -81,6 +81,20 @@ class UserListResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing a list of users
         """
+        # TODO if keycloak then return not available
+        import pdb; pdb.set_trace()
+        # if ...:
+        #     return make_response(
+        #         jsonify(
+        #             SimpleResponseModel(
+        #                 status="error",
+        #                 message="The keycloak authentication does not allow "
+        #                 "to request all users",
+        #             )
+        #         ),
+        #         400,
+        #     )
+
         user = ActiniaUser(None)
         user_list = user.list_all_users()
 

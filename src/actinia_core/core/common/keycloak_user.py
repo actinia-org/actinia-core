@@ -35,7 +35,7 @@ from actinia_core.core.common.user_base import (
     # ActiniaUserError,
 )
 from actinia_core.core.logging_interface import log
-# from actinia_core.core.common.config import global_config
+from actinia_core.core.common.config import global_config
 
 __author__ = "Anika Weinmann"
 __copyright__ = (
@@ -52,6 +52,53 @@ class ActiniaKeycloakUser(ActiniaUserBase):
 
     This class manages the user which are stored in keycloak
     """
+
+    # TODO init with only user_id hast to work + exists has to be implemented for resource_management.py(128)check_permissions()
+
+    def __init__(
+        self,
+        user_id,
+        user_group=None,
+        user_role=None,
+        accessible_datasets={
+            "nc_spm_08": ["PERMANENT", "user1", "landsat"],
+            "ECAD": ["PERMANENT"],
+            "latlong_wgs84": ["PERMANENT"],
+        },
+        accessible_modules=global_config.MODULE_ALLOW_LIST,
+        cell_limit=global_config.MAX_CELL_LIMIT,
+        process_num_limit=global_config.PROCESS_NUM_LIMIT,
+        process_time_limit=global_config.PROCESS_TIME_LIMT,
+    ):
+        if isinstance(accessible_datasets, str):
+            datasets = dict()
+            lm_list = accessible_datasets.split(",")
+            for lm in lm_list:
+                if "/" in lm:
+                    location, mapset = lm.split("/")
+                else:
+                    location = lm
+                    mapset = None
+                if location not in datasets:
+                    datasets[location] = []
+                datasets[location].append(mapset)
+        else:
+            datasets = accessible_datasets
+        if isinstance(accessible_modules, str):
+            modules = accessible_modules.split(",")
+        else:
+            modules = accessible_modules
+        super().__init__(
+            user_id,
+            user_group=user_group,
+            user_role=user_role,
+            accessible_datasets=datasets,
+            accessible_modules=modules,
+            cell_limit=cell_limit,
+            process_num_limit=process_num_limit,
+            process_time_limit=process_time_limit,
+        )
+        self.group_members = list()
 
     @staticmethod
     def verify_keycloak_token(token):
@@ -115,7 +162,33 @@ class ActiniaKeycloakUser(ActiniaUserBase):
             **kwargs,
         )
         user._generate_permission_dict()
+        # adding group members
+        if "group_members" in token_info and token_info["group_members"]:
+            user.set_group_members(",".join(
+                token_info["group_members"]).split(","))
         return user
+
+    def set_group_members(self, group_members):
+        """Set the user group_members
+
+        Args:
+            group: The user group_members
+
+        """
+        self.group_members = group_members
+
+    def check_group_members(self, user_id):
+        """Check if the user_id is in the group_members attribute.
+
+        Args:
+            user_id (str): The id (name, email, ..) of the user that must be
+                           unique
+
+        Returns:
+            bool:
+            Return the if the user_id is in the group_members
+        """
+        return user_id in self.group_members
 
     # def read_from_db(self):
     #
