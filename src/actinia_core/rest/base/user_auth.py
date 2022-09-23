@@ -31,6 +31,7 @@ from functools import wraps
 from flask import g, abort
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common.app import auth
+from actinia_core.core.common.keycloak_user import ActiniaKeycloakUser
 from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.messages_logger import MessageLogger
 
@@ -41,39 +42,60 @@ __copyright__ = (
 )
 __maintainer__ = "mundialis"
 
+token_verification = True  # TODO from config
 
-@auth.verify_password
-def verify_password(username_or_token, password):
-    """Verify the user name and password.
-
-    Instead of a user name an authentication token
-    or an API token can be provided.
-    This function is called by the
-    @auth.login_required decorator.
-
-    Args:
-        username_or_token (str): The username or an authentication token
-        password (str): The optional user password, not required in case of
-                        token
-
-    Returns:
-        bool: True if authorized or False if not
-
-    """
-    # first try to authenticate by token
-    user = ActiniaUser.verify_auth_token(username_or_token)
-
-    if not user:
-        user = ActiniaUser.verify_api_key(username_or_token)
-
-    if not user:
-        # try to authenticate with username/password
-        user = ActiniaUser(user_id=username_or_token)
-        if not user.exists() or not user.verify_password(password):
+if token_verification is True:
+    @auth.verify_token
+    def verify_token(token):
+        """Verify the keycloak token.
+        A keycloak authentication token has to be provided.
+        This function is called by the
+        @auth.login_required decorator.
+        Args:
+            token (str): An authentication token
+        Returns:
+            bool: True if authorized or False if not
+        """
+        user = ActiniaKeycloakUser.verify_keycloak_token(token)
+        if not user:
             return False
-    # Store the user globally
-    g.user = user
-    return True
+        g.user = user
+        return True
+
+
+if token_verification is False:
+    @auth.verify_password
+    def verify_password(username_or_token, password):
+        """Verify the user name and password.
+
+        Instead of a user name an authentication token
+        or an API token can be provided.
+        This function is called by the
+        @auth.login_required decorator.
+
+        Args:
+            username_or_token (str): The username or an authentication token
+            password (str): The optional user password, not required in case of
+                            token
+
+        Returns:
+            bool: True if authorized or False if not
+
+        """
+        # first try to authenticate by token
+        user = ActiniaUser.verify_auth_token(username_or_token)
+
+        if not user:
+            user = ActiniaUser.verify_api_key(username_or_token)
+
+        if not user:
+            # try to authenticate with username/password
+            user = ActiniaUser(user_id=username_or_token)
+            if not user.exists() or not user.verify_password(password):
+                return False
+        # Store the user globally
+        g.user = user
+        return True
 
 
 def create_dummy_user(f):
