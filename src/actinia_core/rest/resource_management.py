@@ -125,7 +125,7 @@ class ResourceManagerBase(Resource):
                     401,
                 )
 
-        if global_config.KEYCLOAK_ATTR_PREFIX and self.user_role == "admin":
+        if global_config.KEYCLOAK_CONFIG_PATH and self.user_role == "admin":
             if self.user.check_group_members(user_id):
                 return None
             else:

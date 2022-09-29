@@ -35,6 +35,7 @@ from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
+from actinia_core.core.common.config import global_config
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
@@ -81,19 +82,17 @@ class UserListResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing a list of users
         """
-        # TODO if keycloak then return not available
-        import pdb; pdb.set_trace()
-        # if ...:
-        #     return make_response(
-        #         jsonify(
-        #             SimpleResponseModel(
-        #                 status="error",
-        #                 message="The keycloak authentication does not allow "
-        #                 "to request all users",
-        #             )
-        #         ),
-        #         400,
-        #     )
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to request all users",
+                    )
+                ),
+                400,
+            )
 
         user = ActiniaUser(None)
         user_list = user.list_all_users()
@@ -137,7 +136,22 @@ class UserManagementResource(LoginBase):
                             JSON payload containing the credentials
                             of the user
         """
-        # TODO
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            # TODO
+            import pdb; pdb.set_trace()
+            # return make_response(
+            #     jsonify(
+            #         UserInfoResponseModel(
+            #             status="success",
+            #             permissions=credentials["permissions"],
+            #             user_id=credentials["user_id"],
+            #             user_role=credentials["user_role"],
+            #             user_group=credentials["user_group"],
+            #         )
+            #     ),
+            #     200,
+            # )
+
         user = ActiniaUser(user_id)
 
         if user.exists() != 1:
@@ -183,7 +197,17 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
-        # TODO
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to create a new user",
+                    )
+                ),
+                400,
+            )
 
         user = ActiniaUser(user_id)
 
@@ -260,7 +284,18 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
-        # TODO
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to delete a user",
+                    )
+                ),
+                400,
+            )
+
         user = ActiniaUser(user_id)
 
         if user.exists() != 1:

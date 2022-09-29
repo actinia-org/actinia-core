@@ -111,7 +111,7 @@ from flask_cors import CORS
 from flask import Flask
 from flask_restful_swagger_2 import Api
 
-from actinia_core.core.common.config import global_config
+from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 
 from actinia_api import API_VERSION, URL_PREFIX
 
@@ -141,7 +141,8 @@ flask_api = Api(
 )
 
 # authentication method
-if global_config.KEYCLOAK_ATTR_PREFIX:
+global_config.read(DEFAULT_CONFIG_PATH)
+if global_config.KEYCLOAK_CONFIG_PATH:
     auth = HTTPTokenAuth(scheme='Bearer')
 else:
     # Set the security definition in an unconventional way

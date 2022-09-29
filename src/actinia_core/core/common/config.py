@@ -29,7 +29,7 @@ import os
 import configparser
 import ast
 
-from actinia_core.core.logging_interface import log
+# from actinia_core.core.logging_interface import log
 
 
 __license__ = "GPLv3"
@@ -743,11 +743,11 @@ class Configuration(object):
                     )
                     if os.path.isfile(keycloak_cfg_path):
                         self.KEYCLOAK_CONFIG_PATH = keycloak_cfg_path
-                    else:
-                        log.warning(
-                            f"Keycloak is configured, but configfile is not an"
-                            " existing file! Using Redis for user management."
-                        )
+                    # else:
+                    #     log.warning(
+                    #         f"Keycloak is configured, but configfile is not an"
+                    #         " existing file! Using Redis for user management."
+                    #     )
                 if config.has_option("KEYCLOAK", "GROUP_PREFIX"):
                     self.KEYCLOAK_GROUP_PREFIX = config.get(
                         "KEYCLOAK", "GROUP_PREFIX"
