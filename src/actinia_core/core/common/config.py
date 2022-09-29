@@ -320,6 +320,14 @@ class Configuration(object):
         self.ENDPOINTS_CONFIG = None
 
         """
+        KEYCLOAK: has only to be set if keycloak server is configured with
+        actinia client and actinia attributes for the users
+        """
+        self.KEYCLOAK_CONFIG_PATH = None
+        self.KEYCLOAK_GROUP_PREFIX = None
+        self.KEYCLOAK_ATTR_PREFIX = None
+
+        """
         REDIS
         """
         # The hostname of the redis server
@@ -510,6 +518,23 @@ class Configuration(object):
         config.set("API", "FORCE_HTTPS_URLS", str(self.FORCE_HTTPS_URLS))
         config.set("API", "PLUGINS", str(self.PLUGINS))
         config.set("API", "ENDPOINTS_CONFIG", str(self.ENDPOINTS_CONFIG))
+
+        config.add_section("KEYCLOAK")
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_CONFIG_PATH",
+            str(self.KEYCLOAK_CONFIG_PATH),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_GROUP_PREFIX",
+            str(self.KEYCLOAK_GROUP_PREFIX),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_ATTR_PREFIX",
+            str(self.KEYCLOAK_ATTR_PREFIX),
+        )
 
         config.add_section("REDIS")
         config.set("REDIS", "REDIS_SERVER_URL", self.REDIS_SERVER_URL)
@@ -706,6 +731,20 @@ class Configuration(object):
                 if config.has_option("API", "ENDPOINTS_CONFIG"):
                     self.ENDPOINTS_CONFIG = config.get(
                         "API", "ENDPOINTS_CONFIG"
+                    )
+
+            if config.has_section("KEYCLOAK"):
+                if config.has_option("KEYCLOAK", "CONFIG_PATH"):
+                    self.KEYCLOAK_CONFIG_PATH = config.get(
+                        "KEYCLOAK", "CONFIG_PATH"
+                    )
+                if config.has_option("KEYCLOAK", "GROUP_PREFIX"):
+                    self.KEYCLOAK_GROUP_PREFIX = config.get(
+                        "KEYCLOAK", "GROUP_PREFIX"
+                    )
+                if config.has_option("KEYCLOAK", "ATTR_PREFIX"):
+                    self.KEYCLOAK_ATTR_PREFIX = config.get(
+                        "KEYCLOAK", "ATTR_PREFIX"
                     )
 
             if config.has_section("REDIS"):
