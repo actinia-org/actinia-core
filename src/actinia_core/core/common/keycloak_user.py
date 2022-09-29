@@ -42,9 +42,8 @@ __author__ = "Anika Weinmann"
 __copyright__ = (
     "Copyright 2022, mundialis GmbH & Co. KG"
 )
+__maintainer__ = "mundialis GmbH & Co. KG"
 
-
-USER_ROLES = ["superadmin", "admin", "user", "guest"]
 
 if global_config.KEYCLOAK_CONFIG_PATH and isfile(
         global_config.KEYCLOAK_CONFIG_PATH):

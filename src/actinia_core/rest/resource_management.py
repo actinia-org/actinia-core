@@ -125,8 +125,7 @@ class ResourceManagerBase(Resource):
                     401,
                 )
 
-        token_verification = True  # TODO from config
-        if token_verification is True and self.user_role == "admin":
+        if global_config.KEYCLOAK_ATTR_PREFIX and self.user_role == "admin":
             if self.user.check_group_members(user_id):
                 return None
             else:

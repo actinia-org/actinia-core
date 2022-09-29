@@ -42,9 +42,8 @@ __copyright__ = (
 )
 __maintainer__ = "mundialis"
 
-token_verification = True  # TODO from config
 
-if token_verification is True:
+if global_config.KEYCLOAK_ATTR_PREFIX:
     @auth.verify_token
     def verify_token(token):
         """Verify the keycloak token.
@@ -63,7 +62,7 @@ if token_verification is True:
         return True
 
 
-if token_verification is False:
+if global_config.KEYCLOAK_ATTR_PREFIX is None:
     @auth.verify_password
     def verify_password(username_or_token, password):
         """Verify the user name and password.

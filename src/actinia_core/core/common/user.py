@@ -34,11 +34,9 @@ from itsdangerous import (
     SignatureExpired,
 )
 from itsdangerous import JSONWebSignatureSerializer
-from jose.exceptions import ExpiredSignatureError
 
 from actinia_core.core.common.user_base import (
     ActiniaUserBase,
-    ActiniaUserError,
 )
 from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_user import redis_user_interface
@@ -47,8 +45,7 @@ __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2022, mundialis GmbH & Co. KG"
 )
-
-USER_ROLES = ["superadmin", "admin", "user", "guest"]
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class ActiniaUser(ActiniaUserBase):
