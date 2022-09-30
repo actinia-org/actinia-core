@@ -14,7 +14,7 @@ google-cloud>=0.32.0
 google-cloud-bigquery<=3.0.0
 google-cloud-storage>=1.6.0
 gunicorn>=19.9.0
-joblib==0.15.1
+joblib==1.2.0
 MarkupSafe==2.0.1 # TODO: remove when #345 is fixed
 matplotlib==3.3.4
 passlib>=1.7.1
