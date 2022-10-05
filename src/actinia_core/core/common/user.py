@@ -42,9 +42,7 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_user import redis_user_interface
 
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = (
-    "Copyright 2016-2022, mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 

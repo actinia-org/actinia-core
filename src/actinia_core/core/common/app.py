@@ -143,7 +143,7 @@ flask_api = Api(
 # authentication method
 global_config.read(DEFAULT_CONFIG_PATH)
 if global_config.KEYCLOAK_CONFIG_PATH:
-    auth = HTTPTokenAuth(scheme='Bearer')
+    auth = HTTPTokenAuth(scheme="Bearer")
 else:
     # Set the security definition in an unconventional way
     flask_api._swagger_object["securityDefinitions"] = {

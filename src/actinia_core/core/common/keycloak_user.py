@@ -39,14 +39,13 @@ from actinia_core.core.logging_interface import log
 from actinia_core.core.common.config import global_config
 
 __author__ = "Anika Weinmann"
-__copyright__ = (
-    "Copyright 2022, mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 if global_config.KEYCLOAK_CONFIG_PATH and isfile(
-        global_config.KEYCLOAK_CONFIG_PATH):
+    global_config.KEYCLOAK_CONFIG_PATH
+):
     with open(global_config.KEYCLOAK_CONFIG_PATH) as f:
         keycloak_cfg = json_load(f)
         KEYCLOAK_URL = keycloak_cfg["auth-server-url"]
@@ -120,12 +119,15 @@ class ActiniaKeycloakUser(ActiniaUserBase):
             realm_name=REALM,
             client_secret_key=CLIENT_SECRET_KEY,
         )
-        KEYCLOAK_PUBLIC_KEY = "-----BEGIN PUBLIC KEY-----\n" + \
-            keycloak_openid.public_key() + "\n-----END PUBLIC KEY-----"
+        KEYCLOAK_PUBLIC_KEY = (
+            "-----BEGIN PUBLIC KEY-----\n"
+            + keycloak_openid.public_key()
+            + "\n-----END PUBLIC KEY-----"
+        )
         options = {
             "verify_signature": True,
             "verify_aud": True,
-            "verify_exp": True
+            "verify_exp": True,
         }
         try:
             token_info = keycloak_openid.decode_token(
@@ -135,21 +137,25 @@ class ActiniaKeycloakUser(ActiniaUserBase):
             return None
         except Exception:
             return None
-        attr_prefix = global_config.KEYCLOAK_ATTR_PREFIX if \
-            global_config.KEYCLOAK_ATTR_PREFIX is not None else ""
+        attr_prefix = (
+            global_config.KEYCLOAK_ATTR_PREFIX
+            if global_config.KEYCLOAK_ATTR_PREFIX is not None
+            else ""
+        )
         user_id = token_info["preferred_username"]
         kwargs = {
             "user_role": token_info["resource_access"][CLIENT_ID]["roles"][0],
             "cell_limit": token_info[f"{attr_prefix}cell_limit"],
             "process_num_limit": token_info[f"{attr_prefix}process_num_limit"],
-            "process_time_limit":
-                token_info[f"{attr_prefix}process_time_limit"],
+            "process_time_limit": token_info[
+                f"{attr_prefix}process_time_limit"
+            ],
         }
         acc_ds_name = f"{attr_prefix}accessible_datasets"
-        if (token_info[acc_ds_name] and token_info[acc_ds_name] != "None"):
+        if token_info[acc_ds_name] and token_info[acc_ds_name] != "None":
             kwargs["accessible_datasets"] = token_info[acc_ds_name]
         acc_mod_name = f"{attr_prefix}accessible_modules"
-        if (token_info[acc_mod_name] and token_info[acc_mod_name] != "None"):
+        if token_info[acc_mod_name] and token_info[acc_mod_name] != "None":
             kwargs["accessible_modules"] = token_info[acc_mod_name]
         groups = list()
         for group in token_info["groups"]:
@@ -174,8 +180,9 @@ class ActiniaKeycloakUser(ActiniaUserBase):
         user._generate_permission_dict()
         # adding group members
         if "group_members" in token_info and token_info["group_members"]:
-            user.set_group_members(",".join(
-                token_info["group_members"]).split(","))
+            user.set_group_members(
+                ",".join(token_info["group_members"]).split(",")
+            )
         return user
 
     def set_group_members(self, group_members):

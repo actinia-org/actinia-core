@@ -44,6 +44,7 @@ __maintainer__ = "mundialis"
 
 
 if global_config.KEYCLOAK_CONFIG_PATH:
+
     @auth.verify_token
     def verify_token(token):
         """Verify the keycloak token.
@@ -63,6 +64,7 @@ if global_config.KEYCLOAK_CONFIG_PATH:
 
 
 if global_config.KEYCLOAK_CONFIG_PATH is None:
+
     @auth.verify_password
     def verify_password(username_or_token, password):
         """Verify the user name and password.

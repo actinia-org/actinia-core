@@ -738,9 +738,7 @@ class Configuration(object):
 
             if config.has_section("KEYCLOAK"):
                 if config.has_option("KEYCLOAK", "CONFIG_PATH"):
-                    keycloak_cfg_path = config.get(
-                        "KEYCLOAK", "CONFIG_PATH"
-                    )
+                    keycloak_cfg_path = config.get("KEYCLOAK", "CONFIG_PATH")
                     if os.path.isfile(keycloak_cfg_path):
                         self.KEYCLOAK_CONFIG_PATH = keycloak_cfg_path
                     # else:
