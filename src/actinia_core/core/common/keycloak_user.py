@@ -76,9 +76,7 @@ def create_user_from_tokeninfo(token_info):
         "user_role": token_info["resource_access"][CLIENT_ID]["roles"][0],
         "cell_limit": token_info[f"{attr_prefix}cell_limit"],
         "process_num_limit": token_info[f"{attr_prefix}process_num_limit"],
-        "process_time_limit": token_info[
-            f"{attr_prefix}process_time_limit"
-        ],
+        "process_time_limit": token_info[f"{attr_prefix}process_time_limit"],
     }
     acc_ds_name = f"{attr_prefix}accessible_datasets"
     if token_info[acc_ds_name] and token_info[acc_ds_name] != "None":
@@ -93,9 +91,7 @@ def create_user_from_tokeninfo(token_info):
                 group.replace(global_config.KEYCLOAK_GROUP_PREFIX, "")
             )
     if len(groups) == 0:
-        log.error(
-            f"Authentication ERROR: User {user_id} has no user group."
-        )
+        log.error(f"Authentication ERROR: User {user_id} has no user group.")
         return None
     elif len(groups) > 1:
         log.warning(
