@@ -30,7 +30,7 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 
-from flask import jsonify, make_response
+from flask import jsonify, make_response, g
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
@@ -137,33 +137,30 @@ class UserManagementResource(LoginBase):
                             of the user
         """
         if global_config.KEYCLOAK_CONFIG_PATH:
-            # TODO
-            import pdb; pdb.set_trace()
-            # return make_response(
-            #     jsonify(
-            #         UserInfoResponseModel(
-            #             status="success",
-            #             permissions=credentials["permissions"],
-            #             user_id=credentials["user_id"],
-            #             user_role=credentials["user_role"],
-            #             user_group=credentials["user_group"],
-            #         )
-            #     ),
-            #     200,
-            # )
-
-        user = ActiniaUser(user_id)
-
-        if user.exists() != 1:
-            return make_response(
-                jsonify(
-                    SimpleResponseModel(
-                        status="error",
-                        message="User <%s> does not exist" % user_id,
-                    )
-                ),
-                400,
-            )
+            user = g.user
+            if user.user_id != user_id:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="The keycloak authentication does not "
+                            "allow to request another user.",
+                        )
+                    ),
+                    400,
+                )
+        else:
+            user = ActiniaUser(user_id)
+            if user.exists() != 1:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="User <%s> does not exist" % user_id,
+                        )
+                    ),
+                    400,
+                )
 
         credentials = user.get_credentials()
 
