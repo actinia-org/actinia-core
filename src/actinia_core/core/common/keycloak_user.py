@@ -43,20 +43,19 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
-if global_config.KEYCLOAK_CONFIG_PATH and isfile(
-    global_config.KEYCLOAK_CONFIG_PATH
-):
-    with open(global_config.KEYCLOAK_CONFIG_PATH) as f:
-        keycloak_cfg = json_load(f)
-        KEYCLOAK_URL = keycloak_cfg["auth-server-url"]
-        REALM = keycloak_cfg["realm"]
-        CLIENT_ID = keycloak_cfg["resource"]
-        CLIENT_SECRET_KEY = keycloak_cfg["credentials"]["secret"]
-else:
-    raise Exception(
-        "KEYCLOAK_CONFIG_PATH is not a valid keycloak configuration for "
-        "actinia"
-    )
+if global_config.KEYCLOAK_CONFIG_PATH:
+    if isfile(global_config.KEYCLOAK_CONFIG_PATH):
+        with open(global_config.KEYCLOAK_CONFIG_PATH) as f:
+            keycloak_cfg = json_load(f)
+            KEYCLOAK_URL = keycloak_cfg["auth-server-url"]
+            REALM = keycloak_cfg["realm"]
+            CLIENT_ID = keycloak_cfg["resource"]
+            CLIENT_SECRET_KEY = keycloak_cfg["credentials"]["secret"]
+    else:
+        raise Exception(
+            "KEYCLOAK_CONFIG_PATH is not a valid keycloak configuration for "
+            "actinia"
+        )
 
 
 class ActiniaKeycloakUser(ActiniaUserBase):
