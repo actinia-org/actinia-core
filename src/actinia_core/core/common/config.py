@@ -745,8 +745,9 @@ class Configuration(object):
                         self.KEYCLOAK_CONFIG_PATH = keycloak_cfg_path
                     # else:
                     #     log.warning(
-                    #         f"Keycloak is configured, but configfile is not an"
-                    #         " existing file! Using Redis for user management."
+                    #         f"Keycloak is configured, but configfile is not "
+                    #         "an existing file! Using Redis for user "
+                    #         "management."
                     #     )
                 if config.has_option("KEYCLOAK", "GROUP_PREFIX"):
                     self.KEYCLOAK_GROUP_PREFIX = config.get(
