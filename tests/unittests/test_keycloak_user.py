@@ -40,20 +40,13 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
-add_versions = {
-    "test_key_a": "test_val_a",
-    "test_key_b": "test_val_b",
-    "test_key_c": "test_val_c",
-}
-global_config.KEYCLOAK_CONFIG_PATH = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "keycloak.json"
-)
-global_config.KEYCLOAK_GROUP_PREFIX = "/actinia-user/"
-read_keycloak_config(global_config.KEYCLOAK_CONFIG_PATH)
-
-
 @pytest.mark.unittest
 def test_keycloak_superadmin():
+    global_config.KEYCLOAK_CONFIG_PATH = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "keycloak.json"
+    )
+    global_config.KEYCLOAK_GROUP_PREFIX = "/actinia-user/"
+    read_keycloak_config(global_config.KEYCLOAK_CONFIG_PATH)
     token_info = {
         "exp": 1664974952,
         "iat": 1664974652,
