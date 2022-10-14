@@ -28,12 +28,8 @@ TODO: User update must be implemented
 """
 
 from passlib.apps import custom_app_context as pwd_context
-from itsdangerous import (
-    TimedJSONWebSignatureSerializer,
-    BadSignature,
-    SignatureExpired,
-)
-from itsdangerous import JSONWebSignatureSerializer
+import jwt
+from datetime import datetime, timezone, timedelta
 from actinia_core.core.common.config import global_config
 from actinia_core.core.redis_user import redis_user_interface
 
@@ -515,8 +511,13 @@ class ActiniaUser(object):
             str:
             API key
         """
-        s = JSONWebSignatureSerializer(global_config.SECRET_KEY)
-        return s.dumps({"user_id": self.user_id})
+        api_key = jwt.encode(
+            {"user_id": self.user_id},
+            global_config.SECRET_KEY,
+            algorithm="HS512",
+        )
+
+        return api_key
 
     def generate_auth_token(self, expiration=86400):
         """Generate an authentication token with a specific expiration time
@@ -528,10 +529,15 @@ class ActiniaUser(object):
             str:
             The auth token
         """
-        s = TimedJSONWebSignatureSerializer(
-            global_config.SECRET_KEY, expires_in=expiration
+        exp_date = datetime.now(tz=datetime.timezone.utc) + timedelta(
+            seconds=expiration
         )
-        return s.dumps({"user_id": self.user_id})
+        token = jwt.encode(
+            {"user_id": self.user_id, "expires_at": exp_date.isoformat()},
+            global_config.SECRET_KEY,
+            algorithm="HS512",
+        )
+        return token
 
     def commit(self):
         """Commit the user to the database
@@ -639,11 +645,15 @@ class ActiniaUser(object):
             Actinia Core_api.common.user.ActiniaUser:
             A user object is success or None
         """
-        s = JSONWebSignatureSerializer(global_config.SECRET_KEY)
-
-        try:
-            data = s.loads(api_key)
-        except BadSignature:
+        data = jwt.decode(
+            api_key,
+            global_config.SECRET_KEY,
+            leeway=timedelta(seconds=10),
+            algorithms=["HS512"],
+        )
+        if data is None:
+            return None
+        if "user_id" not in data.keys():
             return None
 
         user = ActiniaUser(data["user_id"])
@@ -654,13 +664,24 @@ class ActiniaUser(object):
 
     @staticmethod
     def verify_auth_token(token):
-        s = TimedJSONWebSignatureSerializer(global_config.SECRET_KEY)
-        try:
-            data = s.loads(token)
-        except SignatureExpired:
-            return None  # valid token, but expired
-        except BadSignature:
-            return None  # invalid token
+        data = jwt.decode(
+            token,
+            global_config.SECRET_KEY,
+            leeway=timedelta(seconds=10),
+            algorithms=["HS512"],
+        )
+
+        if data is None:
+            return None
+        if "user_id" not in data.keys():
+            return None
+        if "expires_at" not in data.keys():
+            return None
+
+        exp_date = datetime.fromisoformat(data["expires_at"])
+        if exp_date < datetime.now(tz=timezone.utc):
+            return None
+
         user = ActiniaUser(data["user_id"])
         if user.exists():
             return user
