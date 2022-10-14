@@ -645,12 +645,16 @@ class ActiniaUser(object):
             Actinia Core_api.common.user.ActiniaUser:
             A user object is success or None
         """
-        data = jwt.decode(
-            api_key,
-            global_config.SECRET_KEY,
-            leeway=timedelta(seconds=10),
-            algorithms=["HS512"],
-        )
+        try:
+            data = jwt.decode(
+                api_key,
+                global_config.SECRET_KEY,
+                leeway=timedelta(seconds=10),
+                algorithms=["HS512"],
+            )
+        except jwt.exceptions.DecodeError:
+            return None
+
         if data is None:
             return None
         if "user_id" not in data.keys():
@@ -664,12 +668,15 @@ class ActiniaUser(object):
 
     @staticmethod
     def verify_auth_token(token):
-        data = jwt.decode(
-            token,
-            global_config.SECRET_KEY,
-            leeway=timedelta(seconds=10),
-            algorithms=["HS512"],
-        )
+        try:
+            data = jwt.decode(
+                token,
+                global_config.SECRET_KEY,
+                leeway=timedelta(seconds=10),
+                algorithms=["HS512"],
+            )
+        except jwt.exceptions.DecodeError:
+            return None
 
         if data is None:
             return None
