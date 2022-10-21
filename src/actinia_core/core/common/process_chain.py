@@ -675,8 +675,9 @@ class ProcessChainConverter(object):
                     "parameters for %s" % module_name
                 )
 
-        if ((module_name != "importer" and module_name != "exporter")
-                or params == ["--interface-description"]):
+        if (
+            module_name != "importer" and module_name != "exporter"
+        ) or params == ["--interface-description"]:
             p = Process(
                 exec_type="grass",
                 executable=module_name,
