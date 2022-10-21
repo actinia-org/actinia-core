@@ -33,3 +33,5 @@ Steps when releasing actinia-core:
     ```
 * Copy the output to the top of the release list in [CHANGELOG.md](https://github.com/mundialis/actinia_core/blob/main/CHANGELOG.md)
 * Push changes in CHANGELOG.md to main branch (before, you might need to pull changes from CITATION.cff).
+
+5. Optionally update version in https://github.com/mundialis/actinia-docker/blob/main/actinia-alpine/Dockerfile#L15
