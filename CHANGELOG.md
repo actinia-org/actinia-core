@@ -15,12 +15,22 @@ Types of changes
 
 
 ## [Unreleased]
-https://github.com/mundialis/actinia_core/compare/4.0.0...main
+https://github.com/mundialis/actinia_core/compare/4.3.1...main
 
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
- 
+
+## [4.3.1] - 2022-10-21
+released from main
+### Fixed
+* Add initialisation of self.queue by @juleshaas in https://github.com/mundialis/actinia_core/pull/388
+* Change pc style for module description for importer and exporter in module plugin by @juleshaas in https://github.com/mundialis/actinia_core/pull/387
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.3.0...4.3.1
+
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.3.1" -f target_commitish=main -q .body"
+
 ## [4.3.0] - 2022-09-22
 released from main
 ### Added
@@ -39,15 +49,15 @@ released from main
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.1...4.3.0
 
 "generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.3.0 -f target_commitish=main -q .body"
- 
+
 ## [4.2.1] - 2022-08-05
 released from main
 ### Fixed
 * Allow users to create and delete mapsets by @juleshaas and @anikaweinmann in https://github.com/mundialis/actinia_core/pull/374
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.0...4.2.1
-"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.2.1" -f target_commitish=main -q .body" 
- 
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.2.1" -f target_commitish=main -q .body"
+
 ## [4.2.0] - 2022-08-03
 released from main
 ### Added
@@ -89,7 +99,7 @@ released from main
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.0.1...4.1.0
 
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.1.0" -f target_commitish=main -q .body`
- 
+
 ## [4.0.1] - 2022-05-20
 released from main
 ### Fixed
@@ -120,9 +130,9 @@ This is a major release because it breaks the actinia python API. Plugins were a
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.3.0...4.0.0
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.0.0 -f target_commitish=main -q .body`
- 
+
 -----------------------------
- 
+
 ## [3.3.0] - 2022-03-31
 released from main
 ### Added
@@ -132,7 +142,7 @@ released from main
 * Pystac Issue changing name of the function by @joaherrerama in https://github.com/mundialis/actinia_core/pull/336
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.2.0...3.3.0
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.3.0 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.3.0 -f target_commitish=main -q .body`
 
 ## [3.2.0] - 2022-03-23
 released from main
@@ -146,7 +156,7 @@ released from main
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.3...3.2.0
 
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body`
 
 
 ## [3.1.3] - 2022-03-11
@@ -156,7 +166,7 @@ released from main
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.2...3.1.3
 
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body`
 
 
 ## [3.1.2] - 2022-02-23
@@ -171,8 +181,8 @@ released from main
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.1...3.1.2
 
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.2 -f target_commitish=main -q .body`
- 
- 
+
+
 ## [3.1.1] - 2022-02-03
 released from main
 ## Added
