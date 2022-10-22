@@ -529,11 +529,11 @@ class ActiniaUser(object):
             str:
             The auth token
         """
-        exp_date = datetime.now(tz=datetime.timezone.utc) + timedelta(
+        exp_date = datetime.now(tz=timezone.utc) + timedelta(
             seconds=expiration
         )
         token = jwt.encode(
-            {"user_id": self.user_id, "expires_at": exp_date.isoformat()},
+            {"user_id": self.user_id, "exp": exp_date},
             global_config.SECRET_KEY,
             algorithm="HS512",
         )
@@ -674,19 +674,17 @@ class ActiniaUser(object):
                 global_config.SECRET_KEY,
                 leeway=timedelta(seconds=10),
                 algorithms=["HS512"],
+                options={"require": ["exp"],
+                         "verify_exp": "verify_signature"},
             )
         except jwt.exceptions.DecodeError:
+            return None
+        except jwt.exceptions.ExpiredSignatureError:
             return None
 
         if data is None:
             return None
         if "user_id" not in data.keys():
-            return None
-        if "expires_at" not in data.keys():
-            return None
-
-        exp_date = datetime.fromisoformat(data["expires_at"])
-        if exp_date < datetime.now(tz=timezone.utc):
             return None
 
         user = ActiniaUser(data["user_id"])
