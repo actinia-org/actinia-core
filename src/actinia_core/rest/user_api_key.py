@@ -81,7 +81,7 @@ class APIKeyCreationResource(LoginBase):
                 jsonify(
                     TokenResponseModel(
                         status="success",
-                        token=g.user.generate_api_key().decode(),
+                        token=g.user.generate_api_key(),
                         message="API key successfully generated",
                     )
                 )
@@ -131,7 +131,7 @@ class TokenCreationResource(LoginBase):
                         status="success",
                         token=g.user.generate_auth_token(
                             expiration=expiration
-                        ).decode(),
+                        ),
                         message="Token successfully generated with "
                         "an expiration time of %i seconds" % expiration,
                     )
