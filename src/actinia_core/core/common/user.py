@@ -674,8 +674,7 @@ class ActiniaUser(object):
                 global_config.SECRET_KEY,
                 leeway=timedelta(seconds=10),
                 algorithms=["HS512"],
-                options={"require": ["exp"],
-                         "verify_exp": "verify_signature"},
+                options={"require": ["exp"], "verify_exp": "verify_signature"},
             )
         except jwt.exceptions.DecodeError:
             return None
