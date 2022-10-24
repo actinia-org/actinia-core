@@ -590,10 +590,10 @@ class ProcessChainConverter(object):
         )
 
     def _create_module_process(self, module_descr):
-        """Analyse a grass process description dict and create a Process
+        """Analyse a grass process description dict and create a process
         that is used to execute a GRASS GIS binary.
 
-        - Identify the required mapsets from the input definition and stores
+        - Identify the required mapsets from the input definition and store
           them in a list.
         - Identify input and output options
         - Add export options to the export list
@@ -675,7 +675,9 @@ class ProcessChainConverter(object):
                     "parameters for %s" % module_name
                 )
 
-        if module_name != "importer" and module_name != "exporter":
+        if (
+            module_name != "importer" and module_name != "exporter"
+        ) or params == ["--interface-description"]:
             p = Process(
                 exec_type="grass",
                 executable=module_name,
@@ -685,7 +687,6 @@ class ProcessChainConverter(object):
             )
 
             self.process_dict[id] = p
-
             return p
 
         return None

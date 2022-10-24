@@ -112,6 +112,7 @@ class ResourceDataContainer(object):
         self.orig_datetime = orig_datetime
         self.user_data = None
         self.storage_model = "file"
+        self.queue = None
 
     # def __str__(self):
     #    return str(self.__dict__)

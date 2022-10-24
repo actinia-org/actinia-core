@@ -75,11 +75,10 @@ __maintainer__ = "mundialis"
 
 
 class EphemeralProcessing(object):
-    """
-    This class processes GRASS data on the local machine in an temporary
+    """This class processes GRASS data on the local machine in a temporary
     mapset.
 
-    The temporary mapset will be removed by this class when the processing
+    The temporary mapset will be removed by this class when the processing is
     finished
 
     Creating the temporary database and mapset:
@@ -92,7 +91,7 @@ class EphemeralProcessing(object):
 
        e.g: /tmp/soeren_temp_gisdbase/ECAD
 
-    3. Softlink the PERMANENT and all required mapsets into the,
+    3. Softlink the PERMANENT and all required mapsets into the
        new location directory from the original location,
        check the input parameter of the module for which mapsets must be linked
 
@@ -102,7 +101,7 @@ class EphemeralProcessing(object):
         -> /tmp/soeren_temp_gisdbase/ECAD/Temperature
 
     4. Set the GRASS GIS environmental variables to point to the new gisdbase,
-       location and PERMANENT maspet
+       location and PERMANENT mapset
 
     5. Create a new mapset with g.mapset in the temporary location directory
 
@@ -470,8 +469,9 @@ class EphemeralProcessing(object):
 
     def _post_to_webhook(self, document, type):
         """Helper method to send a post request to a webhook.
-        The finished webhook will be retried until it is reached of the number
-        of tries is WEBHOOK_RETRIES which can be set in the config.
+        The finished webhook will be retried until it has reached the number
+        of tries. The number of tries is WEBHOOK_RETRIES which can be set in the
+        config.
 
         Args:
             document (str): The response document
@@ -698,7 +698,7 @@ class EphemeralProcessing(object):
         - Create the resource and message logger
         - Create the redis lock interface for resource locking
         - Set cell limit, process number limit and process time limit from user
-          c redentials.
+          credentials.
         - Create all required paths to original and temporary location and
           mapsets.
             - temp_location_path
@@ -1887,7 +1887,7 @@ class EphemeralProcessing(object):
 
     def run(self):
         """This function will run the processing and will catch and process
-        any Exceptions that were raised while processing. Call this function to
+        any exceptions that were raised while processing. Call this function to
         run the processing.
 
         You have to implement/overwrite two methods that are called here:
