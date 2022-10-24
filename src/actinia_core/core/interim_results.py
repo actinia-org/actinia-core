@@ -277,7 +277,7 @@ class InterimResult(object):
             raise RsyncError("Error while rsyncing of step %d" % progress_step)
 
     def save_interim_results(
-        self, progress_step, temp_mapset_path, temp_file_path
+        self, progress_step, temp_mapset_path, temp_file_path, force_copy=False
     ):
         """Saves the temporary mapset to the
         `user_resource_interim_storage_path` by copying the directory or
@@ -299,7 +299,7 @@ class InterimResult(object):
             self._get_step_tmpdir_name(progress_step),
         )
 
-        if progress_step == 1:
+        if progress_step == 1 or force_copy is True:
             # copy temp mapset for first step
             shutil.copytree(temp_mapset_path, dest_mapset)
             shutil.copytree(temp_file_path, dest_tmpdir)

@@ -399,6 +399,12 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
+        self.SAVE_INTERIM_RESULTS_CFG = None
+        self.INTERIM_SAVING_ENDPOINTS = [
+            "AsyncEphemeralResource",
+            "AsyncEphemeralExportResource",
+            "AsyncPersistentResource",
+        ]
 
         """
         LOGGING
@@ -555,6 +561,13 @@ class Configuration(object):
         config.set("MISC", "SECRET_KEY", self.SECRET_KEY)
         config.set(
             "MISC", "SAVE_INTERIM_RESULTS", str(self.SAVE_INTERIM_RESULTS)
+        )
+        config.set(
+            "MISC", "SAVE_INTERIM_RESULTS_CFG", self.SAVE_INTERIM_RESULTS_CFG
+        )
+        config.set(
+            "MISC", "INTERIM_SAVING_ENDPOINTS",
+            str(self.INTERIM_SAVING_ENDPOINTS)
         )
 
         config.add_section("LOGGING")
@@ -774,9 +787,17 @@ class Configuration(object):
                 if config.has_option("MISC", "LOG_LEVEL"):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
-                    self.SAVE_INTERIM_RESULTS = config.getboolean(
-                        "MISC", "SAVE_INTERIM_RESULTS"
+                    save_interim = config.get("MISC", "SAVE_INTERIM_RESULTS")
+                    if save_interim in ["True", "False"]:
+                        self.SAVE_INTERIM_RESULTS = bool(save_interim)
+                    else:
+                        self.SAVE_INTERIM_RESULTS = save_interim
+                if config.has_option("MISC", "SAVE_INTERIM_RESULTS_CFG"):
+                    self.SAVE_INTERIM_RESULTS_CFG = config.get(
+                        "MISC", "SAVE_INTERIM_RESULTS_CFG"
                     )
+                    # TODO read SAVE_INTERIM_RESULTS_CFG
+                    # and append INTERIM_SAVING_ENDPOINTS
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

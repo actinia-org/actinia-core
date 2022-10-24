@@ -377,7 +377,8 @@ class ResourceManager(ResourceManagerBase):
     def put(self, user_id, resource_id):
         """Updates/Resumes the status of a resource."""
         global_config.read(DEFAULT_CONFIG_PATH)
-        if global_config.SAVE_INTERIM_RESULTS is not True:
+        if (global_config.SAVE_INTERIM_RESULTS is not True and
+                    global_config.SAVE_INTERIM_RESULTS != "onError"):
             return make_response(
                 jsonify(
                     SimpleResponseModel(
