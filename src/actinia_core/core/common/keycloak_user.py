@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,8 +24,9 @@
 """
 Keycloak user management
 
-TODO: list_all_users, delete, create_user (, exists) to be added later
-      (keycloak admin console is needed!)
+Possible TODOs: add list_all_users, delete, create_user (, exists).
+        In this case, keycloak admin console would be needed and actinia would
+        need to store keycloak admin credentials!
 """
 from os.path import isfile
 from json import load as json_load
@@ -95,7 +96,7 @@ def create_user_from_tokeninfo(token_info):
         return None
     elif len(groups) > 1:
         log.warning(
-            f"User {user_id} has more than one group taking {groups[0]}."
+            f"User {user_id} has more than one group, taking {groups[0]}."
         )
     kwargs["user_group"] = groups[0]
     user = ActiniaKeycloakUser(
@@ -115,7 +116,7 @@ class ActiniaKeycloakUser(ActiniaUserBase):
     """
     The Actinia Core keycloak user management class
 
-    This class manages the user which are stored in keycloak
+    This class manages a user which is stored in keycloak
     """
 
     def __init__(
