@@ -1875,7 +1875,7 @@ class EphemeralProcessing(object):
             elif process.exec_type == "python":
                 eval(process.executable)
 
-    def _save_interim_results(self):
+    def _interim_results(self):
         """TODO
         """
 
@@ -1887,6 +1887,9 @@ class EphemeralProcessing(object):
                 self.temp_file_path,
                 force_copy=True,
             )
+        elif ("success" in self.run_state and
+                self.interim_result.saving_interim_results is not False):
+            self.interim_result.delete_interim_results()
 
     def _final_cleanup(self):
         """Overwrite this function in subclasses to perform the final cleanup,
@@ -1906,7 +1909,7 @@ class EphemeralProcessing(object):
         You have to implement/overwrite two methods that are called here:
 
             * self._execute()
-            * self._save_interim_results()
+            * self._interim_results()
             * self._final_cleanup()
 
             e_type, e_value, e_traceback = sys.exc_info()
@@ -1949,7 +1952,7 @@ class EphemeralProcessing(object):
         finally:
             try:
                 # Check if interim results should be saved and save them
-                self._save_interim_results()
+                self._interim_results()
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()
             except Exception as e:

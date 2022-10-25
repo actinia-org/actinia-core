@@ -136,16 +136,8 @@ class InterimResult(object):
         if self.saving_interim_results is False:
             iterim_error = True
             msg = "Saving iterim results is not configured"
-        if os.path.isdir(
-            os.path.join(
-                self.user_resource_interim_storage_path, self.resource_id
-            )
-        ):
-            interim_folder = os.listdir(
-                os.path.join(
-                    self.user_resource_interim_storage_path, self.resource_id
-                )
-            )
+        if os.path.isdir(self._get_interim_path()):
+            interim_folder = os.listdir(self._get_interim_path())
         else:
             iterim_error = True
             msg = "No interim results saved in previous iteration"
@@ -163,16 +155,8 @@ class InterimResult(object):
             self.logger.error(msg)
             return None
 
-        interim_mapset = os.path.join(
-            self.user_resource_interim_storage_path,
-            self.resource_id,
-            self._get_step_folder_name(pc_step),
-        )
-        interim_file_path = os.path.join(
-            self.user_resource_interim_storage_path,
-            self.resource_id,
-            self._get_step_tmpdir_name(pc_step),
-        )
+        interim_mapset = self._get_interim_mapset_path(pc_step)
+        interim_file_path = self._get_interim_tmpdir_path(pc_step)
 
         return interim_mapset, interim_file_path
 
@@ -276,6 +260,36 @@ class InterimResult(object):
         else:
             raise RsyncError("Error while rsyncing of step %d" % progress_step)
 
+    def delete_interim_results(self):
+        """Deletes the temporary mapset and temporary data
+        """
+        interim_result_path = self._get_interim_path()
+
+        if (os.path.exists(interim_result_path) and
+                os.path.isdir(interim_result_path)):
+            shutil.rmtree(interim_result_path, ignore_errors=True)
+
+    def _get_interim_path(self):
+        """Returns the path where the interim results are saved"""
+        return os.path.join(
+                self.user_resource_interim_storage_path,
+                self.resource_id,
+            )
+
+    def _get_interim_mapset_path(self, progress_step):
+        """Returns path where the interim mapset is saved"""
+        return os.path.join(
+            self._get_interim_path(),
+            self._get_step_folder_name(progress_step),
+        )
+
+    def _get_interim_tmpdir_path(self, progress_step=None):
+        """Returns path where the interim directory is saved"""
+        return os.path.join(
+            self._get_interim_path(),
+            self._get_step_tmpdir_name(progress_step),
+        )
+
     def save_interim_results(
         self, progress_step, temp_mapset_path, temp_file_path, force_copy=False
     ):
@@ -287,17 +301,8 @@ class InterimResult(object):
         if self.old_pc_step is not None:
             progress_step += self.old_pc_step
         self.logger.info("Saving interim results of step %d" % progress_step)
-        dest_base_path = self.user_resource_interim_storage_path
-        dest_mapset = os.path.join(
-            dest_base_path,
-            self.resource_id,
-            self._get_step_folder_name(progress_step),
-        )
-        dest_tmpdir = os.path.join(
-            dest_base_path,
-            self.resource_id,
-            self._get_step_tmpdir_name(progress_step),
-        )
+        dest_mapset = self._get_interim_mapset_path(progress_step)
+        dest_tmpdir = self._get_interim_tmpdir_path(progress_step)
 
         if progress_step == 1 or force_copy is True:
             # copy temp mapset for first step
@@ -308,16 +313,8 @@ class InterimResult(object):
                 % (temp_mapset_path, temp_file_path)
             )
         else:
-            old_dest_mapset = os.path.join(
-                dest_base_path,
-                self.resource_id,
-                self._get_step_folder_name(progress_step - 1),
-            )
-            old_dest_tmpdir = os.path.join(
-                dest_base_path,
-                self.resource_id,
-                self._get_step_tmpdir_name(progress_step - 1),
-            )
+            old_dest_mapset = self._get_interim_mapset_path(progress_step - 1)
+            old_dest_tmpdir = self._get_interim_tmpdir_path(progress_step - 1)
 
             # saving mapset
             self._saving_folder(
