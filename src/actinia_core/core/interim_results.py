@@ -64,7 +64,7 @@ def get_directory_size(directory):
 class InterimResult(object):
     """This class manages the interim results"""
 
-    def __init__(self, user_id, resource_id, iteration):
+    def __init__(self, user_id, resource_id, iteration, endpoint):
         """Init method for InterimResult class
         Args:
             user_id (str): The unique user name/id
@@ -81,6 +81,7 @@ class InterimResult(object):
         self.resource_id = resource_id
         self.iteration = iteration if iteration is not None else 1
         self.old_pc_step = None
+        self.endpoint = endpoint
 
     def set_old_pc_step(self, old_pc_step):
         """Set method for the number of the successfully finished steps of
@@ -297,6 +298,10 @@ class InterimResult(object):
         `user_resource_interim_storage_path` by copying the directory or
         rsyncing it
         """
+
+        # check if interim results should be saved for current endpoint
+        if self.endpoint not in global_config.INTERIM_SAVING_ENDPOINTS:
+            return
 
         if self.old_pc_step is not None:
             progress_step += self.old_pc_step

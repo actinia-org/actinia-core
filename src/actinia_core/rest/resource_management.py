@@ -290,7 +290,7 @@ class ResourceManager(ResourceManagerBase):
         return error_msg
 
     def _create_ResourceDataContainer_for_resumption(
-        self, post_url, pc_step, user_id, resource_id, iteration
+        self, post_url, pc_step, user_id, resource_id, iteration, endpoint
     ):
         """Create the ResourceDataContainer for the resumption of the resource
         depending on the post_url
@@ -311,18 +311,17 @@ class ResourceManager(ResourceManagerBase):
             start_job (function): The start job function of the
                                   processing_resource
         """
-        interim_result = InterimResult(user_id, resource_id, iteration)
+        interim_result = InterimResult(
+            user_id, resource_id, iteration, endpoint
+        )
         if (
             interim_result.check_interim_result_mapset(pc_step, iteration - 1)
             is None
         ):
             return None, None, None
-        processing_type = post_url.split("/")[-1]
         location = re.findall(r"locations\/(.*?)\/", post_url)[0]
-        if (
-            processing_type.endswith("processing_async")
-            and "mapsets" not in post_url
-        ):
+        processing_class = global_config.INTERIM_SAVING_ENDPOINTS[endpoint]
+        if processing_class == "AsyncEphemeralResource":
             # /locations/<string:location_name>/processing_async
             from .ephemeral_processing import AsyncEphemeralResource
             from ..processing.common.ephemeral_processing import start_job
@@ -331,10 +330,7 @@ class ResourceManager(ResourceManagerBase):
                 resource_id, iteration, post_url
             )
             rdc = processing_resource.preprocess(location_name=location)
-        elif (
-            processing_type.endswith("processing_async")
-            and "mapsets" in post_url
-        ):
+        elif processing_class == "AsyncPersistentResource":
             # /locations/{location_name}/mapsets/{mapset_name}/processing_async
             from .persistent_processing import AsyncPersistentResource
             from ..processing.common.persistent_processing import start_job
@@ -346,7 +342,7 @@ class ResourceManager(ResourceManagerBase):
             rdc = processing_resource.preprocess(
                 location_name=location, mapset_name=mapset
             )
-        elif processing_type.endswith("processing_async_export"):
+        elif processing_class == "AsyncEphemeralExportResource":
             # /locations/{location_name}/processing_async_export
             from .ephemeral_processing_with_export import (
                 AsyncEphemeralExportResource,
@@ -370,6 +366,7 @@ class ResourceManager(ResourceManagerBase):
                 ),
                 400,
             )
+        rdc.api_info["endpoint"] = endpoint
         return rdc, processing_resource, start_job
 
     @endpoint_decorator()
@@ -454,7 +451,8 @@ class ResourceManager(ResourceManagerBase):
             processing_resource,
             start_job,
         ) = self._create_ResourceDataContainer_for_resumption(
-            post_url, pc_step, user_id, resource_id, iteration
+            post_url, pc_step, user_id, resource_id, iteration,
+            response_model["api_info"]["endpoint"],
         )
 
         # enqueue job

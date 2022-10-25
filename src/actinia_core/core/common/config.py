@@ -400,11 +400,12 @@ class Configuration(object):
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
         self.SAVE_INTERIM_RESULTS_CFG = None
-        self.INTERIM_SAVING_ENDPOINTS = [
-            "AsyncEphemeralResource",
-            "AsyncEphemeralExportResource",
-            "AsyncPersistentResource",
-        ]
+        self.INTERIM_SAVING_ENDPOINTS = {
+            "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
+            "AsyncEphemeralExportResource".lower():
+                "AsyncEphemeralExportResource",
+            "AsyncPersistentResource".lower(): "AsyncPersistentResource",
+        }
 
         """
         LOGGING
@@ -799,6 +800,7 @@ class Configuration(object):
                     )
                     # TODO read SAVE_INTERIM_RESULTS_CFG
                     # and append INTERIM_SAVING_ENDPOINTS
+                    self.INTERIM_SAVING_ENDPOINTS.append("TODO")
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

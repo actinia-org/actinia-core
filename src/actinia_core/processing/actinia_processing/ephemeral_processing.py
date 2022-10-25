@@ -154,7 +154,8 @@ class EphemeralProcessing(object):
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
         self.interim_result = InterimResult(
-            self.user_id, self.resource_id, self.iteration
+            self.user_id, self.resource_id, self.iteration,
+            self.api_info["endpoint"]
         )
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
@@ -1876,7 +1877,7 @@ class EphemeralProcessing(object):
                 eval(process.executable)
 
     def _interim_results(self):
-        """TODO"""
+        """Check if interim results should be saved or cleaned up"""
 
         if (
             "error" in self.run_state
