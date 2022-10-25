@@ -1882,6 +1882,7 @@ class EphemeralProcessing(object):
             "error" in self.run_state
             and self.interim_result.saving_interim_results == "onError"
         ):
+            self.interim_result.delete_interim_results()
             self.interim_result.save_interim_results(
                 self.progress_steps - 1,
                 self.temp_mapset_path,
