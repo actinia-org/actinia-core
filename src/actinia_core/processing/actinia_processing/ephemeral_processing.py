@@ -1876,19 +1876,22 @@ class EphemeralProcessing(object):
                 eval(process.executable)
 
     def _interim_results(self):
-        """TODO
-        """
+        """TODO"""
 
-        if ("error" in self.run_state and
-                self.interim_result.saving_interim_results == "onError"):
+        if (
+            "error" in self.run_state
+            and self.interim_result.saving_interim_results == "onError"
+        ):
             self.interim_result.save_interim_results(
                 self.progress_steps - 1,
                 self.temp_mapset_path,
                 self.temp_file_path,
                 force_copy=True,
             )
-        elif ("success" in self.run_state and
-                self.interim_result.saving_interim_results is not False):
+        elif (
+            "success" in self.run_state
+            and self.interim_result.saving_interim_results is not False
+        ):
             self.interim_result.delete_interim_results()
 
     def _final_cleanup(self):

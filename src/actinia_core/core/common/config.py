@@ -566,8 +566,9 @@ class Configuration(object):
             "MISC", "SAVE_INTERIM_RESULTS_CFG", self.SAVE_INTERIM_RESULTS_CFG
         )
         config.set(
-            "MISC", "INTERIM_SAVING_ENDPOINTS",
-            str(self.INTERIM_SAVING_ENDPOINTS)
+            "MISC",
+            "INTERIM_SAVING_ENDPOINTS",
+            str(self.INTERIM_SAVING_ENDPOINTS),
         )
 
         config.add_section("LOGGING")

@@ -261,20 +261,20 @@ class InterimResult(object):
             raise RsyncError("Error while rsyncing of step %d" % progress_step)
 
     def delete_interim_results(self):
-        """Deletes the temporary mapset and temporary data
-        """
+        """Deletes the temporary mapset and temporary data"""
         interim_result_path = self._get_interim_path()
 
-        if (os.path.exists(interim_result_path) and
-                os.path.isdir(interim_result_path)):
+        if os.path.exists(interim_result_path) and os.path.isdir(
+            interim_result_path
+        ):
             shutil.rmtree(interim_result_path, ignore_errors=True)
 
     def _get_interim_path(self):
         """Returns the path where the interim results are saved"""
         return os.path.join(
-                self.user_resource_interim_storage_path,
-                self.resource_id,
-            )
+            self.user_resource_interim_storage_path,
+            self.resource_id,
+        )
 
     def _get_interim_mapset_path(self, progress_step):
         """Returns path where the interim mapset is saved"""
