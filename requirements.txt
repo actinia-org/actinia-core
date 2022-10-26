@@ -33,6 +33,7 @@ wheel
 geopandas
 rasterio==1.2.10
 pystac==0.5.6
+PyJWT
 # required for running i.sentinel.download from GCS:
 pandas
 sentinelsat
