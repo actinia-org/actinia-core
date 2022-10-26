@@ -402,8 +402,7 @@ class Configuration(object):
         self.SAVE_INTERIM_RESULTS_CFG = None
         self.INTERIM_SAVING_ENDPOINTS = {
             "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
-            "AsyncEphemeralExportResource".lower():
-                "AsyncEphemeralExportResource",
+            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
             "AsyncPersistentResource".lower(): "AsyncPersistentResource",
         }
 

@@ -28,6 +28,7 @@ TODO: Tests required
 """
 
 from flask import jsonify, make_response
+from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 import pickle
 from actinia_api.swagger2.actinia_core.apidocs import (
@@ -86,6 +87,26 @@ class SyncResourceStorageResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
+    def _create_parser(self):
+        """Create the delete option arguments
+
+        The parameter contain:
+
+            olderthan : for older than X days
+
+        Returns:
+            The argument parser
+
+        """
+        parser = reqparse.RequestParser()
+        parser.add_argument(
+            "olderthan",
+            type=int,
+            location="args",
+            help="Older than x days. X must be specified as integer value",
+        )
+        return parser
+
     @endpoint_decorator()
     @swagger.doc(
         check_endpoint("delete", resource_storage_management.delete_doc)
@@ -94,11 +115,18 @@ class SyncResourceStorageResource(ResourceBase):
         """Clean the resource storage and remove all cached data"""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
+        olderthan = None
+        parser = self._create_parser()
+        args = parser.parse_args()
+        if "olderthan" in args and args["olderthan"] is not None:
+            olderthan = args["olderthan"]
+
         if rdc:
             enqueue_job(
                 self.job_timeout,
                 start_resource_storage_remove,
                 rdc,
+                olderthan,
                 queue_type_overwrite=True,
             )
             http_code, response_model = self.wait_until_finish()

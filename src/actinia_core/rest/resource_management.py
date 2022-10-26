@@ -451,7 +451,11 @@ class ResourceManager(ResourceManagerBase):
             processing_resource,
             start_job,
         ) = self._create_ResourceDataContainer_for_resumption(
-            post_url, pc_step, user_id, resource_id, iteration,
+            post_url,
+            pc_step,
+            user_id,
+            resource_id,
+            iteration,
             response_model["api_info"]["endpoint"],
         )
 
