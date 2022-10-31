@@ -373,7 +373,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             data=tpl.render(map1="elevation@PERMANENT", map2="baum555"),
             content_type="application/json",
         )
-        resp = self.waitAsyncStatusAssertHTTP(
+        self.waitAsyncStatusAssertHTTP(
             rv, headers=self.admin_auth_header, http_status=400, status="error"
         )
 

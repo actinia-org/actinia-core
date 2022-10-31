@@ -412,7 +412,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
         self.delete_mapset(mapset_name, location_name)
         # Create new mapset
-        rv = self.server.post(
+        self.server.post(
             URL_PREFIX
             + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
             headers=self.admin_auth_header,
@@ -420,14 +420,14 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
         # Unlock mapset for deletion
-        rv = self.server.delete(
+        self.server.delete(
             URL_PREFIX
             + "/locations/%s/mapsets/%s/lock" % (location_name, mapset_name),
             headers=self.admin_auth_header,
         )
 
         # Delete existing mapset
-        rv = self.server.delete(
+        self.server.delete(
             URL_PREFIX
             + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
             headers=self.admin_auth_header,
