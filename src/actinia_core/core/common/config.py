@@ -563,9 +563,12 @@ class Configuration(object):
         config.set(
             "MISC", "SAVE_INTERIM_RESULTS", str(self.SAVE_INTERIM_RESULTS)
         )
-        config.set(
-            "MISC", "SAVE_INTERIM_RESULTS_CFG", self.SAVE_INTERIM_RESULTS_CFG
-        )
+        if self.SAVE_INTERIM_RESULTS_CFG:
+            config.set(
+                "MISC",
+                "SAVE_INTERIM_RESULTS_CFG",
+                self.SAVE_INTERIM_RESULTS_CFG,
+            )
         config.set(
             "MISC",
             "INTERIM_SAVING_ENDPOINTS",

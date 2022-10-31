@@ -57,8 +57,6 @@ class ConfigurationTestCase(unittest.TestCase):
 
         self.assertEqual(c.LOG_LEVEL, 1)
 
-        print(c)
-
     def test_read_write_exceptions(self):
 
         c = Configuration()
