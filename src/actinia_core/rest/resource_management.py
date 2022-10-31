@@ -446,11 +446,7 @@ class ResourceManager(ResourceManagerBase):
         else:
             post_url = None
 
-        (
-            rdc,
-            processing_resource,
-            start_job,
-        ) = self._create_ResourceDataContainer_for_resumption(
+        rdc_resp = self._create_ResourceDataContainer_for_resumption(
             post_url,
             pc_step,
             user_id,
@@ -459,9 +455,25 @@ class ResourceManager(ResourceManagerBase):
             response_model["api_info"]["endpoint"],
         )
 
+        if len(rdc_resp) == 3:
+            rdc = rdc_resp[0]
+            processing_resource = rdc_resp[1]
+            start_job = rdc_resp[2]
+        else:
+            return rdc_resp
+
         # enqueue job
         if rdc:
             enqueue_job(processing_resource.job_timeout, start_job, rdc)
+        else:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource cannot be resumed."
+                    )
+                ),
+                400,
+            )
         html_code, response_model = pickle.loads(
             processing_resource.response_data
         )

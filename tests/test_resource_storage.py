@@ -24,7 +24,6 @@
 """
 Tests: Resource storage test case
 """
-import pytest
 from flask.json import loads as json_load
 from datetime import datetime, timedelta
 import unittest

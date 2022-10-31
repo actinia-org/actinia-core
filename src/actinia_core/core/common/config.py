@@ -25,9 +25,10 @@
 Global configuration
 """
 
+import ast
 import os
 import configparser
-import ast
+import csv
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -794,12 +795,19 @@ class Configuration(object):
                     else:
                         self.SAVE_INTERIM_RESULTS = save_interim
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS_CFG"):
-                    self.SAVE_INTERIM_RESULTS_CFG = config.get(
-                        "MISC", "SAVE_INTERIM_RESULTS_CFG"
-                    )
-                    # TODO read SAVE_INTERIM_RESULTS_CFG
-                    # and append INTERIM_SAVING_ENDPOINTS
-                    self.INTERIM_SAVING_ENDPOINTS.append("TODO")
+                    cfg = config.get("MISC", "SAVE_INTERIM_RESULTS_CFG")
+                    if os.path.isfile(cfg):
+                        self.SAVE_INTERIM_RESULTS_CFG = cfg
+                        with open(cfg, mode="r") as inp:
+                            reader = csv.reader(inp, delimiter=";")
+                            endpoints_dict = {
+                                row[0].lower(): row[1]
+                                for row in reader
+                                if len(row) == 2
+                            }
+                            self.INTERIM_SAVING_ENDPOINTS.update(
+                                endpoints_dict
+                            )
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):
