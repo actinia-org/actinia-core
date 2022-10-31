@@ -47,10 +47,12 @@ class ResourceStorageDelete(PersistentProcessing):
     """Delete the user specific resource directory"""
 
     def __init__(self, *args):
-        PersistentProcessing.__init__(self, *args)
+        rdc = args[0]
+        PersistentProcessing.__init__(self, rdc)
         self.user_resource_storage_path = os.path.join(
             self.config.GRASS_RESOURCE_DIR, self.user_id
         )
+        self.olderthan = args[1]
 
     def _execute(self):
 
@@ -59,8 +61,22 @@ class ResourceStorageDelete(PersistentProcessing):
         if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
             self.user_resource_storage_path
         ):
-            executable = "/bin/rm"
-            args = ["-rf", self.user_resource_storage_path]
+
+            if self.olderthan is None:
+                # delete all user resources
+                executable = "/bin/rm"
+                args = ["-rf", self.user_resource_storage_path]
+            else:
+                # delete all user resources older than X days
+                executable = "/usr/bin/find"
+                args = [
+                    self.user_resource_storage_path,
+                    "-mindepth",
+                    "1",
+                    "-mtime",
+                    f"+{self.olderthan}",
+                    "-delete",
+                ]
 
             self._run_process(
                 Process(
@@ -71,7 +87,8 @@ class ResourceStorageDelete(PersistentProcessing):
                 )
             )
 
-            os.mkdir(self.user_resource_storage_path)
+            if not os.path.exists(self.user_resource_storage_path):
+                os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
             raise AsyncProcessError(
