@@ -36,7 +36,7 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )

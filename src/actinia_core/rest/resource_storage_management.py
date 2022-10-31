@@ -52,7 +52,7 @@ from actinia_core.rest.base.user_auth import check_admin_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
