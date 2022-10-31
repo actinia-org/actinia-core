@@ -36,7 +36,7 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Anika Weinmann"
+__author__ = "Sören Gebbert"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
@@ -47,12 +47,10 @@ class ResourceStorageDelete(PersistentProcessing):
     """Delete the user specific resource directory"""
 
     def __init__(self, *args):
-        rdc = args[0]
-        PersistentProcessing.__init__(self, rdc)
+        PersistentProcessing.__init__(self, *args)
         self.user_resource_storage_path = os.path.join(
             self.config.GRASS_RESOURCE_DIR, self.user_id
         )
-        self.olderthan = args[1]
 
     def _execute(self):
 
@@ -61,22 +59,8 @@ class ResourceStorageDelete(PersistentProcessing):
         if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
             self.user_resource_storage_path
         ):
-
-            if self.olderthan is None:
-                # delete all user resources
-                executable = "/bin/rm"
-                args = ["-rf", self.user_resource_storage_path]
-            else:
-                # delete all user resources older than X days
-                executable = "/usr/bin/find"
-                args = [
-                    self.user_resource_storage_path,
-                    "-mindepth",
-                    "1",
-                    "-mtime",
-                    f"+{self.olderthan}",
-                    "-delete",
-                ]
+            executable = "/bin/rm"
+            args = ["-rf", self.user_resource_storage_path]
 
             self._run_process(
                 Process(
@@ -87,8 +71,7 @@ class ResourceStorageDelete(PersistentProcessing):
                 )
             )
 
-            if not os.path.exists(self.user_resource_storage_path):
-                os.mkdir(self.user_resource_storage_path)
+            os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
             raise AsyncProcessError(
