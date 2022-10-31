@@ -31,7 +31,7 @@ import configparser
 import csv
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
@@ -793,8 +793,10 @@ class Configuration(object):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
                     save_interim = config.get("MISC", "SAVE_INTERIM_RESULTS")
-                    if save_interim in ["True", "False"]:
-                        self.SAVE_INTERIM_RESULTS = bool(save_interim)
+                    if save_interim == "True":
+                        self.SAVE_INTERIM_RESULTS = True
+                    elif save_interim == "False":
+                        self.SAVE_INTERIM_RESULTS = False
                     else:
                         self.SAVE_INTERIM_RESULTS = save_interim
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS_CFG"):

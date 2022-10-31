@@ -34,7 +34,8 @@ from actinia_core.core.common.exceptions import RsyncError
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
