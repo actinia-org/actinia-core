@@ -30,6 +30,7 @@ geopandas
 rasterio==1.2.10
 pystac==0.5.6
 PyJWT
+werkzeug==2.0.3
 # required for running i.sentinel.download from GCS:
 pandas
 sentinelsat
