@@ -20,6 +20,21 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+## [4.4.0] - 2022-11-22
+released from main
+### Added
+* Resource storage older than X days deletion by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/392
+* Start with the adjustment of the interim results by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/390
+
+### Fixed
+* update RELEASE documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/389
+* replace deprecated (Timed)JSONWebSignatureSerializer by @metzm in https://github.com/mundialis/actinia_core/pull/386
+* update requirements.txt by @mmacata in https://github.com/mundialis/actinia_core/pull/393
+* Update alpine dependency image version by @mmacata in https://github.com/mundialis/actinia_core/pull/394
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.3.1...4.4.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.4.0" -f target_commitish=main -q .body`
 
 ## [4.3.1] - 2022-10-21
 released from main
