@@ -10,10 +10,12 @@ the temporary mapset in which the calculation is done is saved.
 This requires a lot of memory depending on the calculated data and the amount
 of calculations.
 2. `save_iterim_results=onError` saves only intermediate results if an error
-has occurred in the processing.
-Here the job resumption can fail, if the failing step modifies the temporary
-mapset (e.g. deletion of data which are needed) so that the fixed module call
-can not be executed after that modification.
+has occurred in the processing. This means that the temporary mapset is only
+saved if an error occurs. Here the job resumption can fail, if the failing step
+modifies the temporary mapset (e.g. deletion of data which are needed) so that
+the fixed module call can not be executed after that modification. In the event
+of such an error, the process chain can then be adjusted so that the missing
+data is generated again, or the entire process can be started as a new job.
 
 The interim results will be saved in the resource storage. Which can be configured in the config:
 ```
@@ -27,13 +29,13 @@ The interim results will be deleted automatically if a job resource is successfu
     ```
     [MISC]
     save_interim_results = True
-    save_interim_results_cfg = /etc/default/actinia_interim_endpoints.csv
+    save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
     ```
     or for option 2
     ```
     [MISC]
     save_interim_results = onError
-    save_interim_results_cfg = /etc/default/actinia_interim_endpoints.csv
+    save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
     ```
 
     The `/etc/default/actinia_interim_endpoints.csv` file can be set if not only

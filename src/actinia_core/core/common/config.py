@@ -400,7 +400,7 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
-        self.SAVE_INTERIM_RESULTS_CFG = None
+        self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = None
         self.INTERIM_SAVING_ENDPOINTS = {
             "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
             "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
@@ -563,11 +563,11 @@ class Configuration(object):
         config.set(
             "MISC", "SAVE_INTERIM_RESULTS", str(self.SAVE_INTERIM_RESULTS)
         )
-        if self.SAVE_INTERIM_RESULTS_CFG:
+        if self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG:
             config.set(
                 "MISC",
-                "SAVE_INTERIM_RESULTS_CFG",
-                self.SAVE_INTERIM_RESULTS_CFG,
+                "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG",
+                self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG,
             )
         config.set(
             "MISC",
@@ -799,10 +799,10 @@ class Configuration(object):
                         self.SAVE_INTERIM_RESULTS = False
                     else:
                         self.SAVE_INTERIM_RESULTS = save_interim
-                if config.has_option("MISC", "SAVE_INTERIM_RESULTS_CFG"):
-                    cfg = config.get("MISC", "SAVE_INTERIM_RESULTS_CFG")
+                if config.has_option("MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"):
+                    cfg = config.get("MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG")
                     if os.path.isfile(cfg):
-                        self.SAVE_INTERIM_RESULTS_CFG = cfg
+                        self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = cfg
                         with open(cfg, mode="r") as inp:
                             reader = csv.reader(inp, delimiter=";")
                             endpoints_dict = {
