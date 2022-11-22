@@ -25,6 +25,7 @@ exclude =
 per-file-ignores =
     ./src/actinia_core/core/common/api_logger.py: F401
     ./src/actinia_core/core/common/app.py: E402
+    ./src/actinia_core/core/common/config.py: E501
     ./src/actinia_core/core/common/process_queue.py: F401
     ./src/actinia_core/core/interim_results.py: W605
     ./src/actinia_core/core/list_grass_modules.py: F821

@@ -49,7 +49,8 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
@@ -295,6 +296,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
     resource_user_id = None
     resource_resource_id = None
     sleep_time = 15
+    save_interim_results = "True"
 
     @classmethod
     def save_config(cls, src, dest, value):
@@ -310,7 +312,11 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         cls.save_interim_results_value = global_config.SAVE_INTERIM_RESULTS
         if cls.save_interim_results_value is False:
             os.replace(cls.cfg_file, cls.tmp_cfg_file)
-            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, "True")
+            cls.save_config(
+                cls.tmp_cfg_file,
+                cls.cfg_file,
+                cls.save_interim_results,
+            )
 
         super(JobResumptionProcessingTestCase, cls).setUpClass()
 
@@ -324,8 +330,10 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
         super(JobResumptionProcessingTestCase, cls).tearDownClass()
 
-    def test_saved_interim_results(self):
-        """Test if the interim results are saved correctly"""
+    def test_notsaved_interim_results_by_success(self):
+        """Test if the interim results are not saved if process ends
+        successfully
+        """
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
@@ -338,6 +346,35 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             headers=self.admin_auth_header,
             http_status=200,
             status="finished",
+        )
+
+        # check if interim results are not saved
+        resp_data = json_loads(rv.data)
+        rv_user_id = resp_data["user_id"]
+        rv_resource_id = resp_data["resource_id"]
+        interim_dir = os.path.join(
+            global_config.GRASS_RESOURCE_DIR,
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertFalse(
+            os.path.isdir(interim_dir),
+            "Interim results are stored",
+        )
+
+    def test_saved_interim_results(self):
+        """Test if the interim results are not saved correctly"""
+        step = 4
+        tpl = Template(json_dumps(process_chain_1))
+        rv = self.server.post(
+            URL_PREFIX + self.endpoint,
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum555"),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
         )
 
         # check if interim results are saved
@@ -355,16 +392,16 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             "Interim results are not stored in the expected folder",
         )
         self.assertTrue(
-            os.path.isdir(os.path.join(interim_dir, "step5")),
+            os.path.isdir(os.path.join(interim_dir, f"step{step}")),
             "Interim results mapset is not stored in the expected folder",
         )
         self.assertIn(
             "baum",
-            os.listdir(os.path.join(interim_dir, "step5", "cellhd")),
+            os.listdir(os.path.join(interim_dir, f"step{step}", "cellhd")),
             "Raster map 'baum' not in interim results mapset",
         )
         self.assertTrue(
-            os.path.isdir(os.path.join(interim_dir, "tmpdir5")),
+            os.path.isdir(os.path.join(interim_dir, f"tmpdir{step}")),
             "Interim results temporary file path is not stored in the expected"
             " folder",
         )
@@ -935,7 +972,6 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         # Get the exported results
         urls = resp2["urls"]["resources"]
         for url in urls:
-            print(url)
             rv = self.server.get(url, headers=self.admin_auth_header)
             self.assertEqual(
                 rv.status_code,
@@ -1018,7 +1054,6 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         # Get the exported results
         urls = resp3["urls"]["resources"]
         for url in urls:
-            print(url)
             rv = self.server.get(url, headers=self.admin_auth_header)
             self.assertEqual(
                 rv.status_code,
@@ -1109,6 +1144,7 @@ class JobResumptionPersistentProcessingTestCase(
         ).test_job_resumption_error_by_running()
         sleep(self.sleep_time)
         self.__class__.mapset_created = False
+        print(self.resource_user_id)
 
     def test_resource_endpoints(self):
         super(
@@ -1129,7 +1165,7 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
-            data=tpl.render(map="elevation2@PERMANENT"),
+            data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
         )
         resp = self.waitAsyncStatusAssertHTTP(
@@ -1139,7 +1175,7 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
-            data=tpl.render(map="elevation@PERMANENT"),
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
             content_type="application/json",
         )
         self.assertEqual(rv2.status_code, 404)
@@ -1149,6 +1185,22 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
             resp_data["message"],
             "Interim results are not set in the configureation",
         )
+
+
+class JobResumptionProcessingTestCaseOnError(JobResumptionProcessingTestCase):
+    save_interim_results = "onError"
+
+
+class JobResumptionProcessingExportTestCaseOnError(
+    JobResumptionProcessingExportTestCase
+):
+    save_interim_results = "onError"
+
+
+class JobResumptionPersistentProcessingTestCaseOnError(
+    JobResumptionPersistentProcessingTestCase
+):
+    save_interim_results = "onError"
 
 
 if __name__ == "__main__":

@@ -318,7 +318,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         """
         # Check if the resource was accepted
-        print("waitAsyncStatusAssertHTTP:", response.data.decode())
         self.assertEqual(
             response.status_code,
             200,
@@ -340,7 +339,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
                 headers=headers,
             )
-            print("waitAsyncStatusAssertHTTP in loop:", rv.data.decode())
             resp_data = json_loads(rv.data)
             if (
                 resp_data["status"] == "finished"
@@ -414,29 +412,26 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
         self.delete_mapset(mapset_name, location_name)
         # Create new mapset
-        rv = self.server.post(
+        self.server.post(
             URL_PREFIX
             + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
             headers=self.admin_auth_header,
         )
-        print(rv.data.decode())
 
     def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
         # Unlock mapset for deletion
-        rv = self.server.delete(
+        self.server.delete(
             URL_PREFIX
             + "/locations/%s/mapsets/%s/lock" % (location_name, mapset_name),
             headers=self.admin_auth_header,
         )
-        print(rv.data.decode())
 
         # Delete existing mapset
-        rv = self.server.delete(
+        self.server.delete(
             URL_PREFIX
             + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
             headers=self.admin_auth_header,
         )
-        print(rv.data.decode())
 
     def create_vector_layer(self, location, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
