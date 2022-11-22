@@ -416,7 +416,7 @@ actiniadelete $AUTH $URL/resource_storage
 }
 ```
 
-`pc_template_forput.json`: complete process chain without template:
+`pc_template_forput.json`: complete process chain without template (can be found in actinia response) :
 ```
 {
     "list": [
