@@ -799,8 +799,12 @@ class Configuration(object):
                         self.SAVE_INTERIM_RESULTS = False
                     else:
                         self.SAVE_INTERIM_RESULTS = save_interim
-                if config.has_option("MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"):
-                    cfg = config.get("MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG")
+                if config.has_option(
+                    "MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"
+                ):
+                    cfg = config.get(
+                        "MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"
+                    )
                     if os.path.isfile(cfg):
                         self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = cfg
                         with open(cfg, mode="r") as inp:
