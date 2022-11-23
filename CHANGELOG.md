@@ -29,6 +29,7 @@ released from main
 ### Fixed
 * update RELEASE documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/389
 * replace deprecated (Timed)JSONWebSignatureSerializer by @metzm in https://github.com/mundialis/actinia_core/pull/386
+  * !! **Old API keys and tokens might not be valid anymore** !!
 * update requirements.txt by @mmacata in https://github.com/mundialis/actinia_core/pull/393
 * Update alpine dependency image version by @mmacata in https://github.com/mundialis/actinia_core/pull/394
 
