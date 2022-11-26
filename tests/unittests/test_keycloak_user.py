@@ -26,12 +26,12 @@ Tests: Version unittest case
 """
 import os
 import pytest
+from datetime import datetime, timedelta
 
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common.keycloak_user import (
     ActiniaKeycloakUser,
     create_user_from_tokeninfo,
-    read_keycloak_config,
 )
 
 __license__ = "GPLv3"
@@ -40,16 +40,18 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
+@pytest.mark.dev
 @pytest.mark.unittest
 def test_keycloak_superadmin():
-    global_config.KEYCLOAK_CONFIG_PATH = os.path.join(
+    keycloak_config_path = os.path.join(
         os.path.dirname(os.path.abspath(__file__)), "keycloak.json"
     )
     global_config.KEYCLOAK_GROUP_PREFIX = "/actinia-user/"
-    read_keycloak_config(global_config.KEYCLOAK_CONFIG_PATH)
+    global_config.read_keycloak_config(keycloak_config_path)
+    time = datetime.now()
     token_info = {
-        "exp": 1664974952,
-        "iat": 1664974652,
+        "iat": time.strftime("%s"),
+        "exp": (time + timedelta(minutes=5)).strftime("%s"),
         "jti": "efa087ce-6853-49b5-9033-3d344994d779",
         "iss": "http://keycloak:8080/auth/realms/actinia-realm",
         "aud": ["actinia-client", "account"],

@@ -28,8 +28,6 @@ Possible TODOs: add list_all_users, delete, create_user (, exists).
         In this case, keycloak admin console would be needed and actinia would
         need to store keycloak admin credentials!
 """
-from os.path import isfile
-from json import load as json_load
 from keycloak import KeycloakOpenID
 from jose.exceptions import ExpiredSignatureError
 
@@ -44,25 +42,6 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
-def read_keycloak_config(keycloak_config_path=None):
-    global KEYCLOAK_URL, REALM, CLIENT_ID, CLIENT_SECRET_KEY
-    if keycloak_config_path:
-        global_config.KEYCLOAK_CONFIG_PATH = keycloak_config_path
-    if global_config.KEYCLOAK_CONFIG_PATH:
-        if isfile(global_config.KEYCLOAK_CONFIG_PATH):
-            with open(global_config.KEYCLOAK_CONFIG_PATH) as f:
-                keycloak_cfg = json_load(f)
-                KEYCLOAK_URL = keycloak_cfg["auth-server-url"]
-                REALM = keycloak_cfg["realm"]
-                CLIENT_ID = keycloak_cfg["resource"]
-                CLIENT_SECRET_KEY = keycloak_cfg["credentials"]["secret"]
-        else:
-            raise Exception(
-                "KEYCLOAK_CONFIG_PATH is not a valid keycloak configuration "
-                "for actinia"
-            )
-
-
 def create_user_from_tokeninfo(token_info):
     """
     Function to create a keycloak user from the keycloak token.
@@ -74,7 +53,9 @@ def create_user_from_tokeninfo(token_info):
     )
     user_id = token_info["preferred_username"]
     kwargs = {
-        "user_role": token_info["resource_access"][CLIENT_ID]["roles"][0],
+        "user_role": token_info["resource_access"][
+            global_config.KEYCLOAK_CLIENT_ID
+        ]["roles"][0],
         "cell_limit": token_info[f"{attr_prefix}cell_limit"],
         "process_num_limit": token_info[f"{attr_prefix}process_num_limit"],
         "process_time_limit": token_info[f"{attr_prefix}process_time_limit"],
@@ -167,10 +148,10 @@ class ActiniaKeycloakUser(ActiniaUserBase):
     @staticmethod
     def verify_keycloak_token(token):
         keycloak_openid = KeycloakOpenID(
-            server_url=KEYCLOAK_URL,
-            client_id=CLIENT_ID,
-            realm_name=REALM,
-            client_secret_key=CLIENT_SECRET_KEY,
+            server_url=global_config.KEYCLOAK_URL,
+            client_id=global_config.KEYCLOAK_CLIENT_ID,
+            realm_name=global_config.KEYCLOAK_REALM,
+            client_secret_key=global_config.KEYCLOAK_CLIENT_SECRET_KEY,
         )
         KEYCLOAK_PUBLIC_KEY = (
             "-----BEGIN PUBLIC KEY-----\n"
@@ -319,6 +300,3 @@ class ActiniaKeycloakUser(ActiniaUserBase):
 
         if self.permissions and "process_time_limit" in self.permissions:
             return self.permissions["process_time_limit"]
-
-
-read_keycloak_config()

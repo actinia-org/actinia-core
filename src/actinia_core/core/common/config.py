@@ -28,8 +28,7 @@ Global configuration
 import os
 import configparser
 import ast
-
-# from actinia_core.core.logging_interface import log
+from json import load as json_load
 
 
 __license__ = "GPLv3"
@@ -334,6 +333,11 @@ class Configuration(object):
         # Prefix to distinguish parameters inside keycloak from parameters
         # used by other applications, e.g. actinia
         self.KEYCLOAK_ATTR_PREFIX = None
+        # KEYCLOAK parameter read from json configured in KEYCLOAK_CONFIG_PATH
+        self.KEYCLOAK_URL = None
+        self.KEYCLOAK_CLIENT_ID = None
+        self.KEYCLOAK_REALM = None
+        self.KEYCLOAK_CLIENT_SECRET_KEY = None
 
         """
         REDIS
@@ -479,6 +483,25 @@ class Configuration(object):
 
         return string
 
+    def read_keycloak_config(self, key_cloak_config_path=None):
+        """Read keycloak configuration json"""
+        if key_cloak_config_path is None:
+            key_cloak_config_path = self.KEYCLOAK_CONFIG_PATH
+        if os.path.isfile(key_cloak_config_path):
+            with open(key_cloak_config_path) as f:
+                keycloak_cfg = json_load(f)
+                self.KEYCLOAK_URL = keycloak_cfg["auth-server-url"]
+                self.KEYCLOAK_REALM = keycloak_cfg["realm"]
+                self.KEYCLOAK_CLIENT_ID = keycloak_cfg["resource"]
+                self.KEYCLOAK_CLIENT_SECRET_KEY = keycloak_cfg["credentials"][
+                    "secret"
+                ]
+        else:
+            raise Exception(
+                "KEYCLOAK_CONFIG_PATH is not a valid keycloak configuration "
+                "for actinia"
+            )
+
     def write(self, path=DEFAULT_CONFIG_PATH):
         """Save the configuration into a file
 
@@ -542,6 +565,26 @@ class Configuration(object):
             "KEYCLOAK",
             "KEYCLOAK_ATTR_PREFIX",
             str(self.KEYCLOAK_ATTR_PREFIX),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_URL",
+            str(self.KEYCLOAK_URL),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_CLIENT_ID",
+            str(self.KEYCLOAK_CLIENT_ID),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_REALM",
+            str(self.KEYCLOAK_REALM),
+        )
+        config.set(
+            "KEYCLOAK",
+            "KEYCLOAK_CLIENT_SECRET_KEY",
+            str(self.KEYCLOAK_CLIENT_SECRET_KEY),
         )
 
         config.add_section("REDIS")
@@ -746,12 +789,13 @@ class Configuration(object):
                     keycloak_cfg_path = config.get("KEYCLOAK", "CONFIG_PATH")
                     if os.path.isfile(keycloak_cfg_path):
                         self.KEYCLOAK_CONFIG_PATH = keycloak_cfg_path
-                    # else:
-                    #     log.warning(
-                    #         f"Keycloak is configured, but configfile is not "
-                    #         "an existing file! Using Redis for user "
-                    #         "management."
-                    #     )
+                        self.read_keycloak_config()
+                    else:
+                        print(
+                            f"Keycloak is configured, but configfile is not "
+                            "an existing file! Using Redis for user "
+                            "management."
+                        )
                 if config.has_option("KEYCLOAK", "GROUP_PREFIX"):
                     self.KEYCLOAK_GROUP_PREFIX = config.get(
                         "KEYCLOAK", "GROUP_PREFIX"
