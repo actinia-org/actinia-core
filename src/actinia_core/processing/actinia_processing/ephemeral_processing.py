@@ -71,7 +71,7 @@ __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class EphemeralProcessing(object):
@@ -154,7 +154,10 @@ class EphemeralProcessing(object):
         self.status_url = self.rdc.status_url
         self.api_info = self.rdc.api_info
         self.interim_result = InterimResult(
-            self.user_id, self.resource_id, self.iteration
+            self.user_id,
+            self.resource_id,
+            self.iteration,
+            self.api_info["endpoint"],
         )
 
         self.grass_data_base = self.rdc.grass_data_base  # Global database
@@ -1875,6 +1878,26 @@ class EphemeralProcessing(object):
             elif process.exec_type == "python":
                 eval(process.executable)
 
+    def _interim_results(self):
+        """Check if interim results should be saved or cleaned up"""
+
+        if (
+            "error" in self.run_state
+            and self.interim_result.saving_interim_results == "onError"
+        ):
+            self.interim_result.delete_interim_results()
+            self.interim_result.save_interim_results(
+                self.progress_steps - 1,
+                self.temp_mapset_path,
+                self.temp_file_path,
+                force_copy=True,
+            )
+        elif (
+            "success" in self.run_state
+            and self.interim_result.saving_interim_results is not False
+        ):
+            self.interim_result.delete_interim_results()
+
     def _final_cleanup(self):
         """Overwrite this function in subclasses to perform the final cleanup,
         by default this function calls self._cleanup() to remove the temporary
@@ -1893,6 +1916,7 @@ class EphemeralProcessing(object):
         You have to implement/overwrite two methods that are called here:
 
             * self._execute()
+            * self._interim_results()
             * self._final_cleanup()
 
             e_type, e_value, e_traceback = sys.exc_info()
@@ -1934,6 +1958,8 @@ class EphemeralProcessing(object):
             self.run_state = {"error": str(e), "exception": model}
         finally:
             try:
+                # Check if interim results should be saved and save them
+                self._interim_results()
                 # Call the final cleanup, before sending the status messages
                 self._final_cleanup()
             except Exception as e:

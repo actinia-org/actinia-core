@@ -25,11 +25,11 @@
 Global configuration
 """
 
-import os
-import configparser
 import ast
+import configparser
+import csv
+import os
 from json import load as json_load
-
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
@@ -419,6 +419,12 @@ class Configuration(object):
         self.DOWNLOAD_CACHE_QUOTA = 100
         # If True the interim results (temporary mapset) are saved
         self.SAVE_INTERIM_RESULTS = False
+        self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = None
+        self.INTERIM_SAVING_ENDPOINTS = {
+            "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
+            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
+            "AsyncPersistentResource".lower(): "AsyncPersistentResource",
+        }
 
         """
         LOGGING
@@ -631,6 +637,17 @@ class Configuration(object):
         config.set("MISC", "SECRET_KEY", self.SECRET_KEY)
         config.set(
             "MISC", "SAVE_INTERIM_RESULTS", str(self.SAVE_INTERIM_RESULTS)
+        )
+        if self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG:
+            config.set(
+                "MISC",
+                "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG",
+                self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG,
+            )
+        config.set(
+            "MISC",
+            "INTERIM_SAVING_ENDPOINTS",
+            str(self.INTERIM_SAVING_ENDPOINTS),
         )
 
         config.add_section("LOGGING")
@@ -871,9 +888,31 @@ class Configuration(object):
                 if config.has_option("MISC", "LOG_LEVEL"):
                     self.LOG_LEVEL = config.getint("MISC", "LOG_LEVEL")
                 if config.has_option("MISC", "SAVE_INTERIM_RESULTS"):
-                    self.SAVE_INTERIM_RESULTS = config.getboolean(
-                        "MISC", "SAVE_INTERIM_RESULTS"
+                    save_interim = config.get("MISC", "SAVE_INTERIM_RESULTS")
+                    if save_interim == "True":
+                        self.SAVE_INTERIM_RESULTS = True
+                    elif save_interim == "False":
+                        self.SAVE_INTERIM_RESULTS = False
+                    else:
+                        self.SAVE_INTERIM_RESULTS = save_interim
+                if config.has_option(
+                    "MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"
+                ):
+                    cfg = config.get(
+                        "MISC", "SAVE_INTERIM_RESULTS_ENDPOINTS_CFG"
                     )
+                    if os.path.isfile(cfg):
+                        self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = cfg
+                        with open(cfg, mode="r") as inp:
+                            reader = csv.reader(inp, delimiter=";")
+                            endpoints_dict = {
+                                row[0].lower(): row[1]
+                                for row in reader
+                                if len(row) == 2
+                            }
+                            self.INTERIM_SAVING_ENDPOINTS.update(
+                                endpoints_dict
+                            )
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):
