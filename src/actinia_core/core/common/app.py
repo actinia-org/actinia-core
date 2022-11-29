@@ -149,18 +149,20 @@ if global_config.KEYCLOAK_CONFIG_PATH:
             "type": "http",
             "scheme": "bearer",
             "bearerFormat": "JWT",
-            }
+        }
     }
     # https://swagger.io/docs/specification/authentication/oauth2/
-    flask_api._swagger_object["security"] = [{
-        "OAuth2": {
-            "type": "oauth2",
-            # "authorizationUrl": "http://swagger.io/api/oauth/dialog",
-            # "tokenUrl": "http://swagger.io/api/oauth/dialog",
-            "flow": "implicit",
-            "scopes": {}
+    flask_api._swagger_object["security"] = [
+        {
+            "OAuth2": {
+                "type": "oauth2",
+                # "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+                # "tokenUrl": "http://swagger.io/api/oauth/dialog",
+                "flow": "implicit",
+                "scopes": {},
+            }
         }
-    }]
+    ]
 else:
     # Set the security definition in an unconventional way
     flask_api._swagger_object["securityDefinitions"] = {
