@@ -809,7 +809,7 @@ class Configuration(object):
                         self.read_keycloak_config()
                     else:
                         print(
-                            f"Keycloak is configured, but configfile is not "
+                            "Keycloak is configured, but configfile is not "
                             "an existing file! Using Redis for user "
                             "management."
                         )

@@ -144,6 +144,23 @@ flask_api = Api(
 global_config.read(DEFAULT_CONFIG_PATH)
 if global_config.KEYCLOAK_CONFIG_PATH:
     auth = HTTPTokenAuth(scheme="Bearer")
+    flask_api._swagger_object["securityDefinitions"] = {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+            }
+    }
+    # https://swagger.io/docs/specification/authentication/oauth2/
+    flask_api._swagger_object["security"] = [{
+        "OAuth2": {
+            "type": "oauth2",
+            # "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+            # "tokenUrl": "http://swagger.io/api/oauth/dialog",
+            "flow": "implicit",
+            "scopes": {}
+        }
+    }]
 else:
     # Set the security definition in an unconventional way
     flask_api._swagger_object["securityDefinitions"] = {
