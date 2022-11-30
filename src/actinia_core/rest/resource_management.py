@@ -124,6 +124,23 @@ class ResourceManagerBase(Resource):
                     ),
                     401,
                 )
+
+        if global_config.KEYCLOAK_CONFIG_PATH and self.user_role == "admin":
+            if self.user.check_group_members(user_id):
+                return None
+            else:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="You do not have the permission to access "
+                            "this resource. Wrong user group. (Maybe you can c"
+                            "heck the group_members in the group attributes.)",
+                        )
+                    ),
+                    401,
+                )
+
         new_user = ActiniaUser(user_id=user_id)
 
         # Check if the user exists

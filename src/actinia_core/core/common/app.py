@@ -106,9 +106,12 @@ a cloud storage for download.
 """
 
 from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPTokenAuth
 from flask_cors import CORS
 from flask import Flask
 from flask_restful_swagger_2 import Api
+
+from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 
 from actinia_api import API_VERSION, URL_PREFIX
 
@@ -125,6 +128,7 @@ flask_app = Flask(__name__)
 flask_app.url_map.strict_slashes = False
 CORS(flask_app)
 
+
 flask_api = Api(
     flask_app,
     prefix=URL_PREFIX,
@@ -136,10 +140,36 @@ flask_api = Api(
     consumes=["application/gml+xml", "application/json"],
 )
 
-# Set the security definition in an unconventional way
-flask_api._swagger_object["securityDefinitions"] = {
-    "basicAuth": {"type": "basic"}
-}
-flask_api._swagger_object["security"] = [{"basicAuth": []}]
+# authentication method
+global_config.read(DEFAULT_CONFIG_PATH)
+if global_config.KEYCLOAK_CONFIG_PATH:
+    auth = HTTPTokenAuth(scheme="Bearer")
+    flask_api._swagger_object["securityDefinitions"] = {
+        "bearerAuth": {
+            "type": "http",
+            "scheme": "bearer",
+            "bearerFormat": "JWT",
+        }
+    }
+    # https://swagger.io/docs/specification/authentication/oauth2/
+    flask_api._swagger_object["security"] = [
+        {
+            "OAuth2": {
+                "type": "oauth2",
+                # "authorizationUrl": "http://swagger.io/api/oauth/dialog",
+                "tokenUrl": f"{global_config.KEYCLOAK_URL}/realms/"
+                f"{global_config.KEYCLOAK_REALM}/protocol/openid-connect/"
+                "token",
+                "flow": "implicit",
+                "scopes": {},
+            }
+        }
+    ]
+else:
+    # Set the security definition in an unconventional way
+    flask_api._swagger_object["securityDefinitions"] = {
+        "basicAuth": {"type": "basic"}
+    }
+    flask_api._swagger_object["security"] = [{"basicAuth": []}]
 
-auth = HTTPBasicAuth()
+    auth = HTTPBasicAuth()

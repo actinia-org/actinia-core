@@ -18,6 +18,7 @@ passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
 python-json-logger
+python-keycloak>=2.6.0
 python-magic>=0.4.15
 Sphinx>=1.7.1
 redis>=2.10.6
