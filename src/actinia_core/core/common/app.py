@@ -75,7 +75,7 @@ To execute the examples, first setup login information, IP address and port:
     curl ${AUTH} -X GET \
     "${ACTINIA_URL}/locations/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 
-- List all space-time raster datasets (STRDS) in lochttp://localhost:8080/auth/realms/actinia-realm/protocol/openid-connect/tokenation ECAD and mapset
+- List all space-time raster datasets (STRDS) in location ECAD and mapset
   PERMANENT:
 
     curl ${AUTH} -X GET \
