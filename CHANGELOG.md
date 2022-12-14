@@ -20,7 +20,19 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
-## [4.4.0] - 2022-11-22
+ 
+## [4.5.0] - 2022-12-14
+released from main
+### Changed
+* Add possibility to use keycloak authentication token by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/381
+* More secure path mangling by @marcjansen in https://github.com/mundialis/actinia_core/pull/281
+* Improve interim results by include additional mapsets by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/399
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.4.0...4.5.0
+
+ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.5.0" -f target_commitish=main -q .body`
+
+ ## [4.4.0] - 2022-11-22
 released from main
 ### Added
 * Resource storage older than X days deletion by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/392
