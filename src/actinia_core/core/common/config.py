@@ -425,6 +425,7 @@ class Configuration(object):
             "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
             "AsyncPersistentResource".lower(): "AsyncPersistentResource",
         }
+        self.INCLUDE_ADDITIONAL_MAPSET_PATTERN = None
 
         """
         LOGGING
@@ -648,6 +649,11 @@ class Configuration(object):
             "MISC",
             "INTERIM_SAVING_ENDPOINTS",
             str(self.INTERIM_SAVING_ENDPOINTS),
+        )
+        config.set(
+            "MISC",
+            "INCLUDE_ADDITIONAL_MAPSET_PATTERN",
+            str(self.INCLUDE_ADDITIONAL_MAPSET_PATTERN),
         )
 
         config.add_section("LOGGING")
@@ -913,6 +919,12 @@ class Configuration(object):
                             self.INTERIM_SAVING_ENDPOINTS.update(
                                 endpoints_dict
                             )
+                if config.has_option(
+                    "MISC", "INCLUDE_ADDITIONAL_MAPSET_PATTERN"
+                ):
+                    self.INCLUDE_ADDITIONAL_MAPSET_PATTERN = config.get(
+                        "MISC", "INCLUDE_ADDITIONAL_MAPSET_PATTERN"
+                    )
 
             if config.has_section("LOGGING"):
                 if config.has_option("LOGGING", "LOG_INTERFACE"):

@@ -1114,6 +1114,8 @@ class EphemeralProcessing(object):
                     "Error while rsyncing of interim results to new temporare "
                     "mapset"
                 )
+            self.interim_result.rsync_addidtional_mapsets(
+                os.path.dirname(self.temp_mapset_path))
         if interim_result_file_path:
             self.message_logger.info(
                 "Rsync interim result file path to temporary GRASS DB"

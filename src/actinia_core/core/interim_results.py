@@ -28,6 +28,7 @@ Interim Result class
 import os
 import subprocess
 import shutil
+from fnmatch import filter
 from .messages_logger import MessageLogger
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.exceptions import RsyncError
@@ -83,6 +84,8 @@ class InterimResult(object):
         self.iteration = iteration if iteration is not None else 1
         self.old_pc_step = None
         self.endpoint = endpoint
+        self.include_additional_mapset_pattern = \
+            global_config.INCLUDE_ADDITIONAL_MAPSET_PATTERN
 
     def set_old_pc_step(self, old_pc_step):
         """Set method for the number of the successfully finished steps of
@@ -197,6 +200,27 @@ class InterimResult(object):
         else:
             return False
 
+    def rsync_addidtional_mapsets(self, dest_path):
+        """Using rsync to update additional mapsets from interim results to
+        temporary mapset
+        Args:
+            dest_path (str): Path to destination folder where the additional
+                             mapset should be saved
+        """
+
+        src_path = f"{self._get_interim_mapset_path(self.old_pc_step)}_add_mapsets"
+        if not os.path.isdir(src_path):
+            return
+
+        for mapset in os.listdir(src_path):
+            src = os.path.join(src_path, mapset)
+            dest = os.path.join(dest_path, mapset)
+            rsync_status = self.rsync_mapsets(src, dest)
+            if rsync_status != "success":
+                self.logger.info(
+                    f"Syncing additional mapset <{mapset}> failed."
+                )
+
     def rsync_mapsets(self, src, dest):
         """Using rsync to update the mapset folder.
         Args:
@@ -278,6 +302,23 @@ class InterimResult(object):
             self.resource_id,
         )
 
+    def _get_included_additional_mapset_pathes(
+            self, temp_mapset_path, progress_step
+    ):
+        """Returns lists with source pathes of hte additional mapsets and
+        destination pathes for them"""
+
+        if self.include_additional_mapset_pattern:
+            pattern = self.include_additional_mapset_pattern
+            tmp_path = os.path.dirname(temp_mapset_path)
+            dest_path = f"{self._get_interim_mapset_path(progress_step)}_add_mapsets"
+            mapsets = filter(os.listdir(tmp_path), pattern)
+            srcs = [os.path.join(tmp_path, mapset) for mapset in mapsets]
+            dests = [os.path.join(dest_path, mapset) for mapset in mapsets]
+            return srcs, dests
+        else:
+            return [], []
+
     def _get_interim_mapset_path(self, progress_step):
         """Returns path where the interim mapset is saved"""
         return os.path.join(
@@ -309,6 +350,12 @@ class InterimResult(object):
         self.logger.info("Saving interim results of step %d" % progress_step)
         dest_mapset = self._get_interim_mapset_path(progress_step)
         dest_tmpdir = self._get_interim_tmpdir_path(progress_step)
+        addm_src, addm_dest = self._get_included_additional_mapset_pathes(
+            temp_mapset_path, progress_step
+        )
+
+        if temp_mapset_path is None:
+            return
 
         if progress_step == 1 or force_copy is True:
             # copy temp mapset for first step
@@ -318,6 +365,8 @@ class InterimResult(object):
                 "Maspset %s and temp_file_path %s are copied"
                 % (temp_mapset_path, temp_file_path)
             )
+            for m_src, m_dest in zip(addm_src, addm_dest):
+                shutil.copytree(m_src, m_dest)
         else:
             old_dest_mapset = self._get_interim_mapset_path(progress_step - 1)
             old_dest_tmpdir = self._get_interim_tmpdir_path(progress_step - 1)
@@ -330,3 +379,11 @@ class InterimResult(object):
             self._saving_folder(
                 temp_file_path, dest_tmpdir, old_dest_tmpdir, progress_step
             )
+            # saving additional mapsets
+            _, old_dests = self._get_included_additional_mapset_pathes(
+                temp_mapset_path, progress_step -1
+            )
+            for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests):
+                self._saving_folder(
+                    m_src, m_dest, old_dest, progress_step
+                )
