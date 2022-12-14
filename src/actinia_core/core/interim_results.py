@@ -84,8 +84,9 @@ class InterimResult(object):
         self.iteration = iteration if iteration is not None else 1
         self.old_pc_step = None
         self.endpoint = endpoint
-        self.include_additional_mapset_pattern = \
+        self.include_additional_mapset_pattern = (
             global_config.INCLUDE_ADDITIONAL_MAPSET_PATTERN
+        )
 
     def set_old_pc_step(self, old_pc_step):
         """Set method for the number of the successfully finished steps of
@@ -208,7 +209,9 @@ class InterimResult(object):
                              mapset should be saved
         """
 
-        src_path = f"{self._get_interim_mapset_path(self.old_pc_step)}_add_mapsets"
+        src_path = (
+            f"{self._get_interim_mapset_path(self.old_pc_step)}_add_mapsets"
+        )
         if not os.path.isdir(src_path):
             return
 
@@ -303,7 +306,7 @@ class InterimResult(object):
         )
 
     def _get_included_additional_mapset_pathes(
-            self, temp_mapset_path, progress_step
+        self, temp_mapset_path, progress_step
     ):
         """Returns lists with source pathes of hte additional mapsets and
         destination pathes for them"""
@@ -311,7 +314,9 @@ class InterimResult(object):
         if self.include_additional_mapset_pattern:
             pattern = self.include_additional_mapset_pattern
             tmp_path = os.path.dirname(temp_mapset_path)
-            dest_path = f"{self._get_interim_mapset_path(progress_step)}_add_mapsets"
+            dest_path = (
+                f"{self._get_interim_mapset_path(progress_step)}_add_mapsets"
+            )
             mapsets = filter(os.listdir(tmp_path), pattern)
             srcs = [os.path.join(tmp_path, mapset) for mapset in mapsets]
             dests = [os.path.join(dest_path, mapset) for mapset in mapsets]
@@ -381,9 +386,7 @@ class InterimResult(object):
             )
             # saving additional mapsets
             _, old_dests = self._get_included_additional_mapset_pathes(
-                temp_mapset_path, progress_step -1
+                temp_mapset_path, progress_step - 1
             )
             for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests):
-                self._saving_folder(
-                    m_src, m_dest, old_dest, progress_step
-                )
+                self._saving_folder(m_src, m_dest, old_dest, progress_step)

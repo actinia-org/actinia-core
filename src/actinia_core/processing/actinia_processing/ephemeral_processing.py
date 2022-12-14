@@ -1115,7 +1115,8 @@ class EphemeralProcessing(object):
                     "mapset"
                 )
             self.interim_result.rsync_addidtional_mapsets(
-                os.path.dirname(self.temp_mapset_path))
+                os.path.dirname(self.temp_mapset_path)
+            )
         if interim_result_file_path:
             self.message_logger.info(
                 "Rsync interim result file path to temporary GRASS DB"
