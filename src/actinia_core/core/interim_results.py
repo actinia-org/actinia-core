@@ -201,7 +201,7 @@ class InterimResult(object):
         else:
             return False
 
-    def rsync_addidtional_mapsets(self, dest_path):
+    def rsync_additional_mapsets(self, dest_path):
         """Using rsync to update additional mapsets from interim results to
         temporary mapset
         Args:
@@ -305,11 +305,11 @@ class InterimResult(object):
             self.resource_id,
         )
 
-    def _get_included_additional_mapset_pathes(
+    def _get_included_additional_mapset_paths(
         self, temp_mapset_path, progress_step
     ):
-        """Returns lists with source pathes of hte additional mapsets and
-        destination pathes for them"""
+        """Returns lists with source paths of hte additional mapsets and
+        destination paths for them"""
 
         if self.include_additional_mapset_pattern:
             pattern = self.include_additional_mapset_pattern
@@ -355,7 +355,7 @@ class InterimResult(object):
         self.logger.info("Saving interim results of step %d" % progress_step)
         dest_mapset = self._get_interim_mapset_path(progress_step)
         dest_tmpdir = self._get_interim_tmpdir_path(progress_step)
-        addm_src, addm_dest = self._get_included_additional_mapset_pathes(
+        addm_src, addm_dest = self._get_included_additional_mapset_paths(
             temp_mapset_path, progress_step
         )
 
@@ -385,7 +385,7 @@ class InterimResult(object):
                 temp_file_path, dest_tmpdir, old_dest_tmpdir, progress_step
             )
             # saving additional mapsets
-            _, old_dests = self._get_included_additional_mapset_pathes(
+            _, old_dests = self._get_included_additional_mapset_paths(
                 temp_mapset_path, progress_step - 1
             )
             for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests):

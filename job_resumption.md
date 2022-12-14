@@ -56,10 +56,10 @@ The interim results will be deleted automatically if a job resource is successfu
 `cd ~/repos/actinia` + press F5
 
 ## Additional mapsets
-For parallelization on different region some GRASS GIS could create additional
-mapsets and use the data from these mapsets in further calculations without
-copying them to the temporary mapsets. To add the possibility to also resumpt
-jobs where such addional mapsets are created in a previous step you can
+For parallelization on different regions some GRASS GIS processes might create
+additional mapsets and use the data from these mapsets in further calculations
+without copying them to the temporary mapsets. To add the possibility to also
+resumpt jobs where such addional mapsets are created in a previous step you can
 configure additional mapsets which should be included in the interim results
 by setting a pattern for the mapset name, e.g.:
 ```

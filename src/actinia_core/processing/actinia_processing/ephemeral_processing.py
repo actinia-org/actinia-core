@@ -1114,7 +1114,7 @@ class EphemeralProcessing(object):
                     "Error while rsyncing of interim results to new temporare "
                     "mapset"
                 )
-            self.interim_result.rsync_addidtional_mapsets(
+            self.interim_result.rsync_additional_mapsets(
                 os.path.dirname(self.temp_mapset_path)
             )
         if interim_result_file_path:
