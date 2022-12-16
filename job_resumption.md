@@ -372,9 +372,57 @@ JSONPUT=pc_noerror.json
 actiniaput $AUTH $JSONPUT $STATUS_URL_POST
 ```
 
+### Job resumption without new process chain
+
 If the process is not aborted due to an error in the process chain, the job
-can be resumed without sending a new process chain, e.g. with
+can be resumed without sending a new process chain.
+Here an example process chain where a folder `/test` is requested which does not exist inside actinia.
+The process can be resumpt after the folder is created insode the actinia.
+
+`pc_errornotinpc.json`: Process chain with not existing folder `/test`
 ```
+{
+    "list": [
+      {
+          "id": "r_mapcalc",
+          "module": "r.mapcalc",
+          "inputs": [
+              {
+                  "param": "expression",
+                  "value": "baum=5"
+              }
+          ]
+      },
+      {
+        "id": "ls1",
+        "exe": "ls",
+        "params": ["/test"]
+      },
+      {
+          "id": "r_info1",
+          "module": "r.info",
+          "inputs": [
+              {
+                  "param": "map",
+                  "value": "baum"
+              }
+          ],
+          "flags": "g",
+          "stdout": {"id": "r_info_1", "format": "kv", "delimiter": "="}
+      }
+    ],
+    "version": "1"
+}
+```
+
+```
+# processing (which ends with error)
+JSON=pc_errornotinpc.json
+actiniapost $AUTH $JSON $URL/$ENDPOINT
+
+# TODO: create /test folder inside actinia
+
+# job resumption
 curl -X PUT -H 'Content-Type: application/json' -H 'accept: application/json' -u $AUTH $STATUS_URL_POST
 curl -L -u $AUTH $STATUS_URL_POST | jq
 ```
