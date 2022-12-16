@@ -372,6 +372,13 @@ JSONPUT=pc_noerror.json
 actiniaput $AUTH $JSONPUT $STATUS_URL_POST
 ```
 
+If the process is not aborted due to an error in the process chain, the job
+can be resumed without sending a new process chain, e.g. with
+```
+curl -X PUT -H 'Content-Type: application/json' -H 'accept: application/json' -u $AUTH $STATUS_URL_POST
+curl -L -u $AUTH $STATUS_URL_POST | jq
+```
+
 ### Cleaning up resources which are not restarted
 If a job is not restarted and the processing is not finished successfully the
 interim results will not be automatically cleaned. For this you can delete the

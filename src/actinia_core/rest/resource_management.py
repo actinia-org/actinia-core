@@ -307,8 +307,14 @@ class ResourceManager(ResourceManagerBase):
         return error_msg
 
     def _create_ResourceDataContainer_for_resumption(
-        self, post_url, pc_step, user_id, resource_id, iteration, endpoint,
-        process_chain_list=None
+        self,
+        post_url,
+        pc_step,
+        user_id,
+        resource_id,
+        iteration,
+        endpoint,
+        process_chain_list=None,
     ):
         """Create the ResourceDataContainer for the resumption of the resource
         depending on the post_url
