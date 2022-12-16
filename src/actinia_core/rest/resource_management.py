@@ -28,7 +28,10 @@ asynchronous processes.
 
 import pickle
 import re
-from flask import g
+from flask import (
+    g,
+    request,
+)
 from flask import jsonify, make_response
 from flask_restful_swagger_2 import Resource
 from flask_restful_swagger_2 import swagger
@@ -483,6 +486,11 @@ class ResourceManager(ResourceManagerBase):
         else:
             post_url = None
 
+        # use old process chain list if no new one is send
+        process_chain_list = None
+        if not request.is_json:
+            process_chain_list = response_model["process_chain_list"][0]
+
         rdc_resp = self._create_ResourceDataContainer_for_resumption(
             post_url,
             pc_step,
@@ -490,7 +498,7 @@ class ResourceManager(ResourceManagerBase):
             resource_id,
             iteration,
             response_model["api_info"]["endpoint"],
-            process_chain_list=response_model["process_chain_list"][0],
+            process_chain_list=process_chain_list,
         )
 
         if len(rdc_resp) == 3:
