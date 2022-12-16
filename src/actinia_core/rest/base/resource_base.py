@@ -298,6 +298,7 @@ class ResourceBase(Resource):
         location_name=None,
         mapset_name=None,
         map_name=None,
+        process_chain_list=None,
     ):
         """Preprocessing steps for asynchronous processing
 
@@ -317,6 +318,9 @@ class ResourceBase(Resource):
                                computation should be performed
             map_name: The name of the map or other resource (raster, vector,
                       STRDS, color, ...)
+            process_chain_list (dict): The process chain list (e.g. for the
+                                       job resumption when no new postbody is
+                                       send in the PUT request)
 
         Returns:
             The ResourceDataContainer that contains all required information
@@ -336,6 +340,8 @@ class ResourceBase(Resource):
         elif has_json is True:
             if self.check_for_json() is False:
                 return None
+        elif process_chain_list is not None:
+            self.request_data = process_chain_list
 
         # Compute the job timeout of the worker queue from the user credentials
         process_time_limit = self.user_credentials["permissions"][
