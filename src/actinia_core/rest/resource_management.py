@@ -307,7 +307,8 @@ class ResourceManager(ResourceManagerBase):
         return error_msg
 
     def _create_ResourceDataContainer_for_resumption(
-        self, post_url, pc_step, user_id, resource_id, iteration, endpoint
+        self, post_url, pc_step, user_id, resource_id, iteration, endpoint,
+        process_chain_list=None
     ):
         """Create the ResourceDataContainer for the resumption of the resource
         depending on the post_url
@@ -319,6 +320,9 @@ class ResourceManager(ResourceManagerBase):
             user_id (str): The unique user name/id
             resource_id (str): The id of the resource
             iteration (int): The number of iteration of this resource
+            process_chain_list (dict): The process chain list (e.g. for the
+                                       job resumption when no new postbody is
+                                       send in the PUT request)
 
         Returns:
             rdc (ResourceDataContainer): The data container that contains all
@@ -328,6 +332,11 @@ class ResourceManager(ResourceManagerBase):
             start_job (function): The start job function of the
                                   processing_resource
         """
+        preprocess_kwargs = {}
+        if process_chain_list is not None:
+            preprocess_kwargs["has_json"] = False
+            preprocess_kwargs["process_chain_list"] = process_chain_list
+
         interim_result = InterimResult(
             user_id, resource_id, iteration, endpoint
         )
@@ -346,7 +355,9 @@ class ResourceManager(ResourceManagerBase):
             processing_resource = AsyncEphemeralResource(
                 resource_id, iteration, post_url
             )
-            rdc = processing_resource.preprocess(location_name=location)
+            rdc = processing_resource.preprocess(
+                location_name=location, **preprocess_kwargs
+            )
         elif processing_class == "AsyncPersistentResource":
             # /locations/{location_name}/mapsets/{mapset_name}/processing_async
             from .persistent_processing import AsyncPersistentResource
@@ -357,8 +368,9 @@ class ResourceManager(ResourceManagerBase):
             )
             mapset = re.findall(r"mapsets\/(.*?)\/", post_url)[0]
             rdc = processing_resource.preprocess(
-                location_name=location, mapset_name=mapset
+                location_name=location, mapset_name=mapset, **preprocess_kwargs
             )
+
         elif processing_class == "AsyncEphemeralExportResource":
             # /locations/{location_name}/processing_async_export
             from .ephemeral_processing_with_export import (
@@ -371,7 +383,9 @@ class ResourceManager(ResourceManagerBase):
             processing_resource = AsyncEphemeralExportResource(
                 resource_id, iteration, post_url
             )
-            rdc = processing_resource.preprocess(location_name=location)
+            rdc = processing_resource.preprocess(
+                location_name=location, **preprocess_kwargs
+            )
         else:
             return make_response(
                 jsonify(
@@ -470,6 +484,7 @@ class ResourceManager(ResourceManagerBase):
             resource_id,
             iteration,
             response_model["api_info"]["endpoint"],
+            process_chain_list=response_model["process_chain_list"][0],
         )
 
         if len(rdc_resp) == 3:
