@@ -20,6 +20,16 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
+## [4.6.0] - 2022-12-17
+released from main
+### Changed
+* Job resumption working without new process chain by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/400
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.5.0...4.6.0
+
+"generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.6.0" -f target_commitish=main -q .body`" 
+ 
  
 ## [4.5.0] - 2022-12-14
 released from main
