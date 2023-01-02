@@ -46,8 +46,7 @@ def setup_package():
     needs_sphinx = {"build_sphinx", "upload_docs"}.intersection(sys.argv)
     sphinx = ["sphinx"] if needs_sphinx else []
     setup(
-        setup_requires=["pyscaffold==4.3.1", "rasterio==1.3.4"]
-        + sphinx,
+        setup_requires=["pyscaffold==4.3.1", "rasterio==1.3.4"] + sphinx,
         entry_points=entry_points,
         use_pyscaffold=True,
         scripts=[
