@@ -51,6 +51,8 @@ COPY . /src/actinia_core
 WORKDIR /src/actinia_core
 RUN chmod a+x tests_with_redis.sh
 
+RUN pip3 install pytest pytest-cov
+
 RUN make install
 
 # RUN make test
