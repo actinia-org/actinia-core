@@ -451,7 +451,7 @@ process_chain_raster_import_resample_resolution = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
@@ -459,7 +459,7 @@ process_chain_raster_import_resample_resolution = {
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -475,7 +475,7 @@ process_chain_raster_import_resample_resolution_info = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
@@ -483,7 +483,7 @@ process_chain_raster_import_resample_resolution_info = {
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
             "module": "r.info",
@@ -503,7 +503,7 @@ process_chain_raster_import_resample_resolution_error_resamp = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinea",
@@ -511,7 +511,7 @@ process_chain_raster_import_resample_resolution_error_resamp = {
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -528,7 +528,7 @@ process_chain_raster_import_resample_resolution_error_resol = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
@@ -536,7 +536,7 @@ process_chain_raster_import_resample_resolution_error_resol = {
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -553,14 +553,14 @@ pc_raster_import_resample_resolution_error_val_missing = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
                         "resolution": "value",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -577,7 +577,7 @@ pc_raster_import_resample_resolution_error_val_not_float = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
@@ -585,7 +585,7 @@ pc_raster_import_resample_resolution_error_val_not_float = {
                         "resolution_value": "not float",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -602,14 +602,14 @@ pc_raster_import_resample_resolution_error_resol_not_set = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }
@@ -626,7 +626,7 @@ pc_raster_import_resample_resolution_error_resol_not_val = {
                 {
                     "import_descr": {
                         "source": additional_external_data[
-                            "mangkawuk_srtmgl1_v003_30m_tif"
+                            "elev_ned_30m_epsg4326_tif"
                         ],
                         "type": "raster",
                         "resample": "bilinear_f",
@@ -634,7 +634,7 @@ pc_raster_import_resample_resolution_error_resol_not_val = {
                         "resolution_value": "100",
                     },
                     "param": "map",
-                    "value": "mangkawuk_srtmgl1_v003_100m",
+                    "value": "elev_ned_100m",
                 }
             ],
         }

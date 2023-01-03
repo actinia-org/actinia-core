@@ -59,6 +59,7 @@ additional_external_data = {
     "rio_json": f"{base_url_data}/rio.json",
     "brazil_json": f"{base_url_data}/brazil_polygon.json",
     "elev_ned_30m_tif": f"{base_url_data}/elev_ned_30m.tif",
+    "elev_ned_30m_epsg4326_tif": f"{base_url_data}/elev_ned_30m_epsg4326.tif",
     "elev_ned_30m_nope_tif": f"{base_url_data}/elev_ned_30m_nope.tif",
     "polygon_gml": f"{base_url_data}/polygon.gml",
     "census_wake2000_gml": f"{base_url_data}/census_wake2000.gml",
@@ -66,8 +67,6 @@ additional_external_data = {
     "geology_30m_tif": f"{base_url_data}/geology_30m.tif",
     "geology_30m_zip": f"{base_url_data}/geology_30m.zip",
     "pointInBonn": f"{base_url_data}/pointInBonn.geojson",
-    "mangkawuk_srtmgl1_v003_30m_tif": f"{base_url_data}/mangkawuk_srtmgl1_v003"
-    "_30m.tiff",
 }
 
 
