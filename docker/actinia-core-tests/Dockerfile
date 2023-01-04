@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:4.0.0 as actinia_test
+FROM mundialis/actinia-core:latest as actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
@@ -50,6 +50,8 @@ RUN pip3 install -r /src/requirements.txt
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
 RUN chmod a+x tests_with_redis.sh
+
+RUN pip3 install pytest pytest-cov
 
 RUN make install
 

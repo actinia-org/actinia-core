@@ -40,7 +40,6 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
-@pytest.mark.dev
 @pytest.mark.unittest
 def test_keycloak_superadmin():
     keycloak_config_path = os.path.join(

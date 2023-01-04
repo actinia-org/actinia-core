@@ -97,8 +97,12 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
                     "value": "%s@%s" % (strds_name, self.mapset_name),
                 },
                 {"param": "method", "value": "comma"},
+                {"param": "separator", "value": "comma"},
+                {"param": "columns", "value": "id"},
+                {"param": "format", "value": "line"},
                 {"param": "where", "value": where},
             ],
+            "flags": "u",
         }
 
         pc = {"version": 1, "list": []}

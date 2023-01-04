@@ -145,8 +145,8 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
-        self.assertEquals(json_load(rv.data)["user_id"], new_user_id)
-        self.assertEquals(json_load(rv.data)["user_role"], "user")
+        self.assertEqual(json_load(rv.data)["user_id"], new_user_id)
+        self.assertEqual(json_load(rv.data)["user_role"], "user")
 
         # Get the admin user entry
         rv = self.server.get(
@@ -160,8 +160,8 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
-        self.assertEquals(json_load(rv.data)["user_id"], "admin")
-        self.assertEquals(json_load(rv.data)["user_role"], "admin")
+        self.assertEqual(json_load(rv.data)["user_id"], "admin")
+        self.assertEqual(json_load(rv.data)["user_role"], "admin")
 
         # Delete the user as admin
         rv = self.server.delete(

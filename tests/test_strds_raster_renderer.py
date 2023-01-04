@@ -25,8 +25,6 @@
 Tests: STRDS render test case
 """
 import unittest
-from pprint import pprint
-from flask.json import loads as json_load
 from flask.json import dumps as json_dumps
 
 try:
@@ -135,7 +133,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
             ),
             content_type="application/json",
         )
-        pprint(json_load(rv.data))
+
         self.assertEqual(
             rv.status_code,
             200,
@@ -175,7 +173,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
             content_type="application/json",
             headers=self.admin_auth_header,
         )
-        pprint(json_load(rv.data))
+
         self.assertEqual(
             rv.status_code,
             200,
@@ -191,6 +189,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
             "test_strds_register/render?width=100&height=100",
             headers=self.admin_auth_header,
         )
+
         self.assertEqual(
             rv.status_code,
             200,
@@ -200,7 +199,7 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "image/png", "Wrong mimetype %s" % rv.mimetype
         )
 
-        # # Check strds
+        # Check strds
         rv = self.server.get(
             f"{URL_PREFIX}/locations/{location}/mapsets/{new_mapset}/strds/"
             "test_strds_register/render?width=100&height=100&"
