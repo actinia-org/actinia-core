@@ -21,6 +21,15 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+## [4.6.1] - 2023-01-04
+released from main
+### Fixed
+* try to fix wheel by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/405
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.0...4.6.1
+
+generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.6.1" -f target_commitish=main -q .body` 
+
 ## [4.6.0] - 2022-12-17
 released from main
 ### Changed
