@@ -29,12 +29,15 @@ from flask import jsonify, make_response
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.processing.common.ephemeral_custom_processing \
-     import start_job
+from actinia_core.processing.common.ephemeral_custom_processing import (
+    start_job,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -43,6 +46,7 @@ class AsyncEphemeralCustomResource(ResourceBase):
     that will be asynchronously executed without the initialization
     of the GRASS environment.
     """
+
     def __init__(self):
         ResourceBase.__init__(self)
 
@@ -54,8 +58,8 @@ class AsyncEphemeralCustomResource(ResourceBase):
         Args:
             executable (str): Name of the executable
 
-        Process arguments must be provided as JSON document in the POST request::
-
+        Process arguments must be provided as JSON document in the POST
+        request:
             ["arg_1", "arg_2", "arg_3", "arg_4", ...]
 
         Returns:

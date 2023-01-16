@@ -24,21 +24,25 @@
 """
 Vector layer resources
 """
-from actinia_api.swagger2.actinia_core.schemas.vector_layer import \
-    VectorInfoResponseModel, \
-    VectorAttributeModel, VectorInfoModel
+from actinia_api.swagger2.actinia_core.schemas.vector_layer import (
+    VectorInfoResponseModel,
+    VectorAttributeModel,
+    VectorInfoModel,
+)
 
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralVectorInfo(EphemeralProcessing):
-
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
         self.response_model_class = VectorInfoResponseModel

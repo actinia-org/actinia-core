@@ -43,18 +43,22 @@ entry_points = """
 
 
 def setup_package():
-    needs_sphinx = {'build_sphinx', 'upload_docs'}.intersection(sys.argv)
-    sphinx = ['sphinx'] if needs_sphinx else []
-    setup(setup_requires=['pyscaffold>=3.0a0,<3.1a0', "rasterio==1.2.10"] + sphinx,
-          entry_points=entry_points,
-          use_pyscaffold=True,
-          scripts=['scripts/actinia-user',
-                   'scripts/actinia-bench',
-                   'scripts/actinia-algebra',
-                   'scripts/rq_custom_worker',
-                   'scripts/rq_starter',
-                   'scripts/webhook-server',
-                   'scripts/actinia-server'])
+    needs_sphinx = {"build_sphinx", "upload_docs"}.intersection(sys.argv)
+    sphinx = ["sphinx"] if needs_sphinx else []
+    setup(
+        setup_requires=["pyscaffold==4.3.1", "rasterio==1.3.4"] + sphinx,
+        entry_points=entry_points,
+        use_pyscaffold=True,
+        scripts=[
+            "scripts/actinia-user",
+            "scripts/actinia-bench",
+            "scripts/actinia-algebra",
+            "scripts/rq_custom_worker",
+            "scripts/rq_starter",
+            "scripts/webhook-server",
+            "scripts/actinia-server",
+        ],
+    )
 
 
 if __name__ == "__main__":

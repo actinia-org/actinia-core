@@ -9,9 +9,16 @@ as swagger[^2]. The JSON definition of the API can be accessed here:
 
  <https://actinia.mundialis.de/latest/swagger.json>
 
+A nicely rendered ReDoc version is available here:
+
+ <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>
+
+<!---
+no longer generated:
 The full API documentation is available here:
 
  <https://actinia.mundialis.de/api_docs/>
+--->
 
 To generate a readable documentation out of the swagger.json file, the
 spectacle tool can be used:
@@ -52,8 +59,6 @@ The following user-roles are supported:
 
      admin:
 
-         -   Can create, modify and delete locations in a user specific
-             database
          -   Can access all API calls
          -   Can create, modify and delete users with the maximum
              user-role *user* of the same user group
@@ -66,6 +71,8 @@ The following user-roles are supported:
 
          -   Can run computational tasks in ephemeral and user specific
              databases
+         -   Can create, modify and delete locations in a user specific
+             database
          -   Can create, modify and delete mapsets in user
              specific databases
          -   Has limited access to API calls
@@ -89,7 +96,7 @@ Overview table:
 |------|------------|-------|------|-------|------|
 | amount raster cells is unlimited | y | y | limited, selected via redis | limited, selected via redis | - |
 | database access is unlimited                              | y         | only to persistent databases that were granted by a superadmin | limited, defined in redis | limited, defined in redis | - |
-| location/mapset access is unlimited  | y | y | can create, modify and delete mapsets in user specific databases, defined in redis | has access to persistent databases that were granted by a superadmin, defined in redis | - |
+| location/mapset access is unlimited  | y | y | can create, modify and delete locations/mapsets in user specific databases, defined in redis | has access to persistent databases that were granted by a superadmin, defined in redis | - |
 |module access is unlimited  | y | y | can run computational tasks in ephemeral and user specific databases | has very limited access to API calls | - |
 | get, create, delete a single user | y | users with the maximum user-role user of the same user group | n | n | Only normal users (role=user can be created) |
 

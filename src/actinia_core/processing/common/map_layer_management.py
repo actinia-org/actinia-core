@@ -29,24 +29,35 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 PersistentListLayers = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.map_layer_management'),
-    'PersistentListLayers')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".map_layer_management"
+    ),
+    "PersistentListLayers",
+)
 
 PersistentRemoveLayers = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.map_layer_management'),
-    'PersistentRemoveLayers')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".map_layer_management"
+    ),
+    "PersistentRemoveLayers",
+)
 
 PersistentRenameLayers = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.map_layer_management'),
-    'PersistentRenameLayers')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".map_layer_management"
+    ),
+    "PersistentRenameLayers",
+)
 
 
 def list_raster_layers(*args):

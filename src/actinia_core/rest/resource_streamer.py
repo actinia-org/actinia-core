@@ -31,12 +31,14 @@ import os
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.core.utils import os_path_normpath
+from actinia_core.core.utils import ensure_valid_path
 
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -46,6 +48,7 @@ class RequestStreamerResource(Resource):
     This class is responsible to answer requests
     for file based resources and to stream them.
     """
+
     decorators = [log_api_call, auth.login_required]
 
     def get(self, user_id, resource_id, file_name):
@@ -84,16 +87,26 @@ class RequestStreamerResource(Resource):
         """
 
         resource_dir = global_config.GRASS_RESOURCE_DIR
-        user_export_path = os_path_normpath([resource_dir, user_id])
-        resource_export_path = os_path_normpath([user_export_path, resource_id])
-        resource_export_file_path = os_path_normpath([resource_export_path,
-                                                      file_name])
+        user_export_path = ensure_valid_path([resource_dir, user_id], "w")
+        resource_export_path = ensure_valid_path(
+            [user_export_path, resource_id], "w"
+        )
+        resource_export_file_path = ensure_valid_path(
+            [resource_export_path, file_name], "w"
+        )
 
-        if (os.path.exists(resource_export_file_path) is True
-                and os.access(resource_export_file_path, os.R_OK) is True):
+        if (
+            os.path.exists(resource_export_file_path) is True
+            and os.access(resource_export_file_path, os.R_OK) is True
+        ):
 
-            return send_from_directory(resource_export_path,
-                                       file_name, as_attachment=True)
+            return send_from_directory(
+                resource_export_path, file_name, as_attachment=True
+            )
         else:
-            return make_response(jsonify({"status": "error",
-                                          "message": "Resource does not exist"}), 400)
+            return make_response(
+                jsonify(
+                    {"status": "error", "message": "Resource does not exist"}
+                ),
+                400,
+            )

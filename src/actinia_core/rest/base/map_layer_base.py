@@ -30,7 +30,9 @@ from actinia_core.rest.base.resource_base import ResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -62,37 +64,64 @@ class MapLayerRegionResourceBase(ResourceBase):
         """
         parser = reqparse.RequestParser()
         parser.add_argument(
-            'n', type=float, help='Northern border must be specified as double value')
+            "n",
+            type=float,
+            help="Northern border must be specified as double value",
+        )
         parser.add_argument(
-            'e', type=float, help='Eastern border must be specified as double value')
+            "e",
+            type=float,
+            help="Eastern border must be specified as double value",
+        )
         parser.add_argument(
-            'w', type=float, help='Western border must be specified as double value')
+            "w",
+            type=float,
+            help="Western border must be specified as double value",
+        )
         parser.add_argument(
-            's', type=float, help='Southern border must be specified as double value')
-        parser.add_argument('res', type=float,
-                            help='Resolution must be specified as double value')
+            "s",
+            type=float,
+            help="Southern border must be specified as double value",
+        )
         parser.add_argument(
-            'nsres', type=float,
-            help='North-South resolution must be specified as double value')
+            "res",
+            type=float,
+            help="Resolution must be specified as double value",
+        )
         parser.add_argument(
-            'ewres', type=float,
-            help='East-West resolution must be specified as double value')
+            "nsres",
+            type=float,
+            help="North-South resolution must be specified as double value",
+        )
         parser.add_argument(
-            'raster', type=str,
-            help='The raster layer name from which the region should be used, '
-                 'with mapset information: name@mapset')
+            "ewres",
+            type=float,
+            help="East-West resolution must be specified as double value",
+        )
         parser.add_argument(
-            'align', type=str,
-            help='The raster layer name from which the region should be aligned, '
-                 'with mapset information: name@mapset')
+            "raster",
+            type=str,
+            help="The raster layer name from which the region should be used, "
+            "with mapset information: name@mapset",
+        )
         parser.add_argument(
-            'zoom', type=str,
-            help='The raster layer name to which the region should be zoomed, '
-                 'with mapset information: name@mapset')
+            "align",
+            type=str,
+            help="The raster layer name from which the region should be "
+            "aligned, with mapset information: name@mapset",
+        )
         parser.add_argument(
-            'vector', type=str,
-            help='The vector layer name from which the region should be used, '
-                 'with mapset information: name@mapset')
+            "zoom",
+            type=str,
+            help="The raster layer name to which the region should be zoomed, "
+            "with mapset information: name@mapset",
+        )
+        parser.add_argument(
+            "vector",
+            type=str,
+            help="The vector layer name from which the region should be used, "
+            "with mapset information: name@mapset",
+        )
 
         return parser
 
@@ -120,46 +149,54 @@ class MapLayerRegionResourceBase(ResourceBase):
         if "res" in args and args["res"] is not None:
             options["res"] = args["res"]
             if options["res"] < 0:
-                return self.get_error_response(message="Resolution can not be negative")
+                return self.get_error_response(
+                    message="Resolution can not be negative"
+                )
 
         if "nsres" in args and args["nsres"] is not None:
             options["nsres"] = args["nsres"]
             if options["nsres"] < 0:
                 return self.get_error_response(
-                    message="North-south resolution can not be negative")
+                    message="North-south resolution can not be negative"
+                )
 
         if "ewres" in args and args["ewres"] is not None:
             options["ewres"] = args["ewres"]
             if options["ewres"] < 0:
                 return self.get_error_response(
-                    message="East-west resolution can not be negative")
+                    message="East-west resolution can not be negative"
+                )
 
         if "raster" in args and args["raster"] is not None:
             options["raster"] = args["raster"]
             if "@" not in args["raster"]:
                 return self.get_error_response(
                     message="The raster layer to set the region from must "
-                            "contain the mapset: name@mapset")
+                    "contain the mapset: name@mapset"
+                )
 
         if "align" in args and args["align"] is not None:
             options["align"] = args["align"]
             if "@" not in args["align"]:
                 return self.get_error_response(
                     message="The raster layer to align the region from must "
-                            "contain the mapset: name@mapset")
+                    "contain the mapset: name@mapset"
+                )
 
         if "zoom" in args and args["zoom"] is not None:
             options["zoom"] = args["zoom"]
             if "@" not in args["zoom"]:
                 return self.get_error_response(
                     message="The raster layer to zoom the region to must "
-                            "contain the mapset: name@mapset")
+                    "contain the mapset: name@mapset"
+                )
 
         if "vector" in args and args["vector"] is not None:
             options["vector"] = args["vector"]
             if "@" not in args["vector"]:
                 return self.get_error_response(
                     message="The vector layer to set the region from must "
-                            "contain the mapset: name@mapset")
+                    "contain the mapset: name@mapset"
+                )
 
         return options

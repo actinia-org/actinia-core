@@ -22,20 +22,23 @@
 #######
 
 """
-Compute areal categorical statistics on a raster map layer based on an input polygon.
+Compute areal categorical statistics on a raster map layer based on an input
+polygon.
 """
 
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class ProcessValidation(EphemeralProcessing):
-
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
 
@@ -43,7 +46,9 @@ class ProcessValidation(EphemeralProcessing):
 
         self._setup()
 
-        process_chain = self._create_temporary_grass_environment_and_process_list()
+        process_chain = (
+            self._create_temporary_grass_environment_and_process_list()
+        )
 
         result = []
         for process in process_chain:

@@ -44,16 +44,19 @@ from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class ActiniaRequests(object):
     """Requests to a actinia server are performed with this class
 
-    The requests.Response object will be extended to imitate a flask Response object
-    by adding data and mimetype.
+    The requests.Response object will be extended to imitate a flask Response
+    object by adding data and mimetype.
     """
+
     # The default server is the localhost
     actinia_server = "http://127.0.0.1:5000"
     # Check for an environmental variable to set the hostname http://IP:PORT
@@ -68,14 +71,21 @@ class ActiniaRequests(object):
             resp: The requests.Response object that needs to be extended to be
                   a flask Response object
 
-        Returns: extended requests.Response object with mimetype and data attributes
+        Returns: extended requests.Response object with mimetype and data
+                 attributes
 
         """
         if "content-type" in resp.headers:
             resp.mimetype = resp.headers["content-type"].split(";")[0]
-        if "content-type" in resp.headers and "tif" in resp.headers["content-type"]:
+        if (
+            "content-type" in resp.headers
+            and "tif" in resp.headers["content-type"]
+        ):
             resp.data = resp.raw
-        elif "content-type" in resp.headers and "png" in resp.headers["content-type"]:
+        elif (
+            "content-type" in resp.headers
+            and "png" in resp.headers["content-type"]
+        ):
             resp.data = resp.raw
         else:
             resp.data = resp.text
@@ -117,8 +127,8 @@ class ActiniaRequests(object):
 
 
 class ActiniaTestCaseBase(unittest.TestCase):
-    """Base class for GRASS GIS REST API tests
-    """
+    """Base class for GRASS GIS REST API tests"""
+
     server_test = False
     custom_actinia_cfg = False
     guest = None
@@ -156,14 +166,22 @@ class ActiniaTestCaseBase(unittest.TestCase):
         if cls.server_test is False and cls.custom_actinia_cfg is not False:
             global_config.read(cls.custom_actinia_cfg)
 
-            # Create the job queue
-            # redis_interface.create_job_queues(global_config.REDIS_QUEUE_SERVER_URL,
-            #                                  global_config.REDIS_QUEUE_SERVER_PORT,
-            #                                  global_config.NUMBER_OF_WORKERS)
+            # # Create the job queue
+            # redis_interface.create_job_queues(
+            #     global_config.REDIS_QUEUE_SERVER_URL,
+            #     global_config.REDIS_QUEUE_SERVER_PORT,
+            #     global_config.NUMBER_OF_WORKERS
+            # )
 
         # Start the redis interface
-        redis_args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
-        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+        redis_args = (
+            global_config.REDIS_SERVER_URL,
+            global_config.REDIS_SERVER_PORT,
+        )
+        if (
+            global_config.REDIS_SERVER_PW
+            and global_config.REDIS_SERVER_PW is not None
+        ):
             redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
 
         redis_interface.connect(*redis_args)
@@ -172,52 +190,76 @@ class ActiniaTestCaseBase(unittest.TestCase):
         create_process_queue(config=global_config)
 
         # We create 4 user for all roles: guest, user, admin, root
-        accessible_datasets = {"nc_spm_08": ["PERMANENT",
-                                             "user1",
-                                             "landsat",
-                                             "modis_lst",
-                                             "test_mapset"],
-                               "ECAD": ["PERMANENT"],
-                               "latlong_wgs84": ["PERMANENT"]}
+        accessible_datasets = {
+            "nc_spm_08": [
+                "PERMANENT",
+                "user1",
+                "landsat",
+                "modis_lst",
+                "test_mapset",
+            ],
+            "ECAD": ["PERMANENT"],
+            "latlong_wgs84": ["PERMANENT"],
+        }
 
         # Create users
         cls.guest_id, cls.guest_group, cls.guest_auth_header = cls.create_user(
-            name="guest", role="guest", process_num_limit=3, process_time_limit=2,
-            accessible_datasets=accessible_datasets)
+            name="guest",
+            role="guest",
+            process_num_limit=3,
+            process_time_limit=2,
+            accessible_datasets=accessible_datasets,
+        )
         cls.user_id, cls.user_group, cls.user_auth_header = cls.create_user(
-            name="user", role="user", process_num_limit=3, process_time_limit=4,
-            accessible_datasets=accessible_datasets)
+            name="user",
+            role="user",
+            process_num_limit=3,
+            process_time_limit=4,
+            accessible_datasets=accessible_datasets,
+        )
         cls.admin_id, cls.admin_group, cls.admin_auth_header = cls.create_user(
-            name="admin", role="admin", accessible_datasets=accessible_datasets)
+            name="admin", role="admin", accessible_datasets=accessible_datasets
+        )
         cls.root_id, cls.root_group, cls.root_auth_header = cls.create_user(
-            name="superadmin", role="superadmin",
-            accessible_datasets=accessible_datasets)
+            name="superadmin",
+            role="superadmin",
+            accessible_datasets=accessible_datasets,
+        )
 
     @classmethod
-    def create_user(cls, name="guest", role="guest",
-                    group="group", password="abcdefgh",
-                    accessible_datasets=None, process_num_limit=1000,
-                    process_time_limit=6000):
+    def create_user(
+        cls,
+        name="guest",
+        role="guest",
+        group="group",
+        password="abcdefgh",
+        accessible_datasets=None,
+        process_num_limit=1000,
+        process_time_limit=6000,
+    ):
 
-        auth = bytes('%s:%s' % (name, password), "utf-8")
+        auth = bytes("%s:%s" % (name, password), "utf-8")
 
         # We need to create an HTML basic authorization header
         cls.auth_header[role] = Headers()
-        cls.auth_header[role].add('Authorization',
-                                  'Basic ' + base64.b64encode(auth).decode())
+        cls.auth_header[role].add(
+            "Authorization", "Basic " + base64.b64encode(auth).decode()
+        )
 
         # Make sure the user database is empty
         user = ActiniaUser(name)
         if user.exists():
             user.delete()
         # Create a user in the database
-        user = ActiniaUser.create_user(name,
-                                       group,
-                                       password,
-                                       user_role=role,
-                                       accessible_datasets=accessible_datasets,
-                                       process_num_limit=process_num_limit,
-                                       process_time_limit=process_time_limit)
+        user = ActiniaUser.create_user(
+            name,
+            group,
+            password,
+            user_role=role,
+            accessible_datasets=accessible_datasets,
+            process_num_limit=process_num_limit,
+            process_time_limit=process_time_limit,
+        )
         user.add_accessible_modules(["uname", "sleep"])
         cls.users_list.append(user)
 
@@ -239,7 +281,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         # Check if the local or server site tests should be performed
         if self.server_test is False:
-            flask_app.config['TESTING'] = True
+            flask_app.config["TESTING"] = True
 
             self.server = flask_app.test_client()
         else:
@@ -248,8 +290,14 @@ class ActiniaTestCaseBase(unittest.TestCase):
     def tearDown(self):
         self.app_context.pop()
 
-    def waitAsyncStatusAssertHTTP(self, response, headers, http_status=200,
-                                  status="finished", message_check=None):
+    def waitAsyncStatusAssertHTTP(
+        self,
+        response,
+        headers,
+        http_status=200,
+        status="finished",
+        message_check=None,
+    ):
         """Poll the status of a resource and assert its finished HTTP status
 
         The response will be checked if the resource was accepted. Hence it
@@ -270,11 +318,16 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
         """
         # Check if the resource was accepted
-        print("waitAsyncStatusAssertHTTP:", response.data.decode())
-        self.assertEqual(response.status_code, 200,
-                         "HTML status code is wrong %i" % response.status_code)
-        self.assertEqual(response.mimetype, "application/json",
-                         "Wrong mimetype %s" % response.mimetype)
+        self.assertEqual(
+            response.status_code,
+            200,
+            "HTML status code is wrong %i" % response.status_code,
+        )
+        self.assertEqual(
+            response.mimetype,
+            "application/json",
+            "Wrong mimetype %s" % response.mimetype,
+        )
 
         resp_data = json_loads(response.data)
 
@@ -282,80 +335,110 @@ class ActiniaTestCaseBase(unittest.TestCase):
         rv_resource_id = resp_data["resource_id"]
 
         while True:
-            rv = self.server.get(URL_PREFIX + "/resources/%s/%s"
-                                 % (rv_user_id, rv_resource_id),
-                                 headers=headers)
-            print("waitAsyncStatusAssertHTTP in loop:", rv.data.decode())
+            rv = self.server.get(
+                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                headers=headers,
+            )
             resp_data = json_loads(rv.data)
-            if (resp_data["status"] == "finished"
-                    or resp_data["status"] == "error"
-                    or resp_data["status"] == "terminated"
-                    or resp_data["status"] == "timeout"):
+            if (
+                resp_data["status"] == "finished"
+                or resp_data["status"] == "error"
+                or resp_data["status"] == "terminated"
+                or resp_data["status"] == "timeout"
+            ):
                 break
             time.sleep(0.2)
 
         self.assertEqual(resp_data["status"], status)
-        self.assertEqual(rv.status_code, http_status,
-                         "HTML status code is wrong %i" % rv.status_code)
+        self.assertEqual(
+            rv.status_code,
+            http_status,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
 
         if message_check is not None:
-            self.assertTrue(message_check in resp_data["message"],
-                            (f"Message is {resp_data['message']}"))
+            self.assertTrue(
+                message_check in resp_data["message"],
+                (f"Message is {resp_data['message']}"),
+            )
 
         time.sleep(0.4)
         return resp_data
 
     def assertRasterInfo(self, location, mapset, raster, ref_info, header):
 
-        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
-               f"raster_layers/{raster}")
+        url = (
+            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"raster_layers/{raster}"
+        )
         rv = self.server.get(url, headers=header)
         resp = json_loads(rv.data.decode())
         info = resp["process_results"]
         for key, val in ref_info.items():
-            self.assertIn(key, info, f"RasterInfoAssertion failed: key {key} not found")
-            self.assertEqual(val, info[key], (
-                f"RasterInfoAssertion failed:"
-                f" value {key}:{val} does not match reference"))
+            self.assertIn(
+                key, info, f"RasterInfoAssertion failed: key {key} not found"
+            )
+            self.assertEqual(
+                val,
+                info[key],
+                (
+                    f"RasterInfoAssertion failed:"
+                    f" value {key}:{val} does not match reference"
+                ),
+            )
 
     def assertVectorInfo(self, location, mapset, vector, ref_info, header):
 
-        url = (f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
-               f"vector_layers/{vector}")
+        url = (
+            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"vector_layers/{vector}"
+        )
         rv = self.server.get(url, headers=header)
         resp = json_loads(rv.data.decode())
         info = resp["process_results"]
         for key, val in ref_info.items():
-            self.assertIn(key, info, f"VectorInfoAssertion failed: key {key} not found")
-            self.assertEqual(val, info[key], (
-                f"VectorInfoAssertion failed:"
-                f" value {key}:{val} does not match reference"))
+            self.assertIn(
+                key, info, f"VectorInfoAssertion failed: key {key} not found"
+            )
+            self.assertEqual(
+                val,
+                info[key],
+                (
+                    f"VectorInfoAssertion failed:"
+                    f" value {key}:{val} does not match reference"
+                ),
+            )
 
     def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
         self.delete_mapset(mapset_name, location_name)
         # Create new mapset
-        rv = self.server.post(
-            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-            headers=self.admin_auth_header)
-        print(rv.data.decode())
+        self.server.post(
+            URL_PREFIX
+            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            headers=self.admin_auth_header,
+        )
 
     def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
         # Unlock mapset for deletion
-        rv = self.server.delete(
-            URL_PREFIX + '/locations/%s/mapsets/%s/lock' % (location_name, mapset_name),
-            headers=self.admin_auth_header)
-        print(rv.data.decode())
+        self.server.delete(
+            URL_PREFIX
+            + "/locations/%s/mapsets/%s/lock" % (location_name, mapset_name),
+            headers=self.admin_auth_header,
+        )
 
         # Delete existing mapset
-        rv = self.server.delete(
-            URL_PREFIX + '/locations/%s/mapsets/%s' % (location_name, mapset_name),
-            headers=self.admin_auth_header)
-        print(rv.data.decode())
+        self.server.delete(
+            URL_PREFIX
+            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            headers=self.admin_auth_header,
+        )
 
     def create_vector_layer(self, location, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
-        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
-               f'vector_layers/{vector}')
+        url = (
+            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"vector_layers/{vector}"
+        )
         rv = self.server.delete(url, headers=self.user_auth_header)
 
         parameter["column"] = "z"
@@ -366,30 +449,46 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 {
                     "id": "set_region",
                     "module": "g.region",
-                    "inputs": [{"param": key, "value": str(val)} for key, val
-                               in region.items()]
+                    "inputs": [
+                        {"param": key, "value": str(val)}
+                        for key, val in region.items()
+                    ],
                 },
                 {
                     "id": "create_vector",
                     "module": "v.random",
-                    "inputs": [{"param": key, "value": str(val)} for key, val
-                               in parameter.items()],
+                    "inputs": [
+                        {"param": key, "value": str(val)}
+                        for key, val in parameter.items()
+                    ],
                     "outputs": [{"param": "output", "value": vector}],
-                    "flags": "z"
-                }
+                    "flags": "z",
+                },
             ],
-            "version": "1"
+            "version": "1",
         }
-        url = (f'{URL_PREFIX}/locations/{location}/mapsets/{mapset}/'
-               f'processing_async')
-        rv = self.server.post(url,
-                              headers=self.user_auth_header,
-                              data=json_dumps(postbody),
-                              content_type="application/json")
+        url = (
+            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"processing_async"
+        )
+        rv = self.server.post(
+            url,
+            headers=self.user_auth_header,
+            data=json_dumps(postbody),
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" %
-                         rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" %
-                         rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )

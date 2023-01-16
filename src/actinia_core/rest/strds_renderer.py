@@ -33,22 +33,24 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_renderer
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.processing.common.strds_renderer import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
-
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_renderer.get_doc))
     def get(self, location_name, mapset_name, strds_name):
-        """Render the raster map layers of a specific STRDS as a single image.
+        """
+        Render the raster map layers of a specific STRDS as a single image.
         """
         parser = self.create_parser()
         args = parser.parse_args()
@@ -57,16 +59,19 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
         if isinstance(options, dict) is False:
             return options
 
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         rdc.set_user_data(options)
 
         enqueue_job(
-            self.job_timeout, start_job, rdc,
-            queue_type_overwrite=True)
+            self.job_timeout, start_job, rdc, queue_type_overwrite=True
+        )
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:
@@ -76,5 +81,5 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
                 if os.path.isfile(result_file):
                     image = open(result_file, "rb").read()
                     os.remove(result_file)
-                    return Response(image, mimetype='image/png')
+                    return Response(image, mimetype="image/png")
         return make_response(jsonify(response_model), http_code)

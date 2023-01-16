@@ -30,7 +30,9 @@ from actinia_core.core.logging_interface import log
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -54,19 +56,21 @@ class RedisBaseInterface(object):
 
         """
         kwargs = dict()
-        kwargs['host'] = host
-        kwargs['port'] = port
+        kwargs["host"] = host
+        kwargs["port"] = port
         if password and password is not None:
-            kwargs['password'] = password
+            kwargs["password"] = password
         self.connection_pool = redis.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = redis.StrictRedis(connection_pool=self.connection_pool)
+        self.redis_server = redis.StrictRedis(
+            connection_pool=self.connection_pool
+        )
         try:
             self.redis_server.ping()
         except redis.exceptions.ResponseError as e:
-            log.error('Could not connect to ' + host, port, str(e))
+            log.error("Could not connect to " + host, port, str(e))
         except redis.exceptions.AuthenticationError:
-            log.error('Invalid password')
+            log.error("Invalid password")
         except redis.exceptions.ConnectionError as e:
             log.error(str(e))
 

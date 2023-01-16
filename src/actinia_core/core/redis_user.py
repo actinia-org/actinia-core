@@ -30,7 +30,9 @@ import pickle
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -69,7 +71,8 @@ class RedisUserInterface(RedisBaseInterface):
              The password hash of the user id
         """
         return self.redis_server.hget(
-            self.user_id_hash_prefix + user_id, "password_hash").decode()
+            self.user_id_hash_prefix + user_id, "password_hash"
+        ).decode()
 
     def get_role(self, user_id):
         """Return the role of the user
@@ -84,7 +87,8 @@ class RedisUserInterface(RedisBaseInterface):
              The api key of the user id
         """
         return self.redis_server.hget(
-            self.user_id_hash_prefix + user_id, "user_role").decode()
+            self.user_id_hash_prefix + user_id, "user_role"
+        ).decode()
 
     def get_group(self, user_id):
         """Return the group of the user
@@ -99,7 +103,8 @@ class RedisUserInterface(RedisBaseInterface):
              The user group
         """
         return self.redis_server.hget(
-            self.user_id_hash_prefix + user_id, "user_group").decode()
+            self.user_id_hash_prefix + user_id, "user_group"
+        ).decode()
 
     def get_credentials(self, user_id):
         """Return a dictionary that contains the user credentials
@@ -114,7 +119,9 @@ class RedisUserInterface(RedisBaseInterface):
             A dictionary that contains the user credentials
         """
         creds = {}
-        user_creds = self.redis_server.hgetall(self.user_id_hash_prefix + user_id)
+        user_creds = self.redis_server.hgetall(
+            self.user_id_hash_prefix + user_id
+        )
 
         if user_creds:
             creds["user_id"] = user_creds[b"user_id"].decode()
@@ -135,14 +142,18 @@ class RedisUserInterface(RedisBaseInterface):
             user_id (str): The user id
             user_group (str): The user group
             password_hash (str): The password hash
-            user_role (str): Get the role of the user ("admin", "user", "guest")
+            user_role (str): Get the role of the user ("admin", "user",
+                             "guest")
             permissions (dict): A dictionary of permissions
 
         Returns:
             bool:
             True is success, False if user is already in the database
         """
-        if self.redis_server.exists(self.user_id_hash_prefix + user_id) is True:
+        if (
+            self.redis_server.exists(self.user_id_hash_prefix + user_id)
+            is True
+        ):
             return False
         pstring = pickle.dumps(permissions)
 
@@ -151,25 +162,36 @@ class RedisUserInterface(RedisBaseInterface):
         # First add the user-id to the user id database
         self.redis_server.hset(self.user_id_db, user_id, user_id)
 
-        mapping = {"user_id": user_id,
-                   "password_hash": password_hash,
-                   "user_role": user_role,
-                   "user_group": user_group,
-                   "permissions": pstring}
+        mapping = {
+            "user_id": user_id,
+            "password_hash": password_hash,
+            "user_role": user_role,
+            "user_group": user_group,
+            "permissions": pstring,
+        }
         # Make the database entry
-        self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
+        self.redis_server.hset(
+            self.user_id_hash_prefix + user_id, mapping=mapping
+        )
         lock.release()
 
         return True
 
-    def update(self, user_id, user_group=None, password_hash=None, user_role=None,
-               permissions=None):
+    def update(
+        self,
+        user_id,
+        user_group=None,
+        password_hash=None,
+        user_role=None,
+        permissions=None,
+    ):
         """Update the user credentials.
 
-        Renaming an entry is not allowed, only existing entries with the same user_id
-        can be updated.
+        Renaming an entry is not allowed, only existing entries with the same
+        user_id can be updated.
 
-        If a parameter is not provided (set None), the original value will be kept.
+        If a parameter is not provided (set None), the original value will be
+        kept.
 
         HSET User-id-hash db -> set user with all required entries
 
@@ -177,7 +199,8 @@ class RedisUserInterface(RedisBaseInterface):
             user_id (str): The user id
             user_group (str): The user group
             password_hash (str): The password hash
-            user_role (str): Get the role of the user ("admin", "user", "guest")
+            user_role (str): Get the role of the user ("admin", "user",
+                             "guest")
             permissions (dict): A dictionary of permissions
 
         Returns:
@@ -185,7 +208,10 @@ class RedisUserInterface(RedisBaseInterface):
             True is success, False if user is not in the database
 
         """
-        if self.redis_server.exists(self.user_id_hash_prefix + user_id) is False:
+        if (
+            self.redis_server.exists(self.user_id_hash_prefix + user_id)
+            is False
+        ):
             return False
 
         user_creds = self.get_credentials(user_id)
@@ -207,11 +233,17 @@ class RedisUserInterface(RedisBaseInterface):
         lock = self.redis_server.lock(name="update_user_lock", timeout=1)
         lock.acquire()
 
-        mapping = {"user_id": user_id, "password_hash": password_hash,
-                   "user_role": user_role, "user_group": user_group,
-                   "permissions": pstring}
+        mapping = {
+            "user_id": user_id,
+            "password_hash": password_hash,
+            "user_role": user_role,
+            "user_group": user_group,
+            "permissions": pstring,
+        }
         # Update the database entry
-        self.redis_server.hset(self.user_id_hash_prefix + user_id, mapping=mapping)
+        self.redis_server.hset(
+            self.user_id_hash_prefix + user_id, mapping=mapping
+        )
 
         lock.release()
 
@@ -286,17 +318,23 @@ def test_management(r):
     user_group = "test_1"
     password_hash = "hash"
     user_role = "admin"
-    permissions = {"locations": {"NC": {"mapsets": ["PERMANWENT", "user1"]},
-                                 "ECAD": {"mapsets": ["Temp", "Prec"]}},
-                   "modules": ["r.series", "r.slope.aspect"]}
+    permissions = {
+        "locations": {
+            "NC": {"mapsets": ["PERMANWENT", "user1"]},
+            "ECAD": {"mapsets": ["Temp", "Prec"]},
+        },
+        "modules": ["r.series", "r.slope.aspect"],
+    }
 
     r.delete(user_id)
 
-    r.add(user_id=user_id,
-          user_group=user_group,
-          password_hash=password_hash,
-          user_role=user_role,
-          permissions=permissions)
+    r.add(
+        user_id=user_id,
+        user_group=user_group,
+        password_hash=password_hash,
+        user_role=user_role,
+        permissions=permissions,
+    )
 
     user_creds = r.get_credentials(user_id)
     # print(user_creds)
@@ -316,11 +354,13 @@ def test_management(r):
     if r.get_role(user_id) != user_role:
         raise Exception("get_role does not work")
 
-    r.update(user_id=user_id,
-             user_group=user_group,
-             password_hash="hello",
-             user_role=None,
-             permissions=None)
+    r.update(
+        user_id=user_id,
+        user_group=user_group,
+        password_hash="hello",
+        user_role=None,
+        permissions=None,
+    )
 
     user_creds = r.get_credentials(user_id)
     # print(user_creds)
@@ -335,12 +375,18 @@ def test_management(r):
         raise Exception("update does not work")
 
     user_group = "test_2"
-    r.update(user_id=user_id,
-             user_group=user_group,
-             password_hash="yellow",
-             user_role="user",
-             permissions={"locations": {"utm32n": {"mapsets": ["PERMANWENT"]}},
-                          "modules": ["i.vi", ]})
+    r.update(
+        user_id=user_id,
+        user_group=user_group,
+        password_hash="yellow",
+        user_role="user",
+        permissions={
+            "locations": {"utm32n": {"mapsets": ["PERMANWENT"]}},
+            "modules": [
+                "i.vi",
+            ],
+        },
+    )
 
     user_creds = r.get_credentials(user_id)
     # print(user_creds)
@@ -365,11 +411,13 @@ def test_management(r):
     user_id_2 = user_id
     user_role = "guest"
 
-    r.add(user_id=user_id,
-          user_group=user_group,
-          password_hash=password_hash,
-          user_role=user_role,
-          permissions=permissions)
+    r.add(
+        user_id=user_id,
+        user_group=user_group,
+        password_hash=password_hash,
+        user_role=user_role,
+        permissions=permissions,
+    )
 
     user_creds = r.get_credentials(user_id)
 
@@ -404,12 +452,14 @@ def test_management(r):
         raise Exception("delete does not work")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import signal
     import time
 
-    pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
+    pid = os.spawnl(
+        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+    )
 
     time.sleep(1)
 
