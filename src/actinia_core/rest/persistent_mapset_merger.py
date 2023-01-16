@@ -29,17 +29,17 @@ from flask import jsonify, make_response
 
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.processing.common.persistent_mapset_merger \
-    import start_job
+from actinia_core.processing.common.persistent_mapset_merger import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class AsyncPersistentMapsetMergerResource(ResourceBase):
-
     def __init__(self):
         ResourceBase.__init__(self)
 
@@ -53,8 +53,8 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
             target_mapset_name (str): The name of the target mapset, into other
                                       mapsets should be merged
 
-        Process arguments must be provided as JSON document in the POST request::
-
+        Process arguments must be provided as JSON document in the POST
+        request:
             ["mapset_A", "mapset_B", "mapset_C", "mapset_D", ...]
 
         Returns:
@@ -67,7 +67,8 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
             {
               "HTTP code": 200,
               "Messages": "Resource accepted",
-              "Resource id": "resource_id-985164c9-1db9-49cf-b2c4-3e8e48500e31",
+              "Resource id": "resource_id-985164c9-1db9-49cf-"
+              "b2c4-3e8e48500e31",
               "Status": "accepted",
               "URLs": {
                 "Resources": [],
@@ -81,7 +82,8 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
         """
         # Preprocess the post call
         rdc = self.preprocess(
-            has_json=True, location_name=location_name, mapset_name=mapset_name)
+            has_json=True, location_name=location_name, mapset_name=mapset_name
+        )
 
         if rdc:
             enqueue_job(self.job_timeout, start_job, rdc)

@@ -27,24 +27,25 @@ Raster map renderer
 
 import os
 from tempfile import NamedTemporaryFile
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralRasterLegend(EphemeralProcessing):
-
     def __init__(self, *args):
 
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
-        """Render the raster legend with d.legend
-        """
+        """Render the raster legend with d.legend"""
         self._setup()
 
         self.required_mapsets.append(self.mapset_name)
@@ -64,15 +65,20 @@ class EphemeralRasterLegend(EphemeralProcessing):
         os.putenv("GRASS_RENDER_FILE_READ", "TRUE")
 
         pc = {}
-        pc["1"] = {"module": "d.legend", "inputs": {
-            "raster": raster_name + "@" + self.mapset_name}}
+        pc["1"] = {
+            "module": "d.legend",
+            "inputs": {"raster": raster_name + "@" + self.mapset_name},
+        }
         for key in options:
             if key not in ["width", "height"]:
                 value = options[key]
                 pc["1"]["inputs"][key] = value
 
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            process_chain=pc, skip_permission_check=True)
+        process_list = (
+            self._create_temporary_grass_environment_and_process_list(
+                process_chain=pc, skip_permission_check=True
+            )
+        )
         self._execute_process_list(process_list)
 
         self.module_results = result_file

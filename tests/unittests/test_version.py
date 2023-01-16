@@ -26,14 +26,12 @@ Tests: Version unittest case
 """
 import os
 import pytest
-import re
-import unittest
 
 from actinia_core.version import (
     find_running_since_info,
     find_additional_version_info,
     parse_additional_version_info,
-    valid_additional_version_info_key
+    valid_additional_version_info_key,
 )
 
 __license__ = "GPLv3"
@@ -43,21 +41,24 @@ __maintainer__ = "mundialis"
 
 
 add_versions = {
-    'test_key_a': 'test_val_a',
-    'test_key_b': 'test_val_b',
-    'test_key_c': 'test_val_c'
+    "test_key_a": "test_val_a",
+    "test_key_b": "test_val_b",
+    "test_key_c": "test_val_c",
 }
 
 
 @pytest.mark.unittest
-@pytest.mark.parametrize("key,status", [
-    ('test_key_a', True),
-    ('number1', False),
-    ('a!', False),
-    ('a-', False),
-    ('', False),
-    ('a' * 21, False)
-])
+@pytest.mark.parametrize(
+    "key,status",
+    [
+        ("test_key_a", True),
+        ("number1", False),
+        ("a!", False),
+        ("a-", False),
+        ("", False),
+        ("a" * 21, False),
+    ],
+)
 def test_valid_additional_version_info_key(key, status):
     test = valid_additional_version_info_key(key)
     if status is True:
@@ -67,25 +68,34 @@ def test_valid_additional_version_info_key(key, status):
 
 
 @pytest.mark.unittest
-@pytest.mark.parametrize("use_env,val", [
-    (False, 'n/a'),
-    (True, 'test')
-])
+@pytest.mark.parametrize("use_env,val", [(False, "n/a"), (True, "test")])
 def test_find_running_since_info(use_env, val):
 
     if use_env is True:
-        os.environ['ACTINIA_RUNNING_SINCE'] = val
+        os.environ["ACTINIA_RUNNING_SINCE"] = val
     test = find_running_since_info()
     assert test == val, f"Running since info is not '{val}'"
 
 
 @pytest.mark.unittest
-@pytest.mark.parametrize("env_value,expected", [
-    ('', {}),
-    ([f"{key}:{val}" for key, val in add_versions.items()][0],
-     {list(add_versions.keys())[0]:add_versions[list(add_versions.keys())[0]]}),
-    ("|".join([f"{key}:{val}" for key, val in add_versions.items()]), add_versions)
-])
+@pytest.mark.parametrize(
+    "env_value,expected",
+    [
+        ("", {}),
+        (
+            [f"{key}:{val}" for key, val in add_versions.items()][0],
+            {
+                list(add_versions.keys())[0]: add_versions[
+                    list(add_versions.keys())[0]
+                ]
+            },
+        ),
+        (
+            "|".join([f"{key}:{val}" for key, val in add_versions.items()]),
+            add_versions,
+        ),
+    ],
+)
 def test_parse_additional_version_info(env_value, expected):
 
     test = parse_additional_version_info(env_value)
@@ -93,20 +103,35 @@ def test_parse_additional_version_info(env_value, expected):
 
 
 @pytest.mark.unittest
-@pytest.mark.parametrize("env_value,expected", [
-    ('', {}),
-    ([f"{key}:{val}" for key, val in add_versions.items()][0],
-     {list(add_versions.keys())[0]:add_versions[list(add_versions.keys())[0]]}),
-    ("|".join([f"{key}:{val}" for key, val in add_versions.items()]), add_versions),
-    (f'{"|".join([f"{key}:{val}" for key, val in add_versions.items()])}|'
-     'key_1:test', add_versions)
-])
+@pytest.mark.parametrize(
+    "env_value,expected",
+    [
+        ("", {}),
+        (
+            [f"{key}:{val}" for key, val in add_versions.items()][0],
+            {
+                list(add_versions.keys())[0]: add_versions[
+                    list(add_versions.keys())[0]
+                ]
+            },
+        ),
+        (
+            "|".join([f"{key}:{val}" for key, val in add_versions.items()]),
+            add_versions,
+        ),
+        (
+            f'{"|".join([f"{k}:{v}" for k, v in add_versions.items()])}|'
+            "key_1:test",
+            add_versions,
+        ),
+    ],
+)
 def test_find_additional_version_info(env_value, expected):
 
-    if env_value != '':
-        os.environ['ACTINIA_ADDITIONAL_VERSION_INFO'] = env_value
+    if env_value != "":
+        os.environ["ACTINIA_ADDITIONAL_VERSION_INFO"] = env_value
     else:
-        if 'ACTINIA_ADDITIONAL_VERSION_INFO' in os.environ:
-            del os.environ['ACTINIA_ADDITIONAL_VERSION_INFO']
+        if "ACTINIA_ADDITIONAL_VERSION_INFO" in os.environ:
+            del os.environ["ACTINIA_ADDITIONAL_VERSION_INFO"]
     test = find_additional_version_info()
     assert test == expected, "Additional version is not right"

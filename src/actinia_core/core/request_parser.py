@@ -29,23 +29,30 @@ from flask_restful import reqparse
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 # Create a temporal module where, order, column parser
 where_parser = reqparse.RequestParser()
-where_parser.add_argument('where', type=str, location='args', help='A SQL where option')
-where_parser.add_argument('order', type=str, location='args',
-                          help='The order of the listing')
-where_parser.add_argument('columns', type=str, location='args',
-                          help='The columns to be listed')
+where_parser.add_argument(
+    "where", type=str, location="args", help="A SQL where option"
+)
+where_parser.add_argument(
+    "order", type=str, location="args", help="The order of the listing"
+)
+where_parser.add_argument(
+    "columns", type=str, location="args", help="The columns to be listed"
+)
 
 
 def extract_where_parameters(args):
-    """Parse the request parameters for modules that have where, order and column options
-    from parsed arguments that were created with the where_parser.
+    """Parse the request parameters for modules that have where, order and
+    column options from parsed arguments that were created with the
+    where_parser.
 
     Args:
         args (dict): The argument dictionary with where option
@@ -68,7 +75,11 @@ def extract_where_parameters(args):
 # Create a g.list/g.remove pattern parser
 glist_parser = reqparse.RequestParser()
 glist_parser.add_argument(
-    'pattern', type=str, help='A pattern string must be provided', location='args')
+    "pattern",
+    type=str,
+    help="A pattern string must be provided",
+    location="args",
+)
 
 
 def extract_glist_parameters(args):
@@ -76,7 +87,8 @@ def extract_glist_parameters(args):
     that were created with the glist_parser.
 
     Args:
-        args (dict): The argument dictionary with g.list/g.remove pattern option
+        args (dict): The argument dictionary with g.list/g.remove pattern
+                     option
 
     Returns:
          list:
@@ -92,13 +104,18 @@ def extract_glist_parameters(args):
 
 # Create a grass EPSG code parser
 start_script_parser = reqparse.RequestParser()
-start_script_parser.add_argument('epsg', required=True, location='args', type=int,
-                                 help='A EPSG code as integer must be provided')
+start_script_parser.add_argument(
+    "epsg",
+    required=True,
+    location="args",
+    type=int,
+    help="A EPSG code as integer must be provided",
+)
 
 
 def extract_start_script_parameters(args):
-    """Parse the request parameters for the GRASS start script from parsed arguments
-    that were created with the start_script_parser.
+    """Parse the request parameters for the GRASS start script from parsed
+    arguments that were created with the start_script_parser.
 
     Args:
         args (dict): The argument dictionary with grass start script options
@@ -117,13 +134,27 @@ def extract_start_script_parameters(args):
 
 # Create a t.create option parser
 t_create_parser = reqparse.RequestParser()
-t_create_parser.add_argument('temporaltype', type=str, location='args',
-                             help='The temporal type of the space time dataset,'
-                                  'options: absolute,relative, default: absolute')
-t_create_parser.add_argument('title', required=True, type=str, location='args',
-                             help='Title of the new space time raster dataset')
-t_create_parser.add_argument('description', required=True, type=str, location='args',
-                             help='Description of the new space time dataset')
+t_create_parser.add_argument(
+    "temporaltype",
+    type=str,
+    location="args",
+    help="The temporal type of the space time dataset,"
+    "options: absolute,relative, default: absolute",
+)
+t_create_parser.add_argument(
+    "title",
+    required=True,
+    type=str,
+    location="args",
+    help="Title of the new space time raster dataset",
+)
+t_create_parser.add_argument(
+    "description",
+    required=True,
+    type=str,
+    location="args",
+    help="Description of the new space time dataset",
+)
 
 
 def extract_t_create_parameters(args):
@@ -150,24 +181,40 @@ def extract_t_create_parameters(args):
 
 # Create a t.register option parser
 t_register_parser = reqparse.RequestParser()
-t_register_parser.add_argument('start', type=str, location='args',
-                               help='Valid start date and time of the first map. '
-                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS '
-                                    '+HHMM", relative time is of type integer')
-t_register_parser.add_argument('end', type=str, location='args',
-                               help='Valid end date and time of all maps. '
-                                    'Format absolute time: "yyyy-mm-dd HH:MM:SS0'
-                                    ' +HHMM", relative time is of type integer')
-t_register_parser.add_argument('unit', type=str, location='args',
-                               help='Time stamp unit. Unit must be set in case of '
-                                    'relative time stamps. options: '
-                                    'years,months,days,hours,minutes,seconds')
-t_register_parser.add_argument('increment', type=str, location='args',
-                               help='Time increment, works only in conjunction with '
-                                    'start option. Time increment between maps for '
-                                    'valid time interval creation (format absolute: '
-                                    'NNN seconds, minutes, hours, days, weeks, '
-                                    'months, years; format relative is integer: 5)')
+t_register_parser.add_argument(
+    "start",
+    type=str,
+    location="args",
+    help="Valid start date and time of the first map. "
+    'Format absolute time: "yyyy-mm-dd HH:MM:SS '
+    '+HHMM", relative time is of type integer',
+)
+t_register_parser.add_argument(
+    "end",
+    type=str,
+    location="args",
+    help="Valid end date and time of all maps. "
+    'Format absolute time: "yyyy-mm-dd HH:MM:SS0'
+    ' +HHMM", relative time is of type integer',
+)
+t_register_parser.add_argument(
+    "unit",
+    type=str,
+    location="args",
+    help="Time stamp unit. Unit must be set in case of "
+    "relative time stamps. options: "
+    "years,months,days,hours,minutes,seconds",
+)
+t_register_parser.add_argument(
+    "increment",
+    type=str,
+    location="args",
+    help="Time increment, works only in conjunction with "
+    "start option. Time increment between maps for "
+    "valid time interval creation (format absolute: "
+    "NNN seconds, minutes, hours, days, weeks, "
+    "months, years; format relative is integer: 5)",
+)
 
 
 def extract_t_register_parameters(args):

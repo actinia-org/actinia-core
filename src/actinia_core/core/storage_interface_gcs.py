@@ -27,22 +27,27 @@ Storage base class
 import os
 import datetime
 from google.cloud import storage
-from google.cloud import bigquery
 from .storage_interface_base import ResourceStorageBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class ResourceStorageGCS(ResourceStorageBase):
-    """Storage class of generated resources to be put in a Google Cloud Storage bucket
+    """
+    Storage class of generated resources to be put in a Google Cloud Storage
+    bucket
     """
 
     def __init__(self, user_id, resource_id, config):
-        """Storage class of generated resources to be put in a Google Cloud Storage bucket
+        """
+        Storage class of generated resources to be put in a Google Cloud
+        Storage bucket
 
         Args:
             user_id: The user id
@@ -55,10 +60,12 @@ class ResourceStorageGCS(ResourceStorageBase):
         self.bucket_name = self.config.GCS_RESOURCE_BUCKET
 
     def setup(self):
-        """Setup the Google Cloud Storage (GCS) client and the GCS credentials
         """
-        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = \
-            self.config.GOOGLE_APPLICATION_CREDENTIALS
+        Setup the Google Cloud Storage (GCS) client and the GCS credentials
+        """
+        os.environ[
+            "GOOGLE_APPLICATION_CREDENTIALS"
+        ] = self.config.GOOGLE_APPLICATION_CREDENTIALS
         self.storage_client = storage.Client()
 
     def get_resource_urls(self):
@@ -96,15 +103,15 @@ class ResourceStorageGCS(ResourceStorageBase):
             # This URL is valid for 10 days
             expiration=datetime.timedelta(days=10),
             # Allow GET requests using this URL.
-            method='GET')
+            method="GET",
+        )
 
         self.resource_file_list.append(object_path)
         self.resource_url_list.append(url)
         return url
 
     def remove_resources(self):
-        """Remove the resource export path and everything inside
-        """
+        """Remove the resource export path and everything inside"""
         for blob_name in self.resource_file_list:
             bucket = self.storage_client.get_bucket(self.bucket_name)
             blob = bucket.blob(blob_name)

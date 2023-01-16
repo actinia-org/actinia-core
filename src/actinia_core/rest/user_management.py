@@ -30,37 +30,42 @@ TODO: Implement POST full permission creation
       Implement PUT to modify existing users
 """
 
-from flask import jsonify, make_response
+from flask import jsonify, make_response, g
 from flask_restful import reqparse
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
+from actinia_core.core.common.config import global_config
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.rest.base.base_login import LoginBase
 from actinia_core.rest.base.user_auth import (
     check_admin_role,
-    check_admin_role_or_own_userid
+    check_admin_role_or_own_userid,
 )
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.user import ActiniaUser
-from actinia_core.models.response_models import \
-    UserListResponseModel, UserInfoResponseModel, SimpleResponseModel
+from actinia_core.models.response_models import (
+    UserListResponseModel,
+    UserInfoResponseModel,
+    SimpleResponseModel,
+)
 
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class UserListResource(LoginBase):
-    """List all user in the database.
-    """
+    """List all user in the database."""
 
     def __init__(self):
         LoginBase.__init__(self)
@@ -77,13 +82,27 @@ class UserListResource(LoginBase):
             flask.Response: A HTTP response with
                             JSON payload containing a list of users
         """
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to request all users",
+                    )
+                ),
+                400,
+            )
+
         user = ActiniaUser(None)
         user_list = user.list_all_users()
 
-        return make_response(jsonify(UserListResponseModel(
-            status="success",
-            user_list=user_list
-        )), 200)
+        return make_response(
+            jsonify(
+                UserListResponseModel(status="success", user_list=user_list)
+            ),
+            200,
+        )
 
 
 class UserManagementResource(LoginBase):
@@ -117,23 +136,46 @@ class UserManagementResource(LoginBase):
                             JSON payload containing the credentials
                             of the user
         """
-        user = ActiniaUser(user_id)
-
-        if user.exists() != 1:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="User <%s> does not exist" % user_id
-            )), 400)
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            user = g.user
+            if user.user_id != user_id:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="The keycloak authentication does not "
+                            "allow to request another user.",
+                        )
+                    ),
+                    400,
+                )
+        else:
+            user = ActiniaUser(user_id)
+            if user.exists() != 1:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="User <%s> does not exist" % user_id,
+                        )
+                    ),
+                    400,
+                )
 
         credentials = user.get_credentials()
 
-        return make_response(jsonify(UserInfoResponseModel(
-            status="success",
-            permissions=credentials["permissions"],
-            user_id=credentials["user_id"],
-            user_role=credentials["user_role"],
-            user_group=credentials["user_group"]
-        )), 200)
+        return make_response(
+            jsonify(
+                UserInfoResponseModel(
+                    status="success",
+                    permissions=credentials["permissions"],
+                    user_id=credentials["user_id"],
+                    user_role=credentials["user_role"],
+                    user_group=credentials["user_group"],
+                )
+            ),
+            200,
+        )
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", user_management.user_post_doc))
@@ -152,32 +194,48 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to create a new user",
+                    )
+                ),
+                400,
+            )
 
         user = ActiniaUser(user_id)
 
         if user.exists() == 1:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="User <%s> already exists" % user_id
-            )), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="User <%s> already exists" % user_id,
+                    )
+                ),
+                400,
+            )
 
         # Password parser
         password_parser = reqparse.RequestParser()
         password_parser.add_argument(
-            'password',
+            "password",
             required=True,
             type=str,
-            location='args',
-            dest='password',
-            help='The password of the new user cannot be converted.'
+            location="args",
+            dest="password",
+            help="The password of the new user cannot be converted.",
         )
         password_parser.add_argument(
-            'group',
+            "group",
             required=True,
             type=str,
-            location='args',
-            dest='group',
-            help='The group of the new user cannot be converted.'
+            location="args",
+            dest="group",
+            help="The group of the new user cannot be converted.",
         )
         args = password_parser.parse_args()
         password = args["password"]
@@ -186,15 +244,25 @@ class UserManagementResource(LoginBase):
         user = ActiniaUser.create_user(user_id, group, password, "user", {})
         if user is not None:
             if user.exists():
-                return make_response(jsonify(SimpleResponseModel(
-                    status="success",
-                    message="User %s created" % user_id
-                )), 201)
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="success",
+                            message="User %s created" % user_id,
+                        )
+                    ),
+                    201,
+                )
 
-        return make_response(jsonify(SimpleResponseModel(
-            status="error",
-            message="Unable to create user %s" % user_id
-        )), 400)
+        return make_response(
+            jsonify(
+                SimpleResponseModel(
+                    status="error",
+                    message="Unable to create user %s" % user_id,
+                )
+            ),
+            400,
+        )
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", user_management.user_delete_doc))
@@ -213,21 +281,48 @@ class UserManagementResource(LoginBase):
                             JSON payload containing
                             the status and messages
         """
+        if global_config.KEYCLOAK_CONFIG_PATH:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="The keycloak authentication does not allow "
+                        "to delete a user",
+                    )
+                ),
+                400,
+            )
+
         user = ActiniaUser(user_id)
 
         if user.exists() != 1:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Unable to delete user %s. User does not exist." % user_id
-            )), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message=f"Unable to delete user {user_id}. User does "
+                        "not exist.",
+                    )
+                ),
+                400,
+            )
 
         if user.delete() is True:
-            return make_response(jsonify(SimpleResponseModel(
-                status="success",
-                message="User %s deleted" % user_id
-            )), 200)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="success", message="User %s deleted" % user_id
+                    )
+                ),
+                200,
+            )
 
-        return make_response(jsonify(SimpleResponseModel(
-            status="error",
-            message="Unable to delete user %s" % user_id
-        )), 400)
+        return make_response(
+            jsonify(
+                SimpleResponseModel(
+                    status="error",
+                    message="Unable to delete user %s" % user_id,
+                )
+            ),
+            400,
+        )

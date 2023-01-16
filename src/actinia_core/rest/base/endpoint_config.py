@@ -42,14 +42,16 @@ __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
-if (global_config.ENDPOINTS_CONFIG is not None and
-        os.path.isfile(global_config.ENDPOINTS_CONFIG)):
+if global_config.ENDPOINTS_CONFIG is not None and os.path.isfile(
+    global_config.ENDPOINTS_CONFIG
+):
     with open(global_config.ENDPOINTS_CONFIG, mode="r") as inp:
-        reader = csv.reader(inp, delimiter=';')
+        reader = csv.reader(inp, delimiter=";")
         endpoints_dict = {
-            row[0]: [
-                method.upper() for method in row[1].split(",")
-            ] for row in reader if len(row) == 2}
+            row[0]: [method.upper() for method in row[1].split(",")]
+            for row in reader
+            if len(row) == 2
+        }
 else:
     endpoints_dict = None
 
@@ -58,9 +60,10 @@ def check_endpoint(method, api_doc=None, endpoint_class=None):
     if endpoint_class is None:
         endpoint_class = sys._getframe().f_back.f_code.co_name
     method_upper = method.upper()
-    if (endpoints_dict is None or
-        (endpoint_class in endpoints_dict and
-         method_upper in endpoints_dict[endpoint_class])):
+    if endpoints_dict is None or (
+        endpoint_class in endpoints_dict
+        and method_upper in endpoints_dict[endpoint_class]
+    ):
         return api_doc if api_doc is not None else True
     else:
         return False
@@ -81,10 +84,17 @@ def endpoint_decorator():
                 result = func(*args, **kwargs)
                 return result
             else:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Not Found. The requested URL is not configured on"
-                            " the server.")), 404)
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Not Found. The requested URL is not "
+                            "configured on the server.",
+                        )
+                    ),
+                    404,
+                )
+
         return wrapper
 
     return decorator

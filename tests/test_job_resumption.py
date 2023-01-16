@@ -32,26 +32,25 @@ from flask.json import loads as json_loads
 from jinja2 import Template
 from time import sleep
 
-from actinia_core.core.common import redis_interface
-from actinia_core.core.common.process_queue import create_process_queue
 from actinia_core.core.common.config import global_config
 
 try:
     from .test_resource_base import (
         ActiniaResourceTestCaseBase,
         URL_PREFIX,
-        additional_external_data
+        additional_external_data,
     )
 except ModuleNotFoundError:
     from test_resource_base import (
         ActiniaResourceTestCaseBase,
         URL_PREFIX,
-        additional_external_data
+        additional_external_data,
     )
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
@@ -61,37 +60,30 @@ process_chain_1 = {
         {
             "id": "1",
             "module": "g.region",
-            "inputs": [
-                {"param": "raster",
-                 "value": "elevation@PERMANENT"}
-            ],
-            "flags": "p"
+            "inputs": [{"param": "raster", "value": "elevation@PERMANENT"}],
+            "flags": "p",
         },
         {
             "id": "2",
             "module": "r.mapcalc",
-            "inputs": [{"param": "expression",
-                        "value": "baum = 5"}]
+            "inputs": [{"param": "expression", "value": "baum = 5"}],
         },
         {
             "id": "3",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map1 }}"}]
+            "inputs": [{"param": "map", "value": "{{ map1 }}"}],
         },
         {
             "id": "4",
             "module": "g.list",
-            "inputs": [{"param": "type",
-                        "value": "raster"}]
+            "inputs": [{"param": "type", "value": "raster"}],
         },
         {
             "id": "5",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map2 }}"}]
-        }
-    ]
+            "inputs": [{"param": "map", "value": "{{ map2 }}"}],
+        },
+    ],
 }
 
 process_chain_2_error = {
@@ -100,24 +92,16 @@ process_chain_2_error = {
         {
             "id": "1",
             "module": "g.region",
-            "inputs": [
-                {"param": "raster",
-                 "value": "elevation@PERMANENT"}
-            ],
-            "flags": "p"
+            "inputs": [{"param": "raster", "value": "elevation@PERMANENT"}],
+            "flags": "p",
         },
-        {
-            "id": "2",
-            "exe": "sleep",
-            "params": ["{{ seconds }}"]
-        },
+        {"id": "2", "exe": "sleep", "params": ["{{ seconds }}"]},
         {
             "id": "3",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "elevation2@PERMANENT"}]
-        }
-    ]
+            "inputs": [{"param": "map", "value": "elevation2@PERMANENT"}],
+        },
+    ],
 }
 
 process_chain_3_importer = {
@@ -128,27 +112,25 @@ process_chain_3_importer = {
             "id": "1",
             "inputs": [
                 {
-                  "import_descr": {
-                      "source": additional_external_data["elev_ned_30m_tif"],
-                      "type": "raster"
-                  },
+                    "import_descr": {
+                        "source": additional_external_data["elev_ned_30m_tif"],
+                        "type": "raster",
+                    },
                     "param": "raster",
-                    "value": "elev_ned_30m_new"
+                    "value": "elev_ned_30m_new",
                 }
             ],
-            "flags": "p"
+            "flags": "p",
         },
         {
             "id": "2",
             "module": "r.mapcalc",
-            "inputs": [{"param": "expression",
-                        "value": "baum = 5"}]
+            "inputs": [{"param": "expression", "value": "baum = 5"}],
         },
         {
             "id": "3",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map1 }}"}]
+            "inputs": [{"param": "map", "value": "{{ map1 }}"}],
         },
         {
             "id": "4",
@@ -157,46 +139,42 @@ process_chain_3_importer = {
                 {
                     "import_descr": {
                         "source": additional_external_data["pointInBonn"],
-                        "type": "vector"
+                        "type": "vector",
                     },
                     "param": "map",
-                    "value": "point"
+                    "value": "point",
                 },
                 {
                     "import_descr": {
                         "source": additional_external_data["geology_30m_tif"],
-                        "type": "raster"
+                        "type": "raster",
                     },
                     "param": "map",
-                    "value": "geology_30m_new"
-                }
-            ]
+                    "value": "geology_30m_new",
+                },
+            ],
         },
         {
             "id": "5",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map2 }}"}]
+            "inputs": [{"param": "map", "value": "{{ map2 }}"}],
         },
         {
             "id": "6",
             "module": "g.list",
-            "inputs": [{"param": "type",
-                        "value": "raster"}]
+            "inputs": [{"param": "type", "value": "raster"}],
         },
         {
             "id": "7",
             "module": "v.info",
-            "inputs": [{"param": "map",
-                        "value": "point"}]
+            "inputs": [{"param": "map", "value": "point"}],
         },
         {
             "id": "8",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "geology_30m_new"}]
-        }
-    ]
+            "inputs": [{"param": "map", "value": "geology_30m_new"}],
+        },
+    ],
 }
 
 
@@ -206,52 +184,40 @@ process_chain_4_exporter = {
         {
             "id": "1",
             "module": "g.region",
-            "inputs": [
-                {"param": "raster",
-                 "value": "elevation@PERMANENT"}
-            ],
-            "flags": "p"
+            "inputs": [{"param": "raster", "value": "elevation@PERMANENT"}],
+            "flags": "p",
         },
         {
             "id": "2",
             "module": "r.colors.out_sld",
-            "inputs": [
-                {
-                    "param": "map",
-                    "value": "elevation@PERMANENT"
-                }
-            ],
+            "inputs": [{"param": "map", "value": "elevation@PERMANENT"}],
             "outputs": [
                 {
                     "param": "output",
                     "value": "$file::export_of_2",
-                    "export": {"type": "file", "format": "TXT"}
+                    "export": {"type": "file", "format": "TXT"},
                 }
-            ]
+            ],
         },
         {
             "id": "3",
             "module": "r.mapcalc",
-            "inputs": [{"param": "expression",
-                        "value": "baum = 5*elevation"}]
+            "inputs": [{"param": "expression", "value": "baum = 5*elevation"}],
         },
         {
             "id": "4",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map1 }}"}]
+            "inputs": [{"param": "map", "value": "{{ map1 }}"}],
         },
         {
             "id": "5",
             "module": "g.list",
-            "inputs": [{"param": "type",
-                        "value": "raster"}]
+            "inputs": [{"param": "type", "value": "raster"}],
         },
         {
             "id": "6",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map2 }}"}]
+            "inputs": [{"param": "map", "value": "{{ map2 }}"}],
         },
         {
             "id": "7",
@@ -259,24 +225,18 @@ process_chain_4_exporter = {
             "comment": "Export indices as COG",
             "outputs": [
                 {
-                    "export": {
-                        "type": "raster",
-                        "format": "COG"
-                    },
+                    "export": {"type": "raster", "format": "COG"},
                     "param": "map",
-                    "value": "baum"
+                    "value": "baum",
                 },
                 {
-                    "export": {
-                        "type": "raster",
-                        "format": "COG"
-                    },
+                    "export": {"type": "raster", "format": "COG"},
                     "param": "map",
-                    "value": "elevation@PERMANENT"
-                }
-            ]
-        }
-    ]
+                    "value": "elevation@PERMANENT",
+                },
+            ],
+        },
+    ],
 }
 
 process_chain_5_stdout = {
@@ -285,75 +245,65 @@ process_chain_5_stdout = {
         {
             "id": "1",
             "module": "g.region",
-            "inputs": [
-                {"param": "raster",
-                 "value": "elevation@PERMANENT"}
-            ],
-            "flags": "p"
+            "inputs": [{"param": "raster", "value": "elevation@PERMANENT"}],
+            "flags": "p",
         },
         {
             "id": "2",
             "module": "r.colors.out_sld",
             "inputs": [
-                {
-                    "param": "map",
-                    "value": "elevation@PERMANENT"
-                },
-                {
-                    "param": "style_name",
-                    "value": "elevation"
-                }
+                {"param": "map", "value": "elevation@PERMANENT"},
+                {"param": "style_name", "value": "elevation"},
             ],
-            "stdout": {"id": "sld", "format": "list", "delimiter": "\n"}
+            "stdout": {"id": "sld", "format": "list", "delimiter": "\n"},
         },
         {
             "id": "3",
             "module": "r.mapcalc",
-            "inputs": [{"param": "expression",
-                        "value": "baum = 5"}]
+            "inputs": [{"param": "expression", "value": "baum = 5"}],
         },
         {
             "id": "4",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map1 }}"}],
+            "inputs": [{"param": "map", "value": "{{ map1 }}"}],
             "flags": "g",
-            "stdout": {"id": "r_info_map1", "format": "kv", "delimiter": "="}
+            "stdout": {"id": "r_info_map1", "format": "kv", "delimiter": "="},
         },
         {
             "id": "5",
             "module": "g.list",
-            "inputs": [{"param": "type",
-                        "value": "raster"}]
+            "inputs": [{"param": "type", "value": "raster"}],
         },
         {
             "id": "6",
             "module": "r.info",
-            "inputs": [{"param": "map",
-                        "value": "{{ map2 }}"}],
+            "inputs": [{"param": "map", "value": "{{ map2 }}"}],
             "flags": "g",
-            "stdout": {"id": "r_info_map2", "format": "kv", "delimiter": "="}
-        }
-    ]
+            "stdout": {"id": "r_info_map2", "format": "kv", "delimiter": "="},
+        },
+    ],
 }
 
 
 class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
-    cfg_file = os.environ.get('ACTINIA_CUSTOM_TEST_CFG', '/etc/default/actinia')
+    cfg_file = os.environ.get(
+        "ACTINIA_CUSTOM_TEST_CFG", "/etc/default/actinia"
+    )
     tmp_cfg_file = "%s_tmp" % cfg_file
     save_interim_results_value = None
-    endpoint = '/locations/nc_spm_08/processing_async'
+    endpoint = "/locations/nc_spm_08/processing_async"
     resource_user_id = None
     resource_resource_id = None
     sleep_time = 15
+    save_interim_results = "True"
 
     @classmethod
     def save_config(cls, src, dest, value):
         config = configparser.ConfigParser()
         config.read(src)
-        config['MISC']['save_interim_results'] = value
-        with open(dest, 'w') as configfile:
+        config["MISC"]["save_interim_results"] = value
+        with open(dest, "w") as configfile:
             config.write(configfile)
 
     @classmethod
@@ -362,7 +312,11 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         cls.save_interim_results_value = global_config.SAVE_INTERIM_RESULTS
         if cls.save_interim_results_value is False:
             os.replace(cls.cfg_file, cls.tmp_cfg_file)
-            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, 'True')
+            cls.save_config(
+                cls.tmp_cfg_file,
+                cls.cfg_file,
+                cls.save_interim_results,
+            )
 
         super(JobResumptionProcessingTestCase, cls).setUpClass()
 
@@ -370,23 +324,58 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
     def tearDownClass(cls):
         # reset config
         if cls.save_interim_results_value is False:
-            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, 'False')
+            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, "False")
             os.remove(cls.tmp_cfg_file)
         global_config.read(cls.cfg_file)
 
         super(JobResumptionProcessingTestCase, cls).tearDownClass()
 
-    def test_saved_interim_results(self):
-        """Test if the interim results are saved correctly
+    def test_notsaved_interim_results_by_success(self):
+        """Test if the interim results are not saved if process ends
+        successfully
         """
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
+
+        # check if interim results are not saved
+        resp_data = json_loads(rv.data)
+        rv_user_id = resp_data["user_id"]
+        rv_resource_id = resp_data["resource_id"]
+        interim_dir = os.path.join(
+            global_config.GRASS_RESOURCE_DIR,
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertFalse(
+            os.path.isdir(interim_dir),
+            "Interim results are stored",
+        )
+
+    def test_saved_interim_results(self):
+        """Test if the interim results are not saved correctly"""
+        step = 4
+        tpl = Template(json_dumps(process_chain_1))
+        rv = self.server.post(
+            URL_PREFIX + self.endpoint,
+            headers=self.admin_auth_header,
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum555"),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
 
         # check if interim results are saved
         resp_data = json_loads(rv.data)
@@ -394,30 +383,41 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
         self.assertTrue(
-            os.path.isdir(os.path.join(interim_dir, 'step5')),
-            "Interim results mapset is not stored in the expected folder")
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
+        self.assertTrue(
+            os.path.isdir(os.path.join(interim_dir, f"step{step}")),
+            "Interim results mapset is not stored in the expected folder",
+        )
         self.assertIn(
-            'baum', os.listdir(os.path.join(interim_dir, 'step5', 'cellhd')),
-            "Raster map 'baum' not in interim results mapset")
+            "baum",
+            os.listdir(os.path.join(interim_dir, f"step{step}", "cellhd")),
+            "Raster map 'baum' not in interim results mapset",
+        )
         self.assertTrue(
-            os.path.isdir(os.path.join(interim_dir, 'tmpdir5')),
-            "Interim results temporary file path is not stored in the expected folder")
+            os.path.isdir(os.path.join(interim_dir, f"tmpdir{step}")),
+            "Interim results temporary file path is not stored in the expected"
+            " folder",
+        )
 
     def test_job_resumption(self):
-        """Test job resumption with processing_async endpoint
-        """
+        """Test job resumption with processing_async endpoint"""
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -426,30 +426,41 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # resumption of the job
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
     def test_job_2_times_resumption(self):
-        """Test job 2 times resumption with processing_async endpoint
-        """
+        """Test job 2 times resumption with processing_async endpoint"""
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # first job resumption
@@ -457,9 +468,14 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum1"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=400, status="error")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+        )
         status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -468,18 +484,28 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # second job resumption
         rv3 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv3,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
         self.__class__.resource_user_id = rv_user_id
         self.__class__.resource_resource_id = rv_resource_id
 
@@ -492,21 +518,30 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(seconds=self.sleep_time),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp_data = json_loads(rv.data)
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
         waiting_for_running = True
         while waiting_for_running:
-            rv_pull = self.server.get(URL_PREFIX + "/resources/%s/%s"
-                                      % (rv_user_id, rv_resource_id),
-                                      headers=self.admin_auth_header)
+            rv_pull = self.server.get(
+                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                headers=self.admin_auth_header,
+            )
             resp_data_pull = json_loads(rv_pull.data)
             if resp_data_pull["status"] == "running":
                 waiting_for_running = False
-            elif resp_data_pull["status"] in ["error", "terminated", "timeout"]:
-                self.assertTrue(False, "Process is not running it is %s"
-                                       % resp_data_pull["status"])
+            elif resp_data_pull["status"] in [
+                "error",
+                "terminated",
+                "timeout",
+            ]:
+                self.assertTrue(
+                    False,
+                    "Process is not running it is %s"
+                    % resp_data_pull["status"],
+                )
         status_url = resp_data_pull["urls"]["status"].split(URL_PREFIX)[-1]
 
         # job resumption by running job
@@ -514,24 +549,27 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_2_error),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.assertEqual(rv2.status_code, 404)
         resp_data2 = json_loads(rv2.data)
-        self.assertEqual(resp_data2['status'], 'error')
+        self.assertEqual(resp_data2["status"], "error")
         self.assertEqual(
-            resp_data2['message'], 'Resource is running no restart possible')
+            resp_data2["message"], "Resource is running no restart possible"
+        )
 
     def test_job_resumption_importer(self):
-        """Test job resumption with processing_async endpoint and importer
-        """
+        """Test job resumption with processing_async endpoint and importer"""
         tpl = Template(json_dumps(process_chain_3_importer))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -540,18 +578,28 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # resumption of the job
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elev_ned_30m_new", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
     def test_job_2_times_resumption_importer(self):
         """Test job 2 times resumption with processing_async endpoint and
@@ -562,9 +610,11 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # first job resumption
@@ -572,9 +622,14 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elev_ned_30m_new", map2="baum1"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=400, status="error")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+        )
         status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -583,62 +638,108 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # second job resumption
         rv3 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elev_ned_30m_new", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv3,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
         self.__class__.resource_user_id = rv_user_id
         self.__class__.resource_resource_id = rv_resource_id
 
     def compare_stdout(self, resp):
-        proc_results = resp['process_results']
-        self.assertIn('sld', proc_results, "'sld' not saved in process results")
-        self.assertIn('r_info_map1', proc_results,
-                      "'r_info_map1' not saved in process results")
-        self.assertIn('r_info_map2', proc_results,
-                      "'r_info_map2' not saved in process results")
-        self.assertIsInstance(proc_results['sld'], list,
-                              "'sld' result is not of type list")
+        proc_results = resp["process_results"]
+        self.assertIn(
+            "sld", proc_results, "'sld' not saved in process results"
+        )
+        self.assertIn(
+            "r_info_map1",
+            proc_results,
+            "'r_info_map1' not saved in process results",
+        )
+        self.assertIn(
+            "r_info_map2",
+            proc_results,
+            "'r_info_map2' not saved in process results",
+        )
         self.assertIsInstance(
-            proc_results['r_info_map1'], dict,
-            "'r_info_map1' result is not of type dict")
+            proc_results["sld"], list, "'sld' result is not of type list"
+        )
         self.assertIsInstance(
-            proc_results['r_info_map2'], dict,
-            "'r_info_map2' result is not of type dict")
+            proc_results["r_info_map1"],
+            dict,
+            "'r_info_map1' result is not of type dict",
+        )
+        self.assertIsInstance(
+            proc_results["r_info_map2"],
+            dict,
+            "'r_info_map2' result is not of type dict",
+        )
         r_info_map1 = {
-            'cells': '2025000', 'cols': '1500', 'datatype': 'FCELL',
-            'east': '645000', 'ewres': '10', 'ncats': '255', 'north': '228500',
-            'nsres': '10', 'rows': '1350', 'south': '215000', 'west': '630000'}
+            "cells": "2025000",
+            "cols": "1500",
+            "datatype": "FCELL",
+            "east": "645000",
+            "ewres": "10",
+            "ncats": "255",
+            "north": "228500",
+            "nsres": "10",
+            "rows": "1350",
+            "south": "215000",
+            "west": "630000",
+        }
         self.assertEqual(
-            proc_results['r_info_map1'], r_info_map1,
-            "'r_info_map1' is not equal to the region")
+            proc_results["r_info_map1"],
+            r_info_map1,
+            "'r_info_map1' is not equal to the region",
+        )
         r_info_map2 = {
-            'cells': '2025000', 'cols': '1500', 'datatype': 'CELL',
-            'east': '645000', 'ewres': '10', 'ncats': '0', 'north': '228500',
-            'nsres': '10', 'rows': '1350', 'south': '215000', 'west': '630000'}
+            "cells": "2025000",
+            "cols": "1500",
+            "datatype": "CELL",
+            "east": "645000",
+            "ewres": "10",
+            "ncats": "0",
+            "north": "228500",
+            "nsres": "10",
+            "rows": "1350",
+            "south": "215000",
+            "west": "630000",
+        }
         self.assertEqual(
-            proc_results['r_info_map2'], r_info_map2,
-            "'r_info_map2' is not equal to the region")
+            proc_results["r_info_map2"],
+            r_info_map2,
+            "'r_info_map2' is not equal to the region",
+        )
 
     def test_job_resumption_stdout(self):
-        """Test job resumption with processing_async endpoint and stdout
-        """
+        """Test job resumption with processing_async endpoint and stdout"""
         tpl = Template(json_dumps(process_chain_5_stdout))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -647,18 +748,28 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # resumption of the job
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
         self.compare_stdout(resp2)
 
     def test_job_2_times_resumption_stdout(self):
@@ -670,9 +781,11 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # first job resumption
@@ -680,9 +793,14 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum1"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=400, status="error")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+        )
         status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -691,90 +809,135 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # second job resumption
         rv3 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp3 = self.waitAsyncStatusAssertHTTP(
-            rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv3,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
         self.compare_stdout(resp3)
 
     def test_resource_endpoints(self):
-        """Test resource endpoint with iterations
-        """
+        """Test resource endpoint with iterations"""
         self.assertIsNotNone(self.resource_user_id, "resource_user_id is None")
-        self.assertIsNotNone(self.resource_resource_id, "resource_resource_id is None")
+        self.assertIsNotNone(
+            self.resource_resource_id, "resource_resource_id is None"
+        )
 
         # get latest iteration by requesting /resources/{USER}/resource_id-{ID}
         rv1 = self.server.get(
-            URL_PREFIX + "/resources/%s/%s"
+            URL_PREFIX
+            + "/resources/%s/%s"
             % (self.resource_user_id, self.resource_resource_id),
-            headers=self.admin_auth_header)
+            headers=self.admin_auth_header,
+        )
         resp_data1 = json_loads(rv1.data)
-        self.assertEqual(resp_data1["status"], "finished",
-                         "Resource request 1 is not finished")
-        self.assertEqual(rv1.status_code, 200,
-                         "Resource request 1 status code is not 200")
-        self.assertEqual(resp_data1['iteration'], 3, "Iteration is not 3 (the latest)")
+        self.assertEqual(
+            resp_data1["status"],
+            "finished",
+            "Resource request 1 is not finished",
+        )
+        self.assertEqual(
+            rv1.status_code, 200, "Resource request 1 status code is not 200"
+        )
+        self.assertEqual(
+            resp_data1["iteration"], 3, "Iteration is not 3 (the latest)"
+        )
 
         # get all iteration by requesting /resources/{USER}/{ID}
         rv2 = self.server.get(
-            URL_PREFIX + "/resources/%s/%s"
-            % (self.resource_user_id,
-               self.resource_resource_id.replace('resource_id-', '')),
-            headers=self.admin_auth_header)
+            URL_PREFIX
+            + "/resources/%s/%s"
+            % (
+                self.resource_user_id,
+                self.resource_resource_id.replace("resource_id-", ""),
+            ),
+            headers=self.admin_auth_header,
+        )
         resp_data2 = json_loads(rv2.data)
-        self.assertEqual(rv2.status_code, 200,
-                         "Resource request 2 status code is not 200")
-        self.assertEqual(len(resp_data2.keys()), 3, "Not 3 iteration in request")
+        self.assertEqual(
+            rv2.status_code, 200, "Resource request 2 status code is not 200"
+        )
+        self.assertEqual(
+            len(resp_data2.keys()), 3, "Not 3 iteration in request"
+        )
 
-        # get resource by iteration number requesting /resources/{USER}/{ID}/{ITERATION}
+        # get resource by iteration number requesting /resources/{USER}/{ID}/
+        # {ITERATION}
         for iteration in range(1, 4):
             rv3 = self.server.get(
-                URL_PREFIX + "/resources/%s/%s/%d"
-                % (self.resource_user_id,
-                   self.resource_resource_id, iteration),
-                headers=self.admin_auth_header)
+                URL_PREFIX
+                + "/resources/%s/%s/%d"
+                % (
+                    self.resource_user_id,
+                    self.resource_resource_id,
+                    iteration,
+                ),
+                headers=self.admin_auth_header,
+            )
             resp_data3 = json_loads(rv3.data)
             self.assertEqual(
-                rv3.status_code, 200,
-                "Resource request for iteration %d status code is not 200" % iteration)
+                rv3.status_code,
+                200,
+                "Resource request for iteration %d status code is not 200"
+                % iteration,
+            )
             if iteration != 1:
                 self.assertIn(
-                    'iteration', resp_data3[str(iteration)],
-                    "'iteration' is not in response")
+                    "iteration",
+                    resp_data3[str(iteration)],
+                    "'iteration' is not in response",
+                )
                 self.assertEqual(
-                    resp_data3[str(iteration)]['iteration'], iteration,
-                    "Iteration is not %d" % iteration)
+                    resp_data3[str(iteration)]["iteration"],
+                    iteration,
+                    "Iteration is not %d" % iteration,
+                )
             else:
-                self.assertNotIn('iteration', resp_data3[str(iteration)],
-                                 "'iteration' is in response")
+                self.assertNotIn(
+                    "iteration",
+                    resp_data3[str(iteration)],
+                    "'iteration' is in response",
+                )
             del rv3, resp_data3
 
 
 class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
 
-    endpoint = '/locations/nc_spm_08/processing_async_export'
+    endpoint = "/locations/nc_spm_08/processing_async_export"
     resource_user_id = None
     resource_resource_id = None
 
     def test_job_resumption_exporter(self):
-        """Test job resumption with processing_async_export endpoint and exporter
+        """
+        Test job resumption with processing_async_export endpoint and exporter
         """
         tpl = Template(json_dumps(process_chain_4_exporter))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -783,45 +946,65 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # resumption of the job
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
         # Get the exported results
         urls = resp2["urls"]["resources"]
         for url in urls:
-            print(url)
             rv = self.server.get(url, headers=self.admin_auth_header)
             self.assertEqual(
-                rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-            if url.endswith('.tif'):
+                rv.status_code,
+                200,
+                "HTML status code is wrong %i" % rv.status_code,
+            )
+            if url.endswith(".tif"):
                 self.assertEqual(
-                    rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
-            elif url.endswith('.zip'):
+                    rv.mimetype,
+                    "image/tiff",
+                    "Wrong mimetype %s" % rv.mimetype,
+                )
+            elif url.endswith(".zip"):
                 self.assertEqual(
-                    rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
+                    rv.mimetype,
+                    "application/zip",
+                    "Wrong mimetype %s" % rv.mimetype,
+                )
 
     def test_job_2_times_resumption_exporter(self):
-        """Test job 2 times resumption with processing_async_export endpoint and
-        exporter
+        """Test job 2 times resumption with processing_async_export endpoint
+        and exporter
         """
         tpl = Template(json_dumps(process_chain_4_exporter))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
 
         # first job resumption
@@ -829,9 +1012,14 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum1"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp2 = self.waitAsyncStatusAssertHTTP(
-            rv2, headers=self.admin_auth_header, http_status=400, status="error")
+            rv2,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+        )
         status_url = resp2["urls"]["status"].split(URL_PREFIX)[-1]
 
         # check if interim results are saved
@@ -840,41 +1028,61 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
         # second job resumption
         rv3 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         resp3 = self.waitAsyncStatusAssertHTTP(
-            rv3, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv3,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
         # Get the exported results
         urls = resp3["urls"]["resources"]
         for url in urls:
-            print(url)
             rv = self.server.get(url, headers=self.admin_auth_header)
             self.assertEqual(
-                rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-            if url.endswith('.tif'):
+                rv.status_code,
+                200,
+                "HTML status code is wrong %i" % rv.status_code,
+            )
+            if url.endswith(".tif"):
                 self.assertEqual(
-                    rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
-            elif url.endswith('.zip'):
+                    rv.mimetype,
+                    "image/tiff",
+                    "Wrong mimetype %s" % rv.mimetype,
+                )
+            elif url.endswith(".zip"):
                 self.assertEqual(
-                    rv.mimetype, "application/zip", "Wrong mimetype %s" % rv.mimetype)
+                    rv.mimetype,
+                    "application/zip",
+                    "Wrong mimetype %s" % rv.mimetype,
+                )
         self.__class__.resource_user_id = rv_user_id
         self.__class__.resource_resource_id = rv_resource_id
 
 
-class JobResumptionPersistentProcessingTestCase(JobResumptionProcessingTestCase):
+class JobResumptionPersistentProcessingTestCase(
+    JobResumptionProcessingTestCase
+):
 
-    location = 'nc_spm_08'
-    mapset = 'test_mapset'
-    endpoint = '/locations/%s/mapsets/%s/processing_async' % (location, mapset)
+    location = "nc_spm_08"
+    mapset = "test_mapset"
+    endpoint = "/locations/%s/mapsets/%s/processing_async" % (location, mapset)
     resource_user_id = None
     resource_resource_id = None
     mapset_created = True
@@ -882,30 +1090,38 @@ class JobResumptionPersistentProcessingTestCase(JobResumptionProcessingTestCase)
     def tearDown(self):
         if self.mapset_created is True:
             rv = self.server.delete(
-                URL_PREFIX + '/locations/%s/mapsets/%s/lock'
-                             % (self.location, self.mapset),
-                headers=self.admin_auth_header)
+                URL_PREFIX
+                + "/locations/%s/mapsets/%s/lock"
+                % (self.location, self.mapset),
+                headers=self.admin_auth_header,
+            )
             self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
             rv2 = self.server.delete(
-                URL_PREFIX + '/locations/%s/mapsets/%s' % (self.location, self.mapset),
-                headers=self.admin_auth_header)
+                URL_PREFIX
+                + "/locations/%s/mapsets/%s" % (self.location, self.mapset),
+                headers=self.admin_auth_header,
+            )
             self.waitAsyncStatusAssertHTTP(rv2, headers=self.admin_auth_header)
         else:
             self.__class__.mapset_created = True
         self.app_context.pop()
 
     def test_saved_interim_results(self):
-        """Test if the interim results are removed
-        """
+        """Test if the interim results are removed"""
         self.create_new_mapset(self.mapset, self.location)
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
-            content_type="application/json")
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
         # check if interim results are saved
         resp_data = json_loads(rv.data)
@@ -913,24 +1129,33 @@ class JobResumptionPersistentProcessingTestCase(JobResumptionProcessingTestCase)
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
             global_config.GRASS_RESOURCE_DIR,
-            rv_user_id, "interim", rv_resource_id)
-        self.assertTrue(not os.path.isdir(interim_dir),
-                        "Interim results are not stored in the expected folder")
+            rv_user_id,
+            "interim",
+            rv_resource_id,
+        )
+        self.assertTrue(
+            not os.path.isdir(interim_dir),
+            "Interim results are not stored in the expected folder",
+        )
 
     def test_job_resumption_error_by_running(self):
-        super(JobResumptionPersistentProcessingTestCase, self).\
-            test_job_resumption_error_by_running()
+        super(
+            JobResumptionPersistentProcessingTestCase, self
+        ).test_job_resumption_error_by_running()
         sleep(self.sleep_time)
         self.__class__.mapset_created = False
+        print(self.resource_user_id)
 
     def test_resource_endpoints(self):
-        super(JobResumptionPersistentProcessingTestCase, self).test_resource_endpoints()
+        super(
+            JobResumptionPersistentProcessingTestCase, self
+        ).test_resource_endpoints()
         self.__class__.mapset_created = False
 
 
 class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
 
-    endpoint = '/locations/nc_spm_08/processing_async'
+    endpoint = "/locations/nc_spm_08/processing_async"
 
     def test_job_resumption_config_error(self):
         """Test if the job resumption fails if save_interim_results is set to
@@ -940,23 +1165,43 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
         rv = self.server.post(
             URL_PREFIX + self.endpoint,
             headers=self.admin_auth_header,
-            data=tpl.render(map="elevation2@PERMANENT"),
-            content_type="application/json")
+            data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
+            content_type="application/json",
+        )
         resp = self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error")
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
         status_url = resp["urls"]["status"].split(URL_PREFIX)[-1]
         rv2 = self.server.put(
             URL_PREFIX + status_url,
             headers=self.admin_auth_header,
-            data=tpl.render(map="elevation@PERMANENT"),
-            content_type="application/json")
+            data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
+            content_type="application/json",
+        )
         self.assertEqual(rv2.status_code, 404)
         resp_data = json_loads(rv2.data)
-        self.assertEqual(resp_data['status'], 'error')
+        self.assertEqual(resp_data["status"], "error")
         self.assertEqual(
-            resp_data['message'],
-            'Interim results are not set in the configureation')
+            resp_data["message"],
+            "Interim results are not set in the configureation",
+        )
 
 
-if __name__ == '__main__':
+class JobResumptionProcessingTestCaseOnError(JobResumptionProcessingTestCase):
+    save_interim_results = "onError"
+
+
+class JobResumptionProcessingExportTestCaseOnError(
+    JobResumptionProcessingExportTestCase
+):
+    save_interim_results = "onError"
+
+
+class JobResumptionPersistentProcessingTestCaseOnError(
+    JobResumptionPersistentProcessingTestCase
+):
+    save_interim_results = "onError"
+
+
+if __name__ == "__main__":
     unittest.main()

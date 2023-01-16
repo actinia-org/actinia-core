@@ -23,13 +23,13 @@ that is used as computational environment.
 A process chain is a list of GRASS GIS modules[^1] that will be executed in
 serial, based on the order of the list. GRASS GIS modules are specified
 as process definitions[^2] that include the name of the command, the
-inputs[^3] and outputs[^4], including import and export definitions as
+inputs and outputs], including import and export definitions as
 well as the module flags.
 
 The following example defines a single process
-that runs the GRASS GIS module *r.slope.aspect*[^5] to compute the
+that runs the GRASS GIS module *r.slope.aspect*[^3] to compute the
 *slope* for the raster map layer *elev\_ned\_30m* that is located in the
-mapset[^6] *PERMANENT*. The output of the module is named
+mapset[^4] *PERMANENT*. The output of the module is named
 *elev\_ned\_30m\_slope* and should be exported as a GeoTiff file.
 
 ```json
@@ -62,7 +62,7 @@ The actinia process chain supports the specification of URL\'s to raster
 layers in the input definition. The following process chain imports a
 raster map layer that is located in an object storage with the name
 *elev\_ned\_30m\_new* and sets the computational region for the
-following processing step with the GRASS GIS module *g.region*[^7]. Then
+following processing step with the GRASS GIS module *g.region*[^5]. Then
 slope and aspect are computed with *r.slope.aspect* and specified for
 export as GeoTiff files.
 
@@ -609,10 +609,10 @@ address:
 export ACTINIA_URL=https://actinia.mundialis.de/latest
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
-
+```
 We create a process chain that computes the NDVI from a Sentinel-2A
 scene based on the bands 8 and 4 with the GRASS GIS module *r.mapcalc*. We
-use the latitude/longitude location **latlong\_wgs84** as processing
+use the North Carolina sample location **nc\_spm\_08** as processing
 environment and the computational region of sentinel band B04 for the
 NDVI processing. Then we calculate univariate statistics for the
 Sentinel-2A scene. The computed NDVI raster layer will be exported as
@@ -621,7 +621,7 @@ geotiff file that can be accessed via an URL.
 The following JSON code has 6 process definitions:
 
  1.  Import of two bands (B04 and B08) of the Sentinel-2A scene
-     *S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749*
+     *S2A\_MSIL2A\_20220420T154941\_N0400\_R054\_T18SUE\_20220421T000632*
  2.  Set the computational region to imported raster layer B04
  3.  Use *r.mapcalc* to compute the NDVI
  4.  Use *r.univar* to compute univariate statistics of the computed NDVI
@@ -632,12 +632,12 @@ The following JSON code has 6 process definitions:
  {
   "list": [{"id": "importer_1",
            "module": "importer",
-           "inputs": [{"import_descr": {"source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
                                         "type": "sentinel2",
                                         "sentinel_band": "B04"},
                        "param": "map",
                        "value": "B04"},
-                      {"import_descr": {"source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+                      {"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
                                         "type": "sentinel2",
                                         "sentinel_band": "B08"},
                        "param": "map",
@@ -650,7 +650,7 @@ The following JSON code has 6 process definitions:
           {"id": "rmapcalc_1",
            "module": "r.mapcalc",
            "inputs": [{"param": "expression",
-                       "value": "NDVI = float((B08 - B04)/(B08 + B04))"}]},
+                       "value": "NDVI = float(B08 - B04)/(B08 + B04)"}]},
           {"id": "r_univar_sentinel2",
            "module": "r.univar",
            "inputs": [{"param": "map",
@@ -672,12 +672,12 @@ Run the process chain asynchronously:
  JSON='{
  "list": [{"id": "importer_1",
            "module": "importer",
-           "inputs": [{"import_descr": {"source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
                                         "type": "sentinel2",
                                         "sentinel_band": "B04"},
                        "param": "map",
                        "value": "B04"},
-                      {"import_descr": {"source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
+                      {"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
                                         "type": "sentinel2",
                                         "sentinel_band": "B08"},
                        "param": "map",
@@ -690,7 +690,7 @@ Run the process chain asynchronously:
           {"id": "rmapcalc_1",
            "module": "r.mapcalc",
            "inputs": [{"param": "expression",
-                       "value": "NDVI = float((B08 - B04)/(B08 + B04))"}]},
+                       "value": "NDVI = float(B08 - B04)/(B08 + B04)"}]},
           {"id": "r_univar_sentinel2",
            "module": "r.univar",
            "inputs": [{"param": "map",
@@ -704,668 +704,343 @@ Run the process chain asynchronously:
           ],
  "version": "1"}'
 
-curl ${AUTH} -X POST "${ACTINIA_URL}/locations/latlong_wgs84/processing_async_export" -H "accept: application/json" -H "content-type: application/json" -d "$JSON"
+curl ${AUTH} -X POST "${ACTINIA_URL}/locations/nc_spm_08/processing_async_export" -H "accept: application/json" -H "content-type: application/json" -d "$JSON"
 ```
 
 The response requires the polling of the status URL, since the API call
 works asynchronously:
 
 ```json
- {
-   "accept_datetime": "2018-05-02 21:05:34.873031",
-   "accept_timestamp": 1525287934.8730297,
-   "api_info": {
-     "endpoint": "asyncephemeralexportresource",
-     "method": "POST",
-     "path": "/api/v3/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/latlong_wgs84/processing_async_export"
-   },
-   "datetime": "2018-05-02 21:05:34.873754",
-   "http_code": 200,
-   "message": "Resource accepted",
-   "process_chain_list": [],
-   "process_results": {},
-   "resource_id": "resource_id-60f3f012-4220-46ec-9110-694df49006c4",
-   "status": "accepted",
-   "time_delta": 0.0007345676422119141,
-   "timestamp": 1525287934.873754,
-   "urls": {
-     "resources": [],
-     "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-ff5a89da-82fe-4f13-9f35-8872c4d0ccf7"
-   },
-   "user_id": "demouser"
- }
+{
+  "accept_datetime": "2022-07-28 14:07:21.578233",
+  "accept_timestamp": 1659017241.5782313,
+  "api_info": {
+    "endpoint": "asyncephemeralexportresource",
+    "method": "POST",
+    "path": "/api/v3/locations/nc_spm_08/processing_async_export",
+    "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export"
+  },
+  "datetime": "2022-07-28 14:07:21.580321",
+  "http_code": 200,
+  "message": "Resource accepted",
+  "process_chain_list": [],
+  "process_results": {},
+  "resource_id": "resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70",
+  "status": "accepted",
+  "time_delta": 0.002097606658935547,
+  "timestamp": 1659017241.58032,
+  "urls": {
+    "resources": [],
+    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
+  },
+  "user_id": "demouser"
+}
+
 ```
 
 Poll the status of the Sentinel-2A NDVI job and view the result of the
 computation (remember to use your own resource-id):
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
 ```
 
 The finished response should look like this:
 
 ```json
- {
-   "accept_datetime": "2018-05-02 21:05:34.873031",
-   "accept_timestamp": 1525287934.8730297,
-   "api_info": {
-     "endpoint": "asyncephemeralexportresource",
-     "method": "POST",
-     "path": "/locations/latlong_wgs84/processing_async_export",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/latlong_wgs84/processing_async_export"
-   },
-   "datetime": "2018-05-02 21:09:39.823857",
-   "http_code": 200,
-   "message": "Processing successfully finished",
-   "process_chain_list": [
-     {
-       "list": [
-         {
-           "id": "importer_1",
-           "inputs": [
-             {
-               "import_descr": {
-                 "sentinel_band": "B04",
-                 "source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-                 "type": "sentinel2"
-               },
-               "param": "map",
-               "value": "B04"
-             },
-             {
-               "import_descr": {
-                 "sentinel_band": "B08",
-                 "source": "S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-                 "type": "sentinel2"
-               },
-               "param": "map",
-               "value": "B08"
-             }
-           ],
-           "module": "importer"
-         },
-         {
-           "flags": "g",
-           "id": "g_region_1",
-           "inputs": [
-             {
-               "param": "raster",
-               "value": "B04"
-             }
-           ],
-           "module": "g.region"
-         },
-         {
-           "id": "rmapcalc_1",
-           "inputs": [
-             {
-               "param": "expression",
-               "value": "NDVI = float((B08 - B04)/(B08 + B04))"
-             }
-           ],
-           "module": "r.mapcalc"
-         },
-         {
-           "flags": "g",
-           "id": "r_univar_sentinel2",
-           "inputs": [
-             {
-               "param": "map",
-               "value": "NDVI"
-             }
-           ],
-           "module": "r.univar"
-         },
-         {
-           "id": "exporter_1",
-           "module": "exporter",
-           "outputs": [
-             {
-               "export": {
-                 "format": "GTiff",
-                 "type": "raster"
-               },
-               "param": "map",
-               "value": "NDVI"
-             }
-           ]
-         }
-       ],
-       "version": "1"
-     }
-   ],
-   "process_log": [
-     {
-       "executable": "/usr/bin/wget",
-       "parameter": [
-         "-t5",
-         "-c",
-         "-q",
-         "https://storage.googleapis.com/gcp-public-data-sentinel-2/tiles/50/R/KR/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.SAFE/GRANULE/L1C_T50RKR_A007608_20161206T030749/IMG_DATA/T50RKR_20161206T030112_B04.jp2"
-       ],
-       "return_code": 0,
-       "run_time": 26.578389167785645,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "/bin/mv",
-       "parameter": [
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/T50RKR_20161206T030112_B04.jp2",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04"
-       ],
-       "return_code": 0,
-       "run_time": 0.05015993118286133,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "v.import",
-       "parameter": [
-         "input=/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml",
-         "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "--q"
-       ],
-       "return_code": 0,
-       "run_time": 0.150557279586792,
-       "stderr": [
-         "WARNING: Width for column fid set to 255 (was not specified by OGR), some strings may be truncated!",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "v.timestamp",
-       "parameter": [
-         "map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "date=06 dec 2016 03:07:49"
-       ],
-       "return_code": 0,
-       "run_time": 0.05015850067138672,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "/usr/bin/gdal_translate",
-       "parameter": [
-         "-projwin",
-         "113.949663",
-         "28.011816",
-         "115.082607",
-         "27.001706",
-         "-of",
-         "vrt",
-         "-projwin_srs",
-         "EPSG:4326",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt"
-       ],
-       "return_code": 0,
-       "run_time": 0.050154685974121094,
-       "stderr": [
-         "Warning 1: Computed -srcwin 5 -225 10971 11419 falls partially outside raster extent. Going on however.",
-         ""
-       ],
-       "stdout": "Input file size is 10980, 10980\n"
-     },
-     {
-       "executable": "r.import",
-       "parameter": [
-         "input=/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt",
-         "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped",
-         "--q"
-       ],
-       "return_code": 0,
-       "run_time": 47.980000257492065,
-       "stderr": [
-         "WARNING: Projection of dataset does not appear to match current location.",
-         "",
-         "Location PROJ_INFO is:",
-         "name: WGS 84",
-         "datum: wgs84",
-         "ellps: wgs84",
-         "proj: ll",
-         "no_defs: defined",
-         "",
-         "Dataset PROJ_INFO is:",
-         "name: WGS 84 / UTM zone 50N",
-         "datum: wgs84",
-         "ellps: wgs84",
-         "proj: utm",
-         "zone: 50",
-         "no_defs: defined",
-         "",
-         "ERROR: proj",
-         "",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.region",
-       "parameter": [
-         "align=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped",
-         "vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "-g"
-       ],
-       "return_code": 0,
-       "run_time": 0.05019974708557129,
-       "stderr": [
-         ""
-       ],
-       "stdout": "projection=3\nzone=0\nn=28.0118772817232\ns=27.0016255440191\nw=113.949598991944\ne=115.082625141434\nnsres=9.36719274644538e-05\newres=9.36694898718473e-05\nrows=10785\ncols=12096\ncells=130455360\n"
-     },
-     {
-       "executable": "r.mask",
-       "parameter": [
-         "vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
-       ],
-       "return_code": 0,
-       "run_time": 7.319561243057251,
-       "stderr": [
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "All subsequent raster operations will be limited to the MASK area. Removing or renaming raster map named 'MASK' will restore raster operations to normal.",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.mapcalc",
-       "parameter": [
-         "expression=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04 = float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped)"
-       ],
-       "return_code": 0,
-       "run_time": 11.935151815414429,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.timestamp",
-       "parameter": [
-         "map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04",
-         "date=06 dec 2016 03:07:49"
-       ],
-       "return_code": 0,
-       "run_time": 0.05023622512817383,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.remove",
-       "parameter": [
-         "type=raster",
-         "name=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped",
-         "-f"
-       ],
-       "return_code": 0,
-       "run_time": 0.05019116401672363,
-       "stderr": [
-         "Removing raster <S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped>",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.mask",
-       "parameter": [
-         "-r"
-       ],
-       "return_code": 0,
-       "run_time": 0.10028839111328125,
-       "stderr": [
-         "Raster MASK removed",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.rename",
-       "parameter": [
-         "raster=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04,B04"
-       ],
-       "return_code": 0,
-       "run_time": 0.0501711368560791,
-       "stderr": [
-         "Rename raster <S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04> to <B04>",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "/usr/bin/wget",
-       "parameter": [
-         "-t5",
-         "-c",
-         "-q",
-         "https://storage.googleapis.com/gcp-public-data-sentinel-2/tiles/50/R/KR/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.SAFE/GRANULE/L1C_T50RKR_A007608_20161206T030749/IMG_DATA/T50RKR_20161206T030112_B08.jp2"
-       ],
-       "return_code": 0,
-       "run_time": 35.301382303237915,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "/bin/mv",
-       "parameter": [
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/T50RKR_20161206T030112_B08.jp2",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08"
-       ],
-       "return_code": 0,
-       "run_time": 0.05019092559814453,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "v.import",
-       "parameter": [
-         "input=/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml",
-         "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "--q"
-       ],
-       "return_code": 0,
-       "run_time": 0.1504042148590088,
-       "stderr": [
-         "WARNING: Vector map <S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749> already exists and will be overwritten",
-         "WARNING: Width for column fid set to 255 (was not specified by OGR), some strings may be truncated!",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "v.timestamp",
-       "parameter": [
-         "map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "date=06 dec 2016 03:07:49"
-       ],
-       "return_code": 0,
-       "run_time": 0.05019021034240723,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "/usr/bin/gdal_translate",
-       "parameter": [
-         "-projwin",
-         "113.949663",
-         "28.011816",
-         "115.082607",
-         "27.001706",
-         "-of",
-         "vrt",
-         "-projwin_srs",
-         "EPSG:4326",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
-         "/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt"
-       ],
-       "return_code": 0,
-       "run_time": 0.05018925666809082,
-       "stderr": [
-         "Warning 1: Computed -srcwin 5 -225 10971 11419 falls partially outside raster extent. Going on however.",
-         ""
-       ],
-       "stdout": "Input file size is 10980, 10980\n"
-     },
-     {
-       "executable": "r.import",
-       "parameter": [
-         "input=/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt",
-         "output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped",
-         "--q"
-       ],
-       "return_code": 0,
-       "run_time": 46.33052468299866,
-       "stderr": [
-         "WARNING: Projection of dataset does not appear to match current location.",
-         "",
-         "Location PROJ_INFO is:",
-         "name: WGS 84",
-         "datum: wgs84",
-         "ellps: wgs84",
-         "proj: ll",
-         "no_defs: defined",
-         "",
-         "Dataset PROJ_INFO is:",
-         "name: WGS 84 / UTM zone 50N",
-         "datum: wgs84",
-         "ellps: wgs84",
-         "proj: utm",
-         "zone: 50",
-         "no_defs: defined",
-         "",
-         "ERROR: proj",
-         "",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.region",
-       "parameter": [
-         "align=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped",
-         "vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749",
-         "-g"
-       ],
-       "return_code": 0,
-       "run_time": 0.05030989646911621,
-       "stderr": [
-         ""
-       ],
-       "stdout": "projection=3\nzone=0\nn=28.0118772817232\ns=27.0016255440191\nw=113.949598991944\ne=115.082625141434\nnsres=9.36719274644538e-05\newres=9.36694898718473e-05\nrows=10785\ncols=12096\ncells=130455360\n"
-     },
-     {
-       "executable": "r.mask",
-       "parameter": [
-         "vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
-       ],
-       "return_code": 0,
-       "run_time": 7.324517488479614,
-       "stderr": [
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "Reading areas...",
-         "0..100",
-         "Writing raster map...",
-         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-         "All subsequent raster operations will be limited to the MASK area. Removing or renaming raster map named 'MASK' will restore raster operations to normal.",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.mapcalc",
-       "parameter": [
-         "expression=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08 = float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped)"
-       ],
-       "return_code": 0,
-       "run_time": 12.890670776367188,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.timestamp",
-       "parameter": [
-         "map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08",
-         "date=06 dec 2016 03:07:49"
-       ],
-       "return_code": 0,
-       "run_time": 0.05022931098937988,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.remove",
-       "parameter": [
-         "type=raster",
-         "name=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped",
-         "-f"
-       ],
-       "return_code": 0,
-       "run_time": 0.050171613693237305,
-       "stderr": [
-         "Removing raster <S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped>",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.mask",
-       "parameter": [
-         "-r"
-       ],
-       "return_code": 0,
-       "run_time": 0.10028266906738281,
-       "stderr": [
-         "Raster MASK removed",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.rename",
-       "parameter": [
-         "raster=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08,B08"
-       ],
-       "return_code": 0,
-       "run_time": 0.05016207695007324,
-       "stderr": [
-         "Rename raster <S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08> to <B08>",
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "g.region",
-       "parameter": [
-         "raster=B04",
-         "-g"
-       ],
-       "return_code": 0,
-       "run_time": 0.05024123191833496,
-       "stderr": [
-         ""
-       ],
-       "stdout": "projection=3\nzone=0\nn=28.0118772816667\ns=27.0016255438889\nw=113.949598991944\ne=115.082625141389\nnsres=9.36719274712822e-05\newres=9.36694898680925e-05\nrows=10785\ncols=12096\ncells=130455360\n"
-     },
-     {
-       "executable": "r.mapcalc",
-       "parameter": [
-         "expression=NDVI = float((B08 - B04)/(B08 + B04))"
-       ],
-       "return_code": 0,
-       "run_time": 25.169322967529297,
-       "stderr": [
-         ""
-       ],
-       "stdout": ""
-     },
-     {
-       "executable": "r.univar",
-       "parameter": [
-         "map=NDVI",
-         "-g"
-       ],
-       "return_code": 0,
-       "run_time": 4.662879705429077,
-       "stderr": [
-         ""
-       ],
-       "stdout": "n=125210913\nnull_cells=5244447\ncells=130455360\nmin=-0.96863466501236\nmax=0.80298912525177\nrange=1.77162379026413\nmean=0.345240281310971\nmean_of_abs=0.347942456759571\nstddev=0.135376600339386\nvariance=0.0183268239194499\ncoeff_var=39.2122842170458\nsum=43227850.8273235\n"
-     },
-     {
-       "executable": "r.out.gdal",
-       "parameter": [
-         "-fm",
-         "input=NDVI",
-         "format=GTiff",
-         "createopt=COMPRESS=LZW",
-         "output=/home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/NDVI.tiff"
-       ],
-       "return_code": 0,
-       "run_time": 12.83556079864502,
-       "stderr": [
-         "Checking GDAL data type and nodata value...",
-         "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
-         "Using GDAL data type <Float32>",
-         "Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.",
-         "Exporting raster data to GTiff format...",
-         "ERROR 6: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.",
-         "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
-         "r.out.gdal complete. File </home/soeren/actinia/workspace/temp_db/gisdbase_d7f340e070934294bdd908be975953a5/.tmp/NDVI.tiff> created.",
-         ""
-       ],
-       "stdout": ""
-     }
-   ],
-   "process_results": {},
-   "progress": {
-     "num_of_steps": 30,
-     "step": 30
-   },
-   "resource_id": "resource_id-60f3f012-4220-46ec-9110-694df49006c4",
-   "status": "finished",
-   "time_delta": 244.95086097717285,
-   "timestamp": 1525288179.8238533,
-   "urls": {
-     "resources": [
-       "http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4/NDVI.tiff"
-     ],
-     "status": "http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-60f3f012-4220-46ec-9110-694df49006c4"
-   },
-   "user_id": "demouser"
- }
+{
+  "accept_datetime": "2022-07-28 14:07:21.578233",
+  "accept_timestamp": 1659017241.5782313,
+  "api_info": {
+    "endpoint": "asyncephemeralexportresource",
+    "method": "POST",
+    "path": "/api/v3/locations/nc_spm_08/processing_async_export",
+    "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export"
+  },
+  "datetime": "2022-07-28 14:14:42.004376",
+  "http_code": 200,
+  "message": "Processing successfully finished",
+  "process_chain_list": [
+    {
+      "list": [
+        {
+          "id": "importer_1",
+          "inputs": [
+            {
+              "import_descr": {
+                "sentinel_band": "B04",
+                "source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                "type": "sentinel2"
+              },
+              "param": "map",
+              "value": "B04"
+            },
+            {
+              "import_descr": {
+                "sentinel_band": "B08",
+                "source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                "type": "sentinel2"
+              },
+              "param": "map",
+              "value": "B08"
+            }
+          ],
+          "module": "importer"
+        },
+        {
+          "flags": "g",
+          "id": "g_region_1",
+          "inputs": [
+            {
+              "param": "raster",
+              "value": "B04"
+            }
+          ],
+          "module": "g.region"
+        },
+        {
+          "id": "rmapcalc_1",
+          "inputs": [
+            {
+              "param": "expression",
+              "value": "NDVI = float((B08 - B04))/(B08 + B04)"
+            }
+          ],
+          "module": "r.mapcalc"
+        },
+        {
+          "flags": "g",
+          "id": "r_univar_sentinel2",
+          "inputs": [
+            {
+              "param": "map",
+              "value": "NDVI"
+            }
+          ],
+          "module": "r.univar"
+        },
+        {
+          "id": "exporter_1",
+          "module": "exporter",
+          "outputs": [
+            {
+              "export": {
+                "format": "GTiff",
+                "type": "raster"
+              },
+              "param": "map",
+              "value": "NDVI"
+            }
+          ]
+        }
+      ],
+      "version": "1"
+    }
+  ],
+  "process_log": [
+    {
+      "executable": "i.sentinel.download",
+      "id": "i_sentinel_download_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+      "mapset_size": 421,
+      "parameter": [
+        "datasource=GCS",
+        "query=identifier=S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+        "output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1"
+      ],
+      "return_code": 0,
+      "run_time": 36.222164154052734,
+      "stderr": [
+        "Downloading data into </actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1>...",
+        "Downloading S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632...",
+        "\r  0%|          | 0/84 [00:00<?, ?it/s]\r  2%|▏         | 2/84 [00:00<00:09,  8.82it/s]\r  4%|▎         | 3/84 [00:00<00:23,  3.38it/s]\r  5%|▍         | 4/84 [00:00<00:17,  4.45it/s]\r  7%|▋         | 6/84 [00:01<00:12,  6.48it/s]\r 10%|▉         | 8/84 [00:01<00:10,  7.02it/s]\r 11%|█         | 9/84 [00:01<00:10,  7.02it/s]\r 13%|█▎        | 11/84 [00:01<00:11,  6.62it/s]\r 14%|█▍        | 12/84 [00:04<00:46,  1.55it/s]\r 15%|█▌        | 13/84 [00:06<01:10,  1.01it/s]\r 17%|█▋        | 14/84 [00:09<01:45,  1.51s/it]\r 18%|█▊        | 15/84 [00:11<02:00,  1.75s/it]\r 19%|█▉        | 16/84 [00:14<02:18,  2.04s/it]\r 20%|██        | 17/84 [00:15<02:04,  1.85s/it]\r 21%|██▏       | 18/84 [00:16<01:30,  1.37s/it]\r 23%|██▎       | 19/84 [00:16<01:13,  1.13s/it]\r 24%|██▍       | 20/84 [00:17<01:07,  1.05s/it]\r 25%|██▌       | 21/84 [00:18<01:02,  1.01it/s]\r 26%|██▌       | 22/84 [00:19<00:58,  1.06it/s]\r 27%|██▋       | 23/84 [00:20<00:59,  1.02it/s]\r 29%|██▊       | 24/84 [00:21<00:57,  1.03it/s]\r 30%|██▉       | 25/84 [00:21<00:53,  1.10it/s]\r 31%|███       | 26/84 [00:22<00:50,  1.14it/s]\r 32%|███▏      | 27/84 [00:23<00:48,  1.18it/s]\r 33%|███▎      | 28/84 [00:24<00:48,  1.16it/s]\r 35%|███▍      | 29/84 [00:24<00:35,  1.53it/s]\r 36%|███▌      | 30/84 [00:26<00:50,  1.08it/s]\r 37%|███▋      | 31/84 [00:26<00:45,  1.18it/s]\r 38%|███▊      | 32/84 [00:26<00:32,  1.59it/s]\r 39%|███▉      | 33/84 [00:27<00:26,  1.90it/s]\r 40%|████      | 34/84 [00:27<00:21,  2.34it/s]\r 42%|████▏     | 35/84 [00:27<00:17,  2.81it/s]\r 43%|████▎     | 36/84 [00:27<00:16,  2.89it/s]\r 44%|████▍     | 37/84 [00:28<00:14,  3.32it/s]\r 45%|████▌     | 38/84 [00:28<00:12,  3.73it/s]\r 46%|████▋     | 39/84 [00:28<00:11,  4.07it/s]\r 48%|████▊     | 40/84 [00:28<00:10,  4.36it/s]\r 49%|████▉     | 41/84 [00:29<00:13,  3.25it/s]\r 50%|█████     | 42/84 [00:29<00:12,  3.48it/s]\r 51%|█████     | 43/84 [00:29<00:11,  3.50it/s]\r 52%|█████▏    | 44/84 [00:29<00:10,  3.94it/s]\r 54%|█████▎    | 45/84 [00:30<00:10,  3.56it/s]\r 55%|█████▍    | 46/84 [00:30<00:09,  3.85it/s]\r 56%|█████▌    | 47/84 [00:30<00:07,  4.65it/s]\r 58%|█████▊    | 49/84 [00:30<00:05,  6.73it/s]\r 61%|██████    | 51/84 [00:30<00:03,  8.87it/s]\r 63%|██████▎   | 53/84 [00:30<00:03,  9.97it/s]\r 65%|██████▌   | 55/84 [00:31<00:02, 10.87it/s]\r 68%|██████▊   | 57/84 [00:31<00:02, 11.09it/s]\r 70%|███████   | 59/84 [00:31<00:02, 10.17it/s]\r 73%|███████▎  | 61/84 [00:31<00:02, 11.35it/s]\r 75%|███████▌  | 63/84 [00:31<00:01, 11.71it/s]\r 77%|███████▋  | 65/84 [00:31<00:01, 10.88it/s]\r 80%|███████▉  | 67/84 [00:32<00:01,  9.74it/s]\r 82%|████████▏ | 69/84 [00:32<00:01,  8.64it/s]\r 83%|████████▎ | 70/84 [00:32<00:01,  8.45it/s]\r 86%|████████▌ | 72/84 [00:32<00:01,  8.65it/s]\r 88%|████████▊ | 74/84 [00:33<00:01,  9.05it/s]\r 90%|█████████ | 76/84 [00:33<00:00,  9.42it/s]\r 93%|█████████▎| 78/84 [00:33<00:00, 10.36it/s]\r 95%|█████████▌| 80/84 [00:33<00:00, 10.41it/s]\r 98%|█████████▊| 82/84 [00:33<00:00, 10.83it/s]\r100%|██████████| 84/84 [00:34<00:00,  4.78it/s]\r100%|██████████| 84/84 [00:34<00:00,  2.42it/s]",
+        "Downloaded to /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1/S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632.SAFE",
+        ""
+      ],
+      "stdout": ""
+    },
+    {
+      "executable": "i.sentinel.import",
+      "id": "i_sentinel_import_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+      "mapset_size": 376982877,
+      "parameter": [
+        "input=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1",
+        "pattern=(B04_10m|B08_10m)",
+        "-r"
+      ],
+      "return_code": 0,
+      "run_time": 344.0564560890198,
+      "stderr": [
+        "Processing <T18SUE_20220420T154941_B08_10m>...",
+        "Importing raster map <T18SUE_20220420T154941_B08_10m>...",
+        "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
+        "Estimated target resolution for input band <T18SUE_20220420T154941_B08_10m>: 9.618686330457596",
+        "Using given resolution for input band <T18SUE_20220420T154941_B08_10m>: 10.0",
+        "Reprojecting <T18SUE_20220420T154941_B08_10m>...",
+        "Rounding to integer after reprojection",
+        "Processing <T18SUE_20220420T154941_B04_10m>...",
+        "Importing raster map <T18SUE_20220420T154941_B04_10m>...",
+        "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
+        "Estimated target resolution for input band <T18SUE_20220420T154941_B04_10m>: 9.618686330457596",
+        "Using given resolution for input band <T18SUE_20220420T154941_B04_10m>: 10.0",
+        "Reprojecting <T18SUE_20220420T154941_B04_10m>...",
+        "Rounding to integer after reprojection",
+        "Writing metadata to maps...",
+        "/usr/local/grass/scripts/i.sentinel.import:830: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
+        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
+        "  dtype=np.float,",
+        "/usr/local/grass/scripts/i.sentinel.import:834: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
+        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
+        "  dtype=np.float,",
+        "/usr/local/grass/scripts/i.sentinel.import:846: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
+        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
+        "  dtype=np.float,",
+        "/usr/local/grass/scripts/i.sentinel.import:850: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
+        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
+        "  dtype=np.float,",
+        ""
+      ],
+      "stdout": ""
+    },
+    {
+      "executable": "g.rename",
+      "id": "rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B04",
+      "mapset_size": 376982877,
+      "parameter": [
+        "raster=T18SUE_20220420T154941_B04_10m,B04"
+      ],
+      "return_code": 0,
+      "run_time": 0.15042471885681152,
+      "stderr": [
+        "Rename raster <T18SUE_20220420T154941_B04_10m> to <B04>",
+        ""
+      ],
+      "stdout": ""
+    },
+    {
+      "executable": "g.rename",
+      "id": "rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B08",
+      "mapset_size": 376982877,
+      "parameter": [
+        "raster=T18SUE_20220420T154941_B08_10m,B08"
+      ],
+      "return_code": 0,
+      "run_time": 0.15053868293762207,
+      "stderr": [
+        "Rename raster <T18SUE_20220420T154941_B08_10m> to <B08>",
+        ""
+      ],
+      "stdout": ""
+    },
+    {
+      "executable": "g.region",
+      "id": "g_region_1",
+      "mapset_size": 376982871,
+      "parameter": [
+        "raster=B04",
+        "-g"
+      ],
+      "return_code": 0,
+      "run_time": 0.10027408599853516,
+      "stderr": [
+        ""
+      ],
+      "stdout": "projection=99\nzone=0\nn=269280\ns=155130\nw=769610\ne=883770\nnsres=10\newres=10\nrows=11415\ncols=11416\ncells=130313640\n"
+    },
+    {
+      "executable": "r.mapcalc",
+      "id": "rmapcalc_1",
+      "mapset_size": 808176157,
+      "parameter": [
+        "expression=NDVI = float((B08 - B04))/(B08 + B04)"
+      ],
+      "return_code": 0,
+      "run_time": 25.457623958587646,
+      "stderr": [
+        ""
+      ],
+      "stdout": ""
+    },
+    {
+      "executable": "r.univar",
+      "id": "r_univar_sentinel2",
+      "mapset_size": 808176157,
+      "parameter": [
+        "map=NDVI",
+        "-g"
+      ],
+      "return_code": 0,
+      "run_time": 5.166007995605469,
+      "stderr": [
+        ""
+      ],
+      "stdout": "n=120547065\nnull_cells=9766575\ncells=130313640\nmin=-0.468370884656906\nmax=0.720661163330078\nrange=1.18903204798698\nmean=0.25310113195823\nmean_of_abs=0.283006503246459\nstddev=0.219731453415328\nvariance=0.0482819116200123\ncoeff_var=86.8156739226241\nsum=30510598.6057423\n"
+    },
+    {
+      "executable": "r.out.gdal",
+      "id": "exporter_raster_NDVI",
+      "mapset_size": 808176157,
+      "parameter": [
+        "-fmt",
+        "input=NDVI",
+        "format=GTiff",
+        "output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif",
+        "overviews=5",
+        "createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES"
+      ],
+      "return_code": 0,
+      "run_time": 20.729568481445312,
+      "stderr": [
+        "Checking GDAL data type and nodata value...",
+        "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
+        "Using GDAL data type <Float32>",
+        "Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.",
+        "Exporting raster data to GTiff format...",
+        "ERROR 6: /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif, band 1: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.",
+        "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
+        "Building overviews ...",
+        "r.out.gdal complete. File </actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif> created.",
+        ""
+      ],
+      "stdout": ""
+    }
+  ],
+  "process_results": {},
+  "progress": {
+    "num_of_steps": 8,
+    "step": 8
+  },
+  "resource_id": "resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70",
+  "status": "finished",
+  "time_delta": 440.42616844177246,
+  "timestamp": 1659017682.0043712,
+  "urls": {
+    "resources": [
+      "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70/NDVI.tif"
+    ],
+    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
+  },
+  "user_id": "demouser"
+}
 ```
+Use the Link at the end of the response under `"resources"` to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:
+
+ ![image](nc_s2_ndvi_actinia_process_chain.png)
 
 **Footnotes**
 
 [^1]: <https://grass.osgeo.org/grass-stable/manuals/index.html>
 
-[^2]: <https://actinia.mundialis.de/api_docs/#/definitions/GrassModule>
+[^2]: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get>
 
-[^3]: <https://actinia.mundialis.de/api_docs/#/definitions/InputParameter>
+<!---
+https://actinia.mundialis.de/api_docs/ is no longer generated
 
-[^4]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>
+[^x]: <https://actinia.mundialis.de/api_docs/#/definitions/InputParameter>
 
-[^5]: <https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html>
+[^x]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>
+--->
+[^3]: <https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html>
 
-[^6]: <https://grass.osgeo.org/grass-stable/manuals/grass_database.html>
+[^4]: <https://grass.osgeo.org/grass-stable/manuals/grass_database.html>
 
-[^7]: <https://grass.osgeo.org/grass-stable/manuals/g.region.html>
+[^5]: <https://grass.osgeo.org/grass-stable/manuals/g.region.html>

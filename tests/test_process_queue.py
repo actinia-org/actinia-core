@@ -28,18 +28,24 @@ import unittest
 import time
 import datetime
 from copy import deepcopy
-from actinia_core.core.common.process_queue import create_process_queue,\
-    enqueue_job, stop_process_queue
+from actinia_core.core.common.process_queue import (
+    create_process_queue,
+    enqueue_job,
+    stop_process_queue,
+)
 from actinia_core.core.resource_data_container import ResourceDataContainer
 from actinia_core.core.common.app import flask_app
+
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from .test_resource_base import global_config
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from test_resource_base import global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -66,6 +72,7 @@ class ProcessQueueTestCase(unittest.TestCase):
     """
     This class tests the api logging interface
     """
+
     def setUp(self):
         # We need to set the application context
         self.app_context = flask_app.app_context()
@@ -76,23 +83,25 @@ class ProcessQueueTestCase(unittest.TestCase):
         global global_config
         global_config.NUMBER_OF_WORKERS = 1
 
-        self.rdc = ResourceDataContainer(grass_data_base="grass_data_base",
-                                         grass_user_data_base="grass_user_data_base",
-                                         grass_base_dir="grass_base_dir",
-                                         request_data={"request_data": None},
-                                         user_id="user_id",
-                                         user_group="user_group",
-                                         user_credentials={"user_credentials": None},
-                                         resource_id="resource_id",
-                                         status_url="status_url",
-                                         api_info="api_info",
-                                         resource_url_base="resource_url_base",
-                                         orig_time=time.time(),
-                                         orig_datetime=datetime.datetime.now(),
-                                         config=global_config,
-                                         location_name="location_name",
-                                         mapset_name="mapset_name",
-                                         map_name="map_name")
+        self.rdc = ResourceDataContainer(
+            grass_data_base="grass_data_base",
+            grass_user_data_base="grass_user_data_base",
+            grass_base_dir="grass_base_dir",
+            request_data={"request_data": None},
+            user_id="user_id",
+            user_group="user_group",
+            user_credentials={"user_credentials": None},
+            resource_id="resource_id",
+            status_url="status_url",
+            api_info="api_info",
+            resource_url_base="resource_url_base",
+            orig_time=time.time(),
+            orig_datetime=datetime.datetime.now(),
+            config=global_config,
+            location_name="location_name",
+            mapset_name="mapset_name",
+            map_name="map_name",
+        )
 
     def tearDown(self):
         self.app_context.pop()
@@ -178,5 +187,5 @@ class ProcessQueueTestCase(unittest.TestCase):
         # return
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
