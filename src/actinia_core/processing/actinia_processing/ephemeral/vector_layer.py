@@ -104,6 +104,14 @@ class EphemeralVectorInfo(EphemeralProcessing):
         )
         self._execute_process_list(process_list)
 
+        # TODO: check index x of self.modul_output_log[x]
+        #       due to more output (v.db.connect), this index probably doesn't
+        #       fit anymore
+        #       Additional: depending on number of layers,
+        #                   the amount of output changes;
+        #                   have to be considered; e.g. with addtional
+        #                   key-value pair in vector_info
+        #                   AND for muliptle layers multiple output
         kv_list = self.module_output_log[0]["stdout"].split("\n")
 
         vector_info = {}
