@@ -116,6 +116,7 @@ class EphemeralVectorInfo(EphemeralProcessing):
         #                   have to be considered; e.g. with addtional
         #                   key-value pair in vector_info
         #                   AND for muliptle layers multiple output
+
         kv_list = self.module_output_log[0]["stdout"].split("\n")
 
         vector_info = {}
