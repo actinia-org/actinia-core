@@ -30,7 +30,9 @@ from .storage_interface_gcs import ResourceStorageGCS
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -40,30 +42,32 @@ class ResourceDataContainer(object):
     to the enqueued asynchronous processing object
     """
 
-    def __init__(self,
-                 grass_data_base,
-                 grass_user_data_base,
-                 grass_base_dir,
-                 request_data,
-                 user_id,
-                 user_group,
-                 resource_id,
-                 iteration,
-                 status_url,
-                 api_info,
-                 resource_url_base,
-                 orig_time,
-                 orig_datetime,
-                 user_credentials,
-                 config,
-                 location_name,
-                 mapset_name,
-                 map_name):
+    def __init__(
+        self,
+        grass_data_base,
+        grass_user_data_base,
+        grass_base_dir,
+        request_data,
+        user_id,
+        user_group,
+        resource_id,
+        iteration,
+        status_url,
+        api_info,
+        resource_url_base,
+        orig_time,
+        orig_datetime,
+        user_credentials,
+        config,
+        location_name,
+        mapset_name,
+        map_name,
+    ):
         """
 
         Args:
-            grass_data_base (str): GRASS GIS database root directory that contains
-                                   global locations
+            grass_data_base (str): GRASS GIS database root directory that
+                                   contains global locations
             grass_user_data_base (str): GRASS GIS database user directory that
                                         contains group specific locations
             grass_base_dir (str): The installation directory of GRASS GIS
@@ -79,12 +83,12 @@ class ResourceDataContainer(object):
             orig_datetime (datetime): The datetime of origin (datetime format)
             user_credentials (dict): The user credentials dict
             config (actinia_core.core.config.Configuration): The actinia
-                                                                         configuration
+                                                             configuration
             location_name (str): The name of the location to work in
             mapset_name (str): The name of the target mapset in which the
                                computation should be performed
-            map_name: The name of the map or other resource (raster, vector, STRDS,
-                      color, ...)
+            map_name: The name of the map or other resource (raster, vector,
+                      STRDS, color, ...)
 
         """
 
@@ -108,6 +112,7 @@ class ResourceDataContainer(object):
         self.orig_datetime = orig_datetime
         self.user_data = None
         self.storage_model = "file"
+        self.queue = None
 
     # def __str__(self):
     #    return str(self.__dict__)
@@ -116,14 +121,17 @@ class ResourceDataContainer(object):
         """Put all required data for processing into the data object
 
         Args:
-            user_data: Any payload that must be passed in addition tot the request
-                       data, like command arguments and so on
+            user_data: Any payload that must be passed in addition tot the
+                       request data, like command arguments and so on
 
         """
         self.user_data = user_data
 
     def set_request_data(self, request_data):
         self.request_data = request_data
+
+    def set_queue_name(self, queue_name):
+        self.queue = queue_name
 
     def set_storage_model_to_file(self):
         self.storage_model = "file"
@@ -153,17 +161,23 @@ class ResourceDataContainer(object):
                  ResourceStorageS3
         """
         if self.is_storage_model_file():
-            return ResourceStorageFilesystem(user_id=self.user_id,
-                                             resource_id=self.resource_id,
-                                             config=self.config,
-                                             resource_url_base=self.resource_url_base)
+            return ResourceStorageFilesystem(
+                user_id=self.user_id,
+                resource_id=self.resource_id,
+                config=self.config,
+                resource_url_base=self.resource_url_base,
+            )
 
         if self.is_storage_model_s3():
-            return ResourceStorageS3(user_id=self.user_id,
-                                     resource_id=self.resource_id,
-                                     config=self.config)
+            return ResourceStorageS3(
+                user_id=self.user_id,
+                resource_id=self.resource_id,
+                config=self.config,
+            )
 
         if self.is_storage_model_gcs():
-            return ResourceStorageGCS(user_id=self.user_id,
-                                      resource_id=self.resource_id,
-                                      config=self.config)
+            return ResourceStorageGCS(
+                user_id=self.user_id,
+                resource_id=self.resource_id,
+                config=self.config,
+            )

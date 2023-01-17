@@ -27,14 +27,17 @@ Tests: User test case
 import unittest
 from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.common.app import flask_app
+
 try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from .test_resource_base import ActiniaResourceTestCaseBase
 except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, global_config
+    from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -67,15 +70,17 @@ class UserTestCase(ActiniaResourceTestCaseBase):
             user.delete()
 
         # Create a new user
-        user = ActiniaUser.create_user(self.user_id,
-                                       self.user_group,
-                                       self.password,
-                                       user_role="admin",
-                                       accessible_datasets={"nc_spm_08": ["PERMANENT", "user1"]},
-                                       accessible_modules=["g.region", "g.mapset", "r.slope.aspect"],
-                                       cell_limit=1000,
-                                       process_num_limit=3,
-                                       process_time_limit=30)
+        user = ActiniaUser.create_user(
+            self.user_id,
+            self.user_group,
+            self.password,
+            user_role="admin",
+            accessible_datasets={"nc_spm_08": ["PERMANENT", "user1"]},
+            accessible_modules=["g.region", "g.mapset", "r.slope.aspect"],
+            cell_limit=1000,
+            process_num_limit=3,
+            process_time_limit=30,
+        )
 
         print(user)
 
@@ -138,8 +143,7 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         self.assertFalse(user_3.delete())
 
     def test_create_update_user(self):
-        """Test the creation and update of a user in the redis database
-        """
+        """Test the creation and update of a user in the redis database"""
 
         user = ActiniaUser(self.user_id)
         if user.exists():
@@ -147,15 +151,17 @@ class UserTestCase(ActiniaResourceTestCaseBase):
             user.delete()
 
         # Create a new user
-        user = ActiniaUser.create_user(self.user_id,
-                                       self.user_group,
-                                       self.password,
-                                       user_role="admin",
-                                       accessible_datasets={"nc_spm_08": ["PERMANENT", "user1"]},
-                                       accessible_modules=["g.region", "g.mapset", "r.slope.aspect"],
-                                       cell_limit=1000,
-                                       process_num_limit=3,
-                                       process_time_limit=30)
+        user = ActiniaUser.create_user(
+            self.user_id,
+            self.user_group,
+            self.password,
+            user_role="admin",
+            accessible_datasets={"nc_spm_08": ["PERMANENT", "user1"]},
+            accessible_modules=["g.region", "g.mapset", "r.slope.aspect"],
+            cell_limit=1000,
+            process_num_limit=3,
+            process_time_limit=30,
+        )
 
         print(user)
 
@@ -189,7 +195,11 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         user = ActiniaUser(user_id=self.user_id)
         user.read_from_db()
         user.add_accessible_dataset("utm32n", ["PERMANENT"])
-        user.add_accessible_modules(["i.vi", ])
+        user.add_accessible_modules(
+            [
+                "i.vi",
+            ]
+        )
         user.update()
 
         print(user)
@@ -207,8 +217,17 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         user = ActiniaUser(user_id=self.user_id)
         user.read_from_db()
         user.remove_location("utm32n")
-        user.remove_mapsets_from_location("nc_spm_08", ["user1", ])
-        user.remove_accessible_modules(["i.vi", ])
+        user.remove_mapsets_from_location(
+            "nc_spm_08",
+            [
+                "user1",
+            ],
+        )
+        user.remove_accessible_modules(
+            [
+                "i.vi",
+            ]
+        )
         user.update()
 
         print(user)
@@ -224,5 +243,5 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         self.assertFalse("i.vi" in modules)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

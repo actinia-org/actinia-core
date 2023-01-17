@@ -25,19 +25,22 @@
 Raster layer resources
 """
 
-from actinia_api.swagger2.actinia_core.schemas.raster_layer import \
-     RasterInfoModel
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_api.swagger2.actinia_core.schemas.raster_layer import (
+    RasterInfoModel,
+)
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralRasterInfo(EphemeralProcessing):
-
     def __init__(self, *args):
 
         EphemeralProcessing.__init__(self, *args)
@@ -54,13 +57,17 @@ class EphemeralRasterInfo(EphemeralProcessing):
 
         pc = {}
         pc["1"] = {
-            "module": "r.info", "inputs": {
-                "map": raster_name + "@" + self.mapset_name},
-            "flags": "gre"}
+            "module": "r.info",
+            "inputs": {"map": raster_name + "@" + self.mapset_name},
+            "flags": "gre",
+        }
 
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            process_chain=pc, skip_permission_check=True)
+        process_list = (
+            self._create_temporary_grass_environment_and_process_list(
+                process_chain=pc, skip_permission_check=True
+            )
+        )
         self._execute_process_list(process_list)
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")

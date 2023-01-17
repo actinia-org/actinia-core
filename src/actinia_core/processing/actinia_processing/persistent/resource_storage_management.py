@@ -28,44 +28,70 @@ TODO: Tests required
 """
 
 import os
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+    PersistentProcessing,
+)
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.common.exceptions import AsyncProcessError
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Anika Weinmann"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class ResourceStorageDelete(PersistentProcessing):
-    """Delete the user specific resource directory
-    """
+    """Delete the user specific resource directory"""
 
     def __init__(self, *args):
-        PersistentProcessing.__init__(self, *args)
+        rdc = args[0]
+        PersistentProcessing.__init__(self, rdc)
         self.user_resource_storage_path = os.path.join(
-            self.config.GRASS_RESOURCE_DIR, self.user_id)
+            self.config.GRASS_RESOURCE_DIR, self.user_id
+        )
+        self.olderthan = args[1]
 
     def _execute(self):
 
         self._setup()
 
-        if (os.path.exists(self.user_resource_storage_path)
-                and os.path.isdir(self.user_resource_storage_path)):
-            executable = "/bin/rm"
-            args = ["-rf", self.user_resource_storage_path]
+        if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
+            self.user_resource_storage_path
+        ):
 
-            self._run_process(Process(exec_type="exec",
-                                      executable=executable,
-                                      id="delete_user_specific_resource_directory",
-                                      executable_params=args))
+            if self.olderthan is None:
+                # delete all user resources
+                executable = "/bin/rm"
+                args = ["-rf", self.user_resource_storage_path]
+            else:
+                # delete all user resources older than X days
+                executable = "/usr/bin/find"
+                args = [
+                    self.user_resource_storage_path,
+                    "-mindepth",
+                    "1",
+                    "-mtime",
+                    f"+{self.olderthan}",
+                    "-delete",
+                ]
 
-            os.mkdir(self.user_resource_storage_path)
+            self._run_process(
+                Process(
+                    exec_type="exec",
+                    executable=executable,
+                    id="delete_user_specific_resource_directory",
+                    executable_params=args,
+                )
+            )
+
+            if not os.path.exists(self.user_resource_storage_path):
+                os.mkdir(self.user_resource_storage_path)
             self.finish_message = "Resource storage successfully removed."
         else:
             raise AsyncProcessError(
                 "Resource storage directory <%s> does not exist."
-                % self.user_resource_storage_path)
+                % self.user_resource_storage_path
+            )

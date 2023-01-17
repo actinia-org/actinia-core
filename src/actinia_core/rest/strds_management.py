@@ -34,41 +34,54 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_management
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
-from actinia_core.processing.common.strds_management import \
-    list_raster_mapsets, strds_create, strds_delete, strds_info
+from actinia_core.processing.common.strds_management import (
+    list_raster_mapsets,
+    strds_create,
+    strds_delete,
+    strds_info,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class SyncSTRDSListerResource(ResourceBase):
-    """List all STRDS in a location/mapset
-    """
+    """List all STRDS in a location/mapset"""
+
     layer_type = None
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.list_get_doc))
     def get(self, location_name, mapset_name):
-        """Get a list of all STRDS that are located in a specific location/mapset.
         """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name)
+        Get a list of all STRDS that are located in a specific location/mapset.
+        """
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+        )
 
         if rdc:
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
             enqueue_job(
-                self.job_timeout, list_raster_mapsets, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                list_raster_mapsets,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -82,28 +95,35 @@ STRDS Management
 
 recursive_parser = reqparse.RequestParser()
 recursive_parser.add_argument(
-    'recursive', type=bool,
-    help='Set True to recursively remove the STRDS and all registered raster '
-         'map layer', location='args')
+    "recursive",
+    type=bool,
+    help="Set True to recursively remove the STRDS and all registered raster "
+    "map layer",
+    location="args",
+)
 
 
 class STRDSManagementResource(ResourceBase):
-    """List all STRDS in a location/mapset
-    """
+    """List all STRDS in a location/mapset"""
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.get_doc))
     def get(self, location_name, mapset_name, strds_name):
-        """Get information about a STRDS that is located in a specific location/mapset.
         """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        Get information about a STRDS that is located in a specific
+        location/mapset.
+        """
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
         if rdc:
             enqueue_job(
-                self.job_timeout, strds_info, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout, strds_info, rdc, queue_type_overwrite=True
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -113,20 +133,22 @@ class STRDSManagementResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_management.delete_doc))
     def delete(self, location_name, mapset_name, strds_name):
-        """Delete a STRDS that is located in a specific location/mapset.
-        """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        """Delete a STRDS that is located in a specific location/mapset."""
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         if rdc:
             args = recursive_parser.parse_args()
             rdc.set_user_data(args)
 
             enqueue_job(
-                self.job_timeout, strds_delete, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout, strds_delete, rdc, queue_type_overwrite=True
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -136,12 +158,14 @@ class STRDSManagementResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", strds_management.post_doc))
     def post(self, location_name, mapset_name, strds_name):
-        """Create a new STRDS in a specific location/mapset.
-        """
-        rdc = self.preprocess(has_json=True, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        """Create a new STRDS in a specific location/mapset."""
+        rdc = self.preprocess(
+            has_json=True,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         if rdc:
             enqueue_job(self.job_timeout, strds_create, rdc)

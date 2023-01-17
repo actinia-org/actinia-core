@@ -16,12 +16,12 @@ echo $DEFAULT_CONFIG_PATH
 if [ "$1" == "dev" ]
 then
   echo "Executing only 'dev' tests ..."
-  python3 setup.py test --addopts "-m dev"
+  pytest -m 'dev'
 elif [ "$1" == "integrationtest" ]
 then
-  python3 setup.py test --addopts "-m 'not unittest'"
+  pytest -m 'not unittest'
 else
-  python3 setup.py test
+  pytest
 fi
 
 TEST_RES=$?

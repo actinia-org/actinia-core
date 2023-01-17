@@ -35,15 +35,16 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_export
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.processing.common.raster_export \
-    import start_job
+from actinia_core.processing.common.raster_export import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -53,22 +54,26 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
 
     The region settings of the mapset is used for export.
     """
+
     def __init__(self):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", raster_export.post_doc))
     def post(self, location_name, mapset_name, raster_name):
-        """Export an existing raster map layer as GeoTiff.
-        """
+        """Export an existing raster map layer as GeoTiff."""
         return self._execute(location_name, mapset_name, raster_name, False)
 
-    def _execute(self, location_name, mapset_name, raster_name, use_raster_region):
+    def _execute(
+        self, location_name, mapset_name, raster_name, use_raster_region
+    ):
 
-        rdc = self.preprocess(has_json=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=raster_name)
+        rdc = self.preprocess(
+            has_json=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=raster_name,
+        )
         if rdc:
             rdc.set_user_data(use_raster_region)
             enqueue_job(self.job_timeout, start_job, rdc)
@@ -78,7 +83,8 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
 
 
 class AsyncEphemeralRasterLayerRegionExporterResource(
-        AsyncEphemeralRasterLayerExporterResource):
+    AsyncEphemeralRasterLayerExporterResource
+):
     """This class represents a raster layer resource as geotiff file that
     will be created asynchronously.
 
@@ -86,6 +92,7 @@ class AsyncEphemeralRasterLayerRegionExporterResource(
     layer is used for export. A temporary mapset is used to modify
     the region settings.
     """
+
     def __init__(self):
         ResourceBase.__init__(self)
 

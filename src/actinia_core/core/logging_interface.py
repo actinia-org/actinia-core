@@ -39,7 +39,10 @@ from actinia_core.core.common.config import global_config
 # is needed to load the correct interface and log level at this time
 global_config.read()
 
-if "colored" in [global_config.LOG_STDOUT_FORMAT, global_config.LOG_FILE_FORMAT]:
+if "colored" in [
+    global_config.LOG_STDOUT_FORMAT,
+    global_config.LOG_FILE_FORMAT,
+]:
     from colorlog import ColoredFormatter
 
 if global_config.LOG_INTERFACE == "fluentd":
@@ -48,7 +51,9 @@ if global_config.LOG_INTERFACE == "fluentd":
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 
 
 class BasicLogger(object):
@@ -72,12 +77,12 @@ class BasicLogger(object):
         self.log.setLevel(getattr(logging, self.log_level))
 
     def addFileHandler(self):
-        fileformat = self.getLogFormat('file')
-        self.setLogHandler(self.log, 'file', fileformat)
+        fileformat = self.getLogFormat("file")
+        self.setLogHandler(self.log, "file", fileformat)
 
     def addStdouthandler(self):
-        stdoutformat = self.getLogFormat('stdout')
-        self.setLogHandler(self.log, 'stdout', stdoutformat)
+        stdoutformat = self.getLogFormat("stdout")
+        self.setLogHandler(self.log, "stdout", stdoutformat)
 
     def initLevel(self):
         level = global_config.LOG_LEVEL
@@ -92,30 +97,29 @@ class BasicLogger(object):
         self.log_level = LOG_LEVEL
 
     def getLogFormat(self, type):
-        if type == 'stdout':
+        if type == "stdout":
             format = global_config.LOG_STDOUT_FORMAT
-        elif type == 'file':
+        elif type == "file":
             format = global_config.LOG_FILE_FORMAT
 
         if format == "json":
             return CustomJsonFormatter(
-                '%(time) %(level) %(component) %(module)%(message) %(pathname)'
-                ' %(lineno)%(processName) %(threadName)%(node)')
+                "%(time) %(level) %(component) %(module)%(message) %(pathname)"
+                " %(lineno)%(processName) %(threadName)%(node)"
+            )
         else:
             return ColoredFormatter(
-                '%(log_color)s[%(asctime)s] %(levelname)-10s: '
-                '%(name)s.%(module)-10s -%(message)s '
-                '[in %(pathname)s:%(lineno)d]%(reset)s'
+                "%(log_color)s[%(asctime)s] %(levelname)-10s: "
+                "%(name)s.%(module)-10s -%(message)s "
+                "[in %(pathname)s:%(lineno)d]%(reset)s"
             )
 
     def setLogHandler(self, logger, type, format):
-        if type == 'stdout' and global_config.LOG_INTERFACE == 'stdout':
+        if type == "stdout" and global_config.LOG_INTERFACE == "stdout":
             handler = logging.StreamHandler()
-        elif type == 'file':
+        elif type == "file":
             handler = logging.handlers.RotatingFileHandler(
-                global_config.WORKER_LOGFILE,
-                maxBytes=2000000,
-                backupCount=5
+                global_config.WORKER_LOGFILE, maxBytes=2000000, backupCount=5
             )
         else:
             return
@@ -137,14 +141,16 @@ class ActiniaLogger(BasicLogger):
         if global_config.LOG_INTERFACE == "fluentd":
             node = platform.node()
             custom_format = {
-                'host': '%(hostname)s',
-                'where': '%(module)s.%(funcName)s',
-                'status': '%(levelname)s',
-                'stack_trace': '%(exc_text)s'
+                "host": "%(hostname)s",
+                "where": "%(module)s.%(funcName)s",
+                "status": "%(levelname)s",
+                "stack_trace": "%(exc_text)s",
             }
-            fh = handler.FluentHandler('%s::actinia.worker' % node,
-                                       host=global_config.LOG_FLUENT_HOST,
-                                       port=global_config.LOG_FLUENT_PORT)
+            fh = handler.FluentHandler(
+                "%s::actinia.worker" % node,
+                host=global_config.LOG_FLUENT_HOST,
+                port=global_config.LOG_FLUENT_PORT,
+            )
             fh_formatter = handler.FluentRecordFormatter(custom_format)
             fh.setFormatter(fh_formatter)
             self.log.addHandler(fh)
@@ -165,7 +171,7 @@ class StderrLogger(BasicLogger):
         self.createLogger(name)
         self.addFileHandler()
 
-        if global_config.LOG_STDERR_FORMAT != 'plain':
+        if global_config.LOG_STDERR_FORMAT != "plain":
             self.addStdouthandler()
 
         sl = StreamToLogger(self.log)
@@ -185,6 +191,7 @@ class GunicornLogger(BasicLogger):
         Name of Logger to be created.
 
     """
+
     def __init__(self, name):
         BasicLogger.__init__(self, name)
         # gunicorn already has a lot of children logger, e.g gunicorn.http,
@@ -198,7 +205,8 @@ class GunicornLogger(BasicLogger):
 class CustomJsonFormatter(jsonlogger.JsonFormatter):
     def add_fields(self, log_record, record, message_dict):
         super(CustomJsonFormatter, self).add_fields(
-            log_record, record, message_dict)
+            log_record, record, message_dict
+        )
 
         # (Pdb) dir(record)
         # ... 'args', 'created', 'exc_info', 'exc_text', 'filename', 'funcName'
@@ -206,11 +214,11 @@ class CustomJsonFormatter(jsonlogger.JsonFormatter):
         # 'msecs', 'msg', 'name', 'pathname', 'process', 'processName',
         # 'relativeCreated', 'stack_info', 'thread', 'threadName']
 
-        now = datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
-        log_record['time'] = now
-        log_record['level'] = record.levelname
-        log_record['component'] = record.name
-        log_record['node'] = platform.node()
+        now = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        log_record["time"] = now
+        log_record["level"] = record.levelname
+        log_record["component"] = record.name
+        log_record["node"] = platform.node()
 
 
 class StreamToLogger(object):
@@ -225,14 +233,14 @@ class StreamToLogger(object):
     def write(self, buffer):
         for line in buffer.rstrip().splitlines():
             # the wrapper wraps log output from different loggers. To prevent:
-            if 'gunicorn.' in line or 'actinia-gdi' in line:
+            if "gunicorn." in line or "actinia-gdi" in line:
                 print(line.rstrip())
             else:
                 # In case this is a stacktrace, it is logged line by line, each
                 # wrapped by the log formatter. It is hardly readable and
                 # context can get lost (but needed by e.g. kibana).
                 self.logger.log(logging.CRITICAL, line.rstrip())
-                if global_config.LOG_STDERR_FORMAT == 'plain':
+                if global_config.LOG_STDERR_FORMAT == "plain":
                     # This is a tradeoff for readable stacktrace in the console
                     print(line.rstrip())
 
@@ -241,13 +249,13 @@ class StreamToLogger(object):
 
 
 def createMainLogger():
-    Log = ActiniaLogger('actinia-core')
+    Log = ActiniaLogger("actinia-core")
     log = Log.log
     log.info("Log level is set to '%s'", Log.log_level)
 
-    StderrLogger('actinia-core-stderr').log
-    BasicLogger('werkzeug').log
-    GunicornLogger('gunicorn').log
+    StderrLogger("actinia-core-stderr").log
+    BasicLogger("werkzeug").log
+    GunicornLogger("gunicorn").log
 
     return log
 

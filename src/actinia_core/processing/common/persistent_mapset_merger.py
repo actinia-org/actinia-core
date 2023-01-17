@@ -29,14 +29,19 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 PersistentMapsetMerger = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.persistent_mapset_merger'),
-    'PersistentMapsetMerger')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".persistent_mapset_merger"
+    ),
+    "PersistentMapsetMerger",
+)
 
 
 def start_job(*args):
