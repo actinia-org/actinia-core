@@ -35,7 +35,9 @@ from actinia_core.core.common.app import flask_app
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2019, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -70,9 +72,12 @@ def setup_environment():
     # global_config.GRASS_DATABASE = "%s/actinia/grass_test_db" % home
 
     # Start the redis server for user and logging management
-    redis_pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server",
-                          "common/redis.conf",
-                          "--port %i" % global_config.REDIS_SERVER_PORT)
+    redis_pid = os.spawnl(
+        os.P_NOWAIT,
+        "/usr/bin/redis-server",
+        "common/redis.conf",
+        "--port %i" % global_config.REDIS_SERVER_PORT,
+    )
     time.sleep(1)
 
 
@@ -94,6 +99,7 @@ class CommonTestCaseBase(unittest.TestCase):
     """
     This is the base class for the common testing
     """
+
     @classmethod
     def setUpClass(cls):
 
@@ -104,8 +110,14 @@ class CommonTestCaseBase(unittest.TestCase):
             global_config.REDIS_SERVER_URL = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
 
-        args = (global_config.REDIS_SERVER_URL, global_config.REDIS_SERVER_PORT)
-        if global_config.REDIS_SERVER_PW and global_config.REDIS_SERVER_PW is not None:
+        args = (
+            global_config.REDIS_SERVER_URL,
+            global_config.REDIS_SERVER_PORT,
+        )
+        if (
+            global_config.REDIS_SERVER_PW
+            and global_config.REDIS_SERVER_PW is not None
+        ):
             args = (*args, global_config.REDIS_SERVER_PW)
 
         redis_interface.connect(*args)

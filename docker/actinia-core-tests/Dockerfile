@@ -1,9 +1,9 @@
-FROM mundialis/actinia-core:4.0.0 as actinia_test
+FROM mundialis/actinia-core:latest as actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
 
-ENV ACTINIA_API_VERSION 3.3.0
+ENV ACTINIA_API_VERSION 3.4.0
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
@@ -23,9 +23,9 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_mic
   rm -f nc_spm_08_micro.zip && \
   mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
 RUN grass -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
-RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst.zip && \
-  unzip nc_spm_mapset_modis2015_2016_lst.zip && \
-  rm -f nc_spm_mapset_modis2015_2016_lst.zip && \
+RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
+  unzip nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
+  rm -f nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
   mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
 RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
 
@@ -50,6 +50,8 @@ RUN pip3 install -r /src/requirements.txt
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
 RUN chmod a+x tests_with_redis.sh
+
+RUN pip3 install pytest pytest-cov
 
 RUN make install
 

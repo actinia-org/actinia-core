@@ -34,7 +34,9 @@ from .process_queue import enqueue_job as enqueue_job_local
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 job_queues = []
@@ -59,8 +61,7 @@ def connect(host, port, pw=None):
 
 
 def disconnect():
-    """Disconnect all required redis interfaces
-    """
+    """Disconnect all required redis interfaces"""
     redis_user_interface.disconnect()
     redis_api_log_interface.disconnect()
 
@@ -80,10 +81,10 @@ def __create_job_queue(queue_name):
     password = global_config.REDIS_QUEUE_SERVER_PASSWORD
 
     kwargs = dict()
-    kwargs['host'] = host
-    kwargs['port'] = port
+    kwargs["host"] = host
+    kwargs["port"] = port
     if password and password is not None:
-        kwargs['password'] = password
+        kwargs["password"] = password
     redis_conn = Redis(**kwargs)
 
     string = "Create queue %s with server %s:%s" % (queue_name, host, port)
@@ -110,7 +111,8 @@ def __enqueue_job_redis(queue, timeout, func, *args):
         *args,
         # job_timeout=timeout,
         ttl=global_config.REDIS_QUEUE_JOB_TTL,
-        result_ttl=global_config.REDIS_QUEUE_JOB_TTL)
+        result_ttl=global_config.REDIS_QUEUE_JOB_TTL
+    )
     log.info(ret)
 
 
@@ -125,18 +127,20 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     global job_queues, redis_conn
     num_queues = global_config.NUMBER_OF_WORKERS
     queue_type = global_config.QUEUE_TYPE
+    queue_name = "local"
     if queue_type_overwrite:
         queue_type = global_config.QUEUE_TYPE_OVERWRITE
 
-    if (queue_type == "per_job"):
+    if queue_type == "per_job":
         resource_id = args[0].resource_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
         __create_job_queue(queue_name)
         for i in job_queues:
             if i.name == queue_name:
+                args[0].set_queue_name(queue_name)
                 __enqueue_job_redis(i, timeout, func, *args)
 
-    elif (queue_type == "redis"):
+    elif queue_type == "redis":
         if job_queues == []:
             for i in range(num_queues):
                 queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, i)
@@ -145,14 +149,17 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         # to chose for each job a different queue
         num = redis_conn.incr("actinia_worker_count", 1)
         current_queue = num % num_queues
+        args[0].set_queue_name(job_queues[current_queue].name)
         __enqueue_job_redis(job_queues[current_queue], timeout, func, *args)
 
-    elif (queue_type == "local"):
+    elif queue_type == "local":
         # __enqueue_job_local(timeout, func, *args)
+        args[0].set_queue_name(queue_name)
         enqueue_job_local(timeout, func, *args)
         return
         # Just in case the current process queue does not work
         # Then use the most simple solution by just starting the process
         from multiprocessing import Process
+
         p = Process(target=func, args=args)
         p.start()

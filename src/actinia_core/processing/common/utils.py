@@ -30,7 +30,9 @@ from actinia_core.core.common.config import global_config
 
 __license__ = "GPLv3"
 __author__ = "Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -58,7 +60,9 @@ def try_import(actinia_module, actinia_class):
         return imported_class
     except ImportError as e:
         # ModuleNotFoundError is a subclass and caught here as well.
-        if (global_config.QUEUE_TYPE == "local"):
-            e.msg += (" - No actinia_processing found but required "
-                      + "for local queue!")
+        if global_config.QUEUE_TYPE == "local":
+            e.msg += (
+                " - No actinia_processing found but required "
+                + "for local queue!"
+            )
             raise e

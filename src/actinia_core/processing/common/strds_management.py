@@ -31,29 +31,43 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 PersistentSTRDSLister = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_management'),
-    'PersistentSTRDSLister')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_management"
+    ),
+    "PersistentSTRDSLister",
+)
 
 PersistentSTRDSInfo = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_management'),
-    'PersistentSTRDSInfo')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_management"
+    ),
+    "PersistentSTRDSInfo",
+)
 
 PersistentSTRDSDeleter = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_management'),
-    'PersistentSTRDSDeleter')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_management"
+    ),
+    "PersistentSTRDSDeleter",
+)
 
 PersistentSTRDSCreator = try_import(
-    ('actinia_core.processing.actinia_processing.persistent'
-     + '.strds_management'),
-    'PersistentSTRDSCreator')
+    (
+        "actinia_core.processing.actinia_processing.persistent"
+        + ".strds_management"
+    ),
+    "PersistentSTRDSCreator",
+)
 
 
 def list_raster_mapsets(*args):

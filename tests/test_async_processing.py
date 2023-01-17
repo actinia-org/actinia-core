@@ -28,6 +28,7 @@ import unittest
 import copy
 from flask.json import loads as json_loads, dumps as json_dumps
 import time
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -35,7 +36,9 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -43,121 +46,87 @@ __email__ = "soerengebbert@googlemail.com"
 process_chain = {
     1: {
         "module": "g.region",
-        "inputs": {
-            "raster": "elevation@PERMANENT"
-        },
+        "inputs": {"raster": "elevation@PERMANENT"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     },
     2: {
         "module": "r.slope.aspect",
         "inputs": {
             "elevation": "elevation@PERMANENT",
             "format": "degrees",
-            "min_slope": "0.0"
+            "min_slope": "0.0",
         },
         "outputs": {
-            "aspect": {
-                "name": "my_aspect"
-            },
+            "aspect": {"name": "my_aspect"},
             "slope": {
                 "name": "my_slope",
-                "export": {
-                    "format": "GTiff",
-                    "type": "raster"
-                }
-            }
+                "export": {"format": "GTiff", "type": "raster"},
+            },
         },
         "flags": "a",
         "overwrite": False,
-        "verbose": True
+        "verbose": True,
     },
     3: {
         "module": "r.watershed",
-        "inputs": {
-            "elevation": "elevation@PERMANENT"
-        },
+        "inputs": {"elevation": "elevation@PERMANENT"},
         "outputs": {
             "accumulation": {
                 "name": "my_accumulation",
-                "export": {
-                    "format": "GTiff",
-                    "type": "raster"
-                }
+                "export": {"format": "GTiff", "type": "raster"},
             }
-        }
+        },
     },
     4: {
         "module": "r.info",
-        "inputs": {
-            "map": "my_aspect"
-        },
+        "inputs": {"map": "my_aspect"},
         "flags": "gr",
-        "verbose": True
+        "verbose": True,
     },
-    5: {
-        "executable": "/bin/true",
-        "parameters": []
-    },
-    6: {
-        "executable": "/bin/true"
-    },
-    7: {
-        "executable": "/bin/sleep",
-        "parameters": ["4"]
-    },
+    5: {"executable": "/bin/true", "parameters": []},
+    6: {"executable": "/bin/true"},
+    7: {"executable": "/bin/sleep", "parameters": ["4"]},
 }
 
 # Module chains with errors
 process_chain_error_1 = {
     1: {
         "module": "g.region",
-        "inputs": {
-            "raster": "elevation@PERMANENT"
-        },
+        "inputs": {"raster": "elevation@PERMANENT"},
         "flags": "&p",
-        "verbose": True
+        "verbose": True,
     }
 }
 
 process_chain_error_2 = {
     1: {
         "module": "g.region_nopo",
-        "inputs": {
-            "raster": "elevation@PERMANENT"
-        },
+        "inputs": {"raster": "elevation@PERMANENT"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     }
 }
 
 process_chain_error_3 = {
     1: {
         "module": "g.region",
-        "inputs": {
-            "raster": "elevion@PANENT"
-        },
+        "inputs": {"raster": "elevion@PANENT"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     }
 }
 
 process_chain_error_4 = {
     1: {
         "module": "g.region",
-        "inputs": {
-            "faster": "elevion@PANENT"
-        },
+        "inputs": {"faster": "elevion@PANENT"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     }
 }
 
-process_chain_error_5 = {
-    1: {
-
-    }
-}
+process_chain_error_5 = {1: {}}
 
 process_chain_error_6 = {
     2: {
@@ -165,74 +134,76 @@ process_chain_error_6 = {
         "inputs": {
             "elevation": "elevation@PERMANENT",
             "format": "degrees",
-            "min_slope": "0.0"
+            "min_slope": "0.0",
         },
         "outputs": {
-            "aspect": {
-                "name": "my_aspect"
-            },
+            "aspect": {"name": "my_aspect"},
             "slope": {
                 "name": "my_slope",
-                "export": {
-                    "fromat": "GTiff",
-                    "type": "raster"
-                }
-            }
+                "export": {"fromat": "GTiff", "type": "raster"},
+            },
         },
         "flags": "a",
         "overwrite": False,
-        "verbose": True
+        "verbose": True,
     },
 }
 
 process_chain_region = {
     1: {
         "module": "g.region",
-        "inputs": {
-            "raster": "elevation@PERMANENT"
-        },
+        "inputs": {"raster": "elevation@PERMANENT"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     },
     2: {
         "module": "g.region",
-        "inputs": {
-            "res": "0.001"
-        },
+        "inputs": {"res": "0.001"},
         "flags": "p",
-        "verbose": True
+        "verbose": True,
     },
     3: {
         "module": "r.info",
-        "inputs": {
-            "map": "elevation@PERMANENT"
-        },
+        "inputs": {"map": "elevation@PERMANENT"},
         "flags": "gr",
-        "verbose": True
-    }
+        "verbose": True,
+    },
 }
 
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
-
     def test_async_processing(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header,
-                                       http_status=200, status="finished")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.admin_auth_header,
+            data=json_dumps(process_chain),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
     def test_async_processing_termination(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(process_chain),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.admin_auth_header,
+            data=json_dumps(process_chain),
+            content_type="application/json",
+        )
         print(rv.data)
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         resp = json_loads(rv.data)
 
@@ -240,34 +211,55 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         rv_resource_id = resp["resource_id"]
 
         while True:
-            rv = self.server.get(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
-                                 headers=self.admin_auth_header)
+            rv = self.server.get(
+                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                headers=self.admin_auth_header,
+            )
             print("Get", rv.data.decode())
             resp = json_loads(rv.data)
-            if resp["status"] == "finished" or resp["status"] == "error" or resp["status"] == "terminated":
+            if (
+                resp["status"] == "finished"
+                or resp["status"] == "error"
+                or resp["status"] == "terminated"
+            ):
                 break
 
             time.sleep(0.2)
 
             # Send the termination request, again and again :)
-            rv = self.server.delete(URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
-                                    headers=self.admin_auth_header)
+            rv = self.server.delete(
+                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                headers=self.admin_auth_header,
+            )
             print("Delete", rv.data.decode())
 
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
         self.assertEqual(resp["status"], "terminated")
 
         time.sleep(1)
 
     def test_async_processing_large_region(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_region),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_region),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_1(self):
         """
@@ -275,12 +267,19 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         :return:
         """
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_1),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_1),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_2(self):
         """
@@ -288,59 +287,101 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         :return:
         """
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_2),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_2),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_3(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_3),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_3),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_4(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_4),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_4),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_5(self):
-        """No JSON payload error
-        """
+        """No JSON payload error"""
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header)
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+        )
 
         print(rv.data.decode())
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
     def test_async_processing_error_6(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_5),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_5),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_7(self):
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(process_chain_error_6),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(process_chain_error_6),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_8(self):
         """Wrong mapset in input definitions as admin"""
@@ -350,27 +391,43 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         pc[2]["inputs"]["elevation"] = "elevation@NO_Mapset"
         pc[3]["inputs"]["elevation"] = "elevation@NO_Mapset"
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(pc),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.admin_auth_header,
+            data=json_dumps(pc),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_error_9(self):
-        """Wrong mapset in input definitions as user, hence authorization error"""
+        """
+        Wrong mapset in input definitions as user, hence authorization error
+        """
 
         pc = copy.deepcopy(process_chain_error_1)
         pc[1]["inputs"]["raster"] = "elevation@NO_Mapset"
         pc[1]["flags"] = "p"
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async',
-                              headers=self.user_auth_header,
-                              data=json_dumps(pc),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            headers=self.user_auth_header,
+            data=json_dumps(pc),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

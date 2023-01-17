@@ -42,7 +42,9 @@ except Exception:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -81,7 +83,8 @@ class ApiLogger(RedisFluentLoggerBase):
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
         RedisFluentLoggerBase.__init__(
-            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender
+        )
 
     def add_entry(self, user_id, http_request):
         """Add an API call entry to the database
@@ -95,7 +98,8 @@ class ApiLogger(RedisFluentLoggerBase):
                 "endpoint": "asyncephemeralresource",
                 "method": "POST",
                 "path": "/locations/nc_spm_08/processing_async",
-                "request_url": "http://localhost/locations/nc_spm_08/processing_async"
+                "request_url": "http://localhost/locations/nc_spm_08/"
+                "processing_async"
               }
 
 
@@ -104,18 +108,22 @@ class ApiLogger(RedisFluentLoggerBase):
             The index of the new entry in the api log list
 
         """
-        api_info = {"endpoint": http_request.endpoint,
-                    "method": http_request.method,
-                    "path": http_request.path,
-                    "request_url": http_request.url}
+        api_info = {
+            "endpoint": http_request.endpoint,
+            "method": http_request.method,
+            "path": http_request.path,
+            "request_url": http_request.url,
+        }
 
-        entry = {"time_stamp": datetime.now(),
-                 "node": platform.node(),
-                 "api_info": api_info,
-                 "request_str": str(http_request),
-                 "user_id": user_id,
-                 "status": "api_call",
-                 "logger": "api_logger"}
+        entry = {
+            "time_stamp": datetime.now(),
+            "node": platform.node(),
+            "api_info": api_info,
+            "request_str": str(http_request),
+            "user_id": user_id,
+            "status": "api_call",
+            "logger": "api_logger",
+        }
 
         # Serialize the entry
         pentry = pickle.dumps(entry)

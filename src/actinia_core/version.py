@@ -28,7 +28,9 @@ Returns the version information and the roles that are activated
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 from flask import make_response, jsonify, request
@@ -42,8 +44,7 @@ from actinia_api import URL_PREFIX
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
-from actinia_core.models.response_models import \
-     LinkResponseModel
+from actinia_core.models.response_models import LinkResponseModel
 from . import __version__
 
 
@@ -58,22 +59,30 @@ def init_versions():
     global API_VERSION
 
     g_version = subprocess.run(
-        ['grass', '--tmp-location', 'epsg:4326', '--exec',
-         'g.version', '-rge'], capture_output=True).stdout
-    log.debug('Detecting GRASS GIS version')
-    for i in g_version.decode('utf-8').strip('\n').split('\n'):
-        G_VERSION[i.split('=')[0]] = i.split('=')[1]
+        [
+            "grass",
+            "--tmp-location",
+            "epsg:4326",
+            "--exec",
+            "g.version",
+            "-rge",
+        ],
+        capture_output=True,
+    ).stdout
+    log.debug("Detecting GRASS GIS version")
+    for i in g_version.decode("utf-8").strip("\n").split("\n"):
+        G_VERSION[i.split("=")[0]] = i.split("=")[1]
 
-    log.debug('Detecting Plugin versions')
+    log.debug("Detecting Plugin versions")
     for i in global_config.PLUGINS:
         module = importlib.import_module(i)
         PLUGIN_VERSIONS[i] = module.__version__
 
-    log.debug('Detecting API versions')
+    log.debug("Detecting API versions")
     module = importlib.import_module("actinia_api")
     API_VERSION = module.__version__
 
-    PYTHON_VERSION = sys.version.replace('\n', '- ')
+    PYTHON_VERSION = sys.version.replace("\n", "- ")
 
 
 def valid_additional_version_info_key(cand):
@@ -83,10 +92,14 @@ def valid_additional_version_info_key(cand):
     we will set and populate."""
     minlength = 1
     maxlength = 20
-    valid_reg_ex = '^[a-z_]{' + str(minlength) + ',' + str(maxlength) + '}$'
+    valid_reg_ex = "^[a-z_]{" + str(minlength) + "," + str(maxlength) + "}$"
     reserved_keys = [
-        'grass_version', 'plugin_versions', 'plugins', 'python_version',
-        'version', 'api_version'
+        "grass_version",
+        "plugin_versions",
+        "plugins",
+        "python_version",
+        "version",
+        "api_version",
     ]
     return cand and cand not in reserved_keys and re.match(valid_reg_ex, cand)
 
@@ -99,7 +112,7 @@ def parse_additional_version_info(env_value):
     kvp_pairs = env_value.split("|")
     for kvp_pair in kvp_pairs:
         # split at colon : but only max once
-        kvp = kvp_pair.split(':', 1)
+        kvp = kvp_pair.split(":", 1)
         if len(kvp) == 2 and valid_additional_version_info_key(kvp[0]):
             additional_info[kvp[0]] = kvp[1]
     return additional_info
@@ -107,8 +120,8 @@ def parse_additional_version_info(env_value):
 
 def find_additional_version_info():
     """If there is a ACTINIA_ADDITIONAL_VERSION_INFO environment variable,
-    we'll try to parse its value and return more information that will eventually
-    be added to the version output"""
+    we'll try to parse its value and return more information that will
+    eventually be added to the version output"""
     env_name = "ACTINIA_ADDITIONAL_VERSION_INFO"
     if env_name in os.environ:
         return parse_additional_version_info(os.environ[env_name])
@@ -125,7 +138,7 @@ def find_running_since_info():
 
 
 # Return the version of Actinia Core as REST API call
-@flask_app.route(URL_PREFIX + '/version')
+@flask_app.route(URL_PREFIX + "/version")
 def version():
     """Return the version information and the roles that are activated
 
@@ -134,13 +147,13 @@ def version():
     """
     # start with any potential additional version info or an empty dictionary
     info = find_additional_version_info()
-    info['version'] = __version__
-    info['plugins'] = ",".join(global_config.PLUGINS)
-    info['grass_version'] = G_VERSION
-    info['plugin_versions'] = PLUGIN_VERSIONS
-    info['api_version'] = API_VERSION
-    info['python_version'] = PYTHON_VERSION
-    info['running_since'] = find_running_since_info()
+    info["version"] = __version__
+    info["plugins"] = ",".join(global_config.PLUGINS)
+    info["grass_version"] = G_VERSION
+    info["plugin_versions"] = PLUGIN_VERSIONS
+    info["api_version"] = API_VERSION
+    info["python_version"] = PYTHON_VERSION
+    info["running_since"] = find_running_since_info()
 
     return make_response(jsonify(info), 200)
 
@@ -154,13 +167,21 @@ def hint(actinia_path):
     Returns: Response
 
     """
-    url = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path
+    url = request.url_root.strip("/") + URL_PREFIX + "/" + actinia_path
 
-    return make_response(jsonify(LinkResponseModel(
-            status="Not found",
-            message=("Are you looking for the current API version? "
-                     "Change 'v1' to 'v3' in the URL."),
-            links=[url]), 404))
+    return make_response(
+        jsonify(
+            LinkResponseModel(
+                status="Not found",
+                message=(
+                    "Are you looking for the current API version? "
+                    "Change 'v1' to 'v3' in the URL."
+                ),
+                links=[url],
+            ),
+            404,
+        )
+    )
 
 
 @flask_app.route("/api/v2/<path:actinia_path>")
@@ -171,10 +192,18 @@ def hint_v2(actinia_path):
     Returns: Response
 
     """
-    url = request.url_root.strip('/') + URL_PREFIX + '/' + actinia_path
+    url = request.url_root.strip("/") + URL_PREFIX + "/" + actinia_path
 
-    return make_response(jsonify(LinkResponseModel(
-            status="Not found",
-            message=("Are you looking for the current API version? "
-                     "Change 'v2' to 'v3' in the URL."),
-            links=[url]), 404))
+    return make_response(
+        jsonify(
+            LinkResponseModel(
+                status="Not found",
+                message=(
+                    "Are you looking for the current API version? "
+                    "Change 'v2' to 'v3' in the URL."
+                ),
+                links=[url],
+            ),
+            404,
+        )
+    )

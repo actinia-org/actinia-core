@@ -1,0 +1,12 @@
+{
+  "realm": "actinia-realm",
+  "auth-server-url": "http://keycloak:8080/auth/",
+  "ssl-required": "external",
+  "resource": "actinia-client",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "SECRET"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
+}

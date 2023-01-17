@@ -1,4 +1,4 @@
-FROM mundialis/actinia:alpine-dependencies-v1 as build-base
+FROM mundialis/actinia:alpine-dependencies-2022-11-18 as build-base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 
 FROM build-base as build
@@ -23,7 +23,7 @@ ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_API_VERSION 3.3.0
+ENV ACTINIA_API_VERSION 3.4.0
 
 USER root
 

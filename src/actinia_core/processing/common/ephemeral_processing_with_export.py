@@ -30,15 +30,20 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 __email__ = "info@mundialis.de"
 
 
 EphemeralProcessingWithExport = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral'
-     + '.ephemeral_processing_with_export'),
-    'EphemeralProcessingWithExport')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral"
+        + ".ephemeral_processing_with_export"
+    ),
+    "EphemeralProcessingWithExport",
+)
 
 
 def start_job(*args):

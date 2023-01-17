@@ -28,37 +28,44 @@ related to the Actinia Core functionality
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class AsyncProcessError(Exception):
-    """Raise this exception in case the asynchronous processing faces an error
     """
+    Raise this exception in case the asynchronous processing faces an error
+    """
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
 class RsyncError(Exception):
-    """Raise this exception in case the rsync of the interim result fails
-    """
+    """Raise this exception in case the rsync of the interim result fails"""
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
 class AsyncProcessTermination(Exception):
-    """Raise this exception in case the termination requests was executed successfully
     """
+    Raise this exception in case the termination requests was executed
+    successfully
+    """
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
 class AsyncProcessTimeLimit(Exception):
-    """Raise this exception in case the process time limit was reached
-    """
+    """Raise this exception in case the process time limit was reached"""
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
@@ -68,14 +75,15 @@ class GoogleCloudAPIError(Exception):
     """Raise this exception in case something went wrong in
     when accessing the google API
     """
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)
 
 
 class SecurityError(Exception):
-    """Raise this exception in case some security problem occurs
-    """
+    """Raise this exception in case some security problem occurs"""
+
     def __init__(self, message):
         message = "%s:  %s" % (str(self.__class__.__name__), message)
         Exception.__init__(self, message)

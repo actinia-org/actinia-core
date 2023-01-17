@@ -33,7 +33,7 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_legend
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.resource_base import ResourceBase
@@ -42,35 +42,62 @@ from actinia_core.processing.common.raster_legend import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class SyncEphemeralRasterLegendResource(ResourceBase):
-    """Render the raster legend with d.legend
-    """
+    """Render the raster legend with d.legend"""
+
     def create_parser(self):
         # Create a legend parser
         parser = reqparse.RequestParser()
-        parser.add_argument('at', type=str, location='args',
-                            help='Size and placement as percentage of '
-                                 'screen coordinates (0,0 is lower left). '
-                                 'bottom,top,left,right 0-100%')
-        parser.add_argument('range', type=str, location='args',
-                            help='Use a subset of the map range for the legend '
-                                 '(min,max)')
-        parser.add_argument('use', type=str, location='args',
-                            help='List of discrete category numbers/values for legend')
-        parser.add_argument('fontsize', type=float, location='args',
-                            help='Size of the font 1-360')
-        parser.add_argument('labelnum', type=float, location='args',
-                            help='Number of text labels for smooth gradient legend')
-        parser.add_argument('width', type=float, location='args',
-                            help='North-South resolution must be specified as '
-                                 'double value')
-        parser.add_argument('height', type=float, location='args',
-                            help='East-West resolution must be specified as '
-                                 'double value')
+        parser.add_argument(
+            "at",
+            type=str,
+            location="args",
+            help="Size and placement as percentage of "
+            "screen coordinates (0,0 is lower left). "
+            "bottom,top,left,right 0-100%",
+        )
+        parser.add_argument(
+            "range",
+            type=str,
+            location="args",
+            help="Use a subset of the map range for the legend " "(min,max)",
+        )
+        parser.add_argument(
+            "use",
+            type=str,
+            location="args",
+            help="List of discrete category numbers/values for legend",
+        )
+        parser.add_argument(
+            "fontsize",
+            type=float,
+            location="args",
+            help="Size of the font 1-360",
+        )
+        parser.add_argument(
+            "labelnum",
+            type=float,
+            location="args",
+            help="Number of text labels for smooth gradient legend",
+        )
+        parser.add_argument(
+            "width",
+            type=float,
+            location="args",
+            help="North-South resolution must be specified as " "double value",
+        )
+        parser.add_argument(
+            "height",
+            type=float,
+            location="args",
+            help="East-West resolution must be specified as " "double value",
+        )
 
         return parser
 
@@ -82,7 +109,8 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
 
         Returns:
              dict:
-             A dictionary of display parameter or an error response in case of an error
+             A dictionary of display parameter or an error response in case of
+             an error
         """
         options = {}
         options["width"] = 600
@@ -103,17 +131,23 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
             options["fontsize"] = args["fontsize"]
         if "width" in args and args["width"] is not None:
             if args["width"] < 1:
-                return self.get_error_response(message="Width must be larger than 0")
+                return self.get_error_response(
+                    message="Width must be larger than 0"
+                )
             if args["width"] > 10000:
                 return self.get_error_response(
-                    message="Width can not be larger than 10000")
+                    message="Width can not be larger than 10000"
+                )
             options["width"] = args["width"]
         if "height" in args and args["height"] is not None:
             if args["height"] < 1:
-                return self.get_error_response(message="Height must be larger than 0")
+                return self.get_error_response(
+                    message="Height must be larger than 0"
+                )
             if args["height"] > 10000:
                 return self.get_error_response(
-                    message="Height can not be larger than 10000")
+                    message="Height can not be larger than 10000"
+                )
             options["height"] = args["height"]
 
         return options
@@ -121,8 +155,7 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_legend.get_doc))
     def get(self, location_name, mapset_name, raster_name):
-        """Render the legend of a raster map layer as a PNG image.
-        """
+        """Render the legend of a raster map layer as a PNG image."""
         parser = self.create_parser()
         args = parser.parse_args()
         options = self.create_parser_options(args)
@@ -130,16 +163,19 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
         if isinstance(options, dict) is False:
             return options
 
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=raster_name)
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=raster_name,
+        )
 
         rdc.set_user_data(options)
 
         enqueue_job(
-            self.job_timeout, start_job, rdc,
-            queue_type_overwrite=True)
+            self.job_timeout, start_job, rdc, queue_type_overwrite=True
+        )
 
         http_code, response_model = self.wait_until_finish(0.05)
         if http_code == 200:
@@ -149,5 +185,5 @@ class SyncEphemeralRasterLegendResource(ResourceBase):
                 if os.path.isfile(result_file):
                     image = open(result_file, "rb").read()
                     os.remove(result_file)
-                    return Response(image, mimetype='image/png')
+                    return Response(image, mimetype="image/png")
         return make_response(jsonify(response_model), http_code)

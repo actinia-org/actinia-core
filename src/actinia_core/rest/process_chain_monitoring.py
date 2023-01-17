@@ -32,12 +32,14 @@ from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import process_chain_monitoring
-from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import \
-     MapsetSizeResponseModel, MaxMapsetSizeResponseModel
+from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import (
+    MapsetSizeResponseModel,
+    MaxMapsetSizeResponseModel,
+)
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.rest.resource_management import ResourceManager
 from actinia_core.models.response_models import SimpleResponseModel
@@ -59,7 +61,7 @@ def create_scatter_plot(x, y, xlabel, ylabel, title):
     plt.ylim(0, y_up)
     step = y_up / 10
     plt.xticks(np.arange(1, len(y) + 1, step=step))
-    with NamedTemporaryFile(suffix='.png', mode="wb", delete=False) as f:
+    with NamedTemporaryFile(suffix=".png", mode="wb", delete=False) as f:
         plt.savefig(f)
     return f.name
 
@@ -77,14 +79,16 @@ class MapsetSizeResource(ResourceManager):
     """
     This class returns the mapset sizes of a resource
     """
+
     def __init__(self):
 
         # Configuration
         ResourceManager.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "get", process_chain_monitoring.mapset_size_get_doc))
+    @swagger.doc(
+        check_endpoint("get", process_chain_monitoring.mapset_size_get_doc)
+    )
     def get(self, user_id, resource_id):
         """Get the sizes of mapset of a resource."""
 
@@ -97,36 +101,57 @@ class MapsetSizeResource(ResourceManager):
         if response_data is not None:
             http_code, pc_response_model = pickle.loads(response_data)
 
-            pc_status = pc_response_model['status']
-            if pc_status in ['accepted', 'running']:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is not ready it is %s" % pc_status)),
-                    400)
+            pc_status = pc_response_model["status"]
+            if pc_status in ["accepted", "running"]:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Resource is not ready it is %s"
+                            % pc_status,
+                        )
+                    ),
+                    400,
+                )
 
             mapset_sizes = [
-                proc['mapset_size'] for proc in pc_response_model['process_log']]
+                proc["mapset_size"]
+                for proc in pc_response_model["process_log"]
+            ]
 
-            return make_response(jsonify(MapsetSizeResponseModel(
-                status="success", mapset_sizes=mapset_sizes)), http_code)
+            return make_response(
+                jsonify(
+                    MapsetSizeResponseModel(
+                        status="success", mapset_sizes=mapset_sizes
+                    )
+                ),
+                http_code,
+            )
         else:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Resource does not exist")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource does not exist"
+                    )
+                ),
+                400,
+            )
 
 
 class MapsetSizeDiffResource(ResourceManager):
     """
     This class returns the step-by-step mapset size differences of a resource
     """
+
     def __init__(self):
 
         # Configuration
         ResourceManager.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "get", process_chain_monitoring.mapset_sizediff_get_doc))
+    @swagger.doc(
+        check_endpoint("get", process_chain_monitoring.mapset_sizediff_get_doc)
+    )
     def get(self, user_id, resource_id):
         """Get the step-by-step mapset size differences of a resource."""
 
@@ -139,37 +164,58 @@ class MapsetSizeDiffResource(ResourceManager):
         if response_data is not None:
             http_code, pc_response_model = pickle.loads(response_data)
 
-            pc_status = pc_response_model['status']
-            if pc_status in ['accepted', 'running']:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is not ready it is %s" % pc_status)),
-                    400)
+            pc_status = pc_response_model["status"]
+            if pc_status in ["accepted", "running"]:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Resource is not ready it is %s"
+                            % pc_status,
+                        )
+                    ),
+                    400,
+                )
 
             mapset_sizes = [
-                proc['mapset_size'] for proc in pc_response_model['process_log']]
+                proc["mapset_size"]
+                for proc in pc_response_model["process_log"]
+            ]
             diffs = compute_mapset_size_diffs(mapset_sizes)
 
-            return make_response(jsonify(MapsetSizeResponseModel(
-                status="success", mapset_sizes=diffs)), http_code)
+            return make_response(
+                jsonify(
+                    MapsetSizeResponseModel(
+                        status="success", mapset_sizes=diffs
+                    )
+                ),
+                http_code,
+            )
         else:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Resource does not exist")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource does not exist"
+                    )
+                ),
+                400,
+            )
 
 
 class MaxMapsetSizeResource(ResourceManager):
     """
     This class returns the maximum mapset size of a resource
     """
+
     def __init__(self):
 
         # Configuration
         ResourceManager.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "get", process_chain_monitoring.mapset_maxsize_get_doc))
+    @swagger.doc(
+        check_endpoint("get", process_chain_monitoring.mapset_maxsize_get_doc)
+    )
     def get(self, user_id, resource_id):
         """Get the maximum size of mapset of a resource."""
 
@@ -182,37 +228,60 @@ class MaxMapsetSizeResource(ResourceManager):
         if response_data is not None:
             http_code, pc_response_model = pickle.loads(response_data)
 
-            pc_status = pc_response_model['status']
-            if pc_status in ['accepted', 'running']:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is not ready it is %s" % pc_status)),
-                    400)
+            pc_status = pc_response_model["status"]
+            if pc_status in ["accepted", "running"]:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Resource is not ready it is %s"
+                            % pc_status,
+                        )
+                    ),
+                    400,
+                )
 
             mapset_sizes = [
-                proc['mapset_size'] for proc in pc_response_model['process_log']]
+                proc["mapset_size"]
+                for proc in pc_response_model["process_log"]
+            ]
             max_mapset_size = max(mapset_sizes)
 
-            return make_response(jsonify(MaxMapsetSizeResponseModel(
-                status="success", max_mapset_size=max_mapset_size)), http_code)
+            return make_response(
+                jsonify(
+                    MaxMapsetSizeResponseModel(
+                        status="success", max_mapset_size=max_mapset_size
+                    )
+                ),
+                http_code,
+            )
         else:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Resource does not exist")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource does not exist"
+                    )
+                ),
+                400,
+            )
 
 
 class MapsetSizeRenderResource(ResourceManager):
     """
     This class renders the mapset sizes of a resource
     """
+
     def __init__(self):
 
         # Configuration
         ResourceManager.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "get", process_chain_monitoring.mapset_render_sizes_get_doc))
+    @swagger.doc(
+        check_endpoint(
+            "get", process_chain_monitoring.mapset_render_sizes_get_doc
+        )
+    )
     def get(self, user_id, resource_id):
         """Render the mapset sizes of a resource."""
 
@@ -225,22 +294,30 @@ class MapsetSizeRenderResource(ResourceManager):
         if response_data is not None:
             http_code, pc_response_model = pickle.loads(response_data)
 
-            pc_status = pc_response_model['status']
-            if pc_status in ['accepted', 'running']:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is not ready it is %s" % pc_status)),
-                    400)
+            pc_status = pc_response_model["status"]
+            if pc_status in ["accepted", "running"]:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Resource is not ready it is %s"
+                            % pc_status,
+                        )
+                    ),
+                    400,
+                )
 
             mapset_sizes = [
-                proc['mapset_size'] for proc in pc_response_model['process_log']]
+                proc["mapset_size"]
+                for proc in pc_response_model["process_log"]
+            ]
 
             y = np.array(mapset_sizes)
             x = np.array(list(range(1, len(mapset_sizes) + 1)))
             unit = "bytes"
-            for new_unit in ['KB', 'MB', 'GB', 'TB']:
-                if max(y) > 1024.:
-                    y = y / 1024.
+            for new_unit in ["KB", "MB", "GB", "TB"]:
+                if max(y) > 1024.0:
+                    y = y / 1024.0
                     unit = new_unit
                     print(new_unit)
                 else:
@@ -248,32 +325,45 @@ class MapsetSizeRenderResource(ResourceManager):
 
             # create png
             result_file = create_scatter_plot(
-                x, y, 'process chain steps', 'mapset size [%s]' % unit,
-                'Mapset sizes of the resource\n%s' % resource_id)
+                x,
+                y,
+                "process chain steps",
+                "mapset size [%s]" % unit,
+                "Mapset sizes of the resource\n%s" % resource_id,
+            )
 
             if result_file:
                 if os.path.isfile(result_file):
                     image = open(result_file, "rb").read()
                     os.remove(result_file)
-                    return Response(image, mimetype='image/png')
+                    return Response(image, mimetype="image/png")
         else:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Resource does not exist")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource does not exist"
+                    )
+                ),
+                400,
+            )
 
 
 class MapsetSizeDiffRenderResource(ResourceManager):
     """
     This class renders the step-by-step mapset size differences of a resource
     """
+
     def __init__(self):
 
         # Configuration
         ResourceManager.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "get", process_chain_monitoring.mapset_render_sizediff_get_doc))
+    @swagger.doc(
+        check_endpoint(
+            "get", process_chain_monitoring.mapset_render_sizediff_get_doc
+        )
+    )
     def get(self, user_id, resource_id):
         """Render the step-by-step mapset size differences of a resource."""
 
@@ -286,23 +376,31 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         if response_data is not None:
             http_code, pc_response_model = pickle.loads(response_data)
 
-            pc_status = pc_response_model['status']
-            if pc_status in ['accepted', 'running']:
-                return make_response(jsonify(SimpleResponseModel(
-                    status="error",
-                    message="Resource is not ready, it is %s" % pc_status)),
-                    400)
+            pc_status = pc_response_model["status"]
+            if pc_status in ["accepted", "running"]:
+                return make_response(
+                    jsonify(
+                        SimpleResponseModel(
+                            status="error",
+                            message="Resource is not ready, it is %s"
+                            % pc_status,
+                        )
+                    ),
+                    400,
+                )
 
             mapset_sizes = [
-                proc['mapset_size'] for proc in pc_response_model['process_log']]
+                proc["mapset_size"]
+                for proc in pc_response_model["process_log"]
+            ]
             diffs = compute_mapset_size_diffs(mapset_sizes)
 
             y = np.array(diffs)
             x = np.array(list(range(1, len(mapset_sizes) + 1)))
             unit = "bytes"
-            for new_unit in ['KB', 'MB', 'GB', 'TB']:
-                if max(y) > 1024.:
-                    y = y / 1024.
+            for new_unit in ["KB", "MB", "GB", "TB"]:
+                if max(y) > 1024.0:
+                    y = y / 1024.0
                     unit = new_unit
                     print(new_unit)
                 else:
@@ -310,16 +408,25 @@ class MapsetSizeDiffRenderResource(ResourceManager):
 
             # create png
             result_file = create_scatter_plot(
-                x, y, 'process chain steps', 'mapset size [%s]' % unit,
-                'Step-by-step mapset size differences of the resource\n%s'
-                % resource_id)
+                x,
+                y,
+                "process chain steps",
+                "mapset size [%s]" % unit,
+                "Step-by-step mapset size differences of the resource\n%s"
+                % resource_id,
+            )
 
             if result_file:
                 if os.path.isfile(result_file):
                     image = open(result_file, "rb").read()
                     os.remove(result_file)
-                    return Response(image, mimetype='image/png')
+                    return Response(image, mimetype="image/png")
         else:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Resource does not exist")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="Resource does not exist"
+                    )
+                ),
+                400,
+            )

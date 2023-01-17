@@ -15,12 +15,105 @@ Types of changes
 
 
 ## [Unreleased]
-https://github.com/mundialis/actinia_core/compare/4.0.0...main
+https://github.com/mundialis/actinia_core/compare/4.3.1...main
 
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+
  
+ ## [4.6.2] - 2023-01-17
+released from main
+### Fixed
+* New GRASS GIS 8.2 with fix https://github.com/OSGeo/grass/pull/2735 (https://github.com/OSGeo/grass/pull/2742)
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.1...4.6.2 
+
+ 
+## [4.6.1] - 2023-01-04
+released from main
+### Fixed
+* try to fix wheel by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/405
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.0...4.6.1
+
+generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.6.1" -f target_commitish=main -q .body` 
+
+## [4.6.0] - 2022-12-17
+released from main
+### Changed
+* Job resumption working without new process chain by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/400
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.5.0...4.6.0
+
+"generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.6.0" -f target_commitish=main -q .body`" 
+ 
+ 
+## [4.5.0] - 2022-12-14
+released from main
+### Changed
+* Add possibility to use keycloak authentication token by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/381
+* More secure path mangling by @marcjansen in https://github.com/mundialis/actinia_core/pull/281
+* Improve interim results by include additional mapsets by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/399
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.4.0...4.5.0
+
+ generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.5.0" -f target_commitish=main -q .body`
+
+ ## [4.4.0] - 2022-11-22
+released from main
+### Added
+* Resource storage older than X days deletion by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/392
+* Start with the adjustment of the interim results by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/390
+
+### Fixed
+* update RELEASE documentation by @juleshaas in https://github.com/mundialis/actinia_core/pull/389
+* replace deprecated (Timed)JSONWebSignatureSerializer by @metzm in https://github.com/mundialis/actinia_core/pull/386
+  * !! **Old API keys and tokens might not be valid anymore** !!
+* update requirements.txt by @mmacata in https://github.com/mundialis/actinia_core/pull/393
+* Update alpine dependency image version by @mmacata in https://github.com/mundialis/actinia_core/pull/394
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.3.1...4.4.0
+
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.4.0" -f target_commitish=main -q .body`
+
+## [4.3.1] - 2022-10-21
+released from main
+### Fixed
+* Add initialisation of self.queue by @juleshaas in https://github.com/mundialis/actinia_core/pull/388
+* Change pc style for module description for importer and exporter in module plugin by @juleshaas in https://github.com/mundialis/actinia_core/pull/387
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.3.0...4.3.1
+
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.3.1" -f target_commitish=main -q .body"
+
+## [4.3.0] - 2022-09-22
+released from main
+### Added
+* Black by @anikaweinmann in https://github.com/mundialis/actinia_core/pull/378
+* Add job queue name to response by @mmacata in https://github.com/mundialis/actinia_core/pull/380
+
+### Fixed
+* Fix install description by @mmacata in https://github.com/mundialis/actinia_core/pull/375
+* small typo by @linakrisztian in https://github.com/mundialis/actinia_core/pull/367
+* Fix redoc rendering by @ninsbl in https://github.com/mundialis/actinia_core/pull/379
+
+## New Contributors
+* @linakrisztian made their first contribution in https://github.com/mundialis/actinia_core/pull/367
+* @ninsbl made their first contribution in https://github.com/mundialis/actinia_core/pull/379
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.1...4.3.0
+
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.3.0 -f target_commitish=main -q .body"
+
+## [4.2.1] - 2022-08-05
+released from main
+### Fixed
+* Allow users to create and delete mapsets by @juleshaas and @anikaweinmann in https://github.com/mundialis/actinia_core/pull/374
+
+**Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.2.0...4.2.1
+"generated with gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.2.1" -f target_commitish=main -q .body"
+
 ## [4.2.0] - 2022-08-03
 released from main
 ### Added
@@ -62,7 +155,7 @@ released from main
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/4.0.1...4.1.0
 
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.1.0" -f target_commitish=main -q .body`
- 
+
 ## [4.0.1] - 2022-05-20
 released from main
 ### Fixed
@@ -93,9 +186,9 @@ This is a major release because it breaks the actinia python API. Plugins were a
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.3.0...4.0.0
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=4.0.0 -f target_commitish=main -q .body`
- 
+
 -----------------------------
- 
+
 ## [3.3.0] - 2022-03-31
 released from main
 ### Added
@@ -105,7 +198,7 @@ released from main
 * Pystac Issue changing name of the function by @joaherrerama in https://github.com/mundialis/actinia_core/pull/336
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.2.0...3.3.0
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.3.0 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.3.0 -f target_commitish=main -q .body`
 
 ## [3.2.0] - 2022-03-23
 released from main
@@ -119,7 +212,7 @@ released from main
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.3...3.2.0
 
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.2.0 -f target_commitish=main -q .body`
 
 
 ## [3.1.3] - 2022-03-11
@@ -129,7 +222,7 @@ released from main
 
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.2...3.1.3
 
-generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body` 
+generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.3 -f target_commitish=main -q .body`
 
 
 ## [3.1.2] - 2022-02-23
@@ -144,8 +237,8 @@ released from main
 **Full Changelog**: https://github.com/mundialis/actinia_core/compare/3.1.1...3.1.2
 
 generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name=3.1.2 -f target_commitish=main -q .body`
- 
- 
+
+
 ## [3.1.1] - 2022-02-03
 released from main
 ## Added

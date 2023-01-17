@@ -28,12 +28,15 @@ The region settings of the mapset
 or the raster layer region are used for export.
 """
 
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export \
-     import EphemeralProcessingWithExport
+from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import (
+    EphemeralProcessingWithExport,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -44,6 +47,7 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
     temporary mapset will be created to modify the region settings safely.
     Hence, this works also in write protected mapsets.
     """
+
     def __init__(self, rdc):
         """Setup the variables of this class
 
@@ -75,20 +79,25 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
 
         # Check if we have access and create the temporary storage
         self.required_mapsets.append(self.mapset_name)
-        self._create_temporary_grass_environment(source_mapset_name="PERMANENT")
+        self._create_temporary_grass_environment(
+            source_mapset_name="PERMANENT"
+        )
 
         # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will
         # be fixed in GDAL 3.1.4
         # use r.out.gdal -c to avoid the bug
         format = "COG"
         from osgeo import gdal
+
         if "COG" not in [
-                gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())]:
+            gdal.GetDriver(i).ShortName for i in range(gdal.GetDriverCount())
+        ]:
             format = "GTiff"
 
-        export_dict = {"name": self.raster_name + "@" + self.mapset_name,
-                       "export": {"format": format,
-                                  "type": "raster"}}
+        export_dict = {
+            "name": self.raster_name + "@" + self.mapset_name,
+            "export": {"format": format, "type": "raster"},
+        }
 
         self.resource_export_list.append(export_dict)
         self._export_resources(self.use_raster_region)
