@@ -21,6 +21,15 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+ 
+ ## [4.6.2] - 2023-01-17
+released from main
+### Fixed
+* New GRASS GIS 8.2 with fix https://github.com/OSGeo/grass/pull/2735 (https://github.com/OSGeo/grass/pull/2742)
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.1...4.6.2 
+
+ 
 ## [4.6.1] - 2023-01-04
 released from main
 ### Fixed
