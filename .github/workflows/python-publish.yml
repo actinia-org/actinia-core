@@ -28,7 +28,10 @@ jobs:
           sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
           pip3 install build
       - name: Build package
-        run: python3 -m build --outdir build .
+        run: |
+          echo $SETUPTOOLS_SCM_PRETEND_VERSION
+          ls -lah
+          python3 -m build --outdir build .
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
