@@ -69,10 +69,10 @@ dependencies = [
 
 [project.optional-dependencies]
 plugins = [
-    # "actinia-module-plugin @ https://github.com/mundialis/actinia-module-plugin/releases/download/2.3.1/actinia_module_plugin.wsgi-2.3.1-py2.py3-none-any.whl",
-    # "actinia-metadata-plugin @ https://github.com/mundialis/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
-    # "actinia-satellite-plugin @ https://github.com/mundialis/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
-    # "actinia-statistic-plugin @ https://github.com/mundialis/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
+    # "actinia-module-plugin @ https://github.com/actinia-org/actinia-module-plugin/releases/download/2.3.1/actinia_module_plugin.wsgi-2.3.1-py2.py3-none-any.whl",
+    # "actinia-metadata-plugin @ https://github.com/actinia-org/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
+    # "actinia-satellite-plugin @ https://github.com/actinia-org/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
+    # "actinia-statistic-plugin @ https://github.com/actinia-org/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
 ]
 
 [project.scripts]
@@ -82,6 +82,6 @@ actinia-server = "actinia_core.cli.actinia_server:main"
 webhook-server = "actinia_core.cli.webhook_server:main"
 
 [project.urls]
-Homepage = "https://github.com/mundialis/actinia_core"
-Tutorial = "https://mundialis.github.io/actinia_core"
+Homepage = "https://github.com/actinia-org/actinia_core"
+Tutorial = "https://actinia-org.github.io/actinia_core"
 API_Docs = "https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json"
