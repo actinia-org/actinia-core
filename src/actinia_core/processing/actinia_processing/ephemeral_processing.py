@@ -45,7 +45,7 @@ from actinia_core.core.grass_init import GrassInitializer
 from actinia_core.core.messages_logger import MessageLogger
 from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.resources_logger import ResourceLogger
-from actinia_core.src.actinia_core.core.mapset_merge_utils import change_mapsetname
+from actinia_core.core.mapset_merge_utils import change_mapsetname
 from actinia_core.core.common.process_chain import ProcessChainConverter
 from actinia_core.core.common.exceptions import (
     AsyncProcessError,

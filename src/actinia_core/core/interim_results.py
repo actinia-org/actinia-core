@@ -32,7 +32,7 @@ from fnmatch import filter
 from .messages_logger import MessageLogger
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.exceptions import RsyncError
-from actinia_core.src.actinia_core.core.mapset_merge_utils import change_mapsetname
+from actinia_core.core.mapset_merge_utils import change_mapsetname
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Lina Krisztian"

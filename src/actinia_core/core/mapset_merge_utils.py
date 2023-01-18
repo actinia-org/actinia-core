@@ -33,9 +33,7 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Lina Krisztian"
-__copyright__ = (
-    "Copyright 2023, mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis"
 
 
@@ -53,15 +51,13 @@ def _change_mapsetname_in_raster_vrt(
         vrt_file = os.path.join(source_path, raster, "vrt")
         if os.path.isfile(vrt_file):
             for line in fileinput.input(vrt_file, inplace=True):
-                print(line.replace(
-                    f"@{source_mapset}",
-                    f"@{target_mapset}"
-                ), end="")
+                print(
+                    line.replace(f"@{source_mapset}", f"@{target_mapset}"),
+                    end="",
+                )
 
 
-def _change_mapsetname_in_group(
-    group_path, source_mapset, target_mapset
-):
+def _change_mapsetname_in_group(group_path, source_mapset, target_mapset):
     """Replaces the mapset name in the group file
 
     Args:
@@ -80,9 +76,7 @@ def _change_mapsetname_in_group(
             for line in fileinput.input(group_file, inplace=True):
                 print(line.replace(source_mapset, target_mapset), end="")
         else:
-            raise AsyncProcessError(
-                "group %s has no REF file" % (group_dir)
-            )
+            raise AsyncProcessError("group %s has no REF file" % (group_dir))
 
 
 def _merge_tgis_dbs(tgis_db_path_1, tgis_db_path_2):
@@ -125,9 +119,7 @@ def _merge_tgis_dbs(tgis_db_path_1, tgis_db_path_2):
                 f"CREATE TABLE {table} AS " f"SELECT * FROM dba.{table}"
             )
             continue
-        combine = (
-            f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
-        )
+        combine = f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
         con.execute(combine)
     con.commit()
     con.execute("detach database dba")
@@ -135,7 +127,7 @@ def _merge_tgis_dbs(tgis_db_path_1, tgis_db_path_2):
         con.close()
 
 
-def _update_views_in_tgis( tgis_db_path):
+def _update_views_in_tgis(tgis_db_path):
     """Update views in tgis sqlite.db
 
     Args:
@@ -197,9 +189,7 @@ def _change_mapsetname_in_tgis(
     for table_name in table_names:
         columns = [
             row[0]
-            for row in cur.execute(
-                f"SELECT * FROM {table_name}"
-            ).description
+            for row in cur.execute(f"SELECT * FROM {table_name}").description
         ]
         for col in columns:
             cur.execute(
@@ -234,9 +224,7 @@ def change_mapsetname(
         elif directory == "tgis":
             target_tgis_db = None
             if os.path.isdir(os.path.join(target_path, "tgis")):
-                target_tgis_db = os.path.join(
-                    target_path, "tgis", "sqlite.db"
-                )
+                target_tgis_db = os.path.join(target_path, "tgis", "sqlite.db")
             _change_mapsetname_in_tgis(
                 source_path,
                 source_mapset,
