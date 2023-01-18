@@ -423,7 +423,7 @@ class ResourceManager(ResourceManagerBase):
                     SimpleResponseModel(
                         status="error",
                         message="Interim results are not set in the "
-                        "configureation",
+                        "configuration",
                     )
                 ),
                 404,

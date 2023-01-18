@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2021 mundialis GmbH & Co. KG
+# Copyright (c) 2021-2023 mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,10 +32,11 @@ from fnmatch import filter
 from .messages_logger import MessageLogger
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.exceptions import RsyncError
+from actinia_core.src.actinia_core.core.mapset_merge_utils import change_mapsetname
 
 __license__ = "GPLv3"
-__author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
+__author__ = "Anika Weinmann, Lina Krisztian"
+__copyright__ = "Copyright 2021-2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
@@ -361,6 +362,15 @@ class InterimResult(object):
 
         if temp_mapset_path is None:
             return
+
+        # change mapset name for groups, raster VRTs and tgis
+        for directory in ["group", "cell_misc", "tgis"]:
+            change_mapsetname(
+                os.path.join(temp_mapset_path, directory),
+                directory,
+                os.path.basename(temp_mapset_path),
+                os.path.basename(dest_mapset),
+            )
 
         if progress_step == 1 or force_copy is True:
             # copy temp mapset for first step
