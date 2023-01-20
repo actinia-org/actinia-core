@@ -22,8 +22,8 @@
 #######
 
 """
-Asynchronous computation in specific temporary generated and then copied
-or original mapsets
+Utils needed for mapsets merge to rename the mapset inside the mapset 
+directory for groups, virtual rasters and tgis
 """
 import fileinput
 import os
