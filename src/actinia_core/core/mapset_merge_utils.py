@@ -22,8 +22,8 @@
 #######
 
 """
-Utils needed for mapsets merge to rename the mapset inside the mapset 
-directory for groups, virtual rasters and tgis
+Utils needed for mapsets merge to rename the mapset inside the 
+mapset directory for groups, virtual rasters and tgis
 """
 import fileinput
 import os
