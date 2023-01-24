@@ -466,6 +466,11 @@ class Webhooks(Schema):
     """
     type = 'object'
     properties = {
+        'auth': {'type': 'string',
+                 'description': 'Authentication information (username and password) '
+					            'to authenticate to the webhook url.Given as '
+					            '"username:password" string. The username and '
+					            'password should not contain a ":".'},
         'update': {'type': 'string',
                    'description': 'Specify a HTTP(S) GET/POST endpoint that should be '
                                   'called when a status update is available while the '
@@ -496,6 +501,7 @@ class Webhooks(Schema):
         'will be used to check if the webhooks endpoints are available.'
         'The finished endpoint is mandatory, the update endpoint is optional.')
     example = {
+        'auth': 'username:password',
         'update': f'http://business-logic.company.com{URL_PREFIX}/'
                   'actinia-update-webhook',
         'finished': f'http://business-logic.company.com{URL_PREFIX}/'
@@ -617,6 +623,7 @@ class ProcessChainModel(Schema):
         }
         ],
         'webhooks': {
+            'auth': 'username:password',
             'update': f'http://business-logic.company.com{URL_PREFIX}/'
                       'actinia-update-webhook',
             'finished': f'http://business-logic.company.com{URL_PREFIX}/'
