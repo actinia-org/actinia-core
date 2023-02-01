@@ -468,7 +468,7 @@ class Webhooks(Schema):
     properties = {
         'auth': {'type': 'string',
                  'description': 'Authentication information (username and password) '
-					            'to authenticate to the webhook url.Given as '
+					            'to authenticate to the webhook url. Given as '
 					            '"username:password" string. The username and '
 					            'password should not contain a ":".'},
         'update': {'type': 'string',
