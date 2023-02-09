@@ -166,7 +166,7 @@ class GrassEnvironment(ProcessLogging):
                 )
 
     def set(self):
-        # # for debugging in ephemeral_processing.py (see also process_queue.py)
+        # # for debugging in ephemeral_processing.py (s. also process_queue.py)
         # for var in [
         #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
         #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
