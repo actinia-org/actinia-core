@@ -106,7 +106,7 @@ def enqueue_job(timeout, func, *args):
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource
     # from ...processing.common.ephemeral_processing import start_job
-    # from ...processing.actinia_processing.ephemeral.ephemeral_processing \
+    # from ...processing.actinia_processing.ephemeral_processing \
     #      import EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
