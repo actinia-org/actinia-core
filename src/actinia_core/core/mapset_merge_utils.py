@@ -223,8 +223,10 @@ def change_mapsetname(
             )
         elif directory == "tgis":
             target_tgis_db = None
-            if os.path.isdir(os.path.join(target_path, "tgis")):
+            if target_path and os.path.isdir(os.path.join(target_path, "tgis")):
                 target_tgis_db = os.path.join(target_path, "tgis", "sqlite.db")
+            else:
+                target_path = None
             _change_mapsetname_in_tgis(
                 source_path,
                 source_mapset,
