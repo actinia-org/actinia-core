@@ -36,7 +36,9 @@ import sys
 
 __license__ = "GPLv3"
 __author__ = "Soeren Gebbert"
-__copyright__ = "Copyright 2016-2019, Soen Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -48,7 +50,8 @@ def verify_password(username_or_token, password):
 
     Args:
         username_or_token (str): The username or an authentication token
-        password (str): The optional user password, not required in case of token
+        password (str): The optional user password, not required in case
+        of token
 
     Returns:
         bool: True if authorized or False if not
@@ -129,73 +132,131 @@ def set_user_credentials(user, args, method):
 
 
 def main():
-    """User management
-    """
+    """User management"""
     parser = argparse.ArgumentParser(
-        description='Manage actinia users in the Redis database.',
-        formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+        description="Manage actinia users in the Redis database.",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
 
     parser.add_argument(
-        "action", type=str, default="create",
-        choices=["create", "delete", "show", "list",
-                 "update", "update_add", "update_rm", "update_rm_location",
-                 "pwcheck"],
+        "action",
+        type=str,
+        default="create",
+        choices=[
+            "create",
+            "delete",
+            "show",
+            "list",
+            "update",
+            "update_add",
+            "update_rm",
+            "update_rm_location",
+            "pwcheck",
+        ],
         help="The action that should be performed:"
-             " * create: Create a user"
-             " * show:   Show the user credentials"
-             " * list:   List all users"
-             " * update: Update a user with the provided parameters"
-             " * update_add: Update a user with the provided parameters"
-             " and add datasets or/and modules"
-             " * update_rm: Update a user with the provided parameters"
-             " and remove mapsets or/and modules"
-             " * update_rm_location: Update a user with the provided parameters"
-             " and remove locations or/and modules"
-             " * pwcheck: Check the password of the user"
+        " * create: Create a user"
+        " * show:   Show the user credentials"
+        " * list:   List all users"
+        " * update: Update a user with the provided parameters"
+        " * update_add: Update a user with the provided parameters"
+        " and add datasets or/and modules"
+        " * update_rm: Update a user with the provided parameters"
+        " and remove mapsets or/and modules"
+        " * update_rm_location: Update a user with the provided parameters"
+        " and remove locations or/and modules"
+        " * pwcheck: Check the password of the user",
     )
     parser.add_argument(
-        "-s", "--server", type=str, required=False,
+        "-s",
+        "--server",
+        type=str,
+        required=False,
         help="The host name of the redis server,"
-             " default is the value from the actinia config file")
+        " default is the value from the actinia config file",
+    )
     parser.add_argument(
-        "-p", "--port", type=int, required=False,
+        "-p",
+        "--port",
+        type=int,
+        required=False,
         help="The port of the redis server,"
-             " default is the value from the actinia config file")
+        " default is the value from the actinia config file",
+    )
     parser.add_argument(
-        "-a", "--redis_password", type=str, required=False,
+        "-a",
+        "--redis_password",
+        type=str,
+        required=False,
         help="The password of the redis server,"
-             " default is the value from the actinia config file or None")
+        " default is the value from the actinia config file or None",
+    )
     parser.add_argument(
-        "-u", "--user_id", type=str, required=False,
-        help="The user name")
+        "-u",
+        "--user_id",
+        type=str,
+        required=False,
+        help="The user name",
+    )
     parser.add_argument(
-        "-g", "--user_group", type=str, required=False,
-        help="The name of the user group this user is associated with")
+        "-g",
+        "--user_group",
+        type=str,
+        required=False,
+        help="The name of the user group this user is associated with",
+    )
     parser.add_argument(
-        "-w", "--password", type=str, required=False,
-        help="The password")
+        "-w",
+        "--password",
+        type=str,
+        required=False,
+        help="The password",
+    )
     parser.add_argument(
-        "-r", "--role", type=str, required=False,
+        "-r",
+        "--role",
+        type=str,
+        required=False,
         choices=["superadmin", "admin", "user", "guest"],
-        help="The user role")
+        help="The user role",
+    )
     parser.add_argument(
-        "-c", "--cell_limit", type=int, required=False,
-        help="The maximum number of cells a user can process")
+        "-c",
+        "--cell_limit",
+        type=int,
+        required=False,
+        help="The maximum number of cells a user can process",
+    )
     parser.add_argument(
-        "-n", "--process_num_limit", type=int, required=False,
+        "-n",
+        "--process_num_limit",
+        type=int,
+        required=False,
         help="The maximum number of processes the user can execute"
-             " in a single process chain")
+        " in a single process chain",
+    )
     parser.add_argument(
-        "-t", "--process_time_limit", type=int, required=False,
-        help="The maximum number seconds a single process is allowed to run")
+        "-t",
+        "--process_time_limit",
+        type=int,
+        required=False,
+        help="The maximum number seconds a single process is allowed to run",
+    )
     parser.add_argument(
-        "-d", "--datasets", type=str, required=False,
+        "-d",
+        "--datasets",
+        type=str,
+        required=False,
         help="The datasets the user is allowed to access."
-             " Format: location/mapset,location/mapset")
+        " Format: location/mapset,location/mapset",
+    )
     parser.add_argument(
-        "-m", "--modules", type=str, required=False,
+        "-m",
+        "--modules",
+        type=str,
+        required=False,
         help="A list of modules the user is allowed to access."
-             " Format: module,module,module")
+        " Format: module,module,module",
+    )
 
     args = parser.parse_args()
 
@@ -218,7 +279,11 @@ def main():
         port = args.port
     if args.redis_password:
         redis_password = args.redis_password
-    redis_user_interface.connect(host=server, port=port, password=redis_password)
+    redis_user_interface.connect(
+        host=server,
+        port=port,
+        password=redis_password,
+    )
 
     # CREATE ############################
     if args.action == "create":
@@ -243,7 +308,9 @@ def main():
 
         if user.exists() == 1:
             sys.stderr.write(
-                "Unable to create the user <%s> the user exists\n" % args.user_id)
+                "Unable to create the user <%s> the user exists\n"
+                % args.user_id
+            )
             return
 
         # Set the credentials
@@ -251,15 +318,21 @@ def main():
 
         if user.commit() is True:
             sys.stderr.write(
-                "Created user <%s> in group <%s>\n" % (args.user_id, args.user_group))
+                "Created user <%s> in group <%s>\n"
+                % (args.user_id, args.user_group)
+            )
             sys.stdout.write(str(user))
             return
         else:
             sys.stderr.write("Unable to create the user <%s>\n" % args.user_id)
             return
     # UPDATE ############################
-    elif args.action == "update" or args.action == "update_add" or \
-            args.action == "update_rm" or args.action == "update_rm_location":
+    elif (
+        args.action == "update"
+        or args.action == "update_add"
+        or args.action == "update_rm"
+        or args.action == "update_rm_location"
+    ):
 
         if args.user_id is None:
             sys.stderr.write("You need to provide a user id\n")
@@ -269,7 +342,8 @@ def main():
 
         if user.exists() == 0:
             sys.stderr.write(
-                "Unable to update the user <%s> the user doesn't exist\n" % args.user_id
+                "Unable to update the user <%s> the user doesn't exist\n"
+                % args.user_id
             )
             return
 
@@ -334,5 +408,5 @@ def main():
             sys.stderr.write("Password and user name are correct\n")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
