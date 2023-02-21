@@ -1183,7 +1183,7 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(resp_data["status"], "error")
         self.assertEqual(
             resp_data["message"],
-            "Interim results are not set in the configureation",
+            "Interim results are not set in the configuration",
         )
 
 

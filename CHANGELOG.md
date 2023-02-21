@@ -21,6 +21,24 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+## [4.7.1] - 2023-02-09
+### Fixed
+* fix tgis merge by interim results by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/413
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.7.0...4.7.1
+
+generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.7.1" -f target_commitish=main -q .body`
+ 
+ 
+## [4.7.0] - 2023-01-25
+released from main
+### Added
+* Add raster VRT support and support for mapset names by interim results by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/410
+
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.2...4.7.0
+
+"generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.7.0" -f target_commitish=main -q .body`"
  
  ## [4.6.2] - 2023-01-17
 released from main

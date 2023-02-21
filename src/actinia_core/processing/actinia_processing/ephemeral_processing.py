@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,6 +45,7 @@ from actinia_core.core.grass_init import GrassInitializer
 from actinia_core.core.messages_logger import MessageLogger
 from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.resources_logger import ResourceLogger
+from actinia_core.core.mapset_merge_utils import change_mapsetname
 from actinia_core.core.common.process_chain import ProcessChainConverter
 from actinia_core.core.common.exceptions import (
     AsyncProcessError,
@@ -67,9 +68,9 @@ from actinia_core.rest.base.user_auth import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Anika Weinmann"
+__author__ = "Sören Gebbert, Anika Weinmann, Lina Krisztian"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 
@@ -1103,9 +1104,18 @@ class EphemeralProcessing(object):
         # if interim_result_mapset is set copy the mapset from the interim
         # results
         if interim_result_mapset:
+
             self.message_logger.info(
                 "Rsync interim result mapset to temporary GRASS DB"
             )
+            # change mapset name for groups, raster VRTs and tgis
+            for directory in ["group", "cell_misc", "tgis"]:
+                change_mapsetname(
+                    os.path.join(interim_result_mapset, directory),
+                    directory,
+                    os.path.basename(interim_result_mapset),
+                    os.path.basename(self.temp_mapset_path),
+                )
             rsync_status = self.interim_result.rsync_mapsets(
                 interim_result_mapset, self.temp_mapset_path
             )
@@ -1888,13 +1898,14 @@ class EphemeralProcessing(object):
             "error" in self.run_state
             and self.interim_result.saving_interim_results == "onError"
         ):
-            self.interim_result.delete_interim_results()
-            self.interim_result.save_interim_results(
-                self.progress_steps - 1,
-                self.temp_mapset_path,
-                self.temp_file_path,
-                force_copy=True,
-            )
+            if self.progress_steps > 0:
+                self.interim_result.delete_interim_results()
+                self.interim_result.save_interim_results(
+                    self.progress_steps - 1,
+                    self.temp_mapset_path,
+                    self.temp_file_path,
+                    force_copy=True,
+                )
         elif (
             "success" in self.run_state
             and self.interim_result.saving_interim_results is not False
