@@ -83,3 +83,11 @@ webhook-server = "actinia_core.cli.webhook_server:main"
 Homepage = "https://github.com/actinia-org/actinia_core"
 Tutorial = "https://actinia-org.github.io/actinia_core"
 API_Docs = "https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov actinia_core --cov-report term-missing --verbose --tb=line -x"
+testpaths = [
+    "tests",
+]
