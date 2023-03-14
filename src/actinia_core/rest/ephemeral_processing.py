@@ -172,6 +172,16 @@ class AsyncEphemeralResource(ResourceBase):
         rdc = self.preprocess(location_name=location_name)
 
         if rdc:
+            # IDEA: here VM start (asyncron - subprocess?)
+            # QUESTION:
+            # * set status to accepted or to startingVM?
+            # * consider from "queue_type": only if "per_job", "per_user" the VM should be started?
+            # prepare_actinia(vm_size, queue_name (created in enqueue_job))
+            #    * check if VM already run (if only one VM should be started per user)
+            #    * start VM
+            #    * install actinia
+            #    * start worker for queue_name (execute_actinia)
+            # vm_size, ... in preprocess (attributes of rdc?)
             enqueue_job(self.job_timeout, start_job, rdc)
 
         html_code, response_model = pickle.loads(self.response_data)

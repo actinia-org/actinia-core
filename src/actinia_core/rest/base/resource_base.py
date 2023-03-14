@@ -352,6 +352,14 @@ class ResourceBase(Resource):
         ]
         self.job_timeout = int(process_time_limit * process_num_limit * 20)
 
+        # IDEA: maybe here we can also ask for the user the (
+        # self.user_credentials["vm_definition"]):
+        #  * VM size
+        #  * number of worker per VM
+        #  * mounts
+        #  * ...
+        # return directly an error message (create_response_from_model)
+
         # Create the resource URL base and use a placeholder for the file name
         # The placeholder __None__ must be replaced by the resource URL
         # generator
