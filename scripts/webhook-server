@@ -30,6 +30,8 @@ import os
 import signal
 from flask import Flask, make_response, jsonify, request, json
 from multiprocessing import Process
+from werkzeug.exceptions import BadRequest
+
 from pprint import pprint
 
 __license__    = "GPLv3"
@@ -43,15 +45,19 @@ flask_app = Flask(__name__)
 
 @flask_app.route('/webhook/finished', methods=['GET', 'POST'])
 def finished():
-    if request.get_json():
+    try:
         pprint(json.loads(request.get_json()))
+    except BadRequest:
+        pass
     return make_response(jsonify("OK"), 200)
 
 
 @flask_app.route('/webhook/update', methods=['GET', 'POST'])
 def update():
-    if request.get_json():
+    try:
         pprint(json.loads(request.get_json()))
+    except BadRequest:
+        pass
     return make_response(jsonify("OK"), 200)
 
 
