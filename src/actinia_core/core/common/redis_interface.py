@@ -90,7 +90,16 @@ def __create_job_queue(queue_name):
     string = "Create queue %s with server %s:%s" % (queue_name, host, port)
     log.info(string)
     queue = rq.Queue(queue_name, connection=redis_conn)
-    job_queues.append(queue)
+
+    if not job_queues:
+        job_queues.append(queue)
+
+    all_queue_names = []
+    for job_queue in job_queues:
+        all_queue_names.append(job_queue.name)
+
+    if queue_name not in all_queue_names:
+        job_queues.append(queue)
 
 
 def __enqueue_job_redis(queue, timeout, func, *args):
@@ -134,6 +143,18 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     if queue_type == "per_job":
         resource_id = args[0].resource_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
+        __create_job_queue(queue_name)
+        for i in job_queues:
+            if i.name == queue_name:
+                args[0].set_queue_name(queue_name)
+                __enqueue_job_redis(i, timeout, func, *args)
+
+    elif queue_type == "per_user":
+        user_id = args[0].user_id
+        queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, user_id)
+        # Run __create_job_queue everytime.
+        # If queue already exists, rq seems to be fine with it
+        # and old jobs are still kept inside.
         __create_job_queue(queue_name)
         for i in job_queues:
             if i.name == queue_name:
