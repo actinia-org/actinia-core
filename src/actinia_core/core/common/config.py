@@ -384,7 +384,8 @@ class Configuration(object):
         # It will be extended by a numerical suffix that represents
         # the worker id/number database to re-queue it, usually this is not
         # necessary. If QUEUE_TYPE = per_job, it is extended by the
-        # resource_id of the job.
+        # resource_id of the job, if QUEUE_TYPE = per_user, it is extended
+        # by the user_id
         self.WORKER_QUEUE_PREFIX = "job_queue"
         # Type of queue.
         # "local":  Single queue for all jobs, processed by same actinia
@@ -396,8 +397,11 @@ class Configuration(object):
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). Resource_id will be added to above
         #           WORKER_QUEUE_PREFIX.
+        # "per_user": Separate queue for each user, config for NUMBER_OF_WORKERS
+        #           is ignored. Processed by different actinia instance
+        #           (actinia worker). User_id will be added to above
+        #           WORKER_QUEUE_PREFIX.
         # future ideas
-        # - redis separate queue per user
         # - redis separate queue per process type
         # - redis separate queue per resource consumption
         self.QUEUE_TYPE = "local"
