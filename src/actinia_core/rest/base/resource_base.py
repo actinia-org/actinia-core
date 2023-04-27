@@ -136,7 +136,7 @@ class ResourceBase(Resource):
             self.queue = "%s_%s" % (
                 global_config.WORKER_QUEUE_PREFIX,
                 self.user_id,
-        )
+            )
         elif global_config.QUEUE_TYPE == "redis":
             self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, "count")
         else:
