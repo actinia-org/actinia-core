@@ -76,29 +76,21 @@ def __create_job_queue(queue_name):
     # Redis work queue and connection
     global job_queues, redis_conn
 
-    host = global_config.REDIS_QUEUE_SERVER_URL
-    port = global_config.REDIS_QUEUE_SERVER_PORT
-    password = global_config.REDIS_QUEUE_SERVER_PASSWORD
+    if not any(q.name == queue_name for q in job_queues):
+        host = global_config.REDIS_QUEUE_SERVER_URL
+        port = global_config.REDIS_QUEUE_SERVER_PORT
+        password = global_config.REDIS_QUEUE_SERVER_PASSWORD
 
-    kwargs = dict()
-    kwargs["host"] = host
-    kwargs["port"] = port
-    if password and password is not None:
-        kwargs["password"] = password
-    redis_conn = Redis(**kwargs)
+        kwargs = dict()
+        kwargs["host"] = host
+        kwargs["port"] = port
+        if password and password is not None:
+            kwargs["password"] = password
+        redis_conn = Redis(**kwargs)
 
-    string = "Create queue %s with server %s:%s" % (queue_name, host, port)
-    log.info(string)
-    queue = rq.Queue(queue_name, connection=redis_conn)
-
-    if not job_queues:
-        job_queues.append(queue)
-
-    all_queue_names = []
-    for job_queue in job_queues:
-        all_queue_names.append(job_queue.name)
-
-    if queue_name not in all_queue_names:
+        string = "Create queue %s with server %s:%s" % (queue_name, host, port)
+        log.info(string)
+        queue = rq.Queue(queue_name, connection=redis_conn)
         job_queues.append(queue)
 
 
@@ -153,8 +145,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         user_id = args[0].user_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, user_id)
         # Run __create_job_queue everytime.
-        # If queue already exists, rq seems to be fine with it
-        # and old jobs are still kept inside.
+        # If queue already exists, it does nothing.
         __create_job_queue(queue_name)
         for i in job_queues:
             if i.name == queue_name:
