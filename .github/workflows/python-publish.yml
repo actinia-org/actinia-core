@@ -19,6 +19,14 @@ jobs:
         export DEBIAN_FRONTEND=noninteractive
         sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
         pip3 install build
+    - name: Update Version Number
+        run: |
+          # already done in update-version workflow,
+          # repeated here if other workflow is slower.
+          OLD_VERSION=`cat pyproject.toml | grep ^version | cut -d '"' -f 2`
+          OLD_VERSION="\"$OLD_VERSION\""
+          NEW_VERSION="\"$GITHUB_REF_NAME\""
+          sed -i "s+version = $OLD_VERSION+version = $NEW_VERSION+g" pyproject.toml
     - name: Build package
       run: python3 -m build --outdir build .
     - name: Release
