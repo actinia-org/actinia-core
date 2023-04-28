@@ -5,7 +5,7 @@ on:
     types: [published]
 
 jobs:
-  deploy:
+  upload-python-package:
 
     runs-on: ubuntu-latest
 
