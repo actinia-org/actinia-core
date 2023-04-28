@@ -9,7 +9,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+            ref: github.event.release.target_commitish
       - name: Update Version Number
         run: |
           OLD_VERSION=`cat pyproject.toml | grep ^version | cut -d '"' -f 2`
@@ -21,4 +23,5 @@ jobs:
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git commit -a -m "Update version number to new_version"
+          git branch -a
           git push origin pypi
