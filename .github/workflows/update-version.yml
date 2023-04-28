@@ -11,7 +11,7 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
-            ref: github.event.release.target_commitish
+          fetch-depth: 0
       - name: Update Version Number
         run: |
           OLD_VERSION=`cat pyproject.toml | grep ^version | cut -d '"' -f 2`
