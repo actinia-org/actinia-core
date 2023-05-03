@@ -132,6 +132,11 @@ class ResourceBase(Resource):
                 global_config.WORKER_QUEUE_PREFIX,
                 self.resource_id,
             )
+        elif global_config.QUEUE_TYPE == "per_user":
+            self.queue = "%s_%s" % (
+                global_config.WORKER_QUEUE_PREFIX,
+                self.user_id,
+            )
         elif global_config.QUEUE_TYPE == "redis":
             self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, "count")
         else:

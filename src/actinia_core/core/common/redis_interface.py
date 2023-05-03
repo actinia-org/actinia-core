@@ -76,21 +76,22 @@ def __create_job_queue(queue_name):
     # Redis work queue and connection
     global job_queues, redis_conn
 
-    host = global_config.REDIS_QUEUE_SERVER_URL
-    port = global_config.REDIS_QUEUE_SERVER_PORT
-    password = global_config.REDIS_QUEUE_SERVER_PASSWORD
+    if not any(q.name == queue_name for q in job_queues):
+        host = global_config.REDIS_QUEUE_SERVER_URL
+        port = global_config.REDIS_QUEUE_SERVER_PORT
+        password = global_config.REDIS_QUEUE_SERVER_PASSWORD
 
-    kwargs = dict()
-    kwargs["host"] = host
-    kwargs["port"] = port
-    if password and password is not None:
-        kwargs["password"] = password
-    redis_conn = Redis(**kwargs)
+        kwargs = dict()
+        kwargs["host"] = host
+        kwargs["port"] = port
+        if password and password is not None:
+            kwargs["password"] = password
+        redis_conn = Redis(**kwargs)
 
-    string = "Create queue %s with server %s:%s" % (queue_name, host, port)
-    log.info(string)
-    queue = rq.Queue(queue_name, connection=redis_conn)
-    job_queues.append(queue)
+        string = "Create queue %s with server %s:%s" % (queue_name, host, port)
+        log.info(string)
+        queue = rq.Queue(queue_name, connection=redis_conn)
+        job_queues.append(queue)
 
 
 def __enqueue_job_redis(queue, timeout, func, *args):
@@ -134,6 +135,17 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     if queue_type == "per_job":
         resource_id = args[0].resource_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, resource_id)
+        __create_job_queue(queue_name)
+        for i in job_queues:
+            if i.name == queue_name:
+                args[0].set_queue_name(queue_name)
+                __enqueue_job_redis(i, timeout, func, *args)
+
+    elif queue_type == "per_user":
+        user_id = args[0].user_id
+        queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, user_id)
+        # Run __create_job_queue everytime.
+        # If queue already exists, it does nothing.
         __create_job_queue(queue_name)
         for i in job_queues:
             if i.name == queue_name:
