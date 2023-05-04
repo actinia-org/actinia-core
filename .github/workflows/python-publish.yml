@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install dependencies
         run: |
           # noninteractive is necessary to install libgdal-dev
@@ -36,7 +36,7 @@ jobs:
           files: build/*.whl
 
     # - name: Publish package
-    #   uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
+    #   uses: pypa/gh-action-pypi-publish@release/v1
     #   with:
     #     user: __token__
     #     password: ${{ secrets.PYPI_API_TOKEN }}
