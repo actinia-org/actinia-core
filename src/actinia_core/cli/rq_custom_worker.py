@@ -76,7 +76,7 @@ def main():
 
     if parser.prog == "rq_custom_worker":
         log.warning(
-            'The call "rq_custom_worker" is deprecated and will be '
+            'The command "rq_custom_worker" is deprecated and will be '
             'removed soon. Use "actinia-worker" instead!'
         )
 

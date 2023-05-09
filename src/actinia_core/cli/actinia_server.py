@@ -54,7 +54,7 @@ def main():
 
     if parser.prog == "actinia_server":
         log.warning(
-            'The call "actinia_server" is deprecated and will be '
+            'The command "actinia_server" is deprecated and will be '
             'removed soon. Use "actinia-server" instead!'
         )
 

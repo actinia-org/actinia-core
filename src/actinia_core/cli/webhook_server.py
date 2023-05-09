@@ -80,7 +80,7 @@ def main():
 
     if parser.prog == "webhook_server":
         log.warning(
-            'The call "webhook_server" is deprecated and will be '
+            'The command "webhook_server" is deprecated and will be '
             'removed soon. Use "webhook-server" instead!'
         )
 
