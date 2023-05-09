@@ -53,8 +53,10 @@ def main():
     )
 
     if parser.prog == "actinia_server":
-        log.warning('The call "actinia_server" is deprecated and will be '
-                    'removed soon. User "actinia-server" instead!')
+        log.warning(
+            'The call "actinia_server" is deprecated and will be '
+            'removed soon. User "actinia-server" instead!'
+        )
 
     parser.add_argument(
         "--host",

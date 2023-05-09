@@ -75,8 +75,10 @@ def main():
     )
 
     if parser.prog == "rq_custom_worker":
-        log.warning('The call "rq_custom_worker" is deprecated and will be '
-                    'removed soon. User "actinia-worker" instead!')
+        log.warning(
+            'The call "rq_custom_worker" is deprecated and will be '
+            'removed soon. User "actinia-worker" instead!'
+        )
 
     parser.add_argument(
         "queue",

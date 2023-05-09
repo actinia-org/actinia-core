@@ -140,8 +140,10 @@ def main():
     )
 
     if parser.prog == "actinia_user":
-        log.warning('The call "actinia_user" is deprecated and will be '
-                    'removed soon. User "actinia-user" instead!')
+        log.warning(
+            'The call "actinia_user" is deprecated and will be '
+            'removed soon. User "actinia-user" instead!'
+        )
 
     parser.add_argument(
         "action",
