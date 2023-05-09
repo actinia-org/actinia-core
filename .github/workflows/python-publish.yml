@@ -10,37 +10,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Install dependencies
-      run: |
-        # noninteractive is necessary to install libgdal-dev
-        # which is needed for python gdal which is
-        # required by rasterio
-        export DEBIAN_FRONTEND=noninteractive
-        sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
-        pip3 install build
-    - name: Update Version Number
-      run: |
-        # already done in update-version workflow,
-        # repeated here if other workflow is slower.
-        OLD_VERSION=`cat pyproject.toml | grep ^version | cut -d '"' -f 2`
-        OLD_VERSION="\"$OLD_VERSION\""
-        NEW_VERSION="\"$GITHUB_REF_NAME\""
-        sed -i "s+version = $OLD_VERSION+version = $NEW_VERSION+g" pyproject.toml
-    - name: Build package
-      run: python3 -m build --outdir build .
-    - name: Release
-      uses: softprops/action-gh-release@v1
-      if: startsWith(github.ref, 'refs/tags/')
-      with:
-        files: build/*.whl
+      - uses: actions/checkout@v3
+      - name: Install dependencies
+        run: |
+          # noninteractive is necessary to install libgdal-dev
+          # which is needed for python gdal which is
+          # required by rasterio
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update && sudo apt-get install python3 python3-pip python3-venv libgdal-dev -y
+          pip3 install build
+      - name: Update Version Number
+        run: |
+          # already done in update-version workflow,
+          # repeated here if other workflow is slower.
+          OLD_VERSION=`cat pyproject.toml | grep ^version | cut -d '"' -f 2`
+          OLD_VERSION="\"$OLD_VERSION\""
+          NEW_VERSION="\"$GITHUB_REF_NAME\""
+          sed -i "s+version = $OLD_VERSION+version = $NEW_VERSION+g" pyproject.toml
+      - name: Build package
+        run: python3 -m build --outdir build .
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: build/*.whl
 
 
-    - name: Publish package
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        repository_url: https://test.pypi.org/legacy/
-        password: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        # password: ${{ secrets.PYPI_API_TOKEN }}
-        packages_dir: build/
-        verbose: true
+      - name: Publish package
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository_url: https://test.pypi.org/legacy/
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          # password: ${{ secrets.PYPI_API_TOKEN }}
+          packages_dir: build/
+          verbose: true
