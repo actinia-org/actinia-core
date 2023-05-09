@@ -35,7 +35,6 @@ from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.redis_interface import connect
 from actinia_core.core.common.process_queue import create_process_queue
-from actinia_core.core.logging_interface import log
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -51,12 +50,6 @@ def main():
         description="Start actinia server. A running redis server"
         + " is required."
     )
-
-    if parser.prog == "actinia_server":
-        log.warning(
-            'The command "actinia_server" is deprecated and will be '
-            'removed soon. Use "actinia-server" instead!'
-        )
 
     parser.add_argument(
         "--host",

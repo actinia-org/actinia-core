@@ -29,8 +29,6 @@ import argparse
 from pprint import pprint
 from flask import Flask, make_response, jsonify, request, json
 
-from actinia_core.core.logging_interface import log
-
 __license__ = "GPLv3"
 __author__ = "Soeren Gebbert, Anika Weinmann"
 __copyright__ = (
@@ -77,12 +75,6 @@ def main():
         " - /webhook/finished for finished callbacks "
         " - /webhook/update for status update callbacks"
     )
-
-    if parser.prog == "webhook_server":
-        log.warning(
-            'The command "webhook_server" is deprecated and will be '
-            'removed soon. Use "webhook-server" instead!'
-        )
 
     parser.add_argument(
         "--host",

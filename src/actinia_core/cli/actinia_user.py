@@ -29,7 +29,6 @@ Purpose: Command line program to manage actinia user
 
 from actinia_core.core.common.config import Configuration
 from actinia_core.core.common.user import ActiniaUser
-from actinia_core.core.logging_interface import log
 from actinia_core.core.redis_user import redis_user_interface
 import argparse
 import pprint
@@ -138,12 +137,6 @@ def main():
         description="Manage actinia users in the Redis database.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
-
-    if parser.prog == "actinia_user":
-        log.warning(
-            'The command "actinia_user" is deprecated and will be '
-            'removed soon. Use "actinia-user" instead!'
-        )
 
     parser.add_argument(
         "action",

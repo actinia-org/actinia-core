@@ -78,11 +78,8 @@ actinia-user = "actinia_core.cli.actinia_user:main"
 actinia-worker = "actinia_core.cli.rq_custom_worker:main"
 actinia-server = "actinia_core.cli.actinia_server:main"
 webhook-server = "actinia_core.cli.webhook_server:main"
-
-actinia_user = "actinia_core.cli.actinia_user:main"
+# still support deprecated command
 rq_custom_worker = "actinia_core.cli.rq_custom_worker:main"
-actinia_server = "actinia_core.cli.actinia_server:main"
-webhook_server = "actinia_core.cli.webhook_server:main"
 
 [project.urls]
 Homepage = "https://github.com/actinia-org/actinia_core"
