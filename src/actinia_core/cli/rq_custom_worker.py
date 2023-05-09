@@ -42,6 +42,7 @@ from redis import Redis
 import logging
 import logging.handlers
 from actinia_core.core.common.config import Configuration
+from actinia_core.core.logging_interface import log
 import os
 import argparse
 import platform
@@ -72,6 +73,10 @@ def main():
         "in the default Actinia Core configuration file"
         "or a file specified by an optional path."
     )
+
+    if parser.prog == "rq_custom_worker":
+        log.warning('The call "rq_custom_worker" is deprecated and will be '
+                    'removed soon. User "actinia-worker" instead!')
 
     parser.add_argument(
         "queue",
