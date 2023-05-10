@@ -20,7 +20,23 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
+ 
+## [4.8.0] - 2023-05-10
+released from main
+### Fixed
+* change deprecated tag creation by @mmacata in https://github.com/actinia-org/actinia-core/pull/419
+* update GH action versions by @neteler in https://github.com/actinia-org/actinia-core/pull/420
+* docker CI: only run CI in actinia-org remote by @neteler in https://github.com/actinia-org/actinia-core/pull/424
+### Added
+* Allow one job queue per user by @mmacata in https://github.com/actinia-org/actinia-core/pull/421
+* README.md: Thanks to all contributors by @neteler in https://github.com/actinia-org/actinia-core/pull/423
+* Allow redis queue config to be overwritten by env vars by @mmacata in https://github.com/actinia-org/actinia-core/pull/426
 
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.7.1...4.8.0
+
+ generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.8.0" -f target_commitish=main -q .body`
+ 
+ 
 ## [4.7.1] - 2023-02-09
 ### Fixed
 * fix tgis merge by interim results by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/413
