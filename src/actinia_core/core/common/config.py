@@ -1030,7 +1030,7 @@ class Configuration(object):
         if os.environ.get("REDIS_SERVER_PW"):
             print_warning("REDIS", "REDIS_SERVER_PW", "XXX", "XXX")
             self.REDIS_SERVER_PW = os.environ["REDIS_SERVER_PW"]
-            
+
         if os.environ.get("REDIS_QUEUE_SERVER_URL"):
             print_warning("QUEUE", "REDIS_QUEUE_SERVER_URL")
             self.REDIS_QUEUE_SERVER_URL = os.environ["REDIS_QUEUE_SERVER_URL"]
@@ -1040,7 +1040,7 @@ class Configuration(object):
             self.REDIS_QUEUE_SERVER_PORT = os.environ["REDIS_QUEUE_SERVER_PORT"]
 
         if os.environ.get("REDIS_QUEUE_SERVER_PW"):
-            print_warning("QUEUE", "REDIS_QUEUE_SERVER_PW", "XXX", "XXX")
+            print_warning("QUEUE", "REDIS_QUEUE_SERVER_PASSWORD", "XXX", "XXX")
             self.REDIS_QUEUE_SERVER_PASSWORD = os.environ["REDIS_QUEUE_SERVER_PW"]
 
 
