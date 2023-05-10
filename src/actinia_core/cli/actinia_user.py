@@ -37,7 +37,7 @@ import sys
 __license__ = "GPLv3"
 __author__ = "Soeren Gebbert"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
