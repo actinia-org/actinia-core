@@ -3,20 +3,11 @@
 clean:
 	python3 setup.py clean
 
-docs:
-	python3 setup.py docs
-
 build:
-	python3 setup.py build
+	python3 -m build
 
 install:
-	python3 setup.py install
-
-bdist:
-	python3 setup.py bdist
-
-dist:
-	python3 setup.py dist
+	pip3 install .
 
 test:
 	./tests_with_redis.sh

@@ -29,23 +29,25 @@ import argparse
 from pprint import pprint
 from flask import Flask, make_response, jsonify, request, json
 
-__license__    = "GPLv3"
-__author__     = "Soeren Gebbert, Anika Weinmann"
-__copyright__  = "Copyright 2016-2022, mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Soeren Gebbert, Anika Weinmann"
+__copyright__ = (
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 flask_app = Flask(__name__)
 
 
-@flask_app.route('/webhook/finished', methods=['GET', 'POST'])
+@flask_app.route("/webhook/finished", methods=["GET", "POST"])
 def finished():
     if request.get_json():
         pprint(json.loads(request.get_json()))
     return make_response(jsonify("OK"), 200)
 
 
-@flask_app.route('/webhook/update', methods=['GET', 'POST'])
+@flask_app.route("/webhook/update", methods=["GET", "POST"])
 def update():
     if request.get_json():
         pprint(json.loads(request.get_json()))
@@ -53,13 +55,13 @@ def update():
 
 
 def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
+    func = request.environ.get("werkzeug.server.shutdown")
     if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
+        raise RuntimeError("Not running with the Werkzeug Server")
     func()
 
 
-@flask_app.route('/shutdown', methods=['GET'])
+@flask_app.route("/shutdown", methods=["GET"])
 def shutdown():
     shutdown_server()
     return make_response(jsonify("Server shutting down..."), 200)
@@ -67,21 +69,33 @@ def shutdown():
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start a REST webhook server that exposes a two GET/POST endpoint '
-                                                 'which returns HTTP code 200 if called. The endpoints are: '
-                                                 ' - /webhook/finished for finished callbacks '
-                                                 ' - /webhook/update for status update callbacks')
+    parser = argparse.ArgumentParser(
+        description="Start a REST webhook server that exposes a GET/POST "
+        "endpoint which returns HTTP code 200 if called. The endpoints are: "
+        " - /webhook/finished for finished callbacks "
+        " - /webhook/update for status update callbacks"
+    )
 
-    parser.add_argument("--host", type=str, required=False, default="0.0.0.0",
-                        help="The IP address that should be used for the webhook server")
+    parser.add_argument(
+        "--host",
+        type=str,
+        required=False,
+        default="0.0.0.0",
+        help="The IP address that should be used for the webhook server",
+    )
 
-    parser.add_argument("--port", type=int, required=False, default=5005,
-                        help="The port that should be used for the webhook server")
+    parser.add_argument(
+        "--port",
+        type=int,
+        required=False,
+        default=5005,
+        help="The port that should be used for the webhook server",
+    )
 
     args = parser.parse_args()
 
     flask_app.run(host=args.host, port=args.port)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
