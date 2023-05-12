@@ -26,12 +26,17 @@
 Dummy server to response HTTP code 200 to a POST call from an actinia webhook
 """
 import argparse
-from pprint import pprint
+import os
+import signal
 from flask import Flask, make_response, jsonify, request, json
+from multiprocessing import Process
+from werkzeug.exceptions import BadRequest
+
+from pprint import pprint
 
 __license__    = "GPLv3"
-__author__     = "Soeren Gebbert, Anika Weinmann"
-__copyright__  = "Copyright 2016-2022, mundialis GmbH & Co. KG"
+__author__     = "Soeren Gebbert, Anika Weinmann, Carmen Tawalika"
+__copyright__  = "Copyright 2016-2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
@@ -42,7 +47,7 @@ flask_app = Flask(__name__)
 def finished():
     if request.get_json():
         pprint(json.loads(request.get_json()))
-    shutdown_server()
+    shutdown_webhook()
 
 
 @flask_app.route('/webhook/update', methods=['GET', 'POST'])
@@ -52,16 +57,20 @@ def update():
     return make_response(jsonify("OK"), 200)
 
 
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
+def shutdown_webhook():
+    server_pid = os.getpid()
+    server_signal = signal.SIGINT
+    sp = Process(target=shutdown_server, args=(server_pid, server_signal))
+    sp.start()
+
+
+def shutdown_server(server_pid, server_signal):
+    os.kill(server_pid, server_signal)
 
 
 @flask_app.route('/shutdown', methods=['GET'])
 def shutdown():
-    shutdown_server()
+    shutdown_webhook()
     return make_response(jsonify("Server shutting down..."), 200)
 
 
