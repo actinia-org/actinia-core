@@ -43,6 +43,7 @@ COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
 
 COPY requirements.txt /src/requirements.txt
 RUN pip3 install -r /src/requirements.txt
+RUN pip3 install pytest pytest-cov
 
 # TODO: Postgres for tests
 # using tests/data/poly.gpkg
@@ -50,8 +51,6 @@ RUN pip3 install -r /src/requirements.txt
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
 RUN chmod a+x tests_with_redis.sh
-
-RUN pip3 install pytest pytest-cov
 
 RUN make install
 

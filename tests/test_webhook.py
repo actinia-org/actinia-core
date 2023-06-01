@@ -73,8 +73,7 @@ def startWebhook(sleeptime=10):
     and /webhook/finished endpoints and can be shutdown by endpoint /shutdown.
     """
     inputlist = [
-        "python3",
-        "/src/actinia_core/scripts/webhook-server",
+        "webhook-server",
         "--host",
         "0.0.0.0",
         "--port",

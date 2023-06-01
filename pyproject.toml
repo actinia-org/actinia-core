@@ -1,0 +1,103 @@
+[build-system]
+requires      = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "actinia-core"
+version = "4.7.1"
+description = "Actinia Core is an open source REST API for scalable, distributed, high performance processing of geographical data that uses mainly GRASS GIS for computational tasks"
+readme = "README.md"
+authors = [
+    { name = "Carmen Tawalika"},
+    { name = "Anika Weinmann"},
+    { name = "Guido Riembauer"},
+    { name = "Markus Metz"},
+    { name = "Julia Haas"},
+    { name = "Marc Jansen"},
+    { name = "Jorge A. Herrera Maldonado"},
+    { name = "Sören Gebbert"},
+    { name = "Markus Neteler"},
+    { name = "Momen Mawad"},
+    { name = "and more"}
+]
+classifiers = [
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Programming Language :: Python :: 3",
+]
+requires-python = ">=3.8"
+keywords = [
+    "processing",
+    "earth observation",
+    "cloud-based processing",
+    "rest api",
+    "gis",
+    "grass gis",
+    "osgeo",
+]
+dependencies = [
+    "actinia-api==3.4.0",
+    "Flask>=1.1.4",
+    "boto3>=1.6.6",
+    "colorlog>=4.2.1",
+    "docutils==0.15",
+    "Flask-HTTPAuth>=3.2.3",
+    "Flask-RESTful>=0.3.9",
+    "flask-restful-swagger-2",
+    "Flask-Cors>=3.0.3",
+    "fluent-logger>=0.9.4",
+    "google-cloud>=0.32.0",
+    "google-cloud-bigquery<=3.0.0",
+    "google-cloud-storage>=1.6.0",
+    "gunicorn>=19.9.0",
+    "matplotlib==3.3.4",
+    "passlib>=1.7.1",
+    "ply>=3.11",
+    "psutil>=5.7.0",
+    "python-json-logger",
+    "python-keycloak>=2.6.0",
+    "python-magic>=0.4.15",
+    "Sphinx>=1.7.1",
+    "redis>=2.10.6",
+    "requests>=2.20.0",
+    "rq>=0.10.0",
+    "setuptools",
+    "uWSGI>=2.0.17",
+    "wheel",
+    "geopandas",
+    "rasterio==1.3.4",
+    "pystac==0.5.6",
+    "PyJWT",
+    "werkzeug==2.0.3",
+    "pandas",
+    "sentinelsat",
+    "tqdm",
+]
+
+[project.optional-dependencies]
+plugins = [
+    # "actinia-module-plugin @ https://github.com/actinia-org/actinia-module-plugin/releases/download/2.3.1/actinia_module_plugin.wsgi-2.3.1-py2.py3-none-any.whl",
+    # "actinia-metadata-plugin @ https://github.com/actinia-org/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
+    # "actinia-satellite-plugin @ https://github.com/actinia-org/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
+    # "actinia-statistic-plugin @ https://github.com/actinia-org/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
+]
+
+[project.scripts]
+actinia-user = "actinia_core.cli.actinia_user:main"
+actinia-worker = "actinia_core.cli.rq_custom_worker:main"
+actinia-server = "actinia_core.cli.actinia_server:main"
+webhook-server = "actinia_core.cli.webhook_server:main"
+# still support deprecated command
+rq_custom_worker = "actinia_core.cli.rq_custom_worker:main"
+
+[project.urls]
+Homepage = "https://github.com/actinia-org/actinia_core"
+Tutorial = "https://actinia-org.github.io/actinia_core"
+API_Docs = "https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json"
+
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "--cov actinia_core --cov-report term-missing --verbose --tb=line -x"
+testpaths = [
+    "tests",
+]

@@ -34,6 +34,18 @@ see [here](https://github.com/mundialis/actinia_core/tree/main/scripts).
 
 ## Installation
 
+Required system packages:
+* alpine: `apk add python3 py3-pip`
+  As not all python packages are pre-build for alpine, they need to be build during installation. For this some system packages are required:
+  `apk add python3 py3-pip python3-dev gcc musl-dev linux-headers build-base gdal gdal-tools gdal-dev proj proj-util proj-dev geos-dev py3-numpy-dev`
+* ubuntu: `apt install -y python3 python3-pip`
+
+And then install from pypi:
+```
+pip install actinia-core
+```
+## Installation with Docker
+
 Docker images are available from https://hub.docker.com/r/mundialis/actinia-core
 
 ```
@@ -96,3 +108,9 @@ To see a simple **list of endpoints** (and more), consult the "paths" section in
 # sudo npm install -g json
 curl -u 'demouser:gu3st!pa55w0rd' -X GET https://actinia.mundialis.de/api/v3/swagger.json | json paths | json -ka
 ```
+
+## Thanks to all contributors ❤
+
+<a href = "https://github.com/actinia-org/actinia-core/graphs/contributors">
+    <img src = "https://contrib.rocks/image?repo=actinia-org/actinia-core"/>
+</a>

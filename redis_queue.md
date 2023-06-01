@@ -20,7 +20,14 @@ queue_type = redis
 `cd ~/repos/actinia` + press F5
 - Start Container for worker
 ```
-docker-compose -f actinia-docker/docker-compose-dev-rq.yml run --rm --service-ports --entrypoint sh actinia-worker
+MY_ACTINIA_DATA=$HOME/actinia
+docker run --rm -it --entrypoint sh \
+    -v $HOME/repos/actinia/actinia-docker/actinia-dev/actinia.cfg:/etc/default/actinia \
+    -v $MY_ACTINIA_DATA/workspace:/actinia_core/workspace \
+    -v $MY_ACTINIA_DATA/resources:/actinia_core/resources \
+    -v $MY_ACTINIA_DATA/grassdb:/actinia_core/grassdb \
+    -v $MY_ACTINIA_DATA/grassdb_user:/actinia_core/userdata \
+    --network actinia-docker_actinia-dev mundialis/actinia:2.5.6
 ```
 - inside container, start worker listening to specified queue
 ```
