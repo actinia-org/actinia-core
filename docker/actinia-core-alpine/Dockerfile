@@ -1,4 +1,4 @@
-FROM mundialis/actinia:alpine-dependencies-2022-11-18 as build-base
+FROM mundialis/actinia:alpine-dependencies-2023-06-03 as build-base
 FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
 
 FROM build-base as build
@@ -7,16 +7,12 @@ LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
 COPY . /src/actinia_core
-
 WORKDIR /src/actinia_core
-# setuptools uses this command or similar to determine app version
-# in CI environments it might not work as expected
-# RUN git describe --dirty --tags --long --first-parent
-RUN git checkout .
-RUN python3 setup.py sdist bdist_wheel -d /build
+RUN pip3 install build && python3 -m build --outdir /build .
+RUN if [[ -f /build/UNKNOWN* ]];then echo "ERROR - Check actinia-core build";exit 1;fi
 
 
-FROM mundialis/actinia:alpine-dependencies-v1 as actinia_installation
+FROM mundialis/actinia:alpine-dependencies-2023-06-03 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
