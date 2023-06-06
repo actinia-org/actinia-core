@@ -56,7 +56,7 @@ add_versions = {
         ("a!", False),
         ("a-", False),
         ("", False),
-        ("a" * 21, False),
+        ("a" * 26, False),
     ],
 )
 def test_valid_additional_version_info_key(key, status):
