@@ -88,7 +88,7 @@ def init_versions():
 def valid_additional_version_info_key(cand):
     """Checks whether the input is a valid key for inclusion in the version/
     output. Keys may only contain lowercase letters and the underscore, have
-    a length between 1 and 20 and must not be any of the reserved keys which
+    a length between 1 and 25 and must not be any of the reserved keys which
     we will set and populate."""
     minlength = 1
     maxlength = 25
