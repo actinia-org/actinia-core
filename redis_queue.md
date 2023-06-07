@@ -171,3 +171,15 @@ string
 127.0.0.1:6379> GET rq:clean_registries:job_queue_0
 "1"
 ```
+
+## Example how to set timeout
+```
+# requesting jobs in queue (queue name: job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7)
+LRANGE rq:queue:job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7 0 -1
+# requesting job (4b10b746-7842-4bc4-a035-ad908572b1fa)
+HGETALL rq:job:4b10b746-7842-4bc4-a035-ad908572b1fa
+# set timeout for job to 7200 sec
+HSET rq:job:4b10b746-7842-4bc4-a035-ad908572b1fa timeout 7200
+# requesting job
+HGETALL rq:job:4b10b746-7842-4bc4-a035-ad908572b1fa
+```
