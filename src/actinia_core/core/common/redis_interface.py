@@ -103,14 +103,16 @@ def __enqueue_job_redis(queue, timeout, func, *args):
     """
 
     log.info("Enqueue job in queue %s" % queue.name)
-    # Below timeout is defined in resource_base.pyL295:
+    # Below timeout is defined in resource_base.pyL295 will be changed because:
     # int(process_time_limit * process_num_limit * 20)
     # which is 630720000000 and raises in worker:
     # OverflowError: Python int too large to convert to C int
+    if timeout > 2147483647:
+        timeout = -1  # never exprire
     ret = queue.enqueue(
         func,
         *args,
-        # job_timeout=timeout,
+        job_timeout=timeout,
         ttl=global_config.REDIS_QUEUE_JOB_TTL,
         result_ttl=global_config.REDIS_QUEUE_JOB_TTL
     )
