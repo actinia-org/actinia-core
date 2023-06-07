@@ -103,7 +103,9 @@ def __enqueue_job_redis(queue, timeout, func, *args):
     """
 
     log.info("Enqueue job in queue %s" % queue.name)
-    # Below timeout is defined in resource_base.pyL295 will be changed because:
+    # Below timeout is defined in resource_base.pyL295.
+    # If it is higher than 2147483647, it will be set to never expire.
+    # Else it would raise an error:
     # int(process_time_limit * process_num_limit * 20)
     # which is 630720000000 and raises in worker:
     # OverflowError: Python int too large to convert to C int
