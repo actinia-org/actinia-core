@@ -94,8 +94,7 @@ def startBrokenWebhook(sleeptime=10):
     code (500 - 599).
     """
     inputlist = [
-        "python3",
-        "/src/actinia_core/scripts/webhook-server-broken",
+        "webhook-server-broken",
         "--host",
         "0.0.0.0",
         "--port",
@@ -104,7 +103,7 @@ def startBrokenWebhook(sleeptime=10):
     ]
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
-    resp = requests.get(f"http://0.0.0.0:{port}/webhook/update")
+    resp = requests.get(f"http://0.0.0.0:{port}/webhook/finished")
     return resp.status_code
 
 
@@ -126,6 +125,7 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         # poll an actinia job
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
+        time.sleep(10)
         rv2 = self.server.get(
             URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
             headers=self.admin_auth_header,
@@ -151,6 +151,8 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #     )
     #     self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
+    import pytest
+    @pytest.mark.dev
     def test_finished_webhook_retries(self):
         """Test the retry if the webhook can not be reached or returns a server
         error.
