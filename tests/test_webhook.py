@@ -103,7 +103,7 @@ def startBrokenWebhook(sleeptime=10):
     ]
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
-    resp = requests.get(f"http://0.0.0.0:{port}/webhook/finished")
+    resp = requests.get(f"http://0.0.0.0:{port}/webhook/update")
     return resp.status_code
 
 
@@ -151,8 +151,6 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #     )
     #     self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-    import pytest
-    @pytest.mark.dev
     def test_finished_webhook_retries(self):
         """Test the retry if the webhook can not be reached or returns a server
         error.

@@ -26,8 +26,6 @@
 Dummy server to response HTTP code 200 to a POST call from an actinia webhook
 """
 import argparse
-import os
-import signal
 import psutil
 from flask import Flask, make_response, jsonify, request, json
 from multiprocessing import Process
@@ -74,15 +72,12 @@ def shutdown_server(port):
         if (proc.name() == "webhook-server-" and
             proc.as_dict()['connections'] and
             proc.as_dict()['connections'][0].laddr.port == port):
-                print(proc)
                 proc.kill()
 
 
 @flask_app.route('/shutdown', methods=['GET'])
 def shutdown():
     port = request.server[1]
-    print("webhook-server", str(port))
-    # sp = Process(target=shutdown_server, args=(proc.pid, server_signal))
     sp = Process(target=shutdown_server, args=(port,))
     sp.start()
     return make_response(jsonify("Server shutting down..."), 200)
