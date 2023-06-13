@@ -40,7 +40,7 @@ Steps when releasing actinia-core:
 * close the milestone
 
 ## 6. actinia-docker
-* Optionally update version in https://github.com/actinia-org/actinia-docker/blob/main/actinia-alpine/Dockerfile#L15
+* Optionally update version in [https://github.com/actinia-org/actinia-docker/blob/main/actinia-alpine/Dockerfile#L15](https://github.com/actinia-org/actinia-docker/blob/main/actinia-alpine/Dockerfile#L23)
 
 ## Outcome:
 * Automatically a new docker image with the new tag will be created and pushed to [Dockerhub](https://hub.docker.com/r/mundialis/actinia-core/tags)
