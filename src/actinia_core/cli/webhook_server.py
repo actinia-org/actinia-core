@@ -66,10 +66,12 @@ def update():
 
 def shutdown_server(port):
     for proc in psutil.process_iter():
-        if (proc.name() == "webhook-server" and
-            proc.as_dict()['connections'] and
-            proc.as_dict()['connections'][0].laddr.port == port):
-                proc.kill()
+        if (
+            proc.name() == "webhook-server"
+            and proc.as_dict()["connections"]
+            and proc.as_dict()["connections"][0].laddr.port == port
+        ):
+            proc.kill()
 
 
 @flask_app.route("/shutdown", methods=["GET"])
