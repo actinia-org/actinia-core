@@ -44,13 +44,16 @@ flask_app = Flask(__name__)
 
 @flask_app.route("/webhook/finished", methods=["GET", "POST"])
 def finished():
+    port = request.server[1]
     try:
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
     except TypeError:
         pass
-    return make_response(jsonify("OK"), 200)
+    sp = Process(target=shutdown_server, args=(port,))
+    sp.start()
+    return make_response(jsonify("Server shutting down..."), 200)
 
 
 @flask_app.route("/webhook/update", methods=["GET", "POST"])
@@ -67,7 +70,7 @@ def update():
 def shutdown_server(port):
     for proc in psutil.process_iter():
         if (
-            proc.name() == "webhook-server"
+            proc.name() == "webhook-server-"
             and proc.as_dict()["connections"]
             and proc.as_dict()["connections"][0].laddr.port == port
         ):
@@ -85,8 +88,8 @@ def shutdown():
 def main():
 
     parser = argparse.ArgumentParser(
-        description="Start a REST webhook server that exposes a GET/POST "
-        "endpoint which returns HTTP code 200 if called. The endpoints are: "
+        description="Start a webhook server that exposes GET/POST endpoints "
+        "which returns HTTP code 200 if called. The endpoints are: "
         " - /webhook/finished for finished callbacks "
         " - /webhook/update for status update callbacks"
     )

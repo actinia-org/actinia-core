@@ -86,6 +86,7 @@ actinia-user = "actinia_core.cli.actinia_user:main"
 actinia-worker = "actinia_core.cli.rq_custom_worker:main"
 actinia-server = "actinia_core.cli.actinia_server:main"
 webhook-server = "actinia_core.cli.webhook_server:main"
+webhook-server-broken = "actinia_core.cli.webhook_server_broken:main"
 # still support deprecated command
 rq_custom_worker = "actinia_core.cli.rq_custom_worker:main"
 

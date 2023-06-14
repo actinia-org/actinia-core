@@ -145,12 +145,14 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             "red",
             required=True,
             type=str,
+            location="args",
             help="The name of the raster layer associated with the color red",
         )
         parser.add_argument(
             "green",
             required=True,
             type=str,
+            location="args",
             help="The name of the raster layer associated with the color "
             "green",
         )
@@ -158,6 +160,7 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
             "blue",
             required=True,
             type=str,
+            location="args",
             help="The name of the raster layer associated with the color blue",
         )
 
@@ -239,12 +242,14 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
             "shade",
             required=True,
             type=str,
+            location="args",
             help="The name of the raster layer associated with shading",
         )
         parser.add_argument(
             "color",
             required=True,
             type=str,
+            location="args",
             help="The name of the raster layer associated with color",
         )
 

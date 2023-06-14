@@ -94,8 +94,7 @@ def startBrokenWebhook(sleeptime=10):
     code (500 - 599).
     """
     inputlist = [
-        "python3",
-        "/src/actinia_core/scripts/webhook-server-broken",
+        "webhook-server-broken",
         "--host",
         "0.0.0.0",
         "--port",
@@ -126,6 +125,7 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         # poll an actinia job
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
+        time.sleep(10)
         rv2 = self.server.get(
             URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
             headers=self.admin_auth_header,
