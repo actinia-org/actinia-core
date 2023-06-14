@@ -21,6 +21,35 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
  
+## [4.9.0] - 2023-06-07
+released from main
+### Added
+* PyPI publish by @mmacata in https://github.com/actinia-org/actinia-core/pull/373
+
+### Changed
+* Configure Renovate by @renovate in https://github.com/actinia-org/actinia-core/pull/425
+* Update docker/build-push-action action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/437
+* Update docker/login-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/438
+* Update docker/setup-buildx-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/439
+* Update docker/setup-qemu-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/440
+* Update mundialis/actinia-core Docker tag to v4.8.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/434
+* Update docker image by @mmacata in https://github.com/actinia-org/actinia-core/pull/442
+* Increase allowed length of additional version info key by @mmacata in https://github.com/actinia-org/actinia-core/pull/443
+* Align comment with reality by @mmacata in https://github.com/actinia-org/actinia-core/pull/444
+* Update redis_queue.md by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/445
+* Update grass docker image reference by @mmacata in https://github.com/actinia-org/actinia-core/pull/446
+
+### Fixed
+* Change runtime if runtime is higher 2147483647 by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/447
+
+## New Contributors
+* @renovate made their first contribution in https://github.com/actinia-org/actinia-core/pull/425
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.8.0...4.9.0
+
+"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.0" -f target_commitish=main -q .body" 
+ 
+ 
 ## [4.8.0] - 2023-05-10
 released from main
 ### Fixed

@@ -83,7 +83,7 @@ To lint your local changes, run
     ```
     pip3 uninstall actinia_core
     cd /src/actinia_core && pip3 install .
-    rq_custom_worker job_queue_0 -c /etc/default/actinia
+    actinia-worker job_queue_0 -c /etc/default/actinia
     ```
 
 ## Local dev-setup with configured endpoints
