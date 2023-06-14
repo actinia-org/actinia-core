@@ -21,6 +21,21 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
  
+## [4.9.1] - 2023-06-14
+released from main
+### Fixed
+* Update version number to new_version by @mmacata in https://github.com/actinia-org/actinia-core/pull/449
+* Update RELEASE.md by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/451
+* Bump werkzeug from 2.0.3 to 2.3.6 by @dependabot in https://github.com/actinia-org/actinia-core/pull/414
+
+## New Contributors
+* @dependabot made their first contribution in https://github.com/actinia-org/actinia-core/pull/414
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.0...4.9.1
+
+generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.1" -f target_commitish=main -q .body"
+ 
+
 ## [4.9.0] - 2023-06-07
 released from main
 ### Added
