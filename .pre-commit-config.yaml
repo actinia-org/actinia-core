@@ -37,9 +37,10 @@ repos:
                 src/actinia_core.egg-info/
           )
   - repo: https://github.com/pycqa/flake8
-    rev: 3.9.2
+    rev: 3.8.0
     hooks:
       - id: flake8
+        args: [--config=.flake8]
         exclude: |
           (?x)^(
                 build/|
