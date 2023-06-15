@@ -31,155 +31,130 @@ import simplejson
 import time
 from multiprocessing import Process, Queue
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 URL_PREFIX = "/api/v3"
 
-PROCESS_CHAIN_ERROR={
-   1:{
-        "module":"g.region",
-        "inputs":{
-            "flaster":"elevation@PERMANENT",
-            "res":"2.5"
-        },
-        "flags":"p",
-        "verbose":True
-   }
+PROCESS_CHAIN_ERROR = {
+    1: {
+        "module": "g.region",
+        "inputs": {"flaster": "elevation@PERMANENT", "res": "2.5"},
+        "flags": "p",
+        "verbose": True,
+    }
 }
 
-PROCESS_CHAIN_SHORT={
-   1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            "res":"2.5"
+PROCESS_CHAIN_SHORT = {
+    1: {
+        "module": "g.region",
+        "inputs": {"raster": "elevation@PERMANENT", "res": "2.5"},
+        "flags": "p",
+        "verbose": True,
+    },
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0",
         },
-        "flags":"p",
-        "verbose":True
-   },
-   2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
-        },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect"
+        "outputs": {
+            "aspect": {"name": "my_aspect"},
+            "slope": {
+                "name": "my_slope",
+                "export": {"format": "GTiff", "type": "raster"},
             },
-            "slope":{
-                "name":"my_slope",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
-            }
         },
-        "flags":"a",
-        "overwrite":True,
-        "verbose":True
-   }
+        "flags": "a",
+        "overwrite": True,
+        "verbose": True,
+    },
 }
 
 
-PROCESS_CHAIN_LONG={
-   1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"elevation@PERMANENT",
-            #"res":"4"
+PROCESS_CHAIN_LONG = {
+    1: {
+        "module": "g.region",
+        "inputs": {
+            "raster": "elevation@PERMANENT",
+            # "res":"4"
         },
-        "flags":"p",
-        "verbose":True
-   },
-   2:{
-        "module":"r.slope.aspect",
-        "inputs":{
-            "elevation":"elevation@PERMANENT",
-            "format":"degrees",
-            "min_slope":"0.0"
+        "flags": "p",
+        "verbose": True,
+    },
+    2: {
+        "module": "r.slope.aspect",
+        "inputs": {
+            "elevation": "elevation@PERMANENT",
+            "format": "degrees",
+            "min_slope": "0.0",
         },
-        "outputs":{
-            "aspect":{
-                "name":"my_aspect",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
+        "outputs": {
+            "aspect": {
+                "name": "my_aspect",
+                "export": {"format": "GTiff", "type": "raster"},
             },
-            "slope":{
-                "name":"my_slope",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
+            "slope": {
+                "name": "my_slope",
+                "export": {"format": "GTiff", "type": "raster"},
+            },
+        },
+        "flags": "a",
+        "overwrite": True,
+        "verbose": True,
+    },
+    3: {
+        "module": "r.watershed",
+        "inputs": {"elevation": "elevation@PERMANENT"},
+        "outputs": {
+            "accumulation": {
+                "name": "my_accumulation",
+                "export": {"format": "GTiff", "type": "raster"},
             }
         },
-        "flags":"a",
-        "overwrite":True,
-        "verbose":True
-   },
-   3:{
-        "module":"r.watershed",
-        "inputs":{
-            "elevation":"elevation@PERMANENT"
-        },
-        "outputs":{
-            "accumulation":{
-                "name":"my_accumulation",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
-            }
-        }
-   },
-   4:{
-        "module":"r.info",
-        "inputs":{
-            "map":"my_aspect"
-        },
-        "flags":"gr",
-        "verbose":True
-   }
+    },
+    4: {
+        "module": "r.info",
+        "inputs": {"map": "my_aspect"},
+        "flags": "gr",
+        "verbose": True,
+    },
 }
 
 # NDVI computation based on sentinel data
-# i.vi viname=ndvi red=sentinel2_rhein_may2016_B04 nir=sentinel2_rhein_may2016_B08 output=sentinel2_rhein_may2016_B04_NDVI
-# Data here: http://data.neteler.org/tmp/grassdata_sentinel2_rhein_may2016_chan4_8.tgz
-SENTINEL_NDVI={
-   1:{
-        "module":"g.region",
-        "inputs":{
-            "raster":"sentinel2_rhein_may2016_B04@sentinel2_bonn"
+# i.vi viname=ndvi red=sentinel2_rhein_may2016_B04 \
+#      nir=sentinel2_rhein_may2016_B08 output=sentinel2_rhein_may2016_B04_NDVI
+# Data here:
+#  http://data.neteler.org/tmp/grassdata_sentinel2_rhein_may2016_chan4_8.tgz
+SENTINEL_NDVI = {
+    1: {
+        "module": "g.region",
+        "inputs": {"raster": "sentinel2_rhein_may2016_B04@sentinel2_bonn"},
+        "flags": "p",
+        "verbose": False,
+    },
+    2: {
+        "module": "i.vi",
+        "inputs": {
+            "viname": "ndvi",
+            "red": "sentinel2_rhein_may2016_B04@sentinel2_bonn",
+            "nir": "sentinel2_rhein_may2016_B08@sentinel2_bonn",
         },
-        "flags":"p",
-        "verbose":False
-   },
-   2:{
-        "module":"i.vi",
-        "inputs":{
-            "viname":"ndvi",
-            "red":"sentinel2_rhein_may2016_B04@sentinel2_bonn",
-            "nir":"sentinel2_rhein_may2016_B08@sentinel2_bonn",
-        },
-        "outputs":{
-            "output":{
-                "name":"sentinel2_rhein_may2016_B04_NDVI",
-                "export":{
-                    "format":"GTiff",
-                    "type":"raster"
-                }
+        "outputs": {
+            "output": {
+                "name": "sentinel2_rhein_may2016_B04_NDVI",
+                "export": {"format": "GTiff", "type": "raster"},
             }
         },
-        "overwrite":True,
-        "verbose":False
-   }
+        "overwrite": True,
+        "verbose": False,
+    },
 }
 
 # Sentinel benchmark without and with export
@@ -240,58 +215,90 @@ SENTINEL_NDVI={
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Run a simple benchmark on a actinia Service '\
-                                                 'based on the north carolina dataset. '\
-                                                 'Example: actinia-bench -s http://127.0.0.1:80 -u soeren -p 12345678 -r 8 -t long',
-                                     formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+    parser = argparse.ArgumentParser(
+        description="Run a simple benchmark on a actinia Service "
+        "based on the north carolina dataset. "
+        "Example: "
+        "actinia-bench -s http://127.0.0.1:80 -u soeren "
+        "-p 12345678 -r 8 -t long",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
 
-    parser.add_argument("-s", "--server",
-                        type=str,
-                        default=f"http://127.0.0.1:8080{URL_PREFIX}",
-                        required=False,
-                        help="The hostname:port of the actinia server")
+    parser.add_argument(
+        "-s",
+        "--server",
+        type=str,
+        default=f"http://127.0.0.1:8080{URL_PREFIX}",
+        required=False,
+        help="The hostname:port of the actinia server",
+    )
 
-    parser.add_argument("-u", "--user_id",
-                        default="superadmin",
-                        type=str,
-                        required=False,
-                        help="The user name")
+    parser.add_argument(
+        "-u",
+        "--user_id",
+        default="superadmin",
+        type=str,
+        required=False,
+        help="The user name",
+    )
 
-    parser.add_argument("-p", "--password",
-                        default="abcdefgh",
-                        type=str,
-                        required=False,
-                        help="The user password")
+    parser.add_argument(
+        "-p",
+        "--password",
+        default="abcdefgh",
+        type=str,
+        required=False,
+        help="The user password",
+    )
 
-    parser.add_argument("-r", "--requests",
-                        default=1,
-                        type=int,
-                        required=False,
-                        help="The number of parallel requests to perform")
+    parser.add_argument(
+        "-r",
+        "--requests",
+        default=1,
+        type=int,
+        required=False,
+        help="The number of parallel requests to perform",
+    )
 
-    parser.add_argument("-l", "--loop",
-                        default=1,
-                        type=int,
-                        required=False,
-                        help="The number of loops to perform parallel requests")
+    parser.add_argument(
+        "-l",
+        "--loop",
+        default=1,
+        type=int,
+        required=False,
+        help="The number of loops to perform parallel requests",
+    )
 
-    parser.add_argument("-t", "--type",
-                        type=str,
-                        default="short",
-                        choices=["long", "long_export", "short", "short_export",
-                                 "ndvi_sent", "ndvi_sent_export", "error"],
-                        required=False,
-                        help="The type of process chain")
+    parser.add_argument(
+        "-t",
+        "--type",
+        type=str,
+        default="short",
+        choices=[
+            "long",
+            "long_export",
+            "short",
+            "short_export",
+            "ndvi_sent",
+            "ndvi_sent_export",
+            "error",
+        ],
+        required=False,
+        help="The type of process chain",
+    )
 
-    parser.add_argument("-o", "--poll",
-                        type=int,
-                        default=1,
-                        required=False,
-                        help="Should the results be polled from the actinia server.")
+    parser.add_argument(
+        "-o",
+        "--poll",
+        type=int,
+        default=1,
+        required=False,
+        help="Should the results be polled from the actinia server.",
+    )
 
     args = parser.parse_args()
 
-    auth=(args.user_id, args.password)
+    auth = (args.user_id, args.password)
 
     if args.requests > 96:
         raise Exception("Too many parallel requests")
@@ -304,11 +311,12 @@ def main():
         process_list = []
         for i in range(args.requests):
 
-            param=[args.server, auth, q, i, args.type, bool(args.poll)]
+            param = [args.server, auth, q, i, args.type, bool(args.poll)]
 
             try:
-                p = Process(target=start_query_processing_async_export,
-                            args=param)
+                p = Process(
+                    target=start_query_processing_async_export, args=param
+                )
 
                 p.start()
                 process_list.append(p)
@@ -330,14 +338,19 @@ def main():
 
         print("Measured times", result_times)
         if result_times:
-            mean_time = sum(result_times)/len(result_times)
+            mean_time = sum(result_times) / len(result_times)
         else:
             mean_time = 0
 
         if errors:
-            print("Errors in %i requests errors: %s"%(len(errors), str(errors)))
+            print(
+                "Errors in %i requests errors: %s" % (len(errors), str(errors))
+            )
 
-        print("Loop %i Resulting mean time in seconds for %i requests: %.2f"%(k, count - len(errors), mean_time))
+        print(
+            "Loop %i Resulting mean time in seconds for %i requests: %.2f"
+            % (k, count - len(errors), mean_time)
+        )
 
 
 def start_query_processing_async_export(base_url, auth, q, id, type, polling):
@@ -383,7 +396,7 @@ def start_query_processing_async_export(base_url, auth, q, id, type, polling):
         # Process chain request
         r = requests.post(url, json=pc, auth=auth)
         print(r.text)
-    except:
+    except Exception:
         q.close()
         raise
 
@@ -404,7 +417,11 @@ def start_query_processing_async_export(base_url, auth, q, id, type, polling):
     else:
         q.put(-1 * r.status_code)
         q.close()
-        string = "Error for Process %i %i HTTP Status %s"%(id, r.status_code, r)
+        string = "Error for Process %i %i HTTP Status %s" % (
+            id,
+            r.status_code,
+            r,
+        )
         raise Exception(string)
 
 
@@ -428,13 +445,25 @@ def poll(url, auth, start, q, id):
             data = simplejson.loads(r.text)
 
             end = time.time()
-            print("Process", id, r.status_code, "HTTP Status", data["status"],
-                  "Time needed:" , "%.2f"%(end - start), "seconds")
+            print(
+                "Process",
+                id,
+                r.status_code,
+                "HTTP Status",
+                data["status"],
+                "Time needed:",
+                "%.2f" % (end - start),
+                "seconds",
+            )
 
-            if data["status"] == "finished" or data["status"] == "error" or data["status"] == "terminated":
+            if (
+                data["status"] == "finished"
+                or data["status"] == "error"
+                or data["status"] == "terminated"
+            ):
                 break
             time.sleep(1)
-        except Exception as a:
+        except Exception:
             raise
 
     # print data["urls"]["status"]
@@ -447,5 +476,5 @@ def poll(url, auth, start, q, id):
         q.put(end - start)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,0 +1,59 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: |
+          (?x)^(
+                .*\.ref$|
+                .*\.svg$|
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+      - id: end-of-file-fixer
+        exclude: |
+          (?x)^(
+                .*\.ref$|
+                .*\.svg$|
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+  - repo: https://github.com/psf/black
+    rev: 22.3.0
+    hooks:
+      - id: black
+        args: [--line-length, '79']
+        exclude: |
+          (?x)^(
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+  - repo: https://github.com/pycqa/flake8
+    rev: 3.8.0
+    hooks:
+      - id: flake8
+        args: [--config=.flake8]
+        exclude: |
+          (?x)^(
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+
+# still deactivated, needs major code cleanup:
+#  - repo: https://github.com/igorshubovych/markdownlint-cli
+#    rev: v0.33.0
+#    hooks:
+#      - id: markdownlint
+#  - repo: https://github.com/adrienverge/yamllint.git
+#    rev: v1.29.0
+#    hooks:
+#      - id: yamllint
+#        args: [--format, parsable, --strict, -d,
+#               '{extends: default, rules: {truthy: disable,
+#                line-length: {max: 120,
+#                allow-non-breakable-words: true}}}']
