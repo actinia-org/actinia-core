@@ -117,7 +117,7 @@ curl -u 'demouser:gu3st!pa55w0rd' -X GET https://actinia.mundialis.de/api/v3/swa
 It is highly recommended to install and use [pre-commit](https://pre-commit.com)
 before submitting any new or modified code or any other content. The pre-commit
 Git hooks set checks validity and executes automated formatting for
-a range of file formats, including C/C++ and Python. Pre-commit installs
+a range of file formats, including Python. Pre-commit installs
 all necessary tools in a virtual environment upon first use.
 
 If you never used pre-commit before, you must start by installing it on your
@@ -147,8 +147,8 @@ It is also possible to run pre-commit manually, e.g:
 ```bash
 pre-commit run flake8 --all-files
 pre-commit run black --all-files
-pre-commit run yamllint --all-files
-pre-commit run markdownlint --all-files
+# pre-commit run yamllint --all-files
+# pre-commit run markdownlint --all-files
 ```
 
 Or to target a specific set of files:
@@ -176,6 +176,4 @@ pre-commit install
 
 ## Thanks to all contributors ❤
 
-<a href = "https://github.com/actinia-org/actinia-core/graphs/contributors">
-    <img src = "https://contrib.rocks/image?repo=actinia-org/actinia-core"/>
-</a>
+[![actinia-core contributors](https://contrib.rocks/image?repo=actinia-org/actinia-core "actinia-core contributors")](https://github.com/actinia-org/actinia-core/graphs/contributors)
