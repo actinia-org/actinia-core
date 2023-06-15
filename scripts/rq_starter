@@ -34,11 +34,13 @@ import time
 import argparse
 from actinia_core.core.common.config import Configuration
 
-__license__    = "GPLv3"
-__author__     = "Sören Gebbert"
-__copyright__  = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__license__ = "GPLv3"
+__author__ = "Sören Gebbert"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Soeren Gebbert"
-__email__      = "soerengebbert@googlemail.com"
+__email__ = "soerengebbert@googlemail.com"
 
 # Job handling
 worker_pids = []
@@ -53,13 +55,16 @@ def create_workers(config_file):
         else:
             conf.read()
     except IOError as e:
-        print("WARNING: unable to read config file, will use defaults instead, IOError: %s"%str(e))
+        print(
+            "WARNING: unable to read config file, will use "
+            "defaults instead, IOError: %s" % str(e)
+        )
 
     # Redis work queue
     global worker_pids
 
     for i in range(conf.NUMBER_OF_WORKERS):
-        name = "%s_%i"%(conf.WORKER_QUEUE_PREFIX, i)
+        name = "%s_%i" % (conf.WORKER_QUEUE_PREFIX, i)
         print("Start worker queue", name)
         args = ["rq_custom_worker", name]
         proc = subprocess.Popen(args)
@@ -75,12 +80,20 @@ def kill_all_workers():
 
 def main():
 
-    parser = argparse.ArgumentParser(description='Start all Actinia Core custom worker listening to a specific queue'
-                                                 'that are specified in the actinia configuration file '
-                                                 'or in a configuration file specified as an optional path.')
+    parser = argparse.ArgumentParser(
+        description="Start all Actinia Core custom worker "
+        "listening to a specific queue that are specified "
+        "in the actinia configuration file or in a "
+        "configuration file specified as an optional path."
+    )
 
-    parser.add_argument("-c", "--config", type=str, required=False,
-                        help="The path to the Actinia Core configuration file")
+    parser.add_argument(
+        "-c",
+        "--config",
+        type=str,
+        required=False,
+        help="The path to the Actinia Core configuration file",
+    )
 
     args = parser.parse_args()
 
@@ -93,5 +106,5 @@ def main():
         time.sleep(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
