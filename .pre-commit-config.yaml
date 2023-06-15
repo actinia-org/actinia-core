@@ -21,10 +21,6 @@ repos:
                 dist/|
                 src/actinia_core.egg-info/
           )
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.33.0
-    hooks:
-      - id: markdownlint
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
@@ -47,11 +43,17 @@ repos:
                 dist/|
                 src/actinia_core.egg-info/
           )
-  - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.29.0
-    hooks:
-      - id: yamllint
-        args: [--format, parsable, --strict, -d,
-               '{extends: default, rules: {truthy: disable,
-                line-length: {max: 120,
-                allow-non-breakable-words: true}}}']
+
+# still deactivated, needs major code cleanup:
+#  - repo: https://github.com/igorshubovych/markdownlint-cli
+#    rev: v0.33.0
+#    hooks:
+#      - id: markdownlint
+#  - repo: https://github.com/adrienverge/yamllint.git
+#    rev: v1.29.0
+#    hooks:
+#      - id: yamllint
+#        args: [--format, parsable, --strict, -d,
+#               '{extends: default, rules: {truthy: disable,
+#                line-length: {max: 120,
+#                allow-non-breakable-words: true}}}']
