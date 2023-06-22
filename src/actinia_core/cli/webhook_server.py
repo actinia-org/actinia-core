@@ -29,7 +29,7 @@ import argparse
 import psutil
 from flask import Flask, make_response, jsonify, request, json
 from multiprocessing import Process
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
 from pprint import pprint
 
@@ -44,11 +44,14 @@ flask_app = Flask(__name__)
 
 @flask_app.route("/webhook/finished", methods=["GET", "POST"])
 def finished():
+
     try:
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
     except TypeError:
+        pass
+    except UnsupportedMediaType:
         pass
     return make_response(jsonify("OK"), 200)
 
@@ -60,6 +63,8 @@ def update():
     except BadRequest:
         pass
     except TypeError:
+        pass
+    except UnsupportedMediaType:
         pass
     return make_response(jsonify("OK"), 200)
 

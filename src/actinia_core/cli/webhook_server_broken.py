@@ -29,7 +29,7 @@ import argparse
 import psutil
 from flask import Flask, make_response, jsonify, request, json
 from multiprocessing import Process
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
 from pprint import pprint
 
@@ -51,6 +51,8 @@ def finished():
         pass
     except TypeError:
         pass
+    except UnsupportedMediaType:
+        pass
     sp = Process(target=shutdown_server, args=(port,))
     sp.start()
     return make_response(jsonify("Server shutting down..."), 200)
@@ -63,6 +65,8 @@ def update():
     except BadRequest:
         pass
     except TypeError:
+        pass
+    except UnsupportedMediaType:
         pass
     return make_response(jsonify("OK"), 200)
 

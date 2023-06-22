@@ -10,13 +10,13 @@ install:
 	pip3 install .
 
 test:
-	./tests_with_redis.sh
+	sh ./tests_with_redis.sh
 
 unittest:
 	pytest -m unittest
 
 devtest:
-	./tests_with_redis.sh dev
+	sh ./tests_with_redis.sh dev
 
 integrationtest:
-	./tests_with_redis.sh integrationtest
+	sh ./tests_with_redis.sh integrationtest
