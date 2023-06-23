@@ -49,9 +49,9 @@ def finished():
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
-    except TypeError:
-        pass
     except UnsupportedMediaType:
+        pass
+    except TypeError:
         pass
     sp = Process(target=shutdown_server, args=(port,))
     sp.start()
@@ -64,9 +64,9 @@ def update():
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
-    except TypeError:
-        pass
     except UnsupportedMediaType:
+        pass
+    except TypeError:
         pass
     return make_response(jsonify("OK"), 200)
 

@@ -49,9 +49,9 @@ def finished():
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
-    except TypeError:
-        pass
     except UnsupportedMediaType:
+        pass
+    except TypeError:
         pass
     return make_response(jsonify("OK"), 200)
 
@@ -62,9 +62,9 @@ def update():
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
-    except TypeError:
-        pass
     except UnsupportedMediaType:
+        pass
+    except TypeError:
         pass
     return make_response(jsonify("OK"), 200)
 
