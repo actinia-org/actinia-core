@@ -41,8 +41,6 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
 
-COPY requirements.txt /src/requirements.txt
-RUN pip3 install -r /src/requirements.txt
 RUN pip3 install pytest pytest-cov
 
 # TODO: Postgres for tests
@@ -50,7 +48,6 @@ RUN pip3 install pytest pytest-cov
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
-RUN chmod a+x tests_with_redis.sh
 
 RUN make install
 

@@ -29,7 +29,7 @@ import argparse
 import psutil
 from flask import Flask, make_response, jsonify, request, json
 from multiprocessing import Process
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
 from pprint import pprint
 
@@ -49,6 +49,8 @@ def finished():
         pprint(json.loads(request.get_json()))
     except BadRequest:
         pass
+    except UnsupportedMediaType:
+        pass
     except TypeError:
         pass
     sp = Process(target=shutdown_server, args=(port,))
@@ -61,6 +63,8 @@ def update():
     try:
         pprint(json.loads(request.get_json()))
     except BadRequest:
+        pass
+    except UnsupportedMediaType:
         pass
     except TypeError:
         pass
