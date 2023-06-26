@@ -34,7 +34,7 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 
 ```bash
 # or some other location of your choice, /tmp will not keep data between reboots
-cd /tmp 
+cd /tmp
 
 # fetch weekly generated latest snapshot of GRASS GIS stable
 wget https://grass.osgeo.org/grass80/source/snapshot/grass-8.0.git_src_snapshot_latest.tar.gz
