@@ -6,3 +6,5 @@ on: [push]
 jobs:
   lint:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
+    with:
+      pylint-version: ''
