@@ -122,7 +122,6 @@ class AsyncProcessFileExportTestCase(ActiniaResourceTestCaseBase):
             print(rv.iter_encoded())
 
     def test_termination(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -159,7 +158,6 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
         "'GOOGLE_CLOUD_PROJECT' not set",
     )
     def test_async_processing_export(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export_s3",
             headers=self.admin_auth_header,
@@ -190,7 +188,6 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
         "'GOOGLE_CLOUD_PROJECT' not set",
     )
     def test_termination(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export_s3",
             headers=self.admin_auth_header,
@@ -227,7 +224,6 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
         "'GOOGLE_CLOUD_PROJECT' not set",
     )
     def test_async_processing_export(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export_gcs",
             headers=self.admin_auth_header,
@@ -258,7 +254,6 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
         "'GOOGLE_CLOUD_PROJECT' not set",
     )
     def test_termination(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export_gcs",
             headers=self.admin_auth_header,

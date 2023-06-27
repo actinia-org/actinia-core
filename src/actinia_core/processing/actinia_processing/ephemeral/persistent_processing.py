@@ -209,7 +209,6 @@ class PersistentProcessing(EphemeralProcessing):
             and os.access(self.user_location_path, os.R_OK | os.X_OK | os.W_OK)
             is True
         ):
-
             self.orig_mapset_path = os.path.join(
                 self.user_location_path, mapset
             )

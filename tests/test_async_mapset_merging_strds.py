@@ -243,7 +243,6 @@ process_chain_list = {
 
 
 class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
-
     user_mapset = mapset_name
     raster_dict_modis = {
         "MOD11B3.A2015001.h11v05.single_LST_Day_6km": "2015-01-01 00:00:00",
@@ -317,7 +316,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         )
 
     def test_create_strds_in_persistent_user_db(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/{self.user_mapset}/"
             "processing_async",
@@ -374,7 +372,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         self.check_modis_strds(self.raster_dict_modis, "modis")
 
     def test_create_strds_in_persistent_user_db_2(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/{self.user_mapset}/"
             "processing_async",
@@ -412,7 +409,6 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         self.check_modis_strds(self.raster_dict_modis2, "modis2")
 
     def test_create_strds_in_persistent_user_db_3(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/{self.user_mapset}/"
             "processing_async",

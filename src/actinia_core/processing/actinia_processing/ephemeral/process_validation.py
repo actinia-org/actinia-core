@@ -43,7 +43,6 @@ class ProcessValidation(EphemeralProcessing):
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         process_chain = (

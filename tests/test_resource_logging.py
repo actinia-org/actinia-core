@@ -73,7 +73,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.app_context.pop()
 
     def test_logging(self):
-
         ret = self.log.commit(
             user_id=self.user_id,
             resource_id=self.resource_id,
@@ -115,7 +114,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         self.assertFalse(ret)
 
     def test_list(self):
-
         user = "lisa"
         resource = "a"
         ret = self.log.commit(
@@ -184,7 +182,6 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
         print(ret)
 
     def test_termination(self):
-
         ret = self.log.commit_termination(
             user_id=self.user_id, resource_id=self.resource_id
         )

@@ -284,7 +284,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_admin(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token", headers=self.admin_auth_header
         )
@@ -299,7 +298,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_api_key_generation_admin(self):
-
         rv = self.server.get(
             URL_PREFIX + "/api_key", headers=self.admin_auth_header
         )
@@ -314,7 +312,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_user(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token", headers=self.user_auth_header
         )
@@ -329,7 +326,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_user_expire(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token?expiration_time=3600",
             headers=self.user_auth_header,
@@ -345,7 +341,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_guest(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token", headers=self.guest_auth_header
         )
@@ -360,7 +355,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_wrong_no_auth(self):
-
         rv = self.server.get(URL_PREFIX + "/token")
         print(rv.data)
         self.assertEqual(
@@ -373,7 +367,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_api_key_generation_wrong_user(self):
-
         rv = self.server.get(
             URL_PREFIX + "/api_key", headers=self.user_auth_header
         )
@@ -388,7 +381,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_user_expire_error(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token?expiration_time=1000000000",
             headers=self.user_auth_header,
@@ -404,7 +396,6 @@ class ActiniaUserTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_token_generation_user_expire_wrong(self):
-
         rv = self.server.get(
             URL_PREFIX + "/token?expiration_time=blablub",
             headers=self.user_auth_header,

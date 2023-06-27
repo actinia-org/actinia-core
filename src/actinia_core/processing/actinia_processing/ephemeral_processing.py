@@ -1104,7 +1104,6 @@ class EphemeralProcessing(object):
         # if interim_result_mapset is set copy the mapset from the interim
         # results
         if interim_result_mapset:
-
             self.message_logger.info(
                 "Rsync interim result mapset to temporary GRASS DB"
             )

@@ -44,7 +44,6 @@ class MessageLoggerTestCase(unittest.TestCase):
     """
 
     def test_change_loglevel(self):
-
         c = Configuration()
         c.LOG_LEVEL = 4
 
@@ -82,7 +81,6 @@ class MessageLoggerTestCase(unittest.TestCase):
         logger.error("error")
 
     def test_fluentd(self):
-
         c = Configuration()
         c.LOG_LEVEL = 4
         c.LOG_INTERFACE = "fluentd"

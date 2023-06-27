@@ -105,7 +105,6 @@ process_chain_short = {
 
 class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
     def check_remove_test_mapset(self):
-
         rv = self.server.get(
             URL_PREFIX + "/locations/nc_spm_08/mapsets",
             headers=self.user_auth_header,
@@ -449,7 +448,6 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
 
     def test_4_create_global_mapset(self):
-
         rv = self.server.post(
             URL_PREFIX
             + "/locations/nc_spm_08/mapsets/PERMANENT/processing_async",

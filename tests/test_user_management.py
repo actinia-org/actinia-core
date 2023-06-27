@@ -62,7 +62,6 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         self.app_context.pop()
 
     def test_create_delete_user(self):
-
         # Make sure the user database is empty
         user = ActiniaUser(self.user_id)
         if user.exists():

@@ -42,7 +42,6 @@ __maintainer__ = "mundialis"
 
 class EphemeralSTRDSRenderer(EphemeralRendererBase):
     def __init__(self, *args):
-
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):

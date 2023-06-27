@@ -54,11 +54,10 @@ except Exception:
 class STACImporter:
     @staticmethod
     def _get_search_root(stac_collection_id):
-
         stac_from_actinia = callStacCollection(stac_collection_id)
         try:
             stac_json = json.loads(stac_from_actinia)
-        except (Exception):
+        except Exception:
             stac_json = stac_from_actinia
 
         for item in stac_json["links"]:
@@ -77,7 +76,6 @@ class STACImporter:
 
     @staticmethod
     def _apply_filter(stac_root_search, stac_name, interval, bbox, filter):
-
         search_body = {
             "collections": [stac_name],
         }
@@ -104,7 +102,6 @@ class STACImporter:
                 "features" in full_filtered_result
                 and len(full_filtered_result["features"]) > 0
             ):
-
                 return full_filtered_result
             else:
                 raise AsyncProcessError("Not matched found")
@@ -143,7 +140,6 @@ class STACImporter:
         filter=None,
         strd_name=None,
     ):
-
         if has_plugin:
             try:
                 stac_name = stac_collection_id.split(".")[3]
@@ -258,7 +254,6 @@ class STACImporter:
         message_logger=None,
         send_resource_update=None,
     ):
-
         """Helper method to get the stac import and download commands.
         Args:
             stac_entry (dict): stac_entry of the import description list

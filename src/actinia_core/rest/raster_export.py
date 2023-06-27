@@ -67,7 +67,6 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
     def _execute(
         self, location_name, mapset_name, raster_name, use_raster_region
     ):
-
         rdc = self.preprocess(
             has_json=False,
             location_name=location_name,

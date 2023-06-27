@@ -119,7 +119,6 @@ class PersistentGetProjectionRegionInfo(PersistentProcessing):
         self.response_model_class = MapsetInfoResponseModel
 
     def _execute(self):
-
         self._setup()
 
         pc = {
@@ -169,7 +168,6 @@ class PersistentMapsetCreator(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
         # Create temporary database
         self._create_temp_database()
@@ -221,7 +219,6 @@ class PersistentMapsetDeleter(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         # For debug purpose

@@ -45,7 +45,6 @@ __maintainer__ = "mundialis"
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Start actinia server. A running redis server"
         + " is required."

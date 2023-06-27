@@ -99,7 +99,6 @@ class RequestStreamerResource(Resource):
             os.path.exists(resource_export_file_path) is True
             and os.access(resource_export_file_path, os.R_OK) is True
         ):
-
             return send_from_directory(
                 resource_export_path, file_name, as_attachment=True
             )

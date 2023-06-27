@@ -287,7 +287,6 @@ def main():
 
     # CREATE ############################
     if args.action == "create":
-
         if args.user_id is None:
             sys.stderr.write("You need to provide a user id\n")
             return
@@ -333,7 +332,6 @@ def main():
         or args.action == "update_rm"
         or args.action == "update_rm_location"
     ):
-
         if args.user_id is None:
             sys.stderr.write("You need to provide a user id\n")
             return
@@ -362,7 +360,6 @@ def main():
 
     # DELETE ############################
     elif args.action == "delete":
-
         user = ActiniaUser(args.user_id)
 
         if user.exists() == 1:
@@ -377,7 +374,6 @@ def main():
 
     # SHOW ##############################
     elif args.action == "show":
-
         user = ActiniaUser(args.user_id)
 
         if user.exists() == 1:
@@ -387,13 +383,11 @@ def main():
 
     # LIST ##############################
     elif args.action == "list":
-
         user = ActiniaUser(args.user_id)
         pprint.pprint(user.list_all_users())
 
     # PWCHECK ###########################
     elif args.action == "pwcheck":
-
         if args.user_id is None:
             sys.stderr.write("You need to provide a user id\n")
             return

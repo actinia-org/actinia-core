@@ -65,7 +65,8 @@ class ResourceStorageS3(ResourceStorageBase):
         self.s3_client = self.session.client("s3")
 
     def get_resource_urls(self):
-        """Return all resource urls that were generated when storing a resource on disk
+        """Return all resource urls that were generated when storing a resource
+        on disk
 
         Returns:
             (list): A list of urls

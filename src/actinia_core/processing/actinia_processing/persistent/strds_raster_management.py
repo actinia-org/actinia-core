@@ -49,12 +49,10 @@ class PersistentRasterSTRDSLister(PersistentProcessing):
     """List all mapsets in a location"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
         self.response_model_class = STRDSRasterListResponseModel
 
     def _execute(self):
-
         self._setup()
 
         result_file = tempfile.NamedTemporaryFile(
@@ -124,7 +122,6 @@ class PersistentRasterSTRDSRegisterer(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         input_file = tempfile.NamedTemporaryFile(
