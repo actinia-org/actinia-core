@@ -20,7 +20,7 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 ## [4.X.X] - YYYY-MM-DD
 released from <branch>\
 ...
- 
+
 ## [4.9.1] - 2023-06-14
 released from main
 ### Fixed
@@ -34,7 +34,7 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.0...4.9.1
 
 generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.1" -f target_commitish=main -q .body"
- 
+
 
 ## [4.9.0] - 2023-06-07
 released from main
@@ -62,9 +62,9 @@ released from main
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.8.0...4.9.0
 
-"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.0" -f target_commitish=main -q .body" 
- 
- 
+"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.0" -f target_commitish=main -q .body"
+
+
 ## [4.8.0] - 2023-05-10
 released from main
 ### Fixed
@@ -79,8 +79,8 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.7.1...4.8.0
 
  generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.8.0" -f target_commitish=main -q .body`
- 
- 
+
+
 ## [4.7.1] - 2023-02-09
 ### Fixed
 * fix tgis merge by interim results by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/413
@@ -88,8 +88,8 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.7.0...4.7.1
 
 generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.7.1" -f target_commitish=main -q .body`
- 
- 
+
+
 ## [4.7.0] - 2023-01-25
 released from main
 ### Added
@@ -99,15 +99,15 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.2...4.7.0
 
 "generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.7.0" -f target_commitish=main -q .body`"
- 
+
  ## [4.6.2] - 2023-01-17
 released from main
 ### Fixed
 * New GRASS GIS 8.2 with fix https://github.com/OSGeo/grass/pull/2735 (https://github.com/OSGeo/grass/pull/2742)
 
-**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.1...4.6.2 
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.1...4.6.2
 
- 
+
 ## [4.6.1] - 2023-01-04
 released from main
 ### Fixed
@@ -115,7 +115,7 @@ released from main
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.6.0...4.6.1
 
-generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.6.1" -f target_commitish=main -q .body` 
+generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.6.1" -f target_commitish=main -q .body`
 
 ## [4.6.0] - 2022-12-17
 released from main
@@ -124,9 +124,9 @@ released from main
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.5.0...4.6.0
 
-"generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.6.0" -f target_commitish=main -q .body`" 
- 
- 
+"generated with `gh api repos/mundialis/actinia_core/releases/generate-notes -f tag_name="4.6.0" -f target_commitish=main -q .body`"
+
+
 ## [4.5.0] - 2022-12-14
 released from main
 ### Changed

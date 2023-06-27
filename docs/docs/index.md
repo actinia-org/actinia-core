@@ -39,7 +39,7 @@ The source code is available here: <https://github.com/mundialis/actinia_core>.
 * Landsat NDVI computation
 * Sentinel-2 NDVI computation
 -->
-* User defined processing  
+* User defined processing
     * The actinia process chain
     * Sentinel-2A NDVI process chain
 * License

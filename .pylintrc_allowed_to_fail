@@ -1,0 +1,50 @@
+# For documentation about this config, see
+# https://pylint.readthedocs.io/en/stable/user_guide/configuration/all-options.html (as of writing, version 2.17.4)
+
+[MAIN]
+
+exit-zero=yes
+
+jobs=0 # Default: 1
+
+load-plugins=
+       pylint.extensions.broad_try_clause
+
+recursive=yes # Default: False
+
+# score=no # Default: True
+
+
+[BROAD_TRY_CLAUSE]
+max-try-statements=4 # Default: 1
+
+[FORMAT]
+max-line-length=80 # Default: 100
+max-module-lines=800 # Default: 1000
+ignore-long-lines=.*COPYRIGHT:.* |# . description:.*|\s*(# )?.*http.:\/\/\S+?
+
+[VARIABLES]
+additional-builtins=_ # Default: ()
+
+
+; [DESIGN]
+
+; # Maximum number of arguments for function / method.
+; # Default: 5
+; max-args=9
+
+; # Maximum number of attributes for a class (see R0902).
+; # Default: 7
+; max-attributes=11
+
+; # Maximum number of branch for function / method body.
+; # Default: 12
+; max-branches=15
+
+; # Maximum number of locals for function / method body.
+; # Default: 15
+; max-locals=19
+
+; # Maximum number of return / yield for function / method body.
+; # Default: 6
+; max-returns=11

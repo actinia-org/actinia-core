@@ -47,7 +47,7 @@ always a specific user role and can be member of one single user-group.
 
 The following user-roles are supported:
 
- 1.  
+ 1.
 
      superadmin:
 
@@ -55,7 +55,7 @@ The following user-roles are supported:
          -   Has access to all API calls and read/write access to all
              databases
 
- 2.  
+ 2.
 
      admin:
 
@@ -65,7 +65,7 @@ The following user-roles are supported:
          -   Has access to persistent databases that were granted by a
              superadmin
 
- 3.  
+ 3.
 
      user:
 
@@ -80,7 +80,7 @@ The following user-roles are supported:
          -   Has access to persistent databases that were granted by a
              superadmin
 
- 4.  
+ 4.
 
      guest:
 
@@ -128,7 +128,7 @@ database.
 
 **Summary**
 
- 1.  
+ 1.
 
      Persistent database:
 
@@ -136,7 +136,7 @@ database.
              used as processing environment and data source
          -   Data can only be accessed using HTTP GET API calls
 
- 2.  
+ 2.
 
      Ephemeral database:
 
@@ -148,7 +148,7 @@ database.
              environments to access required data from mapsets in
              persistent locations
 
- 3.  
+ 3.
 
      User specific databases:
 

@@ -68,4 +68,3 @@ gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode t
 
 # make WebM film:
 #gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track --seconds-per-day 0.05 --stop-at-end --disable-progress --hide filenames -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b:v 10000K $OUTPUT.webm
-

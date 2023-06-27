@@ -129,7 +129,7 @@ class SyncResourceStorageResource(ResourceBase):
                 olderthan,
                 queue_type_overwrite=True,
             )
-            http_code, response_model = self.wait_until_finish()
+            http_code, response_model = pickle.loads(self.response_data)
         else:
             http_code, response_model = pickle.loads(self.response_data)
 

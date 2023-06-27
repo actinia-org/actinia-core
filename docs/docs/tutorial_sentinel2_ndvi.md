@@ -8,7 +8,7 @@ address:
 export ACTINIA_URL=https://actinia.mundialis.de/latest
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
-```  
+```
 
 The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
