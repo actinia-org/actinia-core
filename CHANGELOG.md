@@ -21,6 +21,22 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+## [4.9.2] - 2023-06-29
+released from main
+### Added
+* pre-commit: activate tests by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/453
+
+### Fixed
+* Fixes currently failing test by @mmacata in https://github.com/actinia-org/actinia-core/pull/455
+* Make resource storage delete asynchron by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/456
+* Black by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/458
+* fix HOME env by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/459
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.1...4.9.2
+
+ "generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.2" -f target_commitish=main -q .body`"
+ 
+
 ## [4.9.1] - 2023-06-14
 released from main
 ### Fixed
