@@ -113,7 +113,7 @@ class GrassEnvironment(ProcessLogging):
         """
         self.env["GIS_LOCK"] = str(os.getpid())
         self.env["GISBASE"] = grass_gis_base
-        self.env["HOME"] = "/tmp/"
+        self.env["HOME"] = os.getenv(key, "/tmp/")
         self.env["GRASS_MESSAGE_FORMAT"] = "plain"
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
         self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
@@ -165,13 +165,6 @@ class GrassEnvironment(ProcessLogging):
                 )
 
     def set(self):
-        # # for debugging in ephemeral_processing.py (s. also process_queue.py)
-        # for var in [
-        #         'GISRC', 'GISBASE', 'LD_LIBRARY_PATH',
-        #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
-        #     if var in os.environ:
-        #         del os.environ[var]
-
         for key in self.env:
             value = self.env[key]
             # use self.env and enviroment variable values
@@ -179,10 +172,6 @@ class GrassEnvironment(ProcessLogging):
                 origValue = os.getenv(key, None)
                 if origValue:
                     value += ":" + origValue
-            # for HOME use the environmental variable and only if not set use
-            # self.env value
-            elif key in ["HOME"]:
-                value = os.getenv(key, value)
             # use self.env value
             else:
                 pass
