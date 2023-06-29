@@ -113,7 +113,7 @@ class GrassEnvironment(ProcessLogging):
         """
         self.env["GIS_LOCK"] = str(os.getpid())
         self.env["GISBASE"] = grass_gis_base
-        self.env["HOME"] = os.getenv(key, "/tmp/")
+        self.env["HOME"] = os.getenv("HOME", "/tmp/")
         self.env["GRASS_MESSAGE_FORMAT"] = "plain"
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
         self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
