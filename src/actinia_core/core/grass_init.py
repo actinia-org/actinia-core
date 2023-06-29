@@ -39,8 +39,7 @@ __copyright__ = (
     "Copyright 2016-2023, Sören Gebbert, Anika Weinmann and mundialis GmbH & "
     "Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis"
 
 
 class GrassInitError(Exception):
