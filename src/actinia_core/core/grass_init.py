@@ -36,7 +36,8 @@ from .messages_logger import MessageLogger
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert, Anika Weinmann and mundialis GmbH & "
+    "Co. KG"
 )
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
@@ -113,7 +114,6 @@ class GrassEnvironment(ProcessLogging):
 
         """
         self.env["GIS_LOCK"] = str(os.getpid())
-        self.env["HOME"] = "/tmp/"
         self.env["GISBASE"] = grass_gis_base
         self.env["GRASS_MESSAGE_FORMAT"] = "plain"
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
