@@ -172,9 +172,6 @@ class GrassEnvironment(ProcessLogging):
                 origValue = os.getenv(key, None)
                 if origValue:
                     value += ":" + origValue
-            # use self.env value
-            else:
-                pass
             try:
                 os.putenv(key, value)
                 os.environ[key] = value
