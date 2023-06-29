@@ -102,3 +102,7 @@ addopts = "--cov actinia_core --cov-report term-missing --verbose --tb=line -x"
 testpaths = [
     "tests",
 ]
+markers = [
+    "dev: test current in development",
+    "unittest: completely independent test",
+]
