@@ -40,7 +40,6 @@ __maintainer__ = "mundialis"
 
 
 class MapsetsTestCase(ActiniaResourceTestCaseBase):
-
     test_mapsets = [str(uuid.uuid4()), str(uuid.uuid4())]
     test_user = f"test_user_{str(uuid.uuid4())}"
     accessible_datasets = {

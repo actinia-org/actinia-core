@@ -55,13 +55,11 @@ class ResourceStorageDelete(PersistentProcessing):
         self.olderthan = args[1]
 
     def _execute(self):
-
         self._setup()
 
         if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
             self.user_resource_storage_path
         ):
-
             if self.olderthan is None:
                 # delete all user resources
                 executable = "/bin/rm"

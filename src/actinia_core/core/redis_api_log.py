@@ -73,7 +73,8 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
 
     def add(self, user_id, log_entry):
-        """Add a API log entry to a user specific  API log list in the Redis server
+        """Add a API log entry to a user specific  API log list in the Redis
+        server
 
         Args:
             user_id (str): The user id of the API log
@@ -154,7 +155,6 @@ redis_api_log_interface = RedisAPILogInterface()
 
 
 def test_api_logging(r):
-
     user_id = "abcdefg"
 
     # Remove the loglist

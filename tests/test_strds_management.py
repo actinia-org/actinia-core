@@ -127,7 +127,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(start_time, "'2015-01-01 00:00:00'")
 
     def test_strds_create_remove(self):
-
         new_mapset = "strds_test"
         self.create_new_mapset(mapset_name=new_mapset, location_name=location)
 

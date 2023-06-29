@@ -51,7 +51,6 @@ __maintainer__ = "mundialis"
 
 
 def create_scatter_plot(x, y, xlabel, ylabel, title):
-
     plt.clf()
     plt.scatter(x, y, s=(np.pi * 5), c=(1, 0, 0))
     plt.title(title, fontsize=14)
@@ -81,7 +80,6 @@ class MapsetSizeResource(ResourceManager):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManager.__init__(self)
 
@@ -144,7 +142,6 @@ class MapsetSizeDiffResource(ResourceManager):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManager.__init__(self)
 
@@ -208,7 +205,6 @@ class MaxMapsetSizeResource(ResourceManager):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManager.__init__(self)
 
@@ -272,7 +268,6 @@ class MapsetSizeRenderResource(ResourceManager):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManager.__init__(self)
 
@@ -354,7 +349,6 @@ class MapsetSizeDiffRenderResource(ResourceManager):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManager.__init__(self)
 

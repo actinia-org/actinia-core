@@ -166,7 +166,6 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(len(map_list) == 0)
 
     def test_remove_raster_layers_pattern(self):
-
         new_mapset = "raster_test_mapset"
         self.create_new_mapset(new_mapset)
 
@@ -224,7 +223,6 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
             print(rv.data.decode())
 
     def test_rename_raster_layers(self):
-
         new_mapset = "raster_test_mapset"
         self.create_new_mapset(new_mapset)
 

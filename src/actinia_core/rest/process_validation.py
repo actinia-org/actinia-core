@@ -50,7 +50,6 @@ __maintainer__ = "mundialis"
 
 
 class AsyncProcessValidationResource(ResourceBase):
-
     decorators = [log_api_call, auth.login_required]
 
     @endpoint_decorator()
@@ -72,7 +71,6 @@ class AsyncProcessValidationResource(ResourceBase):
 
 
 class SyncProcessValidationResource(ResourceBase):
-
     decorators = [log_api_call, auth.login_required]
 
     @endpoint_decorator()

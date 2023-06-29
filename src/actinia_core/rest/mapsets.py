@@ -67,7 +67,6 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapsets.get_doc))
     def get(self):
-
         if "status" in request.args:
             if request.args["status"] == "locked":
                 if self.user.has_superadmin_role() is False:

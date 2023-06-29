@@ -286,7 +286,6 @@ process_chain_5_stdout = {
 
 
 class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
-
     cfg_file = os.environ.get(
         "ACTINIA_CUSTOM_TEST_CFG", "/etc/default/actinia"
     )
@@ -919,7 +918,6 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
 
 class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
-
     endpoint = "/locations/nc_spm_08/processing_async_export"
     resource_user_id = None
     resource_resource_id = None
@@ -1079,7 +1077,6 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
 class JobResumptionPersistentProcessingTestCase(
     JobResumptionProcessingTestCase
 ):
-
     location = "nc_spm_08"
     mapset = "test_mapset"
     endpoint = "/locations/%s/mapsets/%s/processing_async" % (location, mapset)
@@ -1154,7 +1151,6 @@ class JobResumptionPersistentProcessingTestCase(
 
 
 class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
-
     endpoint = "/locations/nc_spm_08/processing_async"
 
     def test_job_resumption_config_error(self):

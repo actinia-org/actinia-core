@@ -248,7 +248,6 @@ class ResourceBase(Resource):
         """
         # First check for the data field and create JSON from it
         if hasattr(request, "data") is True:
-
             try:
                 self.request_data = json_loads(request.data)
             except Exception as e:

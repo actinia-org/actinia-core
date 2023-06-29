@@ -116,7 +116,7 @@ def __enqueue_job_redis(queue, timeout, func, *args):
         *args,
         job_timeout=timeout,
         ttl=global_config.REDIS_QUEUE_JOB_TTL,
-        result_ttl=global_config.REDIS_QUEUE_JOB_TTL
+        result_ttl=global_config.REDIS_QUEUE_JOB_TTL,
     )
     log.info(ret)
 

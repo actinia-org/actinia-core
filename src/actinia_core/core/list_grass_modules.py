@@ -51,7 +51,6 @@ class GrassModuleReader(object):
     """
 
     def __init__(self, filename):
-
         self.modules_keyword_dict = {}
 
         file = QFile(filename)
@@ -74,13 +73,11 @@ class GrassModuleReader(object):
         return self.modules_keyword_dict
 
     def parse_module(self):
-
         module = None
         keywords = None
         description = None
 
         while self.xml.readNextStartElement():
-
             if self.xml.name() == "module":
                 module = self.xml.readElementText()
             elif self.xml.name() == "description":
@@ -126,7 +123,6 @@ def test():
 
 
 def main():
-
     grass_modules_xml_path = global_config.GRASS_MODULES_XML_PATH
     module_reader = GrassModuleReader(grass_modules_xml_path)
 

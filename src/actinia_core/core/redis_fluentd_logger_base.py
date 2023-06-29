@@ -45,7 +45,6 @@ class RedisFluentLoggerBase(object):
     """Base class for all logger that use Redis and fluentd for logging"""
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-
         if config is None:
             config = global_config
         if user_id is None:
@@ -65,7 +64,6 @@ class RedisFluentLoggerBase(object):
             )
 
     def _send_to_fluent(self, tag, data):
-
         try:
             cur_time = int(time.time())
             self.fluent_sender.emit_with_time(
@@ -94,7 +92,6 @@ class RedisFluentLoggerBase(object):
             )
 
     def _send_to_logging_interface(self, tag, data):
-
         if tag == "RESOURCE_LOG" and "status" in data:
             if data["status"] == "error":
                 log.error(data)
@@ -115,7 +112,6 @@ class RedisFluentLoggerBase(object):
                 log.info(data)
 
     def send_to_logger(self, tag, data):
-
         if global_config.LOG_INTERFACE == "fluentd":
             self._send_to_fluent(tag, data)
 

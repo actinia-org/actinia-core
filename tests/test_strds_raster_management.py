@@ -116,7 +116,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_strds_creation_error(self):
-
         # This must fail, global mapsets are not allowed to modify
         rv = self.server.post(
             f"{URL_PREFIX}/locations/{location}/mapsets/{strds_mapset}/strds/"
@@ -142,7 +141,6 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_strds_create_register_unregister_1(self):
-
         self.create_new_mapset(new_mapset, location)
 
         # Create success

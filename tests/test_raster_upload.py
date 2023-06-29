@@ -48,7 +48,6 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
-
     location = "nc_spm_08"
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"

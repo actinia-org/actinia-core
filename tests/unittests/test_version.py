@@ -70,7 +70,6 @@ def test_valid_additional_version_info_key(key, status):
 @pytest.mark.unittest
 @pytest.mark.parametrize("use_env,val", [(False, "n/a"), (True, "test")])
 def test_find_running_since_info(use_env, val):
-
     if use_env is True:
         os.environ["ACTINIA_RUNNING_SINCE"] = val
     test = find_running_since_info()
@@ -97,7 +96,6 @@ def test_find_running_since_info(use_env, val):
     ],
 )
 def test_parse_additional_version_info(env_value, expected):
-
     test = parse_additional_version_info(env_value)
     assert test == expected, "Find additional version is not right"
 
@@ -127,7 +125,6 @@ def test_parse_additional_version_info(env_value, expected):
     ],
 )
 def test_find_additional_version_info(env_value, expected):
-
     if env_value != "":
         os.environ["ACTINIA_ADDITIONAL_VERSION_INFO"] = env_value
     else:

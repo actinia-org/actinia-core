@@ -68,7 +68,6 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
         self.app_context.pop()
 
     def test_logging(self):
-
         ret = self.log.add_entry(
             user_id=self.user_id, http_request=self.request_object
         )

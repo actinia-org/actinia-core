@@ -146,7 +146,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         if cls.server_test is False and cls.custom_actinia_cfg is False:
             global_config.REDIS_SERVER_SERVER = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
@@ -237,7 +236,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
         process_num_limit=1000,
         process_time_limit=6000,
     ):
-
         auth = bytes("%s:%s" % (name, password), "utf-8")
 
         # We need to create an HTML basic authorization header
@@ -267,7 +265,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-
         for user in cls.users_list:
             user.delete()
 
@@ -366,7 +363,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
         return resp_data
 
     def assertRasterInfo(self, location, mapset, raster, ref_info, header):
-
         url = (
             f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
             f"raster_layers/{raster}"
@@ -388,7 +384,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
             )
 
     def assertVectorInfo(self, location, mapset, vector, ref_info, header):
-
         url = (
             f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
             f"vector_layers/{vector}"

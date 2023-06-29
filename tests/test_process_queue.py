@@ -107,7 +107,6 @@ class ProcessQueueTestCase(unittest.TestCase):
         self.app_context.pop()
 
     def otest_1(self):
-
         create_process_queue(config=global_config, use_logger=False)
 
         args = deepcopy(self.rdc)
@@ -144,7 +143,6 @@ class ProcessQueueTestCase(unittest.TestCase):
         return
 
     def otest_2(self):
-
         create_process_queue(config=global_config, use_logger=False)
 
         args = deepcopy(self.rdc)

@@ -43,7 +43,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
-
         rv = self.server.post(
             URL_PREFIX + "/custom_process/uname",
             headers=self.admin_auth_header,

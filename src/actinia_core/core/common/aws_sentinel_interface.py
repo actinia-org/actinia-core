@@ -182,7 +182,6 @@ class AWSSentinel2AInterface(object):
             bands = ["B04", "B08"]
 
         try:
-
             for band in bands:
                 if band not in self.sentinel_bands:
                     raise Exception("Unknown Sentinel-2 band name <%s>" % band)

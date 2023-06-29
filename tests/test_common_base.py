@@ -50,7 +50,6 @@ if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
 
 
 def setup_environment():
-
     # If docker config
     if custom_actinia_cfg is not False:
         global_config.read(custom_actinia_cfg)
@@ -102,7 +101,6 @@ class CommonTestCaseBase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-
         if custom_actinia_cfg is not False:
             global_config.read(custom_actinia_cfg)
             print(global_config)

@@ -270,7 +270,6 @@ def check_user_permissions(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-
         location_name = None
         mapset_name = None
         module_name = None

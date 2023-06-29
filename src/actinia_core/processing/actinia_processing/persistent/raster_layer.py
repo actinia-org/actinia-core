@@ -86,7 +86,6 @@ class PersistentRasterDeleter(PersistentProcessing):
 
 class PersistentRasterCreator(PersistentProcessing):
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):

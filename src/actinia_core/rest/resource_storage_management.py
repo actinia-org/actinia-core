@@ -60,7 +60,6 @@ __maintainer__ = "mundialis"
 
 
 class SyncResourceStorageResource(ResourceBase):
-
     decorators = [
         log_api_call,
         check_user_permissions,

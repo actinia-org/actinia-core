@@ -51,7 +51,6 @@ class PersistentListLayers(PersistentProcessing):
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
-
         self._setup()
 
         args, layer_type = self.data
@@ -92,11 +91,9 @@ class PersistentRemoveLayers(PersistentProcessing):
     """Remove layers in a mapset"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         args, layer_type = self.data
@@ -134,11 +131,9 @@ class PersistentRenameLayers(PersistentProcessing):
     """Rename raster layers in a mapset"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         args, layer_type = self.data

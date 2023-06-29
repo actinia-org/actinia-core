@@ -94,9 +94,9 @@ def path_is_in_allowed_read_and_write_paths(path):
 
 
 def path_is_in_allowed_read_paths(path):
-    """Checks whether the passed path is a valid read path, uses the global_config
-    variables `GRASS_USER_DATABASE`, `GRASS_DATABASE` and `GRASS_RESOURCE_DIR`
-    for the check.
+    """Checks whether the passed path is a valid read path, uses the
+    global_config variables `GRASS_USER_DATABASE`, `GRASS_DATABASE` and
+    `GRASS_RESOURCE_DIR` for the check.
 
     Args:
         path (string): a normalized path
@@ -113,8 +113,9 @@ def path_is_in_allowed_read_paths(path):
 
 
 def path_is_in_allowed_write_paths(path):
-    """Checks whether the passed path is a valid write path, uses the global_config
-    variables `GRASS_USER_DATABASE` and `GRASS_RESOURCE_DIR` for the check.
+    """Checks whether the passed path is a valid write path, uses the
+    global_config variables `GRASS_USER_DATABASE` and `GRASS_RESOURCE_DIR` for
+    the check.
 
     Args:
         path (string): a normalized path

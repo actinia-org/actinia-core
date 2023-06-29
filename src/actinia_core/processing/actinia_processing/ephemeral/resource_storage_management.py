@@ -57,13 +57,11 @@ class ResourceStorageSize(EphemeralProcessing):
         )
 
     def _execute(self):
-
         self._setup()
 
         if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
             self.user_resource_storage_path
         ):
-
             executable = "/usr/bin/du"
             args = ["-sb", self.user_resource_storage_path]
 

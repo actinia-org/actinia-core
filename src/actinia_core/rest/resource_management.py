@@ -69,7 +69,6 @@ class ResourceManagerBase(Resource):
     decorators = [log_api_call, auth.login_required]
 
     def __init__(self):
-
         # Configuration
         Resource.__init__(self)
 
@@ -195,7 +194,6 @@ class ResourceManager(ResourceManagerBase):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManagerBase.__init__(self)
 
@@ -593,7 +591,6 @@ class ResourcesManager(ResourceManagerBase):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManagerBase.__init__(self)
 
@@ -687,7 +684,6 @@ class ResourceIterationManager(ResourceManagerBase):
     """
 
     def __init__(self):
-
         # Configuration
         ResourceManagerBase.__init__(self)
 

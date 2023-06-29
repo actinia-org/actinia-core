@@ -57,13 +57,11 @@ class DownloadCacheSize(EphemeralProcessing):
         self.response_model_class = StorageResponseModel
 
     def _execute(self):
-
         self._setup()
 
         if os.path.exists(self.user_download_cache_path) and os.path.isdir(
             self.user_download_cache_path
         ):
-
             executable = "/usr/bin/du"
             args = ["-sb", self.user_download_cache_path]
 

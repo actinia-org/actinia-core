@@ -87,7 +87,6 @@ class GrassEnvironment(ProcessLogging):
     """This class saves and sets grass environment variables"""
 
     def __init__(self):
-
         ProcessLogging.__init__(self)
         self.env = {
             "GISBASE": "",
@@ -301,7 +300,6 @@ class GrassWindFile(ProcessLogging):
 
 class GrassModuleRunner(ProcessLogging):
     def __init__(self, grassbase, grass_addon_path):
-
         ProcessLogging.__init__(self)
 
         self.grassbase = grassbase

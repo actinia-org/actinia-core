@@ -313,7 +313,6 @@ redis_user_interface = RedisUserInterface()
 
 
 def test_management(r):
-
     user_id = "Soeren"
     user_group = "test_1"
     password_hash = "hash"

@@ -62,7 +62,8 @@ class ResourceStorageBase(object):
 
     @abstractmethod
     def get_resource_urls(self):
-        """Return all resource urls that were generated when storing a resource on disk
+        """Return all resource urls that were generated when storing a resource
+        on disk
 
         Returns:
             (list): A list of urls
@@ -72,8 +73,8 @@ class ResourceStorageBase(object):
 
     @abstractmethod
     def store_resource(self, file_path):
-        """Store a resource (file) at the user resource storage and return an URL
-        to the resource accessible via HTTP
+        """Store a resource (file) at the user resource storage and return an
+        URL to the resource accessible via HTTP
 
         Args:
             file_path:

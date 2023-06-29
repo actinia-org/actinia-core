@@ -209,7 +209,6 @@ def datetime_to_grass_datetime_string(dt):
 
     # Check for time zone info in the datetime object
     if dt.tzinfo is not None:
-
         tz = dt.tzinfo.utcoffset(0)
         if tz.seconds > 86400 / 2:
             tz = (tz.seconds - 86400) / 60
@@ -319,7 +318,6 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
             count += 1
 
     def get_import_process_list(self):
-
         count = 0
         import_commands = []
 
@@ -342,7 +340,6 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         return import_commands
 
     def get_i_landsat_toar_process_list(self, atcor_method):
-
         option = "uncorrected"
 
         if atcor_method == "DOS4":
@@ -374,7 +371,6 @@ class LandsatProcessing(GeoDataDownloadImportSupport):
         return toar_commands
 
     def get_i_vi_process_list(self, atcor_method, processing_method):
-
         self.ndvi_name = "%s_%s_%s" % (
             self.scene_id,
             atcor_method,

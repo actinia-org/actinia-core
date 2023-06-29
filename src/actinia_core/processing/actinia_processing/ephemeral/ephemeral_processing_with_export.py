@@ -104,7 +104,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         file_name = raster_name.split("@")[0] + suffix
 
         if use_raster_region is True:
-
             p = Process(
                 exec_type="grass",
                 executable="g.region",
@@ -411,7 +410,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
         """
 
         for resource in self.resource_export_list:
-
             # Check for termination requests between the exports
             if (
                 bool(
@@ -432,7 +430,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                 "file",
                 "strds",
             ]:
-
                 output_type = resource["export"]["type"]
                 output_path = None
 

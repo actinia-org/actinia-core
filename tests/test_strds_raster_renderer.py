@@ -115,7 +115,6 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_strds_render_1(self):
-
         new_mapset = "strds_render_test"
         self.create_new_mapset(new_mapset, location)
 

@@ -86,7 +86,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         pass
 
     def _run_process(self, process):
-
         print("Run process: " + str(process))
 
         inputlist = list()
@@ -108,7 +107,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         )
 
     def test_download_commands_gml(self):
-
         gml = additional_external_data["census_wake2000_gml"]
 
         gddl = GeoDataDownloadImportSupport(
@@ -138,7 +136,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             self.assertEqual("v.import", p.executable)
 
     def test_download_commands_gml_zip(self):
-
         url_list = []
 
         gml = additional_external_data["census_wake2000_gml"]
@@ -171,7 +168,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             gddl.perform_file_validation(filepath=file_name)
 
     def test_download_commands_tif(self):
-
         tif_list = []
         tif_list.append(additional_external_data["geology_30m_tif"])
         tif_list.append(additional_external_data["geology_30m_tif"])
@@ -209,7 +205,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             self.assertEqual("r.import", p.executable)
 
     def test_landsat_download_commands(self):
-
         lp = LandsatProcessing(
             config=global_config,
             temp_file_path="/tmp",

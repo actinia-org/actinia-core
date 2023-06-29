@@ -45,7 +45,6 @@ class MessageLogger(RedisFluentLoggerBase):
         )
 
     def _log_message(self, log_level, message):
-
         node = platform.node()
         ctime = time.ctime()
 

@@ -43,7 +43,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 class RasterAsyncExport(ActiniaResourceTestCaseBase):
     def test_export(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevation/geotiff_async",
@@ -72,7 +71,6 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         time.sleep(1)
 
     def test_export_region(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevation/geotiff_async_orig",
@@ -101,7 +99,6 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         time.sleep(1)
 
     def test_export_error(self):
-
         rv = self.server.post(
             f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
             "raster_layers/elevationion/geotiff_async",

@@ -49,7 +49,6 @@ class PersistentLocationCreator(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         new_location = self.location_name
 
         self.location_name = self.config.GRASS_DEFAULT_LOCATION

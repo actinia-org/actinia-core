@@ -44,7 +44,6 @@ class ConfigurationTestCase(unittest.TestCase):
     file_name = "/tmp/actinia_test.cfg"
 
     def test_change_loglevel(self):
-
         c = Configuration()
 
         c.write(self.file_name)
@@ -58,7 +57,6 @@ class ConfigurationTestCase(unittest.TestCase):
         self.assertEqual(c.LOG_LEVEL, 1)
 
     def test_read_write_exceptions(self):
-
         c = Configuration()
         self.assertRaises(IOError, c.read, "/dk/l/K/D/V/l/d/g")
         self.assertRaises(IOError, c.write, "/dk/l/K/D/V/l/d/g")

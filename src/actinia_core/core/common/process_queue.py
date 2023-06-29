@@ -161,7 +161,6 @@ class EnqueuedProcess(object):
     """
 
     def __init__(self, func, timeout, resource_logger, args):
-
         self.process = Process(target=func, args=args)
         self.timeout = timeout
         self.config = args[0].config
@@ -242,7 +241,6 @@ class EnqueuedProcess(object):
 
         """
         if self.process.exitcode is not None and self.process.exitcode != 0:
-
             # Check if the process noticed the error already
             response_data = self.resource_logger.get(
                 self.user_id, self.resource_id, self.iteration
