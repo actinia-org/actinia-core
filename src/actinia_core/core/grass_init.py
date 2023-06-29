@@ -114,6 +114,7 @@ class GrassEnvironment(ProcessLogging):
         """
         self.env["GIS_LOCK"] = str(os.getpid())
         self.env["GISBASE"] = grass_gis_base
+        self.env["HOME"] = "/tmp/"
         self.env["GRASS_MESSAGE_FORMAT"] = "plain"
         self.env["GRASS_SKIP_MAPSET_OWNER_CHECK"] = "1"
         self.env["GRASS_TGIS_RAISE_ON_ERROR"] = "1"
@@ -121,7 +122,7 @@ class GrassEnvironment(ProcessLogging):
         self.env["LD_LIBRARY_PATH"] = str(
             os.path.join(self.env["GISBASE"], "lib")
         )
-        self.env["GRASS_VERSION"] = "7.7.svn"
+        self.env["GRASS_VERSION"] = "8"
         self.env["GRASS_ADDON_PATH"] = grass_addon_path
         self.env["GRASS_ADDON_BASE"] = grass_addon_path
         if os.name != "posix":
@@ -171,12 +172,22 @@ class GrassEnvironment(ProcessLogging):
         #         'GRASS_ADDON_PATH', 'GIS_LOCK']:
         #     if var in os.environ:
         #         del os.environ[var]
+
         for key in self.env:
-            try:
-                value = self.env[key]
-                origValue = os.getenv(key)
+            value = self.env[key]
+            # use self.env and enviroment variable values
+            if key in ["PATH", "PYTHONPATH"]:
+                origValue = os.getenv(key, None)
                 if origValue:
                     value += ":" + origValue
+            # for HOME use the environmental variable and only if not set use
+            # self.env value
+            elif key in ["HOME"]:
+                value = os.getenv(key, value)
+            # use self.env value
+            else:
+                pass
+            try:
                 os.putenv(key, value)
                 os.environ[key] = value
                 self.log_debug(key + "=" + value)
