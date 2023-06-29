@@ -173,7 +173,6 @@ process_chain_region = {
 
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
@@ -188,7 +187,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_async_processing_termination(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
@@ -246,7 +244,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         time.sleep(1)
 
     def test_async_processing_large_region(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.user_auth_header,
@@ -302,7 +299,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_async_processing_error_3(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.user_auth_header,
@@ -318,7 +314,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_async_processing_error_4(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.user_auth_header,
@@ -352,7 +347,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_async_processing_error_6(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.user_auth_header,
@@ -368,7 +362,6 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_async_processing_error_7(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",
             headers=self.user_auth_header,

@@ -44,7 +44,6 @@ flask_app = Flask(__name__)
 
 @flask_app.route("/webhook/finished", methods=["GET", "POST"])
 def finished():
-
     try:
         pprint(json.loads(request.get_json()))
     except BadRequest:
@@ -88,7 +87,6 @@ def shutdown():
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Start a REST webhook server that exposes a GET/POST "
         "endpoint which returns HTTP code 200 if called. The endpoints are: "

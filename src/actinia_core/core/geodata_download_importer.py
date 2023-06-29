@@ -214,7 +214,6 @@ class GeoDataDownloadImportSupport(object):
 
             # Download file only if it does not exist in the download cache
             if os.path.isfile(dest) is False:
-
                 p = get_wget_process(source, url)
                 download_commands.append(p)
                 if source != dest:

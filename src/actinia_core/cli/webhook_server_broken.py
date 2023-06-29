@@ -90,7 +90,6 @@ def shutdown():
 
 
 def main():
-
     parser = argparse.ArgumentParser(
         description="Start a webhook server that exposes GET/POST endpoints "
         "which returns HTTP code 200 if called. The endpoints are: "

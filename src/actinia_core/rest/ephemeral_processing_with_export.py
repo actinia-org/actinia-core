@@ -94,8 +94,8 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
         check_endpoint("post", ephemeral_processing_with_export.post_doc)
     )
     def post(self, location_name):
-        """Execute a user defined process chain in an ephemeral location/mapset and
-        store the processing result in an Amazon S3 bucket
+        """Execute a user defined process chain in an ephemeral location/mapset
+        and store the processing result in an Amazon S3 bucket
         """
         rdc = self.preprocess(has_json=True, location_name=location_name)
         rdc.set_storage_model_to_s3()

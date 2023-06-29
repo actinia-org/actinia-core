@@ -52,7 +52,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
     def test_download_cache(self):
-
         global_config.DOWNLOAD_CACHE = "/tmp/dcache_tmp"
         global_config.DOWNLOAD_CACHE_QUOTA = 1
         try:
@@ -119,7 +118,6 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_download_cache_error_1(self):
-
         if os.path.isdir("/tmp/dcache_tmp_nope") is True:
             os.rmdir("/tmp/dcache_tmp_nope")
 
@@ -140,7 +138,6 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_download_cache_error_2(self):
-
         if os.path.isdir("/tmp/dcache_tmp_nope") is True:
             os.rmdir("/tmp/dcache_tmp_nope")
 

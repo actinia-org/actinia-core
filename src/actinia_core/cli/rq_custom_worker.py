@@ -123,7 +123,6 @@ def main():
             password=conf.REDIS_QUEUE_SERVER_PASSWORD,
         )
     ):
-
         logger = logging.getLogger("rq.worker")
         logger.setLevel(logging.ERROR)
 

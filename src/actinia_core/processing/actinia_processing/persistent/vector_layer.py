@@ -87,7 +87,6 @@ class PersistentVectorDeleter(PersistentProcessing):
 
 class PersistentVectorCreator(PersistentProcessing):
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):

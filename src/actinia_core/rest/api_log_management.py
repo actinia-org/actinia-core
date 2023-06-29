@@ -58,7 +58,6 @@ class APILogResource(Resource):
     decorators = [log_api_call, check_user_permissions, auth.login_required]
 
     def __init__(self):
-
         # Configuration
         Resource.__init__(self)
 

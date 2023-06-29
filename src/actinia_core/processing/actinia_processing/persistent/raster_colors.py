@@ -50,11 +50,9 @@ class PersistentRasterColorsRules(PersistentProcessing):
     """
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
-
         self._setup()
 
         raster_name = self.map_name

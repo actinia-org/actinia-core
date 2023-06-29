@@ -236,7 +236,6 @@ class RedisLockingInterface(object):
 
 
 def test_locking(r):
-
     resource = "location/mapset"
 
     # Remove the lock if its present

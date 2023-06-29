@@ -64,7 +64,6 @@ def datetime_to_grass_datetime_string(dt):
 
     # Check for time zone info in the datetime object
     if dt.tzinfo is not None:
-
         tz = dt.tzinfo.utcoffset(0)
         if tz.seconds > 86400 / 2:
             tz = (tz.seconds - 86400) / 60
@@ -260,7 +259,6 @@ class Sentinel2Processing(object):
 
         # Create file names, urls and check the download cache
         for band in self.bands:
-
             file_name = self.query_result[self.product_id][band]["file"]
             tile_name = self.query_result[self.product_id][band]["tile"]
             public_url = self.query_result[self.product_id][band]["public_url"]
@@ -380,7 +378,6 @@ class Sentinel2Processing(object):
 
         # Create file names, urls and check the download cache
         for band in self.bands:
-
             file_name = self.query_result[self.product_id][band]["file"]
             tile_name = self.query_result[self.product_id][band]["tile"]
             public_url = self.query_result[self.product_id][band]["public_url"]

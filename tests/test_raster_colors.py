@@ -65,7 +65,6 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(len(colors) == 8)
 
     def test_raster_layer_set_colors(self):
-
         new_mapset = "raster_test_mapset"
         self.create_new_mapset(new_mapset)
 

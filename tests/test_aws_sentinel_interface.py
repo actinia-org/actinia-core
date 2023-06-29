@@ -55,10 +55,8 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         pass
 
     def validate_result(self, result, bands):
-
         for scene in result:
             for tile in scene["tiles"]:
-
                 url = tile["info"]
                 response = urlopen(url)
                 mime_type = magic.from_buffer(

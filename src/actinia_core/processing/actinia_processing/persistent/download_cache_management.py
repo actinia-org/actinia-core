@@ -46,14 +46,12 @@ class DownloadCacheDelete(PersistentProcessing):
     """Delete the whole download cache directory"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
         self.user_download_cache_path = os.path.join(
             self.config.DOWNLOAD_CACHE, self.user_id
         )
 
     def _execute(self):
-
         self._setup()
 
         if os.path.exists(self.user_download_cache_path) and os.path.isdir(

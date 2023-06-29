@@ -383,7 +383,6 @@ class GoogleSatelliteBigQueryInterface(object):
             ]
         """
         try:
-
             self._start_clients()
             scene_id_query = None
             spacecraft_id_query = None
@@ -572,7 +571,6 @@ class GoogleSatelliteBigQueryInterface(object):
             bands = ["B1", "B2"]
 
         try:
-
             self._start_clients()
 
             for scene_id in scene_ids:
@@ -595,7 +593,6 @@ class GoogleSatelliteBigQueryInterface(object):
 
             if query_results.result():
                 for row in query_results.result():
-
                     scene_id, sensing_time, base_url = row
                     public_url = self.gcs_url + base_url[5:]
                     sensor_id = extract_sensor_id_from_scene_id(scene_id)
@@ -772,7 +769,6 @@ class GoogleSatelliteBigQueryInterface(object):
             bands = ["B04", "B08"]
 
         try:
-
             self._start_clients()
 
             for band in bands:
@@ -793,7 +789,6 @@ class GoogleSatelliteBigQueryInterface(object):
 
             if rows:
                 for row in rows:
-
                     (
                         granule_id,
                         product_id,

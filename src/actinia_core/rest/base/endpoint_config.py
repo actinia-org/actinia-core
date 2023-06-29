@@ -79,7 +79,6 @@ def endpoint_decorator():
 
         @wraps(func)
         def wrapper(*args, **kwargs):
-
             if check_endpoint(method, endpoint_class=endpoint_class):
                 result = func(*args, **kwargs)
                 return result

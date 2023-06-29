@@ -325,7 +325,6 @@ process_chain_error_4 = {
 
 class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -405,7 +404,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_termination_1(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -429,7 +427,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_termination_2(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -453,7 +450,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_termination_3(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.root_auth_header,
@@ -477,7 +473,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_error_1(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -493,7 +488,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_error_2(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -509,7 +503,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_error_3(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -525,7 +518,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         )
 
     def test_error_4(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.user_auth_header,
@@ -569,7 +561,6 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
 class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -596,7 +587,6 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
             )
 
     def test_termination(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -620,7 +610,6 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
 
     def test_error_1(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -636,7 +625,6 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
 
     def test_error_2(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -652,7 +640,6 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
 
     def test_error_3(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
@@ -668,7 +655,6 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
 
     def test_error_4(self):
-
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,

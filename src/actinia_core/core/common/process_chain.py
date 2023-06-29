@@ -145,7 +145,6 @@ class ProcessChainConverter(object):
         self.webhook_auth = None
 
     def process_chain_to_process_list(self, process_chain):
-
         if not process_chain:
             raise AsyncProcessError("Process chain is empty")
 
@@ -188,7 +187,6 @@ class ProcessChainConverter(object):
 
         # Check for the webhooks
         if "webhooks" in process_chain:
-
             if "finished" in process_chain["webhooks"]:
                 self.webhook_finished = process_chain["webhooks"]["finished"]
                 self._check_if_webhook_exists(
@@ -206,7 +204,6 @@ class ProcessChainConverter(object):
                 )
 
         for process_descr in process_chain["list"]:
-
             if "module" in process_descr:
                 module = self._create_module_process(process_descr)
                 if module:
@@ -768,7 +765,6 @@ class ProcessChainConverter(object):
 
         if "params" in module_descr:
             for search_string in module_descr["params"]:
-
                 # Search for file identifiers and generate the temporary file
                 # path
                 if "$file" in search_string and "::" in search_string:
@@ -833,7 +829,6 @@ class ProcessChainConverter(object):
                 or entry["import_descr"]["type"].lower() == "vector"
                 or entry["import_descr"]["type"].lower() == "file"
             ):
-
                 rvf_downimport_commands = (
                     self._get_raster_vector_file_download_import_command(entry)
                 )
@@ -930,7 +925,6 @@ class ProcessChainConverter(object):
 
         if "inputs" in module_descr:
             for key in module_descr["inputs"]:
-
                 search_string = str(module_descr["inputs"][key])
 
                 # Search for file identifiers and generate the temporary file
@@ -949,7 +943,6 @@ class ProcessChainConverter(object):
                     # Check for mapset in input name and append it
                     # to the list of required mapsets
                     if "@" in str(module_descr["inputs"][key]):
-
                         # Mapset names are after an @ symbol
                         # Mapsets in expressions can be detected by replacing
                         # the symbols like *, +, :, /, {, (,},], ... by spaces
@@ -997,7 +990,6 @@ class ProcessChainConverter(object):
         if "outputs" in module_descr:
             for key in module_descr["outputs"]:
                 if "name" in module_descr["outputs"][key]:
-
                     search_string = module_descr["outputs"][key]["name"]
 
                     # Search for file identifiers and generate the temporary
@@ -1129,7 +1121,6 @@ class ProcessChainConverter(object):
         executable = module_descr["executable"]
         if "parameters" in module_descr:
             for search_string in module_descr["parameters"]:
-
                 # Search for file identifiers and generate the temporary file
                 # path
                 if "$file" in search_string and "::" in search_string:

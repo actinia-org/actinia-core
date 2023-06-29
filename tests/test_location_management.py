@@ -104,7 +104,6 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_location_creation_and_deletion(self):
-
         # Delete a potentially existing location
         rv = self.server.delete(
             URL_PREFIX + "/locations/test_location",
@@ -176,7 +175,6 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_location_creation_and_deletion_as_user(self):
-
         # Delete a potentially existing location
         rv = self.server.delete(
             URL_PREFIX + "/locations/test_location",
@@ -256,7 +254,6 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         )
 
     def test_location_creation_and_deletion_as_guest(self):
-
         # ERROR: Try to create a location as guest
         rv = self.server.post(
             URL_PREFIX + "/locations/test_location_user",

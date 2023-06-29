@@ -44,7 +44,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
-
     # TODO create test for CREATION (upload)
 
     def test_raster_layer_info(self):

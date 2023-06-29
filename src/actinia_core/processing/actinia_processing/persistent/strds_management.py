@@ -49,12 +49,10 @@ __maintainer__ = "mundialis"
 
 class PersistentSTRDSLister(PersistentProcessing):
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
         self.response_model_class = StringListProcessingResultResponseModel
 
     def _execute(self):
-
         self._setup()
 
         pc = {
@@ -108,12 +106,10 @@ class PersistentSTRDSInfo(PersistentProcessing):
     """Gather the STRDS information"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
         self.response_model_class = STRDSInfoResponseModel
 
     def _execute(self):
-
         self._setup()
 
         pc = {
@@ -196,7 +192,6 @@ class PersistentSTRDSCreator(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
         self.required_mapsets.append(self.target_mapset_name)
 

@@ -78,7 +78,6 @@ class STACExporter:
         self._stac_collection_initializer()
 
         if output_type == "raster":
-
             # Get parameters for STAC item
             extra_values = self._get_raster_parameters(output_path)
 
@@ -126,7 +125,6 @@ class STACExporter:
             redis_items = self._save_items_redis(item, item_name)
 
             if redis_items:
-
                 # Add item to Catalog
                 catalog.add_item(item)
 
@@ -254,7 +252,6 @@ class STACExporter:
 
     @staticmethod
     def _update_catalog_redis(catalog):
-
         new_catalog = catalog.to_dict()
         redis_actinia_interface.update("result-catalog", new_catalog)
 

@@ -52,7 +52,6 @@ class ActiniaUser(ActiniaUserBase):
     db = redis_user_interface
 
     def read_from_db(self):
-
         creds = self.db.get_credentials(self.user_id)
         self.user_role = self.get_role()
         self.user_group = self.get_group()

@@ -269,7 +269,6 @@ class RedisResourceInterface(RedisBaseInterface):
 
 
 def test_resource_entries(r):
-
     resource_id = "abcdefg"
 
     # Remove the resource entry if it exist
