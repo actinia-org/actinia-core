@@ -73,7 +73,7 @@ include_additional_mapset_pattern = test_tmp_*
 ## Job resumption examples
 ```
 actiniapost() {
-    curl -X POST -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL_POST=`cat resp.json | json urls.status`;     curl -L -u $1 $STATUS_URL_POST | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL_POST | jq'
+    curl -X POST -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL=$(cat resp.json | jq .urls.status | sed 's/"//g');     curl -L -u $1 $STATUS_URL_POST | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL_POST | jq'
     cat resp.json | json urls.status | xargs -I {} echo "curl -L -u '$1' -X GET {} | jq"
 }
 
@@ -82,11 +82,11 @@ actiniaget() {
 }
 
 actiniaput () {
-  curl -X PUT -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL=`cat resp.json | json urls.status`;     curl -L -u $1 $STATUS_URL | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL | jq'
+  curl -X PUT -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL=$(cat resp.json | jq .urls.status | sed 's/"//g');     curl -L -u $1 $STATUS_URL | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL | jq'
 }
 
 actiniadelete(){
-  curl -X DELETE -u $1 $2 | jq
+  curl -X DELETE -u $1 $2 > resp.json && cat resp.json | jq;     export STATUS_URL=$(cat resp.json | jq .urls.status | sed 's/"//g');     curl -L -u $1 $STATUS_URL | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL | jq'
 }
 ```
 
@@ -437,6 +437,7 @@ actiniaget $AUTH $URL/resource_storage
 
 # delete resource storage files older than 5 days
 actiniadelete $AUTH $URL/resource_storage?olderthan=5
+actiniaget $AUTH 
 
 # delete all files in the user resource storage
 actiniadelete $AUTH $URL/resource_storage
