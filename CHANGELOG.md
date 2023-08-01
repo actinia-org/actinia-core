@@ -21,6 +21,16 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+## [4.9.3] - 2023-08-01
+released from main
+### Fixed
+* Update GRASS GIS to fix missing GDAL PostgreSQL support (see https://github.com/actinia-org/actinia-docker/pull/47 and https://github.com/OSGeo/grass/pull/3058)
+
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.2...4.9.3
+
+"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.3" -f target_commitish=main -q .body" 
+
 ## [4.9.2] - 2023-06-29
 released from main
 ### Added
