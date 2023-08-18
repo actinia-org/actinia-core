@@ -1,5 +1,5 @@
 FROM mundialis/actinia:alpine-dependencies-2023-06-03 as build-base
-FROM osgeo/grass-gis:stable-alpine as grass
+FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
 
 FROM build-base as build
 
