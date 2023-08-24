@@ -437,7 +437,7 @@ actiniaget $AUTH $URL/resource_storage
 
 # delete resource storage files older than 5 days
 actiniadelete $AUTH $URL/resource_storage?olderthan=5
-actiniaget $AUTH 
+actiniaget $AUTH
 
 # delete all files in the user resource storage
 actiniadelete $AUTH $URL/resource_storage

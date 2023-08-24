@@ -1,27 +1,27 @@
 ---
 repos:
-  # - repo: https://github.com/pre-commit/pre-commit-hooks
-  #   rev: v4.4.0
-  #   hooks:
-  #     - id: trailing-whitespace
-  #       exclude: |
-  #         (?x)^(
-  #               .*\.ref$|
-  #               .*\.svg$|
-  #               build/|
-  #               dist/|
-  #               src/actinia_core.egg-info/
-  #         )
-  #     - id: end-of-file-fixer
-  #       exclude: |
-  #         (?x)^(
-  #               .*\.ref$|
-  #               .*\.svg$|
-  #               build/|
-  #               dist/|
-  #               src/actinia_core.egg-info/
-  #         )
--   repo: https://github.com/mundialis/github-workflows
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+        exclude: |
+          (?x)^(
+                .*\.ref$|
+                .*\.svg$|
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+      - id: end-of-file-fixer
+        exclude: |
+          (?x)^(
+                .*\.ref$|
+                .*\.svg$|
+                build/|
+                dist/|
+                src/actinia_core.egg-info/
+          )
+  - repo: https://github.com/mundialis/github-workflows
     rev: 8a5bab5f1b3e18d8edb8cb5d78a31e3b6b4646c5
     hooks:
     -   id: linting

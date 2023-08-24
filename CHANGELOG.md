@@ -29,7 +29,7 @@ released from main
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.2...4.9.3
 
-"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.3" -f target_commitish=main -q .body" 
+"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.3" -f target_commitish=main -q .body"
 
 ## [4.9.2] - 2023-06-29
 released from main
@@ -45,7 +45,7 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.1...4.9.2
 
  "generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.9.2" -f target_commitish=main -q .body`"
- 
+
 
 ## [4.9.1] - 2023-06-14
 released from main
