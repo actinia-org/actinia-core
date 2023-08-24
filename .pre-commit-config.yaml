@@ -21,28 +21,10 @@ repos:
                 dist/|
                 src/actinia_core.egg-info/
           )
-  - repo: https://github.com/psf/black
-    rev: 22.3.0
+  - repo: https://github.com/mundialis/github-workflows
+    rev: 8a5bab5f1b3e18d8edb8cb5d78a31e3b6b4646c5
     hooks:
-      - id: black
-        args: [--line-length, '79']
-        exclude: |
-          (?x)^(
-                build/|
-                dist/|
-                src/actinia_core.egg-info/
-          )
-  - repo: https://github.com/pycqa/flake8
-    rev: 3.8.0
-    hooks:
-      - id: flake8
-        args: [--config=.flake8]
-        exclude: |
-          (?x)^(
-                build/|
-                dist/|
-                src/actinia_core.egg-info/
-          )
+    -   id: linting
 
 # still deactivated, needs major code cleanup:
 #  - repo: https://github.com/igorshubovych/markdownlint-cli
