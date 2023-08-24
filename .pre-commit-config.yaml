@@ -22,9 +22,9 @@ repos:
                 src/actinia_core.egg-info/
           )
   - repo: https://github.com/mundialis/github-workflows
-    rev: 8a5bab5f1b3e18d8edb8cb5d78a31e3b6b4646c5
+    rev: 1.0.0
     hooks:
-    -   id: linting
+    - id: linting
 
 # still deactivated, needs major code cleanup:
 #  - repo: https://github.com/igorshubovych/markdownlint-cli
