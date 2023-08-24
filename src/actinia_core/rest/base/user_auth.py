@@ -45,7 +45,6 @@ __maintainer__ = "mundialis"
 
 
 if not global_config.AUTHENTICATION:
-
     # No authentication
     @auth.login_required
     def login_required(a, b):
@@ -55,6 +54,7 @@ if not global_config.AUTHENTICATION:
     def verify_password(username_or_token, password):
         g.user = ActiniaUserNoAuth.create_user()
         return True
+
 
 if global_config.KEYCLOAK_CONFIG_PATH:
 
