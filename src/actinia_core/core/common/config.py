@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ from json import load as json_load
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 
@@ -320,6 +320,8 @@ class Configuration(object):
         self.PLUGINS = []
         # ENDPOINTS_CONFIG: configuration csv file for endpoints
         self.ENDPOINTS_CONFIG = None
+        # AUTHENTICATION: If set False no authentication is needed
+        self.AUTHENTICATION = True
 
         """
         KEYCLOAK: has only to be set if keycloak server is configured with
@@ -560,6 +562,7 @@ class Configuration(object):
         config.set("API", "FORCE_HTTPS_URLS", str(self.FORCE_HTTPS_URLS))
         config.set("API", "PLUGINS", str(self.PLUGINS))
         config.set("API", "ENDPOINTS_CONFIG", str(self.ENDPOINTS_CONFIG))
+        config.set("API", "AUTHENTICATION", str(self.AUTHENTICATION))
 
         config.add_section("KEYCLOAK")
         config.set(
@@ -809,6 +812,10 @@ class Configuration(object):
                 if config.has_option("API", "ENDPOINTS_CONFIG"):
                     self.ENDPOINTS_CONFIG = config.get(
                         "API", "ENDPOINTS_CONFIG"
+                    )
+                if config.has_option("API", "AUTHENTICATION"):
+                    self.AUTHENTICATION = config.getboolean(
+                        "API", "AUTHENTICATION"
                     )
 
             if config.has_section("KEYCLOAK"):

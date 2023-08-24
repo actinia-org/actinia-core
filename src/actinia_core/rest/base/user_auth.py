@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,15 +33,28 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.keycloak_user import ActiniaKeycloakUser
 from actinia_core.core.common.user import ActiniaUser
+from actinia_core.core.common.user_noauth import ActiniaUserNoAuth
 from actinia_core.core.messages_logger import MessageLogger
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Julia Haas"
+__author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
+
+if not global_config.AUTHENTICATION:
+
+    # No authentication
+    @auth.login_required
+    def login_required(a, b):
+        return False
+
+    @auth.verify_password
+    def verify_password(username_or_token, password):
+        g.user = ActiniaUserNoAuth.create_user()
+        return True
 
 if global_config.KEYCLOAK_CONFIG_PATH:
 
@@ -63,7 +76,7 @@ if global_config.KEYCLOAK_CONFIG_PATH:
         return True
 
 
-if global_config.KEYCLOAK_CONFIG_PATH is None:
+if global_config.KEYCLOAK_CONFIG_PATH is None and global_config.AUTHENTICATION:
 
     @auth.verify_password
     def verify_password(username_or_token, password):
