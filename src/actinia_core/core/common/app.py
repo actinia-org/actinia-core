@@ -165,7 +165,7 @@ if global_config.KEYCLOAK_CONFIG_PATH:
             }
         }
     ]
-else:
+elif global_config.AUTHENTICATION:
     # Set the security definition in an unconventional way
     flask_api._swagger_object["securityDefinitions"] = {
         "basicAuth": {"type": "basic"}
@@ -173,3 +173,20 @@ else:
     flask_api._swagger_object["security"] = [{"basicAuth": []}]
 
     auth = HTTPBasicAuth()
+else:
+    # No authentication
+    auth = HTTPBasicAuth()
+    # auth = None
+
+    # class NoAuthentication(HTTPBasicAuth):
+    #     def login_required(user=None, pw=None):
+    #         return False
+    # auth = NoAuthentication()
+
+    # class NoAuthentication():
+    #     login_required = False
+    # auth = NoAuthentication()
+
+    # @auth.login_required
+    # def login_required():
+    #     return False
