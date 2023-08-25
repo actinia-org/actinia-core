@@ -29,6 +29,7 @@ then
 elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
+  run_tests_notauth
 elif [ "$1" == "noauth" ]
 then
   run_tests_notauth
