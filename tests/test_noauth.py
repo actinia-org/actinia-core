@@ -98,6 +98,7 @@ PC = {
 
 class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
     """Test bsae class to test actinia without autentication"""
+
     server_test = False
 
     if "ACTINIA_SERVER_TEST" in os.environ:
@@ -190,7 +191,6 @@ class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
 
 @pytest.mark.noauth
 class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
-
     def test_01_version(self):
         """Test version endpoint"""
         rv = self.server.get(f"{URL_PREFIX}/version")
@@ -354,7 +354,6 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
             r_info_map2,
             "'r_info_map2' is not equal to the region",
         )
-
 
 
 if __name__ == "__main__":
