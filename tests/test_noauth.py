@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2023 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -97,7 +97,7 @@ PC = {
 
 
 class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
-    """Test bsae class to test actinia without autentication"""
+    """Test base class to test actinia without autentication"""
 
     server_test = False
 
