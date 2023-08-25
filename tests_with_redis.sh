@@ -28,7 +28,7 @@ then
   pytest -m 'dev'
 elif [ "$1" == "integrationtest" ]
 then
-  pytest -m 'not unittest' -m 'not noauth' # + no auth
+  pytest -m 'not unittest and not noauth'
 elif [ "$1" == "noauth" ]
 then
   run_tests_notauth
