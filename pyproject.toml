@@ -98,11 +98,12 @@ API_Docs = "https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/la
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "--cov actinia_core --cov-report term-missing --verbose --tb=line -x"
+addopts = "--cov actinia_core --cov-report term-missing --verbose --tb=line -x -s"
 testpaths = [
     "tests",
 ]
 markers = [
     "dev: test current in development",
     "unittest: completely independent test",
+    "noauth: tests for actinia without authentication",
 ]

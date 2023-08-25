@@ -1,5 +1,14 @@
 #!/usr/bin/env sh
 
+run_tests_notauth (){
+  # change config run tests and change config bag
+  mv ${ACTINIA_CUSTOM_TEST_CFG} ${ACTINIA_CUSTOM_TEST_CFG}_tmp
+  cp /etc/default/actinia_test_noauth ${ACTINIA_CUSTOM_TEST_CFG}
+  pytest -m 'noauth'
+  mv ${ACTINIA_CUSTOM_TEST_CFG}_tmp ${ACTINIA_CUSTOM_TEST_CFG}
+}
+
+
 # start redis server
 redis-server &
 sleep 1
@@ -19,7 +28,10 @@ then
   pytest -m 'dev'
 elif [ "$1" == "integrationtest" ]
 then
-  pytest -m 'not unittest'
+  pytest -m 'not unittest' -m 'not noauth' # + no auth
+elif [ "$1" == "noauth" ]
+then
+  run_tests_notauth
 else
   pytest
 fi

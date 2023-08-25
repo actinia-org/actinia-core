@@ -24,67 +24,87 @@
 """
 Tests: Location test case
 """
-import configparser
-from flask.json import loads as json_loads, dumps as json_dumps
 import os
+from flask.json import dumps as json_dumps
+from flask.json import loads as json_loads
 import pytest
-import requests
 import unittest
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.process_queue import create_process_queue
-from actinia_core.testsuite import ActiniaRequests # ActiniaTestCaseBase, URL_PREFIX,
-
-
-try:
-    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
-except ModuleNotFoundError:
-    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+from actinia_core.testsuite import (
+    ActiniaRequests,
+    ActiniaTestCaseBase,
+    URL_PREFIX,
+)
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = (
-    "Copyright 2023, mundialis GmbH & Co. KG"
-)
-__maintainer__ = "mundialis"
+__copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
-class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
+# Set this variable to use a actinia config file in a docker container
+if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
+    custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
+
+PC = {
+    "version": 1,
+    "list": [
+        {
+            "id": "1",
+            "module": "g.region",
+            "inputs": [{"param": "raster", "value": "elevation@PERMANENT"}],
+            "flags": "p",
+        },
+        {
+            "id": "2",
+            "module": "r.colors.out_sld",
+            "inputs": [
+                {"param": "map", "value": "elevation@PERMANENT"},
+                {"param": "style_name", "value": "elevation"},
+            ],
+            "stdout": {"id": "sld", "format": "list", "delimiter": "\n"},
+        },
+        {
+            "id": "3",
+            "module": "r.mapcalc",
+            "inputs": [{"param": "expression", "value": "baum = 5"}],
+        },
+        {
+            "id": "4",
+            "module": "r.info",
+            "inputs": [{"param": "map", "value": "elevation@PERMANENT"}],
+            "flags": "g",
+            "stdout": {"id": "r_info_map1", "format": "kv", "delimiter": "="},
+        },
+        {
+            "id": "5",
+            "module": "g.list",
+            "inputs": [{"param": "type", "value": "raster"}],
+        },
+        {
+            "id": "6",
+            "module": "r.info",
+            "inputs": [{"param": "map", "value": "baum"}],
+            "flags": "g",
+            "stdout": {"id": "r_info_map2", "format": "kv", "delimiter": "="},
+        },
+    ],
+}
+
+
+class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
     """Test bsae class to test actinia without autentication"""
     server_test = False
-    cfg_file = os.environ.get(
-        "ACTINIA_CUSTOM_TEST_CFG", "/etc/default/actinia"
-    )
-    auth_value = None
-    tmp_cfg_file = "%s_tmp" % cfg_file
-    auth = "False"
 
     if "ACTINIA_SERVER_TEST" in os.environ:
         server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
 
     @classmethod
-    def save_config(cls, src, dest, value):
-        config = configparser.ConfigParser()
-        config.read(src)
-        if value:
-            config["API"]["authentication"] = value
-        else:
-            del config["API"]["authentication"]
-        with open(dest, "w") as configfile:
-            config.write(configfile)
-
-    @classmethod
     def setUpClass(cls):
-        cls.auth_value = global_config.AUTHENTICATION
-        if cls.auth_value is True:
-            os.replace(cls.cfg_file, cls.tmp_cfg_file)
-            cls.save_config(
-                cls.tmp_cfg_file,
-                cls.cfg_file,
-                cls.auth,
-            )
-
         if cls.server_test is False and cls.custom_actinia_cfg is False:
             global_config.REDIS_SERVER_SERVER = "localhost"
             global_config.REDIS_SERVER_PORT = 7000
@@ -98,6 +118,7 @@ class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
         # file will be read to configure Redis queue
         if cls.server_test is False and cls.custom_actinia_cfg is not False:
             global_config.read(cls.custom_actinia_cfg)
+            # global_config.read(cls.custom_actinia_cfg)
         # Start the redis interface
         redis_args = (
             global_config.REDIS_SERVER_URL,
@@ -116,10 +137,6 @@ class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
 
     @classmethod
     def tearDownClass(cls):
-        # reset config
-        if cls.auth is True:
-            cls.save_config(cls.tmp_cfg_file, cls.cfg_file, "True")
-            os.remove(cls.tmp_cfg_file)
         if cls.server_test is False:
             redis_interface.disconnect()
 
@@ -174,10 +191,9 @@ class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
 @pytest.mark.noauth
 class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
 
-    def test_version(self):
-        rv = self.server.get(
-            URL_PREFIX + "/version"
-        )
+    def test_01_version(self):
+        """Test version endpoint"""
+        rv = self.server.get(f"{URL_PREFIX}/version")
         self.assertEqual(
             rv.status_code,
             200,
@@ -188,11 +204,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         self.assertIn("version", data)
         self.assertIn("grass_version", data)
 
-    def test_list_locations(self):
-        rv = self.server.get(
-            URL_PREFIX + "/locations"
-        )
-        print(rv.data)
+    def test_02_list_locations(self):
+        """Test list location endpoint"""
+        rv = self.server.get(f"{URL_PREFIX}/locations")
         self.assertEqual(
             rv.status_code,
             200,
@@ -207,230 +221,140 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         locations = json_loads(rv.data)["locations"]
         self.assertIn("nc_spm_08", locations, "Wrong location listed")
 
-#     def test_location_info(self):
-#         rv = self.server.get(
-#             URL_PREFIX + "/locations/nc_spm_08/info",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             200,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#         region_settings = json_loads(rv.data)["process_results"]["region"]
-#         json_loads(rv.data)["process_results"]["projection"]
-#
-#         self.assertTrue("depths" in region_settings)
-#         self.assertTrue("ewres" in region_settings)
-#         self.assertTrue("cols" in region_settings)
-#         self.assertTrue("rows" in region_settings)
-#
-#     def test_location_global_db_error(self):
-#         # ERROR: Try to create a location as admin that exists in the global
-#         # database
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/nc_spm_08",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             400,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#     def test_location_creation_and_deletion(self):
-#         # Delete a potentially existing location
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.admin_auth_header,
-#         )
-#
-#         # Create new location as admin
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/test_location",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             200,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#         # ERROR: Try to create a location as admin that already exists
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/test_location",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             400,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#         # Delete location
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             200,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#         # ERROR: Delete should fail, since location does not exists
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.admin_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             400,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#     def test_location_creation_and_deletion_as_user(self):
-#         # Delete a potentially existing location
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.user_auth_header,
-#         )
-#
-#         # Create new location as user
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/test_location",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.user_auth_header,
-#         )
-#         self.assertEqual(
-#             rv.status_code,
-#             200,
-#             "Location creation by user: HTML status code is wrong %i"
-#             % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype,
-#             "application/json",
-#             "Location creation by user: Wrong mimetype %s" % rv.mimetype,
-#         )
-#
-#         # ERROR: Try to create a location as user that already exists
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/test_location",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.user_auth_header,
-#         )
-#         self.assertEqual(
-#             rv.status_code,
-#             400,
-#             "Location recreation by user: HTML status code is wrong %i"
-#             % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype,
-#             "application/json",
-#             "Location recreation by user: Wrong mimetype %s" % rv.mimetype,
-#         )
-#
-#         # Delete location
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.user_auth_header,
-#         )
-#         self.assertEqual(
-#             rv.status_code,
-#             200,
-#             "Location deletion by user: HTML status code is wrong %i"
-#             % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype,
-#             "application/json",
-#             "Location deletion by user: Wrong mimetype %s" % rv.mimetype,
-#         )
-#
-#         # ERROR: Delete should fail, since location does not exists
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location",
-#             headers=self.user_auth_header,
-#         )
-#         self.assertEqual(
-#             rv.status_code,
-#             400,
-#             "Location redeletion by user: HTML status code is wrong %i"
-#             % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype,
-#             "application/json",
-#             "Location redeletion by user: Wrong mimetype %s" % rv.mimetype,
-#         )
-#
-#     def test_location_creation_and_deletion_as_guest(self):
-#         # ERROR: Try to create a location as guest
-#         rv = self.server.post(
-#             URL_PREFIX + "/locations/test_location_user",
-#             data=json_dumps({"epsg": "4326"}),
-#             content_type="application/json",
-#             headers=self.guest_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             401,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
-#
-#         # ERROR: Delete should fail since the guest user is not authorized
-#         rv = self.server.delete(
-#             URL_PREFIX + "/locations/test_location_user",
-#             headers=self.guest_auth_header,
-#         )
-#         print(rv.data)
-#         self.assertEqual(
-#             rv.status_code,
-#             401,
-#             "HTML status code is wrong %i" % rv.status_code,
-#         )
-#         self.assertEqual(
-#             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-#         )
+    def test_03_processing_ephemeral(self):
+        """Test job resumption with processing_async endpoint and stdout"""
+        endpoint = "/locations/nc_spm_08/processing_async"
+        rv = self.server.post(
+            f"{URL_PREFIX}{endpoint}",
+            data=json_dumps(PC),
+            content_type="application/json",
+        )
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv,
+            http_status=200,
+            status="finished",
+        )
+        self.compare_stdout(resp)
+
+    def test_04_processing_persistent(self):
+        """Test job resumption with persistent processing_async endpoint and
+        stdout
+        """
+        endpoint = "/locations/nc_spm_08/mapsets/test/processing_async"
+        rv = self.server.post(
+            f"{URL_PREFIX}{endpoint}",
+            data=json_dumps(PC),
+            content_type="application/json",
+        )
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv,
+            http_status=200,
+            status="finished",
+        )
+        self.compare_stdout(resp)
+        # check processing mapset
+        rv2 = self.server.get(f"{URL_PREFIX}/locations/nc_spm_08/mapsets")
+        self.assertEqual(
+            rv2.status_code,
+            200,
+            f"HTML status code is wrong {rv2.status_code}",
+        )
+        data = json_loads(rv2.data)
+        self.assertIn(
+            "test", data["process_results"], "Mapset 'test' does not exists"
+        )
+        # check created raster
+        rv3 = self.server.get(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/test/raster_layers"
+        )
+        self.assertEqual(
+            rv3.status_code,
+            200,
+            f"HTML status code is wrong {rv3.status_code}",
+        )
+        data = json_loads(rv3.data)
+        self.assertIn(
+            "baum", data["process_results"], "Raster 'baum' does not exists"
+        )
+        # delete test mapset
+        self.admin_auth_header = None
+        self.delete_mapset("test", "nc_spm_08")
+        rv4 = self.server.get(f"{URL_PREFIX}/locations/nc_spm_08/mapsets")
+        self.assertEqual(
+            rv4.status_code,
+            200,
+            f"HTML status code is wrong {rv4.status_code}",
+        )
+        data = json_loads(rv4.data)
+        self.assertNotIn(
+            "test", data["process_results"], "Mapset 'test' exists"
+        )
+
+    def compare_stdout(self, resp):
+        proc_results = resp["process_results"]
+        self.assertIn(
+            "sld", proc_results, "'sld' not saved in process results"
+        )
+        self.assertIn(
+            "r_info_map1",
+            proc_results,
+            "'r_info_map1' not saved in process results",
+        )
+        self.assertIn(
+            "r_info_map2",
+            proc_results,
+            "'r_info_map2' not saved in process results",
+        )
+        self.assertIsInstance(
+            proc_results["sld"], list, "'sld' result is not of type list"
+        )
+        self.assertIsInstance(
+            proc_results["r_info_map1"],
+            dict,
+            "'r_info_map1' result is not of type dict",
+        )
+        self.assertIsInstance(
+            proc_results["r_info_map2"],
+            dict,
+            "'r_info_map2' result is not of type dict",
+        )
+        r_info_map1 = {
+            "cells": "2025000",
+            "cols": "1500",
+            "datatype": "FCELL",
+            "east": "645000",
+            "ewres": "10",
+            "ncats": "255",
+            "north": "228500",
+            "nsres": "10",
+            "rows": "1350",
+            "south": "215000",
+            "west": "630000",
+        }
+        self.assertEqual(
+            proc_results["r_info_map1"],
+            r_info_map1,
+            "'r_info_map1' is not equal to the region",
+        )
+        r_info_map2 = {
+            "cells": "2025000",
+            "cols": "1500",
+            "datatype": "CELL",
+            "east": "645000",
+            "ewres": "10",
+            "ncats": "0",
+            "north": "228500",
+            "nsres": "10",
+            "rows": "1350",
+            "south": "215000",
+            "west": "630000",
+        }
+        self.assertEqual(
+            proc_results["r_info_map2"],
+            r_info_map2,
+            "'r_info_map2' is not equal to the region",
+        )
+
 
 
 if __name__ == "__main__":
