@@ -34,7 +34,7 @@ then
   then
     run_tests_noauth
   else
-    echo "Skipping tests without authentication scince other tests failed with ${INTEGRATIONTEST_RETURN}"
+    echo "Skipping tests without authentication scince other tests failed"
   fi
 elif [ "$1" == "noauth" ]
 then
