@@ -29,7 +29,12 @@ then
 elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
-  run_tests_noauth
+  if [ $? -eq 0]
+  then
+    run_tests_noauth
+  else
+    echo "Skipping tests without authentication"
+  fi
 elif [ "$1" == "noauth" ]
 then
   run_tests_noauth
