@@ -22,28 +22,31 @@ sleep 10
 echo $ACTINIA_CUSTOM_TEST_CFG
 echo $DEFAULT_CONFIG_PATH
 
+TEST_RES=1
 if [ "$1" == "dev" ]
 then
   echo "Executing only 'dev' tests ..."
   pytest -m 'dev'
+  TEST_RES=$?
 elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
-  INTEGRATIONTEST_RETURN=$?
-  if [ ${INTEGRATIONTEST_RETURN} -eq 0 ]
+  TEST_RES=$?
+  if [ ${TEST_RES} -eq 0 ]
   then
     run_tests_noauth
+    TEST_RES=$?
   else
     echo "Skipping tests without authentication since other tests failed"
   fi
 elif [ "$1" == "noauth" ]
 then
   run_tests_noauth
+  TEST_RES=$?
 else
   pytest
+  TEST_RES=$?
 fi
-
-TEST_RES=$?
 
 # stop redis server
 redis-cli shutdown
