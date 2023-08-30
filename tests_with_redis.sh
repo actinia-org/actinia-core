@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-run_tests_notauth (){
+run_tests_noauth (){
   # change config run tests and change config bag
   mv ${ACTINIA_CUSTOM_TEST_CFG} ${ACTINIA_CUSTOM_TEST_CFG}_tmp
   cp /etc/default/actinia_test_noauth ${ACTINIA_CUSTOM_TEST_CFG}
@@ -29,10 +29,10 @@ then
 elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
-  run_tests_notauth
+  run_tests_noauth
 elif [ "$1" == "noauth" ]
 then
-  run_tests_notauth
+  run_tests_noauth
 else
   pytest
 fi
