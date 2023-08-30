@@ -30,7 +30,7 @@ elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
   INTEGRATIONTEST_RETURN=$?
-  if [ ${INTEGRATIONTEST_RETURN} -eq 0]
+  if [ ${INTEGRATIONTEST_RETURN} -eq 0 ]
   then
     run_tests_noauth
   else
