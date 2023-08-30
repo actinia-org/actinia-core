@@ -61,7 +61,6 @@ add_versions = {
 )
 def test_valid_additional_version_info_key(key, status):
     test = valid_additional_version_info_key(key)
-    assert "b" == "v"
     if status is True:
         assert test, f"Key <{key}> is wrong"
     else:
