@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -116,9 +116,9 @@ from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_api import API_VERSION, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Julia Haas"
+__author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -165,11 +165,14 @@ if global_config.KEYCLOAK_CONFIG_PATH:
             }
         }
     ]
-else:
+elif global_config.AUTHENTICATION:
     # Set the security definition in an unconventional way
     flask_api._swagger_object["securityDefinitions"] = {
         "basicAuth": {"type": "basic"}
     }
     flask_api._swagger_object["security"] = [{"basicAuth": []}]
 
+    auth = HTTPBasicAuth()
+else:
+    # No authentication
     auth = HTTPBasicAuth()

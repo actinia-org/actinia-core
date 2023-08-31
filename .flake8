@@ -3,6 +3,7 @@
 # E402 module level import not at top of file
 # E501 line too long (80 > 79 characters)
 # F401 '.health_check.health_check' imported but unused
+# F811 redefinition of unused 'verify_password' from line 55
 # F821 undefined name 'QFile'
 # W605 invalid escape sequence '\<'
 
@@ -30,6 +31,7 @@ per-file-ignores =
     ./src/actinia_core/core/interim_results.py: W605
     ./src/actinia_core/core/list_grass_modules.py: F821
     ./src/actinia_core/testsuite.py: F401
+    ./src/actinia_core/rest/base/user_auth.py: F811
     ./src/actinia_core/rest/ephemeral_processing.py: W605
     ./src/actinia_core/processing/actinia_processing/ephemeral_renderer_base/*: E501
     ./src/actinia_core/processing/actinia_processing/ephemeral_with_export/raster_export.py: E501

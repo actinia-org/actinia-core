@@ -18,5 +18,8 @@ unittest:
 devtest:
 	sh ./tests_with_redis.sh dev
 
+noauthtest:
+		sh ./tests_with_redis.sh noauth
+
 integrationtest:
 	sh ./tests_with_redis.sh integrationtest

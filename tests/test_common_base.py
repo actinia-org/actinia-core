@@ -103,7 +103,6 @@ class CommonTestCaseBase(unittest.TestCase):
     def setUpClass(cls):
         if custom_actinia_cfg is not False:
             global_config.read(custom_actinia_cfg)
-            print(global_config)
         else:
             global_config.REDIS_SERVER_URL = "localhost"
             global_config.REDIS_SERVER_PORT = 7000

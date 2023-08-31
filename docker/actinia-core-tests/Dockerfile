@@ -40,6 +40,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
 # copy needed files and configs for test
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
+COPY docker/actinia-core-tests/actinia-test-noauth.cfg /etc/default/actinia_test_noauth
 
 RUN pip3 install pytest pytest-cov
 
