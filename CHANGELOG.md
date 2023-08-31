@@ -21,6 +21,20 @@ https://github.com/mundialis/actinia_core/compare/4.3.1...main
 released from <branch>\
 ...
 
+## [4.10.0] - 2023-08-31
+released from main
+## Changed
+* Reset test markers by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/462
+* Use reusable pre-commit hooks for linting by @mmacata in https://github.com/actinia-org/actinia-core/pull/466
+
+## Added
+* Possibility for no authentication by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/464
+
+"generated with gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.10.0" -f target_commitish=main -q .body"
+
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.9.3...4.10.0 
+
 ## [4.9.3] - 2023-08-01
 released from main
 ### Fixed
