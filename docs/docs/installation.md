@@ -1,6 +1,30 @@
 Installation
 ============
 
+Installation with docker
+------------------------
+
+Requirements: docker and docker-compose
+
+To build and deploy actinia, run
+
+```
+git clone https://github.com/mundialis/actinia-core.git
+cd actinia-core
+docker-compose -f docker/docker-compose.yml up
+```
+Now you have a running actinia instance locally! Check with
+```
+curl http://127.0.0.1:8088/api/v3/version
+```
+
+* For how to add data to this setup, how to run actinia locally with most recent GRASS GIS or how to fix common startup errors, see more details in [docker README](https://github.com/actinia-org/actinia-core/blob/main/docker/README.md).
+
+
+
+Local installation
+------------------
+
 A local installation requires a full GRASS GIS installation. Make sure
 all requirements are fulfilled to compile GRASS GIS from the git
 repository.
