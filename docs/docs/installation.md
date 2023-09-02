@@ -122,7 +122,7 @@ mkdir -p $HOME/actinia/workspace/tmp
 
 cd /tmp
 
-git clone https://github.com/mundialis/actinia_core.git actinia_core
+git clone https://github.com/actinia-org/actinia-core.git actinia_core
 cd actinia_core
 pip install -r requirements.txt
 python setup.py install
@@ -136,7 +136,7 @@ mkdir -p $HOME/actinia/workspace/tmp
 
 cd /tmp
 
-git clone https://github.com/mundialis/actinia-api.git actinia-api
+git clone https://github.com/actinia-org/actinia-api.git actinia-api
 cd actinia-api
 python setup.py install
 ```

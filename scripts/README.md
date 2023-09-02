@@ -32,13 +32,13 @@ To be run in a GRASS GIS session:
 
 ```bash
 # actinia importer installation
-g.extension extension=importer url=https://github.com/mundialis/importer
+g.extension extension=importer url=https://github.com/actinia-org/importer
 
 # actinia exporter installation
-g.extension extension=exporter url=https://github.com/mundialis/exporter
+g.extension extension=exporter url=https://github.com/actinia-org/exporter
 
 # ace (actinia command execution) tool
-g.extension extension=ace url=https://github.com/mundialis/ace
+g.extension extension=ace url=https://github.com/actinia-org/ace
 ```
 
 ### Authentication settings

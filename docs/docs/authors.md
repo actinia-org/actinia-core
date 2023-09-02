@@ -1,3 +1,3 @@
 See
 
-https://github.com/mundialis/actinia_core/graphs/contributors
+https://github.com/actinia-org/actinia-core/graphs/contributors

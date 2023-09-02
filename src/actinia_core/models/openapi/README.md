@@ -1,1 +1,1 @@
-Moved to https://github.com/mundialis/actinia-api
+Moved to https://github.com/actinia-org/actinia-api

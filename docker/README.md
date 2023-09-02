@@ -6,7 +6,7 @@ Requirements: docker and docker-compose
 To build and deploy actinia, run
 
 ```
-git clone https://github.com/mundialis/actinia_core.git
+git clone https://github.com/actinia-org/actinia-core.git
 cd actinia_core
 docker-compose -f docker/docker-compose.yml up
 ```
@@ -66,7 +66,7 @@ To test your local changes, you best use the Test Dockerimage:
 # changing directory is necessary to have the correct build context
 (cd .. && docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .)
 ```
-To dive deeper into testing + development, see the [test README](https://github.com/mundialis/actinia_core/blob/main/tests/README.md)
+To dive deeper into testing + development, see the [test README](https://github.com/actinia-org/actinia-core/blob/main/tests/README.md)
 
 To lint your local changes, run
 ```
@@ -128,7 +128,7 @@ If you want to download the data not from inside the container but from your nor
 <a id="production-deployment"></a>
 # Production and Cloud deployment
 
-To run actinia_core in production systems, best with multiple actinia_core instances, find more detailed information in the dedicated [actinia-docker](https://github.com/mundialis/actinia-docker) repository.
+To run actinia_core in production systems, best with multiple actinia_core instances, find more detailed information in the dedicated [actinia-docker](https://github.com/actinia-org/actinia-docker) repository.
 
 
 # Building the API documentation
