@@ -1,8 +1,6 @@
-Time-series sampling
-====================
+# Time-series sampling
 
-Sampling of a STRDS with vector points
---------------------------------------
+## Sampling of a STRDS with vector points
 
 The actinia REST API provides an API call to sample a space-time raster
 dataset (STRDS) at coordinate points. The coordinates must be specified
@@ -19,7 +17,7 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 ```
 
 The following example shows the synchronous API call that samples the
-STRDS *temperature\_mean\_1950\_2013\_yearly\_celsius* at three
+STRDS *temperature_mean_1950_2013_yearly_celsius* at three
 different coordinates.
 
 ```bash
@@ -31,7 +29,7 @@ different coordinates.
 ```
 
 The result of the sampling is a list of time stamped values, that are
-located in the *process\_results* section of the JSON response:
+located in the *process_results* section of the JSON response:
 
 ```json
  {

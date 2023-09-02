@@ -1,5 +1,4 @@
-Tutorial
-========
+# Tutorial
 
 In the following tutorial we will access the persistent database
 analysing raster and raster-time-series data. We will use the import and
@@ -12,9 +11,7 @@ line tool **curl**[^1]. **Curl** should be available on many Linux
 systems. However, tools like *postman*[^2] allow a more comfortable way
 to access actinia.
 
-
-Using curl for HTTP requests
-----------------------------
+## Using curl for HTTP requests
 
 We will use the Unix shell and curl to access the REST API. First open a
 shell of choice (we use bash here) and setup the login information, the
@@ -27,8 +24,8 @@ export ACTINIA_URL=https://actinia.mundialis.de/latest
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
-Access to locations and mapsets in the persistent database
-----------------------------------------------------------
+
+## Access to locations and mapsets in the persistent database
 
 The following API call lists all available locations in the actinia
 persistent database (the `-i` includes the HTTP response headers):
@@ -51,7 +48,7 @@ The output should look similar to this:
 ```
 
 To show the region settings and the projection of the GRASS GIS standard
-location *nc\_spm\_08* the following REST call must be used:
+location *nc_spm_08* the following REST call must be used:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/info"
@@ -60,9 +57,9 @@ location *nc\_spm\_08* the following REST call must be used:
 The JSON response is the standard response of the actinia REST API. Most
 API calls respond using this JSON structure. The difference between API
 calls is the result part that is located in the JSON section with the
-name *process\_results*. The response includes all steps that were
+name *process_results*. The response includes all steps that were
 executed to receive the projection information and the region
-information. It is located in the *process\_log* section of the JSON
+information. It is located in the *process_log* section of the JSON
 response. In addition API specific information as well as the processing
 time are available in the response. To make the JSON response more readable you can use parsing-tools like jq.
 
@@ -160,7 +157,7 @@ The output should look similar to this then:
  }
 ```
 
-To list all mapsets located in the location *nc\_spm\_08* the following
+To list all mapsets located in the location *nc_spm_08* the following
 API call is used:
 
 ```bash
@@ -168,7 +165,7 @@ API call is used:
 ```
 
 The response of this synchronous call lists all mapsets of the location
-in the *process\_results* section:
+in the *process_results* section:
 
 ```json
  {
@@ -239,7 +236,7 @@ Using the following API call will show all information about the mapset
 ```
 
 The response shows the region of the mapset and the projection of the
-location in the *process\_results* section:
+location in the *process_results* section:
 
 ```json
  {
@@ -333,8 +330,7 @@ location in the *process\_results* section:
  }
 ```
 
-Access to raster layers in the persistent database
---------------------------------------------------
+## Access to raster layers in the persistent database
 
 The location ECAD contains yearly climate data (precipitation and
 temperature) of Europe for 60 years. We list all raster layers of the
@@ -345,7 +341,7 @@ location ECAD in mapset *PERMANENT*:
 ```
 
 The response lists all raster layers of the mapset in the
-*process\_results* section:
+*process_results* section:
 
 ```json
  {
@@ -415,14 +411,14 @@ The response lists all raster layers of the mapset in the
 ```
 
 Show info about the raster layer
-*temperature\_mean\_yearly\_celsius\_60*:
+*temperature_mean_yearly_celsius_60*:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
 ```
 
 The response lists information about the raster layer
-*temperature\_mean\_yearly\_celsius\_60* in the *process\_results*
+*temperature_mean_yearly_celsius_60* in the *process_results*
 section:
 
 ```json
@@ -509,8 +505,7 @@ section:
  }
 ```
 
-Access to raster time-series in the persistent database
--------------------------------------------------------
+## Access to raster time-series in the persistent database
 
 Actinia supports the analysis of time-series data based on the temporal
 framework of GRASS GIS[^3], [^4]. A time-series datatype is located in
@@ -518,14 +513,13 @@ location *ECAD* with mapsets *PERMANENT*. The time-series datatype is
 called space-time raster dataset (strds) and represents a time-stamped
 series of yearly temperature and precipitation data for Europe.
 
-
 We list all strds with the following API call:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds"
 ```
 
-We receive two strds in the *process\_results* section of the JSON
+We receive two strds in the *process_results* section of the JSON
 response:
 
 ```json
@@ -592,15 +586,15 @@ response:
 ```
 
 Use the following API call to receive information about the strds
-*temperature\_mean\_1950\_2013\_yearly\_celsius*.
+*temperature_mean_1950_2013_yearly_celsius*.
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
 ```
 
 All relevant information about strds
-*temperature\_mean\_1950\_2013\_yearly\_celsius* is located in the
-*process\_results* section of the JSON response:
+*temperature_mean_1950_2013_yearly_celsius* is located in the
+*process_results* section of the JSON response:
 
 ```json
  {
@@ -691,14 +685,14 @@ All relevant information about strds
 ```
 
 List all raster layers that are registered in the strds
-*temperature\_mean\_1950\_2013\_yearly\_celsius* with time-stamps:
+*temperature_mean_1950_2013_yearly_celsius* with time-stamps:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
 ```
 
 A list of about 60 raster layers with minimum, maximum values,
-time-stamps and spatial extent will be located in the *process\_results*
+time-stamps and spatial extent will be located in the *process_results*
 section of the JSON response:
 
 ```json
@@ -799,10 +793,7 @@ section of the JSON response:
 
 **Footnotes**
 
-[^1]: <https://en.wikipedia.org/wiki/CURL>
-
-[^2]: <https://www.getpostman.com/apps>
-
-[^3]: <http://www.sciencedirect.com/science/article/pii/S136481521300282X>
-
-[^4]: <http://www.tandfonline.com/doi/abs/10.1080/13658816.2017.1306862?journalCode=tgis20>
+[^1]: https://en.wikipedia.org/wiki/CURL
+[^2]: https://www.getpostman.com/apps
+[^3]: http://www.sciencedirect.com/science/article/pii/S136481521300282X
+[^4]: http://www.tandfonline.com/doi/abs/10.1080/13658816.2017.1306862?journalCode=tgis20

@@ -1,19 +1,18 @@
-Landsat NDVI computation
-========================
+# Landsat NDVI computation
 
 Actinia provides several API calls to compute satellite specific
 parameters:
 
- <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms>
+<https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms>
 
- We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
- address:
+We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:
 
- ```bash
- export ACTINIA_URL=https://actinia.mundialis.de/latest
- export AUTH='-u demouser:gu3st!pa55w0rd'
- # other user credentials can be provided in the same way
- ```
+```bash
+export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+```
 
 The NDVI is an important parameter that is derived from multi-spectral
 satellite images. The following asynchronous API call computes the NDVI
@@ -22,7 +21,6 @@ atmosphere correction. It is designed to hide the complexity of Landsat
 scene downloading, reprojection, atmospheric correction, statistical
 analysis and preview rendering in a single call using a self describing
 url.
-
 
 ```bash
  curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI"
@@ -68,7 +66,7 @@ calls.
 ```
 
 The final result will contain a complete processing list as well as
-URL\'s to the resulting PNG preview image, the created NDVI GeoTiff file
+URL's to the resulting PNG preview image, the created NDVI GeoTiff file
 as well as univariate statistics of the computed NDVI scene.
 
 ```json
@@ -669,7 +667,7 @@ as well as univariate statistics of the computed NDVI scene.
 ```
 
 The statistical analysis of the resulting NDVI raster map layer is
-available in the *process\_results* section:
+available in the *process_results* section:
 
 ```json
  {
@@ -692,10 +690,10 @@ available in the *process\_results* section:
 The following links can be found in the **urls** section of the JSON
 response that point to the created resources:
 
- <http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
+<http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png>
 
- <http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
+<http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff>
 
 The preview image should look like this:
 
- ![image](landsat_ndvi.png)
+![image](landsat_ndvi.png)

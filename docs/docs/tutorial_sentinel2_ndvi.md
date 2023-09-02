@@ -1,5 +1,4 @@
-Sentinel-2 NDVI computation
-===========================
+# Sentinel-2 NDVI computation
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
 address:
@@ -12,7 +11,7 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 
 The following asynchronous API call computes the NDVI of the Sentinel-2
 scene
-**S2A\_MSIL1C\_20161206T030112\_N0204\_R032\_T50RKR\_20161206T030749**:
+**S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749**:
 
 ```bash
  curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749"
@@ -56,7 +55,7 @@ Be aware that you have to change the status url as the resource id will change f
 ```
 
 The final result will contain a complete processing list as well as
-URL\'s to the resulting PNG preview image, the created NDVI GeoTiff file
+URL's to the resulting PNG preview image, the created NDVI GeoTiff file
 as well as univariate statistics of the computed NDVI scene.
 
 ```json
@@ -654,9 +653,9 @@ as well as univariate statistics of the computed NDVI scene.
 The following URLs point to the resulting PNG preview image and the
 NDVI GeoTiff file:
 
- <http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
- <http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
+<http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png>
+<http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff>
 
 The PNG preview should look like this:
 
- ![image](sentinel_ndvi.png)
+![image](sentinel_ndvi.png)

@@ -22,9 +22,9 @@ The option `mapset=MAPSET_NAME` allows the execution of commands in the
 
 In case not yet present on the system, the following Python libraries are needed:
 
-* Linux: `pip3 install click requests simplejson`
-* Windows users (Installer: [OSGeo4W](https://trac.osgeo.org/osgeo4w/) > Advanced installation > Search window):
-    * three Python packages: python3-click, python3-requests, python3-simplejson
+- Linux: `pip3 install click requests simplejson`
+- Windows users (Installer: [OSGeo4W](https://trac.osgeo.org/osgeo4w/) > Advanced installation > Search window):
+  - three Python packages: python3-click, python3-requests, python3-simplejson
 
 ### Installation of ace tools
 
@@ -69,21 +69,21 @@ that on the actinia REST server.
 
 Currently available datasets are (organized by projections):
 
-* North Carolina sample dataset (NC State-Plane metric CRS, EPSG: 3358):
-    * base cartography (`nc_spm_08/PERMANENT`; source: https://grassbook.org/datasets/datasets-3rd-edition/)
-    * Landsat subscenes (`nc_spm_08/landsat`; source: https://grass.osgeo.org/download/sample-data/)
-    * MODIS LST time series (`nc_spm_08/modis_lst`; source: NASA)
-* Latitude-Longitude location (LatLong WGS84, EPSG:4326):
-    * empty (`latlong_wgs84/PERMANENT/`)
-    * 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
-    * LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
-    * LST tropical days asia 2017 (`latlong_wgs84/asia_tropical_2017/`)
-    * LST temperature daily asia 2017, including min, max and avg (`latlong_wgs84/asia_lst_daily_2017/`)
-* Europe (EU LAEA CRS, EPSG:3035):
-    * EU DEM 25m V1.1 (`eu_laea/PERMANENT/`; source: https://land.copernicus.eu/imagery-in-situ/eu-dem)
-    * CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`; source: https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012)
-* World Mollweide (EPSG 54009):
-    * GHS_POP_GPW42015_GLOBE_R2015A_54009_250_v1_0 (`world_mollweide/pop_jrc`; source: https://ghsl.jrc.ec.europa.eu/ghs_pop.php)
+- North Carolina sample dataset (NC State-Plane metric CRS, EPSG: 3358):
+  - base cartography (`nc_spm_08/PERMANENT`; source: https://grassbook.org/datasets/datasets-3rd-edition/)
+  - Landsat subscenes (`nc_spm_08/landsat`; source: https://grass.osgeo.org/download/sample-data/)
+  - MODIS LST time series (`nc_spm_08/modis_lst`; source: NASA)
+- Latitude-Longitude location (LatLong WGS84, EPSG:4326):
+  - empty (`latlong_wgs84/PERMANENT/`)
+  - 16-days NDVI, MOD13C1, V006, CMG 0.05 deg res. (`latlong_wgs84/modis_ndvi_global/`; source: https://lpdaac.usgs.gov/dataset_discovery/modis/modis_products_table/mod13c1_v006)
+  - LST growing degree days asia 2017 (`latlong_wgs84/asia_gdd_2017/`; source: https://www.mundialis.de/en/temperature-data/)
+  - LST tropical days asia 2017 (`latlong_wgs84/asia_tropical_2017/`)
+  - LST temperature daily asia 2017, including min, max and avg (`latlong_wgs84/asia_lst_daily_2017/`)
+- Europe (EU LAEA CRS, EPSG:3035):
+  - EU DEM 25m V1.1 (`eu_laea/PERMANENT/`; source: https://land.copernicus.eu/imagery-in-situ/eu-dem)
+  - CORINE Landcover 2012, g100_clc12_V18_5 (`eu_laea/corine_2012/`; source: https://land.copernicus.eu/pan-european/corine-land-cover/clc-2012)
+- World Mollweide (EPSG 54009):
+  - GHS_POP_GPW42015_GLOBE_R2015A_54009_250_v1_0 (`world_mollweide/pop_jrc`; source: https://ghsl.jrc.ec.europa.eu/ghs_pop.php)
 
 Note that only selected datasets are available to the demo user (access is managed on a per-user base).
 
@@ -237,7 +237,9 @@ To generate the actinia process chain JSON request simply add the -d (dry-run) f
 # example: compute slope from an elevation map
 ace location="nc_spm_08" grass_command="r.slope.aspect elevation=elevation slope=myslope" -d
 ```
+
 which will deliver the output:
+
 ```json
 {
   "version": "1",
@@ -282,11 +284,10 @@ which will deliver the output:
 
 At time (more to come) the following export formats are currently supported:
 
-* raster: `COG` (requires GDAL >= 3.1 on server), `GTiff`
-* vector: `GPKG`, `GML`, `GeoJSON`, `ESRI_Shapefile`, `SQLite`, `CSV`
-* database: `PostgreSQL`
-* table: `CSV`, `TXT`
-
+- raster: `COG` (requires GDAL >= 3.1 on server), `GTiff`
+- vector: `GPKG`, `GML`, `GeoJSON`, `ESRI_Shapefile`, `SQLite`, `CSV`
+- database: `PostgreSQL`
+- table: `CSV`, `TXT`
 
 ## Displaying a map - map rendering
 
@@ -298,7 +299,7 @@ ace location="latlong_wgs84" grass_command="r.info globcover@globcover"
 ace location="latlong_wgs84" render_raster="globcover@globcover"
 ```
 
-![ESA Globcover map shown by actinia](esa_globcover_rendered_by_ace.png  "ESA Globcover map shown by actinia")
+![ESA Globcover map shown by actinia](esa_globcover_rendered_by_ace.png "ESA Globcover map shown by actinia")
 
 ## Examples for ephemeral processing
 
@@ -419,6 +420,7 @@ r.info elev
 r.slope.aspect elevation=elev slope=slope_elev+GTiff
 r.info slope_elev
 ```
+
 Save the script in a text file, e.g. `/tmp/ace_dtm_statistics.sh`.
 
 Just for inspection, to generate the actinia process chain JSON request
@@ -427,7 +429,9 @@ add the -d (dry-run) flag:
 ```bash
 ace -d location="nc_spm_08" script="/tmp/ace_dtm_statistics.sh"
 ```
+
 The output should look like this:
+
 ```json
 {
   "version": "1",
@@ -496,8 +500,6 @@ ace location="nc_spm_08" script="/tmp/ace_dtm_statistics.sh"
 
 The resulting data are provided as REST resources for download.
 
-
-
 #### Example 2: Orthophoto image segmentation with export
 
 Store the following script as text file `/tmp/ace_segmentation.sh`:
@@ -528,7 +530,6 @@ ace location="nc_spm_08" script="/tmp/ace_segmentation.sh"
 ```
 
 The results are provided as REST resources.
-
 
 ## Examples for persistent processing
 
@@ -588,7 +589,6 @@ acp location="nc_spm_08" grass_command="g.list type=raster mapset=test_mapset"
 acp location="nc_spm_08" grass_command="r.info elev@test_mapset"
 acp location="nc_spm_08" grass_command="r.info slope_elev@test_mapset"
 ```
-
 
 ## Super admin tasks
 

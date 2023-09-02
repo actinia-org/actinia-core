@@ -1,6 +1,5 @@
 ## Gource: visualization of source code development
 
-
 ### Installation
 
 Gource page: https://github.com/acaudwell/Gource
@@ -23,7 +22,6 @@ gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode t
        --hide filenames --seconds-per-day 0.05 \
        --caption-file gource_captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 4 ../..
 ```
-
 
 ### Create the animation as a MP4 film
 

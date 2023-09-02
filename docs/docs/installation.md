@@ -1,8 +1,6 @@
-Installation
-============
+# Installation
 
-Installation with docker
-------------------------
+## Installation with docker
 
 Requirements: docker and docker-compose
 
@@ -13,17 +11,16 @@ git clone https://github.com/mundialis/actinia-core.git
 cd actinia-core
 docker-compose -f docker/docker-compose.yml up
 ```
+
 Now you have a running actinia instance locally! Check with
+
 ```
 curl http://127.0.0.1:8088/api/v3/version
 ```
 
-* For how to add data to this setup, how to run actinia locally with most recent GRASS GIS or how to fix common startup errors, see more details in [docker README](https://github.com/actinia-org/actinia-core/blob/main/docker/README.md).
+- For how to add data to this setup, how to run actinia locally with most recent GRASS GIS or how to fix common startup errors, see more details in [docker README](https://github.com/actinia-org/actinia-core/blob/main/docker/README.md).
 
-
-
-Local installation
-------------------
+## Local installation
 
 A local installation requires a full GRASS GIS installation. Make sure
 all requirements are fulfilled to compile GRASS GIS from the git
@@ -32,19 +29,17 @@ repository.
 These installation instructions are based on a Ubuntu Linux system (other
 operating systems and distributions are fine, too).
 
-
 First install PROJ and GRASS GIS by downloading the latest packages
 and GRASS GIS git version and compile it.
 
-1.  Install the latest projection library
+1. Install the latest projection library
 
 ```bash
 sudo apt-get update
 sudo apt-get install proj-bin proj-data
 ```
 
-
-2.  Set Python 3 environment
+2. Set Python 3 environment
 
 Note that this step changes `python` to point to `python3`, system-wide:
 
@@ -53,8 +48,7 @@ Note that this step changes `python` to point to `python3`, system-wide:
 sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 ```
 
-
-3.  Compile and install GRASS GIS and additional modules:
+3. Compile and install GRASS GIS and additional modules:
 
 ```bash
 # or some other location of your choice, /tmp will not keep data between reboots
@@ -116,8 +110,7 @@ cd ../..
 sudo make install
 ```
 
-
-4.  Download the test datasets ("locations") and place them into a
+4. Download the test datasets ("locations") and place them into a
    specific directory that will be used by actinia as a persistent database:
 
 ```bash
@@ -138,8 +131,7 @@ rm -f LL.tar.gz
 mv LL latlong_wgs84
 ```
 
-
-5.  Actinia Core must be installed and run within a (virtual) Python3 environment:
+5. Actinia Core must be installed and run within a (virtual) Python3 environment:
 
 ```bash
 mkdir -p $HOME/actinia/workspace/tmp
@@ -152,8 +144,7 @@ pip install -r requirements.txt
 python setup.py install
 ```
 
-
-6.  Actinia API must be installed and run within a (virtual) Python3 environment:
+6. Actinia API must be installed and run within a (virtual) Python3 environment:
 
 ```bash
 mkdir -p $HOME/actinia/workspace/tmp
@@ -165,8 +156,7 @@ cd actinia-api
 python setup.py install
 ```
 
-
-7.  Make sure that a redis service is running and create a user with
+7. Make sure that a redis service is running and create a user with
    actinia-user tool
 
 ```bash
@@ -183,8 +173,7 @@ actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 10000000
 actinia-server --host 0.0.0.0 --port 5000
 ```
 
-
-8.  Check the service with curl
+8. Check the service with curl
 
 ```bash
 ACTINIA_VERSION="v3"
