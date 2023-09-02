@@ -37,7 +37,7 @@ The `log_interface`s `fluentd` and `stdout` are mutually exclusive, while actini
  log to file with configured formatter and log level `CRITICAL`.
 
  For more information, see
- https://github.com/mundialis/actinia_core/blob/main/src/actinia_core/resources/common/config.py#L132.
+ https://github.com/actinia-org/actinia-core/blob/main/src/actinia_core/resources/common/config.py#L132.
 
 
 ### Dev / Debug Hints

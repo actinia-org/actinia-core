@@ -1,3 +1,3 @@
 See:
 
-https://github.com/mundialis/actinia_core/blob/main/CHANGELOG.md
+https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md

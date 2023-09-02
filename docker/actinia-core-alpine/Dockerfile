@@ -41,7 +41,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
 WORKDIR /build
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and libs
 COPY --from=build /build/*.whl /build/

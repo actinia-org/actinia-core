@@ -42,7 +42,7 @@ as a support forum. Your question is much more likely to be answered by develope
 
 ## Adding bug reports
 
-Bug reports are handled in the [issue tracker](https://github.com/mundialis/actinia_core/issues)
+Bug reports are handled in the [issue tracker](https://github.com/actinia-org/actinia-core/issues)
 on actinia's home on GitHub. Writing a good bug report is not easy. But fixing a poorly
 documented bug is not easy either, so please put in the effort it takes to create a
 thorough bug report.
@@ -69,7 +69,7 @@ definitely a problem with actinia.
 ## Feature requests
 
 Got an idea for a new feature in actinia? Submit a thorough description of the new
-feature in the [issue tracker](https://github.com/mundialis/actinia_core/issues). Please
+feature in the [issue tracker](https://github.com/actinia-org/actinia-core/issues). Please
 include any technical documents that can help the developer make the new feature a
 reality. An example of this could be a publicly available academic paper that
 describes a new geoprocessing method. Also, including a numerical test case will make it
@@ -83,7 +83,7 @@ Note that not all feature requests are accepted.
 actinia is in dire need of better documentation. Any contributions of documentation
 are greatly appreciated. The actinia documentation is available on
 [actinia.mundialis.de](https://actinia.mundialis.de/).
-Contributions to the documentation should be made as [Pull Requests](https://github.com/mundialis/actinia_core/pulls)
+Contributions to the documentation should be made as [Pull Requests](https://github.com/actinia-org/actinia-core/pulls)
 on GitHub.
 
 ## Code contributions

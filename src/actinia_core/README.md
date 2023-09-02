@@ -1,14 +1,14 @@
-The module structure is currently under rework. See [according github issue](https://github.com/mundialis/actinia_core/issues/190) and [plugin dependencies](https://github.com/mundialis/actinia_core/pull/221) for more details.
+The module structure is currently under rework. See [according github issue](https://github.com/actinia-org/actinia-core/issues/190) and [plugin dependencies](https://github.com/actinia-org/actinia-core/pull/221) for more details.
 
 This README should support restructuring and identify dependencies outside of this repository.
 This mainly concerns the plugins:
-* [actinia-module-plugin](https://github.com/mundialis/actinia-module-plugin) (amp)
-* [actinia_statistic_plugin](https://github.com/mundialis/actinia_statistic_plugin) (statistic)
-* [actinia_satallite_plugin](https://github.com/mundialis/actinia_satellite_plugin) (satellite)
-* [actinia-metadata-plugin](https://github.com/mundialis/actinia-metadata-plugin) uses no sources of actinia_core
-* [actinia-stac-plugin](https://github.com/mundialis/actinia-stac-plugin) (stac)
-* [actinia-tiling-plugin](https://github.com/mundialis/actinia-tiling-plugin) (tiling)
-* [actinia-api](https://github.com/mundialis/actinia-api) (api)
+* [actinia-module-plugin](https://github.com/actinia-org/actinia-module-plugin) (amp)
+* [actinia_statistic_plugin](https://github.com/actinia-org/actinia_statistic_plugin) (statistic)
+* [actinia_satallite_plugin](https://github.com/actinia-org/actinia_satellite_plugin) (satellite)
+* [actinia-metadata-plugin](https://github.com/actinia-org/actinia-metadata-plugin) uses no sources of actinia_core
+* [actinia-stac-plugin](https://github.com/actinia-org/actinia-stac-plugin) (stac)
+* [actinia-tiling-plugin](https://github.com/actinia-org/actinia-tiling-plugin) (tiling)
+* [actinia-api](https://github.com/actinia-org/actinia-api) (api)
 
 The modules inside common folder are not only commonly used by actinia but also by actinia plugins.
 Some other modules outside of core folder are concerned as well.
