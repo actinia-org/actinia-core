@@ -6,62 +6,72 @@ If you want to be able to resume a job in actinia, you must enable
 There are two possible options for this:
 
 1. `save_iterim_results=True`: after each processing step
-the temporary mapset in which the calculation is done is saved.
-This requires a lot of memory depending on the calculated data and the amount
-of calculations.
-2. `save_iterim_results=onError` saves only intermediate results if an error
-has occurred in the processing. This means that the temporary mapset is only
-saved if an error occurs. Here the job resumption can fail, if the failing step
-modifies the temporary mapset (e.g. deletion of data which are needed) so that
-the fixed module call can not be executed after that modification. In the event
-of such an error, the process chain can then be adjusted so that the missing
-data is generated again, or the entire process can be started as a new job.
+   the temporary mapset in which the calculation is done is saved.
+   This requires a lot of memory depending on the calculated data and the amount
+   of calculations.
+1. `save_iterim_results=onError` saves only intermediate results if an error
+   has occurred in the processing. This means that the temporary mapset is only
+   saved if an error occurs. Here the job resumption can fail, if the failing step
+   modifies the temporary mapset (e.g. deletion of data which are needed) so that
+   the fixed module call can not be executed after that modification. In the event
+   of such an error, the process chain can then be adjusted so that the missing
+   data is generated again, or the entire process can be started as a new job.
 
 The interim results will be saved in the resource storage. Which can be configured in the config:
+
 ```
 [GRASS]
 grass_resource_dir = /actinia/resources
 ```
+
 The interim results will be deleted automatically if a job resource is successfully resumed. The resource storage can also be cleaned manually via the endpoint (see the example below).
 
 ## Dev setup
-- adjust config, e.g. for option 1
-    ```
-    [MISC]
-    save_interim_results = True
-    save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
-    ```
-    or for option 2
-    ```
-    [MISC]
-    save_interim_results = onError
-    save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
-    ```
 
-    The `/etc/default/actinia_interim_endpoints.csv` file can be set if not only
-    the interim results of the processing endpoints of actinia_core should be saved.
-    If for example also for the processing endpoints of the actinia-module-plugin
-    the interim results should be saved and resource resumption should be prossible
-    the file should contain the following:
-    ```
-    GdiAsyncEphemeralExportResource;AsyncEphemeralExportResource
-    GdiAsyncPersistentResource;AsyncPersistentResource
-    ```
-    The first entry is the class of the actinia-module-plugin endpoint and the
-    seconde one is the actinia_core class which is used to do the job resumption.
-    Since these differ, the complete process chain without template must be
-    specified for job resumption (see below in the examples).
+- adjust config, e.g. for option 1
+
+  ```
+  [MISC]
+  save_interim_results = True
+  save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
+  ```
+
+  or for option 2
+
+  ```
+  [MISC]
+  save_interim_results = onError
+  save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
+  ```
+
+  The `/etc/default/actinia_interim_endpoints.csv` file can be set if not only
+  the interim results of the processing endpoints of actinia_core should be saved.
+  If for example also for the processing endpoints of the actinia-module-plugin
+  the interim results should be saved and resource resumption should be prossible
+  the file should contain the following:
+
+  ```
+  GdiAsyncEphemeralExportResource;AsyncEphemeralExportResource
+  GdiAsyncPersistentResource;AsyncPersistentResource
+  ```
+
+  The first entry is the class of the actinia-module-plugin endpoint and the
+  seconde one is the actinia_core class which is used to do the job resumption.
+  Since these differ, the complete process chain without template must be
+  specified for job resumption (see below in the examples).
 
 - Startup actinia with above config in preferred way, e.g.
-`cd ~/repos/actinia` + press F5
+  `cd ~/repos/actinia` + press F5
 
 ## Additional mapsets
+
 For parallelization on different regions some GRASS GIS processes might create
 additional mapsets and use the data from these mapsets in further calculations
 without copying them to the temporary mapsets. To add the possibility to also
 resumpt jobs where such addional mapsets are created in a previous step you can
 configure additional mapsets which should be included in the interim results
 by setting a pattern for the mapset name, e.g.:
+
 ```
 [MISC]
 save_interim_results = onError
@@ -69,8 +79,8 @@ save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
 include_additional_mapset_pattern = test_tmp_*
 ```
 
-
 ## Job resumption examples
+
 ```
 actiniapost() {
     curl -X POST -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL=$(cat resp.json | jq .urls.status | sed 's/"//g');     curl -L -u $1 $STATUS_URL_POST | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL_POST | jq'
@@ -91,6 +101,7 @@ actiniadelete(){
 ```
 
 For local setup set e.g.:
+
 ```
 export ACTINIA_USER='actinia-gdi'
 export ACTINIA_PASSWORD='actinia-gdi'
@@ -102,11 +113,13 @@ URL=http://127.0.0.1:8088/api/v3
 ### Job resumption
 
 The job resumption works for the following endpoints:
-* ephemeral processing: `ENDPOINT=locations/nc_spm_08/processing_async`
-* ephemeral processing with export: `ENDPOINT=locations/nc_spm_08/processing_async_export`
-* persistent processing: `ENDPOINT=locations/nc_spm_08/mapsets/test44/processing_async`
+
+- ephemeral processing: `ENDPOINT=locations/nc_spm_08/processing_async`
+- ephemeral processing with export: `ENDPOINT=locations/nc_spm_08/processing_async_export`
+- persistent processing: `ENDPOINT=locations/nc_spm_08/mapsets/test44/processing_async`
 
 `pc_error.json`: process chain with error
+
 ```
 {
     "list": [
@@ -235,6 +248,7 @@ The job resumption works for the following endpoints:
 ```
 
 `pc_noerror.json`: fixed process chain
+
 ```
 {
     "list": [
@@ -380,6 +394,7 @@ Here an example process chain where a folder `/test` is requested which does not
 The process can be resumpt after the folder is created inside actinia.
 
 `pc_error_not_in_pc.json`: Process chain with not existing folder `/test`
+
 ```
 {
     "list": [
@@ -428,9 +443,11 @@ curl -L -u $AUTH $STATUS_URL_POST | jq
 ```
 
 ### Cleaning up resources which are not restarted
+
 If a job is not restarted and the processing is not finished successfully the
 interim results will not be automatically cleaned. For this you can delete the
 resource storage:
+
 ```
 # get resource storage information
 actiniaget $AUTH $URL/resource_storage
@@ -444,7 +461,9 @@ actiniadelete $AUTH $URL/resource_storage
 ```
 
 ### Using templates via the actinia-module-plugin
+
 `pc_template_error.json`: process chain with using template index_NDVI
+
 ```
 {
     "list": [
@@ -487,6 +506,7 @@ actiniadelete $AUTH $URL/resource_storage
 ```
 
 `pc_template_forput.json`: complete process chain without template (can be found in actinia response) :
+
 ```
 {
     "list": [

@@ -1,7 +1,9 @@
 # Redis Queue for Jobs
 
 ## Dev setup
+
 - adjust config, e.g.
+
 ```
 [QUEUE]
 redis_queue_server_url = redis-queue
@@ -9,7 +11,9 @@ redis_queue_server_password = pass
 worker_prefix = job_queue
 queue_type = per_job
 ```
+
 or
+
 ```
 [QUEUE]
 number_of_workers = 1
@@ -17,8 +21,9 @@ queue_type = redis
 ```
 
 - Startup actinia with above config in preferred way, e.g.
-`cd ~/repos/actinia` + press F5
+  `cd ~/repos/actinia` + press F5
 - Start Container for worker
+
 ```
 MY_ACTINIA_DATA=$HOME/actinia
 docker run --rm -it --entrypoint sh \
@@ -29,12 +34,13 @@ docker run --rm -it --entrypoint sh \
     -v $MY_ACTINIA_DATA/grassdb_user:/actinia_core/userdata \
     --network actinia-docker_actinia-dev mundialis/actinia:2.5.6
 ```
+
 - inside container, start worker listening to specified queue
+
 ```
 QUEUE_NAME=job_queue_0
 actinia-worker $QUEUE_NAME -c /etc/default/actinia --quit
 ```
-
 
 ## Redis Details
 
@@ -53,13 +59,17 @@ redis-cli -a 'pass'
 5) "rq:failed:job_queue_0"
 1) "rq:finished:job_queue_0"
 ```
+
 ### actinia_worker_count
+
 - only in redis_interface for current queue
 - created at first HTTP POST request
 - currently outcommented
 
 ### workers
+
 - exists if at least one worker is active, else deleted.
+
 ```r
 127.0.0.1:6379> TYPE rq:workers
 set
@@ -102,9 +112,11 @@ hash
 ```
 
 ### job
+
 - created on job start. Then job is "accepted"
 - also for synchronous requests, e.g. GET mapsets, tpl processing, ...
 - deleted after a while - TODO check when?
+
 ```r
 127.0.0.1:6379> TYPE rq:job:b6de9170-0fa6-4118-8eb7-9d5f43a37c23
 hash
@@ -134,9 +146,11 @@ hash
 ```
 
 ### queues
+
 - rq:queue:job_queue_0 only exists if job in queue
 - as soon as worker takes job, queue is removed
 - => if no job is left in queue, it is removed
+
 ```r
 127.0.0.1:6379> TYPE rq:queues
 set
@@ -165,6 +179,7 @@ zset
 ```
 
 ### misc
+
 ```r
 127.0.0.1:6379> TYPE rq:clean_registries:job_queue_0
 string
@@ -173,6 +188,7 @@ string
 ```
 
 ## Example how to set timeout
+
 ```
 # requesting jobs in queue (queue name: job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7)
 LRANGE rq:queue:job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7 0 -1

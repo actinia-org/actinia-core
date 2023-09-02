@@ -1,5 +1,4 @@
-Introduction
-============
+# Introduction
 
 Actinia is a REST service to process geographical data that can be
 managed by the GRASS GIS software system. The software is designed to
@@ -23,8 +22,7 @@ modules. The URLs that provide access to the GRASS database reflect
 these concepts. Hence, the location, the mapset and the required raster map
 are part of the URL to access the service.
 
-What is REST?
--------------
+## What is REST?
 
 The Representational state transfer (REST)[^4] is an architectural style
 based on HTTP[^5] that uses GET[^6], DELETE[^7], POST[^8] and PUT[^9]
@@ -34,8 +32,8 @@ While GET requests can be send easily from a browser, POST, PUT or
 DELETE request can not. To access the full potential of actinia you will
 need a HTTP client, that talks all HTTP communication methods.
 
-Examples
---------
+## Examples
+
 We will use the Unix shell and curl to access the REST API. First open a
 shell of choice (we use bash here) and setup the login information, the
 IP address and the port on which the actinia service is running, so you
@@ -56,12 +54,13 @@ List all locations that are available in the actinia persistent database:
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations"
 ```
 
-List all mapsets in the location latlong\_wgs84:
+List all mapsets in the location latlong_wgs84:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets"
 ```
-List all raster layers in location latlong\_wgs84 and mapset Sentinel2A:
+
+List all raster layers in location latlong_wgs84 and mapset Sentinel2A:
 
 ```bash
  curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
@@ -90,7 +89,7 @@ curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/
 ```
 
 NDVI computation of Sentinel-2A scene
-S2A\_MSIL1C\_20170212T104141\_N0204\_R008\_T31TGJ\_20170212T104138:
+S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
 
 ```bash
 curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
@@ -101,20 +100,12 @@ file in a cloud storage for download.
 
 **Footnotes**
 
-[^1]: <https://grass.osgeo.org/>
-
-[^2]: <https://en.wikipedia.org/wiki/Representational_State_Transfer>
-
-[^3]: <https://grass.osgeo.org/grass-stable/manuals/helptext.html#2.-background:-grass-gis-location-structure>
-
-[^4]: <https://en.wikipedia.org/wiki/Representational_State_Transfer>
-
-[^5]: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol>
-
-[^6]: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>
-
-[^7]: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>
-
-[^8]: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>
-
-[^9]: <https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods>
+[^1]: https://grass.osgeo.org/
+[^2]: https://en.wikipedia.org/wiki/Representational_State_Transfer
+[^3]: https://grass.osgeo.org/grass-stable/manuals/helptext.html#2.-background:-grass-gis-location-structure
+[^4]: https://en.wikipedia.org/wiki/Representational_State_Transfer
+[^5]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
+[^6]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+[^7]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+[^8]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+[^9]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
