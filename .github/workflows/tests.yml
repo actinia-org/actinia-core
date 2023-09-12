@@ -17,7 +17,7 @@ jobs:
       # with:
       #   path: "."
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     - name: Replace run only unittest command
       run: |
         sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
@@ -40,7 +40,7 @@ jobs:
       # with:
       #   path: "."
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2
+      uses: docker/setup-buildx-action@v3
     - name: Replace run integration test command
       run: |
         sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
