@@ -22,6 +22,5 @@ jobs:
         run: |
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
-          git checkout -b pypi
           git commit -a -m "Update version number to new_version"
-          git push origin pypi
+          git push origin main
