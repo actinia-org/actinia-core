@@ -140,6 +140,8 @@ class GeoDataDownloadImportSupport(object):
         nothing needs to be downloaded and checked.
         """
         for url in self.url_list:
+            if url.startswith("/vsicurl/"):
+                continue
             # Send a resource update
             if self.send_resource_update is not None:
                 self.send_resource_update(
