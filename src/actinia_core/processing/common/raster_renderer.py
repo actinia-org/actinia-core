@@ -30,24 +30,35 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 EphemeralRasterRenderer = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral_renderer_base'
-     + '.raster_renderer'),
-    'EphemeralRasterRenderer')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral_renderer_base"
+        + ".raster_renderer"
+    ),
+    "EphemeralRasterRenderer",
+)
 
 EphemeralRasterRGBRenderer = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral_renderer_base'
-     + '.raster_renderer'),
-    'EphemeralRasterRGBRenderer')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral_renderer_base"
+        + ".raster_renderer"
+    ),
+    "EphemeralRasterRGBRenderer",
+)
 
 EphemeralRasterShadeRenderer = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral_renderer_base'
-     + '.raster_renderer'),
-    'EphemeralRasterShadeRenderer')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral_renderer_base"
+        + ".raster_renderer"
+    ),
+    "EphemeralRasterShadeRenderer",
+)
 
 
 def start_job(*args):

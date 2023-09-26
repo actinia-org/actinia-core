@@ -2,7 +2,10 @@ version: "3"
 services:
 
   actinia:
-    image: mundialis/actinia-core:4.2.1
+    image: mundialis/actinia-core:4.10.0
+    # build:
+    #   context: ..
+    #   dockerfile: docker/actinia-core-alpine/Dockerfile
     volumes:
       - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
       - ./actinia-core-data/userdata:/actinia_core/userdata

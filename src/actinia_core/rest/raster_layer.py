@@ -35,37 +35,46 @@ from actinia_api.swagger2.actinia_core.apidocs import raster_layer
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
-from actinia_core.processing.common.raster_layer import \
-     start_info_job, start_delete_job, start_create_job
+from actinia_core.processing.common.raster_layer import (
+    start_info_job,
+    start_delete_job,
+    start_create_job,
+)
 from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class RasterLayerResource(MapLayerRegionResourceBase):
-    """Return information about a specific raster layer as JSON
-    """
+    """Return information about a specific raster layer as JSON"""
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_layer.get_doc))
     def get(self, location_name, mapset_name, raster_name):
-        """Get information about an existing raster map layer.
-        """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=raster_name)
+        """Get information about an existing raster map layer."""
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=raster_name,
+        )
         if rdc:
             enqueue_job(
-                self.job_timeout, start_info_job, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                start_info_job,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish(0.02)
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -74,18 +83,22 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", raster_layer.delete_doc))
-    def delete(
-            self, location_name, mapset_name, raster_name):
-        """Delete an existing raster map layer.
-        """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=raster_name)
+    def delete(self, location_name, mapset_name, raster_name):
+        """Delete an existing raster map layer."""
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=raster_name,
+        )
         if rdc:
             enqueue_job(
-                self.job_timeout, start_delete_job, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                start_delete_job,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish(0.1)
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -95,22 +108,33 @@ class RasterLayerResource(MapLayerRegionResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", raster_layer.post_doc))
     def post(self, location_name, mapset_name, raster_name):
-        """Create a new raster layer by uploading a GeoTIFF
-        """
+        """Create a new raster layer by uploading a GeoTIFF"""
 
-        allowed_extensions = ['tif', 'tiff']
+        allowed_extensions = ["tif", "tiff"]
 
         # TODO check if another content type can be used
-        content_type = request.content_type.split(';')[0]
+        content_type = request.content_type.split(";")[0]
         if content_type != "multipart/form-data":
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="Content type is not 'multipart/form-data'")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="Content type is not 'multipart/form-data'",
+                    )
+                ),
+                400,
+            )
 
-        if 'file' not in request.files:
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="No file part indicated in postbody.")), 400)
+        if "file" not in request.files:
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="No file part indicated in postbody.",
+                    )
+                ),
+                400,
+            )
 
         # create download cache path if does not exists
         if os.path.exists(self.download_cache):
@@ -120,27 +144,41 @@ class RasterLayerResource(MapLayerRegionResourceBase):
 
         # save file from request
         id = str(uuid4())
-        file = request.files['file']
-        if file.filename == '':
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="No selected file")), 400)
+        file = request.files["file"]
+        if file.filename == "":
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error", message="No selected file"
+                    )
+                ),
+                400,
+            )
         if allowed_file(file.filename, allowed_extensions):
-            name, extension = secure_filename(file.filename).rsplit('.', 1)
+            name, extension = secure_filename(file.filename).rsplit(".", 1)
             filename = f"{name}_{id}.{extension}"
             file_path = os.path.join(self.download_cache, filename)
             file.save(file_path)
         else:
             os.remove(file_path)
-            return make_response(jsonify(SimpleResponseModel(
-                status="error",
-                message="File has a not allowed extension. "
-                        f"Please use {','.join(allowed_extensions)}.")), 400)
+            return make_response(
+                jsonify(
+                    SimpleResponseModel(
+                        status="error",
+                        message="File has a not allowed extension. "
+                        f"Please use {','.join(allowed_extensions)}.",
+                    )
+                ),
+                400,
+            )
 
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=raster_name)
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=raster_name,
+        )
         if rdc:
             rdc.set_request_data(file_path)
             enqueue_job(self.job_timeout, start_create_job, rdc)

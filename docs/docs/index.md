@@ -1,5 +1,4 @@
-Actinia - The GRASS GIS REST API
-================================
+# Actinia - The GRASS GIS REST API
 
 **Actinia** is an open source REST API for scalable, distributed, high
 performance processing of geographical data that uses GRASS GIS for
@@ -18,29 +17,31 @@ ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
 The full API documentation is available here: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>.
-The source code is available here: <https://github.com/mundialis/actinia_core>.
+The source code is available here: <https://github.com/actinia-org/actinia-core>.
 
-* Introduction
-    * What is REST?
-    * Examples
-* Actinia concepts
-    * Actinia REST API documentation
-    * User, user-roles and user-groups
-    * The Actinia databases
-* Installation
-* Actinia database access
-    * Using curl for HTTP requests
-    * Access to locations and mapsets in the persistent database
-    * Access to raster layers in the persistent database
-    * Access to raster time-series in the persistent database
-* Time-series sampling
-    * Sampling of a STRDS with vector points
+- Introduction
+  - What is REST?
+  - Examples
+- Actinia concepts
+  - Actinia REST API documentation
+  - User, user-roles and user-groups
+  - The Actinia databases
+- Installation
+- Actinia database access
+  - Using curl for HTTP requests
+  - Access to locations and mapsets in the persistent database
+  - Access to raster layers in the persistent database
+  - Access to raster time-series in the persistent database
+- Time-series sampling
+  - Sampling of a STRDS with vector points
+
 <!---
 * Landsat NDVI computation
 * Sentinel-2 NDVI computation
 -->
-* User defined processing  
-    * The actinia process chain
-    * Sentinel-2A NDVI process chain
-* License
-* Authors
+
+- User defined processing
+  - The actinia process chain
+  - Sentinel-2A NDVI process chain
+- License
+- Authors

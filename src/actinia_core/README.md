@@ -1,19 +1,21 @@
-The module structure is currently under rework. See [according github issue](https://github.com/mundialis/actinia_core/issues/190) and [plugin dependencies](https://github.com/mundialis/actinia_core/pull/221) for more details.
+The module structure is currently under rework. See [according github issue](https://github.com/actinia-org/actinia-core/issues/190) and [plugin dependencies](https://github.com/actinia-org/actinia-core/pull/221) for more details.
 
 This README should support restructuring and identify dependencies outside of this repository.
 This mainly concerns the plugins:
-* [actinia-module-plugin](https://github.com/mundialis/actinia-module-plugin) (amp)
-* [actinia_statistic_plugin](https://github.com/mundialis/actinia_statistic_plugin) (statistic)
-* [actinia_satallite_plugin](https://github.com/mundialis/actinia_satellite_plugin) (satellite)
-* [actinia-metadata-plugin](https://github.com/mundialis/actinia-metadata-plugin) uses no sources of actinia_core
-* [actinia-stac-plugin](https://github.com/mundialis/actinia-stac-plugin) (stac)
-* [actinia-tiling-plugin](https://github.com/mundialis/actinia-tiling-plugin) (tiling)
-* [actinia-api](https://github.com/mundialis/actinia-api) (api)
+
+- [actinia-module-plugin](https://github.com/actinia-org/actinia-module-plugin) (amp)
+- [actinia_statistic_plugin](https://github.com/actinia-org/actinia_statistic_plugin) (statistic)
+- [actinia_satallite_plugin](https://github.com/actinia-org/actinia_satellite_plugin) (satellite)
+- [actinia-metadata-plugin](https://github.com/actinia-org/actinia-metadata-plugin) uses no sources of actinia_core
+- [actinia-stac-plugin](https://github.com/actinia-org/actinia-stac-plugin) (stac)
+- [actinia-tiling-plugin](https://github.com/actinia-org/actinia-tiling-plugin) (tiling)
+- [actinia-api](https://github.com/actinia-org/actinia-api) (api)
 
 The modules inside common folder are not only commonly used by actinia but also by actinia plugins.
 Some other modules outside of core folder are concerned as well.
 
-----------------
+______________________________________________________________________
+
 ### Overview of modules used outside of actinia
 
 | module | import|
@@ -55,13 +57,12 @@ Some other modules outside of core folder are concerned as well.
 | actinia_core.rest.resource_management | ResourceManagerBase |
 | actinia_core.testsuite | ActiniaTestCaseBase, URL_PREFIX |
 
-
-URL_PREFIX moved to actinia_api
-------------
+## URL_PREFIX moved to actinia_api
 
 ### Complete list of where modules are used and what exactly is imported
 
 __amp, satellite, statistic__
+
 ```
 actinia_core.endpoints import create_endpoints
 actinia_core.rest.base.resource_base import ResourceBase
@@ -72,11 +73,13 @@ actinia_core.core.common.response_models import ProcessingResponseModel
 ```
 
 __amp, statistic__
+
 ```
 actinia_core.processing.actinia_processing.ephemeral_processing import EphemeralProcessing
 ```
 
 __actinia-module-plugin__
+
 ```
 actinia_core.processing.common.ephemeral_processing_with_export import start_job
 actinia_core.rest.ephemeral_processing_with_export import SCHEMA_DOC
@@ -95,6 +98,7 @@ actinia_core.core.redis_user import RedisUserInterface
 ```
 
 __satellite, statistic__
+
 ```
 actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 actinia_core.core.common.api_logger import log_api_call
@@ -105,6 +109,7 @@ actinia_core.core.common.response_models import ProcessingErrorResponseModel
 ```
 
 __satellite__
+
 ```
 actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import EphemeralProcessingWithExport
 actinia_core.rest.persistent_processing import PersistentProcessing
@@ -121,6 +126,7 @@ actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
 ```
 
 __stac__
+
 ```
 actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.redis_base import RedisBaseInterface
@@ -128,11 +134,13 @@ actinia_core.core.common.config import Configuration
 ```
 
 __api__
+
 ```
 actinia_core.models.response_models import ProcessingResponseModel
 ```
 
 __tiling__
+
 ```
 actinia_core.core.common.config import global_config
 actinia_core.core.common.process_chain import ProcessChainConverter
@@ -149,6 +157,7 @@ actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 ```
 
 __parallel__
+
 ```
 actinia_core.core.common.app import auth
 actinia_core.core.common.config import global_config

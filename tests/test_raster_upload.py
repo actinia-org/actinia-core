@@ -27,17 +27,18 @@ Tests: Upload raster via endpoint test case
 import os
 import unittest
 import requests
+
 try:
     from .test_resource_base import (
         ActiniaResourceTestCaseBase,
         URL_PREFIX,
-        additional_external_data
+        additional_external_data,
     )
 except Exception:
     from test_resource_base import (
         ActiniaResourceTestCaseBase,
         URL_PREFIX,
-        additional_external_data
+        additional_external_data,
     )
 
 __license__ = "GPLv3"
@@ -47,7 +48,6 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
-
     location = "nc_spm_08"
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
@@ -55,10 +55,21 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     raster_url = additional_external_data["elev_ned_30m_tif"]
     local_raster = f"/tmp/{raster}.tif"
 
-    ref_info = {'cells': '225000', 'cols': '500', 'east': '645000', 'ewres': '30',
-                'maptype': 'raster', 'max': '156.3865', 'min': '55.1736',
-                'ncats': '0', 'north': '228500', 'nsres': '30', 'rows': '450',
-                'south': '215000', 'west': '630000'}
+    ref_info = {
+        "cells": "225000",
+        "cols": "500",
+        "east": "645000",
+        "ewres": "30",
+        "maptype": "raster",
+        "max": "156.3865",
+        "min": "55.1736",
+        "ncats": "0",
+        "north": "228500",
+        "nsres": "30",
+        "rows": "450",
+        "south": "215000",
+        "west": "630000",
+    }
 
     @classmethod
     def setUpClass(cls):
@@ -67,7 +78,7 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         resp_download = requests.get(cls.raster_url)
         if resp_download.status_code == 200:
-            with open(cls.local_raster, 'wb') as out:
+            with open(cls.local_raster, "wb") as out:
                 for bits in resp_download.iter_content():
                     out.write(bits)
 
@@ -86,33 +97,60 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
         super(UploadRasterLayerTestCase, self).tearDown()
 
     def test_upload_raster_userdb(self):
-        """Test successful GeoTIFF upload and check against reference raster info
         """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/"
-               f"raster_layers/{self.raster}")
-        multipart_form_data = {'file': open(self.local_raster, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
+        Test successful GeoTIFF upload and check against reference raster info
+        """
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"/raster_layers/{self.raster}"
+        )
+        multipart_form_data = {"file": open(self.local_raster, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
 
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.user_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
-        self.assertRasterInfo(self.location, self.tmp_mapset, self.raster,
-                              self.ref_info, self.user_auth_header)
+        self.assertRasterInfo(
+            self.location,
+            self.tmp_mapset,
+            self.raster,
+            self.ref_info,
+            self.user_auth_header,
+        )
 
     def test_upload_raster_globaldb_error(self):
-        """Test Error if raster is uploaded to global DB
-        """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
-               f"raster_layers/{self.raster}")
-        multipart_form_data = {'file': open(self.local_raster, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
+        """Test Error if raster is uploaded to global DB"""
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
+            f"raster_layers/{self.raster}"
+        )
+        multipart_form_data = {"file": open(self.local_raster, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=400, status="error",
-            message_check=(f"Mapset <{self.mapset}> exists in the global "
-                           "dataset and can not be modified."))
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check=(
+                f"Mapset <{self.mapset}> exists in the global "
+                "dataset and can not be modified."
+            ),
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

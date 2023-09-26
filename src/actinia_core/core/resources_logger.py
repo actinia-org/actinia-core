@@ -30,18 +30,26 @@ from .redis_fluentd_logger_base import RedisFluentLoggerBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
-__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 
 
 class ResourceLogger(RedisFluentLoggerBase):
-    """Write, update, receive and delete entries in the resource database
-    """
+    """Write, update, receive and delete entries in the resource database"""
 
     def __init__(
-            self, host, port, password=None, config=None, user_id=None,
-            fluent_sender=None):
+        self,
+        host,
+        port,
+        password=None,
+        config=None,
+        user_id=None,
+        fluent_sender=None,
+    ):
         RedisFluentLoggerBase.__init__(
-            self, config=config, user_id=user_id, fluent_sender=fluent_sender)
+            self, config=config, user_id=user_id, fluent_sender=fluent_sender
+        )
         # Connect to a redis database
         self.db = RedisResourceInterface()
         redis_args = (host, port)
@@ -72,15 +80,17 @@ class ResourceLogger(RedisFluentLoggerBase):
 
     @staticmethod
     def _get_iteration_from_db_resource_id(db_resource_id):
-        resoucre_id_split = db_resource_id.split('/')
+        resoucre_id_split = db_resource_id.split("/")
         if len(resoucre_id_split) == 3:
             return int(resoucre_id_split[2])
         else:
             return 1
 
-    def commit(self, user_id, resource_id, iteration, document, expiration=8640000):
-        """Commit a resource entry to the database, create a new one if it does not exists,
-        update existing resource entries
+    def commit(
+        self, user_id, resource_id, iteration, document, expiration=8640000
+    ):
+        """Commit a resource entry to the database, create a new one if it
+        does not exists, update existing resource entries
 
         Args:
             user_id (str): The user id
@@ -96,14 +106,18 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
 
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration
+        )
         redis_return = bool(self.db.set(db_resource_id, document, expiration))
         http_code, data = pickle.loads(document)
-        data["logger"] = 'resources_logger'
+        data["logger"] = "resources_logger"
         self.send_to_logger("RESOURCE_LOG", data)
         return redis_return
 
-    def commit_termination(self, user_id, resource_id, iteration=None, expiration=3600):
+    def commit_termination(
+        self, user_id, resource_id, iteration=None, expiration=3600
+    ):
         """Commit a resource entry to the database that requires the
         termination of the resource, create a new one if it does not exists,
         update existing resource entries
@@ -121,7 +135,8 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
         db_resource_id = self._generate_db_resource_id(
-            user_id, resource_id, iteration)
+            user_id, resource_id, iteration
+        )
         return bool(self.db.set_termination(db_resource_id, expiration))
 
     def get(self, user_id, resource_id, iteration=None):
@@ -137,7 +152,9 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration
+        )
         return self.db.get(db_resource_id)
 
     def get_latest_iteration(self, user_id, resource_id=None):
@@ -155,7 +172,8 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         """
         db_resource_id_pattern = "%s*" % self._generate_db_resource_id(
-            user_id, resource_id, None)
+            user_id, resource_id, None
+        )
         db_keys = self.db.get_keys_from_pattern(db_resource_id_pattern)
         if len(db_keys) == 1:
             db_resource_id = db_keys[0]
@@ -178,7 +196,9 @@ class ResourceLogger(RedisFluentLoggerBase):
             The resource document or None
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, None)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, None
+        )
         db_resource_id_pattern = "%s*" % db_resource_id
         db_keys = self.db.get_keys_from_pattern(db_resource_id_pattern)
         db_keys.sort()
@@ -187,11 +207,13 @@ class ResourceLogger(RedisFluentLoggerBase):
             iteration = self._get_iteration_from_db_resource_id(db_key)
             if iteration != 1:
                 db_resource_id_iter = self._generate_db_resource_id(
-                    user_id, resource_id, iteration)
+                    user_id, resource_id, iteration
+                )
             else:
                 db_resource_id_iter = db_resource_id
-            resp_dict[str(iteration)] = pickle.loads(self.db.get(
-                db_resource_id_iter))[1]
+            resp_dict[str(iteration)] = pickle.loads(
+                self.db.get(db_resource_id_iter)
+            )[1]
         return pickle.dumps([200, resp_dict])
 
     def get_user_resources(self, user_id):
@@ -247,7 +269,9 @@ class ResourceLogger(RedisFluentLoggerBase):
             True is resource should be terminated or False if otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration
+        )
         return self.db.get_termination(db_resource_id)
 
     def delete(self, user_id, resource_id, iteration=None):
@@ -263,7 +287,9 @@ class ResourceLogger(RedisFluentLoggerBase):
             True for success, False otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration
+        )
         return bool(self.db.delete(db_resource_id))
 
     def delete_termination(self, user_id, resource_id, iteration=None):
@@ -279,5 +305,7 @@ class ResourceLogger(RedisFluentLoggerBase):
             True for success, False otherwise
 
         """
-        db_resource_id = self._generate_db_resource_id(user_id, resource_id, iteration)
+        db_resource_id = self._generate_db_resource_id(
+            user_id, resource_id, iteration
+        )
         return bool(self.db.delete_termination(db_resource_id))

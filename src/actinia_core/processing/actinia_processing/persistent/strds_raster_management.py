@@ -27,53 +27,66 @@ STRDS raster map layer management
 TODO: Integrate into the ephemeral process chain approach
 """
 import tempfile
-from actinia_api.swagger2.actinia_core.schemas.strds_raster_management import \
-     STRDSRasterListResponseModel, STRDSRasterListEntryModel
+from actinia_api.swagger2.actinia_core.schemas.strds_raster_management import (
+    STRDSRasterListResponseModel,
+    STRDSRasterListEntryModel,
+)
 
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+    PersistentProcessing,
+)
 from actinia_core.core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class PersistentRasterSTRDSLister(PersistentProcessing):
-    """List all mapsets in a location
-    """
+    """List all mapsets in a location"""
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
         self.response_model_class = STRDSRasterListResponseModel
 
     def _execute(self):
-
         self._setup()
 
-        result_file = tempfile.NamedTemporaryFile(dir=self.temp_file_path, delete=True)
+        result_file = tempfile.NamedTemporaryFile(
+            dir=self.temp_file_path, delete=True
+        )
 
-        pc = {"1": {"module": "t.rast.list",
-                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
-                               "columns": "id,start_time,end_time,north,south,"
-                                          "east,west,min,max,rows,cols",
-                               "separator": "|"},
-                    "outputs": {"output": {"name": result_file.name}},
-                    "flags": "u"}}
+        pc = {
+            "1": {
+                "module": "t.rast.list",
+                "inputs": {
+                    "input": "%s@%s" % (self.map_name, self.mapset_name),
+                    "columns": "id,start_time,end_time,north,south,"
+                    "east,west,min,max,rows,cols",
+                    "separator": "|",
+                },
+                "outputs": {"output": {"name": result_file.name}},
+                "flags": "u",
+            }
+        }
 
         if self.rdc.user_data:
             for option in self.rdc.user_data:
                 if self.rdc.user_data[option] is not None:
                     pc["1"]["inputs"][option] = self.rdc.user_data[option]
 
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
+        process_list = self._validate_process_chain(
+            skip_permission_check=True, process_chain=pc
+        )
 
         self._create_temp_database(mapsets=self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.mapset_name,
+        )
         self._execute_process_list(process_list)
 
         result_file.flush()
@@ -83,60 +96,78 @@ class PersistentRasterSTRDSLister(PersistentProcessing):
         output_list = []
         for line in result:
             values = line.strip().split("|")
-            output_list.append(STRDSRasterListEntryModel(id=values[0],
-                                                         start_time=values[1],
-                                                         end_time=values[2],
-                                                         north=values[3],
-                                                         south=values[4],
-                                                         east=values[5],
-                                                         west=values[6],
-                                                         min=values[7],
-                                                         max=values[8],
-                                                         rows=values[9],
-                                                         cols=values[10]))
+            output_list.append(
+                STRDSRasterListEntryModel(
+                    id=values[0],
+                    start_time=values[1],
+                    end_time=values[2],
+                    north=values[3],
+                    south=values[4],
+                    east=values[5],
+                    west=values[6],
+                    min=values[7],
+                    max=values[8],
+                    rows=values[9],
+                    cols=values[10],
+                )
+            )
 
         self.module_results = output_list
 
 
 class PersistentRasterSTRDSRegisterer(PersistentProcessing):
-    """Register a list of timestamped raster map layers in a STRDS
-    """
+    """Register a list of timestamped raster map layers in a STRDS"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-
         self._setup()
 
         input_file = tempfile.NamedTemporaryFile(
-            dir=self.temp_file_path, delete=True, mode="w")
+            dir=self.temp_file_path, delete=True, mode="w"
+        )
 
         for map_entry in self.request_data:
-            if ("name" not in map_entry
-                    or "start_time" not in map_entry
-                    or "end_time" not in map_entry):
+            if (
+                "name" not in map_entry
+                or "start_time" not in map_entry
+                or "end_time" not in map_entry
+            ):
                 raise AsyncProcessError(
-                    "Wrong input format for raster map layer registration")
+                    "Wrong input format for raster map layer registration"
+                )
 
             line = "%s|%s|%s\n" % (
-                map_entry["name"], map_entry["start_time"], map_entry["end_time"])
+                map_entry["name"],
+                map_entry["start_time"],
+                map_entry["end_time"],
+            )
             input_file.write(line)
         input_file.flush()
         input_file.seek(0)
 
-        pc = {"1": {"module": "t.register",
-                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
-                               "type": "raster",
-                               "separator": "|",
-                               "file": input_file.name}}}
+        pc = {
+            "1": {
+                "module": "t.register",
+                "inputs": {
+                    "input": "%s@%s" % (self.map_name, self.mapset_name),
+                    "type": "raster",
+                    "separator": "|",
+                    "file": input_file.name,
+                },
+            }
+        }
 
         self._check_lock_target_mapset()
         self._create_temp_database(mapsets=self.required_mapsets)
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.mapset_name)
+        process_list = self._validate_process_chain(
+            skip_permission_check=True, process_chain=pc
+        )
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.mapset_name,
+        )
 
         self._execute_process_list(process_list)
 
@@ -144,8 +175,7 @@ class PersistentRasterSTRDSRegisterer(PersistentProcessing):
 
 
 class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
-    """Unregister a list of timestamped raster map layers from a STRDS
-    """
+    """Unregister a list of timestamped raster map layers from a STRDS"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -154,24 +184,34 @@ class PersistentRasterSTRDSUnregisterer(PersistentProcessing):
         self._setup()
 
         input_file = tempfile.NamedTemporaryFile(
-            dir=self.temp_file_path, delete=True, mode="w")
+            dir=self.temp_file_path, delete=True, mode="w"
+        )
 
         for map_name in self.request_data:
             line = "%s\n" % map_name
             input_file.write(line)
         input_file.flush()
 
-        pc = {"1": {"module": "t.unregister",
-                    "inputs": {"input": "%s@%s" % (self.map_name, self.mapset_name),
-                               "type": "raster",
-                               "file": input_file.name}}}
+        pc = {
+            "1": {
+                "module": "t.unregister",
+                "inputs": {
+                    "input": "%s@%s" % (self.map_name, self.mapset_name),
+                    "type": "raster",
+                    "file": input_file.name,
+                },
+            }
+        }
 
-        process_list = self._validate_process_chain(skip_permission_check=True,
-                                                    process_chain=pc)
+        process_list = self._validate_process_chain(
+            skip_permission_check=True, process_chain=pc
+        )
         self._check_lock_target_mapset()
         self._create_temp_database(mapsets=self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.mapset_name,
+        )
 
         self._execute_process_list(process_list)
 

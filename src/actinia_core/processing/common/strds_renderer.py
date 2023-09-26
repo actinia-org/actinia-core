@@ -29,14 +29,19 @@ from actinia_core.processing.common.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 EphemeralSTRDSRenderer = try_import(
-    ('actinia_core.processing.actinia_processing.ephemeral_renderer_base'
-     + '.strds_renderer'),
-    'EphemeralSTRDSRenderer')
+    (
+        "actinia_core.processing.actinia_processing.ephemeral_renderer_base"
+        + ".strds_renderer"
+    ),
+    "EphemeralSTRDSRenderer",
+)
 
 
 def start_job(*args):

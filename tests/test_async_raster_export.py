@@ -26,6 +26,7 @@ Tests: Raster async export test case
 """
 import unittest
 import time
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -33,18 +34,23 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class RasterAsyncExport(ActiniaResourceTestCaseBase):
-
     def test_export(self):
-
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async',
-                              headers=self.user_auth_header)
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
+        rv = self.server.post(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            "/elevation/geotiff_async",
+            headers=self.user_auth_header,
+        )
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.user_auth_header
+        )
 
         # Get the exported results
         urls = resp["urls"]["resources"]
@@ -52,17 +58,27 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
+            self.assertEqual(
+                rv.status_code,
+                200,
+                "HTML status code is wrong %i" % rv.status_code,
+            )
+            self.assertEqual(
+                rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype
+            )
             print(rv.headers)
 
         time.sleep(1)
 
     def test_export_region(self):
-
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/geotiff_async_orig',
-                              headers=self.user_auth_header)
-        resp = self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header)
+        rv = self.server.post(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            "/elevation/geotiff_async_orig",
+            headers=self.user_auth_header,
+        )
+        resp = self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.user_auth_header
+        )
 
         # Get the exported results
         urls = resp["urls"]["resources"]
@@ -70,19 +86,32 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
         for url in urls:
             print(url)
             rv = self.server.get(url, headers=self.user_auth_header)
-            self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-            self.assertEqual(rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype)
+            self.assertEqual(
+                rv.status_code,
+                200,
+                "HTML status code is wrong %i" % rv.status_code,
+            )
+            self.assertEqual(
+                rv.mimetype, "image/tiff", "Wrong mimetype %s" % rv.mimetype
+            )
             print(rv.headers)
 
         time.sleep(1)
 
     def test_export_error(self):
+        rv = self.server.post(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
+            "raster_layers/elevationion/geotiff_async",
+            headers=self.user_auth_header,
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevationion/geotiff_async',
-                              headers=self.user_auth_header)
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.user_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
 
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

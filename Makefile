@@ -3,29 +3,23 @@
 clean:
 	python3 setup.py clean
 
-docs:
-	python3 setup.py docs
-
 build:
-	python3 setup.py build
+	python3 -m build
 
 install:
-	python3 setup.py install
-
-bdist:
-	python3 setup.py bdist
-
-dist:
-	python3 setup.py dist
+	pip3 install .
 
 test:
-	./tests_with_redis.sh
+	sh ./tests_with_redis.sh
 
 unittest:
-	python3 setup.py test --addopts "-m unittest"
+	pytest -m unittest
 
 devtest:
-	./tests_with_redis.sh dev
+	sh ./tests_with_redis.sh dev
+
+noauthtest:
+		sh ./tests_with_redis.sh noauth
 
 integrationtest:
-	./tests_with_redis.sh integrationtest
+	sh ./tests_with_redis.sh integrationtest

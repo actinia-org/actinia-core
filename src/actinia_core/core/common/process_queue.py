@@ -27,8 +27,8 @@ Process queue implementation using multiprocessing, Queue() and Thread.
 The process queue is responsible to run all requests in actinia that
 require to execute GRASS GIS processes or UNIX processes to create a response.
 
-The process queue supports logging of the stderr output of the executed processes
-into a rotating logfile and fluent server.
+The process queue supports logging of the stderr output of the executed
+processes into a rotating logfile and fluent server.
 """
 
 import pickle
@@ -56,7 +56,9 @@ except Exception:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 
 process_queue = Queue()
 process_queue_manager = None
@@ -71,14 +73,16 @@ def create_process_queue(config, use_logger=True):
 
     Args:
         config: The global configuration
-        use_logger: Use the rotating file logger and fluent for stderr logging of
-                    the processes
+        use_logger: Use the rotating file logger and fluent for stderr logging
+                    of the processes
     """
     global process_queue_manager
 
     if process_queue_manager is None:
-        p = Process(target=start_process_queue_manager,
-                    args=(config, process_queue, use_logger))
+        p = Process(
+            target=start_process_queue_manager,
+            args=(config, process_queue, use_logger),
+        )
         p.start()
         process_queue_manager = p
 
@@ -102,14 +106,14 @@ def enqueue_job(timeout, func, *args):
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource
     # from ...processing.common.ephemeral_processing import start_job
-    # from ...processing.actinia_processing.ephemeral.ephemeral_processing \
+    # from ...processing.actinia_processing.ephemeral_processing \
     #      import EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
 
     # # for '/locations/<string:location_name>/processing_async_export'
-    # from ...processing.actinia_processing.ephemeral.ephemeral_processing_with_export \
-    #      import EphemeralProcessingWithExport
+    # from ...processing.actinia_processing.ephemeral.\
+    #     ephemeral_processing_with_export import EphemeralProcessingWithExport
     # processing = EphemeralProcessingWithExport(*args)
     # processing.run()
 
@@ -121,8 +125,7 @@ def enqueue_job(timeout, func, *args):
 
 
 def stop_process_queue():
-    """Destroy the process queue and terminate all running and enqueued jobs
-    """
+    """Destroy the process queue and terminate all running and enqueued jobs"""
     global process_queue_manager
     # Send stop to the queue
     process_queue.put("STOP")
@@ -140,26 +143,24 @@ atexit.register(stop_process_queue)
 
 
 class EnqueuedProcess(object):
-    """The class that takes care of the handling of a single process. It provides
-    support for timeout check, exit status check and resource termination commits.
+    """The class that takes care of the handling of a single process. It
+    provides support for timeout check, exit status check and resource
+    termination commits.
     It implements methods to start and gently terminate processes, so that the
     resource database will be updated with the current state.
 
-    - timeout check -- Check if a waiting process exceedes its timeout for waiting
-                       to be run and terminate it.
+    - timeout check -- Check if a waiting process exceedes its timeout for
+                       waiting to be run and terminate it.
                        A resource update will be send to the resource database.
-    - exits status check -- Check if the exit status of the process was 0, if not
-                            check if the resource database acknowledged this with
-                            a termination or error message, if not send a resource
-                            update
-    - termination commits - Terminate the process and send an update to the resource
-                            database about the termination
+    - exits status check -- Check if the exit status of the process was 0, if
+                            not check if the resource database acknowledged
+                            this with a termination or error message, if not
+                            send a resource update
+    - termination commits - Terminate the process and send an update to the
+                            resource database about the termination
     """
 
-    def __init__(self, func, timeout,
-                 resource_logger,
-                 args):
-
+    def __init__(self, func, timeout, resource_logger, args):
         self.process = Process(target=func, args=args)
         self.timeout = timeout
         self.config = args[0].config
@@ -209,7 +210,9 @@ class EnqueuedProcess(object):
         return self.process.exitcode
 
     def check_timeout(self):
-        """Check if the process waited longer for running then the timeout that was set
+        """
+        Check if the process waited longer for running then the timeout that
+        was set
 
         Terminate the process if the timeout limit was exceeded.
 
@@ -221,10 +224,11 @@ class EnqueuedProcess(object):
             current_time = time.time()
             diff = current_time - self.init_time
             if self.timeout < diff:
-                self.terminate(status="timeout",
-                               message="Processes exceeded timeout (%i) in "
-                                       "waiting queue and was terminated."
-                                       % self.timeout)
+                self.terminate(
+                    status="timeout",
+                    message="Processes exceeded timeout (%i) in "
+                    "waiting queue and was terminated." % self.timeout,
+                )
                 return True
 
         return False
@@ -237,36 +241,43 @@ class EnqueuedProcess(object):
 
         """
         if self.process.exitcode is not None and self.process.exitcode != 0:
-
             # Check if the process noticed the error already
-            response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id,
-                                                     self.iteration)
+            response_data = self.resource_logger.get(
+                self.user_id, self.resource_id, self.iteration
+            )
 
             if response_data is not None:
                 http_code, response_model = pickle.loads(response_data)
-                if response_model["status"] != "error" and \
-                        response_model["status"] != "terminated" and \
-                        response_model["status"] != "timeout":
+                if (
+                    response_model["status"] != "error"
+                    and response_model["status"] != "terminated"
+                    and response_model["status"] != "timeout"
+                ):
                     message = (
                         "The process unexpectedly terminated with exit code %i"
-                        % self.process.exitcode)
+                        % self.process.exitcode
+                    )
                     self._send_resource_update(
-                        status="error", message=message, response_data=response_data)
+                        status="error",
+                        message=message,
+                        response_data=response_data,
+                    )
 
     def _send_resource_update(self, status, message, response_data=None):
-        """Send a response to the resource logger about the current resource state
+        """
+        Send a response to the resource logger about the current resource state
 
         Args:
             status: The status that should be set (terminated)
             message: The message
         """
         # print("Send resource update status: ", status, " message: ", message)
-        # Get the latest response and use it as template for the resource update
+        # Get the latest response and use it as template for the resource
+        # update
         if response_data is None:
-            response_data = self.resource_logger.get(self.user_id,
-                                                     self.resource_id,
-                                                     self.iteartion)
+            response_data = self.resource_logger.get(
+                self.user_id, self.resource_id, self.iteration
+            )
 
         # Send the termination response
         if response_data is not None:
@@ -274,11 +285,14 @@ class EnqueuedProcess(object):
             # print("Resource", http_code, response_model)
             response_model["status"] = status
             response_model["message"] = (
-                "The process was terminated by the server: %s" % message)
+                "The process was terminated by the server: %s" % message
+            )
             orig_time = response_model["accept_timestamp"]
             response_model["timestamp"] = time.time()
             response_model["datetime"] = str(datetime.now())
-            response_model["time_delta"] = response_model["timestamp"] - orig_time
+            response_model["time_delta"] = (
+                response_model["timestamp"] - orig_time
+            )
 
             document = pickle.dumps([http_code, response_model])
 
@@ -287,7 +301,8 @@ class EnqueuedProcess(object):
                 resource_id=self.resource_id,
                 iteration=self.iteration,
                 document=document,
-                expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME)
+                expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME,
+            )
 
 
 def queue_watcher(queue, data_set, lock):
@@ -312,7 +327,8 @@ def queue_watcher(queue, data_set, lock):
 
 
 def start_process_queue_manager(config, queue, use_logger):
-    """The process queue manager that runs the infinite loop for worker creation
+    """
+    The process queue manager that runs the infinite loop for worker creation
 
     - This function creates the stderr logger if requested
     - It listen to a queue in an infinite loop:
@@ -321,14 +337,16 @@ def start_process_queue_manager(config, queue, use_logger):
           queue watcher
         - Check the timeout of waiting processes
         - Enqueue and start new processes
-        - Remove finished processes or processes that exceeded their waiting timeout
-        - Stop the queue and exit all running processes if the "STOP" isgnal was
-          send via Queue()
+        - Remove finished processes or processes that exceeded their waiting
+          timeout
+        - Stop the queue and exit all running processes if the "STOP" isgnal
+          was send via Queue()
 
     Args:
         config: The global config
         queue: The multiprocessing.Queue() object that should be listened to
-        use_logger: Create logifle and fluent logger to log the stderr of the processes
+        use_logger: Create logifle and fluent logger to log the stderr of the
+                    processes
     """
     global finished_procs
 
@@ -345,27 +363,30 @@ def start_process_queue_manager(config, queue, use_logger):
     # Fluentd hack to work in a multiprocessing environment
     try:
         from fluent import sender
-        fluent_sender = sender.FluentSender('actinia_process_logger',
-                                            host=config.LOG_FLUENT_HOST,
-                                            port=config.LOG_FLUENT_PORT)
+
+        fluent_sender = sender.FluentSender(
+            "actinia_process_logger",
+            host=config.LOG_FLUENT_HOST,
+            port=config.LOG_FLUENT_PORT,
+        )
     except Exception:
         pass
     # We need the resource logger to send updates to the resource database
     kwargs = dict()
-    kwargs['host'] = config.REDIS_SERVER_URL
-    kwargs['port'] = config.REDIS_SERVER_PORT
+    kwargs["host"] = config.REDIS_SERVER_URL
+    kwargs["port"] = config.REDIS_SERVER_PORT
     if config.REDIS_SERVER_PW and config.REDIS_SERVER_PW is not None:
-        kwargs['password'] = config.REDIS_SERVER_PW
+        kwargs["password"] = config.REDIS_SERVER_PW
     # Seems to log only on rare occasions: when a job waits too long in the
     # queue and terminates itself.
-    resource_logger = ResourceLogger(**kwargs,
-                                     fluent_sender=fluent_sender)
+    resource_logger = ResourceLogger(**kwargs, fluent_sender=fluent_sender)
     del kwargs
 
     count = 0
     try:
         while True:
-            # Get the process data from the set that is filled in the queue thread
+            # Get the process data from the set that is filled in the queue
+            # thread
             data = None
             lock.acquire_lock()
             if len(data_set) > 0:
@@ -374,19 +395,21 @@ def start_process_queue_manager(config, queue, use_logger):
             lock.release_lock()
 
             if data is not None:
-                # Stop all (running and waiting) processes if the STOP command was
-                # detected and leave the loop
+                # Stop all (running and waiting) processes if the STOP command
+                # was detected and leave the loop
                 if "STOP" in data:
                     for enqproc in running_procs:
                         enqproc.terminate(
                             status="error",
                             message="Running process was terminated by server "
-                                    "shutdown.")
+                            "shutdown.",
+                        )
                     for enqproc in waiting_processes:
                         enqproc.terminate(
                             status="error",
                             message="Waiting process was terminated by server "
-                                    "shutdown.")
+                            "shutdown.",
+                        )
                     del queue_thread
                     queue.close()
                     # print("Exit loop")
@@ -395,10 +418,12 @@ def start_process_queue_manager(config, queue, use_logger):
                 elif len(data) == 3:
                     func, timeout, args = data
                     log.info("Enqueue process: %s", args[0].api_info)
-                    enqproc = EnqueuedProcess(func=func,
-                                              timeout=timeout,
-                                              resource_logger=resource_logger,
-                                              args=args)
+                    enqproc = EnqueuedProcess(
+                        func=func,
+                        timeout=timeout,
+                        resource_logger=resource_logger,
+                        args=args,
+                    )
                     waiting_processes.add(enqproc)
 
             if len(running_procs) < config.NUMBER_OF_WORKERS:
@@ -408,15 +433,16 @@ def start_process_queue_manager(config, queue, use_logger):
                     log.info("Run process: %s", enqproc.api_info)
                     enqproc.start()
 
-            # Purge processes that are finished or exceeded their timeout each 40th loop
+            # Purge processes that are finished or exceeded their timeout each
+            # 40th loop
             if count % 10 == 0:
                 count = 0
                 procs_to_remove = []
                 # purge processes that has been finished
                 for enqproc in running_procs:
                     if enqproc.started is True and enqproc.is_alive() is False:
-                        # Check if the process finished with an error and send a
-                        # resource update if required
+                        # Check if the process finished with an error and send
+                        # a resource update if required
                         enqproc.check_exit()
                         procs_to_remove.append(enqproc)
                 for enqproc in procs_to_remove:

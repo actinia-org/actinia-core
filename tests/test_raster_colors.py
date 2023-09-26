@@ -28,6 +28,7 @@ import unittest
 from pprint import pprint
 from flask.json import loads as json_load
 from flask.json import dumps as json_dumps
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -36,27 +37,34 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Soeren Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
-
-    # ################### COLORS ###############################################
-
     def test_raster_layer_get_colors(self):
-        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation/colors',
-                             headers=self.user_auth_header)
+        rv = self.server.get(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            "/elevation/colors",
+            headers=self.user_auth_header,
+        )
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         colors = json_load(rv.data)["process_results"]
         self.assertTrue(len(colors) == 8)
 
     def test_raster_layer_set_colors(self):
-
         new_mapset = "raster_test_mapset"
         self.create_new_mapset(new_mapset)
 
@@ -72,71 +80,129 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
                         {"param": "e", "value": "645000"},
                         {"param": "w", "value": "630000"},
                         {"param": "ewres", "value": "50"},
-                        {"param": "nsres", "value": "50"}
-                    ]
+                        {"param": "nsres", "value": "50"},
+                    ],
                 },
                 {
                     "id": "create_raster",
                     "module": "r.mapcalc",
                     "inputs": [
-                        {"param": "expression", "value": "test_layer = 1"}]
-                }
+                        {"param": "expression", "value": "test_layer = 1"}
+                    ],
+                },
             ],
-            "version": "1"
+            "version": "1",
         }
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/processing_async' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(postbody),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(postbody),
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.user_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        rules = {"rules": ["1 0:0:0", ]}
+        rules = {
+            "rules": [
+                "1 0:0:0",
+            ]
+        }
 
         # Set the color table
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         rules = {"color": "elevation"}
 
         # Set the color table
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         rules = {"raster": "elevation@PERMANENT"}
 
         # Set the color table
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         # Delete
-        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
-                                headers=self.user_auth_header)
+        rv = self.server.delete(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer"
+            % new_mapset,
+            headers=self.user_auth_header,
+        )
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
     def test_1_raster_layer_set_colors_errors(self):
         new_mapset = "raster_test_mapset"
@@ -154,143 +220,242 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
                         {"param": "e", "value": "645000"},
                         {"param": "w", "value": "630000"},
                         {"param": "ewres", "value": "50"},
-                        {"param": "nsres", "value": "50"}
-                    ]
+                        {"param": "nsres", "value": "50"},
+                    ],
                 },
                 {
                     "id": "create_raster",
                     "module": "r.mapcalc",
                     "inputs": [
-                        {"param": "expression", "value": "test_layer = 1"}]
-                }
+                        {"param": "expression", "value": "test_layer = 1"}
+                    ],
+                },
             ],
-            "version": "1"
+            "version": "1",
         }
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/processing_async' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(postbody),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(postbody),
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
+        )
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
-        rules = {"rules": ["wrong format", ]}
+        rules = {
+            "rules": [
+                "wrong format",
+            ]
+        }
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
 
-        #######################################################################
         rules = {"rules": "blub"}
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
         # Two rules
         rules = {"color": "elevation", "raster": "elevation@PERMANENT"}
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
         # Wrong format
         rules = {"nonsense": "bla"}
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
         # Wrong format
         rules = [1, 2, 3]
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
         # Raster layer not found
         rules = {"raster": "elevation_nope@PERMANENT"}
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
 
-        #######################################################################
         # No mapset in name
         rules = {"raster": "elevation"}
 
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors' % new_mapset,
-                              headers=self.user_auth_header,
-                              data=json_dumps(rules),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            % new_mapset,
+            headers=self.user_auth_header,
+            data=json_dumps(rules),
+            content_type="application/json",
+        )
 
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-        #######################################################################
         # Delete
-        rv = self.server.delete(URL_PREFIX + '/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer' % new_mapset,
-                                headers=self.user_auth_header)
+        rv = self.server.delete(
+            URL_PREFIX
+            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer"
+            % new_mapset,
+            headers=self.user_auth_header,
+        )
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 200, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
     def test_raster_layer_colors_error_1(self):
         # Raster does not exist
-        rv = self.server.get(URL_PREFIX + '/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevat/colors',
-                             headers=self.user_auth_header)
+        rv = self.server.get(
+            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            "/elevat/colors",
+            headers=self.user_auth_header,
+        )
         pprint(json_load(rv.data))
-        self.assertEqual(rv.status_code, 400, "HTML status code is wrong %i" % rv.status_code)
-        self.assertEqual(rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype)
+        self.assertEqual(
+            rv.status_code,
+            400,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
         log = json_load(rv.data)["message"]
         self.assertTrue("AsyncProcessError:" in log)
         self.assertTrue("Error while running executable <r.colors.out" in log)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

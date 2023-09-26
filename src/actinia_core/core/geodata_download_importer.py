@@ -36,26 +36,54 @@ from actinia_core.core.utils import get_wget_process, get_mv_process
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 # Mimetypes supported for download
 SUPPORTED_MIMETYPES = [
-    "application/zip", "image/tiff", "application/gml", "text/xml",
-    "application/x-sqlite3", "application/xml", "text/plain", "text/x-python"]
+    "application/zip",
+    "image/tiff",
+    "application/gml",
+    "text/xml",
+    "application/x-sqlite3",
+    "application/xml",
+    "text/plain",
+    "text/x-python",
+]
 # Suffixes supported in zip files
 SUPPORTED_SUFFIXES = [
-    ".tif", ".tiff", ".xml", ".gml", ".shp", ".dbf", ".shx", ".atx", ".sbx",
-    ".qix", ".aih", ".prj", ".cpg", ".json"]
+    ".tif",
+    ".tiff",
+    ".xml",
+    ".gml",
+    ".shp",
+    ".dbf",
+    ".shx",
+    ".atx",
+    ".sbx",
+    ".qix",
+    ".aih",
+    ".prj",
+    ".cpg",
+    ".json",
+]
 
 
 class GeoDataDownloadImportSupport(object):
-    """
-    """
+    """"""
 
-    def __init__(self, config, temp_file_path, download_cache,
-                 send_resource_update, message_logger, url_list):
-        """ A collection of functions to generate geodata related import and
+    def __init__(
+        self,
+        config,
+        temp_file_path,
+        download_cache,
+        send_resource_update,
+        message_logger,
+        url_list,
+    ):
+        """A collection of functions to generate geodata related import and
         processing commands. Each function returns a process chain that can be
         executed by the async processing classes.
 
@@ -114,28 +142,36 @@ class GeoDataDownloadImportSupport(object):
         for url in self.url_list:
             # Send a resource update
             if self.send_resource_update is not None:
-                self.send_resource_update(message="Checking access to URL: %s" % url)
+                self.send_resource_update(
+                    message="Checking access to URL: %s" % url
+                )
 
             # Check if thr URL exists by investigating the HTTP header
             resp = requests.head(url)
             if self.message_logger:
-                self.message_logger.info("%i %s %s" % (resp.status_code,
-                                                       resp.text, resp.headers))
+                self.message_logger.info(
+                    "%i %s %s" % (resp.status_code, resp.text, resp.headers)
+                )
 
             if resp.status_code != 200:
-                raise AsyncProcessError("The URL <%s> can not be accessed." % url)
+                raise AsyncProcessError(
+                    "The URL <%s> can not be accessed." % url
+                )
 
             # Download 256 bytes from the url and check its mimetype
             response = urlopen(url)
-            mime_type = magic.from_buffer(response.read(256), mime=True).lower()
+            mime_type = magic.from_buffer(
+                response.read(256), mime=True
+            ).lower()
             if self.message_logger:
                 self.message_logger.info(mime_type)
 
             if mime_type not in SUPPORTED_MIMETYPES:
-                raise AsyncProcessError("Mimetype <%s> of url <%s> is not supported. "
-                                        "Supported mimetypes are: %s" % (
-                                            mime_type, url,
-                                            ",".join(SUPPORTED_MIMETYPES)))
+                raise AsyncProcessError(
+                    "Mimetype <%s> of url <%s> is not supported. "
+                    "Supported mimetypes are: %s"
+                    % (mime_type, url, ",".join(SUPPORTED_MIMETYPES))
+                )
 
             self.detected_mime_types.append(mime_type)
 
@@ -178,7 +214,6 @@ class GeoDataDownloadImportSupport(object):
 
             # Download file only if it does not exist in the download cache
             if os.path.isfile(dest) is False:
-
                 p = get_wget_process(source, url)
                 download_commands.append(p)
                 if source != dest:
@@ -189,15 +224,17 @@ class GeoDataDownloadImportSupport(object):
         # Create the import file info list
         self.import_file_info = []
 
-        for mtype, (source, dest) in zip(self.detected_mime_types, self.copy_file_list):
+        for mtype, (source, dest) in zip(
+            self.detected_mime_types, self.copy_file_list
+        ):
             self.import_file_info.append((mtype, source, dest))
 
         return download_commands, self.import_file_info
 
     @staticmethod
     def get_file_rename_command(file_path, file_name):
-        """Generate the file-rename process list so that the input file has a specific
-        file name that is accessible in the process chain via file_id
+        """Generate the file-rename process list so that the input file has a
+        specific file name that is accessible in the process chain via file_id
 
         Args:
             file_path:
@@ -207,37 +244,49 @@ class GeoDataDownloadImportSupport(object):
             Process
 
         """
-        p = Process(exec_type="exec", executable="/bin/mv",
-                    executable_params=[file_path, file_name],
-                    id=f"mv_{os.path.basename(file_path)}_to_"
-                       f"{os.path.basename(file_name)}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="exec",
+            executable="/bin/mv",
+            executable_params=[file_path, file_name],
+            id=f"mv_{os.path.basename(file_path)}_to_"
+            f"{os.path.basename(file_name)}",
+            skip_permission_check=True,
+        )
         return p
 
     @staticmethod
-    def get_raster_import_command(file_path, raster_name, resample=None,
-                                  resolution=None, resolution_value=None):
+    def get_raster_import_command(
+        file_path,
+        raster_name,
+        resample=None,
+        resolution=None,
+        resolution_value=None,
+    ):
         """Generate raster import process list that makes use of r.import
 
         Args:
             file_path (str): The path of the raster file to import
             raster_name (str): The name of the new raster layer
             resample (str): The resampling method to use for reprojection
-                            Options: nearest, bilinear, bicubic, lanczos, bilinear_f,
-                            bicubic_f, lanczos_f (default: nearest)
+                            Options: nearest, bilinear, bicubic, lanczos,
+                            bilinear_f, bicubic_f, lanczos_f (default: nearest)
             resolution (str): The resolution of the new raster layer
-                              Options: estimated, value, region (default: estimated)
-            resolution_value (str): Resolution of output raster map (use with option
-                                    resolution=value). Must be in units of the target
-                                    coordinate reference system, not in map units.
+                              Options: estimated, value, region (default:
+                              estimated)
+            resolution_value (str): Resolution of output raster map (use with
+                                    option resolution=value). Must be in units
+                                    of the target coordinate reference system,
+                                    not in map units.
 
         Returns:
             Process
 
         """
-        executable_params = ["input=%s" % file_path,
-                             "output=%s" % raster_name,
-                             "--q"]
+        executable_params = [
+            "input=%s" % file_path,
+            "output=%s" % raster_name,
+            "--q",
+        ]
 
         if resample is not None:
             executable_params.append("resample=%s" % resample)
@@ -246,11 +295,13 @@ class GeoDataDownloadImportSupport(object):
         if resolution_value is not None:
             executable_params.append("resolution_value=%s" % resolution_value)
 
-        p = Process(exec_type="grass",
-                    executable="r.import",
-                    executable_params=executable_params,
-                    id=f"r_import_{os.path.basename(file_path)}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="r.import",
+            executable_params=executable_params,
+            id=f"r_import_{os.path.basename(file_path)}",
+            skip_permission_check=True,
+        )
 
         return p
 
@@ -259,30 +310,38 @@ class GeoDataDownloadImportSupport(object):
         """Generate raster import process list that makes use of v.import
 
         Args:
-            input_source (str): The input source can be a file path or a database string
+            input_source (str): The input source can be a file path or a
+                                database string
             vector_name (str): The name of the new vector layer
-            layer_name (str): The layer name or comma separated list of layer names
-                              that should be imported from the input source
+            layer_name (str): The layer name or comma separated list of layer
+                              names that should be imported from the input
+                              source
 
         Returns:
             Process
 
         """
         if layer_name is not None:
-            exec_params = ["input=%s" % input_source,
-                           "output=%s" % vector_name,
-                           "layer=%s" % layer_name,
-                           "--q"]
+            exec_params = [
+                "input=%s" % input_source,
+                "output=%s" % vector_name,
+                "layer=%s" % layer_name,
+                "--q",
+            ]
         else:
-            exec_params = ["input=%s" % input_source,
-                           "output=%s" % vector_name,
-                           "--q"]
+            exec_params = [
+                "input=%s" % input_source,
+                "output=%s" % vector_name,
+                "--q",
+            ]
 
-        p = Process(exec_type="grass",
-                    executable="v.import",
-                    executable_params=exec_params,
-                    id=f"v_import_{os.path.basename(input_source)}",
-                    skip_permission_check=True)
+        p = Process(
+            exec_type="grass",
+            executable="v.import",
+            executable_params=exec_params,
+            id=f"v_import_{os.path.basename(input_source)}",
+            skip_permission_check=True,
+        )
         return p
 
     def perform_file_validation(self, filepath, mimetype=None):
@@ -298,7 +357,8 @@ class GeoDataDownloadImportSupport(object):
 
         Returns:
             (list)
-            file_list A list of files that will be in the current working directory
+            file_list A list of files that will be in the current working
+                      directory
         """
         file_name = os.path.basename(filepath)
         file_list = [file_name]
@@ -311,9 +371,11 @@ class GeoDataDownloadImportSupport(object):
             self.message_logger.info(mime_type)
 
         if mime_type not in SUPPORTED_MIMETYPES:
-            raise AsyncProcessError("Mimetype of url <%s> is not supported. "
-                                    "Supported mimetypes are: %s" % (
-                                        filepath, ",".join(SUPPORTED_MIMETYPES)))
+            raise AsyncProcessError(
+                "Mimetype of url <%s> is not supported. "
+                "Supported mimetypes are: %s"
+                % (filepath, ",".join(SUPPORTED_MIMETYPES))
+            )
 
         if mime_type.lower() == "application/zip":
             z = zipfile.ZipFile(filepath)
@@ -324,21 +386,25 @@ class GeoDataDownloadImportSupport(object):
             print(compressed_sum, total_sum, compression_ratio)
 
             if compression_ratio > 10000:
-                raise AsyncProcessError("Compression ratio is larger than 10000.")
-
-            if total_sum > 2 ** 32:
                 raise AsyncProcessError(
-                    "Files larger than 4GB are not supported in zip files.")
+                    "Compression ratio is larger than 10000."
+                )
+
+            if total_sum > 2**32:
+                raise AsyncProcessError(
+                    "Files larger than 4GB are not supported in zip files."
+                )
 
             for name in z.namelist():
                 file_name, suffix = os.path.splitext(name)
                 file_list.append(file_name)
                 if suffix not in SUPPORTED_SUFFIXES:
-                    raise AsyncProcessError("Suffix %s of zipped file <%s> is not "
-                                            "supported. Supported suffixes in zip "
-                                            "files are: %s" % (
-                                                suffix, name,
-                                                ",".join(SUPPORTED_SUFFIXES)))
+                    raise AsyncProcessError(
+                        "Suffix %s of zipped file <%s> is not "
+                        "supported. Supported suffixes in zip "
+                        "files are: %s"
+                        % (suffix, name, ",".join(SUPPORTED_SUFFIXES))
+                    )
             z.close()
 
         return file_list

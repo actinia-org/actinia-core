@@ -25,6 +25,7 @@
 Tests: Async process test case
 """
 import unittest
+
 # import pytest
 from flask.json import loads as json_loads, dumps as json_dumps
 import requests
@@ -46,27 +47,23 @@ port = "5006"
 
 pc = {
     "version": 1,
-    "webhooks": {"finished": f"http://0.0.0.0:{port}/webhook/finished",
-                 "update": f"http://0.0.0.0:{port}/webhook/update"},
+    "webhooks": {
+        "finished": f"http://0.0.0.0:{port}/webhook/finished",
+        "update": f"http://0.0.0.0:{port}/webhook/update",
+    },
     "list": [
-        {
-            "id": "1",
-            "exe": "/bin/sleep",
-            "params": ["{{ sleep }}"]
-        },
+        {"id": "1", "exe": "/bin/sleep", "params": ["{{ sleep }}"]},
         {
             "id": "2",
             "module": "g.region",
             "inputs": [
-                {"param": "raster",
-                 "value": "elevation@PERMANENT"},
-                {"param": "res",
-                 "value": "10000"}
+                {"param": "raster", "value": "elevation@PERMANENT"},
+                {"param": "res", "value": "10000"},
             ],
             "flags": "p",
-            "verbose": True
-        }
-    ]
+            "verbose": True,
+        },
+    ],
 }
 
 
@@ -76,11 +73,16 @@ def startWebhook(sleeptime=10):
     and /webhook/finished endpoints and can be shutdown by endpoint /shutdown.
     """
     inputlist = [
-        "python3", "/src/actinia_core/scripts/webhook-server",
-        "--host", "0.0.0.0", "--port", port, "&"]
+        "webhook-server",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        port,
+        "&",
+    ]
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
-    resp = requests.get(f'http://0.0.0.0:{port}/webhook/finished')
+    resp = requests.get(f"http://0.0.0.0:{port}/webhook/finished")
     return resp.status_code
 
 
@@ -92,16 +94,20 @@ def startBrokenWebhook(sleeptime=10):
     code (500 - 599).
     """
     inputlist = [
-        "python3", "/src/actinia_core/scripts/webhook-server-broken",
-        "--host", "0.0.0.0", "--port", port, "&"]
+        "webhook-server-broken",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        port,
+        "&",
+    ]
     os.system(" ".join(inputlist))
     time.sleep(sleeptime)
-    resp = requests.get(f'http://0.0.0.0:{port}/webhook/update')
+    resp = requests.get(f"http://0.0.0.0:{port}/webhook/update")
     return resp.status_code
 
 
 class WebhookTestCase(ActiniaResourceTestCaseBase):
-
     def setUp(self):
         # start a webhook server before the normal setUp
         status_code = startWebhook(10)
@@ -110,16 +116,20 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
 
     def tearDown(self):
         # shutting down the webhook server
-        resp = requests.get(f'http://0.0.0.0:{port}/shutdown')
-        self.assertEqual(resp.status_code, 200, "Webhook server is not shutting down")
+        resp = requests.get(f"http://0.0.0.0:{port}/shutdown")
+        self.assertEqual(
+            resp.status_code, 200, "Webhook server is not shutting down"
+        )
 
     def poll_job(self, resp_data):
         # poll an actinia job
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
-        rv2 = self.server.get(URL_PREFIX + "/resources/%s/%s"
-                              % (rv_user_id, rv_resource_id),
-                              headers=self.admin_auth_header)
+        time.sleep(10)
+        rv2 = self.server.get(
+            URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+            headers=self.admin_auth_header,
+        )
         resp_data2 = json_loads(rv2.data)
         return resp_data2
 
@@ -130,13 +140,15 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #     # import pdb; pdb.set_trace()
     #     resp = None
     #     while resp is None or resp.status_code != 200:
-    #         resp = requests.get(f'http://0.0.0.0:{port}/webhook/finished')
+    #         resp = requests.get(f"http://0.0.0.0:{port}/webhook/finished")
     #         time.sleep(3)
     #     tm = Template(json_dumps(pc))
-    #     rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
-    #                           headers=self.admin_auth_header,
-    #                           data=tm.render(sleep=1),
-    #                           content_type="application/json")
+    #     rv = self.server.post(
+    #         URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+    #         headers=self.admin_auth_header,
+    #         data=tm.render(sleep=1),
+    #         content_type="application/json",
+    #     )
     #     self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
     def test_finished_webhook_retries(self):
@@ -144,10 +156,12 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         error.
         """
         tm = Template(json_dumps(pc))
-        rv = self.server.post(URL_PREFIX + '/locations/nc_spm_08/processing_async_export',
-                              headers=self.admin_auth_header,
-                              data=tm.render(sleep=30),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            headers=self.admin_auth_header,
+            data=tm.render(sleep=30),
+            content_type="application/json",
+        )
 
         # poll job and check if it is running
         resp_data = json_loads(rv.data)
@@ -159,15 +173,19 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
 
         # shutdown webhook and start broken finished webhook
         webhook_resp = requests.get(f"http://0.0.0.0:{port}/shutdown")
-        self.assertEqual(webhook_resp.status_code, 200, "Shutdown of webhook failed!")
+        self.assertEqual(
+            webhook_resp.status_code, 200, "Shutdown of webhook failed!"
+        )
         time.sleep(2)
         status_code = startBrokenWebhook(10)
-        self.assertEqual(status_code, 200, "Broken webhook server is not running")
+        self.assertEqual(
+            status_code, 200, "Broken webhook server is not running"
+        )
 
         broken_server_is_running = True
         while broken_server_is_running is True:
             try:
-                resp = requests.get(f'http://0.0.0.0:{port}/webhook/update')
+                resp = requests.get(f"http://0.0.0.0:{port}/webhook/update")
                 if resp.status_code == 500:
                     broken_server_is_running = False
             except Exception:
@@ -183,5 +201,5 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(status, "finished", "Actinia job is not finished")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

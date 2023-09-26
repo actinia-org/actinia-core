@@ -22,7 +22,8 @@
 #######
 
 """
-Compute areal categorical statistics on a raster map layer based on an input polygon.
+Compute areal categorical statistics on a raster map layer based on an input
+polygon.
 """
 
 import pickle
@@ -34,21 +35,21 @@ from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.processing.common.process_validation \
-     import start_job
+from actinia_core.processing.common.process_validation import start_job
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class AsyncProcessValidationResource(ResourceBase):
-
     decorators = [log_api_call, auth.login_required]
 
     @endpoint_decorator()
@@ -57,8 +58,9 @@ class AsyncProcessValidationResource(ResourceBase):
         """Validate a process chain asynchronously, check the provided sources
         and the mapsets."""
 
-        rdc = self.preprocess(has_json=True, has_xml=True,
-                              location_name=location_name)
+        rdc = self.preprocess(
+            has_json=True, has_xml=True, location_name=location_name
+        )
 
         if rdc:
             rdc.set_storage_model_to_file()
@@ -69,7 +71,6 @@ class AsyncProcessValidationResource(ResourceBase):
 
 
 class SyncProcessValidationResource(ResourceBase):
-
     decorators = [log_api_call, auth.login_required]
 
     @endpoint_decorator()
@@ -78,8 +79,9 @@ class SyncProcessValidationResource(ResourceBase):
         """Validate a process chain synchronously, check the provided sources
         and the mapsets."""
 
-        rdc = self.preprocess(has_json=True, has_xml=True,
-                              location_name=location_name)
+        rdc = self.preprocess(
+            has_json=True, has_xml=True, location_name=location_name
+        )
 
         if rdc:
             rdc.set_storage_model_to_file()

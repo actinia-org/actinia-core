@@ -26,6 +26,7 @@ Tests: Async process custom test case admin
 """
 import unittest
 from flask.json import dumps as json_dumps
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except ModuleNotFoundError:
@@ -33,19 +34,21 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
-
     def test_async_processing(self):
-
-        rv = self.server.post(URL_PREFIX + '/custom_process/uname',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(["-a"]),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/uname",
+            headers=self.admin_auth_header,
+            data=json_dumps(["-a"]),
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
     def test_async_processing_error_1(self):
@@ -54,11 +57,15 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post(URL_PREFIX + '/custom_process/uname_nopo',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(["-a"]),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="error")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/uname_nopo",
+            headers=self.admin_auth_header,
+            data=json_dumps(["-a"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
+        )
 
     def test_async_processing_error_2(self):
         """
@@ -66,12 +73,19 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post(URL_PREFIX + '/custom_process/cat',
-                              headers=self.admin_auth_header,
-                              data=json_dumps(["non_existing_file"]),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/cat",
+            headers=self.admin_auth_header,
+            data=json_dumps(["non_existing_file"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
     def test_async_processing_user(self):
         """
@@ -79,10 +93,12 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
-                              headers=self.user_auth_header,
-                              data=json_dumps(["1"]),
-                              content_type="application/json")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/sleep",
+            headers=self.user_auth_header,
+            data=json_dumps(["1"]),
+            content_type="application/json",
+        )
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
     def test_async_processing_error_to_long(self):
@@ -91,12 +107,19 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post(URL_PREFIX + '/custom_process/sleep',
-                              headers=self.user_auth_header,
-                              data=json_dumps(["10"]),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="terminated",
-                                       message_check="AsyncProcessTimeLimit:")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/sleep",
+            headers=self.user_auth_header,
+            data=json_dumps(["10"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="terminated",
+            message_check="AsyncProcessTimeLimit:",
+        )
 
     def test_async_processing_unauthorized_access(self):
         """
@@ -104,13 +127,20 @@ class AsyncProcessCustomTestCaseAdmin(ActiniaResourceTestCaseBase):
         Returns:
 
         """
-        rv = self.server.post(URL_PREFIX + '/custom_process/ps',
-                              headers=self.user_auth_header,
-                              data=json_dumps(["-rf"]),
-                              content_type="application/json")
-        self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header, http_status=400, status="error",
-                                       message_check="AsyncProcessError:")
+        rv = self.server.post(
+            URL_PREFIX + "/custom_process/ps",
+            headers=self.user_auth_header,
+            data=json_dumps(["-rf"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError:",
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

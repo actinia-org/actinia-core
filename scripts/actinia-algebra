@@ -480,4 +480,3 @@ def poll(url, auth, start, q, id):
 
 if __name__ == '__main__':
     main()
-

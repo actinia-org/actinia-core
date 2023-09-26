@@ -30,7 +30,9 @@ from actinia_core.core.common.config import Configuration
 from actinia_core.core.messages_logger import MessageLogger
 
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -42,7 +44,6 @@ class MessageLoggerTestCase(unittest.TestCase):
     """
 
     def test_change_loglevel(self):
-
         c = Configuration()
         c.LOG_LEVEL = 4
 
@@ -80,7 +81,6 @@ class MessageLoggerTestCase(unittest.TestCase):
         logger.error("error")
 
     def test_fluentd(self):
-
         c = Configuration()
         c.LOG_LEVEL = 4
         c.LOG_INTERFACE = "fluentd"
@@ -92,5 +92,5 @@ class MessageLoggerTestCase(unittest.TestCase):
         logger.error("error")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

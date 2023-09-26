@@ -36,15 +36,15 @@ if global_config.LOG_INTERFACE == "fluentd":
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 
 
 class RedisFluentLoggerBase(object):
-    """Base class for all logger that use Redis and fluentd for logging
-    """
+    """Base class for all logger that use Redis and fluentd for logging"""
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-
         if config is None:
             config = global_config
         if user_id is None:
@@ -59,33 +59,43 @@ class RedisFluentLoggerBase(object):
 
         # The fluentd sender
         if fluent_sender is None and global_config.LOG_INTERFACE == "fluentd":
-            self.fluent_sender = sender.FluentSender('actinia_logger',
-                                                     host=self.host,
-                                                     port=self.port)
+            self.fluent_sender = sender.FluentSender(
+                "actinia_logger", host=self.host, port=self.port
+            )
 
     def _send_to_fluent(self, tag, data):
-
         try:
             cur_time = int(time.time())
-            self.fluent_sender.emit_with_time(tag, timestamp=cur_time, data=data)
+            self.fluent_sender.emit_with_time(
+                tag, timestamp=cur_time, data=data
+            )
         except Exception as e:
-            log.error(("%s is unable to connect to fluentd server host %s "
-                       "port %i Error: %s, Content %s") %
-                      (tag, self.host, self.port, str(e), str(data)))
+            log.error(
+                (
+                    "%s is unable to connect to fluentd server host %s "
+                    "port %i Error: %s, Content %s"
+                )
+                % (tag, self.host, self.port, str(e), str(data))
+            )
 
         # keep this until sure that all logs are fetched if stdout log is set
         # tags = ['RESOURCE_LOG', 'API_LOG', 'INFO', 'DEBUG']
-        if ('RESOURCE_LOG' not in tag and 'API_LOG' not in tag
-                and 'INFO' not in tag and 'DEBUG' not in tag):
-            print("WARNING: Some output might not be redirected to STDOUT:"
-                  + " %s %s %s" % (tag, str(cur_time), str(data)))
+        if (
+            "RESOURCE_LOG" not in tag
+            and "API_LOG" not in tag
+            and "INFO" not in tag
+            and "DEBUG" not in tag
+        ):
+            print(
+                "WARNING: Some output might not be redirected to STDOUT:"
+                + " %s %s %s" % (tag, str(cur_time), str(data))
+            )
 
     def _send_to_logging_interface(self, tag, data):
-
-        if tag == "RESOURCE_LOG" and 'status' in data:
-            if data['status'] == 'error':
+        if tag == "RESOURCE_LOG" and "status" in data:
+            if data["status"] == "error":
                 log.error(data)
-            elif data['status'] == 'terminated':
+            elif data["status"] == "terminated":
                 log.warning(data)
             else:
                 log.info(data)
@@ -98,11 +108,10 @@ class RedisFluentLoggerBase(object):
             try:
                 log.log(getattr(logging, tag), data)
             except AttributeError:
-                log.debug('Unknown log tag for logging: %s', tag)
+                log.debug("Unknown log tag for logging: %s", tag)
                 log.info(data)
 
     def send_to_logger(self, tag, data):
-
         if global_config.LOG_INTERFACE == "fluentd":
             self._send_to_fluent(tag, data)
 

@@ -29,7 +29,9 @@ from actinia_core.core.common.redis_base import RedisBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -38,6 +40,7 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
     The Redis API log database interface
     """
+
     # API logging entries are lists in the Redis database using LPUSH, LTRIM,
     # LRANGE for management
     api_log_prefix = "API-LOG-LIST::"
@@ -70,7 +73,8 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
 
     def add(self, user_id, log_entry):
-        """Add a API log entry to a user specific  API log list in the Redis server
+        """Add a API log entry to a user specific  API log list in the Redis
+        server
 
         Args:
             user_id (str): The user id of the API log
@@ -81,7 +85,9 @@ class RedisAPILogInterface(RedisBaseInterface):
             The index of the new entry in the api log list
 
         """
-        return self.redis_server.lpush(self.api_log_prefix + user_id, log_entry)
+        return self.redis_server.lpush(
+            self.api_log_prefix + user_id, log_entry
+        )
 
     def list(self, user_id, start, end):
         """Return all API log entries between start and end indices
@@ -96,7 +102,9 @@ class RedisAPILogInterface(RedisBaseInterface):
             A list of user specific API log entries
 
         """
-        return self.redis_server.lrange(self.api_log_prefix + user_id, start, end)
+        return self.redis_server.lrange(
+            self.api_log_prefix + user_id, start, end
+        )
 
     def trim(self, user_id, start, end):
         """Remove all API log entries outside start and end indices
@@ -111,7 +119,9 @@ class RedisAPILogInterface(RedisBaseInterface):
             True in any case
 
         """
-        return self.redis_server.ltrim(self.api_log_prefix + user_id, start, end)
+        return self.redis_server.ltrim(
+            self.api_log_prefix + user_id, start, end
+        )
 
     def size(self, user_id):
         """Return the number of entries in the api log list
@@ -145,7 +155,6 @@ redis_api_log_interface = RedisAPILogInterface()
 
 
 def test_api_logging(r):
-
     user_id = "abcdefg"
 
     # Remove the loglist
@@ -181,12 +190,14 @@ def test_api_logging(r):
         raise Exception("delete does not work")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     import os
     import signal
     import time
 
-    pid = os.spawnl(os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000")
+    pid = os.spawnl(
+        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+    )
 
     time.sleep(1)
 

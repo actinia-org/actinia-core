@@ -31,12 +31,15 @@ from tempfile import NamedTemporaryFile
 import os
 import atexit
 
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing \
-     import PersistentProcessing
+from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+    PersistentProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
@@ -47,11 +50,9 @@ class PersistentRasterColorsRules(PersistentProcessing):
     """
 
     def __init__(self, *args):
-
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
-
         self._setup()
 
         raster_name = self.map_name
@@ -63,8 +64,12 @@ class PersistentRasterColorsRules(PersistentProcessing):
         pc["1"]["inputs"]["map"] = raster_name + "@" + self.target_mapset_name
 
         if "rules" in options:
-            with NamedTemporaryFile(mode="w+", delete=False, suffix=".color",
-                                    dir=self.temp_file_path) as rules:
+            with NamedTemporaryFile(
+                mode="w+",
+                delete=False,
+                suffix=".color",
+                dir=self.temp_file_path,
+            ) as rules:
                 for line in options["rules"]:
                     rules.write(line + "\n")
 
@@ -74,12 +79,15 @@ class PersistentRasterColorsRules(PersistentProcessing):
             for option in options:
                 pc["1"]["inputs"][option] = options[option]
 
-        process_list = self._validate_process_chain(process_chain=pc,
-                                                    skip_permission_check=True)
+        process_list = self._validate_process_chain(
+            process_chain=pc, skip_permission_check=True
+        )
         self._check_lock_target_mapset()
         self._create_temp_database(self.required_mapsets)
-        self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                       mapset_name=self.target_mapset_name)
+        self._create_grass_environment(
+            grass_data_base=self.temp_grass_data_base,
+            mapset_name=self.target_mapset_name,
+        )
 
         self._execute_process_list(process_list)
 

@@ -25,21 +25,23 @@
 Raster map renderer
 """
 from tempfile import NamedTemporaryFile
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
-from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base \
-     import EphemeralRendererBase
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
+from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base import (
+    EphemeralRendererBase,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralSTRDSRenderer(EphemeralRendererBase):
-
     def __init__(self, *args):
-
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
@@ -49,7 +51,8 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
 
             1. A list of raster map layers is generated from a t.rast.list call
                that can be constrained with time and region settings
-            1. The default region is set to the the cumulative raster layer regions
+            1. The default region is set to the the cumulative raster layer
+               regions
             2. User specific region settings are applied
             3. d.rast.multi is invoked to create the PNG file
 
@@ -65,13 +68,14 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
             result_file = file.name
 
         g_region_query = self._setup_render_environment_and_region(
-            options=options, result_file=result_file, legacy=False)
+            options=options, result_file=result_file, legacy=False
+        )
         where_list = []
 
         if "start_time" in options:
-            where_list.append("start_time >= \'%s\'" % options["start_time"])
+            where_list.append("start_time >= '%s'" % options["start_time"])
         if "end_time" in options:
-            where_list.append("end_time  <= \'%s\'" % options["end_time"])
+            where_list.append("end_time  <= '%s'" % options["end_time"])
         if "n" in options:
             where_list.append("south <= %f" % options["n"])
         if "s" in options:
@@ -87,40 +91,49 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
             "id": "1",
             "module": "t.rast.list",
             "inputs": [
-                {"param": "input", "value": "%s@%s" % (strds_name, self.mapset_name)},
+                {
+                    "param": "input",
+                    "value": "%s@%s" % (strds_name, self.mapset_name),
+                },
                 {"param": "method", "value": "comma"},
-                {"param": "where", "value": where}]}
-
-        pc = {
-            "version": 1,
-            "list": []
+                {"param": "separator", "value": "comma"},
+                {"param": "columns", "value": "id"},
+                {"param": "format", "value": "line"},
+                {"param": "where", "value": where},
+            ],
+            "flags": "u",
         }
+
+        pc = {"version": 1, "list": []}
         pc["list"].append(t_rast_list)
         # Run the selected modules
         self.skip_region_check = True
-        process_chain = self._create_temporary_grass_environment_and_process_list(
-            process_chain=pc, skip_permission_check=True)
+        process_chain = (
+            self._create_temporary_grass_environment_and_process_list(
+                process_chain=pc, skip_permission_check=True
+            )
+        )
         self._execute_process_list(process_chain)
 
         map_list = self.module_output_log[0]["stdout"].strip()
 
-        g_region = {"id": "2",
-                    "module": "g.region",
-                    "inputs": [{"param": "raster", "value": map_list}],
-                    "flags": "p"}
+        g_region = {
+            "id": "2",
+            "module": "g.region",
+            "inputs": [{"param": "raster", "value": map_list}],
+            "flags": "p",
+        }
 
         g_region_query["id"] = "3"
         g_region_query["flags"] = "g"
 
-        pc = {
-            "version": 1,
-            "list": []
-        }
+        pc = {"version": 1, "list": []}
         pc["list"].append(g_region)
         pc["list"].append(g_region_query)
 
         process_list = self._validate_process_chain(
-            process_chain=pc, skip_permission_check=True)
+            process_chain=pc, skip_permission_check=True
+        )
         self._execute_process_list(process_list)
 
         # Compute the cell size for visualization
@@ -146,25 +159,29 @@ class EphemeralSTRDSRenderer(EphemeralRendererBase):
         ewres = abs(e - w) / width
         nsres = abs(n - s) / height
 
-        g_region_adjust = {"id": "4",
-                           "module": "g.region",
-                           "inputs": [{"param": "ewres", "value": "%f" % ewres},
-                                      {"param": "nsres", "value": "%f" % nsres}],
-                           "flags": "g"}
-
-        d_rast = {"id": "6",
-                  "module": "d.rast.multi",
-                  "inputs": [{"param": "map", "value": map_list}]}
-
-        pc = {
-            "version": 1,
-            "list": []
+        g_region_adjust = {
+            "id": "4",
+            "module": "g.region",
+            "inputs": [
+                {"param": "ewres", "value": "%f" % ewres},
+                {"param": "nsres", "value": "%f" % nsres},
+            ],
+            "flags": "g",
         }
+
+        d_rast = {
+            "id": "6",
+            "module": "d.rast.multi",
+            "inputs": [{"param": "map", "value": map_list}],
+        }
+
+        pc = {"version": 1, "list": []}
         pc["list"].append(g_region_adjust)
         pc["list"].append(d_rast)
 
         process_list = self._validate_process_chain(
-            process_chain=pc, skip_permission_check=True)
+            process_chain=pc, skip_permission_check=True
+        )
         self._execute_process_list(process_list)
 
         self.module_results = result_file

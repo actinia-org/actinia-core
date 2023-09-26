@@ -29,21 +29,25 @@ import pickle
 from flask import jsonify, make_response
 
 from flask_restful_swagger_2 import swagger
-from actinia_api.swagger2.actinia_core.apidocs import \
-    ephemeral_processing_with_export
+from actinia_api.swagger2.actinia_core.apidocs import (
+    ephemeral_processing_with_export,
+)
 
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.processing.common.ephemeral_processing_with_export \
-     import start_job
+from actinia_core.processing.common.ephemeral_processing_with_export import (
+    start_job,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 __email__ = "info@mundialis.de"
 
@@ -53,12 +57,14 @@ class AsyncEphemeralExportResource(ResourceBase):
     This class represents a resource that runs asynchronous processing tasks in
     a temporary mapset and exports the computed results as geotiff files.
     """
+
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "post", ephemeral_processing_with_export.post_doc))
+    @swagger.doc(
+        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+    )
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing results for download.
@@ -79,15 +85,17 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
     a temporary mapset and exports the computed results as geotiff files to the
     Amazon S3 storage.
     """
+
     def __init__(self):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "post", ephemeral_processing_with_export.post_doc))
+    @swagger.doc(
+        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+    )
     def post(self, location_name):
-        """Execute a user defined process chain in an ephemeral location/mapset and
-        store the processing result in an Amazon S3 bucket
+        """Execute a user defined process chain in an ephemeral location/mapset
+        and store the processing result in an Amazon S3 bucket
         """
         rdc = self.preprocess(has_json=True, location_name=location_name)
         rdc.set_storage_model_to_s3()
@@ -104,12 +112,14 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
     a temporary mapset and exports the computed results as geotiff files to the
     Google Cloud Storage.
     """
+
     def __init__(self):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "post", ephemeral_processing_with_export.post_doc))
+    @swagger.doc(
+        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+    )
     def post(self, location_name):
         """Execute a user defined process chain in an ephemeral location/mapset
         and store the processing result in an Google cloud storage bucket

@@ -24,8 +24,12 @@
 """
 Tests: Geodata download import support test case
 """
-from actinia_core.core.geodata_download_importer import GeoDataDownloadImportSupport
-from actinia_core.core.common.landsat_processing_library import LandsatProcessing
+from actinia_core.core.geodata_download_importer import (
+    GeoDataDownloadImportSupport,
+)
+from actinia_core.core.common.landsat_processing_library import (
+    LandsatProcessing,
+)
 from actinia_core.core.common.config import global_config
 import unittest
 import subprocess
@@ -40,13 +44,14 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class MessageDummy(object):
-
     def info(self, message):
         print(message)
 
@@ -81,16 +86,15 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         pass
 
     def _run_process(self, process):
-
         print("Run process: " + str(process))
 
         inputlist = list()
         inputlist.append(process.executable)
         inputlist.extend(process.executable_params)
 
-        proc = subprocess.Popen(args=inputlist,
-                                stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE)
+        proc = subprocess.Popen(
+            args=inputlist, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+        )
         print("Process id: %i" % proc.pid)
 
         (stdout_buff, stderr_buff) = proc.communicate()
@@ -98,18 +102,23 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         print(stderr_buff)
         proc.wait()
 
-        self.assertEqual(0, proc.returncode, "Error while running %s" % process.executable)
+        self.assertEqual(
+            0, proc.returncode, "Error while running %s" % process.executable
+        )
 
     def test_download_commands_gml(self):
-
         gml = additional_external_data["census_wake2000_gml"]
 
-        gddl = GeoDataDownloadImportSupport(config=global_config,
-                                            temp_file_path="/tmp",
-                                            download_cache=self.cache_dir,
-                                            send_resource_update=update_dummy,
-                                            message_logger=MessageDummy(),
-                                            url_list=[gml, ])
+        gddl = GeoDataDownloadImportSupport(
+            config=global_config,
+            temp_file_path="/tmp",
+            download_cache=self.cache_dir,
+            send_resource_update=update_dummy,
+            message_logger=MessageDummy(),
+            url_list=[
+                gml,
+            ],
+        )
 
         pl, import_file_info = gddl.get_download_process_list()
         self.assertTrue("xml" in import_file_info[0][0])
@@ -127,7 +136,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             self.assertEqual("v.import", p.executable)
 
     def test_download_commands_gml_zip(self):
-
         url_list = []
 
         gml = additional_external_data["census_wake2000_gml"]
@@ -140,12 +148,14 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         url_list.append(gml)
         url_list.append(tif)
 
-        gddl = GeoDataDownloadImportSupport(config=global_config,
-                                            temp_file_path="/tmp",
-                                            download_cache=self.cache_dir,
-                                            send_resource_update=update_dummy,
-                                            message_logger=MessageDummy(),
-                                            url_list=url_list)
+        gddl = GeoDataDownloadImportSupport(
+            config=global_config,
+            temp_file_path="/tmp",
+            download_cache=self.cache_dir,
+            send_resource_update=update_dummy,
+            message_logger=MessageDummy(),
+            url_list=url_list,
+        )
 
         pl, import_file_info = gddl.get_download_process_list()
         self.assertEqual("application/zip", import_file_info[0][0])
@@ -158,7 +168,6 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             gddl.perform_file_validation(filepath=file_name)
 
     def test_download_commands_tif(self):
-
         tif_list = []
         tif_list.append(additional_external_data["geology_30m_tif"])
         tif_list.append(additional_external_data["geology_30m_tif"])
@@ -167,12 +176,14 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         tif_list.append(additional_external_data["geology_30m_tif"])
         tif_list.append(additional_external_data["geology_30m_tif"])
 
-        gddl = GeoDataDownloadImportSupport(config=global_config,
-                                            temp_file_path="/tmp",
-                                            download_cache=self.cache_dir,
-                                            send_resource_update=update_dummy,
-                                            message_logger=MessageDummy(),
-                                            url_list=tif_list)
+        gddl = GeoDataDownloadImportSupport(
+            config=global_config,
+            temp_file_path="/tmp",
+            download_cache=self.cache_dir,
+            send_resource_update=update_dummy,
+            message_logger=MessageDummy(),
+            url_list=tif_list,
+        )
 
         pl, import_file_info = gddl.get_download_process_list()
         self.assertEqual("image/tiff", import_file_info[0][0])
@@ -194,13 +205,14 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
             self.assertEqual("r.import", p.executable)
 
     def test_landsat_download_commands(self):
-
-        lp = LandsatProcessing(config=global_config,
-                               temp_file_path="/tmp",
-                               scene_id="LC08_L1GT_001004_20130910_20170502_01_T2",
-                               download_cache=self.cache_dir,
-                               send_resource_update=update_dummy,
-                               message_logger=MessageDummy())
+        lp = LandsatProcessing(
+            config=global_config,
+            temp_file_path="/tmp",
+            scene_id="LC08_L1GT_001004_20130910_20170502_01_T2",
+            download_cache=self.cache_dir,
+            send_resource_update=update_dummy,
+            message_logger=MessageDummy(),
+        )
 
         pl, import_file_info = lp.get_download_process_list()
 
@@ -214,7 +226,9 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         for p in pl:
             print(p)
 
-        pl = lp.get_i_vi_process_list(atcor_method="DOS4", processing_method="NDVI")
+        pl = lp.get_i_vi_process_list(
+            atcor_method="DOS4", processing_method="NDVI"
+        )
 
         print(import_file_info, len(pl))
         for p in pl:
@@ -223,5 +237,5 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         print(lp.raster_names)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

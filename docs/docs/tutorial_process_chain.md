@@ -1,8 +1,6 @@
-User defined processing
-=======================
+# User defined processing
 
-The actinia process chain
--------------------------
+## The actinia process chain
 
 Actinia provides the **process chain** approach to specify import,
 processing and export of geodata using the actinia GRASS GIS processing
@@ -23,14 +21,14 @@ that is used as computational environment.
 A process chain is a list of GRASS GIS modules[^1] that will be executed in
 serial, based on the order of the list. GRASS GIS modules are specified
 as process definitions[^2] that include the name of the command, the
-inputs and outputs], including import and export definitions as
+inputs and outputs\], including import and export definitions as
 well as the module flags.
 
 The following example defines a single process
 that runs the GRASS GIS module *r.slope.aspect*[^3] to compute the
-*slope* for the raster map layer *elev\_ned\_30m* that is located in the
+*slope* for the raster map layer *elev_ned_30m* that is located in the
 mapset[^4] *PERMANENT*. The output of the module is named
-*elev\_ned\_30m\_slope* and should be exported as a GeoTiff file.
+*elev_ned_30m_slope* and should be exported as a GeoTiff file.
 
 ```json
  {
@@ -58,10 +56,10 @@ mapset[^4] *PERMANENT*. The output of the module is named
 
 **Import and export**
 
-The actinia process chain supports the specification of URL\'s to raster
+The actinia process chain supports the specification of URL's to raster
 layers in the input definition. The following process chain imports a
 raster map layer that is located in an object storage with the name
-*elev\_ned\_30m\_new* and sets the computational region for the
+*elev_ned_30m_new* and sets the computational region for the
 following processing step with the GRASS GIS module *g.region*[^5]. Then
 slope and aspect are computed with *r.slope.aspect* and specified for
 export as GeoTiff files.
@@ -110,21 +108,20 @@ export as GeoTiff files.
  }
 ```
 
-
 **Output parsing**
 
 Many GRASS GIS modules produce textual output in form of lists, tables
 and key/value pairs. Actinia supports the analysis of this data and the
 parsing and transformation in JSON accessible data. For each GRASS GIS
-module the property \"stdout\" can be specified to transform the output
+module the property "stdout" can be specified to transform the output
 of the module into a list of values, a key/value list or a table.
 
 The following options are available as format:
 
- -   \"kv\" parses the module output and creates key/value pairs
- -   \"list\" parses the module output and creates a list of values
- -   \"table\" parses the module output and creates a list of lists
-     with values aka 2D array aka table
+- "kv" parses the module output and creates key/value pairs
+- "list" parses the module output and creates a list of values
+- "table" parses the module output and creates a list of lists
+  with values aka 2D array aka table
 
 Additionally the unique id that will be used in the response process
 result dictionary and the delimiter must be defined.
@@ -597,10 +594,9 @@ response:
 ```
 
 The result of the stdout output parsing for each module is located in
-the \"process\_results\" section of the json response.
+the "process_results" section of the json response.
 
-Sentinel-2A NDVI process chain
---
+## Sentinel-2A NDVI process chain
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
 address:
@@ -610,9 +606,10 @@ export ACTINIA_URL=https://actinia.mundialis.de/latest
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
+
 We create a process chain that computes the NDVI from a Sentinel-2A
 scene based on the bands 8 and 4 with the GRASS GIS module *r.mapcalc*. We
-use the North Carolina sample location **nc\_spm\_08** as processing
+use the North Carolina sample location **nc_spm_08** as processing
 environment and the computational region of sentinel band B04 for the
 NDVI processing. Then we calculate univariate statistics for the
 Sentinel-2A scene. The computed NDVI raster layer will be exported as
@@ -620,13 +617,13 @@ geotiff file that can be accessed via an URL.
 
 The following JSON code has 6 process definitions:
 
- 1.  Import of two bands (B04 and B08) of the Sentinel-2A scene
-     *S2A\_MSIL2A\_20220420T154941\_N0400\_R054\_T18SUE\_20220421T000632*
- 2.  Set the computational region to imported raster layer B04
- 3.  Use *r.mapcalc* to compute the NDVI
- 4.  Use *r.univar* to compute univariate statistics of the computed NDVI
-     raster layer
- 5.  Export the computed NDVI as GeoTiff
+1. Import of two bands (B04 and B08) of the Sentinel-2A scene
+   *S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632*
+1. Set the computational region to imported raster layer B04
+1. Use *r.mapcalc* to compute the NDVI
+1. Use *r.univar* to compute univariate statistics of the computed NDVI
+   raster layer
+1. Export the computed NDVI as GeoTiff
 
 ```json
  {
@@ -1022,15 +1019,12 @@ The finished response should look like this:
   "user_id": "demouser"
 }
 ```
+
 Use the Link at the end of the response under `"resources"` to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:
 
- ![image](nc_s2_ndvi_actinia_process_chain.png)
+![image](nc_s2_ndvi_actinia_process_chain.png)
 
 **Footnotes**
-
-[^1]: <https://grass.osgeo.org/grass-stable/manuals/index.html>
-
-[^2]: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get>
 
 <!---
 https://actinia.mundialis.de/api_docs/ is no longer generated
@@ -1039,8 +1033,9 @@ https://actinia.mundialis.de/api_docs/ is no longer generated
 
 [^x]: <https://actinia.mundialis.de/api_docs/#/definitions/OutputParameter>
 --->
-[^3]: <https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html>
 
-[^4]: <https://grass.osgeo.org/grass-stable/manuals/grass_database.html>
-
-[^5]: <https://grass.osgeo.org/grass-stable/manuals/g.region.html>
+[^1]: https://grass.osgeo.org/grass-stable/manuals/index.html
+[^2]: https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get
+[^3]: https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html
+[^4]: https://grass.osgeo.org/grass-stable/manuals/grass_database.html
+[^5]: https://grass.osgeo.org/grass-stable/manuals/g.region.html

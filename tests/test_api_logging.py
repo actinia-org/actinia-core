@@ -27,6 +27,7 @@ Tests: API logging test case
 import unittest
 from actinia_core.core.common.api_logger import ApiLogger
 from actinia_core.core.common.app import flask_app
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase
 except ModuleNotFoundError:
@@ -34,13 +35,14 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
 class DummyHTTPRequest(object):
-
     def __init__(self):
         self.path = "path"
         self.endpoint = "endpoint"
@@ -52,6 +54,7 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
     """
     This class tests the api logging interface
     """
+
     def setUp(self):
         # We need to set the application context
         self.app_context = flask_app.app_context()
@@ -65,16 +68,21 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
         self.app_context.pop()
 
     def test_logging(self):
-
-        ret = self.log.add_entry(user_id=self.user_id, http_request=self.request_object)
-
-        self.assertTrue(ret, "add_entry does not work")
-
-        ret = self.log.add_entry(user_id=self.user_id, http_request=self.request_object)
+        ret = self.log.add_entry(
+            user_id=self.user_id, http_request=self.request_object
+        )
 
         self.assertTrue(ret, "add_entry does not work")
 
-        ret = self.log.add_entry(user_id=self.user_id, http_request=self.request_object)
+        ret = self.log.add_entry(
+            user_id=self.user_id, http_request=self.request_object
+        )
+
+        self.assertTrue(ret, "add_entry does not work")
+
+        ret = self.log.add_entry(
+            user_id=self.user_id, http_request=self.request_object
+        )
 
         self.assertTrue(ret, "add_entry does not work")
 
@@ -104,5 +112,5 @@ class ApiLoggingTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(self.log.delete(self.user_id))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

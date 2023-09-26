@@ -48,20 +48,23 @@ from actinia_core.version import G_VERSION
 
 try:
     from actinia_stac_plugin.core.common import connectRedis
-    from actinia_stac_plugin.core.stac_redis_interface import redis_actinia_interface
-    from pystac.extensions.projection import\
-        ItemProjectionExtension as ProjectionItemExt
+    from actinia_stac_plugin.core.stac_redis_interface import (
+        redis_actinia_interface,
+    )
+    from pystac.extensions.projection import (
+        ItemProjectionExtension as ProjectionItemExt,
+    )
+
     has_plugin = True
 except Exception:
     has_plugin = False
 
 
 class STACExporter:
-
-    def stac_builder(self, resource_url: str, filename: str,
-                     output_type: str):
+    def stac_builder(self, resource_url: str, filename: str, output_type: str):
         """
-        This function build the STAC ITEM and implement the following extension:
+        This function build the STAC ITEM and implement the following
+        extension:
             - Projection
             - Raster
             Args:
@@ -75,7 +78,6 @@ class STACExporter:
         self._stac_collection_initializer()
 
         if output_type == "raster":
-
             # Get parameters for STAC item
             extra_values = self._get_raster_parameters(output_path)
 
@@ -85,34 +87,27 @@ class STACExporter:
             item_name = f"item-{filename}"
 
             # Start building the Item
-            item = Item(id=item_name,
-                        geometry=geom,
-                        bbox=bbox_raster,
-                        datetime=datetime.utcnow(),
-                        properties={
-                            "gds": extra_values["gds"]
-                            }
-                        )
+            item = Item(
+                id=item_name,
+                geometry=geom,
+                bbox=bbox_raster,
+                datetime=datetime.utcnow(),
+                properties={"gds": extra_values["gds"]},
+            )
 
             # Adding Asset and Raster Ext
-            asset_ = Asset(
-                href=resource_url,
-                title=filename
-            )
+            asset_ = Asset(href=resource_url, title=filename)
 
-            item.add_asset(
-                key='source',
-                asset=asset_
-            )
+            item.add_asset(key="source", asset=asset_)
 
             # Adding the Projection Extension
             proj_ext = ProjectionItemExt(item)
             proj_ext.apply(
-                    epsg=extra_values["crs"],
-                    geometry=extra_values["geometry"],
-                    shape=extra_values["shape"],
-                    bbox=extra_values["bbox"],
-                    transform=extra_values["transform"]
+                epsg=extra_values["crs"],
+                geometry=extra_values["geometry"],
+                shape=extra_values["shape"],
+                bbox=extra_values["bbox"],
+                transform=extra_values["transform"],
             )
 
             # Adding the Raster Extension
@@ -130,7 +125,6 @@ class STACExporter:
             redis_items = self._save_items_redis(item, item_name)
 
             if redis_items:
-
                 # Add item to Catalog
                 catalog.add_item(item)
 
@@ -164,7 +158,9 @@ class STACExporter:
         """
         connectRedis()
 
-        result_catalog_validation = redis_actinia_interface.exists("result-catalog")
+        result_catalog_validation = redis_actinia_interface.exists(
+            "result-catalog"
+        )
 
         if not result_catalog_validation:
             results = Catalog(id="result-catalog", description="STAC catalog")
@@ -190,9 +186,9 @@ class STACExporter:
                 return False
 
             redis_actinia_interface.create(
-                    item_name,
-                    item.to_dict(),
-                )
+                item_name,
+                item.to_dict(),
+            )
             return True
         except AssertionError:
             raise AssertionError("Something went wrong")
@@ -203,12 +199,14 @@ class STACExporter:
             gds = raster.transform[:]
             bounds = raster.bounds
             bbox = [bounds.left, bounds.bottom, bounds.right, bounds.top]
-            geom = Polygon([
-                [bounds.left, bounds.bottom],
-                [bounds.left, bounds.top],
-                [bounds.right, bounds.top],
-                [bounds.right, bounds.bottom]
-            ])
+            geom = Polygon(
+                [
+                    [bounds.left, bounds.bottom],
+                    [bounds.left, bounds.top],
+                    [bounds.right, bounds.top],
+                    [bounds.right, bounds.bottom],
+                ]
+            )
             crs = raster.crs.to_epsg()
 
             extra_values = {
@@ -218,7 +216,7 @@ class STACExporter:
                 "geometry": mapping(geom),
                 "transform": gds,
                 "shape": raster.shape,
-                "datetime": "2021-12-09T16:41:39.985257Z"
+                "datetime": "2021-12-09T16:41:39.985257Z",
             }
 
             return extra_values
@@ -226,14 +224,14 @@ class STACExporter:
     @staticmethod
     def _get_wgs84_parameters(extra_values):
         if extra_values["crs"] != 4326:
-            wgs84 = pyproj.CRS('EPSG:4326')
-            raster_proj = pyproj.CRS('EPSG:' + str(extra_values["crs"]))
+            wgs84 = pyproj.CRS("EPSG:4326")
+            raster_proj = pyproj.CRS("EPSG:" + str(extra_values["crs"]))
             project = pyproj.Transformer.from_crs(
-                    raster_proj, wgs84, always_xy=True
-                ).transform
+                raster_proj, wgs84, always_xy=True
+            ).transform
             geojson = Polygon(
-                    [tuple(i) for i in extra_values["geometry"]['coordinates'][0]]
-                )
+                [tuple(i) for i in extra_values["geometry"]["coordinates"][0]]
+            )
             geom = transform(project, geojson)
             geom = mapping(geom)
 
@@ -254,7 +252,6 @@ class STACExporter:
 
     @staticmethod
     def _update_catalog_redis(catalog):
-
         new_catalog = catalog.to_dict()
         redis_actinia_interface.update("result-catalog", new_catalog)
 
@@ -262,11 +259,13 @@ class STACExporter:
     def _set_processing_extention(item):
         input_item = item.to_dict()
 
-        input_item["processing:facility"] = f"Actinia Core {API_VERSION}",
+        input_item["processing:facility"] = (f"Actinia Core {API_VERSION}",)
         input_item["processing:level"] = "L4"
         input_item["processing:derived_from"] = "https://actinia.mundialis.de/"
         input_item["processing:software"] = f" GRASS {G_VERSION}"
-        proc_schema = "https://stac-extensions.github.io/processing/v1.1.0/schema.json"
+        proc_schema = (
+            "https://stac-extensions.github.io/processing/v1.1.0/schema.json"
+        )
 
         input_item["stac_extensions"].append(proc_schema)
 
@@ -289,7 +288,9 @@ class STACExporter:
             asset["raster:nodata"] = nodata
             asset["raster:spatial_resolution"] = spatial_resolution
             asset["raster:data_type"] = data_type
-            proc_schema = "https://stac-extensions.github.io/raster/v1.1.0/schema.json"
+            proc_schema = (
+                "https://stac-extensions.github.io/raster/v1.1.0/schema.json"
+            )
             input_item["stac_extensions"].append(proc_schema)
 
             ras_ext_item = read_dict(input_item)

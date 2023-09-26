@@ -27,21 +27,23 @@ Raster map renderer
 """
 
 from tempfile import NamedTemporaryFile
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
-from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base \
-     import EphemeralRendererBase
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
+from actinia_core.processing.actinia_processing.ephemeral.base.renderer_base import (
+    EphemeralRendererBase,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralVectorRenderer(EphemeralRendererBase):
-
     def __init__(self, *args):
-
         EphemeralProcessing.__init__(self, *args)
 
     def _execute(self, skip_permission_check=True):
@@ -65,21 +67,28 @@ class EphemeralVectorRenderer(EphemeralRendererBase):
             result_file = file.name
 
         region_pc = self._setup_render_environment_and_region(
-            options=options, result_file=result_file)
+            options=options, result_file=result_file
+        )
 
         pc = {}
-        pc["1"] = {"module": "g.region", "inputs": {
-            "vector": vector_name + "@" + self.mapset_name}}
+        pc["1"] = {
+            "module": "g.region",
+            "inputs": {"vector": vector_name + "@" + self.mapset_name},
+        }
         pc["2"] = region_pc
         pc["3"] = {
             "module": "d.vect",
             "inputs": {"map": vector_name + "@" + self.mapset_name},
-            "flags": "c"}
+            "flags": "c",
+        }
 
         # Run the selected modules
         self.skip_region_check = True
-        process_list = self._create_temporary_grass_environment_and_process_list(
-            process_chain=pc, skip_permission_check=True)
+        process_list = (
+            self._create_temporary_grass_environment_and_process_list(
+                process_chain=pc, skip_permission_check=True
+            )
+        )
         self._execute_process_list(process_list)
 
         self.module_results = result_file

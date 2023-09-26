@@ -1,5 +1,5 @@
-FROM mundialis/actinia:alpine-dependencies-v1 as build-base
-FROM mundialis/grass-py3-pdal:releasebranch_8_2-alpine as grass
+FROM mundialis/actinia:alpine-dependencies-2023-06-03 as build-base
+FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
 
 FROM build-base as build
 
@@ -7,23 +7,19 @@ LABEL authors="Carmen Tawalika,Anika Bettge,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
 COPY . /src/actinia_core
-
 WORKDIR /src/actinia_core
-# setuptools uses this command or similar to determine app version
-# in CI environments it might not work as expected
-# RUN git describe --dirty --tags --long --first-parent
-RUN git checkout .
-RUN python3 setup.py sdist bdist_wheel -d /build
+RUN pip3 install build && python3 -m build --outdir /build .
+RUN if [[ -f /build/UNKNOWN* ]];then echo "ERROR - Check actinia-core build";exit 1;fi
 
 
-FROM mundialis/actinia:alpine-dependencies-v1 as actinia_installation
+FROM mundialis/actinia:alpine-dependencies-2023-06-03 as actinia_installation
 
 ENV LC_ALL "en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
 ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
 ENV GISBASE ""
-ENV ACTINIA_API_VERSION 3.3.0
+ENV ACTINIA_API_VERSION 3.4.0
 
 USER root
 
@@ -45,7 +41,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
 WORKDIR /build
 ARG WHEEL_NAME=actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl
 RUN curl -L --output /build/${WHEEL_NAME} \
-    https://github.com/mundialis/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
+    https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/${WHEEL_NAME}
 
 # Install actinia-core and libs
 COPY --from=build /build/*.whl /build/

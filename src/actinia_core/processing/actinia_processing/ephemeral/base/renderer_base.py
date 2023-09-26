@@ -26,21 +26,25 @@ Render base classes
 """
 
 import os
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class EphemeralRendererBase(EphemeralProcessing):
-
     def __init__(self, *args):
         EphemeralProcessing.__init__(self, *args)
 
-    def _setup_render_environment_and_region(self, options, result_file, legacy=True):
+    def _setup_render_environment_and_region(
+        self, options, result_file, legacy=True
+    ):
         """Setup the render environment and create a g.region
          process chain entry to setup the extent from the options.
 
@@ -71,14 +75,13 @@ class EphemeralRendererBase(EphemeralProcessing):
                         value = options[key]
                         pc["inputs"][key] = value
         else:
-            pc = {"id": "2",
-                  "module": "g.region",
-                  "inputs": [],
-                  "flags": "g"}
+            pc = {"id": "2", "module": "g.region", "inputs": [], "flags": "g"}
             if options:
                 for key in options:
                     if key in ["n", "s", "e", "w"]:
                         value = options[key]
-                        pc["inputs"].append({"param": key, "value": str(value)})
+                        pc["inputs"].append(
+                            {"param": key, "value": str(value)}
+                        )
 
         return pc

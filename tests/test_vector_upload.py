@@ -26,6 +26,7 @@ Tests: Upload vector via endpoint test case
 """
 import os
 import unittest
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except Exception:
@@ -79,7 +80,6 @@ geojson_data = """{
 
 
 class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
-
     location = "nc_spm_08"
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
@@ -88,15 +88,26 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
     gpkg_file = "/src/actinia_core/tests/data/nc_test_poly.gpkg"
     zipped_shp_file = "/src/actinia_core/tests/data/nc_test_poly.zip"
 
-    ref_info = {'Attributes': [{'column': 'cat', 'type': 'INTEGER'}],
-                'areas': '1', 'islands': '1', 'boundaries': '1', 'centroids': '1',
-                'lines': '0', 'map3d': '0', 'nodes': '1', 'points': '0',
-                'primitives': '2',
-                'attribute_layer_number': '1',
-                'attribute_primary_key': 'cat',
-                'bottom': '0.000000', 'top': '0.000000',
-                'east': '650847.138969129', 'north': '229690.354743444',
-                'south': '218320.766841849', 'west': '635437.747985441'}
+    ref_info = {
+        "Attributes": [{"column": "cat", "type": "INTEGER"}],
+        "areas": "1",
+        "islands": "1",
+        "boundaries": "1",
+        "centroids": "1",
+        "lines": "0",
+        "map3d": "0",
+        "nodes": "1",
+        "points": "0",
+        "primitives": "2",
+        "attribute_layer_number": "1",
+        "attribute_primary_key": "cat",
+        "bottom": "0.000000",
+        "top": "0.000000",
+        "east": "650847.36413895",
+        "north": "229689.570968999",
+        "south": "218319.98552841",
+        "west": "635437.976534827",
+    }
 
     @classmethod
     def setUpClass(cls):
@@ -123,67 +134,127 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         super(UploadVectorLayerTestCase, self).tearDown()
 
     def test_upload_vector_geojson_userdb(self):
-        """Test successful GeoJSON upload and check against reference vector info
         """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/"
-               f"vector_layers/{self.vector}")
-        multipart_form_data = {'file': open(self.local_geojson, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
-
+        Test successful GeoJSON upload and check against reference vector info
+        """
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"/vector_layers/{self.vector}"
+        )
+        multipart_form_data = {"file": open(self.local_geojson, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.user_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
-        self.assertVectorInfo(self.location, self.tmp_mapset, self.vector,
-                              self.ref_info, self.user_auth_header)
+        self.assertVectorInfo(
+            self.location,
+            self.tmp_mapset,
+            self.vector,
+            self.ref_info,
+            self.user_auth_header,
+        )
 
     def test_upload_vector_gpkg_userdb(self):
-        """Test successful GPKG upload and check against reference vector info
         """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/"
-               f"vector_layers/{self.vector}")
-        multipart_form_data = {'file': open(self.gpkg_file, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
+        Test successful GPKG upload and check against reference vector info
+        """
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"/vector_layers/{self.vector}"
+        )
+        multipart_form_data = {"file": open(self.gpkg_file, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
 
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.user_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
-        self.assertVectorInfo(self.location, self.tmp_mapset, self.vector,
-                              self.ref_info, self.user_auth_header)
+        self.assertVectorInfo(
+            self.location,
+            self.tmp_mapset,
+            self.vector,
+            self.ref_info,
+            self.user_auth_header,
+        )
 
     def test_upload_vector_zipped_shp_userdb(self):
-        """Test successful zipped Shapefile upload and check against reference vector info
         """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}/"
-               f"vector_layers/{self.vector}")
-        multipart_form_data = {'file': open(self.zipped_shp_file, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
+        Test successful zipped Shapefile upload and check against reference
+        vector info
+        """
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"/vector_layers/{self.vector}"
+        )
+        multipart_form_data = {"file": open(self.zipped_shp_file, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
 
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=200, status="finished")
+            rv,
+            headers=self.user_auth_header,
+            http_status=200,
+            status="finished",
+        )
 
         shp_ref_info = self.ref_info.copy()
-        shp_ref_info['Attributes'] = [
-            {'column': 'cat', 'type': 'INTEGER'},
-            {'column': 'fid', 'type': 'DOUBLE PRECISION'}]
-        self.assertVectorInfo(self.location, self.tmp_mapset, self.vector,
-                              shp_ref_info, self.user_auth_header)
+        shp_ref_info["Attributes"] = [
+            {"column": "cat", "type": "INTEGER"},
+            {"column": "fid", "type": "DOUBLE PRECISION"},
+        ]
+        self.assertVectorInfo(
+            self.location,
+            self.tmp_mapset,
+            self.vector,
+            shp_ref_info,
+            self.user_auth_header,
+        )
 
     def test_upload_vector_globaldb_error(self):
-        """Test Error if vector (GPKG) is uploaded to global DB
-        """
-        url = (f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
-               f"vector_layers/{self.vector}")
-        multipart_form_data = {'file': open(self.gpkg_file, "rb")}
-        rv = self.server.post(url, content_type="multipart/form-data",
-                              headers=self.user_auth_header, data=multipart_form_data)
+        """Test Error if vector (GPKG) is uploaded to global DB"""
+        url = (
+            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
+            f"vector_layers/{self.vector}"
+        )
+        multipart_form_data = {"file": open(self.gpkg_file, "rb")}
+        rv = self.server.post(
+            url,
+            content_type="multipart/form-data",
+            headers=self.user_auth_header,
+            data=multipart_form_data,
+        )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.user_auth_header, http_status=400, status="error",
-            message_check=(f"Mapset <{self.mapset}> exists in the global "
-                           "dataset and can not be modified."))
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check=(
+                f"Mapset <{self.mapset}> exists in the global "
+                "dataset and can not be modified."
+            ),
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

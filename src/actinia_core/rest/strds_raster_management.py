@@ -33,41 +33,52 @@ from actinia_api.swagger2.actinia_core.apidocs import strds_raster_management
 
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.request_parser import where_parser
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.processing.common.strds_raster_management import \
-    unregister_raster, register_raster, list_raster_strds
+from actinia_core.processing.common.strds_raster_management import (
+    unregister_raster,
+    register_raster,
+    list_raster_strds,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class STRDSRasterManagement(ResourceBase):
-    """Manage raster layer in a space time raster dataset
-    """
+    """Manage raster layer in a space time raster dataset"""
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_raster_management.get_doc))
     def get(self, location_name, mapset_name, strds_name):
-        """Get a list of all raster map layers that are registered in a STRDS
         """
-        rdc = self.preprocess(has_json=False, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        Get a list of all raster map layers that are registered in a STRDS
+        """
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         if rdc:
             args = where_parser.parse_args()
             rdc.set_user_data(args)
 
             enqueue_job(
-                self.job_timeout, list_raster_strds, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                list_raster_strds,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -80,10 +91,13 @@ class STRDSRasterManagement(ResourceBase):
         """Register raster map layers in a STRDS located in a specific
         location/mapset.
         """
-        rdc = self.preprocess(has_json=True, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        rdc = self.preprocess(
+            has_json=True,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         if rdc:
             enqueue_job(self.job_timeout, register_raster, rdc)
@@ -96,18 +110,25 @@ class STRDSRasterManagement(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_raster_management.delete_doc))
     def delete(self, location_name, mapset_name, strds_name):
-        """Unregister raster map layers from a STRDS located in a specific
+        """
+        Unregister raster map layers from a STRDS located in a specific
         location/mapset.
         """
-        rdc = self.preprocess(has_json=True, has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name,
-                              map_name=strds_name)
+        rdc = self.preprocess(
+            has_json=True,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+            map_name=strds_name,
+        )
 
         if rdc:
             enqueue_job(
-                self.job_timeout, unregister_raster, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                unregister_raster,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

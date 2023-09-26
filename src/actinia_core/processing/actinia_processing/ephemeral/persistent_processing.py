@@ -25,28 +25,30 @@
 Asynchronous computation in specific temporary generated and then copied
 or original mapsets
 """
-import fileinput
 import os
 import shutil
-import sqlite3
 import subprocess
 
-from actinia_core.processing.actinia_processing.ephemeral_processing \
-     import EphemeralProcessing
+from actinia_core.processing.actinia_processing.ephemeral_processing import (
+    EphemeralProcessing,
+)
 from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_core.core.mapset_merge_utils import change_mapsetname
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann, Lina Krisztian"
+__copyright__ = (
+    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class PersistentProcessing(EphemeralProcessing):
     """Processing of grass modules in a temporary or original mapset.
 
-    This class is designed to run GRASS modules that are specified in a process chain
-    in a temporary mapset that later on is copied into the original location or merged
-    into an existing mapset.
+    This class is designed to run GRASS modules that are specified in a
+    process chain in a temporary mapset that later on is copied into the
+    original location or merged into an existing mapset.
 
     Locking concept:
 
@@ -91,12 +93,15 @@ class PersistentProcessing(EphemeralProcessing):
         self.target_mapset_lock_set = False
         self.orig_mapset_path = None
 
-        # We have two mapset lock ids. The target mapset and the temporary mapset
+        # We have two mapset lock ids. The target mapset and the temporary
+        # mapset
         self.target_mapset_lock_id = self._generate_mapset_lock_id(
-            self.user_group, self.location_name, self.target_mapset_name)
+            self.user_group, self.location_name, self.target_mapset_name
+        )
 
         self.temp_mapset_lock_id = self._generate_mapset_lock_id(
-            self.user_group, self.location_name, self.temp_mapset_name)
+            self.user_group, self.location_name, self.temp_mapset_name
+        )
         self.temp_mapset_lock_set = False
 
     def _generate_mapset_lock_id(self, user_group, location_name, mapset_name):
@@ -105,8 +110,8 @@ class PersistentProcessing(EphemeralProcessing):
         Locations are user group specific. Hence different user groups may have
         locations with the same names and with equal mapset names.
 
-        In the same user group, a location/mapset must be locked to grant exclusive
-        access rights.
+        In the same user group, a location/mapset must be locked to grant
+        exclusive access rights.
 
         Args:
             user_group: The user group used for locking
@@ -125,16 +130,21 @@ class PersistentProcessing(EphemeralProcessing):
 
         This method sets in case of success: self.tmp_mapset_lock_set = True
         """
-        # Lock the temporary mapset for the time that the user can allocate at maximum
+        # Lock the temporary mapset for the time that the user can allocate at
+        # maximum
         ret = self.lock_interface.lock(
             resource_id=self.temp_mapset_lock_id,
-            expiration=self.process_time_limit * self.process_num_limit)
+            expiration=self.process_time_limit * self.process_num_limit,
+        )
 
         if ret == 0:
             raise AsyncProcessError(
                 "Unable to lock temporary mapset <%s>, "
-                "resource is already locked" % self.target_mapset_name)
-        self.message_logger.info("Mapset <%s> locked" % self.target_mapset_name)
+                "resource is already locked" % self.target_mapset_name
+            )
+        self.message_logger.info(
+            "Mapset <%s> locked" % self.target_mapset_name
+        )
 
         # if we manage to come here, the lock was correctly set
         self.temp_mapset_lock_set = True
@@ -162,55 +172,77 @@ class PersistentProcessing(EphemeralProcessing):
         # does not exist
         if self.is_global_database is True:
             # Break if the target mapset exists in the global database
-            if os.path.exists(self.global_location_path) and \
-                    os.path.isdir(self.global_location_path) and \
-                    os.access(
-                        self.global_location_path,
-                        os.R_OK | os.X_OK | os.W_OK) is True:
-                self.orig_mapset_path = os.path.join(self.global_location_path, mapset)
+            if (
+                os.path.exists(self.global_location_path)
+                and os.path.isdir(self.global_location_path)
+                and os.access(
+                    self.global_location_path, os.R_OK | os.X_OK | os.W_OK
+                )
+                is True
+            ):
+                self.orig_mapset_path = os.path.join(
+                    self.global_location_path, mapset
+                )
 
                 if os.path.exists(self.orig_mapset_path) is True:
-                    if os.access(
-                            self.orig_mapset_path, os.R_OK | os.X_OK | os.W_OK) is True:
+                    if (
+                        os.access(
+                            self.orig_mapset_path, os.R_OK | os.X_OK | os.W_OK
+                        )
+                        is True
+                    ):
                         raise AsyncProcessError(
                             "Mapset <%s> exists in the global "
-                            "dataset and can not be modified." % mapset)
+                            "dataset and can not be modified." % mapset
+                        )
             else:
                 raise AsyncProcessError(
-                    "Unable to access global location <%s>" % self.location_name)
+                    "Unable to access global location <%s>"
+                    % self.location_name
+                )
 
-        # Always check if the target mapset already exists and set the flag accordingly
-        if (os.path.exists(self.user_location_path)
-                and os.path.isdir(self.user_location_path)
-                and os.access(
-                    self.user_location_path, os.R_OK | os.X_OK | os.W_OK) is True):
-
-            self.orig_mapset_path = os.path.join(self.user_location_path, mapset)
+        # Always check if the target mapset already exists and set the flag
+        # accordingly
+        if (
+            os.path.exists(self.user_location_path)
+            and os.path.isdir(self.user_location_path)
+            and os.access(self.user_location_path, os.R_OK | os.X_OK | os.W_OK)
+            is True
+        ):
+            self.orig_mapset_path = os.path.join(
+                self.user_location_path, mapset
+            )
 
             if os.path.exists(self.orig_mapset_path) is True:
-                if os.access(
-                        self.orig_mapset_path, os.R_OK | os.X_OK | os.W_OK) is True:
+                if (
+                    os.access(
+                        self.orig_mapset_path, os.R_OK | os.X_OK | os.W_OK
+                    )
+                    is True
+                ):
                     mapset_exists = True
                     # Add the existing mapset to the required ones for mapset
                     # search path settings
                     self.required_mapsets.append(mapset)
                 else:
-                    raise AsyncProcessError("Unable to access mapset <%s> "
-                                            "path %s" % (mapset,
-                                                         self.orig_mapset_path))
+                    raise AsyncProcessError(
+                        "Unable to access mapset <%s> "
+                        "path %s" % (mapset, self.orig_mapset_path)
+                    )
             else:
                 mapset_exists = False
         else:
             raise AsyncProcessError(
-                "Unable to access user location <%s>" % self.location_name)
+                "Unable to access user location <%s>" % self.location_name
+            )
 
         return mapset_exists
 
     def _check_target_mapset_exists(self):
         """Check if the target mapset exists
 
-        This method will check if the target mapset exists in the global and user
-        location.
+        This method will check if the target mapset exists in the global and
+        user location.
         If the mapset is in the global database, then an AsyncProcessError will
         be raised, since global mapsets can not be modified.
 
@@ -224,10 +256,12 @@ class PersistentProcessing(EphemeralProcessing):
         self.target_mapset_exists = self._check_mapset(self.target_mapset_name)
 
     def _check_lock_target_mapset(self):
-        """Check if the target mapset exists and lock it, then lock the temporary mapset
+        """
+        Check if the target mapset exists and lock it, then lock the temporary
+        mapset
 
-        This method will check if the target mapset exists in the global and user
-        location.
+        This method will check if the target mapset exists in the global and
+        user location.
         If the mapset is in the global database, then an AsyncProcessError will
         be raised, since global mapsets can not be modified.
 
@@ -254,149 +288,22 @@ class PersistentProcessing(EphemeralProcessing):
         # Lock the mapset for the time that the user can allocate at maximum
         ret = self.lock_interface.lock(
             resource_id=self.target_mapset_lock_id,
-            expiration=self.process_time_limit * self.process_num_limit)
+            expiration=self.process_time_limit * self.process_num_limit,
+        )
 
         if ret == 0:
             raise AsyncProcessError(
                 "Unable to lock location/mapset <%s/%s>, "
-                "resource is already locked" % (self.location_name,
-                                                self.target_mapset_name))
+                "resource is already locked"
+                % (self.location_name, self.target_mapset_name)
+            )
         self.message_logger.info(
-            "location/mapset <%s/%s> locked" % (self.location_name,
-                                                self.target_mapset_name))
+            "location/mapset <%s/%s> locked"
+            % (self.location_name, self.target_mapset_name)
+        )
 
         # if we manage to come here, the lock was correctly set
         self.target_mapset_lock_set = True
-
-    def _change_mapsetname_in_group(self, group_path, source_mapset, target_mapset):
-        """Replaces the mapset name in the group file
-
-        Args:
-            group_path(str): path of the group folder in the source mapset
-            source_mapset(str): name of source mapset
-            target_mapset(str): name of target mapset
-
-        Raises:
-            This method will raise an AsyncProcessError if a group has no REF file
-        """
-        group_dirs = os.listdir(group_path)
-        for group_dir in group_dirs:
-            group_file = os.path.join(group_path, group_dir, "REF")
-            if os.path.isfile(group_file):
-                for line in fileinput.input(group_file, inplace=True):
-                    print(line.replace(
-                        source_mapset, target_mapset), end='')
-            else:
-                raise AsyncProcessError("group %s has no REF file"
-                                        % (group_dir))
-
-    def _update_views_in_tgis(self, tgis_db_path):
-        """Update views in tgis sqlite.db
-
-        Args:
-            tgis_db_path(str): Path to the tgis sqlite.db file where the views
-                               should be updated
-        """
-        con = sqlite3.connect(tgis_db_path)
-        cur = con.cursor()
-
-        sql_script_folder = os.path.join(os.getenv("GISBASE"), "etc", "sql")
-        drop_view_sql = os.path.join(sql_script_folder, 'drop_views.sql')
-        with open(drop_view_sql, 'r') as sql:
-            sql_drop_str = sql.read()
-        cur.executescript(sql_drop_str)
-
-        view_sql_file_names = [
-            "raster_views.sql",
-            "raster3d_views.sql",
-            "vector_views.sql",
-            "strds_views.sql",
-            "str3ds_views.sql",
-            "stvds_views.sql"
-        ]
-        for view_sql_file_name in view_sql_file_names:
-            view_sql_file = os.path.join(sql_script_folder, view_sql_file_name)
-            with open(view_sql_file, 'r') as sql:
-                sql_view_str = sql.read()
-            cur.executescript(sql_view_str)
-        con.commit()
-        if con:
-            con.close()
-        del cur
-
-    def _merge_tgis_dbs(self, tgis_db_path_1, tgis_db_path_2):
-        """Merge two tgis sqlite.db files
-
-        Args:
-            tgis_db_path_1(str): path of a tgis sqlite.db file in which the
-                                 other should be merged
-            tgis_db_path_2(str): path of a tgis sqlite.db file which should be
-                                 merged in tgis_db_path_1
-        """
-        con = sqlite3.connect(tgis_db_path_1)
-        con.execute(f"ATTACH '{tgis_db_path_2}' as dba")
-        con.execute("BEGIN")
-
-        table_names1 = [row[1] for row in con.execute(
-            "SELECT * FROM sqlite_master where type='table'")]
-        table_names2 = [row[1] for row in con.execute(
-            "SELECT * FROM dba.sqlite_master where type='table'")]
-
-        # merge databases
-        for table in table_names2:
-            if table == 'tgis_metadata':
-                con.execute(f"DROP TABLE {table}")
-                con.execute(f"CREATE TABLE {table} AS "
-                            f"SELECT * FROM dba.{table}")
-                continue
-            # for example raster_register_xxx tables are not in both dbs
-            if table not in table_names1:
-                con.execute(f"CREATE TABLE {table} AS "
-                            f"SELECT * FROM dba.{table}")
-                continue
-            combine = f"INSERT OR IGNORE INTO {table} SELECT * FROM dba.{table}"
-            con.execute(combine)
-        con.commit()
-        con.execute("detach database dba")
-        if con:
-            con.close()
-
-    def _change_mapsetname_in_tgis(self, tgis_path, source_mapset,
-                                   target_mapset, target_tgis_db):
-        """Replaces the mapset name in the tgis sqlite.db
-
-        Args:
-            tgis_path(str): path of the tgis folder in the source mapset
-            source_mapset(str): name of source mapset
-            target_mapset(str): name of target mapset
-            target_tgis_db(str): path to existing tgis sqlite.db of target
-                                 mapset. None if nonexistent.
-        """
-
-        tgis_db_path = os.path.join(tgis_path, 'sqlite.db')
-
-        # tables
-        con = sqlite3.connect(tgis_db_path)
-        cur = con.cursor()
-        table_names = [row[1] for row in cur.execute(
-            "SELECT * FROM sqlite_master where type='table'")]
-        for table_name in table_names:
-            columns = [row[0] for row in cur.execute(
-                f"SELECT * FROM {table_name}").description]
-            for col in columns:
-                cur.execute(f"UPDATE {table_name} SET {col} = REPLACE({col}, "
-                            f"'{source_mapset}', '{target_mapset}')")
-        con.commit()
-        if con:
-            con.close()
-        del cur
-
-        # if there already exists a sqlite.db file then merge it
-        if target_tgis_db is not None:
-            self._merge_tgis_dbs(tgis_db_path, target_tgis_db)
-
-        # update views
-        self._update_views_in_tgis(tgis_db_path)
 
     def _merge_mapset_into_target(self, source_mapset, target_mapset):
         """Link the source mapset content into the target mapset
@@ -406,46 +313,61 @@ class PersistentProcessing(EphemeralProcessing):
         """
         self.message_logger.info(
             "Copy source mapset <%s> content "
-            "into the target mapset <%s>" % (source_mapset, target_mapset))
+            "into the target mapset <%s>" % (source_mapset, target_mapset)
+        )
 
         # Raster, vector, group and space time data set directories/files
-        directories = ["cell", "misc", "fcell",
-                       "cats", "cellhd",
-                       "cell_misc", "colr", "colr2",
-                       "hist", "vector", "group", "tgis", "VAR"]
+        directories = [
+            "cell",
+            "misc",
+            "fcell",
+            "cats",
+            "cellhd",
+            "cell_misc",
+            "colr",
+            "colr2",
+            "hist",
+            "vector",
+            "group",
+            "tgis",
+            "VAR",
+        ]
 
         for directory in directories:
             source_path = os.path.join(
-                self.user_location_path, source_mapset, directory)
+                self.user_location_path, source_mapset, directory
+            )
             target_path = os.path.join(self.user_location_path, target_mapset)
 
-            if os.path.exists(source_path) is True:
-                if directory == "group":
-                    self._change_mapsetname_in_group(
-                        source_path, source_mapset, target_mapset)
-                if directory == "tgis":
-                    target_tgis_db = None
-                    if os.path.isdir(os.path.join(target_path, 'tgis')):
-                        target_tgis_db = os.path.join(target_path, 'tgis', 'sqlite.db')
-                    self._change_mapsetname_in_tgis(
-                        source_path, source_mapset, target_mapset,
-                        target_tgis_db)
+            change_mapsetname(
+                source_path,
+                directory,
+                source_mapset,
+                target_mapset,
+                target_path,
+            )
 
             if os.path.exists(source_path) is True:
                 # Hardlink the sources into the target
                 stdout = subprocess.PIPE
                 stderr = subprocess.PIPE
 
-                p = subprocess.Popen(["/bin/cp", "-flr",
-                                      "%s" % source_path,
-                                      "%s/." % target_path],
-                                     stdout=stdout,
-                                     stderr=stderr)
+                p = subprocess.Popen(
+                    [
+                        "/bin/cp",
+                        "-flr",
+                        "%s" % source_path,
+                        "%s/." % target_path,
+                    ],
+                    stdout=stdout,
+                    stderr=stderr,
+                )
                 (stdout_buff, stderr_buff) = p.communicate()
                 if p.returncode != 0:
                     raise AsyncProcessError(
                         "Unable to merge mapsets. Error in linking:"
-                        " stdout: %s stderr: %s" % (stdout_buff, stderr_buff))
+                        " stdout: %s stderr: %s" % (stdout_buff, stderr_buff)
+                    )
 
     def _copy_merge_tmp_mapset_to_target_mapset(self):
         """Copy the temporary mapset into the original location
@@ -457,23 +379,32 @@ class PersistentProcessing(EphemeralProcessing):
 
         # Extent the mapset lock for an hour, since copying can take long
         if self.target_mapset_lock_set is True:
-            ret = self.lock_interface.extend(resource_id=self.target_mapset_lock_id,
-                                             expiration=3600)
+            ret = self.lock_interface.extend(
+                resource_id=self.target_mapset_lock_id, expiration=3600
+            )
             if ret == 0:
-                raise AsyncProcessError("Unable to extend lock for mapset "
-                                        "<%s>" % self.target_mapset_name)
+                raise AsyncProcessError(
+                    "Unable to extend lock for mapset "
+                    "<%s>" % self.target_mapset_name
+                )
 
         if self.temp_mapset_lock_set is True:
-            ret = self.lock_interface.extend(resource_id=self.temp_mapset_lock_id,
-                                             expiration=3600)
+            ret = self.lock_interface.extend(
+                resource_id=self.temp_mapset_lock_id, expiration=3600
+            )
             if ret == 0:
-                raise AsyncProcessError("Unable to extend lock for "
-                                        "temporary mapset <%s>" % self.temp_mapset_name)
+                raise AsyncProcessError(
+                    "Unable to extend lock for "
+                    "temporary mapset <%s>" % self.temp_mapset_name
+                )
 
         self.message_logger.info(
-            "Copy temporary mapset from %s to %s" % (
-                self.temp_mapset_path, os.path.join(
-                    self.user_location_path, self.target_mapset_name)))
+            "Copy temporary mapset from %s to %s"
+            % (
+                self.temp_mapset_path,
+                os.path.join(self.user_location_path, self.target_mapset_name),
+            )
+        )
 
         source_path = self.temp_mapset_path
 
@@ -482,47 +413,61 @@ class PersistentProcessing(EphemeralProcessing):
         # on merged into the target mapset and then removed
         if self.target_mapset_exists is True:
             target_path = self.user_location_path + "/."
-            message = "Copy temporary mapset <%s> to target location " \
-                      "<%s>" % (self.temp_mapset_name, self.location_name)
+            message = (
+                "Copy temporary mapset <%s> to target location "
+                "<%s>" % (self.temp_mapset_name, self.location_name)
+            )
         else:
-            target_path = os.path.join(self.user_location_path, self.target_mapset_name)
-            message = "Copy temporary mapset <%s> to target location " \
-                      "<%s>" % (self.target_mapset_name, self.location_name)
+            target_path = os.path.join(
+                self.user_location_path, self.target_mapset_name
+            )
+            message = (
+                "Copy temporary mapset <%s> to target location "
+                "<%s>" % (self.target_mapset_name, self.location_name)
+            )
 
         self._send_resource_update(message)
 
         try:
             stdout = subprocess.PIPE
             stderr = subprocess.PIPE
-            p = subprocess.Popen(["/bin/cp", "-fr",
-                                  "%s" % source_path,
-                                  "%s" % target_path],
-                                 stdout=stdout,
-                                 stderr=stderr)
+            p = subprocess.Popen(
+                ["/bin/cp", "-fr", "%s" % source_path, "%s" % target_path],
+                stdout=stdout,
+                stderr=stderr,
+            )
             (stdout_buff, stderr_buff) = p.communicate()
             if p.returncode != 0:
                 raise AsyncProcessError(
                     "Unable to copy temporary mapset to "
                     "original location. Copy error "
-                    "stdout: %s stderr: %s returncode: %i" % (stdout_buff,
-                                                              stderr_buff,
-                                                              p.returncode))
+                    "stdout: %s stderr: %s returncode: %i"
+                    % (stdout_buff, stderr_buff, p.returncode)
+                )
         except Exception as e:
-            raise AsyncProcessError("Unable to copy temporary mapset to "
-                                    "original location. Exception %s" % str(e))
+            raise AsyncProcessError(
+                "Unable to copy temporary mapset to "
+                "original location. Exception %s" % str(e)
+            )
 
-        # Merge the temp mapset into the target mapset in case the target already exists
+        # Merge the temp mapset into the target mapset in case the target
+        # already exists
         if self.target_mapset_exists is True:
             self._merge_mapset_into_target(
-                self.temp_mapset_name, self.target_mapset_name)
-            shutil.rmtree(os.path.join(self.user_location_path, self.temp_mapset_name))
+                self.temp_mapset_name, self.target_mapset_name
+            )
+            shutil.rmtree(
+                os.path.join(self.user_location_path, self.temp_mapset_name)
+            )
             # remove interim results
             if self.interim_result.saving_interim_results is True:
                 interim_dir = os.path.join(
                     self.interim_result.user_resource_interim_storage_path,
-                    self.resource_id)
+                    self.resource_id,
+                )
                 self.message_logger.info(
-                    "Remove interim results %s" % interim_dir)
+                    "Remove interim results %s" % interim_dir
+                )
                 if os.path.isdir(interim_dir):
                     shutil.rmtree(interim_dir)
 
@@ -533,26 +478,33 @@ class PersistentProcessing(EphemeralProcessing):
             process_list: The process list to execute
 
         Raises:
-            This method will raise an AsyncProcessError or AsyncProcessTermination
+            This method will raise an AsyncProcessError or
+            AsyncProcessTermination
         """
         for process in process_list:
             # Extent the lock for each process by max processing time * 2
             if self.target_mapset_lock_set is True:
-                ret = self.lock_interface.extend(resource_id=self.target_mapset_lock_id,
-                                                 expiration=self.process_time_limit * 2)
+                ret = self.lock_interface.extend(
+                    resource_id=self.target_mapset_lock_id,
+                    expiration=self.process_time_limit * 2,
+                )
                 if ret == 0:
                     raise AsyncProcessError(
                         "Unable to extend lock for mapset <%s>"
-                        % self.target_mapset_name)
+                        % self.target_mapset_name
+                    )
 
             if self.temp_mapset_lock_set is True:
                 # Extent the lock for each process by max processing time * 2
-                ret = self.lock_interface.extend(resource_id=self.temp_mapset_lock_id,
-                                                 expiration=self.process_time_limit * 2)
+                ret = self.lock_interface.extend(
+                    resource_id=self.temp_mapset_lock_id,
+                    expiration=self.process_time_limit * 2,
+                )
                 if ret == 0:
                     raise AsyncProcessError(
                         "Unable to extend lock for "
-                        "temporary mapset <%s>" % self.temp_mapset_name)
+                        "temporary mapset <%s>" % self.temp_mapset_name
+                    )
 
             if process.exec_type == "grass":
                 self._run_module(process)
@@ -564,15 +516,15 @@ class PersistentProcessing(EphemeralProcessing):
     def _execute(self, skip_permission_check=False):
         """Overwrite this function in subclasses
 
-            - Call self._setup()
-            - Analyse the process chain
-            - Check the target mapset and lock it for the maximum time
-              a user can consume -> process_num_limit*process_time_limit
-            - Initialize and create the temporal database and mapset
-              or use the original mapset
-            - Run the modules and extend the lock each run
-            - Copy the mapset if it has not already exist
-            - Cleanup and unlock the mapset
+        - Call self._setup()
+        - Analyse the process chain
+        - Check the target mapset and lock it for the maximum time
+          a user can consume -> process_num_limit*process_time_limit
+        - Initialize and create the temporal database and mapset
+          or use the original mapset
+        - Run the modules and extend the lock each run
+        - Copy the mapset if it has not already exist
+        - Cleanup and unlock the mapset
 
         """
 
@@ -581,17 +533,23 @@ class PersistentProcessing(EphemeralProcessing):
         # check if this is a job resumption
         if self.rdc.iteration is not None:
             # Create the process chain
-            pc_step, old_process_chain_list = \
-                self._get_previous_iteration_process_chain()
+            (
+                pc_step,
+                old_process_chain_list,
+            ) = self._get_previous_iteration_process_chain()
             self.interim_result.set_old_pc_step(pc_step)
             process_list = self._validate_process_chain(
                 process_chain=self.request_data,
                 old_process_chain=old_process_chain_list,
-                pc_step=pc_step)
+                pc_step=pc_step,
+            )
             # check iterim results
-            interim_result_mapset, interim_result_file_path = \
-                self.interim_result.check_interim_result_mapset(
-                    pc_step, self.rdc.iteration - 1)
+            (
+                interim_result_mapset,
+                interim_result_file_path,
+            ) = self.interim_result.check_interim_result_mapset(
+                pc_step, self.rdc.iteration - 1
+            )
         else:
             # Create the process chain
             process_list = self._validate_process_chain()
@@ -608,20 +566,24 @@ class PersistentProcessing(EphemeralProcessing):
 
             # Initialize the GRASS environment and switch into PERMANENT
             # mapset, which is always linked
-            self._create_grass_environment(grass_data_base=self.temp_grass_data_base,
-                                           mapset_name="PERMANENT")
+            self._create_grass_environment(
+                grass_data_base=self.temp_grass_data_base,
+                mapset_name="PERMANENT",
+            )
 
             # Create the temporary mapset with the same name as the target
             # mapset and switch into it
             self._create_temporary_mapset(
                 temp_mapset_name=self.target_mapset_name,
                 interim_result_mapset=interim_result_mapset,
-                interim_result_file_path=interim_result_file_path)
+                interim_result_file_path=interim_result_file_path,
+            )
             self.temp_mapset_name = self.target_mapset_name
         else:
             # Init GRASS environment and create the temporary mapset
             self._create_temporary_grass_environment(
-                source_mapset_name=self.target_mapset_name)
+                source_mapset_name=self.target_mapset_name
+            )
             self._lock_temp_mapset()
 
         # Execute the process list
@@ -633,7 +595,8 @@ class PersistentProcessing(EphemeralProcessing):
         self._parse_module_outputs()
 
     def _final_cleanup(self):
-        """Final cleanup called in the run function at the very end of processing
+        """
+        Final cleanup called in the run function at the very end of processing
         """
         # Clean up and remove the temporary gisdbase
         self._cleanup()

@@ -34,7 +34,9 @@ AW: I suspect that this file is no longer used
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
@@ -49,7 +51,6 @@ class GrassModuleReader(object):
     """
 
     def __init__(self, filename):
-
         self.modules_keyword_dict = {}
 
         file = QFile(filename)
@@ -72,13 +73,11 @@ class GrassModuleReader(object):
         return self.modules_keyword_dict
 
     def parse_module(self):
-
         module = None
         keywords = None
         description = None
 
         while self.xml.readNextStartElement():
-
             if self.xml.name() == "module":
                 module = self.xml.readElementText()
             elif self.xml.name() == "description":
@@ -124,7 +123,6 @@ def test():
 
 
 def main():
-
     grass_modules_xml_path = global_config.GRASS_MODULES_XML_PATH
     module_reader = GrassModuleReader(grass_modules_xml_path)
 

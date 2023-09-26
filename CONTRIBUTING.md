@@ -23,12 +23,12 @@ Actinia has been mainly developed by open source GIS developers of the GRASS GIS
 Since the project is open source, all users, regardless of the profession or skill level,
 have the ability to contribute to actinia. Here's a few suggestion on how:
 
-* Help actinia users that is less experienced than yourself
-* Write a bug report
-* Request a new feature
-* Write documentation for your favorite actinia usage
-* Fix a bug
-* Implement a new feature
+- Help actinia users that is less experienced than yourself
+- Write a bug report
+- Request a new feature
+- Write documentation for your favorite actinia usage
+- Fix a bug
+- Implement a new feature
 
 In the following sections you can find some guidelines on how to contribute.
 As actinia is managed on GitHub most contributions require that you have a GitHub
@@ -42,18 +42,18 @@ as a support forum. Your question is much more likely to be answered by develope
 
 ## Adding bug reports
 
-Bug reports are handled in the [issue tracker](https://github.com/mundialis/actinia_core/issues)
+Bug reports are handled in the [issue tracker](https://github.com/actinia-org/actinia-core/issues)
 on actinia's home on GitHub. Writing a good bug report is not easy. But fixing a poorly
 documented bug is not easy either, so please put in the effort it takes to create a
 thorough bug report.
 
 A good bug report includes at least:
 
-* A title that quickly explains the problem
-* A description of the problem and how it can be reproduced
-* Version of actinia being used
-* Version numbers of any other relevant software being used, e.g. operating system
-* A description of what already has been done to solve the problem
+- A title that quickly explains the problem
+- A description of the problem and how it can be reproduced
+- Version of actinia being used
+- Version numbers of any other relevant software being used, e.g. operating system
+- A description of what already has been done to solve the problem
 
 The more information that is given up front, the more likely it is that a developer
 will find interest in solving the problem. You will probably get follow-up questions
@@ -69,7 +69,7 @@ definitely a problem with actinia.
 ## Feature requests
 
 Got an idea for a new feature in actinia? Submit a thorough description of the new
-feature in the [issue tracker](https://github.com/mundialis/actinia_core/issues). Please
+feature in the [issue tracker](https://github.com/actinia-org/actinia-core/issues). Please
 include any technical documents that can help the developer make the new feature a
 reality. An example of this could be a publicly available academic paper that
 describes a new geoprocessing method. Also, including a numerical test case will make it
@@ -83,12 +83,13 @@ Note that not all feature requests are accepted.
 actinia is in dire need of better documentation. Any contributions of documentation
 are greatly appreciated. The actinia documentation is available on
 [actinia.mundialis.de](https://actinia.mundialis.de/).
-Contributions to the documentation should be made as [Pull Requests](https://github.com/mundialis/actinia_core/pulls)
+Contributions to the documentation should be made as [Pull Requests](https://github.com/actinia-org/actinia-core/pulls)
 on GitHub.
 
 ## Code contributions
 
 ### Legalese
+
 Committers are the front line gatekeepers to keep the code base clear of improperly contributed code.
 It is important to the actinia users, developers and the OSGeo community to avoid contributing any
 code to the project without it being clearly licensed under the project license.
@@ -114,18 +115,18 @@ All unusual situations need to be discussed and/or documented.
 Committer should adhere to the following guidelines, and may be personally legally liable for
 improperly contributing code to the source repository:
 
-* Make sure the contributor (and possibly employer) is aware of the contribution terms.
-* Code coming from a source other than the contributor (such as adapted from another project)
+- Make sure the contributor (and possibly employer) is aware of the contribution terms.
+- Code coming from a source other than the contributor (such as adapted from another project)
   should be clearly marked as to the original source, copyright holders, license terms and so forth.
   This information can be in the file headers, but should also be added to the project licensing
   file if not exactly matching normal project licensing (LICENSE.txt).
-* Existing copyright headers and license text should never be stripped from a file. If a copyright
+- Existing copyright headers and license text should never be stripped from a file. If a copyright
   holder wishes to give up copyright they must do so in writing to the project steering committee
   before copyright messages are removed. If license terms are changed it has to be by agreement
   (written in email is ok) of the copyright holders.
-* When substantial contributions are added to a file (such as substantial patches) the
+- When substantial contributions are added to a file (such as substantial patches) the
   author/contributor should be added to the list of copyright holders for the file.
-* If there is uncertainty about whether a change is proper to contribute to the code base, please
+- If there is uncertainty about whether a change is proper to contribute to the code base, please
   seek more information from the project steering committee.
 
 ### Git workflow with actinia
@@ -145,8 +146,8 @@ Details here...
 
 ### Additional Resources
 
-* [General GitHub documentation](https://help.github.com/)
-* [GitHub pull request documentation](https://help.github.com/articles/about-pull-requests/)
+- [General GitHub documentation](https://help.github.com/)
+- [GitHub pull request documentation](https://help.github.com/articles/about-pull-requests/)
 
 ## Acknowledgements
 

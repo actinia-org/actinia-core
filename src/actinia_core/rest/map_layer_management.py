@@ -32,22 +32,27 @@ from actinia_api.swagger2.actinia_core.apidocs import map_layer_management
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
-    endpoint_decorator
+    endpoint_decorator,
 )
 from actinia_core.core.request_parser import glist_parser
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.processing.common.map_layer_management import \
-     list_raster_layers, remove_raster_layers, rename_raster_layers
+from actinia_core.processing.common.map_layer_management import (
+    list_raster_layers,
+    remove_raster_layers,
+    rename_raster_layers,
+)
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+__copyright__ = (
+    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+)
 __maintainer__ = "mundialis"
 
 
 class MapsetLayersResource(ResourceBase):
-    """Manage layers of a mapset
-    """
+    """Manage layers of a mapset"""
+
     def __init__(self, layer_type):
         ResourceBase.__init__(self)
         self.layer_type = layer_type
@@ -85,17 +90,22 @@ class MapsetLayersResource(ResourceBase):
             }
 
         """
-        rdc = self.preprocess(has_json=False,
-                              has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name)
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+        )
 
         if rdc:
             args = glist_parser.parse_args()
             rdc.set_user_data((args, self.layer_type))
             enqueue_job(
-                self.job_timeout, list_raster_layers, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                list_raster_layers,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -117,17 +127,22 @@ class MapsetLayersResource(ResourceBase):
             flask.Response: HTTP 200 in case of success, HTTP 400 otherwise
 
         """
-        rdc = self.preprocess(has_json=False,
-                              has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name)
+        rdc = self.preprocess(
+            has_json=False,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+        )
 
         if rdc:
             args = glist_parser.parse_args()
             rdc.set_user_data((args, self.layer_type))
             enqueue_job(
-                self.job_timeout, remove_raster_layers, rdc,
-                queue_type_overwrite=True)
+                self.job_timeout,
+                remove_raster_layers,
+                rdc,
+                queue_type_overwrite=True,
+            )
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)
@@ -150,27 +165,35 @@ class MapsetLayersResource(ResourceBase):
             flask.Response: HTTP 200 in case of success, HTTP 400 otherwise
 
         """
-        rdc = self.preprocess(has_json=True,
-                              has_xml=False,
-                              location_name=location_name,
-                              mapset_name=mapset_name)
+        rdc = self.preprocess(
+            has_json=True,
+            has_xml=False,
+            location_name=location_name,
+            mapset_name=mapset_name,
+        )
 
         # Analyse the name list
         if isinstance(self.request_data, list) is False:
-            return self.get_error_response(message="Wrong format for layer list")
+            return self.get_error_response(
+                message="Wrong format for layer list"
+            )
 
         if len(self.request_data) == 0:
             return self.get_error_response(message="Empty layer list")
 
         for name_tuple in self.request_data:
-            if (isinstance(name_tuple, tuple) is False
-                    and isinstance(name_tuple, list) is False):
+            if (
+                isinstance(name_tuple, tuple) is False
+                and isinstance(name_tuple, list) is False
+            ):
                 return self.get_error_response(
-                    message="List entry is not a tuple or list")
+                    message="List entry is not a tuple or list"
+                )
 
             if len(name_tuple) != 2:
                 return self.get_error_response(
-                    message="A tuple of layer names must have 2 entries")
+                    message="A tuple of layer names must have 2 entries"
+                )
 
         if rdc:
             args = glist_parser.parse_args()
@@ -184,8 +207,7 @@ class MapsetLayersResource(ResourceBase):
 
 
 class RasterLayersResource(MapsetLayersResource):
-    """Manage raster layers of a mapset
-    """
+    """Manage raster layers of a mapset"""
 
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="raster")
@@ -207,8 +229,9 @@ class RasterLayersResource(MapsetLayersResource):
         return self._put(location_name, mapset_name)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "delete", map_layer_management.raster_delete_doc))
+    @swagger.doc(
+        check_endpoint("delete", map_layer_management.raster_delete_doc)
+    )
     def delete(self, location_name, mapset_name):
         """Delete a single raster map layer or a list of raster map layer names
         that are located in a specific location/mapset
@@ -217,8 +240,8 @@ class RasterLayersResource(MapsetLayersResource):
 
 
 class VectorLayersResource(MapsetLayersResource):
-    """Manage vector layers of a mapset
-    """
+    """Manage vector layers of a mapset"""
+
     def __init__(self):
         MapsetLayersResource.__init__(self, layer_type="vector")
 
@@ -239,8 +262,9 @@ class VectorLayersResource(MapsetLayersResource):
         return self._put(location_name, mapset_name)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint(
-        "delete", map_layer_management.vector_delete_doc))
+    @swagger.doc(
+        check_endpoint("delete", map_layer_management.vector_delete_doc)
+    )
     def delete(self, location_name, mapset_name):
         """Delete a single vector map layer or a list of vector map layer names
         that are located in a specific location/mapset
