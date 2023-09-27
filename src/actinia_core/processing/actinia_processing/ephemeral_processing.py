@@ -142,8 +142,9 @@ class EphemeralProcessing(object):
         # rdc = ResourceDataContainer()
 
         self.rdc = rdc
-        if (os.path.exists(DEFAULT_CONFIG_PATH) is True and
-                os.path.isfile(DEFAULT_CONFIG_PATH)):
+        if os.path.exists(DEFAULT_CONFIG_PATH) is True and os.path.isfile(
+            DEFAULT_CONFIG_PATH
+        ):
             self.config = global_config
             self.rdc.config = self.config
         else:
