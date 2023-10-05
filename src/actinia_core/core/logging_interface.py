@@ -27,6 +27,7 @@ Logging interface
 
 import logging
 import logging.handlers
+import os
 import sys
 import platform
 from datetime import datetime
@@ -118,6 +119,10 @@ class BasicLogger(object):
         if type == "stdout" and global_config.LOG_INTERFACE == "stdout":
             handler = logging.StreamHandler()
         elif type == "file":
+            logfilepath = global_config.WORKER_LOGFILE.strip(
+                global_config.WORKER_LOGFILE.split("/")[-1]
+            )
+            os.makedirs(logfilepath, exist_ok=True)
             handler = logging.handlers.RotatingFileHandler(
                 global_config.WORKER_LOGFILE, maxBytes=2000000, backupCount=5
             )
