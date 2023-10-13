@@ -20,7 +20,7 @@ pandas
 passlib>=1.7.1
 ply>=3.11
 psutil>=5.7.0
-pyproj==2.6.1
+pyproj>=3.6.1
 python-json-logger
 python-magic>=0.4.15
 scikit-learn
