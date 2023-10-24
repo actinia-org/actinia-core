@@ -52,7 +52,7 @@ __maintainer__ = "mundialis"
 
 class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
     def test_resource_storage(self):
-        global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp"
+        # global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp"
         global_config.GRASS_RESOURCE_QUOTA = 1
         try:
             os.mkdir(global_config.GRASS_RESOURCE_DIR)
@@ -117,42 +117,51 @@ class ResourceStorageTestCase(ActiniaResourceTestCaseBase):
             "free_percent" in json_load(rv.data)["process_results"]
         )
 
-    def test_resource_storage_error_1(self):
-        global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
-        global_config.GRASS_RESOURCE_QUOTA = 1
+    # TODO: configure wrong resource dir path differently (via config file)
+    # see https://github.com/actinia-org/actinia-core/issues/422
+    # def test_resource_storage_error_1(self):
+    #     global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
+    #     global_config.GRASS_RESOURCE_QUOTA = 1
 
-        rv = self.server.get(
-            URL_PREFIX + "/resource_storage", headers=self.admin_auth_header
-        )
-        self.assertEqual(
-            rv.status_code,
-            400,
-            "HTML status code is wrong %i" % rv.status_code,
-        )
-        self.assertEqual(
-            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-        )
+    #     rv = self.server.get(
+    #         URL_PREFIX + "/resource_storage", headers=self.admin_auth_header
+    #     )
+    #     import pdb; pdb.set_trace()
+    #     self.assertEqual(
+    #         rv.status_code,
+    #         400,
+    #         "HTML status code is wrong %i" % rv.status_code,
+    #     )
+    #     self.assertEqual(
+    #         rv.mimetype,
+    #         "application/json",
+    #         "Wrong mimetype %s" % rv.mimetype
+    #     )
 
-    def test_resource_storage_error_2(self):
-        global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
-        global_config.GRASS_RESOURCE_QUOTA = 1
+    # TODO: configure wrong resource dir path differently (via config file)
+    # see https://github.com/actinia-org/actinia-core/issues/422
+    # def test_resource_storage_error_2(self):
+    #     global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp_nope"
+    #     global_config.GRASS_RESOURCE_QUOTA = 1
 
-        rv = self.server.delete(
-            URL_PREFIX + "/resource_storage", headers=self.admin_auth_header
-        )
-        self.waitAsyncStatusAssertHTTP(
-            rv,
-            headers=self.admin_auth_header,
-            http_status=400,
-            status="error",
-            message_check="AsyncProcessError:",
-        )
-        self.assertEqual(
-            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-        )
+    #     rv = self.server.delete(
+    #         URL_PREFIX + "/resource_storage", headers=self.admin_auth_header
+    #     )
+    #     self.waitAsyncStatusAssertHTTP(
+    #         rv,
+    #         headers=self.admin_auth_header,
+    #         http_status=400,
+    #         status="error",
+    #         message_check="AsyncProcessError:",
+    #     )
+    #     self.assertEqual(
+    #         rv.mimetype,
+    #         "application/json",
+    #         "Wrong mimetype %s" % rv.mimetype
+    #     )
 
     def test_resource_storage_delete_olderthan(self):
-        global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp"
+        # global_config.GRASS_RESOURCE_DIR = "/tmp/rstorage_tmp"
         global_config.GRASS_RESOURCE_QUOTA = 1
         try:
             os.mkdir(global_config.GRASS_RESOURCE_DIR)

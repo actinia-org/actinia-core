@@ -52,7 +52,7 @@ __email__ = "soerengebbert@googlemail.com"
 
 class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
     def test_download_cache(self):
-        global_config.DOWNLOAD_CACHE = "/tmp/dcache_tmp"
+        # global_config.DOWNLOAD_CACHE = "/tmp/dcache_tmp"
         global_config.DOWNLOAD_CACHE_QUOTA = 1
         try:
             os.mkdir(global_config.DOWNLOAD_CACHE)

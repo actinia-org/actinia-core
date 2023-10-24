@@ -172,6 +172,13 @@ class ActiniaTestCaseBase(unittest.TestCase):
             #     global_config.NUMBER_OF_WORKERS
             # )
 
+        # create configured folders
+        os.makedirs(global_config.GRASS_USER_DATABASE, exist_ok=True)
+        os.makedirs(global_config.GRASS_TMP_DATABASE, exist_ok=True)
+        os.makedirs(global_config.GRASS_RESOURCE_DIR, exist_ok=True)
+        os.makedirs(global_config.TMP_WORKDIR, exist_ok=True)
+        os.makedirs(global_config.DOWNLOAD_CACHE, exist_ok=True)
+
         # Start the redis interface
         redis_args = (
             global_config.REDIS_SERVER_URL,
