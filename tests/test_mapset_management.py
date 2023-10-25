@@ -336,7 +336,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Lock mapset
         # This locks the mapset even if it doesn't exist and even though an
-        # error is logged. Skip until fixed
+        # error is logged. Skip until fixed. TODO reactivate
         # https://github.com/actinia-org/actinia-core/issues/487
         # rv = self.server.post(
         #     URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",

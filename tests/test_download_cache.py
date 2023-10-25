@@ -117,6 +117,50 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
             "free_percent" in json_load(rv.data)["process_results"]
         )
 
+    # TODO: configure wrong download cache path differently (via config file)
+    # see https://github.com/actinia-org/actinia-core/issues/422
+    # def test_download_cache_error_1(self):
+    #     if os.path.isdir("/tmp/dcache_tmp_nope") is True:
+    #         os.rmdir("/tmp/dcache_tmp_nope")
+
+    #     global_config.DOWNLOAD_CACHE = "/tmp/dcache_tmp_nope"
+    #     global_config.DOWNLOAD_CACHE_QUOTA = 1
+
+    #     rv = self.server.get(
+    #         URL_PREFIX + "/download_cache", headers=self.admin_auth_header
+    #     )
+    #     print(rv.data.decode())
+    #     self.assertEqual(
+    #         rv.status_code,
+    #         400,
+    #         "HTML status code is wrong %i" % rv.status_code,
+    #     )
+    #     self.assertEqual(
+    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+    #     )
+
+    # TODO: configure wrong download cache path differently (via config file)
+    # see https://github.com/actinia-org/actinia-core/issues/422
+    # def test_download_cache_error_2(self):
+    #     if os.path.isdir("/tmp/dcache_tmp_nope") is True:
+    #         os.rmdir("/tmp/dcache_tmp_nope")
+
+    #     global_config.DOWNLOAD_CACHE = "/tmp/dcache_tmp_nope"
+    #     global_config.DOWNLOAD_CACHE_QUOTA = 1
+
+    #     rv = self.server.delete(
+    #         URL_PREFIX + "/download_cache", headers=self.admin_auth_header
+    #     )
+    #     print(rv.data.decode())
+    #     self.assertEqual(
+    #         rv.status_code,
+    #         400,
+    #         "HTML status code is wrong %i" % rv.status_code,
+    #     )
+    #     self.assertEqual(
+    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+    #     )
+
 
 if __name__ == "__main__":
     unittest.main()
