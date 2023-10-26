@@ -1196,6 +1196,45 @@ class EphemeralProcessing(object):
         ):
             shutil.rmtree(self.temp_grass_data_base, ignore_errors=True)
 
+    def _check_pixellimit_rimport(self):
+        """Check the current r.import command against the user cell limit.
+
+        Adjust the r.import command to a meaningful state
+        so that the user cell limit is not reached and the mapset can be
+        accessed again.
+
+        Raises:
+            This method will raise an AsyncProcessError exception
+
+        """
+        # TODO: define extent_region if r.import extent=region
+        extent_region = None
+
+        # build VRT with gdalbuildvrt
+        if extent_region:
+            # first query region extents
+            errorid, stdout_buff, stderr_buff = self.ginit.run_module(
+                "g.region", ["-ug"]
+            )
+
+            if errorid != 0:
+                raise AsyncProcessError(
+                    "Unable to check the computational region size"
+                )
+            # TODO: build vrt with gdalbuildvrt and -te flag
+            # (extents parsed from previous command)
+        else:
+            None
+            # TODO: build vrt with gdalbuildvrt (for whole input)
+        # TODO:
+        # query raster size with gdalinfo
+        # if resample and resoltuion set:
+        #   include to expected raster output
+
+        # compare estimated raster output size with pixel limit
+        # and raise exception if exceeded with message
+        # set e.g. region smaller
+
     def _check_reset_region(self):
         """Check the current region settings against the user cell limit.
 
@@ -1470,6 +1509,14 @@ class EphemeralProcessing(object):
                 str(process.executable_params),
             )
             self._send_resource_update(message)
+
+        # Check pixel limit for r.import operations
+        # TODO: test if by that all r.imports are detected
+        if (
+            self.last_module == "r.import"
+            and process.skip_permission_check is False
+        ):
+            self._check_pixellimit_rimport()
 
         # Check reset region if a g.region call was present in the process
         # chain. By default the initial value of last_module is "g.region" to
