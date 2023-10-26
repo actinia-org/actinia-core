@@ -22,6 +22,31 @@ curl http://127.0.0.1:8088/api/v3/version
 
 On startup, some GRASS GIS locations are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis) below.
 
+## Adding a user
+
+Adding the standard demouser:
+
+```
+actinia-user create -u demouser -g user -w "gu3st!pa55w0rd" -r user
+```
+
+Show what the demouser is allowed to do:
+
+```
+curl http://127.0.0.1:8088/api/v3/users/demouser
+```
+
+Enable new command for demouser: You first need to enter the running docker image, then `update_add` the command:
+
+```
+docker ps
+
+# use ID of running actinia docker image (example)
+docker exec -it 9cf4b370b220 sh
+
+actinia-user update_add -u demouser -m r.import
+```
+
 <a id="latest-grass-gis"></a>
 
 ## Installation with most recent GRASS GIS version
@@ -85,8 +110,13 @@ python3 setup.py install
 sh /src/start.sh
 ```
 
-Now you have a running actinia instance locally.
-For debugging or if you need to start the wsgi server regularly during development, you don't need to repeat all steps from inside the start.sh file. Instead, run the server with only one worker:
+Now you have a running actinia instance locally! Check with
+
+```
+curl http://127.0.0.1:8088/api/v3/version
+```
+
+For debugging or if you need to start the wsgi server regularly during development, you don't need to repeat all steps from inside the `start.sh` file. Instead, run the server with only one worker:
 
 ```
 python3 setup.py install
@@ -155,6 +185,8 @@ grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec r.univar -g elevation
 grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.random output=myrandom n=42
 grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.info -g myrandom
 ```
+
+# Testing GRASS GIS through actinia's REST API
 
 You now have some data which you can access through actinia. To get information
 via API, start actinia with gunicorn and run
