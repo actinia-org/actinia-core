@@ -9,6 +9,7 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV ACTINIA_CUSTOM_TEST_CFG /etc/default/actinia_test
 # TODO do not set DEFAULT_CONFIG_PATH if this is fixed
 ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
+ENV GRASS_DATABASE=/tmp/actinia_core/grassdb
 
 # install things only for tests
 RUN apk add redis
@@ -18,16 +19,27 @@ RUN pip3 install iniconfig colorlog
 RUN pip3 uninstall actinia-core -y
 
 # add data for tests
+WORKDIR ${GRASS_DATABASE}
 RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_micro.zip && \
   unzip nc_spm_08_micro.zip && \
   rm -f nc_spm_08_micro.zip && \
-  mv nc_spm_08_micro /actinia_core/grassdb/nc_spm_08
-RUN grass -e -c 'EPSG:4326' /actinia_core/grassdb/latlong_wgs84
+  mv nc_spm_08_micro nc_spm_08
+RUN grass -e -c 'EPSG:4326' latlong_wgs84
 RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
   unzip nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
   rm -f nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
-  mv  modis_lst /actinia_core/grassdb/nc_spm_08/modis_lst
-RUN chown -R 1001:1001 /actinia_core/grassdb/nc_spm_08/modis_lst && chmod -R g+w /actinia_core/grassdb/nc_spm_08/modis_lst
+  mv  modis_lst nc_spm_08/modis_lst
+RUN chown -R 1001:1001 nc_spm_08/modis_lst && chmod -R g+w nc_spm_08/modis_lst
+
+RUN rmdir /actinia_core/grassdb
+RUN rmdir /actinia_core/userdata
+RUN rmdir /actinia_core/resources
+RUN rmdir /actinia_core/workspace/actinia
+RUN rmdir /actinia_core/workspace/download_cache
+RUN rmdir /actinia_core/workspace/temp_db
+RUN rmdir /actinia_core/workspace/tmp
+RUN rmdir /actinia_core/workspace
+RUN rmdir /actinia_core
 
 # install actinia-api
 RUN pip3 install actinia-api@https://github.com/actinia-org/actinia-api/releases/download/${ACTINIA_API_VERSION}/actinia_api-${ACTINIA_API_VERSION}-py3-none-any.whl

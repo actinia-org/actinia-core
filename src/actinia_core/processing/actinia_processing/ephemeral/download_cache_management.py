@@ -32,7 +32,6 @@ from actinia_core.processing.actinia_processing.ephemeral_processing import (
     EphemeralProcessing,
 )
 from actinia_core.core.common.process_object import Process
-from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import (
     StorageResponseModel,
     StorageModel,
@@ -59,37 +58,30 @@ class DownloadCacheSize(EphemeralProcessing):
     def _execute(self):
         self._setup()
 
-        if os.path.exists(self.user_download_cache_path) and os.path.isdir(
-            self.user_download_cache_path
-        ):
-            executable = "/usr/bin/du"
-            args = ["-sb", self.user_download_cache_path]
+        if not os.path.exists(self.user_download_cache_path):
+            os.mkdir(self.user_download_cache_path)
 
-            self._run_process(
-                Process(
-                    exec_type="exec",
-                    executable=executable,
-                    id="compute_download_cache_size",
-                    executable_params=args,
-                )
-            )
-            print("Disk usage ", self.module_output_log[0]["stdout"])
-            dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
-            quota_size = int(
-                self.config.DOWNLOAD_CACHE_QUOTA * 1024 * 1024 * 1024
-            )
+        executable = "/usr/bin/du"
+        args = ["-sb", self.user_download_cache_path]
 
-            model = StorageModel(
-                used=dc_size,
-                free=quota_size - dc_size,
-                quota=quota_size,
-                free_percent=int(100 * (quota_size - dc_size) / quota_size),
+        self._run_process(
+            Process(
+                exec_type="exec",
+                executable=executable,
+                id="compute_download_cache_size",
+                executable_params=args,
             )
-            self.module_results = model
+        )
+        print("Disk usage ", self.module_output_log[0]["stdout"])
+        dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
+        quota_size = int(self.config.DOWNLOAD_CACHE_QUOTA * 1024 * 1024 * 1024)
 
-            self.finish_message = "Download cache size successfully computed"
-        else:
-            raise AsyncProcessError(
-                "Download cache directory <%s> does not exist."
-                % self.user_download_cache_path
-            )
+        model = StorageModel(
+            used=dc_size,
+            free=quota_size - dc_size,
+            quota=quota_size,
+            free_percent=int(100 * (quota_size - dc_size) / quota_size),
+        )
+        self.module_results = model
+
+        self.finish_message = "Download cache size successfully computed"
