@@ -441,20 +441,28 @@ class ProcessChainConverter(object):
         """
         rvf_downimport_commands = list()
         url = entry["import_descr"]["source"]
-        gdis = GeoDataDownloadImportSupport(
-            config=self.config,
-            temp_file_path=self.temp_file_path,
-            download_cache=self.temp_file_path,
-            message_logger=self.message_logger,
-            send_resource_update=self.send_resource_update,
-            url_list=[
-                url,
-            ],
-        )
-        download_commands, import_file_info = gdis.get_download_process_list()
-        rvf_downimport_commands.extend(download_commands)
+
+        if not url.startswith("/vsicurl/"):
+            gdis = GeoDataDownloadImportSupport(
+                config=self.config,
+                temp_file_path=self.temp_file_path,
+                download_cache=self.temp_file_path,
+                message_logger=self.message_logger,
+                send_resource_update=self.send_resource_update,
+                url_list=[
+                    url,
+                ],
+            )
+            (
+                download_commands,
+                import_file_info,
+            ) = gdis.get_download_process_list()
+            rvf_downimport_commands.extend(download_commands)
+            input_source = import_file_info[0][2]
+        else:
+            input_source = url
+
         map_name = entry["value"]
-        input_source = import_file_info[0][2]
         layer = None
 
         if "vector_layer" in entry["import_descr"]:

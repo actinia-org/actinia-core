@@ -32,7 +32,6 @@ from actinia_core.processing.actinia_processing.ephemeral_processing import (
     EphemeralProcessing,
 )
 from actinia_core.core.common.process_object import Process
-from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.models.response_models import (
     StorageResponseModel,
     StorageModel,
@@ -59,37 +58,30 @@ class ResourceStorageSize(EphemeralProcessing):
     def _execute(self):
         self._setup()
 
-        if os.path.exists(self.user_resource_storage_path) and os.path.isdir(
-            self.user_resource_storage_path
-        ):
-            executable = "/usr/bin/du"
-            args = ["-sb", self.user_resource_storage_path]
+        if not os.path.exists(self.user_resource_storage_path):
+            os.mkdir(self.user_resource_storage_path)
 
-            self._run_process(
-                Process(
-                    exec_type="exec",
-                    executable=executable,
-                    id="compute_download_cache_size",
-                    executable_params=args,
-                )
-            )
+        executable = "/usr/bin/du"
+        args = ["-sb", self.user_resource_storage_path]
 
-            dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
-            quota_size = int(
-                self.config.GRASS_RESOURCE_QUOTA * 1024 * 1024 * 1024
+        self._run_process(
+            Process(
+                exec_type="exec",
+                executable=executable,
+                id="compute_download_cache_size",
+                executable_params=args,
             )
+        )
 
-            model = StorageModel(
-                used=dc_size,
-                free=quota_size - dc_size,
-                quota=quota_size,
-                free_percent=int(100 * (quota_size - dc_size) / quota_size),
-            )
-            self.module_results = model
+        dc_size = int(self.module_output_log[0]["stdout"].split("\t")[0])
+        quota_size = int(self.config.GRASS_RESOURCE_QUOTA * 1024 * 1024 * 1024)
 
-            self.finish_message = "Resource storage size successfully computed"
-        else:
-            raise AsyncProcessError(
-                "Resource storage directory <%s> does not exist."
-                % self.user_resource_storage_path
-            )
+        model = StorageModel(
+            used=dc_size,
+            free=quota_size - dc_size,
+            quota=quota_size,
+            free_percent=int(100 * (quota_size - dc_size) / quota_size),
+        )
+        self.module_results = model
+
+        self.finish_message = "Resource storage size successfully computed"
