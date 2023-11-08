@@ -1204,44 +1204,126 @@ class EphemeralProcessing(object):
         ):
             shutil.rmtree(self.temp_grass_data_base, ignore_errors=True)
 
-    def _check_pixellimit_rimport(self):
+    def _check_pixellimit_rimport(self, process_executable_params):
         """Check the current r.import command against the user cell limit.
-
-        Adjust the r.import command to a meaningful state
-        so that the user cell limit is not reached and the mapset can be
-        accessed again.
 
         Raises:
             This method will raise an AsyncProcessError exception
 
         """
-        # TODO: define extent_region if r.import extent=region
-        extent_region = None
+        rimport_inp = [x for x in process_executable_params if "input=" in x][
+            0
+        ].split("=")[1]
+        rimport_out = [x for x in process_executable_params if "output=" in x][
+            0
+        ].split("=")[1]
+        vrt_out = f"{rimport_out}_tmp.vrt"
 
-        # build VRT with gdalbuildvrt
+        # define extent_region if set (otherwise empty list)
+        extent_region = [
+            x for x in process_executable_params if "extent=" in x
+        ]
+
+        # build VRT of rimport input
+        gdabuildvrt_params = list()
+        # if extent=region set, vrt only for region, not complete input
         if extent_region:
             # first query region extents
-            errorid, stdout_buff, stderr_buff = self.ginit.run_module(
+            errorid, stdout_gregion, stderr_gregion = self.ginit.run_module(
                 "g.region", ["-ug"]
             )
-
             if errorid != 0:
                 raise AsyncProcessError(
                     "Unable to check the computational region size"
                 )
-            # TODO: build vrt with gdalbuildvrt and -te flag
-            # (extents parsed from previous command)
-        else:
-            None
-            # TODO: build vrt with gdalbuildvrt (for whole input)
-        # TODO:
-        # query raster size with gdalinfo
-        # if resample and resoltuion set:
-        #   include to expected raster output
+            # parse region extents for creation of vrt (-te flag from gdalbuildvrt)
+            list_out_gregion = stdout_gregion.split("\n")
+            gdabuildvrt_params.append("-te")
+            gdabuildvrt_params.append(list_out_gregion[4])  # xmin/w
+            gdabuildvrt_params.append(list_out_gregion[3])  # ymin/s
+            gdabuildvrt_params.append(list_out_gregion[5])  # xmax/e
+            gdabuildvrt_params.append(list_out_gregion[2])  # ymax/n
+        # out and input for gdalbuildvrt
+        gdabuildvrt_params.append(vrt_out)
+        gdabuildvrt_params.append(rimport_inp)
+        # build vrt with previous defined parameters
+        (
+            errorid,
+            stdout_gdalbuildvrt,
+            stderr_gdalbuildvrt,
+        ) = self.ginit.run_module("/usr/bin/gdalbuildvrt", gdabuildvrt_params)
+
+        # gdalinfo for created vrt
+        gdalinfo_params = [vrt_out]
+        errorid, stdout_gdalinfo, stderr_gdalinfo = self.ginit.run_module(
+            "/usr/bin/gdalinfo", gdalinfo_params
+        )
+        # parse "Size" output of gdalinfo
+        rastersize_list = (
+            stdout_gdalinfo.split("Size is")[1].split("\n")[0].split(",")
+        )
+        # size = x-dim*y-dim
+        rastersize = int(rastersize_list[0]) * int(rastersize_list[1])
+
+        # if different import resolution set:
+        rimport_res = [
+            x for x in process_executable_params if "resolution=" in x
+        ]
+        if rimport_res:
+            resolution = rimport_res[0].split("=")[1]
+            if resolution == "value":
+                try:
+                    res_val = [
+                        [
+                            x
+                            for x in process_executable_params
+                            if "resolution_value=" in x
+                        ][0].split("=")[1]
+                    ]
+                except Exception():
+                    raise AsyncProcessError(
+                        "No resolution value set for r.import command. "
+                        "Please set parameter <resolution_value> "
+                        "if parameter <resolution> is set to 'value'."
+                    )
+            elif resolution == "region":
+                # if already queried above reuse, otherwise execute g.region command
+                try:
+                    stdout_gregion
+                except Exception(NameError):
+                    (
+                        errorid,
+                        stdout_gregion,
+                        stderr_gregion,
+                    ) = self.ginit.run_module("g.region", ["-ug"])
+                res_val_ns = [
+                    x for x in stdout_gregion.split("\n") if "nsres=" in x
+                ][0].split("=")[1]
+                res_val_ew = [
+                    x for x in stdout_gregion.split("\n") if "ewres=" in x
+                ][0].split("=")[1]
+                res_val = [res_val_ns, res_val_ew]
+            else:
+                res_val = None
+        if res_val:
+            if len(res_val) < 1:
+                None
+                # TODO: value set
+            else:
+                None
+                # TODO: different value for ns and ew 
+
+        # TODO: consider reprojection!
+
+        # TODO: cleanup of vrt?
 
         # compare estimated raster output size with pixel limit
-        # and raise exception if exceeded with message
-        # set e.g. region smaller
+        # and raise exception if exceeded
+        if rastersize > self.cell_limit:
+            raise AsyncProcessError(
+                "Processing pixel limit exceeded for raster import. "
+                "Please set e.g. region smaller."
+            )
 
     def _check_reset_region(self):
         """Check the current region settings against the user cell limit.
@@ -1519,17 +1601,14 @@ class EphemeralProcessing(object):
             self._send_resource_update(message)
 
         # Check pixel limit for r.import operations
-        # TODO: test if by that all r.imports are detected
-        if (
-            self.last_module == "r.import"
-            and process.skip_permission_check is False
-        ):
-            self._check_pixellimit_rimport()
+        import pdb;pdb.set_trace()
+        if process.executable == "r.import":
+            self._check_pixellimit_rimport(process.executable_params)
 
         # Check reset region if a g.region call was present in the process
         # chain. By default the initial value of last_module is "g.region" to
-        # assure for first run of a process from the process chain, the
-        # region settings are evaluated
+        # assure for first run of a process from the process chain, the region
+        # settings are evaluated
         if (
             self.last_module == "g.region"
             and process.skip_permission_check is False
