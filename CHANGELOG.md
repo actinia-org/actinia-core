@@ -23,32 +23,35 @@ https://github.com/actinia-org/actinia-core/compare/4.3.1...main
 released from main
 ...
 
-## [4.11.0] - 2023-11-02
+## [4.11.0](https://github.com/actinia-org/actinia-core/releases/tag/4.11.0) - 2023-11-02
+
 released from main
+
 ### Added
-* enhance docker installation docs by @mmacata in https://github.com/actinia-org/actinia-core/pull/470
-* mdformat by @mmacata in https://github.com/actinia-org/actinia-core/pull/472
-* Add pre-commit to renovate config by @mmacata in https://github.com/actinia-org/actinia-core/pull/473
-* docs: add more details for user management by @neteler in https://github.com/actinia-org/actinia-core/pull/490
-* Enable import via vsicurl by @mmacata in https://github.com/actinia-org/actinia-core/pull/482
-* Allow separate config for worker Part 1 by @mmacata in https://github.com/actinia-org/actinia-core/pull/376
+
+- enhance docker installation docs by @mmacata in https://github.com/actinia-org/actinia-core/pull/470
+- mdformat by @mmacata in https://github.com/actinia-org/actinia-core/pull/472
+- Add pre-commit to renovate config by @mmacata in https://github.com/actinia-org/actinia-core/pull/473
+- docs: add more details for user management by @neteler in https://github.com/actinia-org/actinia-core/pull/490
+- Enable import via vsicurl by @mmacata in https://github.com/actinia-org/actinia-core/pull/482
+- Allow separate config for worker Part 1 by @mmacata in https://github.com/actinia-org/actinia-core/pull/376
 
 ### Fixed
-* mundialis->actinia-org by @mmacata in https://github.com/actinia-org/actinia-core/pull/471
-* Update actions/checkout action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/474
-* Update docker/login-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/477
-* Update docker/build-push-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/476
-* Update docker/setup-buildx-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/479
-* Update docker/setup-qemu-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/480
-* Update docker/metadata-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/478
-* Update update-version.yml by @mmacata in https://github.com/actinia-org/actinia-core/pull/475
-* Update pyproj in requirements for ubuntu by @mmacata in https://github.com/actinia-org/actinia-core/pull/484
-* chore(deps): update dependency werkzeug and Flask to v3 [security] by @renovate in https://github.com/actinia-org/actinia-core/pull/489
+
+- mundialis->actinia-org by @mmacata in https://github.com/actinia-org/actinia-core/pull/471
+- Update actions/checkout action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/474
+- Update docker/login-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/477
+- Update docker/build-push-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/476
+- Update docker/setup-buildx-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/479
+- Update docker/setup-qemu-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/480
+- Update docker/metadata-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/478
+- Update update-version.yml by @mmacata in https://github.com/actinia-org/actinia-core/pull/475
+- Update pyproj in requirements for ubuntu by @mmacata in https://github.com/actinia-org/actinia-core/pull/484
+- chore(deps): update dependency werkzeug and Flask to v3 \[security\] by @renovate in https://github.com/actinia-org/actinia-core/pull/489
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.10.0...4.11.0
 
-generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name=4.11.0 -f target_commitish=main -q .body` 
-
+generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name=4.11.0 -f target_commitish=main -q .body`
 
 ## [4.10.0](https://github.com/actinia-org/actinia-core/releases/tag/4.10.0) - 2023-08-31
 
