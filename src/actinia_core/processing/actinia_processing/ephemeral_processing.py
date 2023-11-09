@@ -192,6 +192,7 @@ class EphemeralProcessing(object):
         self.temp_mapset_path = None
 
         self.ginit = None
+        self.ginit_tmpfiles = list()
 
         # Successfully finished message
         self.finish_message = "Processing successfully finished"
@@ -1203,6 +1204,14 @@ class EphemeralProcessing(object):
             and os.path.isdir(self.temp_grass_data_base)
         ):
             shutil.rmtree(self.temp_grass_data_base, ignore_errors=True)
+        if self.ginit_tmpfiles:
+            for tmpfile in self.ginit_tmpfiles:
+                try:
+                    os.remove(tmpfile)
+                except Exception as e:
+                    self.message_logger.debug(
+                        f"Temporary file {tmpfile} can't be removed: {e}"
+                    )
 
     def _check_pixellimit_rimport(self, process_executable_params):
         """Check the current r.import command against the user cell limit.
@@ -1217,7 +1226,8 @@ class EphemeralProcessing(object):
         rimport_out = [x for x in process_executable_params if "output=" in x][
             0
         ].split("=")[1]
-        vrt_out = f"{rimport_out}_tmp.vrt"
+        vrt_out = f"{rimport_out}_{os.getpid()}_tmp.vrt"
+        self.ginit_tmpfiles.append(vrt_out)
 
         # define extent_region if set (otherwise empty list)
         extent_region = [
@@ -1263,59 +1273,64 @@ class EphemeralProcessing(object):
             stdout_gdalinfo.split("Size is")[1].split("\n")[0].split(",")
         )
         # size = x-dim*y-dim
-        rastersize = int(rastersize_list[0]) * int(rastersize_list[1])
+        rastersize_x = int(rastersize_list[0])
+        rastersize_y = int(rastersize_list[1])
+        rastersize = rastersize_x * rastersize_y
 
-        # if different import resolution set:
+        # if different import/reprojection resolution set:
         rimport_res = [
             x for x in process_executable_params if "resolution=" in x
         ]
+        res_val = None
         if rimport_res:
+            # determine estimated resolution
+            errorid, stdout_estres, stderr_estres = self.ginit.run_module(
+                "r.import", [vrt_out, "-e"]
+            )
+            res_est = float(stderr_estres.split("\n")[-2].split(":")[1])
+            # determine set resolution value
             resolution = rimport_res[0].split("=")[1]
             if resolution == "value":
-                try:
-                    res_val = [
+                res_val = [
+                    float(
                         [
                             x
                             for x in process_executable_params
                             if "resolution_value=" in x
                         ][0].split("=")[1]
-                    ]
-                except Exception():
-                    raise AsyncProcessError(
-                        "No resolution value set for r.import command. "
-                        "Please set parameter <resolution_value> "
-                        "if parameter <resolution> is set to 'value'."
                     )
+                ] * 2
             elif resolution == "region":
                 # if already queried above reuse, otherwise execute g.region command
                 try:
                     stdout_gregion
-                except Exception(NameError):
+                except Exception:
                     (
                         errorid,
                         stdout_gregion,
                         stderr_gregion,
                     ) = self.ginit.run_module("g.region", ["-ug"])
-                res_val_ns = [
-                    x for x in stdout_gregion.split("\n") if "nsres=" in x
-                ][0].split("=")[1]
-                res_val_ew = [
-                    x for x in stdout_gregion.split("\n") if "ewres=" in x
-                ][0].split("=")[1]
+                res_val_ns = float(
+                    [x for x in stdout_gregion.split("\n") if "nsres=" in x][
+                        0
+                    ].split("=")[1]
+                )
+                res_val_ew = float(
+                    [x for x in stdout_gregion.split("\n") if "ewres=" in x][
+                        0
+                    ].split("=")[1]
+                )
                 res_val = [res_val_ns, res_val_ew]
-            else:
-                res_val = None
         if res_val:
-            if len(res_val) < 1:
-                None
-                # TODO: value set
-            else:
-                None
-                # TODO: different value for ns and ew 
-
-        # TODO: consider reprojection!
-
-        # TODO: cleanup of vrt?
+            if (res_val[0] < res_est) | (res_val[1] < res_est):
+                # only check if smaller resolution set
+                res_change_x = res_est / res_val[1]
+                res_change_y = res_est / res_val[0]
+                # approximate raster size after resampling
+                # by using factor of changed resolution
+                rastersize = (
+                    rastersize_x * res_change_x * rastersize_y * res_change_y
+                )
 
         # compare estimated raster output size with pixel limit
         # and raise exception if exceeded
@@ -1601,7 +1616,6 @@ class EphemeralProcessing(object):
             self._send_resource_update(message)
 
         # Check pixel limit for r.import operations
-        import pdb;pdb.set_trace()
         if process.executable == "r.import":
             self._check_pixellimit_rimport(process.executable_params)
 
