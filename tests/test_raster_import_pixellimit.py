@@ -42,7 +42,7 @@ except Exception:
 
 __license__ = "GPLv3"
 __author__ = "Lina Krisztian"
-__copyright__ = "Copyright 2016-2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
