@@ -1282,12 +1282,25 @@ class EphemeralProcessing(object):
             x for x in process_executable_params if "resolution=" in x
         ]
         res_val = None
-        if rimport_res:
+        # If raster exceeds cell limit alreaday in original resolution, next part can be skipped
+        if rimport_res and (rastersize < self.cell_limit):
             # determine estimated resolution
             errorid, stdout_estres, stderr_estres = self.ginit.run_module(
                 "r.import", [vrt_out, "-e"]
             )
-            res_est = float(stderr_estres.split("\n")[-2].split(":")[1])
+            if "Estimated" in stderr_estres:
+                # if data in different projection get rest_est with output of r.import -e
+                res_est = float(stderr_estres.split("\n")[-2].split(":")[1])
+            else:
+                # if data in same projection can use gdalinfo output
+                res_xy = (
+                    stdout_gdalinfo.split("Pixel Size = (")[1]
+                    .split(")\n")[0]
+                    .split(",")
+                )
+                # get estimated resolution
+                # (analoug as done within r.import -e: estres = math.sqrt((n - s) * (e - w) / cells))
+                res_est = math.sqrt(abs(float(res_xy[0]) * float(res_xy[1])))
             # determine set resolution value
             resolution = rimport_res[0].split("=")[1]
             if resolution == "value":

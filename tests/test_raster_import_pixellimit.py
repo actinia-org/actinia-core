@@ -142,12 +142,16 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             data=json_dumps(process_chain),
             content_type="application/json",
         )
-        # Import should fail (due too high resolution)
-        self.waitAsyncStatusAssertHTTP(
+        # Import should fail with certain message (due too high resolution)
+        resp = self.waitAsyncStatusAssertHTTP(
             rv,
             headers=self.admin_auth_header,
             http_status=400,
             status="error",
+        )
+        self.assertTrue(
+            "Processing pixel limit exceeded for raster import"
+            in resp["exception"]["message"]
         )
 
 
