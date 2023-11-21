@@ -1282,7 +1282,7 @@ class EphemeralProcessing(object):
             x for x in process_executable_params if "resolution=" in x
         ]
         res_val = None
-        # If raster exceeds cell limit alreaday in original resolution, next part can be skipped
+        # If raster exceeds cell limit already in original resolution, next part can be skipped
         if rimport_res and (rastersize < self.cell_limit):
             # determine estimated resolution
             errorid, stdout_estres, stderr_estres = self.ginit.run_module(
