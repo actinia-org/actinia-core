@@ -103,9 +103,9 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             status="finished",
         )
 
-    def test_pixellimit_reached(self):
+    def test_pixellimit_not_allowed(self):
         """
-        Test import of raster, for which pixellimit is reached
+        Test import of raster, for which pixellimit is reached and therefore not allowed
         """
         raster_url = additional_external_data[self.rimport_inp]
         raster = self.rimport_inp
