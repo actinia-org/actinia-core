@@ -64,9 +64,9 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
         self.delete_mapset(self.tmp_mapset, location_name=self.location)
         super(ImportRasterLayerPixellimitTestCase, self).tearDown()
 
-    def test_pixellimit_not_reached(self):
+    def test_pixellimit_allowed(self):
         """
-        Test import of raster, for which pixellimit is not reached
+        Test import of raster, for which pixellimit is not reached and therefore allowed
         """
         raster_url = additional_external_data[self.rimport_inp]
         raster = self.rimport_inp
