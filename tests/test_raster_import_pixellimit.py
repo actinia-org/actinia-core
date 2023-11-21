@@ -66,7 +66,8 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
 
     def test_pixellimit_allowed(self):
         """
-        Test import of raster, for which pixellimit is not reached and therefore allowed
+        Test import of raster, for which pixellimit is not reached
+        and therefore allowed
         """
         raster_url = additional_external_data[self.rimport_inp]
         raster = self.rimport_inp
@@ -105,7 +106,8 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
 
     def test_pixellimit_not_allowed(self):
         """
-        Test import of raster, for which pixellimit is reached and therefore not allowed
+        Test import of raster, for which pixellimit is reached
+        and therefore not allowed
         """
         raster_url = additional_external_data[self.rimport_inp]
         raster = self.rimport_inp
@@ -152,6 +154,46 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue(
             "Processing pixel limit exceeded for raster import"
             in resp["exception"]["message"]
+        )
+
+    def test_pixellimit_importer(self):
+        """
+        Test import of raster with the importer
+        with pixellimit not reached and therefore allowed
+        """
+        raster_url = additional_external_data[self.rimport_inp]
+        raster = self.rimport_inp
+        process_chain = {
+            "version": 1,
+            "list": [
+                {
+                    "id": "1",
+                    "module": "importer",
+                    "inputs": [
+                        {
+                            "import_descr": {
+                                "source": raster_url,
+                                "type": "raster",
+                            },
+                            "param": "map",
+                            "value": raster,
+                        },
+                    ],
+                },
+            ],
+        }
+        rv = self.server.post(
+            URL_PREFIX + self.endpoint,
+            headers=self.admin_auth_header,
+            data=json_dumps(process_chain),
+            content_type="application/json",
+        )
+        # Import should succeed
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=200,
+            status="finished",
         )
 
 
