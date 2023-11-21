@@ -67,6 +67,7 @@ additional_external_data = {
     "geology_30m_tif": f"{base_url_data}/geology_30m.tif",
     "geology_30m_zip": f"{base_url_data}/geology_30m.zip",
     "pointInBonn": f"{base_url_data}/pointInBonn.geojson",
+    "elevation": f"{base_url_data}/elevation.tif",
 }
 
 

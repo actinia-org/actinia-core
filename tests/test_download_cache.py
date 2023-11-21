@@ -136,7 +136,7 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
     #         "HTML status code is wrong %i" % rv.status_code,
     #     )
     #     self.assertEqual(
-    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+    #        rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
     #     )
 
     # TODO: configure wrong download cache path differently (via config file)
@@ -158,7 +158,7 @@ class DownloadCacheTestCase(ActiniaResourceTestCaseBase):
     #         "HTML status code is wrong %i" % rv.status_code,
     #     )
     #     self.assertEqual(
-    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+    #        rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
     #     )
 
 
