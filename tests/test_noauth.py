@@ -46,10 +46,6 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-# Set this variable to use a actinia config file in a docker container
-if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
-    custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
-
 PC = {
     "version": 1,
     "list": [
@@ -106,20 +102,6 @@ class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
 
     @classmethod
     def setUpClass(cls):
-        if cls.server_test is False and cls.custom_actinia_cfg is False:
-            global_config.REDIS_SERVER_SERVER = "localhost"
-            global_config.REDIS_SERVER_PORT = 7000
-            global_config.GRASS_RESOURCE_DIR = "/tmp"
-            global_config.DOWNLOAD_CACHE = "/tmp/download_cache"
-            global_config.REDIS_QUEUE_SERVER_URL = "localhost"
-            global_config.REDIS_QUEUE_SERVER_PORT = 6379
-            global_config.NUMBER_OF_WORKERS = 3
-
-        # If the custom_actinia_cfg variable is set, then the actinia config
-        # file will be read to configure Redis queue
-        if cls.server_test is False and cls.custom_actinia_cfg is not False:
-            global_config.read(cls.custom_actinia_cfg)
-            # global_config.read(cls.custom_actinia_cfg)
         # Start the redis interface
         redis_args = (
             global_config.REDIS_SERVER_URL,

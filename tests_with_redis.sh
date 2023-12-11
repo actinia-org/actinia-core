@@ -2,10 +2,10 @@
 
 run_tests_noauth (){
   # change config run tests and change config bag
-  mv ${ACTINIA_CUSTOM_TEST_CFG} ${ACTINIA_CUSTOM_TEST_CFG}_tmp
-  cp /etc/default/actinia_test_noauth ${ACTINIA_CUSTOM_TEST_CFG}
+  mv ${DEFAULT_CONFIG_PATH} ${DEFAULT_CONFIG_PATH}_tmp
+  cp /etc/default/actinia_test_noauth ${DEFAULT_CONFIG_PATH}
   pytest -m 'noauth'
-  mv ${ACTINIA_CUSTOM_TEST_CFG}_tmp ${ACTINIA_CUSTOM_TEST_CFG}
+  mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
 }
 
 
@@ -19,7 +19,6 @@ webhook-server --host "0.0.0.0" --port "5005" &
 sleep 10
 
 # run tests
-echo $ACTINIA_CUSTOM_TEST_CFG
 echo $DEFAULT_CONFIG_PATH
 
 TEST_RES=1

@@ -57,7 +57,7 @@ Redis authorization is set by `from actinia_core.core.common import redis_interf
   from actinia_core.core.common import redis_interface # PROBLEM!!!!
   from actinia_core.core.common.config import global_config
 
-  custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
+  custom_actinia_cfg = str(os.environ["DEFAULT_CONFIG_PATH"])
   global_config.read(custom_actinia_cfg)
   global_config.REDIS_SERVER_PW
   ```
@@ -66,7 +66,7 @@ Redis authorization is set by `from actinia_core.core.common import redis_interf
   import os
   from actinia_core.core.common.config import global_config
 
-  custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
+  custom_actinia_cfg = str(os.environ["DEFAULT_CONFIG_PATH"])
   global_config.read(custom_actinia_cfg)
   global_config.REDIS_SERVER_PW
   ```

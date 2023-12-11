@@ -130,7 +130,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
     """Base class for GRASS GIS REST API tests"""
 
     server_test = False
-    custom_actinia_cfg = False
     guest = None
     user = None
     admin = None
@@ -141,37 +140,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
     if "ACTINIA_SERVER_TEST" in os.environ:
         server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
 
-    if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
-        custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
-
     @classmethod
     def setUpClass(cls):
-        if cls.server_test is False and cls.custom_actinia_cfg is False:
-            global_config.REDIS_SERVER_SERVER = "localhost"
-            global_config.REDIS_SERVER_PORT = 7000
-            global_config.GRASS_RESOURCE_DIR = "/tmp"
-            global_config.DOWNLOAD_CACHE = "/tmp/download_cache"
-            global_config.REDIS_QUEUE_SERVER_URL = "localhost"
-            global_config.REDIS_QUEUE_SERVER_PORT = 6379
-            global_config.NUMBER_OF_WORKERS = 3
-            # Create the job queue
-            # redis_interface.create_job_queues(
-            #     global_config.REDIS_QUEUE_SERVER_URL,
-            #     global_config.REDIS_QUEUE_SERVER_PORT,
-            #     global_config.NUMBER_OF_WORKERS)
-
-        # If the custom_actinia_cfg variable is set, then the actinia config
-        # file will be read to configure Redis queue
-        if cls.server_test is False and cls.custom_actinia_cfg is not False:
-            global_config.read(cls.custom_actinia_cfg)
-
-            # # Create the job queue
-            # redis_interface.create_job_queues(
-            #     global_config.REDIS_QUEUE_SERVER_URL,
-            #     global_config.REDIS_QUEUE_SERVER_PORT,
-            #     global_config.NUMBER_OF_WORKERS
-            # )
-
         # create configured folders
         os.makedirs(global_config.GRASS_USER_DATABASE, exist_ok=True)
         os.makedirs(global_config.GRASS_TMP_DATABASE, exist_ok=True)
