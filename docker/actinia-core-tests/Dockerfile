@@ -39,11 +39,14 @@ RUN rmdir /actinia_core/workspace/temp_db
 RUN rmdir /actinia_core/workspace/tmp
 RUN rmdir /actinia_core/workspace
 RUN rmdir /actinia_core
+RUN rm /etc/default/actinia
 
 # copy needed files and configs for test
-COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
+# COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-tests/actinia-test.cfg /etc/default/actinia_test
 COPY docker/actinia-core-tests/actinia-test-noauth.cfg /etc/default/actinia_test_noauth
+COPY docker/actinia-core-tests/actinia-test-worker-usedby-api.cfg /etc/default/actinia_test_worker_usedby_api
+COPY docker/actinia-core-tests/actinia-test-worker-usedby-worker.cfg /etc/default/actinia_test_worker_usedby_worker
 
 # TODO: Postgres for tests
 # using tests/data/poly.gpkg

@@ -1,10 +1,24 @@
 #!/usr/bin/env sh
 
 run_tests_noauth (){
-  # change config run tests and change config bag
+  # change config run tests and change config back
   mv ${DEFAULT_CONFIG_PATH} ${DEFAULT_CONFIG_PATH}_tmp
   cp /etc/default/actinia_test_noauth ${DEFAULT_CONFIG_PATH}
   pytest -m 'noauth'
+  mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
+}
+
+run_tests_worker (){
+  # change config run tests and change config back
+  mv ${DEFAULT_CONFIG_PATH} ${DEFAULT_CONFIG_PATH}_tmp
+  cp /etc/default/actinia_test_worker_usedby_api ${DEFAULT_CONFIG_PATH}
+  echo "Starting worker..."
+  # TODO: make sure the worker is not overwriting config path from env var
+  actinia-worker job_queue_0 -c /etc/default/actinia_test_worker_usedby_worker &
+  WORKER_PID=`echo $!`
+  echo "Running tests"
+  pytest -m 'not unittest and not noauth'
+  kill $WORKER_PID
   mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
 }
 
@@ -19,7 +33,7 @@ webhook-server --host "0.0.0.0" --port "5005" &
 sleep 10
 
 # run tests
-echo $DEFAULT_CONFIG_PATH
+# echo $DEFAULT_CONFIG_PATH
 
 TEST_RES=1
 if [ "$1" == "dev" ]
@@ -41,6 +55,10 @@ then
 elif [ "$1" == "noauth" ]
 then
   run_tests_noauth
+  TEST_RES=$?
+elif [ "$1" == "worker" ]
+then
+  run_tests_worker
   TEST_RES=$?
 else
   pytest
