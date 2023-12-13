@@ -22,7 +22,6 @@ run_tests_worker (){
   mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
 }
 
-
 # start redis server
 redis-server &
 sleep 1
