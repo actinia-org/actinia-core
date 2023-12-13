@@ -286,9 +286,7 @@ process_chain_5_stdout = {
 
 
 class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
-    cfg_file = os.environ.get(
-        "ACTINIA_CUSTOM_TEST_CFG", "/etc/default/actinia"
-    )
+    cfg_file = os.environ.get("DEFAULT_CONFIG_PATH", "/etc/default/actinia")
     tmp_cfg_file = "%s_tmp" % cfg_file
     save_interim_results_value = None
     endpoint = "/locations/nc_spm_08/processing_async"

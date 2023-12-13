@@ -24,10 +24,15 @@ released from main
 ...
 
 ## [4.12.0](https://github.com/actinia-org/actinia-core/releases/tag/4.12.0) - 2023-11-21
+
 released from main
+
 ### Added
+
 - Checking pixellimit for r.import commands by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/491
+
 ### Changed
+
 - chore(deps): update mundialis/actinia-core docker tag to v4.11.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/492
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.11.0...4.12.0

@@ -44,15 +44,11 @@ create_endpoints()
 
 redis_pid = None
 server_test = False
-custom_actinia_cfg = False
 
 # If this environmental variable is set, then a real http request will be send
 # instead of using the flask test_client.
 if "ACTINIA_SERVER_TEST" in os.environ:
     server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
-# Set this variable to use a actinia config file in a docker container
-if "ACTINIA_CUSTOM_TEST_CFG" in os.environ:
-    custom_actinia_cfg = str(os.environ["ACTINIA_CUSTOM_TEST_CFG"])
 
 base_url_data = "https://apps.mundialis.de/actinia_test_datasets"
 additional_external_data = {
@@ -73,13 +69,6 @@ additional_external_data = {
 
 def setup_environment():
     global redis_pid
-    # Set the port to the test redis server
-    global_config.REDIS_SERVER_SERVER = "localhost"
-    global_config.REDIS_SERVER_PORT = 7000
-    # Set the path to redis WORKER_LOGFILE
-    # global_config.WORKER_LOGFILE = "/var/log/redis/redis"
-
-    # home = os.getenv("HOME")
 
     # GRASS GIS
     # Setup the test environment
@@ -88,7 +77,8 @@ def setup_environment():
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
     # global_config.GRASS_DATABASE = "%s/actinia/grass_test_db" % home
     global_config.GRASS_TMP_DATABASE = "/tmp"
-
+    # TODO: never secretly overwrite config parameters
+    custom_actinia_cfg = True
     if server_test is False and custom_actinia_cfg is False:
         # Start the redis server for user and logging management
         redis_pid = os.spawnl(
@@ -98,9 +88,6 @@ def setup_environment():
             "--port %i" % global_config.REDIS_SERVER_PORT,
         )
         time.sleep(1)
-
-    if server_test is False and custom_actinia_cfg is not False:
-        global_config.read(custom_actinia_cfg)
 
 
 def stop_redis():
