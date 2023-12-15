@@ -4,8 +4,8 @@ docker
 !docker/actinia-core-alpine/actinia.cfg
 !docker/actinia-core-dev/actinia.cfg
 !docker/actinia-core-dev/endpoints.csv
-!docker/actinia-core-tests/actinia-test.cfg
-!docker/actinia-core-tests/actinia-test-noauth.cfg
+!docker/actinia-core-tests/*.cfg
+
 .github
 .travis
 .travis.yml

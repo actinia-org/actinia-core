@@ -23,3 +23,6 @@ noauthtest:
 
 integrationtest:
 	sh ./tests_with_redis.sh integrationtest
+
+workertest:
+	sh ./tests_with_redis.sh worker
