@@ -1242,9 +1242,14 @@ class ProcessChainConverter(object):
                         file_id
                     ] = self.generate_temp_file_path()
                 param = "%s=%s" % (param, self.temporary_pc_files[file_id])
-            elif "::" in value and value.split("::")[1] in ["stdout", "stderr"]:
+            elif "::" in value and value.split("::")[1] in [
+                "stdout",
+                "stderr",
+            ]:
                 id = module_descr["id"]
-                param_stdin_func = self._create_param_stdin_process(value, param)
+                param_stdin_func = self._create_param_stdin_process(
+                    value, param
+                )
                 param = f"{param}=PARAM_STDIN_FUNC_{self.stdin_num}"
                 param_stdin_funcs[self.stdin_num] = param_stdin_func
                 self.stdin_num += 1
@@ -1381,9 +1386,14 @@ class ProcessChainConverter(object):
                         file_id,
                         output["export"]["format"].lower(),
                     )
-            elif "::" in value and value.split("::")[1] in ["stdout", "stderr"]:
+            elif "::" in value and value.split("::")[1] in [
+                "stdout",
+                "stderr",
+            ]:
                 id = module_descr["id"]
-                param_stdin_func = self._create_param_stdin_process(value, param)
+                param_stdin_func = self._create_param_stdin_process(
+                    value, param
+                )
                 param = f"{param}=PARAM_STDIN_FUNC_{self.stdin_num}"
                 param_stdin_funcs[self.stdin_num] = param_stdin_func
                 self.stdin_num += 1
