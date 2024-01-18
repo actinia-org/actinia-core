@@ -1685,6 +1685,17 @@ class EphemeralProcessing(object):
         )
         stdin_file = None
 
+        if process.param_stdin_sources:
+            for num, func in process.param_stdin_sources.items():
+                func_name = f"PARAM_STDIN_FUNC_{num}"
+                for i in range(len(process.executable_params)):
+                    param = process.executable_params[i]
+                    if func_name in param:
+                        par, val = param.split("=")
+                        process.executable_params[i] = (
+                            f"{par}={param.replace(param, func().strip())}"
+                        )
+
         if process.stdin_source is not None:
             tmp_file = self.proc_chain_converter.generate_temp_file_path()
             stdin_file = open(tmp_file, "w")

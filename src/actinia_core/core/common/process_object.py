@@ -45,6 +45,7 @@ class Process(object):
         executable,
         executable_params,
         stdin_source=None,
+        param_stdin_sources=None,
         skip_permission_check=False,
         id=None,
     ):
@@ -58,6 +59,8 @@ class Process(object):
             for the executable
             stdin_source (str): The get_stdout or get_stderr method of a
                                 Process
+            param_stdin_sources (dict): The get_stdout or get_stderr methods of
+                                        a process parameter
             skip_permission_check(boolean): Skip permission check for the
                                             module or executable, this is
                                             meaningful for internal process
@@ -75,6 +78,7 @@ class Process(object):
 
         self.executable_params = executable_params
         self.stdin_source = stdin_source
+        self.param_stdin_sources = param_stdin_sources
         self.stdout = None
         self.stderr = None
         self.skip_permission_check = skip_permission_check
