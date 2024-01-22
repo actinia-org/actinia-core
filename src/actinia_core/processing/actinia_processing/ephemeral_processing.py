@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,7 +47,10 @@ from actinia_core.core.messages_logger import MessageLogger
 from actinia_core.core.redis_lock import RedisLockingInterface
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.mapset_merge_utils import change_mapsetname
-from actinia_core.core.common.process_chain import ProcessChainConverter
+from actinia_core.core.common.process_chain import (
+    get_param_stdin_part,
+    ProcessChainConverter,
+)
 from actinia_core.core.common.exceptions import (
     AsyncProcessError,
     AsyncProcessTermination,
@@ -71,7 +74,7 @@ from actinia_core.rest.base.user_auth import (
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann, Lina Krisztian"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 
@@ -1691,10 +1694,35 @@ class EphemeralProcessing(object):
                 for i in range(len(process.executable_params)):
                     param = process.executable_params[i]
                     if func_name in param:
-                        par, val = param.split("=")
-                        process.executable_params[
-                            i
-                        ] = f"{par}={param.replace(param, func().strip())}"
+                        par, val = param.split("=", 1)
+                        par_val = func().strip()
+                        val_splitted = val.split(func_name)
+                        for j in range(1, len(val_splitted)):
+                            filtered_par_value = par_val
+                            filtered_func_name = func_name
+                            # filter stdout/stderr
+                            if "::" in val_splitted[j]:
+                                filter = get_param_stdin_part(
+                                    val_splitted[j][2:]
+                                )
+                                if "=" not in par_val:
+                                    raise AsyncProcessError(
+                                        "Error while running executable "
+                                        f"<{process.executable}>: <{filter}> "
+                                        "cannot be selected. Maybe you have to "
+                                        "set the '-g' flag for the stdout/stderr "
+                                        "module."
+                                    )
+                                filtered_par_value = {
+                                    x.split("=")[0]: x.split("=")[1]
+                                    for x in par_val.split()
+                                }[filter]
+                                filtered_func_name += f"::{filter}"
+                            process.executable_params[i] = (
+                                process.executable_params[i].replace(
+                                    filtered_func_name, filtered_par_value
+                                )
+                            )
 
         if process.stdin_source is not None:
             tmp_file = self.proc_chain_converter.generate_temp_file_path()
