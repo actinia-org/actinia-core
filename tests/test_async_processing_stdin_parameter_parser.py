@@ -34,9 +34,7 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = (
-    "Copyright 2024, mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 PC_RUNIVAR = {
@@ -44,24 +42,14 @@ PC_RUNIVAR = {
         {
             "id": "set_region_to_raster",
             "module": "g.region",
-            "inputs": [
-                {
-                    "param": "raster",
-                    "value": "landuse96_28m"
-                }
-            ],
-            "flags": "g"
+            "inputs": [{"param": "raster", "value": "landuse96_28m"}],
+            "flags": "g",
         },
         {
             "id": "get_stats",
             "module": "r.univar",
-            "inputs": [
-                {
-                    "param": "map",
-                    "value": "landuse96_28m"
-                }
-            ],
-            "flags": "g"
+            "inputs": [{"param": "map", "value": "landuse96_28m"}],
+            "flags": "g",
         },
         {
             "id": "calculation_scalling",
@@ -70,73 +58,51 @@ PC_RUNIVAR = {
                 {
                     "param": "expression",
                     "value": "test = (landuse96_28m - get_stats::stdout::min) "
-                    "/ (get_stats::stdout::max - get_stats::stdout::min)"
+                    "/ (get_stats::stdout::max - get_stats::stdout::min)",
                 }
-            ]
+            ],
         },
         {
             "id": "get_stats_result",
             "module": "r.univar",
-            "inputs": [
-                {
-                    "param": "map",
-                    "value": "test"
-                }
-            ],
+            "inputs": [{"param": "map", "value": "test"}],
             "stdout": {
                 "id": "stats_zonal",
                 "format": "kv",
                 "delimiter": "=",
             },
             "flags": "g",
-        }
+        },
     ],
-    "version": "1"
+    "version": "1",
 }
 
 PC_GLIST = {
     "list": [
-        {
-            "id": "print_region",
-            "module": "g.region",
-            "flags": "p"
-        },
+        {"id": "print_region", "module": "g.region", "flags": "p"},
         {
             "id": "g_list_rasterpattern",
             "module": "g.list",
             "inputs": [
-                {
-                    "param": "type",
-                    "value": "raster"
-                },
-                {
-                    "param": "pattern",
-                    "value": "l*"
-                },
-                {
-                    "param": "separator",
-                    "value": "comma"
-                }
-            ]
+                {"param": "type", "value": "raster"},
+                {"param": "pattern", "value": "l*"},
+                {"param": "separator", "value": "comma"},
+            ],
         },
         {
             "id": "set_region",
             "module": "g.region",
             "inputs": [
-                {
-                    "param": "raster",
-                    "value": "g_list_rasterpattern::stdout"
-                }
+                {"param": "raster", "value": "g_list_rasterpattern::stdout"}
             ],
-            "flags": "g"
-        }
+            "flags": "g",
+        },
     ],
-    "version": "1"
+    "version": "1",
 }
 
 
 class AsyncProcessStdinParameterParserTestCase(ActiniaResourceTestCaseBase):
-
     def test_glist_parsing(self):
         rv = self.server.post(
             URL_PREFIX + "/locations/nc_spm_08/processing_async",

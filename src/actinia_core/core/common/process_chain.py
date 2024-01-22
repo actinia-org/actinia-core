@@ -734,7 +734,6 @@ class ProcessChainConverter(object):
             )
         return stdin_func
 
-
     def _create_param_stdin_process(self, param_stdin_funcs, param_val, param):
         """Helper methods to create parameter stdin process.
 
