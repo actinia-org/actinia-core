@@ -527,8 +527,8 @@ class Executable(Schema):
             "type": "array",
             "items": {"type": "string"},
             "description": "A list of input parameters of a GRASS GIS module."
-            "By setting module_id::stdout(::filter) the stdout of another module "
-            "can be used as input for the current module. E.g. "
+            "By setting module_id::stdout(::filter) the stdout of another "
+            "module can be used as input for the current module. E.g. "
             "'r_univar_module_id::stdout::max' can be used to do a rescaling "
             "of a raster.",
         },
