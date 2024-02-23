@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -56,9 +56,16 @@ __author__ = (
     " Anika Weinmann"
 )
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
+
+
+def get_param_stdin_part(text):
+    """Function to get method and filter from parameter value"""
+    for delimiter in ["::", " ", "+", "-", "*", ":", "(", ")"]:
+        text = text.split(delimiter, 1)[0]
+    return text
 
 
 class ProcessChainConverter(object):
@@ -143,6 +150,7 @@ class ProcessChainConverter(object):
         self.webhook_finished = None
         self.webhook_update = None
         self.webhook_auth = None
+        self.stdin_num = 0
 
     def process_chain_to_process_list(self, process_chain):
         if not process_chain:
@@ -614,6 +622,7 @@ class ProcessChainConverter(object):
         if self.message_logger:
             self.message_logger.info(str(module_descr))
         params = []
+        param_stdin_funcs = {}
 
         if "id" not in module_descr:
             raise AsyncProcessError(
@@ -640,12 +649,12 @@ class ProcessChainConverter(object):
 
         if "inputs" in module_descr:
             self._add_grass_module_input_parameter_to_list(
-                module_descr, params, id
+                module_descr, params, param_stdin_funcs, id
             )
 
         if "outputs" in module_descr:
             self._add_grass_module_output_parameter_to_list(
-                module_descr, params, id, module_name
+                module_descr, params, param_stdin_funcs, id, module_name
             )
 
         if "flags" in module_descr:
@@ -688,6 +697,7 @@ class ProcessChainConverter(object):
                 executable=module_name,
                 executable_params=params,
                 stdin_source=stdin_func,
+                param_stdin_sources=param_stdin_funcs,
                 id=id,
             )
 
@@ -714,15 +724,62 @@ class ProcessChainConverter(object):
                 "The stdin option in id %s misses the ::" % str(id)
             )
         object_id, method = module_descr["stdin"].split("::")
-        if "stdout" == method is True:
-            stdin_func = self.process_dict[object_id].stdout
-        elif "stderr" == method is True:
-            stdin_func = self.process_dict[object_id].stderr
+        if "stdout" == method:
+            stdin_func = self.process_dict[object_id].get_stdout
+        elif "stderr" == method:
+            stdin_func = self.process_dict[object_id].get_stderr
         else:
             raise AsyncProcessError(
                 "The stdout or stderr flag in id %s is missing" % str(id)
             )
         return stdin_func
+
+    def _create_param_stdin_process(self, param_stdin_funcs, param_val, param):
+        """Helper methods to create parameter stdin process.
+
+        Args:
+            module_descr (dict): The module description
+            param_stdin_funcs(dict): The dictionary with the stdout/stderr
+                                     functions
+            param_val(str): The value of parameter of the module
+            param(str): The parameter name of the module
+
+        Returns:
+            stdin_func(Process): An object of type Process that
+                                 contains the module name, the
+                                 parameter list and stdin definitions
+            filter(str): A string to filter stdout e.g. "max" for r.univar
+        """
+        for mod in self.process_dict:
+            p_splitted = param_val.split(f"{mod}::")
+            p_len = len(p_splitted)
+            for i in range(1, p_len):
+                object_id = mod
+                method = get_param_stdin_part(p_splitted[i])
+                rest_str = p_splitted[i].replace(method, "")
+                filter = None
+                if rest_str.startswith("::"):
+                    filter = get_param_stdin_part(rest_str)
+
+                if "stdout" == method:
+                    stdin_func = self.process_dict[object_id].get_stdout
+                elif "stderr" == method:
+                    stdin_func = self.process_dict[object_id].get_stderr
+                else:
+                    raise AsyncProcessError(
+                        f"The stdout or stderr flag in id {id} is missing"
+                    )
+                func_str = f"{object_id}::{method}"
+                func_name = f"PARAM_STDIN_FUNC_{self.stdin_num}"
+                if filter:
+                    func_str += f"::{filter}"
+                    param += f"::{filter}"
+
+                param_stdin_funcs[self.stdin_num] = stdin_func
+                param_val = param_val.replace(func_str, func_name)
+                self.stdin_num += 1
+
+        return param_val
 
     def _create_exec_process(self, module_descr):
         """Analyse a grass process description dict and create a Process
@@ -770,7 +827,6 @@ class ProcessChainConverter(object):
         executable = module_descr["exe"]
 
         params = []
-
         if "params" in module_descr:
             for search_string in module_descr["params"]:
                 # Search for file identifiers and generate the temporary file
@@ -1166,7 +1222,7 @@ class ProcessChainConverter(object):
         return p
 
     def _add_grass_module_input_parameter_to_list(
-        self, module_descr, params, id
+        self, module_descr, params, param_stdin_funcs, id
     ):
         """Helper method to set the input parameters of a grass module and add
         them to the params list.
@@ -1176,6 +1232,8 @@ class ProcessChainConverter(object):
             params (list): The list of the grass module inputs parameters with
                            param=value entries (here the input parameter are
                            added)
+            param_stdin_funcs (dict): The dictonary with the stdin parameter
+                                      functions
             id (str): The id of this process in the process chain
         """
         if isinstance(module_descr["inputs"], list) is False:
@@ -1210,6 +1268,14 @@ class ProcessChainConverter(object):
                         file_id
                     ] = self.generate_temp_file_path()
                 param = "%s=%s" % (param, self.temporary_pc_files[file_id])
+            elif "::" in value and value.split("::")[1] in [
+                "stdout",
+                "stderr",
+            ]:
+                param_val = self._create_param_stdin_process(
+                    param_stdin_funcs, value, param
+                )
+                param = f"{param}={param_val}"
             else:
                 param = "%s=%s" % (param, value)
                 # Check for mapset in input name and append it,
@@ -1255,7 +1321,7 @@ class ProcessChainConverter(object):
             params.append(param)
 
     def _add_grass_module_output_parameter_to_list(
-        self, module_descr, params, id, module_name
+        self, module_descr, params, param_stdin_funcs, id, module_name
     ):
         """Helper method to set the output parameters of a grass module and add
         them to the params list. If export is in the output parameter the
@@ -1266,6 +1332,8 @@ class ProcessChainConverter(object):
             params (list): The list of the grass module parameters with
                            param=value entries (here the output parameter are
                            added)
+            param_stdin_funcs (dict): The dictonary with the stdin parameter
+                                      functions
             id (str): The id of this process in the process chain
             module_name (str): The name of the grass module
 
@@ -1341,6 +1409,15 @@ class ProcessChainConverter(object):
                         file_id,
                         output["export"]["format"].lower(),
                     )
+            elif "::" in value and value.split("::")[1] in [
+                "stdout",
+                "stderr",
+            ]:
+                id = module_descr["id"]
+                param_val = self._create_param_stdin_process(
+                    param_stdin_funcs, value, param
+                )
+                param = f"{param}={param_val}"
             else:
                 param = "%s=%s" % (param, value)
             params.append(param)
