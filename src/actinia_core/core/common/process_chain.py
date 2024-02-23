@@ -741,7 +741,8 @@ class ProcessChainConverter(object):
             module_descr (dict): The module description
             param_stdin_funcs(dict): The dictionary with the stdout/stderr
                                      functions
-            id (str): The id of this process in the process chain
+            param_val(str): The value of parameter of the module
+            param(str): The parameter name of the module
 
         Returns:
             stdin_func(Process): An object of type Process that
@@ -1271,7 +1272,6 @@ class ProcessChainConverter(object):
                 "stdout",
                 "stderr",
             ]:
-                id = module_descr["id"]
                 param_val = self._create_param_stdin_process(
                     param_stdin_funcs, value, param
                 )
