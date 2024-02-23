@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ from actinia_core.core.stac_exporter_interface import STACExporter
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 __email__ = "info@mundialis.de"
@@ -148,11 +148,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             create_opts += ",TILED=YES"
 
         args.append(create_opts)
-        # current workaround due to color table export
-        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946
-        # TODO: DELETE AND TEST ONCE GDAL 3.1.4 HAS BEEN RELEASED
-        if format == "COG":
-            args.append("-c")
 
         if additional_options:
             args.extend(additional_options)
