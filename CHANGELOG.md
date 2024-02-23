@@ -23,6 +23,16 @@ https://github.com/actinia-org/actinia-core/compare/4.3.1...main
 released from main
 ...
 
+## [4.13.1](https://github.com/actinia-org/actinia-core/releases/tag/4.13.1) - 2024-02-23
+
+released from main
+
+### Fixed
+
+- COG export: remove color table workaround by @neteler in https://github.com/actinia-org/actinia-core/pull/502
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.13.0...4.13.1
+
 ## [4.13.0](https://github.com/actinia-org/actinia-core/releases/tag/4.13.0) - 2024-02-23
 
 released from main
