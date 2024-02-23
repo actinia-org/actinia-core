@@ -23,6 +23,27 @@ https://github.com/actinia-org/actinia-core/compare/4.3.1...main
 released from main
 ...
 
+## [4.13.0](https://github.com/actinia-org/actinia-core/releases/tag/4.13.0) - 2024-02-23
+
+released from main
+
+### Added
+
+- Start to cleanup tests by @mmacata in https://github.com/actinia-org/actinia-core/pull/497
+- Add tests via worker by @mmacata in https://github.com/actinia-org/actinia-core/pull/498
+- Add stdin for parameters by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/501
+
+### Fixed
+
+- chore(deps): update mundialis/actinia-core docker tag to v4.12.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/494
+- chore(deps): update pre-commit hook pre-commit/pre-commit-hooks to v4.5.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/486
+- chore(deps): update actions/checkout digest to b4ffde6 by @renovate in https://github.com/actinia-org/actinia-core/pull/481
+- chore(deps): update github/codeql-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/499
+- chore(deps): update actions/setup-python action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/495
+- chore(deps): update dependency docutils to v0.20.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/431
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.12.0...4.13.0
+
 ## [4.12.0](https://github.com/actinia-org/actinia-core/releases/tag/4.12.0) - 2023-11-21
 
 released from main
