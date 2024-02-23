@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_w
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -83,9 +83,6 @@ class EphemeralRasterLayerExporter(EphemeralProcessingWithExport):
             source_mapset_name="PERMANENT"
         )
 
-        # COG bug in GDAL, see https://github.com/OSGeo/gdal/issues/2946 will
-        # be fixed in GDAL 3.1.4
-        # use r.out.gdal -c to avoid the bug
         format = "COG"
         from osgeo import gdal
 
