@@ -55,3 +55,4 @@ Steps when releasing actinia-core:
 - Automatically a new docker image with the new tag will be created and pushed to [Dockerhub](https://hub.docker.com/r/mundialis/actinia-core/tags)
 - Automatically new source and build distributions are created and pulished on [PyPI](https://pypi.org/project/actinia-core/)
 - The version is automatically updated in [pyproject.toml](pyproject.toml)
+- The version is automatically added in [zenodo](https://zenodo.org/records/10695986)
