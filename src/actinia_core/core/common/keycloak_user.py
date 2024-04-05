@@ -29,7 +29,6 @@ Possible TODOs: add list_all_users, delete, create_user (, exists).
         need to store keycloak admin credentials!
 """
 from keycloak import KeycloakOpenID
-from jose.exceptions import ExpiredSignatureError
 
 from actinia_core.core.common.user_base import (
     ActiniaUserBase,
@@ -167,8 +166,6 @@ class ActiniaKeycloakUser(ActiniaUserBase):
             token_info = keycloak_openid.decode_token(
                 token, key=KEYCLOAK_PUBLIC_KEY, options=options
             )
-        except ExpiredSignatureError:
-            return None
         except Exception:
             return None
         return create_user_from_tokeninfo(token_info)
