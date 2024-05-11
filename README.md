@@ -14,8 +14,8 @@ arbitrary raster data with geographical relations and vector data.
 The REST interface allows to access, manage and manipulate the GRASS GIS
 database via HTTP GET, PUT, POST and DELETE requests and to process raster, vector and
 time series data located in a persistent GRASS GIS database.
-**Actinia** allows the processing of cloud based data, for example all Landsat 4-8 scenes as well as all
-Sentinel-2 scenes in an ephemeral databases. The computational results of ephemeral processing
+**Actinia** allows the processing of cloud-based data, for example all Landsat 4-8 scenes as well as all
+Sentinel-2 scenes in ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
 ## API documentation
