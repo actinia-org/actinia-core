@@ -122,7 +122,7 @@ class InputParameter(IOParameterBase):
                 " raster map layers have a specific name scheme, that "
                 "is independent from the provided map name in the "
                 "process description. The name scheme is always: "
-                "<p>\<landsat scene id\>_\<atcor\>.\<band\></p>"
+                r"<p>\<landsat scene id\>_\<atcor\>.\<band\></p>"
                 "For example, if the scene <p>LT52170762005240COA00</p> "
                 "was requested, the resulting name for the DOS1 "
                 "atmospheric corrected band 1 would be: "
