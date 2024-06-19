@@ -34,9 +34,9 @@ __copyright__ = (
 __maintainer__ = "mundialis"
 
 from flask import make_response, jsonify, request
+from importlib import metadata
 import os
 import re
-import importlib
 import subprocess
 import sys
 from actinia_api import URL_PREFIX
@@ -71,16 +71,20 @@ def init_versions():
     ).stdout
     log.debug("Detecting GRASS GIS version")
     for i in g_version.decode("utf-8").strip("\n").split("\n"):
-        G_VERSION[i.split("=")[0]] = i.split("=")[1]
+        try:
+            G_VERSION[i.split("=")[0]] = i.split("=")[1]
+        except IndexError:
+            pass
 
     log.debug("Detecting Plugin versions")
     for i in global_config.PLUGINS:
-        module = importlib.import_module(i)
-        PLUGIN_VERSIONS[i] = module.__version__
+        try:
+            PLUGIN_VERSIONS[i] = metadata.version(i)
+        except metadata.PackageNotFoundError:
+            PLUGIN_VERSIONS[i] = metadata.version(f"{i}.wsgi")
 
     log.debug("Detecting API versions")
-    module = importlib.import_module("actinia_api")
-    API_VERSION = module.__version__
+    API_VERSION = metadata.version("actinia_api")
 
     PYTHON_VERSION = sys.version.replace("\n", "- ")
 

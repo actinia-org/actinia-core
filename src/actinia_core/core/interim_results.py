@@ -186,7 +186,7 @@ class InterimResult(object):
         # get sha512sum of the folder
         cur_working_dir = os.getcwd()
         sha512sum_cmd = (
-            "find . -type f -exec sha512sum {} \; | " + "sort -k 2 | sha512sum"
+            r"find . -type f -exec sha512sum {} \; | " + "sort -k 2 | sha512sum"
         )
         sha512sums = list()
         for folder in [folder1, folder2]:
