@@ -1,6 +1,6 @@
 name: Python Flake8, black and pylint code quality check
 
-on: [push, pull_request]
+on: [push]
 
 jobs:
   lint:
