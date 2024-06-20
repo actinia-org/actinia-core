@@ -15,7 +15,6 @@ ENV GISBASE ""
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-RUN pip install --upgrade pip six grass-session --ignore-installed six
 RUN ln -s /usr/local/grass `grass --config path`
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
@@ -30,16 +29,20 @@ FROM build-base as build
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
-RUN pip install build && python -m build --outdir /build .
+RUN apk add py3-build && python -m build --outdir /build .
 RUN if [[ -f /build/UNKNOWN* ]];then echo "ERROR - Check actinia-core build";exit 1;fi
 
 
 FROM requirements as actinia
 
+ENV PATH="/opt/venv/bin:$PATH"
+RUN /usr/bin/python -m venv --system-site-packages --without-pip /opt/venv
+RUN python -m ensurepip && pip3 install --upgrade pip pep517 wheel
+
 # actinia-core and requirements installation
 WORKDIR /build
 COPY --from=build /build/*.whl /build/
-RUN pip install /build/*
+RUN pip3 install /build/*
 
 # Copy actinia config file and start script
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
