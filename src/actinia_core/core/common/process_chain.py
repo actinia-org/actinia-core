@@ -378,9 +378,9 @@ class ProcessChainConverter(object):
         for scene in scenes_bands:
             scene_id = scene["scene_id"]
             download_cache = f"download_cache_{scene_id}"
-            self.temporary_pc_files[
-                download_cache
-            ] = self.generate_temp_file_path()
+            self.temporary_pc_files[download_cache] = (
+                self.generate_temp_file_path()
+            )
             sp = Sentinel2Processing(
                 bands=scene["bands"],
                 download_cache=self.temporary_pc_files[download_cache],
@@ -835,9 +835,9 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[
-                            file_id
-                        ] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = (
+                            self.generate_temp_file_path()
+                        )
 
                     param = "%s" % self.temporary_pc_files[file_id]
                 else:
@@ -997,9 +997,9 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[
-                            file_id
-                        ] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = (
+                            self.generate_temp_file_path()
+                        )
 
                     param = "%s=%s" % (key, self.temporary_pc_files[file_id])
                 else:
@@ -1063,9 +1063,9 @@ class ProcessChainConverter(object):
                         # Generate the temporary file path and store it in the
                         # dict
                         if file_id not in self.temporary_pc_files:
-                            self.temporary_pc_files[
-                                file_id
-                            ] = self.generate_temp_file_path()
+                            self.temporary_pc_files[file_id] = (
+                                self.generate_temp_file_path()
+                            )
 
                         param = "%s=%s" % (
                             key,
@@ -1191,9 +1191,9 @@ class ProcessChainConverter(object):
                     file_id = search_string.split("::")[1]
                     # Generate the temporary file path and store it in the dict
                     if file_id not in self.temporary_pc_files:
-                        self.temporary_pc_files[
-                            file_id
-                        ] = self.generate_temp_file_path()
+                        self.temporary_pc_files[file_id] = (
+                            self.generate_temp_file_path()
+                        )
 
                     param = "%s" % self.temporary_pc_files[file_id]
                 else:
@@ -1264,9 +1264,9 @@ class ProcessChainConverter(object):
                 file_id = value.split("::")[1]
                 # Generate the temporary file path and store it in the dict
                 if file_id not in self.temporary_pc_files:
-                    self.temporary_pc_files[
-                        file_id
-                    ] = self.generate_temp_file_path()
+                    self.temporary_pc_files[file_id] = (
+                        self.generate_temp_file_path()
+                    )
                 param = "%s=%s" % (param, self.temporary_pc_files[file_id])
             elif "::" in value and value.split("::")[1] in [
                 "stdout",
@@ -1396,9 +1396,9 @@ class ProcessChainConverter(object):
                 file_id = value.split("::")[1]
                 # Generate the temporary file path and store it in the dict
                 if file_id not in self.temporary_pc_files:
-                    self.temporary_pc_files[
-                        file_id
-                    ] = self.generate_temp_file_path()
+                    self.temporary_pc_files[file_id] = (
+                        self.generate_temp_file_path()
+                    )
                 # Store the file path in the output description for export
                 param = "%s=%s" % (param, self.temporary_pc_files[file_id])
                 # Add the temp file path and the new file name with suffix to ,

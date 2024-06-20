@@ -305,9 +305,9 @@ class AWSSentinel2AInterface(object):
             preview_url = (
                 f'{self.aws_sentinel_base_url}/{tile["path"]}/preview.jpg'
             )
-            tile_info[
-                "url"
-            ] = f'{self.aws_sentinel_base_eu_central_url}/#{tile["path"]}/'
+            tile_info["url"] = (
+                f'{self.aws_sentinel_base_eu_central_url}/#{tile["path"]}/'
+            )
 
             tile_info["metadata"] = metadata_url
             tile_info["info"] = info_url

@@ -211,9 +211,9 @@ class GoogleSatelliteBigQueryInterface(object):
         self.gcs_url = "https://storage.googleapis.com/"
         self.sentinel_xml_metadata_file = "MTD_MSIL1C.xml"
         self.config = config
-        os.environ[
-            "GOOGLE_APPLICATION_CREDENTIALS"
-        ] = self.config.GOOGLE_APPLICATION_CREDENTIALS
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
+            self.config.GOOGLE_APPLICATION_CREDENTIALS
+        )
         os.environ["GOOGLE_CLOUD_PROJECT"] = self.config.GOOGLE_CLOUD_PROJECT
 
         self.sentinel_bands = [

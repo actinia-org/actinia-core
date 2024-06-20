@@ -1718,10 +1718,10 @@ class EphemeralProcessing(object):
                                     for x in par_val.split()
                                 }[filter]
                                 filtered_func_name += f"::{filter}"
-                            process.executable_params[
-                                i
-                            ] = process.executable_params[i].replace(
-                                filtered_func_name, filtered_par_value
+                            process.executable_params[i] = (
+                                process.executable_params[i].replace(
+                                    filtered_func_name, filtered_par_value
+                                )
                             )
 
         if process.stdin_source is not None:
