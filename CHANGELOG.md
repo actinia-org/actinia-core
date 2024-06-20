@@ -23,32 +23,36 @@ https://github.com/actinia-org/actinia-core/compare/4.3.1...main
 released from main
 ...
 
-## [4.14.0] - 2024-05-24
+## \[4.14.0\] - 2024-05-24
+
 released from main
 
 ### Changed
-* update different dependencies by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/514
-* chore(deps): update mundialis/actinia-core docker tag to v4.13.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/503
-* chore(deps): update softprops/action-gh-release action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/504
-* chore(deps): update actions/checkout digest to 1d96c77 by @renovate in https://github.com/actinia-org/actinia-core/pull/510
-* chore(deps): update dependency google-cloud-bigquery to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/435
-* chore(deps): update dependency pystac to v1 by @renovate in https://github.com/actinia-org/actinia-core/pull/436
-* chore(deps): update actions/checkout digest to a5ac7e5 by @renovate in https://github.com/actinia-org/actinia-core/pull/515
-* chore(deps): update anchore/sbom-action digest to 07e5b3a by @renovate in https://github.com/actinia-org/actinia-core/pull/516
+
+- update different dependencies by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/514
+- chore(deps): update mundialis/actinia-core docker tag to v4.13.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/503
+- chore(deps): update softprops/action-gh-release action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/504
+- chore(deps): update actions/checkout digest to 1d96c77 by @renovate in https://github.com/actinia-org/actinia-core/pull/510
+- chore(deps): update dependency google-cloud-bigquery to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/435
+- chore(deps): update dependency pystac to v1 by @renovate in https://github.com/actinia-org/actinia-core/pull/436
+- chore(deps): update actions/checkout digest to a5ac7e5 by @renovate in https://github.com/actinia-org/actinia-core/pull/515
+- chore(deps): update anchore/sbom-action digest to 07e5b3a by @renovate in https://github.com/actinia-org/actinia-core/pull/516
 
 ### Removed
-* Remove python dependency by @mmacata in https://github.com/actinia-org/actinia-core/pull/506
+
+- Remove python dependency by @mmacata in https://github.com/actinia-org/actinia-core/pull/506
 
 ### Fixed
-* README: fix minor grammar issues by @pesekon2 in https://github.com/actinia-org/actinia-core/pull/513
+
+- README: fix minor grammar issues by @pesekon2 in https://github.com/actinia-org/actinia-core/pull/513
 
 ### New Contributors
-* @pesekon2 made their first contribution in https://github.com/actinia-org/actinia-core/pull/513
+
+- @pesekon2 made their first contribution in https://github.com/actinia-org/actinia-core/pull/513
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.13.1...4.14.0
 
-"generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.14.0" -f target_commitish=main -q .body`" 
-
+"generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="4.14.0" -f target_commitish=main -q .body`"
 
 ## [4.13.1](https://github.com/actinia-org/actinia-core/releases/tag/4.13.1) - 2024-02-23
 
