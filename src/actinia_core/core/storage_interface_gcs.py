@@ -63,9 +63,9 @@ class ResourceStorageGCS(ResourceStorageBase):
         """
         Setup the Google Cloud Storage (GCS) client and the GCS credentials
         """
-        os.environ[
-            "GOOGLE_APPLICATION_CREDENTIALS"
-        ] = self.config.GOOGLE_APPLICATION_CREDENTIALS
+        os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = (
+            self.config.GOOGLE_APPLICATION_CREDENTIALS
+        )
         self.storage_client = storage.Client()
 
     def get_resource_urls(self):
