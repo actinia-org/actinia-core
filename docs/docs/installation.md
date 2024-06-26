@@ -140,8 +140,7 @@ cd /tmp
 
 git clone https://github.com/actinia-org/actinia-core.git actinia_core
 cd actinia_core
-pip install -r requirements.txt
-python setup.py install
+pip install .
 ```
 
 6. Actinia API must be installed and run within a (virtual) Python3 environment:
