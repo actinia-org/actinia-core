@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/tutorial_landsat_ndvi/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Landsat NDVI computation - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Landsat NDVI computation";
+        var mkdocs_page_input_path = "tutorial_landsat_ndvi.md";
+        var mkdocs_page_url = "/tutorial/tutorial_landsat_ndvi/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Landsat NDVI computation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="landsat-ndvi-computation">Landsat NDVI computation</h1>
+<p>Actinia provides several API calls to compute satellite specific
+parameters:</p>
+<p><a href="https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms">https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms</a></p>
+<p>We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:</p>
+<pre><code class="language-bash">export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+</code></pre>
+<p>The NDVI is an important parameter that is derived from multi-spectral
+satellite images. The following asynchronous API call computes the NDVI
+of the Landsat8 scene <strong>LC80440342016259LGN00</strong> with TOAR top of
+atmosphere correction. It is designed to hide the complexity of Landsat
+scene downloading, reprojection, atmospheric correction, statistical
+analysis and preview rendering in a single call using a self describing
+url.</p>
+<pre><code class="language-bash"> curl ${AUTH} -X POST &quot;${ACTINIA_URL}/landsat_process/LC80440342016259LGN00/TOAR/NDVI&quot;
+</code></pre>
+<p>The response contains the status URL that must be polled using a GET
+request to show the current processing status and eventually the
+processing result.</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2018-05-30 10:52:19.545323&quot;,
+   &quot;accept_timestamp&quot;: 1527677539.5453222,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;asyncephemerallandsatprocessingresource&quot;,
+     &quot;method&quot;: &quot;POST&quot;,
+     &quot;path&quot;: &quot;/api/v3/landsat_process/LC80440342016259LGN00/TOAR/NDVI&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/landsat_process/LC80440342016259LGN00/TOAR/NDVI&quot;
+   },
+   &quot;datetime&quot;: &quot;2018-05-30 10:52:19.545774&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Resource accepted&quot;,
+   &quot;process_chain_list&quot;: [],
+   &quot;process_results&quot;: {},
+   &quot;resource_id&quot;: &quot;resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03&quot;,
+   &quot;status&quot;: &quot;accepted&quot;,
+   &quot;time_delta&quot;: 0.000457763671875,
+   &quot;timestamp&quot;: 1527677539.5457737,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>Request the status of the asynchronous API call by polling the status
+URL. Be aware that you have to use your status url as the resource id will change for different NDVI API
+calls.</p>
+<pre><code class="language-bash"> curl -L ${AUTH} -X GET &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03&quot;
+</code></pre>
+<p>The final result will contain a complete processing list as well as
+URL's to the resulting PNG preview image, the created NDVI GeoTiff file
+as well as univariate statistics of the computed NDVI scene.</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2018-05-30 11:16:03.033305&quot;,
+   &quot;accept_timestamp&quot;: 1527678963.033304,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;asyncephemerallandsatprocessingresource&quot;,
+     &quot;method&quot;: &quot;POST&quot;,
+     &quot;path&quot;: &quot;/api/v3/landsat_process/LC80440342016259LGN00/TOAR/NDVI&quot;,
+     &quot;request_url&quot;: &quot;http:///actinia.mundialis.de/api/v3/landsat_process/LC80440342016259LGN00/TOAR/NDVI&quot;
+   },
+   &quot;datetime&quot;: &quot;2018-05-30 11:22:58.315162&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;g&quot;,
+         &quot;inputs&quot;: {
+           &quot;map&quot;: &quot;LC80440342016259LGN00_TOAR_NDVI&quot;
+         },
+         &quot;module&quot;: &quot;r.univar&quot;,
+         &quot;outputs&quot;: {
+           &quot;output&quot;: {
+             &quot;name&quot;: &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/tmpkiv0uv6z.univar&quot;
+           }
+         }
+       }
+     },
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;n&quot;,
+         &quot;inputs&quot;: {
+           &quot;map&quot;: &quot;LC80440342016259LGN00_TOAR_NDVI&quot;
+         },
+         &quot;module&quot;: &quot;d.rast&quot;
+       },
+       &quot;2&quot;: {
+         &quot;flags&quot;: &quot;n&quot;,
+         &quot;inputs&quot;: {
+           &quot;at&quot;: &quot;8,92,0,7&quot;,
+           &quot;raster&quot;: &quot;LC80440342016259LGN00_TOAR_NDVI&quot;
+         },
+         &quot;module&quot;: &quot;d.legend&quot;
+       }
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B6.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B6.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 23.63347291946411,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B6.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B6.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05022144317626953,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B7.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B7.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 22.89448094367981,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B7.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B7.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.051961421966552734,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B8.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B8.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 83.04966020584106,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B8.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B8.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05012321472167969,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B9.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B9.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 11.948487043380737,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B9.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B9.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05081939697265625,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B10.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B10.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 15.688527345657349,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B10.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B10.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05163097381591797,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B11.TIF&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_B11.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 15.100370645523071,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_B11.TIF&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B11.TIF&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05057358741760254,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;-O&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_MTL.txt&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-landsat/LC08/PRE/044/034/LC80440342016259LGN00/LC80440342016259LGN00_MTL.txt&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.25395917892456055,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_MTL.txt&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_MTL.txt&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05015206336975098,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;python3&quot;,
+       &quot;parameter&quot;: [
+         &quot;/usr/local/bin/grass&quot;,
+         &quot;-e&quot;,
+         &quot;-c&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B1.TIF&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/Landsat&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.15161657333374023,
+       &quot;stderr&quot;: [
+         &quot;Default locale settings are missing. GRASS running with C locale.WARNING: Searched for a web browser, but none found&quot;,
+         &quot;Creating new GRASS GIS location/mapset...&quot;,
+         &quot;Cleaning up temporary files...&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;Default locale not found, using UTF-8\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B1.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.1&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.093010902404785,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B2.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.2&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.020535707473755,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B3.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.3&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 2.9988090991973877,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B4.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.4&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.0504379272460938,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B5.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.5&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.0378293991088867,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B6.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.6&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.1231300830841064,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B7.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.7&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.0385892391204834,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B8.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.8&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 11.727607488632202,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B9.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.9&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.531238317489624,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B10.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.10&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.1895594596862793,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_B11.TIF&quot;,
+         &quot;output=LC80440342016259LGN00.11&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 3.1583566665649414,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;i.landsat.toar&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=LC80440342016259LGN00.&quot;,
+         &quot;metfile=/actinia/workspace/download_cache/demouser/LC80440342016259LGN00_MTL.txt&quot;,
+         &quot;method=uncorrected&quot;,
+         &quot;output=LC80440342016259LGN00_TOAR.&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 101.34896063804626,
+       &quot;stderr&quot;: [
+         &quot;WARNING: ESUN evaluated from REFLECTANCE_MAXIMUM_BAND&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;i.vi&quot;,
+       &quot;parameter&quot;: [
+         &quot;red=LC80440342016259LGN00_TOAR.4&quot;,
+         &quot;nir=LC80440342016259LGN00_TOAR.5&quot;,
+         &quot;green=LC80440342016259LGN00_TOAR.3&quot;,
+         &quot;blue=LC80440342016259LGN00_TOAR.2&quot;,
+         &quot;band5=LC80440342016259LGN00_TOAR.7&quot;,
+         &quot;band7=LC80440342016259LGN00_TOAR.8&quot;,
+         &quot;viname=ndvi&quot;,
+         &quot;output=LC80440342016259LGN00_TOAR_NDVI&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 45.43833112716675,
+       &quot;stderr&quot;: [
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.colors&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;color=ndvi&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.050219058990478516,
+       &quot;stderr&quot;: [
+         &quot;Color table for raster map &lt;LC80440342016259LGN00_TOAR_NDVI&gt; set to 'ndvi'&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.univar&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;output=/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/tmpkiv0uv6z.univar&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 2.5560226440429688,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;d.rast&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;-n&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 1.2287390232086182,
+       &quot;stderr&quot;: [
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;d.legend&quot;,
+       &quot;parameter&quot;: [
+         &quot;raster=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;at=8,92,0,7&quot;,
+         &quot;-n&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.37291598320007324,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;raster=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.051508188247680664,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=1\nzone=10\nn=4264515\ns=4030185\nw=464385\ne=694515\nnsres=30\newres=30\nrows=7811\ncols=7671\ncells=59918181\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.out.gdal&quot;,
+       &quot;parameter&quot;: [
+         &quot;-fm&quot;,
+         &quot;input=LC80440342016259LGN00_TOAR_NDVI&quot;,
+         &quot;format=GTiff&quot;,
+         &quot;createopt=COMPRESS=LZW&quot;,
+         &quot;output=/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_TOAR_NDVI.tiff&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 8.784564018249512,
+       &quot;stderr&quot;: [
+         &quot;Checking GDAL data type and nodata value...&quot;,
+         &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+         &quot;Using GDAL data type &lt;Float64&gt;&quot;,
+         &quot;Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.&quot;,
+         &quot;Exporting raster data to GTiff format...&quot;,
+         &quot;ERROR 6: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.&quot;,
+         &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+         &quot;r.out.gdal complete. File &lt;/actinia/workspace/temp_db/gisdbase_4e879f3951334a559612abab4352b069/.tmp/LC80440342016259LGN00_TOAR_NDVI.tiff&gt; created.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     }
+   ],
+   &quot;process_results&quot;: [
+     {
+       &quot;cells&quot;: 59918181.0,
+       &quot;coeff_var&quot;: 125.4796560716,
+       &quot;max&quot;: 1.31488464218245,
+       &quot;mean&quot;: 0.215349514428788,
+       &quot;mean_of_abs&quot;: 0.272685223860196,
+       &quot;min&quot;: -1.35084534300324,
+       &quot;n&quot;: 41612094.0,
+       &quot;name&quot;: &quot;LC80440342016259LGN00_TOAR_NDVI&quot;,
+       &quot;null_cells&quot;: 18306087.0,
+       &quot;range&quot;: 2.6657299851857,
+       &quot;stddev&quot;: 0.270219830057103,
+       &quot;sum&quot;: 8961144.23726506,
+       &quot;variance&quot;: 0.0730187565560894
+     }
+   ],
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 35,
+     &quot;step&quot;: 34
+   },
+   &quot;resource_id&quot;: &quot;resource_id-6282c634-42e1-417c-a092-c9b21c3283cc&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 415.2818741798401,
+   &quot;timestamp&quot;: 1527679378.31516,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [
+       &quot;http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png&quot;,
+       &quot;http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff&quot;
+     ],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>The statistical analysis of the resulting NDVI raster map layer is
+available in the <em>process_results</em> section:</p>
+<pre><code class="language-json"> {
+   &quot;cells&quot;: 59918181.0,
+   &quot;coeff_var&quot;: 125.4796560716,
+   &quot;max&quot;: 1.31488464218245,
+   &quot;mean&quot;: 0.215349514428788,
+   &quot;mean_of_abs&quot;: 0.272685223860196,
+   &quot;min&quot;: -1.35084534300324,
+   &quot;n&quot;: 41612094.0,
+   &quot;name&quot;: &quot;LC80440342016259LGN00_TOAR_NDVI&quot;,
+   &quot;null_cells&quot;: 18306087.0,
+   &quot;range&quot;: 2.6657299851857,
+   &quot;stddev&quot;: 0.270219830057103,
+   &quot;sum&quot;: 8961144.23726506,
+   &quot;variance&quot;: 0.0730187565560894
+ }
+</code></pre>
+<p>The following links can be found in the <strong>urls</strong> section of the JSON
+response that point to the created resources:</p>
+<p><a href="http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png">http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/tmp80apvh0h.png</a></p>
+<p><a href="http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff">http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6282c634-42e1-417c-a092-c9b21c3283cc/LC80440342016259LGN00_TOAR_NDVI.tiff</a></p>
+<p>The preview image should look like this:</p>
+<p><img alt="image" src="../landsat_ndvi.png" /></p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
