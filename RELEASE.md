@@ -14,12 +14,10 @@ Steps when releasing actinia-core:
   ```
 - Go to https://github.com/actinia-org/actinia-core/releases/new
 - Copy the output of terminal command to the release description
-- Change heading `## What's Changed` to `### Changed`, `### Fixed`, `### Added` or what applicable and sort list amongst these headings.
+- Change heading `## What's Changed` to `### Changed`, `### Fixed`, `### Added`, `### Updated` or what applicable and sort list amongst these headings.
 - You can [compare manually](https://github.com/actinia-org/actinia-core/compare/3.0.0...3.0.1) if all changes are included. If changes were pushed directly to main branch, they are not included.
 - Check if `ESTIMATED_VERSION` increase still fits - we follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). You can also have a look at the milestones added to the included PRs. They indicate weather this single PR would lead to a major, minor or patch version increment.
 - Fill in tag and release title with this version
-- At the bottom of the release, add
-  "generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body`" and replace `$ESTIMATED_VERSION` with the actual version.
 - Make sure that the checkbox for "Set as the latest release" is checked so that this version appears on the main github repo page
 - DO NOT click "save" yet!!
 
@@ -38,6 +36,7 @@ Steps when releasing actinia-core:
   curl https://api.github.com/repos/actinia-org/actinia-core/releases/latest | jq -r '. | "## [\(.tag_name)] - \(.published_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d"))\nreleased from \(.target_commitish)\n\(.body) \n"'
   ```
 - Copy the output to the top of the release list in [CHANGELOG.md](https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md)
+- run `mdformat CHANGELOG.md` locally
 - Push changes in CHANGELOG.md to main branch (before, you might need to pull changes from CITATION.cff).
 
 ## 5. Update GitHub Milestones

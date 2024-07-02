@@ -13,6 +13,7 @@ Types of changes
 - __Removed__ for now removed features.
 - __Fixed__ for any bug fixes.
 - __Security__ in case of vulnerabilities.
+- __Updated__ for updates of dependencies.
 
 ## [Unreleased](<>)
 
@@ -23,11 +24,38 @@ https://github.com/actinia-org/actinia-core/compare/4.3.1...main
 released from main
 ...
 
+## \[4.14.1\] - 2024-06-21
+
+released from main
+
+### Added
+
+- Updates for g84 and python by @mmacata in https://github.com/actinia-org/actinia-core/pull/531
+- Prepare for newer alpine and grass version by @mmacata in https://github.com/actinia-org/actinia-core/pull/534
+
+### Fixed
+
+- Fix import error by @mmacata in https://github.com/actinia-org/actinia-core/pull/527
+- Lint by @mmacata in https://github.com/actinia-org/actinia-core/pull/535
+
+### Updated
+
+- chore(deps): update anchore/sbom-action digest to 2283abe by @renovate in https://github.com/actinia-org/actinia-core/pull/520
+- chore(deps): update anchore/sbom-action digest to e28bab5 by @renovate in https://github.com/actinia-org/actinia-core/pull/521
+- chore(deps): update anchore/sbom-action digest to 72370e1 by @renovate in https://github.com/actinia-org/actinia-core/pull/522
+- chore(deps): update pre-commit hook mundialis/github-workflows to v1.2.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/524
+- chore(deps): update actions/checkout digest to 692973e by @renovate in https://github.com/actinia-org/actinia-core/pull/526
+- chore(deps): update mundialis/actinia-core docker tag to v4.14.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/519
+- chore(deps): update dependency setuptools to v70 by @renovate in https://github.com/actinia-org/actinia-core/pull/518
+- chore(deps): update dependency setuptools to v70.1.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/532
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.14.0...4.14.1
+
 ## \[4.14.0\] - 2024-05-24
 
 released from main
 
-### Changed
+### Updated
 
 - update different dependencies by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/514
 - chore(deps): update mundialis/actinia-core docker tag to v4.13.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/503
@@ -74,7 +102,7 @@ released from main
 - Add tests via worker by @mmacata in https://github.com/actinia-org/actinia-core/pull/498
 - Add stdin for parameters by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/501
 
-### Fixed
+### Updated
 
 - chore(deps): update mundialis/actinia-core docker tag to v4.12.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/494
 - chore(deps): update pre-commit hook pre-commit/pre-commit-hooks to v4.5.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/486
@@ -93,7 +121,7 @@ released from main
 
 - Checking pixellimit for r.import commands by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/491
 
-### Changed
+### Updated
 
 - chore(deps): update mundialis/actinia-core docker tag to v4.11.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/492
 
@@ -117,14 +145,17 @@ released from main
 ### Fixed
 
 - mundialis->actinia-org by @mmacata in https://github.com/actinia-org/actinia-core/pull/471
+- Update update-version.yml by @mmacata in https://github.com/actinia-org/actinia-core/pull/475
+- Update pyproj in requirements for ubuntu by @mmacata in https://github.com/actinia-org/actinia-core/pull/484
+
+### Updated
+
 - Update actions/checkout action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/474
 - Update docker/login-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/477
 - Update docker/build-push-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/476
 - Update docker/setup-buildx-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/479
 - Update docker/setup-qemu-action action to v3 by @renovate in https://github.com/actinia-org/actinia-core/pull/480
 - Update docker/metadata-action action to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/478
-- Update update-version.yml by @mmacata in https://github.com/actinia-org/actinia-core/pull/475
-- Update pyproj in requirements for ubuntu by @mmacata in https://github.com/actinia-org/actinia-core/pull/484
 - chore(deps): update dependency werkzeug and Flask to v3 \[security\] by @renovate in https://github.com/actinia-org/actinia-core/pull/489
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.10.0...4.11.0
@@ -208,16 +239,19 @@ released from main
 ### Changed
 
 - Configure Renovate by @renovate in https://github.com/actinia-org/actinia-core/pull/425
-- Update docker/build-push-action action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/437
-- Update docker/login-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/438
-- Update docker/setup-buildx-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/439
-- Update docker/setup-qemu-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/440
-- Update mundialis/actinia-core Docker tag to v4.8.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/434
 - Update docker image by @mmacata in https://github.com/actinia-org/actinia-core/pull/442
 - Increase allowed length of additional version info key by @mmacata in https://github.com/actinia-org/actinia-core/pull/443
 - Align comment with reality by @mmacata in https://github.com/actinia-org/actinia-core/pull/444
 - Update redis_queue.md by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/445
 - Update grass docker image reference by @mmacata in https://github.com/actinia-org/actinia-core/pull/446
+
+### Updated
+
+- Update docker/build-push-action action to v4 by @renovate in https://github.com/actinia-org/actinia-core/pull/437
+- Update docker/login-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/438
+- Update docker/setup-buildx-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/439
+- Update docker/setup-qemu-action action to v2 by @renovate in https://github.com/actinia-org/actinia-core/pull/440
+- Update mundialis/actinia-core Docker tag to v4.8.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/434
 
 ### Fixed
 
