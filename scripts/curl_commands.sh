@@ -380,7 +380,6 @@ JSON='{"bands":["B04", "B08"],
 
 curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset/sentinel2_import
 
-
 JSON='{
  "list": [
          {"id": "g_region_1",
@@ -409,7 +408,7 @@ JSON='{
 
 curl ${AUTH} -H "Content-Type: application/json" -X POST -d "${JSON}" ${actinia_url}/locations/latlong_wgs84/mapsets/sentinel2A_openeo_subset_ndvi/processing_sync
 
-
+# shellcheck disable=SC2016
 JSON='{
  "list": [
          {"id": "g_region_1",
