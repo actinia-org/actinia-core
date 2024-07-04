@@ -8,4 +8,5 @@ jobs:
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
+      # set VALIDATE_DOCKERFILE_HADOLINT to empty string to skip Dockerfile linting
       VALIDATE_DOCKERFILE_HADOLINT: ''
