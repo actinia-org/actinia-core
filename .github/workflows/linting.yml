@@ -8,4 +8,4 @@ jobs:
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
-      VALIDATE_DOCKERFILE_HADOLINT: false
+      VALIDATE_DOCKERFILE_HADOLINT: ''
