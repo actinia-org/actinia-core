@@ -1,23 +1,27 @@
-# About actinia
+# How to contribute
 
-The cloud based geoprocessing platform actinia is able to ingest and
-analyse large volumes of data already present in the cloud. Due to the
-scalability of the cloud platform insights and tailor made information
-are delivered in near real-time.
+>
+> ## About actinia
+>
+> The cloud based geoprocessing platform actinia is able to ingest and
+> analyse large volumes of data already present in the cloud. Due to the
+> scalability of the cloud platform insights and tailor made information
+> are delivered in near real-time.
+>
+> ## The name actinia?
+>
+> We adopted the name "actinia" from [sea anemones](https://en.wikipedia.org/wiki/Sea_anemone)
+> which are a group of marine, predatory animals of the order Actiniaria which are named
+> after the terrestrial flowering plant anemone with its colourful
+> appearance. The idea is that the cloud based geoprocessing engine
+> actinia filters information out of the rather unlimited amount of data
+> available.
+>
+> Originally started as "GRaaS" - GRASS GIS as a Service - project, we changed the
+> name to actinia in 2017.
+>
 
-## The name actinia?
-
-We adopted the name "actinia" from [sea anemones](https://en.wikipedia.org/wiki/Sea_anemone)
-which are a group of marine, predatory animals of the order Actiniaria which are named
-after the terrestrial flowering plant anemone with its colourful
-appearance. The idea is that the cloud based geoprocessing engine
-actinia filters information out of the rather unlimited amount of data
-available.
-
-Originally started as "GRaaS" - GRASS GIS as a Service - project, we changed the
-name to actinia in 2017.
-
-# How to contribute to the actinia project
+## How to contribute to the actinia project
 
 Actinia has been mainly developed by open source GIS developers of the GRASS GIS project.
 Since the project is open source, all users, regardless of the profession or skill level,
@@ -138,7 +142,7 @@ This section collects best practices for the use of git in actinia development.
 Indicate a component name (eg a driver name), a short description and when
 relevant, a reference to a issue (with 'fixes #' if it actually fixes it)
 
-```
+```bash
 COMPONENT_NAME: fix bla bla (fixes #1234)
 
 Details here...

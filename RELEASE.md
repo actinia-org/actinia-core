@@ -1,4 +1,4 @@
-Steps when releasing actinia-core:
+# Steps when releasing actinia-core
 
 ## 0. Steps for major updates
 
@@ -7,7 +7,7 @@ Steps when releasing actinia-core:
 ## 1. Prepare release and version
 
 - Run in terminal
-  ```
+  ```bash
   ESTIMATED_VERSION=3.0.1
 
   gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body
@@ -32,7 +32,7 @@ Steps when releasing actinia-core:
 ## 4. Update changelog
 
 - Run in terminal
-  ```
+  ```bash
   curl https://api.github.com/repos/actinia-org/actinia-core/releases/latest | jq -r '. | "## [\(.tag_name)] - \(.published_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d"))\nreleased from \(.target_commitish)\n\(.body) \n"'
   ```
 - Copy the output to the top of the release list in [CHANGELOG.md](https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md)
@@ -49,7 +49,7 @@ Steps when releasing actinia-core:
 
 - Optionally update version in https://github.com/actinia-org/actinia-docker/blob/main/actinia-alpine/Dockerfile#L23
 
-## Outcome:
+## Outcome
 
 - Automatically a new docker image with the new tag will be created and pushed to [Dockerhub](https://hub.docker.com/r/mundialis/actinia-core/tags)
 - Automatically new source and build distributions are created and pulished on [PyPI](https://pypi.org/project/actinia-core/)

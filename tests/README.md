@@ -10,7 +10,7 @@ When writing new tests it is useful to run selected tests locally and isolated. 
 
 1. Then run `docker build`:
 
-```
+```bash
 docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```
 
@@ -20,7 +20,7 @@ docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 
 1. Start the docker container and mount your `tests` folder:
 
-```
+```bash
 docker run -it -v /path/to/tests:/src/actinia_core/tests actinia-test:latest -i
 
 # If you are not developing the tests you can run tests using the following command:
@@ -30,7 +30,7 @@ docker run -it actinia-test:latest -i
 
 5. To execute the test(s) run:
 
-```
+```bash
 # execute all tests
 make test
 
@@ -52,7 +52,7 @@ make devtest
 Redis authorization is set by `from actinia_core.core.common import redis_interface`:
 
 - so this does set the password:
-  ```
+  ```python
   import os
   from actinia_core.core.common import redis_interface # PROBLEM!!!!
   from actinia_core.core.common.config import global_config
@@ -62,7 +62,7 @@ Redis authorization is set by `from actinia_core.core.common import redis_interf
   global_config.REDIS_SERVER_PW
   ```
 - and this works fine:
-  ```
+  ```python
   import os
   from actinia_core.core.common.config import global_config
 

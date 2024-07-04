@@ -4,7 +4,7 @@ Requirements: docker and docker-compose
 
 To build and deploy actinia, run
 
-```
+```bash
 git clone https://github.com/actinia-org/actinia-core.git
 cd actinia-core
 docker-compose -f docker/docker-compose.yml up
@@ -12,7 +12,7 @@ docker-compose -f docker/docker-compose.yml up
 
 Now you have a running actinia instance locally! Check with
 
-```
+```bash
 curl http://127.0.0.1:8088/api/v3/version
 ```
 
@@ -26,19 +26,19 @@ On startup, some GRASS GIS locations are created by default but they are still e
 
 Adding the standard demouser:
 
-```
+```bash
 actinia-user create -u demouser -g user -w "gu3st!pa55w0rd" -r user
 ```
 
 Show what the demouser is allowed to do:
 
-```
+```bash
 curl http://127.0.0.1:8088/api/v3/users/demouser
 ```
 
 Enable new command for demouser: You first need to enter the running docker image, then `update_add` the command:
 
-```
+```bash
 docker ps
 
 # use ID of running actinia docker image (example)
@@ -58,7 +58,7 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
   `FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass` to
   `FROM osgeo/grass-gis:main-alpine as grass`
 - build the image locally. You can use the existing docker-compose file for this. Outcomment the used actinia image and incomment the build section in the [docker-compose.yml](docker-compose.yml)
-  ```
+  ```yaml
     actinia:
       # image: mundialis/actinia-core:4.10.0
       build:
@@ -69,17 +69,17 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
 
 <a id="startup-errors"></a>
 
-# How to fix common startup errors
+## How to fix common startup errors
 
 - if a redis db is running locally this will fail. Run and try again:
 
-```
+```bash
 /etc/init.d/redis-server stop
 ```
 
 - if you see an error like "max virtual memory areas vm.max_map_count \[65530\] is too low, increase to at least \[262144\]", run
 
-```
+```bash
 sudo sysctl -w vm.max_map_count=262144
 ```
 
@@ -87,7 +87,7 @@ this is only valid on runtime. To change permanently, set vm.max_map_count in /e
 
 <a id="local-dev-setup"></a>
 
-# Local dev-setup with docker
+## Local dev-setup with docker
 
 If desired, you can also directly start here without installing actinia first. You only need to have cloned and checked out the actinia-core repository.
 
@@ -97,7 +97,7 @@ __If not stated otherwise, you need to be in folder `actinia-core/docker`__
 
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
 
-```
+```bash
 docker-compose -f docker-compose-dev.yml build
 docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 ```
@@ -105,20 +105,20 @@ docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint s
 Be aware, that your local actinia source code is now mounted in the docker container!
 Then, inside the docker container, run
 
-```
+```bash
 python3 setup.py install
 sh /src/start.sh
 ```
 
 Now you have a running actinia instance locally! Check with
 
-```
+```bash
 curl http://127.0.0.1:8088/api/v3/version
 ```
 
 For debugging or if you need to start the wsgi server regularly during development, you don't need to repeat all steps from inside the `start.sh` file. Instead, run the server with only one worker:
 
-```
+```bash
 python3 setup.py install
 gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:flask_app
 
@@ -126,7 +126,7 @@ gunicorn -b 0.0.0.0:8088 -w 1 --access-logfile=- -k gthread actinia_core.main:fl
 
 To test your local changes, you best use the test Dockerimage:
 
-```
+```bash
 # changing directory is necessary to have the correct build context
 (cd .. && docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .)
 ```
@@ -135,28 +135,28 @@ To dive deeper into testing + development, see the [test README](https://github.
 
 To lint your local changes, run
 
-```
+```bash
 (cd ../src && flake8 --config=../.flake8 --count --statistics --show-source --jobs=$(nproc) .)
 ```
 
-## Local dev-setup with redis queue
+### Local dev-setup with redis queue
 
 - change queue type to redis in `docker/actinia-core-dev/actinia.cfg`
 - start one actinia-core instance (the job receiver) as usual, eg. with vscode
 - open actinia-core on the command line and run
   `docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
 - inside this container, reinstall actinia-core and start the redis-queue-worker
-  ```
+  ```bash
   pip3 uninstall actinia_core
   cd /src/actinia_core && pip3 install .
   actinia-worker job_queue_0 -c /etc/default/actinia
   ```
 
-## Local dev-setup with configured endpoints
+### Local dev-setup with configured endpoints
 
 - add an endpoints configuration csv file like `docker/actinia-core-dev/endpoints.csv`
   with all desired endpoints including method:
-  ```
+  ```text
   Class_of_the_endpoint;method1,method2
   Class_of_the_endpoint2;method1
   ```
@@ -166,11 +166,11 @@ To lint your local changes, run
 
 <a id="grass-gis"></a>
 
-# Testing GRASS GIS inside a container
+## Testing GRASS GIS inside a container
 
 Inside the container, you can run GRASS GIS with:
 
-```
+```bash
 # Download GRASS GIS test data and put it into a directory (nc_spm_08_grass7 works also for GRASS GIS 8)
 cd /actinia_core/grassdb
 wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz && \
@@ -186,12 +186,12 @@ grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.random output=myrandom 
 grass /actinia_core/grassdb/nc_spm_08/PERMANENT --exec v.info -g myrandom
 ```
 
-# Testing GRASS GIS through actinia's REST API
+## Testing GRASS GIS through actinia's REST API
 
 You now have some data which you can access through actinia. To get information
 via API, start actinia with gunicorn and run
 
-```
+```bash
 curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v3/locations/nc_spm_08/mapsets
 ```
 
@@ -201,14 +201,14 @@ If you want to download the data not from inside the container but from your nor
 
 <a id="production-deployment"></a>
 
-# Production and Cloud deployment
+## Production and Cloud deployment
 
 To run actinia-core in production systems, best with multiple actinia-core instances, find more detailed information in the dedicated [actinia-docker](https://github.com/actinia-org/actinia-docker) repository.
 
-# Building the API documentation
+## Building the API documentation
 
 To build the apidocs, run
 
-```
+```bash
 bash create-docs.sh
 ```

@@ -43,56 +43,37 @@ always a specific user role and can be member of one single user-group.
 
 The following user-roles are supported:
 
-1.
+### 1. superadmin
+- Can create, modify and delete users with all user-roles
+- Has access to all API calls and read/write access to all
+  databases
 
-```
- superadmin:
+### 2. admin
+- Can access all API calls
+- Can create, modify and delete users with the maximum
+  user-role *user* of the same user group
+- Has access to persistent databases that were granted by a
+  superadmin
 
-     -   Can create, modify and delete users with all user-roles
-     -   Has access to all API calls and read/write access to all
-         databases
-```
+### 3. user
+- Can run computational tasks in ephemeral and user specific
+  databases
+- Can create, modify and delete locations in a user specific
+  database
+- Can create, modify and delete mapsets in user
+  specific databases
+- Has limited access to API calls
+- Can not create, modify or delete users
+- Has access to persistent databases that were granted by a
+  superadmin
 
-2.
+### 4. guest
+- Has very limited access to API calls
+- Can not create, modify or delete mapsets
+- Can not create, modify or delete users
+- Has access to persistent databases that were granted by a
+  superadmin
 
-```
- admin:
-
-     -   Can access all API calls
-     -   Can create, modify and delete users with the maximum
-         user-role *user* of the same user group
-     -   Has access to persistent databases that were granted by a
-         superadmin
-```
-
-3.
-
-```
- user:
-
-     -   Can run computational tasks in ephemeral and user specific
-         databases
-     -   Can create, modify and delete locations in a user specific
-         database
-     -   Can create, modify and delete mapsets in user
-         specific databases
-     -   Has limited access to API calls
-     -   Can not create, modify or delete users
-     -   Has access to persistent databases that were granted by a
-         superadmin
-```
-
-4.
-
-```
- guest:
-
-     -   Has very limited access to API calls
-     -   Can not create, modify or delete mapsets
-     -   Can not create, modify or delete users
-     -   Has access to persistent databases that were granted by a
-         superadmin
-```
 
 Overview table:
 
@@ -131,43 +112,28 @@ database.
 
 **Summary**
 
-1.
+### 1. Persistent database
+- Read only database with locations and mapsets that can be
+  used as processing environment and data source
+- Data can only be accessed using HTTP GET API calls
 
-```
- Persistent database:
+### 2. Ephemeral database
+- All processing is performed in ephemeral databases for
+  performance and security reasons
+- Ephemeral databases are created for all API calls and
+  removed after the processing is finished
+- Ephemeral databases use persistent databases as processing
+  environments to access required data from mapsets in
+  persistent locations
 
-     -   Read only database with locations and mapsets that can be
-         used as processing environment and data source
-     -   Data can only be accessed using HTTP GET API calls
-```
-
-2.
-
-```
- Ephemeral database:
-
-     -   All processing is performed in ephemeral databases for
-         performance and security reasons
-     -   Ephemeral databases are created for all API calls and
-         removed after the processing is finished
-     -   Ephemeral databases use persistent databases as processing
-         environments to access required data from mapsets in
-         persistent locations
-```
-
-3.
-
-```
- User specific databases:
-
-     -   Persistent databases that can be created and modified by a
-         specific user group
-     -   The base for a location in a user specific database can be
-         a location from a persistent database, however mapsets
-         names must be unique.
-     -   A user group can only access a single database with any
-         number of locations
-```
+### 3. User specific databases
+- Persistent databases that can be created and modified by a
+  specific user group
+- The base for a location in a user specific database can be
+  a location from a persistent database, however mapsets
+  names must be unique.
+- A user group can only access a single database with any
+  number of locations
 
 **Footnotes**
 

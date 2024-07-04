@@ -19,7 +19,7 @@ There are two possible options for this:
 
 The interim results will be saved in the resource storage. Which can be configured in the config:
 
-```
+```ini
 [GRASS]
 grass_resource_dir = /actinia/resources
 ```
@@ -30,7 +30,7 @@ The interim results will be deleted automatically if a job resource is successfu
 
 - adjust config, e.g. for option 1
 
-  ```
+  ```ini
   [MISC]
   save_interim_results = True
   save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
@@ -38,7 +38,7 @@ The interim results will be deleted automatically if a job resource is successfu
 
   or for option 2
 
-  ```
+  ```ini
   [MISC]
   save_interim_results = onError
   save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
@@ -50,7 +50,7 @@ The interim results will be deleted automatically if a job resource is successfu
   the interim results should be saved and resource resumption should be prossible
   the file should contain the following:
 
-  ```
+  ```text
   GdiAsyncEphemeralExportResource;AsyncEphemeralExportResource
   GdiAsyncPersistentResource;AsyncPersistentResource
   ```
@@ -72,7 +72,7 @@ resumpt jobs where such addional mapsets are created in a previous step you can
 configure additional mapsets which should be included in the interim results
 by setting a pattern for the mapset name, e.g.:
 
-```
+```ini
 [MISC]
 save_interim_results = onError
 save_interim_results_endpoints_cfg = /etc/default/actinia_interim_endpoints.csv
@@ -81,7 +81,7 @@ include_additional_mapset_pattern = test_tmp_*
 
 ## Job resumption examples
 
-```
+```bash
 actiniapost() {
     curl -X POST -H 'Content-Type: application/json' -H 'accept: application/json' -u $1 -d @$2 $3 > resp.json && cat resp.json | jq;     export STATUS_URL=$(cat resp.json | jq .urls.status | sed 's/"//g');     curl -L -u $1 $STATUS_URL_POST | jq;     echo 'curl -L -u '\'$1\'' $STATUS_URL_POST | jq'
     cat resp.json | json urls.status | xargs -I {} echo "curl -L -u '$1' -X GET {} | jq"
@@ -102,7 +102,7 @@ actiniadelete(){
 
 For local setup set e.g.:
 
-```
+```bash
 export ACTINIA_USER='actinia-gdi'
 export ACTINIA_PASSWORD='actinia-gdi'
 export AUTH="$ACTINIA_USER:$ACTINIA_PASSWORD"
@@ -110,7 +110,7 @@ export AUTH="$ACTINIA_USER:$ACTINIA_PASSWORD"
 URL=http://127.0.0.1:8088/api/v3
 ```
 
-### Job resumption
+### Job resumption execution
 
 The job resumption works for the following endpoints:
 
@@ -120,7 +120,7 @@ The job resumption works for the following endpoints:
 
 `pc_error.json`: process chain with error
 
-```
+```json
 {
     "list": [
       {
@@ -249,7 +249,7 @@ The job resumption works for the following endpoints:
 
 `pc_noerror.json`: fixed process chain
 
-```
+```json
 {
     "list": [
       {
@@ -376,7 +376,7 @@ The job resumption works for the following endpoints:
 }
 ```
 
-```
+```bash
 # processing (which ends with error)
 JSON=pc_error.json
 actiniapost $AUTH $JSON $URL/$ENDPOINT
@@ -395,7 +395,7 @@ The process can be resumpt after the folder is created inside actinia.
 
 `pc_error_not_in_pc.json`: Process chain with not existing folder `/test`
 
-```
+```json
 {
     "list": [
       {
@@ -430,7 +430,7 @@ The process can be resumpt after the folder is created inside actinia.
 }
 ```
 
-```
+```bash
 # processing (which ends with error)
 JSON=pc_error_not_in_pc.json
 actiniapost $AUTH $JSON $URL/$ENDPOINT
@@ -448,7 +448,7 @@ If a job is not restarted and the processing is not finished successfully the
 interim results will not be automatically cleaned. For this you can delete the
 resource storage:
 
-```
+```bash
 # get resource storage information
 actiniaget $AUTH $URL/resource_storage
 
@@ -464,7 +464,7 @@ actiniadelete $AUTH $URL/resource_storage
 
 `pc_template_error.json`: process chain with using template index_NDVI
 
-```
+```json
 {
     "list": [
         {
@@ -507,7 +507,7 @@ actiniadelete $AUTH $URL/resource_storage
 
 `pc_template_forput.json`: complete process chain without template (can be found in actinia response) :
 
-```
+```json
 {
     "list": [
         {
@@ -551,7 +551,7 @@ actiniadelete $AUTH $URL/resource_storage
 }
 ```
 
-```
+```bash
 # processing (which ends with error)
 JSON=pc_template_error.json
 actiniapost $AUTH $JSON $URL/locations/nc_spm_08/processing_export

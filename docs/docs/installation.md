@@ -6,7 +6,7 @@ Requirements: docker and docker-compose
 
 To build and deploy actinia, run
 
-```
+```bash
 git clone https://github.com/mundialis/actinia-core.git
 cd actinia-core
 docker-compose -f docker/docker-compose.yml up
@@ -14,7 +14,7 @@ docker-compose -f docker/docker-compose.yml up
 
 Now you have a running actinia instance locally! Check with
 
-```
+```bash
 curl http://127.0.0.1:8088/api/v3/version
 ```
 
