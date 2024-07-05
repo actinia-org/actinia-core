@@ -8,3 +8,4 @@ jobs:
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
+      BASH_SEVERITY: 'warning'
