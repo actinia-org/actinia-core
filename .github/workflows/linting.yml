@@ -1,4 +1,4 @@
-name: Python Flake8, black and pylint code quality check
+name: Linting and code quality check
 
 on: [push, pull_request]
 
@@ -8,5 +8,3 @@ jobs:
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
-      # set VALIDATE_DOCKERFILE_HADOLINT to empty string to skip Dockerfile linting
-      VALIDATE_DOCKERFILE_HADOLINT: false

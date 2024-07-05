@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:latest as actinia_test
+FROM mundialis/actinia-core:4.14.1 as actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
@@ -24,22 +24,24 @@ RUN chown -R 1001:1001 nc_spm_08/modis_lst && chmod -R g+w nc_spm_08/modis_lst
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld
 
 # install things only for tests
-RUN apk add redis
-RUN pip install pytest pytest-cov iniconfig
+# DL3013 # Pin versions in pip
+# DL3018: Pin versions in apk add
+# hadolint ignore=DL3013,DL3018
+RUN apk add --no-cache redis &&  \
+    pip install --no-cache-dir pytest pytest-cov iniconfig
 
-# uninstall actinia core from FROM-image
-RUN pip uninstall actinia-core -y
-
-RUN rmdir /actinia_core/grassdb
-RUN rmdir /actinia_core/userdata
-RUN rmdir /actinia_core/resources
-RUN rmdir /actinia_core/workspace/actinia
-RUN rmdir /actinia_core/workspace/download_cache
-RUN rmdir /actinia_core/workspace/temp_db
-RUN rmdir /actinia_core/workspace/tmp
-RUN rmdir /actinia_core/workspace
-RUN rmdir /actinia_core
-RUN rm /etc/default/actinia
+# uninstall actinia-core and directories from FROM-image
+RUN pip uninstall actinia-core -y && \
+    rmdir /actinia_core/grassdb &&  \
+    rmdir /actinia_core/userdata &&  \
+    rmdir /actinia_core/resources &&  \
+    rmdir /actinia_core/workspace/actinia &&  \
+    rmdir /actinia_core/workspace/download_cache &&  \
+    rmdir /actinia_core/workspace/temp_db &&  \
+    rmdir /actinia_core/workspace/tmp &&  \
+    rmdir /actinia_core/workspace &&  \
+    rmdir /actinia_core &&  \
+    rm /etc/default/actinia
 
 # copy needed files and configs for test
 # COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia
