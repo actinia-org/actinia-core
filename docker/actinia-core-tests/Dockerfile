@@ -1,9 +1,9 @@
-FROM mundialis/actinia-core:4.14.1 as actinia_test
+FROM mundialis/actinia-core:4.14.1 AS actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
 
-ENV DEFAULT_CONFIG_PATH /etc/default/actinia_test
+ENV DEFAULT_CONFIG_PATH=/etc/default/actinia_test
 # Path must be equal to actinia config "GRASS_DATABASE"
 ARG GRASS_DATABASE=/tmp/actinia_core/grassdb
 
