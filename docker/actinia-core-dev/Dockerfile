@@ -9,8 +9,8 @@ ENV FLASK_ENV=development
 ENV FLASK_DEBUG=1
 ENV DEFAULT_CONFIG_PATH=/etc/default/actinia
 
-RUN pip3 uninstall actinia-core -y \
-    RUN pip3 uninstall actinia_core -y
+RUN pip3 uninstall actinia-core -y && \
+    pip3 uninstall actinia_core -y
 
 COPY docker/actinia-core-dev/actinia.cfg /etc/default/actinia
 COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv
