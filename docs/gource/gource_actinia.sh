@@ -60,6 +60,7 @@ exit 0
 # IMPORTANT: annotations = caption has to be in ascending order and unix time with pipe!
 #  convert example: date "+%s" -d "Aug 04, 2019"
 #
+# shellcheck disable=SC2317
 gource --title "actinia development" -$RES --bloom-intensity 0.5 --camera-mode track \
        --hide filenames --seconds-per-day 0.05 \
        --caption-file gource.captions.txt -caption-size 24 --caption-colour FF0066 --caption-duration 6 --output-ppm-stream - | ffmpeg -y -b:v 10000K -r 60 \

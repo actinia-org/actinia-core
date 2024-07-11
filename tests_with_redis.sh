@@ -15,7 +15,7 @@ run_tests_worker (){
   echo "Starting worker..."
   # TODO: make sure the worker is not overwriting config path from env var
   actinia-worker job_queue_0 -c /etc/default/actinia_test_worker_usedby_worker &
-  WORKER_PID=`echo $!`
+  WORKER_PID=$!
   echo "Running tests"
   pytest -m 'not unittest and not noauth'
   kill $WORKER_PID
@@ -35,12 +35,12 @@ sleep 10
 # echo $DEFAULT_CONFIG_PATH
 
 TEST_RES=1
-if [ "$1" == "dev" ]
+if [ "$1" = "dev" ]
 then
   echo "Executing only 'dev' tests ..."
   pytest -m 'dev'
   TEST_RES=$?
-elif [ "$1" == "integrationtest" ]
+elif [ "$1" = "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
   TEST_RES=$?
@@ -51,11 +51,11 @@ then
   else
     echo "Skipping tests without authentication since other tests failed"
   fi
-elif [ "$1" == "noauth" ]
+elif [ "$1" = "noauth" ]
 then
   run_tests_noauth
   TEST_RES=$?
-elif [ "$1" == "worker" ]
+elif [ "$1" = "worker" ]
 then
   run_tests_worker
   TEST_RES=$?

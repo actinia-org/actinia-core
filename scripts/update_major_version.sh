@@ -24,6 +24,7 @@ NEW_VERSION=$2
 # code
 sed -i "s+API_VERSION = \"${OLD_VERSION}\"+API_VERSION = \"${NEW_VERSION}\"+g" ../src/actinia_core/core/common/app.py
 sed -i "s+to '${OLD_VERSION}' in the URL.+to '${NEW_VERSION}' in the URL.+g" ../src/actinia_core/version.py
+# shellcheck disable=SC2089
 FUNC="\n\n@flask_app.route(\"/api/${OLD_VERSION}/<path:actinia_path>\")\n\
 def hint_${OLD_VERSION}(actinia_path):\n\
 \t\"\"\"Return a hint that this version is no longer installed. If an older\n\
@@ -35,6 +36,7 @@ def hint_${OLD_VERSION}(actinia_path):\n\
 \t\t\tmessage=(\"Are you looking for the current API version? \"\n\
 \t\t\t\t\t \"Change '${OLD_VERSION}' to '${NEW_VERSION}' in the URL.\"),\n\
 \t\t\tlinks=[url]), 404))"
+# shellcheck disable=SC2090
 echo -e ${FUNC} | sed "s+\t+    +g" >> ../src/actinia_core/version.py
 
 # for vscode Debugging

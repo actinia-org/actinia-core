@@ -1,4 +1,4 @@
-## Local setup
+# Local setup
 
 - cd to actinia-core/docs folder
 - run the command `mkdocs serve`

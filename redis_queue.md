@@ -4,7 +4,7 @@
 
 - adjust config, e.g.
 
-```
+```ini
 [QUEUE]
 redis_queue_server_url = redis-queue
 redis_queue_server_password = pass
@@ -14,7 +14,7 @@ queue_type = per_job
 
 or
 
-```
+```ini
 [QUEUE]
 number_of_workers = 1
 queue_type = redis
@@ -24,7 +24,7 @@ queue_type = redis
   `cd ~/repos/actinia` + press F5
 - Start Container for worker
 
-```
+```bash
 MY_ACTINIA_DATA=$HOME/actinia
 docker run --rm -it --entrypoint sh \
     -v $HOME/repos/actinia/actinia-docker/actinia-dev/actinia.cfg:/etc/default/actinia \
@@ -37,14 +37,14 @@ docker run --rm -it --entrypoint sh \
 
 - inside container, start worker listening to specified queue
 
-```
+```bash
 QUEUE_NAME=job_queue_0
 actinia-worker $QUEUE_NAME -c /etc/default/actinia --quit
 ```
 
 ## Redis Details
 
-```
+```bash
 redis-cli -a 'pass'
 
 127.0.0.1:6379> KEYS *
@@ -70,7 +70,7 @@ redis-cli -a 'pass'
 
 - exists if at least one worker is active, else deleted.
 
-```r
+```text
 127.0.0.1:6379> TYPE rq:workers
 set
 127.0.0.1:6379> SMEMBERS rq:workers
@@ -117,7 +117,7 @@ hash
 - also for synchronous requests, e.g. GET mapsets, tpl processing, ...
 - deleted after a while - TODO check when?
 
-```r
+```text
 127.0.0.1:6379> TYPE rq:job:b6de9170-0fa6-4118-8eb7-9d5f43a37c23
 hash
 127.0.0.1:6379> HGETALL rq:job:b6de9170-0fa6-4118-8eb7-9d5f43a37c23
@@ -151,7 +151,7 @@ hash
 - as soon as worker takes job, queue is removed
 - => if no job is left in queue, it is removed
 
-```r
+```text
 127.0.0.1:6379> TYPE rq:queues
 set
 127.0.0.1:6379> SMEMBERS rq:queues
@@ -180,7 +180,7 @@ zset
 
 ### misc
 
-```r
+```text
 127.0.0.1:6379> TYPE rq:clean_registries:job_queue_0
 string
 127.0.0.1:6379> GET rq:clean_registries:job_queue_0
@@ -189,7 +189,7 @@ string
 
 ## Example how to set timeout
 
-```
+```text
 # requesting jobs in queue (queue name: job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7)
 LRANGE rq:queue:job_queue_resource_id-665c5ecb-b7b1-4613-9189-2274f0e01cd7 0 -1
 # requesting job (4b10b746-7842-4bc4-a035-ad908572b1fa)

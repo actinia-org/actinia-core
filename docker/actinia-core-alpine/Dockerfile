@@ -15,7 +15,7 @@ ENV GISBASE ""
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-RUN ln -s /usr/local/grass `grass --config path`
+RUN ln -s /usr/local/grass "$(grass --config path)"
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python --version
@@ -29,20 +29,24 @@ FROM build-base as build
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
-RUN apk add py3-build && python -m build --outdir /build .
-RUN if [[ -f /build/UNKNOWN* ]];then echo "ERROR - Check actinia-core build";exit 1;fi
+# DL3018: Pin versions in apk add
+# hadolint ignore=DL3018
+RUN apk add --no-cache py3-build && python -m build --outdir /build .
+RUN for i in /build/UNKNOWN*; do if [ -e "$i" ];then echo "ERROR - Check actinia-core build"; exit 1;fi;done
 
 
 FROM requirements as actinia
 
 ENV PATH="/opt/venv/bin:$PATH"
 RUN /usr/bin/python -m venv --system-site-packages --without-pip /opt/venv
-RUN python -m ensurepip && pip3 install --upgrade pip pep517 wheel
+# DL3013 # Pin versions in pip
+# hadolint ignore=DL3013
+RUN python -m ensurepip && pip3 install --no-cache-dir --upgrade pip pep517 wheel
 
 # actinia-core and requirements installation
 WORKDIR /build
 COPY --from=build /build/*.whl /build/
-RUN pip3 install /build/*
+RUN pip3 install --no-cache-dir /build/*
 
 # Copy actinia config file and start script
 COPY docker/actinia-core-alpine/actinia.cfg /etc/default/actinia

@@ -40,7 +40,7 @@ jobs:
         name: Create tag name
         run: |
           tag=${DOCKERHUB_REPOSITORY}:latest
-          echo "tags=$tag" >> $GITHUB_OUTPUT
+          echo "tags=$tag" >> "$GITHUB_OUTPUT"
       - name: log
         run: echo ${{ steps.meta.outputs.tags }}
       - name: Set up QEMU

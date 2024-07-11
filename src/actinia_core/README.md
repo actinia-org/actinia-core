@@ -1,3 +1,5 @@
+# Overview of used modules
+
 The module structure is currently under rework. See [according github issue](https://github.com/actinia-org/actinia-core/issues/190) and [plugin dependencies](https://github.com/actinia-org/actinia-core/pull/221) for more details.
 
 This README should support restructuring and identify dependencies outside of this repository.
@@ -16,7 +18,7 @@ Some other modules outside of core folder are concerned as well.
 
 ______________________________________________________________________
 
-### Overview of modules used outside of actinia
+## Overview of modules used outside of actinia
 
 | module | import|
 | - | - |
@@ -63,7 +65,7 @@ ______________________________________________________________________
 
 __amp, satellite, statistic__
 
-```
+```text
 actinia_core.endpoints import create_endpoints
 actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.app import flask_app
@@ -74,13 +76,13 @@ actinia_core.core.common.response_models import ProcessingResponseModel
 
 __amp, statistic__
 
-```
+```text
 actinia_core.processing.actinia_processing.ephemeral_processing import EphemeralProcessing
 ```
 
 __actinia-module-plugin__
 
-```
+```text
 actinia_core.processing.common.ephemeral_processing_with_export import start_job
 actinia_core.rest.ephemeral_processing_with_export import SCHEMA_DOC
 actinia_core.processing.common.persistent_processing import start_job
@@ -99,7 +101,7 @@ actinia_core.core.redis_user import RedisUserInterface
 
 __satellite, statistic__
 
-```
+```text
 actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 actinia_core.core.common.api_logger import log_api_call
 actinia_core.core.common.app import flask_api
@@ -110,7 +112,7 @@ actinia_core.core.common.response_models import ProcessingErrorResponseModel
 
 __satellite__
 
-```
+```text
 actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import EphemeralProcessingWithExport
 actinia_core.rest.persistent_processing import PersistentProcessing
 actinia_core.core.common.aws_sentinel_interface import AWSSentinel2AInterface
@@ -127,7 +129,7 @@ actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
 
 __stac__
 
-```
+```text
 actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.redis_base import RedisBaseInterface
 actinia_core.core.common.config import Configuration
@@ -135,13 +137,13 @@ actinia_core.core.common.config import Configuration
 
 __api__
 
-```
+```text
 actinia_core.models.response_models import ProcessingResponseModel
 ```
 
 __tiling__
 
-```
+```text
 actinia_core.core.common.config import global_config
 actinia_core.core.common.process_chain import ProcessChainConverter
 actinia_core.core.common.redis_interface import enqueue_job
@@ -158,7 +160,7 @@ actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 
 __parallel__
 
-```
+```text
 actinia_core.core.common.app import auth
 actinia_core.core.common.config import global_config
 actinia_core.core.common.redis_interface import enqueue_job

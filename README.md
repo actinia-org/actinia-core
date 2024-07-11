@@ -43,7 +43,7 @@ Required system packages:
 
 And then install from pypi:
 
-```
+```bash
 pip install actinia-core
 ```
 
@@ -51,7 +51,7 @@ pip install actinia-core
 
 Docker images are available from https://hub.docker.com/r/mundialis/actinia-core
 
-```
+```bash
 docker pull mundialis/actinia-core
 ```
 

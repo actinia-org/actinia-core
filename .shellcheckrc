@@ -1,0 +1,3 @@
+# SC2086 (info): Double quote to prevent globbing and word splitting.
+# https://www.shellcheck.net/wiki/SC2086
+disable=SC2086

@@ -1,18 +1,27 @@
 #!/bin/bash
+# only run this when actinia-core is already running
 
-# First run the actinia server and wait it for running
-make install
-actinia-server &
-sleep 3
+mkdir -p build/stylesheets
 
-# Then download the json file
+echo "
+#spectacle article h1.doc-title {
+    color: #97BF0D;
+}
+#spectacle #sidebar {
+    background-color: #97BF0D;
+}
+#spectacle #sidebar h5 {
+    color: #000000;
+}" \
+> build/stylesheets/actinia.css
 
-wget http://localhost:5000/api/v0/swagger.json -O /tmp/actinia.json
+# download the json file locally
+wget -O build/actinia.json "http://127.0.0.1:8088/api/v3/swagger.json"
 
-# Then run spectacle to generate the HTML documentation
+# run spectacle to generate the api docs
+docker run -v "$(pwd)"/build:/tmp -t sourcey/spectacle \
+    spectacle /tmp/actinia.json -t /tmp
 
-docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
+sed -i 's+<link rel="stylesheet" href="stylesheets/spectacle.min.css" />+<link rel="stylesheet" href="stylesheets/spectacle.min.css" />\n    <link rel="stylesheet" href="stylesheets/actinia.min.css" />+g' build/index.html
 
-# Start firefox
-
-firefox /tmp/index.html
+chromium-browser build/index.html &
