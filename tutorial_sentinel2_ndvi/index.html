@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/tutorial_sentinel2_ndvi/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Sentinel-2 NDVI computation - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Sentinel-2 NDVI computation";
+        var mkdocs_page_input_path = "tutorial_sentinel2_ndvi.md";
+        var mkdocs_page_url = "/tutorial/tutorial_sentinel2_ndvi/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Sentinel-2 NDVI computation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="sentinel-2-ndvi-computation">Sentinel-2 NDVI computation</h1>
+<p>We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:</p>
+<pre><code class="language-bash">export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+</code></pre>
+<p>The following asynchronous API call computes the NDVI of the Sentinel-2
+scene
+<strong>S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749</strong>:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X POST &quot;${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;
+</code></pre>
+<p>The response provides the status URL that must be polled to receive the
+finished response:</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2018-05-30 12:25:43.987713&quot;,
+   &quot;accept_timestamp&quot;: 1527683143.9877105,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;asyncephemeralsentinel2processingresource&quot;,
+     &quot;method&quot;: &quot;POST&quot;,
+     &quot;path&quot;: &quot;/api/v3/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;
+   },
+   &quot;datetime&quot;: &quot;2018-05-30 12:25:43.989044&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Resource accepted&quot;,
+   &quot;process_chain_list&quot;: [],
+   &quot;process_results&quot;: {},
+   &quot;resource_id&quot;: &quot;resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce&quot;,
+   &quot;status&quot;: &quot;accepted&quot;,
+   &quot;time_delta&quot;: 0.001340627670288086,
+   &quot;timestamp&quot;: 1527683143.989044,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>Poll the status of the asynchronous API call by polling the status URL.
+Be aware that you have to change the status url as the resource id will change for different NDVI API calls.</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
+</code></pre>
+<p>The final result will contain a complete processing list as well as
+URL's to the resulting PNG preview image, the created NDVI GeoTiff file
+as well as univariate statistics of the computed NDVI scene.</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2018-05-30 12:25:43.987713&quot;,
+   &quot;accept_timestamp&quot;: 1527683143.9877105,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;asyncephemeralsentinel2processingresource&quot;,
+     &quot;method&quot;: &quot;POST&quot;,
+     &quot;path&quot;: &quot;/api/v3/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/sentinel2_process/ndvi/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;
+   },
+   &quot;datetime&quot;: &quot;2018-05-30 12:29:11.800608&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;g&quot;,
+         &quot;inputs&quot;: {
+           &quot;map&quot;: &quot;ndvi&quot;
+         },
+         &quot;module&quot;: &quot;r.univar&quot;,
+         &quot;outputs&quot;: {
+           &quot;output&quot;: {
+             &quot;name&quot;: &quot;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/tmp7il3n0jk.univar&quot;
+           }
+         }
+       }
+     },
+     {
+       &quot;1&quot;: {
+         &quot;inputs&quot;: {
+           &quot;map&quot;: &quot;ndvi&quot;
+         },
+         &quot;module&quot;: &quot;d.rast&quot;
+       },
+       &quot;2&quot;: {
+         &quot;flags&quot;: &quot;n&quot;,
+         &quot;inputs&quot;: {
+           &quot;at&quot;: &quot;8,92,0,7&quot;,
+           &quot;raster&quot;: &quot;ndvi&quot;
+         },
+         &quot;module&quot;: &quot;d.legend&quot;
+       },
+       &quot;3&quot;: {
+         &quot;inputs&quot;: {
+           &quot;at&quot;: &quot;20,4&quot;,
+           &quot;style&quot;: &quot;line&quot;
+         },
+         &quot;module&quot;: &quot;d.barscale&quot;
+       }
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-sentinel-2/tiles/50/R/KR/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.SAFE/GRANULE/L1C_T50RKR_A007608_20161206T030749/IMG_DATA/T50RKR_20161206T030112_B08.jp2&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 49.85953092575073,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/wget&quot;,
+       &quot;parameter&quot;: [
+         &quot;-t5&quot;,
+         &quot;-c&quot;,
+         &quot;-q&quot;,
+         &quot;https://storage.googleapis.com/gcp-public-data-sentinel-2/tiles/50/R/KR/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.SAFE/GRANULE/L1C_T50RKR_A007608_20161206T030749/IMG_DATA/T50RKR_20161206T030112_B04.jp2&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 38.676433801651,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05118393898010254,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/T50RKR_20161206T030112_B08.jp2&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.35857558250427246,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/bin/mv&quot;,
+       &quot;parameter&quot;: [
+         &quot;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/T50RKR_20161206T030112_B04.jp2&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.15271401405334473,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;python3&quot;,
+       &quot;parameter&quot;: [
+         &quot;/usr/local/bin/grass&quot;,
+         &quot;-e&quot;,
+         &quot;-c&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08&quot;,
+         &quot;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/sentinel2&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.36118006706237793,
+       &quot;stderr&quot;: [
+         &quot;Default locale settings are missing. GRASS running with C locale.WARNING: Searched for a web browser, but none found&quot;,
+         &quot;Creating new GRASS GIS location/mapset...&quot;,
+         &quot;Cleaning up temporary files...&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;Default locale not found, using UTF-8\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;v.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749.gml&quot;,
+         &quot;output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.3551313877105713,
+       &quot;stderr&quot;: [
+         &quot;WARNING: Projection of dataset does not appear to match current location.&quot;,
+         &quot;&quot;,
+         &quot;Location PROJ_INFO is:&quot;,
+         &quot;name: WGS 84 / UTM zone 50N&quot;,
+         &quot;datum: wgs84&quot;,
+         &quot;ellps: wgs84&quot;,
+         &quot;proj: utm&quot;,
+         &quot;zone: 50&quot;,
+         &quot;no_defs: defined&quot;,
+         &quot;&quot;,
+         &quot;Dataset PROJ_INFO is:&quot;,
+         &quot;name: WGS 84&quot;,
+         &quot;datum: wgs84&quot;,
+         &quot;ellps: wgs84&quot;,
+         &quot;proj: ll&quot;,
+         &quot;no_defs: defined&quot;,
+         &quot;&quot;,
+         &quot;ERROR: proj&quot;,
+         &quot;&quot;,
+         &quot;WARNING: Width for column fid set to 255 (was not specified by OGR), some strings may be truncated!&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;v.timestamp&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+         &quot;date=06 dec 2016 03:07:49&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.050455570220947266,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/gdal_translate&quot;,
+       &quot;parameter&quot;: [
+         &quot;-projwin&quot;,
+         &quot;113.949663&quot;,
+         &quot;28.011816&quot;,
+         &quot;115.082607&quot;,
+         &quot;27.001706&quot;,
+         &quot;-of&quot;,
+         &quot;vrt&quot;,
+         &quot;-projwin_srs&quot;,
+         &quot;EPSG:4326&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05114293098449707,
+       &quot;stderr&quot;: [
+         &quot;Warning 1: Computed -srcwin 5 -225 10971 11419 falls partially outside raster extent. Going on however.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;Input file size is 10980, 10980\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08.vrt&quot;,
+         &quot;output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 16.326167583465576,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;align=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped&quot;,
+         &quot;vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.10460591316223145,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=1\nzone=50\nn=3100030\ns=2990100\nw=199960\ne=309790\nnsres=10\newres=10\nrows=10993\ncols=10983\ncells=120736119\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mask&quot;,
+       &quot;parameter&quot;: [
+         &quot;vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 7.36047887802124,
+       &quot;stderr&quot;: [
+         &quot;Reading areas...&quot;,
+         &quot;0..100&quot;,
+         &quot;Writing raster map...&quot;,
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;Reading areas...&quot;,
+         &quot;0..100&quot;,
+         &quot;Writing raster map...&quot;,
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;All subsequent raster operations will be limited to the MASK area. Removing or renaming raster map named 'MASK' will restore raster operations to normal.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mapcalc&quot;,
+       &quot;parameter&quot;: [
+         &quot;expression=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08 = float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped)&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 10.695591926574707,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.timestamp&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08&quot;,
+         &quot;date=06 dec 2016 03:07:49&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.053069353103637695,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.remove&quot;,
+       &quot;parameter&quot;: [
+         &quot;type=raster&quot;,
+         &quot;name=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped&quot;,
+         &quot;-f&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.050362348556518555,
+       &quot;stderr&quot;: [
+         &quot;Removing raster &lt;S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08_uncropped&gt;&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mask&quot;,
+       &quot;parameter&quot;: [
+         &quot;-r&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.10059237480163574,
+       &quot;stderr&quot;: [
+         &quot;Raster MASK removed&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;/usr/bin/gdal_translate&quot;,
+       &quot;parameter&quot;: [
+         &quot;-projwin&quot;,
+         &quot;113.949663&quot;,
+         &quot;28.011816&quot;,
+         &quot;115.082607&quot;,
+         &quot;27.001706&quot;,
+         &quot;-of&quot;,
+         &quot;vrt&quot;,
+         &quot;-projwin_srs&quot;,
+         &quot;EPSG:4326&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04&quot;,
+         &quot;/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05096769332885742,
+       &quot;stderr&quot;: [
+         &quot;Warning 1: Computed -srcwin 5 -225 10971 11419 falls partially outside raster extent. Going on however.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;Input file size is 10980, 10980\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.import&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=/actinia/workspace/download_cache/demouser/S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04.vrt&quot;,
+         &quot;output=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped&quot;,
+         &quot;--q&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 16.76022958755493,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;align=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped&quot;,
+         &quot;vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.0505826473236084,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=1\nzone=50\nn=3100030\ns=2990100\nw=199960\ne=309790\nnsres=10\newres=10\nrows=10993\ncols=10983\ncells=120736119\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mask&quot;,
+       &quot;parameter&quot;: [
+         &quot;vector=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 6.779608249664307,
+       &quot;stderr&quot;: [
+         &quot;Reading areas...&quot;,
+         &quot;0..100&quot;,
+         &quot;Writing raster map...&quot;,
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;Reading areas...&quot;,
+         &quot;0..100&quot;,
+         &quot;Writing raster map...&quot;,
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;All subsequent raster operations will be limited to the MASK area. Removing or renaming raster map named 'MASK' will restore raster operations to normal.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mapcalc&quot;,
+       &quot;parameter&quot;: [
+         &quot;expression=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04 = float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped)&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 10.141529321670532,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.timestamp&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04&quot;,
+         &quot;date=06 dec 2016 03:07:49&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05050253868103027,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.remove&quot;,
+       &quot;parameter&quot;: [
+         &quot;type=raster&quot;,
+         &quot;name=S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped&quot;,
+         &quot;-f&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05098080635070801,
+       &quot;stderr&quot;: [
+         &quot;Removing raster &lt;S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04_uncropped&gt;&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mask&quot;,
+       &quot;parameter&quot;: [
+         &quot;-r&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.10424232482910156,
+       &quot;stderr&quot;: [
+         &quot;Raster MASK removed&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.mapcalc&quot;,
+       &quot;parameter&quot;: [
+         &quot;expression=ndvi = (float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08) - float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04))/(float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B08) + float(S2A_MSIL1C_20161206T030112_N0204_R032_T50RKR_20161206T030749_B04))&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 20.28681755065918,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.colors&quot;,
+       &quot;parameter&quot;: [
+         &quot;color=ndvi&quot;,
+         &quot;map=ndvi&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05031251907348633,
+       &quot;stderr&quot;: [
+         &quot;Color table for raster map &lt;ndvi&gt; set to 'ndvi'&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.univar&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=ndvi&quot;,
+         &quot;output=/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/tmp7il3n0jk.univar&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 4.54892897605896,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;d.rast&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=ndvi&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 2.0198700428009033,
+       &quot;stderr&quot;: [
+         &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;d.legend&quot;,
+       &quot;parameter&quot;: [
+         &quot;raster=ndvi&quot;,
+         &quot;at=8,92,0,7&quot;,
+         &quot;-n&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.4614551067352295,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;d.barscale&quot;,
+       &quot;parameter&quot;: [
+         &quot;style=line&quot;,
+         &quot;at=20,4&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.416748046875,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;raster=ndvi&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.051720619201660156,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=1\nzone=50\nn=3100030\ns=2990100\nw=199960\ne=309790\nnsres=10\newres=10\nrows=10993\ncols=10983\ncells=120736119\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.out.gdal&quot;,
+       &quot;parameter&quot;: [
+         &quot;-fm&quot;,
+         &quot;input=ndvi&quot;,
+         &quot;format=GTiff&quot;,
+         &quot;createopt=COMPRESS=LZW&quot;,
+         &quot;output=/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/ndvi.tiff&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 12.550397157669067,
+       &quot;stderr&quot;: [
+         &quot;Checking GDAL data type and nodata value...&quot;,
+         &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+         &quot;Using GDAL data type &lt;Float32&gt;&quot;,
+         &quot;Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.&quot;,
+         &quot;Exporting raster data to GTiff format...&quot;,
+         &quot;ERROR 6: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.&quot;,
+         &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+         &quot;r.out.gdal complete. File &lt;/actinia/workspace/temp_db/gisdbase_103a050c380e4f50b36efd3f77bd1419/.tmp/ndvi.tiff&gt; created.&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;&quot;
+     }
+   ],
+   &quot;process_results&quot;: [
+     {
+       &quot;cells&quot;: 120736119.0,
+       &quot;coeff_var&quot;: 39.2111992829072,
+       &quot;max&quot;: 0.80298912525177,
+       &quot;mean&quot;: 0.345280366103636,
+       &quot;mean_of_abs&quot;: 0.347984182813063,
+       &quot;min&quot;: -0.96863466501236,
+       &quot;n&quot;: 120371030.0,
+       &quot;name&quot;: &quot;ndvi&quot;,
+       &quot;null_cells&quot;: 365089.0,
+       &quot;range&quot;: 1.77162379026413,
+       &quot;stddev&quot;: 0.135388572437648,
+       &quot;sum&quot;: 41561753.3066718,
+       &quot;variance&quot;: 0.0183300655467043
+     }
+   ],
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 33,
+     &quot;step&quot;: 32
+   },
+   &quot;resource_id&quot;: &quot;resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 207.813636302948,
+   &quot;timestamp&quot;: 1527683351.8002071,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [
+       &quot;http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png&quot;,
+       &quot;http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff&quot;
+     ],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>The following URLs point to the resulting PNG preview image and the
+NDVI GeoTiff file:</p>
+<p><a href="http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png">http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/tmpsaeegg0q.png</a>
+<a href="http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff">http://actinia.mundialis.de/api/v3/resource/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce/ndvi.tiff</a></p>
+<p>The PNG preview should look like this:</p>
+<p><img alt="image" src="../sentinel_ndvi.png" /></p>
+              
+            </div>
+          </div><footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
