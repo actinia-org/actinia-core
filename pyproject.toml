@@ -60,7 +60,7 @@ dependencies = [
     "redis>=2.10.6",
     "requests>=2.20.0",
     "rq>=0.10.0",
-    "setuptools==70.1.1",
+    "setuptools==73.0.1",
     "uWSGI>=2.0.17",
     "wheel",
     "geopandas",
