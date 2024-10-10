@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/installation/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Installation - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Installation";
+        var mkdocs_page_input_path = "installation.md";
+        var mkdocs_page_url = "/tutorial/installation/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Installation</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#installation-with-docker">Installation with docker</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#local-installation">Local installation</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="installation">Installation</h1>
+<h2 id="installation-with-docker">Installation with docker</h2>
+<p>Requirements: docker and docker-compose</p>
+<p>To build and deploy actinia, run</p>
+<pre><code class="language-bash">git clone https://github.com/mundialis/actinia-core.git
+cd actinia-core
+docker-compose -f docker/docker-compose.yml up
+</code></pre>
+<p>Now you have a running actinia instance locally! Check with</p>
+<pre><code class="language-bash">curl http://127.0.0.1:8088/api/v3/version
+</code></pre>
+<ul>
+<li>For how to add data to this setup, how to run actinia locally with most recent GRASS GIS or how to fix common startup errors, see more details in <a href="https://github.com/actinia-org/actinia-core/blob/main/docker/README.md">docker README</a>.</li>
+</ul>
+<h2 id="local-installation">Local installation</h2>
+<p>A local installation requires a full GRASS GIS installation. Make sure
+all requirements are fulfilled to compile GRASS GIS from the git
+repository.</p>
+<p>These installation instructions are based on a Ubuntu Linux system (other
+operating systems and distributions are fine, too).</p>
+<p>First install PROJ and GRASS GIS by downloading the latest packages
+and GRASS GIS git version and compile it.</p>
+<ol>
+<li>Install the latest projection library</li>
+</ol>
+<pre><code class="language-bash">sudo apt-get update
+sudo apt-get install proj-bin proj-data
+</code></pre>
+<ol>
+<li>Set Python 3 environment</li>
+</ol>
+<p>Note that this step changes <code>python</code> to point to <code>python3</code>, system-wide:</p>
+<pre><code class="language-bash"># recommended to give Python3 precedence over Python2 (which is end-of-life since 2019)
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+</code></pre>
+<ol>
+<li>Compile and install GRASS GIS and additional modules:</li>
+</ol>
+<pre><code class="language-bash"># or some other location of your choice, /tmp will not keep data between reboots
+cd /tmp
+
+# fetch weekly generated latest snapshot of GRASS GIS stable
+wget https://grass.osgeo.org/grass80/source/snapshot/grass-8.0.git_src_snapshot_latest.tar.gz
+tar xzvf grass-8.0.git_src_snapshot_latest.tar.gz
+mv grass-8.0.git_src_snapshot_????_??_?? grass
+rm -f grass-8.0.git_src_snapshot_latest.tar.gz
+
+cd grass
+
+# production related compilation flags (no debugging enabled)
+export CFLAGS=&quot;-O2 -std=gnu99 -fexceptions -fstack-protector -m64&quot;
+export CXXFLAGS=&quot;-O2&quot;
+export LDFLAGS=&quot;-Wl,--no-undefined -Wl,-z,now&quot;
+
+./configure \
+  --with-cxx \
+  --enable-largefile \
+  --with-proj-share=/usr/share/proj \
+  --with-gdal \
+  --with-geos \
+  --with-sqlite \
+  --with-cairo --with-cairo-ldflags=-lfontconfig \
+  --with-fftw \
+  --with-netcdf \
+  --with-bzlib \
+  --with-zstd \
+  --without-postgres \
+  --without-freetype \
+  --without-openmp \
+  --without-opengl \
+  --without-nls \
+  --without-mysql \
+  --without-odbc \
+  --without-openmp \
+  --prefix=/usr/local
+
+make -j8
+sudo make install
+
+cd temporal/
+git clone https://github.com/mundialis/t.rast.sample
+cd t.rast.sample
+make
+cd ../..
+sudo make install
+
+# t.rast.udf
+# see https://github.com/mundialis/openeo-addons
+
+cd display/
+git clone https://github.com/mundialis/d_rast_multi d.rast.multi
+cd d.rast.multi
+make
+cd ../..
+sudo make install
+</code></pre>
+<ol>
+<li>Download the test datasets ("locations") and place them into a
+   specific directory that will be used by actinia as a persistent database:</li>
+</ol>
+<pre><code class="language-bash">mkdir -p $HOME/actinia/grassdb
+cd $HOME/actinia/grassdb
+wget https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_grass7.tar.gz
+tar xzvf nc_spm_08_grass7.tar.gz
+rm -f nc_spm_08_grass7.tar.gz
+mv nc_spm_08_grass7 nc_spm_08
+
+wget https://storage.googleapis.com/datentransfer/ECAD.tar.gz
+tar xzvf ECAD.tar.gz
+rm -f ECAD.tar.gz
+
+wget https://storage.googleapis.com/datentransfer/LL.tar.gz
+tar xzvf LL.tar.gz
+rm -f LL.tar.gz
+mv LL latlong_wgs84
+</code></pre>
+<ol>
+<li>Actinia Core must be installed and run within a (virtual) Python3 environment:</li>
+</ol>
+<pre><code class="language-bash">mkdir -p $HOME/actinia/workspace/tmp
+
+cd /tmp
+
+git clone https://github.com/actinia-org/actinia-core.git actinia_core
+cd actinia_core
+pip install .
+</code></pre>
+<ol>
+<li>Actinia API must be installed and run within a (virtual) Python3 environment:</li>
+</ol>
+<pre><code class="language-bash">mkdir -p $HOME/actinia/workspace/tmp
+
+cd /tmp
+
+git clone https://github.com/actinia-org/actinia-api.git actinia-api
+cd actinia-api
+python setup.py install
+</code></pre>
+<ol>
+<li>Make sure that a redis service is running and create a user with
+   actinia-user tool</li>
+</ol>
+<pre><code class="language-bash">cd /tmp
+
+# install and start redis server
+apt-get install -y redis
+redis-server &amp;
+
+# Create the superuser
+actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 100000000000 -n 1000 -t 6000
+
+# Start the actinia service with
+actinia-server --host 0.0.0.0 --port 5000
+</code></pre>
+<ol>
+<li>Check the service with curl</li>
+</ol>
+<pre><code class="language-bash">ACTINIA_VERSION=&quot;v3&quot;
+export ACTINIA_URL=&quot;http://localhost:5000/api/${ACTINIA_VERSION}&quot;
+export AUTH='-u superadmin:abcdefgh'
+
+curl ${AUTH} -X GET ${ACTINIA_URL}/locations
+</code></pre>
+<p>The <code>curl</code> command call should report back:</p>
+<pre><code class="language-bash">{&quot;locations&quot;:[&quot;nc_spm_08&quot;,&quot;ECAD&quot;,&quot;latlong_wgs84&quot;],&quot;status&quot;:&quot;success&quot;}
+</code></pre>
+<p>Success and welcome to actinia!</p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../actinia_concepts/" class="btn btn-neutral float-left" title="Actinia concepts"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tutorial_data_access/" class="btn btn-neutral float-right" title="Actinia database access">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../actinia_concepts/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tutorial_data_access/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

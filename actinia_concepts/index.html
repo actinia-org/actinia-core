@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/actinia_concepts/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Actinia concepts - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Actinia concepts";
+        var mkdocs_page_input_path = "actinia_concepts.md";
+        var mkdocs_page_url = "/tutorial/actinia_concepts/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Actinia concepts</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#actinia-rest-api-documentation">Actinia REST API documentation</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#user-user-roles-and-user-groups">User, user-roles and user-groups</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-superadmin">1. superadmin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-admin">2. admin</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-user">3. user</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#4-guest">4. guest</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#the-actinia-databases">The Actinia databases</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#1-persistent-database">1. Persistent database</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#2-ephemeral-database">2. Ephemeral database</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#3-user-specific-databases">3. User specific databases</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Actinia concepts</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="actinia-basics">Actinia Basics</h1>
+<h2 id="actinia-rest-api-documentation">Actinia REST API documentation</h2>
+<p>Actinia is fully documented using the OpenAPI standard<a href="https://www.openapis.org/">^1</a>, better known
+as swagger<a href="https://swagger.io">^2</a>. The JSON definition of the API can be accessed here:</p>
+<p><a href="https://actinia.mundialis.de/latest/swagger.json">https://actinia.mundialis.de/latest/swagger.json</a></p>
+<p>A nicely rendered ReDoc version is available here:</p>
+<p><a href="https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json">https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json</a></p>
+<!---
+no longer generated:
+The full API documentation is available here:
+
+ <https://actinia.mundialis.de/api_docs/>
+--->
+
+<p>To generate a readable documentation out of the swagger.json file, the
+spectacle tool can be used:</p>
+<pre><code class="language-bash"> # Download the latest swagger definition from the actinia service
+ wget  https://actinia.mundialis.de/latest/swagger.json -O /tmp/actinia.json
+
+ # Run spectacle docker image to generate the HTML documentation
+ docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp
+
+ # Start Firefox to show the documentation
+ firefox /tmp/index.html
+</code></pre>
+<p>The petstore swagger UI creator<a href="https://petstore.swagger.io">^3</a> can be used to show all available
+REST API calls and all response models in a convenient way.</p>
+<h2 id="user-user-roles-and-user-groups">User, user-roles and user-groups</h2>
+<p>Actinia uses the concept of users, user-roles and user-groups to manage
+the access to the actinia databases and API calls. A single user has
+always a specific user role and can be member of one single user-group.</p>
+<p>The following user-roles are supported:</p>
+<h3 id="1-superadmin">1. superadmin</h3>
+<ul>
+<li>Can create, modify and delete users with all user-roles</li>
+<li>Has access to all API calls and read/write access to all
+  databases</li>
+</ul>
+<h3 id="2-admin">2. admin</h3>
+<ul>
+<li>Can access all API calls</li>
+<li>Can create, modify and delete users with the maximum
+  user-role <em>user</em> of the same user group</li>
+<li>Has access to persistent databases that were granted by a
+  superadmin</li>
+</ul>
+<h3 id="3-user">3. user</h3>
+<ul>
+<li>Can run computational tasks in ephemeral and user specific
+  databases</li>
+<li>Can create, modify and delete locations in a user specific
+  database</li>
+<li>Can create, modify and delete mapsets in user
+  specific databases</li>
+<li>Has limited access to API calls</li>
+<li>Can not create, modify or delete users</li>
+<li>Has access to persistent databases that were granted by a
+  superadmin</li>
+</ul>
+<h3 id="4-guest">4. guest</h3>
+<ul>
+<li>Has very limited access to API calls</li>
+<li>Can not create, modify or delete mapsets</li>
+<li>Can not create, modify or delete users</li>
+<li>Has access to persistent databases that were granted by a
+  superadmin</li>
+</ul>
+<p>Overview table:</p>
+<table>
+<thead>
+<tr>
+<th>task</th>
+<th>superadmin</th>
+<th>admin</th>
+<th>user</th>
+<th>guest</th>
+<th>notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>amount raster cells is unlimited</td>
+<td>y</td>
+<td>y</td>
+<td>limited, selected via redis</td>
+<td>limited, selected via redis</td>
+<td>-</td>
+</tr>
+<tr>
+<td>database access is unlimited</td>
+<td>y</td>
+<td>only to persistent databases that were granted by a superadmin</td>
+<td>limited, defined in redis</td>
+<td>limited, defined in redis</td>
+<td>-</td>
+</tr>
+<tr>
+<td>location/mapset access is unlimited</td>
+<td>y</td>
+<td>y</td>
+<td>can create, modify and delete locations/mapsets in user specific databases, defined in redis</td>
+<td>has access to persistent databases that were granted by a superadmin, defined in redis</td>
+<td>-</td>
+</tr>
+<tr>
+<td>module access is unlimited</td>
+<td>y</td>
+<td>y</td>
+<td>can run computational tasks in ephemeral and user specific databases</td>
+<td>has very limited access to API calls</td>
+<td>-</td>
+</tr>
+<tr>
+<td>get, create, delete a single user</td>
+<td>y</td>
+<td>users with the maximum user-role user of the same user group</td>
+<td>n</td>
+<td>n</td>
+<td>Only normal users (role=user can be created)</td>
+</tr>
+</tbody>
+</table>
+<p>In the file actinia.cfg, limits and more can be defined:</p>
+<pre><code class="language-bash">[LIMITS]
+max_cell_limit = 2000000
+process_time_limt = 60
+process_num_limit = 20
+number_of_workers = 3
+</code></pre>
+<h2 id="the-actinia-databases">The Actinia databases</h2>
+<p>Actinia manages GRASS GIS locations in its <em>persistent database</em>. User
+are not permitted to modify data in the actinia persistent database, but
+can access all data read-only for processing and visualization. Data in
+the persistent database can only be accessed via HTTP GET API calls.</p>
+<p>The user can either process data in an <em>ephemeral databases</em>, that will
+be removed after the processing is finished, or in a <em>user specific
+database</em>. A user specific database is persistent, only visible to users
+of the same user-group and can contain any data the user has
+imported. The user can read-access all data from the persistent database
+while running analysis in the ephemeral database or user specific
+database.</p>
+<p><strong>Summary</strong></p>
+<h3 id="1-persistent-database">1. Persistent database</h3>
+<ul>
+<li>Read only database with locations and mapsets that can be
+  used as processing environment and data source</li>
+<li>Data can only be accessed using HTTP GET API calls</li>
+</ul>
+<h3 id="2-ephemeral-database">2. Ephemeral database</h3>
+<ul>
+<li>All processing is performed in ephemeral databases for
+  performance and security reasons</li>
+<li>Ephemeral databases are created for all API calls and
+  removed after the processing is finished</li>
+<li>Ephemeral databases use persistent databases as processing
+  environments to access required data from mapsets in
+  persistent locations</li>
+</ul>
+<h3 id="3-user-specific-databases">3. User specific databases</h3>
+<ul>
+<li>Persistent databases that can be created and modified by a
+  specific user group</li>
+<li>The base for a location in a user specific database can be
+  a location from a persistent database, however mapsets
+  names must be unique.</li>
+<li>A user group can only access a single database with any
+  number of locations</li>
+</ul>
+<p><strong>Footnotes</strong></p>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../introduction/" class="btn btn-neutral float-left" title="Introduction"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../installation/" class="btn btn-neutral float-right" title="Installation">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../introduction/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

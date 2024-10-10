@@ -1,0 +1,1142 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/tutorial_process_chain/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>User defined processing - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "User defined processing";
+        var mkdocs_page_input_path = "tutorial_process_chain.md";
+        var mkdocs_page_url = "/tutorial/tutorial_process_chain/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">User defined processing</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#the-actinia-process-chain">The actinia process chain</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#sentinel-2a-ndvi-process-chain">Sentinel-2A NDVI process chain</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">User defined processing</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="user-defined-processing">User defined processing</h1>
+<h2 id="the-actinia-process-chain">The actinia process chain</h2>
+<p>Actinia provides the <strong>process chain</strong> approach to specify import,
+processing and export of geodata using the actinia GRASS GIS processing
+system. The process chain must be formulated in JSON. The processing is
+always performed in an ephemeral database. The computational environment
+is based on locations in the persistent database. If required, the
+ephemeral database can be moved into the persistent user database, so
+that the computational results can be used in further processing steps
+or visualized using the actinia rendering REST calls.</p>
+<p>The ephemeral database will be removed after computation. However, all
+raster and vector data that was generated during the processing can be
+exported using gdal/ogr specific datatypes and stored in an object
+storage, outside the actinia environment. Within a process chain we have
+read only access to all raster maps of the persistent database location
+that is used as computational environment.</p>
+<p>A process chain is a list of GRASS GIS modules<a href="https://grass.osgeo.org/grass-stable/manuals/index.html">^1</a> that will be executed in
+serial, based on the order of the list. GRASS GIS modules are specified
+as process definitions<a href="https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get">^2</a> that include the name of the command, the
+inputs and outputs], including import and export definitions as
+well as the module flags.</p>
+<p>The following example defines a single process
+that runs the GRASS GIS module <em>r.slope.aspect</em><a href="https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html">^3</a> to compute the
+<em>slope</em> for the raster map layer <em>elev_ned_30m</em> that is located in the
+mapset<a href="https://grass.osgeo.org/grass-stable/manuals/grass_database.html">^4</a> <em>PERMANENT</em>. The output of the module is named
+<em>elev_ned_30m_slope</em> and should be exported as a GeoTiff file.</p>
+<pre><code class="language-json"> {
+   &quot;module&quot;: &quot;r.slope.aspect&quot;,
+   &quot;id&quot;: &quot;r_slope_aspect_1&quot;,
+   &quot;inputs&quot;: [
+     {
+       &quot;param&quot;: &quot;elevation&quot;,
+       &quot;value&quot;: &quot;elev_ned_30m@PERMANENT&quot;
+     }
+   ],
+   &quot;outputs&quot;: [
+     {
+       &quot;export&quot;: {
+         &quot;format&quot;: &quot;GTiff&quot;,
+         &quot;type&quot;: &quot;raster&quot;
+       },
+       &quot;param&quot;: &quot;slope&quot;,
+       &quot;value&quot;: &quot;elev_ned_30m_slope&quot;
+     }
+   ],
+   &quot;flags&quot;: &quot;a&quot;
+ }
+</code></pre>
+<p><strong>Import and export</strong></p>
+<p>The actinia process chain supports the specification of URL's to raster
+layers in the input definition. The following process chain imports a
+raster map layer that is located in an object storage with the name
+<em>elev_ned_30m_new</em> and sets the computational region for the
+following processing step with the GRASS GIS module <em>g.region</em><a href="https://grass.osgeo.org/grass-stable/manuals/g.region.html">^5</a>. Then
+slope and aspect are computed with <em>r.slope.aspect</em> and specified for
+export as GeoTiff files.</p>
+<pre><code class="language-json"> {
+   &quot;list&quot;: [
+     {
+       &quot;module&quot;: &quot;g.region&quot;,
+       &quot;id&quot;: &quot;g_region_1&quot;,
+       &quot;inputs&quot;: [
+         {
+           &quot;import_descr&quot;: {
+             &quot;source&quot;: &quot;https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif&quot;,
+             &quot;type&quot;: &quot;raster&quot;
+           },
+           &quot;param&quot;: &quot;raster&quot;,
+           &quot;value&quot;: &quot;elev_ned_30m_new&quot;
+         }
+       ],
+       &quot;flags&quot;: &quot;p&quot;
+     },
+     {
+       &quot;module&quot;: &quot;r.slope.aspect&quot;,
+       &quot;id&quot;: &quot;r_slope_aspect_1&quot;,
+       &quot;inputs&quot;: [
+         {
+           &quot;param&quot;: &quot;elevation&quot;,
+           &quot;value&quot;: &quot;elev_ned_30m_new&quot;
+         }
+       ],
+       &quot;outputs&quot;: [
+         {
+           &quot;export&quot;: {
+             &quot;format&quot;: &quot;GTiff&quot;,
+             &quot;type&quot;: &quot;raster&quot;
+           },
+           &quot;param&quot;: &quot;slope&quot;,
+           &quot;value&quot;: &quot;elev_ned_30m_new_slope&quot;
+         }
+       ],
+       &quot;flags&quot;: &quot;a&quot;
+     }
+   ],
+   &quot;version&quot;: &quot;1&quot;
+ }
+</code></pre>
+<p><strong>Output parsing</strong></p>
+<p>Many GRASS GIS modules produce textual output in form of lists, tables
+and key/value pairs. Actinia supports the analysis of this data and the
+parsing and transformation in JSON accessible data. For each GRASS GIS
+module the property "stdout" can be specified to transform the output
+of the module into a list of values, a key/value list or a table.</p>
+<p>The following options are available as format:</p>
+<ul>
+<li>"kv" parses the module output and creates key/value pairs</li>
+<li>"list" parses the module output and creates a list of values</li>
+<li>"table" parses the module output and creates a list of lists
+  with values aka 2D array aka table</li>
+</ul>
+<p>Additionally the unique id that will be used in the response process
+result dictionary and the delimiter must be defined.</p>
+<p>The following process chain demonstrates all available approaches, to
+parse the stdout output of a module:</p>
+<pre><code class="language-json"> {
+     &quot;version&quot;: 1,
+     &quot;list&quot;: [
+         {
+             &quot;id&quot;: &quot;1&quot;,
+             &quot;module&quot;: &quot;g.region&quot;,
+             &quot;inputs&quot;: [
+                 {&quot;param&quot;: &quot;raster&quot;,
+                  &quot;value&quot;: &quot;elevation@PERMANENT&quot;},
+                 {&quot;param&quot;: &quot;res&quot;,
+                  &quot;value&quot;: &quot;5000&quot;}
+             ],
+             &quot;stdout&quot;: {&quot;id&quot;: &quot;region&quot;, &quot;format&quot;: &quot;kv&quot;, &quot;delimiter&quot;: &quot;=&quot;},
+             &quot;flags&quot;: &quot;g&quot;
+         },
+         {
+             &quot;id&quot;: &quot;2&quot;,
+             &quot;module&quot;: &quot;r.out.ascii&quot;,
+             &quot;inputs&quot;: [{&quot;param&quot;: &quot;input&quot;,
+                         &quot;value&quot;: &quot;elevation@PERMANENT&quot;},
+                        {&quot;param&quot;: &quot;precision&quot;, &quot;value&quot;: &quot;0&quot;}],
+             &quot;stdout&quot;: {&quot;id&quot;: &quot;elevation&quot;, &quot;format&quot;: &quot;table&quot;, &quot;delimiter&quot;: &quot; &quot;},
+             &quot;flags&quot;: &quot;h&quot;
+         },
+         {
+             &quot;id&quot;: &quot;3&quot;,
+             &quot;module&quot;: &quot;g.list&quot;,
+             &quot;inputs&quot;: [{&quot;param&quot;: &quot;type&quot;,
+                         &quot;value&quot;: &quot;raster&quot;}],
+             &quot;stdout&quot;: {&quot;id&quot;: &quot;map_list&quot;, &quot;format&quot;: &quot;list&quot;, &quot;delimiter&quot;: &quot;\n&quot;}
+         },
+         {
+             &quot;id&quot;: &quot;4&quot;,
+             &quot;module&quot;: &quot;r.univar&quot;,
+             &quot;inputs&quot;: [{&quot;param&quot;: &quot;map&quot;,
+                         &quot;value&quot;: &quot;elevation@PERMANENT&quot;}],
+             &quot;stdout&quot;: {&quot;id&quot;: &quot;stats&quot;, &quot;format&quot;: &quot;kv&quot;, &quot;delimiter&quot;: &quot;=&quot;},
+             &quot;flags&quot;: &quot;g&quot;
+         },
+         {
+             &quot;id&quot;: &quot;5&quot;,
+             &quot;module&quot;: &quot;r.univar&quot;,
+             &quot;inputs&quot;: [{&quot;param&quot;: &quot;map&quot;,
+                         &quot;value&quot;: &quot;elevation@PERMANENT&quot;},
+                        {&quot;param&quot;: &quot;zones&quot;,
+                         &quot;value&quot;: &quot;basin_50K@PERMANENT&quot;},
+                        {&quot;param&quot;: &quot;separator&quot;,
+                         &quot;value&quot;: &quot;pipe&quot;}],
+             &quot;stdout&quot;: {&quot;id&quot;: &quot;stats_zonal&quot;, &quot;format&quot;: &quot;table&quot;, &quot;delimiter&quot;: &quot;|&quot;},
+             &quot;flags&quot;: &quot;t&quot;
+         }
+     ]
+ }
+</code></pre>
+<p>The result of the process chain evaluation is the following JSON
+response:</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2018-06-28 14:11:03.439431&quot;,
+   &quot;accept_timestamp&quot;: 1530195063.439429,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;asyncephemeralresource&quot;,
+     &quot;method&quot;: &quot;POST&quot;,
+     &quot;path&quot;: &quot;/api/v3/locations/nc_spm_08/processing_async&quot;,
+     &quot;request_url&quot;: &quot;http://localhost/api/v3/locations/nc_spm_08/processing_async&quot;
+   },
+   &quot;datetime&quot;: &quot;2018-06-28 14:11:03.878996&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;list&quot;: [
+         {
+           &quot;flags&quot;: &quot;g&quot;,
+           &quot;id&quot;: &quot;1&quot;,
+           &quot;inputs&quot;: [
+             {
+               &quot;param&quot;: &quot;raster&quot;,
+               &quot;value&quot;: &quot;elevation@PERMANENT&quot;
+             },
+             {
+               &quot;param&quot;: &quot;res&quot;,
+               &quot;value&quot;: &quot;5000&quot;
+             }
+           ],
+           &quot;module&quot;: &quot;g.region&quot;,
+           &quot;stdout&quot;: {
+             &quot;delimiter&quot;: &quot;=&quot;,
+             &quot;format&quot;: &quot;kv&quot;,
+             &quot;id&quot;: &quot;region&quot;
+           }
+         },
+         {
+           &quot;flags&quot;: &quot;h&quot;,
+           &quot;id&quot;: &quot;2&quot;,
+           &quot;inputs&quot;: [
+             {
+               &quot;param&quot;: &quot;input&quot;,
+               &quot;value&quot;: &quot;elevation@PERMANENT&quot;
+             },
+             {
+               &quot;param&quot;: &quot;precision&quot;,
+               &quot;value&quot;: &quot;0&quot;
+             }
+           ],
+           &quot;module&quot;: &quot;r.out.ascii&quot;,
+           &quot;stdout&quot;: {
+             &quot;delimiter&quot;: &quot; &quot;,
+             &quot;format&quot;: &quot;table&quot;,
+             &quot;id&quot;: &quot;elevation&quot;
+           }
+         },
+         {
+           &quot;id&quot;: &quot;3&quot;,
+           &quot;inputs&quot;: [
+             {
+               &quot;param&quot;: &quot;type&quot;,
+               &quot;value&quot;: &quot;raster&quot;
+             }
+           ],
+           &quot;module&quot;: &quot;g.list&quot;,
+           &quot;stdout&quot;: {
+             &quot;delimiter&quot;: &quot;\n&quot;,
+             &quot;format&quot;: &quot;list&quot;,
+             &quot;id&quot;: &quot;map_list&quot;
+           }
+         },
+         {
+           &quot;flags&quot;: &quot;g&quot;,
+           &quot;id&quot;: &quot;4&quot;,
+           &quot;inputs&quot;: [
+             {
+               &quot;param&quot;: &quot;map&quot;,
+               &quot;value&quot;: &quot;elevation@PERMANENT&quot;
+             }
+           ],
+           &quot;module&quot;: &quot;r.univar&quot;,
+           &quot;stdout&quot;: {
+             &quot;delimiter&quot;: &quot;=&quot;,
+             &quot;format&quot;: &quot;kv&quot;,
+             &quot;id&quot;: &quot;stats&quot;
+           }
+         },
+         {
+           &quot;flags&quot;: &quot;t&quot;,
+           &quot;id&quot;: &quot;5&quot;,
+           &quot;inputs&quot;: [
+             {
+               &quot;param&quot;: &quot;map&quot;,
+               &quot;value&quot;: &quot;elevation@PERMANENT&quot;
+             },
+             {
+               &quot;param&quot;: &quot;zones&quot;,
+               &quot;value&quot;: &quot;basin_50K@PERMANENT&quot;
+             },
+             {
+               &quot;param&quot;: &quot;separator&quot;,
+               &quot;value&quot;: &quot;pipe&quot;
+             }
+           ],
+           &quot;module&quot;: &quot;r.univar&quot;,
+           &quot;stdout&quot;: {
+             &quot;delimiter&quot;: &quot;|&quot;,
+             &quot;format&quot;: &quot;table&quot;,
+             &quot;id&quot;: &quot;stats_zonal&quot;
+           }
+         }
+       ],
+       &quot;version&quot;: 1
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;raster=elevation@PERMANENT&quot;,
+         &quot;res=5000&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.050546884536743164,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=99\nzone=0\nn=228500\ns=215000\nw=630000\ne=645000\nnsres=4500\newres=5000\nrows=3\ncols=3\ncells=9\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.out.ascii&quot;,
+       &quot;parameter&quot;: [
+         &quot;input=elevation@PERMANENT&quot;,
+         &quot;precision=0&quot;,
+         &quot;-h&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05101513862609863,
+       &quot;stderr&quot;: [
+         &quot;0..33..66..&quot;
+       ],
+       &quot;stdout&quot;: &quot;147 138 100 \n125 114 76 \n125 121 96 \n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.list&quot;,
+       &quot;parameter&quot;: [
+         &quot;type=raster&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05074191093444824,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;aspect\nbasin_50K\nboundary_county_500m\ncfactorbare_1m\ncfactorgrow_1m\nel_D782_6m\nel_D783_6m\nel_D792_6m\nel_D793_6m\nelev_lid792_1m\nelev_ned_30m\nelev_srtm_30m\nelev_state_500m\nelevation\nelevation_shade\nfacility\ngeology_30m\nlakes\nlandclass96\nlandcover_1m\nlanduse96_28m\nlsat7_2002_10\nlsat7_2002_20\nlsat7_2002_30\nlsat7_2002_40\nlsat7_2002_50\nlsat7_2002_61\nlsat7_2002_62\nlsat7_2002_70\nlsat7_2002_80\nncmask_500m\northo_2001_t792_1m\nroadsmajor\nslope\nsoilsID\nsoils_Kfactor\nstreams_derived\ntowns\nurban\nzipcodes\nzipcodes_dbl\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.univar&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=elevation@PERMANENT&quot;,
+         &quot;-g&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05033302307128906,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;n=9\nnull_cells=0\ncells=9\nmin=75.9926223754883\nmax=147.101608276367\nrange=71.1089859008789\nmean=115.709356519911\nmean_of_abs=115.709356519911\nstddev=20.8179625939249\nvariance=433.387566562055\ncoeff_var=17.9915982769661\nsum=1041.3842086792\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;r.univar&quot;,
+       &quot;parameter&quot;: [
+         &quot;map=elevation@PERMANENT&quot;,
+         &quot;zones=basin_50K@PERMANENT&quot;,
+         &quot;separator=pipe&quot;,
+         &quot;-t&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05089259147644043,
+       &quot;stderr&quot;: [
+         &quot;0..33..66..100&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;zone|label|non_null_cells|null_cells|min|max|range|mean|mean_of_abs|stddev|variance|coeff_var|sum|sum_abs\n2||1|0|99.7889709472656|99.7889709472656|0|99.7889709472656|99.7889709472656|0|0|0|99.7889709472656|99.7889709472656\n8||1|0|137.68424987793|137.68424987793|0|137.68424987793|137.68424987793|0|0|0|137.68424987793|137.68424987793\n14||1|0|114.471084594727|114.471084594727|0|114.471084594727|114.471084594727|0|0|0|114.471084594727|114.471084594727\n16||1|0|75.9926223754883|75.9926223754883|0|75.9926223754883|75.9926223754883|0|0|0|75.9926223754883|75.9926223754883\n20||2|0|124.611175537109|125.171577453613|0.560401916503906|124.891376495361|124.891376495361|0.280200958251953|0.0785125770053128|0.224355729046161|249.782752990723|249.782752990723\n24||1|0|120.942115783691|120.942115783691|0|120.942115783691|120.942115783691|0|0|0|120.942115783691|120.942115783691\n&quot;
+     }
+   ],
+   &quot;process_results&quot;: {
+     &quot;elevation&quot;: [
+       [
+         &quot;147&quot;,
+         &quot;138&quot;,
+         &quot;100&quot;
+       ],
+       [
+         &quot;125&quot;,
+         &quot;114&quot;,
+         &quot;76&quot;
+       ],
+       [
+         &quot;125&quot;,
+         &quot;121&quot;,
+         &quot;96&quot;
+       ]
+     ],
+     &quot;map_list&quot;: [
+       &quot;aspect&quot;,
+       &quot;basin_50K&quot;,
+       &quot;boundary_county_500m&quot;,
+       &quot;cfactorbare_1m&quot;,
+       &quot;cfactorgrow_1m&quot;,
+       &quot;el_D782_6m&quot;,
+       &quot;el_D783_6m&quot;,
+       &quot;el_D792_6m&quot;,
+       &quot;el_D793_6m&quot;,
+       &quot;elev_lid792_1m&quot;,
+       &quot;elev_ned_30m&quot;,
+       &quot;elev_srtm_30m&quot;,
+       &quot;elev_state_500m&quot;,
+       &quot;elevation&quot;,
+       &quot;elevation_shade&quot;,
+       &quot;facility&quot;,
+       &quot;geology_30m&quot;,
+       &quot;lakes&quot;,
+       &quot;landclass96&quot;,
+       &quot;landcover_1m&quot;,
+       &quot;landuse96_28m&quot;,
+       &quot;lsat7_2002_10&quot;,
+       &quot;lsat7_2002_20&quot;,
+       &quot;lsat7_2002_30&quot;,
+       &quot;lsat7_2002_40&quot;,
+       &quot;lsat7_2002_50&quot;,
+       &quot;lsat7_2002_61&quot;,
+       &quot;lsat7_2002_62&quot;,
+       &quot;lsat7_2002_70&quot;,
+       &quot;lsat7_2002_80&quot;,
+       &quot;ncmask_500m&quot;,
+       &quot;ortho_2001_t792_1m&quot;,
+       &quot;roadsmajor&quot;,
+       &quot;slope&quot;,
+       &quot;soilsID&quot;,
+       &quot;soils_Kfactor&quot;,
+       &quot;streams_derived&quot;,
+       &quot;towns&quot;,
+       &quot;urban&quot;,
+       &quot;zipcodes&quot;,
+       &quot;zipcodes_dbl&quot;
+     ],
+     &quot;region&quot;: {
+       &quot;cells&quot;: &quot;9&quot;,
+       &quot;cols&quot;: &quot;3&quot;,
+       &quot;e&quot;: &quot;645000&quot;,
+       &quot;ewres&quot;: &quot;5000&quot;,
+       &quot;n&quot;: &quot;228500&quot;,
+       &quot;nsres&quot;: &quot;4500&quot;,
+       &quot;projection&quot;: &quot;99&quot;,
+       &quot;rows&quot;: &quot;3&quot;,
+       &quot;s&quot;: &quot;215000&quot;,
+       &quot;w&quot;: &quot;630000&quot;,
+       &quot;zone&quot;: &quot;0&quot;
+     },
+     &quot;stats&quot;: {
+       &quot;cells&quot;: &quot;9&quot;,
+       &quot;coeff_var&quot;: &quot;17.9915982769661&quot;,
+       &quot;max&quot;: &quot;147.101608276367&quot;,
+       &quot;mean&quot;: &quot;115.709356519911&quot;,
+       &quot;mean_of_abs&quot;: &quot;115.709356519911&quot;,
+       &quot;min&quot;: &quot;75.9926223754883&quot;,
+       &quot;n&quot;: &quot;9&quot;,
+       &quot;null_cells&quot;: &quot;0&quot;,
+       &quot;range&quot;: &quot;71.1089859008789&quot;,
+       &quot;stddev&quot;: &quot;20.8179625939249&quot;,
+       &quot;sum&quot;: &quot;1041.3842086792&quot;,
+       &quot;variance&quot;: &quot;433.387566562055&quot;
+     },
+     &quot;stats_zonal&quot;: [
+       [
+         &quot;zone&quot;,
+         &quot;label&quot;,
+         &quot;non_null_cells&quot;,
+         &quot;null_cells&quot;,
+         &quot;min&quot;,
+         &quot;max&quot;,
+         &quot;range&quot;,
+         &quot;mean&quot;,
+         &quot;mean_of_abs&quot;,
+         &quot;stddev&quot;,
+         &quot;variance&quot;,
+         &quot;coeff_var&quot;,
+         &quot;sum&quot;,
+         &quot;sum_abs&quot;
+       ],
+       [
+         &quot;2&quot;,
+         &quot;&quot;,
+         &quot;1&quot;,
+         &quot;0&quot;,
+         &quot;99.7889709472656&quot;,
+         &quot;99.7889709472656&quot;,
+         &quot;0&quot;,
+         &quot;99.7889709472656&quot;,
+         &quot;99.7889709472656&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;99.7889709472656&quot;,
+         &quot;99.7889709472656&quot;
+       ],
+       [
+         &quot;8&quot;,
+         &quot;&quot;,
+         &quot;1&quot;,
+         &quot;0&quot;,
+         &quot;137.68424987793&quot;,
+         &quot;137.68424987793&quot;,
+         &quot;0&quot;,
+         &quot;137.68424987793&quot;,
+         &quot;137.68424987793&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;137.68424987793&quot;,
+         &quot;137.68424987793&quot;
+       ],
+       [
+         &quot;14&quot;,
+         &quot;&quot;,
+         &quot;1&quot;,
+         &quot;0&quot;,
+         &quot;114.471084594727&quot;,
+         &quot;114.471084594727&quot;,
+         &quot;0&quot;,
+         &quot;114.471084594727&quot;,
+         &quot;114.471084594727&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;114.471084594727&quot;,
+         &quot;114.471084594727&quot;
+       ],
+       [
+         &quot;16&quot;,
+         &quot;&quot;,
+         &quot;1&quot;,
+         &quot;0&quot;,
+         &quot;75.9926223754883&quot;,
+         &quot;75.9926223754883&quot;,
+         &quot;0&quot;,
+         &quot;75.9926223754883&quot;,
+         &quot;75.9926223754883&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;75.9926223754883&quot;,
+         &quot;75.9926223754883&quot;
+       ],
+       [
+         &quot;20&quot;,
+         &quot;&quot;,
+         &quot;2&quot;,
+         &quot;0&quot;,
+         &quot;124.611175537109&quot;,
+         &quot;125.171577453613&quot;,
+         &quot;0.560401916503906&quot;,
+         &quot;124.891376495361&quot;,
+         &quot;124.891376495361&quot;,
+         &quot;0.280200958251953&quot;,
+         &quot;0.0785125770053128&quot;,
+         &quot;0.224355729046161&quot;,
+         &quot;249.782752990723&quot;,
+         &quot;249.782752990723&quot;
+       ],
+       [
+         &quot;24&quot;,
+         &quot;&quot;,
+         &quot;1&quot;,
+         &quot;0&quot;,
+         &quot;120.942115783691&quot;,
+         &quot;120.942115783691&quot;,
+         &quot;0&quot;,
+         &quot;120.942115783691&quot;,
+         &quot;120.942115783691&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;0&quot;,
+         &quot;120.942115783691&quot;,
+         &quot;120.942115783691&quot;
+       ]
+     ]
+   },
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 5,
+     &quot;step&quot;: 5
+   },
+   &quot;resource_id&quot;: &quot;resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 0.4396040439605713,
+   &quot;timestamp&quot;: 1530195063.878975,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;http://localhost/api/v3/resources/admin/resource_id-f084adb6-53eb-42eb-abd1-ae2799a53561&quot;
+   },
+   &quot;user_id&quot;: &quot;admin&quot;
+ }
+</code></pre>
+<p>The result of the stdout output parsing for each module is located in
+the "process_results" section of the json response.</p>
+<h2 id="sentinel-2a-ndvi-process-chain">Sentinel-2A NDVI process chain</h2>
+<p>We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:</p>
+<pre><code class="language-bash">export ACTINIA_URL=https://actinia.mundialis.de/latest
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+</code></pre>
+<p>We create a process chain that computes the NDVI from a Sentinel-2A
+scene based on the bands 8 and 4 with the GRASS GIS module <em>r.mapcalc</em>. We
+use the North Carolina sample location <strong>nc_spm_08</strong> as processing
+environment and the computational region of sentinel band B04 for the
+NDVI processing. Then we calculate univariate statistics for the
+Sentinel-2A scene. The computed NDVI raster layer will be exported as
+geotiff file that can be accessed via an URL.</p>
+<p>The following JSON code has 6 process definitions:</p>
+<ol>
+<li>Import of two bands (B04 and B08) of the Sentinel-2A scene
+   <em>S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632</em></li>
+<li>Set the computational region to imported raster layer B04</li>
+<li>Use <em>r.mapcalc</em> to compute the NDVI</li>
+<li>Use <em>r.univar</em> to compute univariate statistics of the computed NDVI
+   raster layer</li>
+<li>Export the computed NDVI as GeoTiff</li>
+</ol>
+<pre><code class="language-json"> {
+  &quot;list&quot;: [{&quot;id&quot;: &quot;importer_1&quot;,
+           &quot;module&quot;: &quot;importer&quot;,
+           &quot;inputs&quot;: [{&quot;import_descr&quot;: {&quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                                        &quot;type&quot;: &quot;sentinel2&quot;,
+                                        &quot;sentinel_band&quot;: &quot;B04&quot;},
+                       &quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;B04&quot;},
+                      {&quot;import_descr&quot;: {&quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                                        &quot;type&quot;: &quot;sentinel2&quot;,
+                                        &quot;sentinel_band&quot;: &quot;B08&quot;},
+                       &quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;B08&quot;}]},
+          {&quot;id&quot;: &quot;g_region_1&quot;,
+           &quot;module&quot;: &quot;g.region&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;raster&quot;,
+                       &quot;value&quot;: &quot;B04&quot;}],
+           &quot;flags&quot;: &quot;g&quot;},
+          {&quot;id&quot;: &quot;rmapcalc_1&quot;,
+           &quot;module&quot;: &quot;r.mapcalc&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;expression&quot;,
+                       &quot;value&quot;: &quot;NDVI = float(B08 - B04)/(B08 + B04)&quot;}]},
+          {&quot;id&quot;: &quot;r_univar_sentinel2&quot;,
+           &quot;module&quot;: &quot;r.univar&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;NDVI&quot;}],
+           &quot;flags&quot;: &quot;g&quot;},
+          {&quot;id&quot;: &quot;exporter_1&quot;,
+           &quot;module&quot;: &quot;exporter&quot;,
+           &quot;outputs&quot;: [{&quot;export&quot;: {&quot;type&quot;: &quot;raster&quot;, &quot;format&quot;: &quot;GTiff&quot;},
+                        &quot;param&quot;: &quot;map&quot;,
+                        &quot;value&quot;: &quot;NDVI&quot;}]}
+          ],
+  &quot;version&quot;: &quot;1&quot;
+ }
+</code></pre>
+<p>Run the process chain asynchronously:</p>
+<pre><code class="language-bash"> JSON='{
+ &quot;list&quot;: [{&quot;id&quot;: &quot;importer_1&quot;,
+           &quot;module&quot;: &quot;importer&quot;,
+           &quot;inputs&quot;: [{&quot;import_descr&quot;: {&quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                                        &quot;type&quot;: &quot;sentinel2&quot;,
+                                        &quot;sentinel_band&quot;: &quot;B04&quot;},
+                       &quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;B04&quot;},
+                      {&quot;import_descr&quot;: {&quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                                        &quot;type&quot;: &quot;sentinel2&quot;,
+                                        &quot;sentinel_band&quot;: &quot;B08&quot;},
+                       &quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;B08&quot;}]},
+          {&quot;id&quot;: &quot;g_region_1&quot;,
+           &quot;module&quot;: &quot;g.region&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;raster&quot;,
+                       &quot;value&quot;: &quot;B04&quot;}],
+           &quot;flags&quot;: &quot;g&quot;},
+          {&quot;id&quot;: &quot;rmapcalc_1&quot;,
+           &quot;module&quot;: &quot;r.mapcalc&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;expression&quot;,
+                       &quot;value&quot;: &quot;NDVI = float(B08 - B04)/(B08 + B04)&quot;}]},
+          {&quot;id&quot;: &quot;r_univar_sentinel2&quot;,
+           &quot;module&quot;: &quot;r.univar&quot;,
+           &quot;inputs&quot;: [{&quot;param&quot;: &quot;map&quot;,
+                       &quot;value&quot;: &quot;NDVI&quot;}],
+           &quot;flags&quot;: &quot;g&quot;},
+          {&quot;id&quot;: &quot;exporter_1&quot;,
+           &quot;module&quot;: &quot;exporter&quot;,
+           &quot;outputs&quot;: [{&quot;export&quot;: {&quot;type&quot;: &quot;raster&quot;, &quot;format&quot;: &quot;GTiff&quot;},
+                        &quot;param&quot;: &quot;map&quot;,
+                        &quot;value&quot;: &quot;NDVI&quot;}]}
+          ],
+ &quot;version&quot;: &quot;1&quot;}'
+
+curl ${AUTH} -X POST &quot;${ACTINIA_URL}/locations/nc_spm_08/processing_async_export&quot; -H &quot;accept: application/json&quot; -H &quot;content-type: application/json&quot; -d &quot;$JSON&quot;
+</code></pre>
+<p>The response requires the polling of the status URL, since the API call
+works asynchronously:</p>
+<pre><code class="language-json">{
+  &quot;accept_datetime&quot;: &quot;2022-07-28 14:07:21.578233&quot;,
+  &quot;accept_timestamp&quot;: 1659017241.5782313,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;asyncephemeralexportresource&quot;,
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;path&quot;: &quot;/api/v3/locations/nc_spm_08/processing_async_export&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export&quot;
+  },
+  &quot;datetime&quot;: &quot;2022-07-28 14:07:21.580321&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Resource accepted&quot;,
+  &quot;process_chain_list&quot;: [],
+  &quot;process_results&quot;: {},
+  &quot;resource_id&quot;: &quot;resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70&quot;,
+  &quot;status&quot;: &quot;accepted&quot;,
+  &quot;time_delta&quot;: 0.002097606658935547,
+  &quot;timestamp&quot;: 1659017241.58032,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+<p>Poll the status of the Sentinel-2A NDVI job and view the result of the
+computation (remember to use your own resource-id):</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70&quot;
+</code></pre>
+<p>The finished response should look like this:</p>
+<pre><code class="language-json">{
+  &quot;accept_datetime&quot;: &quot;2022-07-28 14:07:21.578233&quot;,
+  &quot;accept_timestamp&quot;: 1659017241.5782313,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;asyncephemeralexportresource&quot;,
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;path&quot;: &quot;/api/v3/locations/nc_spm_08/processing_async_export&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export&quot;
+  },
+  &quot;datetime&quot;: &quot;2022-07-28 14:14:42.004376&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;list&quot;: [
+        {
+          &quot;id&quot;: &quot;importer_1&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;import_descr&quot;: {
+                &quot;sentinel_band&quot;: &quot;B04&quot;,
+                &quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                &quot;type&quot;: &quot;sentinel2&quot;
+              },
+              &quot;param&quot;: &quot;map&quot;,
+              &quot;value&quot;: &quot;B04&quot;
+            },
+            {
+              &quot;import_descr&quot;: {
+                &quot;sentinel_band&quot;: &quot;B08&quot;,
+                &quot;source&quot;: &quot;S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+                &quot;type&quot;: &quot;sentinel2&quot;
+              },
+              &quot;param&quot;: &quot;map&quot;,
+              &quot;value&quot;: &quot;B08&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;importer&quot;
+        },
+        {
+          &quot;flags&quot;: &quot;g&quot;,
+          &quot;id&quot;: &quot;g_region_1&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;param&quot;: &quot;raster&quot;,
+              &quot;value&quot;: &quot;B04&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;g.region&quot;
+        },
+        {
+          &quot;id&quot;: &quot;rmapcalc_1&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;param&quot;: &quot;expression&quot;,
+              &quot;value&quot;: &quot;NDVI = float((B08 - B04))/(B08 + B04)&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;r.mapcalc&quot;
+        },
+        {
+          &quot;flags&quot;: &quot;g&quot;,
+          &quot;id&quot;: &quot;r_univar_sentinel2&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;param&quot;: &quot;map&quot;,
+              &quot;value&quot;: &quot;NDVI&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;r.univar&quot;
+        },
+        {
+          &quot;id&quot;: &quot;exporter_1&quot;,
+          &quot;module&quot;: &quot;exporter&quot;,
+          &quot;outputs&quot;: [
+            {
+              &quot;export&quot;: {
+                &quot;format&quot;: &quot;GTiff&quot;,
+                &quot;type&quot;: &quot;raster&quot;
+              },
+              &quot;param&quot;: &quot;map&quot;,
+              &quot;value&quot;: &quot;NDVI&quot;
+            }
+          ]
+        }
+      ],
+      &quot;version&quot;: &quot;1&quot;
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;i.sentinel.download&quot;,
+      &quot;id&quot;: &quot;i_sentinel_download_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+      &quot;mapset_size&quot;: 421,
+      &quot;parameter&quot;: [
+        &quot;datasource=GCS&quot;,
+        &quot;query=identifier=S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+        &quot;output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 36.222164154052734,
+      &quot;stderr&quot;: [
+        &quot;Downloading data into &lt;/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1&gt;...&quot;,
+        &quot;Downloading S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632...&quot;,
+        &quot;\r  0%|          | 0/84 [00:00&lt;?, ?it/s]\r  2%|▏         | 2/84 [00:00&lt;00:09,  8.82it/s]\r  4%|▎ ...&quot;,
+        &quot;Downloaded to /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1/S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632.SAFE&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;i.sentinel.import&quot;,
+      &quot;id&quot;: &quot;i_sentinel_import_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632&quot;,
+      &quot;mapset_size&quot;: 376982877,
+      &quot;parameter&quot;: [
+        &quot;input=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1&quot;,
+        &quot;pattern=(B04_10m|B08_10m)&quot;,
+        &quot;-r&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 344.0564560890198,
+      &quot;stderr&quot;: [
+        &quot;Processing &lt;T18SUE_20220420T154941_B08_10m&gt;...&quot;,
+        &quot;Importing raster map &lt;T18SUE_20220420T154941_B08_10m&gt;...&quot;,
+        &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+        &quot;Estimated target resolution for input band &lt;T18SUE_20220420T154941_B08_10m&gt;: 9.618686330457596&quot;,
+        &quot;Using given resolution for input band &lt;T18SUE_20220420T154941_B08_10m&gt;: 10.0&quot;,
+        &quot;Reprojecting &lt;T18SUE_20220420T154941_B08_10m&gt;...&quot;,
+        &quot;Rounding to integer after reprojection&quot;,
+        &quot;Processing &lt;T18SUE_20220420T154941_B04_10m&gt;...&quot;,
+        &quot;Importing raster map &lt;T18SUE_20220420T154941_B04_10m&gt;...&quot;,
+        &quot;0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100&quot;,
+        &quot;Estimated target resolution for input band &lt;T18SUE_20220420T154941_B04_10m&gt;: 9.618686330457596&quot;,
+        &quot;Using given resolution for input band &lt;T18SUE_20220420T154941_B04_10m&gt;: 10.0&quot;,
+        &quot;Reprojecting &lt;T18SUE_20220420T154941_B04_10m&gt;...&quot;,
+        &quot;Rounding to integer after reprojection&quot;,
+        &quot;Writing metadata to maps...&quot;,
+        &quot;/usr/local/grass/scripts/i.sentinel.import:830: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.&quot;,
+        &quot;Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations&quot;,
+        &quot;  dtype=np.float,&quot;,
+        &quot;/usr/local/grass/scripts/i.sentinel.import:834: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.&quot;,
+        &quot;Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations&quot;,
+        &quot;  dtype=np.float,&quot;,
+        &quot;/usr/local/grass/scripts/i.sentinel.import:846: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.&quot;,
+        &quot;Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations&quot;,
+        &quot;  dtype=np.float,&quot;,
+        &quot;/usr/local/grass/scripts/i.sentinel.import:850: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.&quot;,
+        &quot;Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations&quot;,
+        &quot;  dtype=np.float,&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;g.rename&quot;,
+      &quot;id&quot;: &quot;rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B04&quot;,
+      &quot;mapset_size&quot;: 376982877,
+      &quot;parameter&quot;: [
+        &quot;raster=T18SUE_20220420T154941_B04_10m,B04&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.15042471885681152,
+      &quot;stderr&quot;: [
+        &quot;Rename raster &lt;T18SUE_20220420T154941_B04_10m&gt; to &lt;B04&gt;&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;g.rename&quot;,
+      &quot;id&quot;: &quot;rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B08&quot;,
+      &quot;mapset_size&quot;: 376982877,
+      &quot;parameter&quot;: [
+        &quot;raster=T18SUE_20220420T154941_B08_10m,B08&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.15053868293762207,
+      &quot;stderr&quot;: [
+        &quot;Rename raster &lt;T18SUE_20220420T154941_B08_10m&gt; to &lt;B08&gt;&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;g.region&quot;,
+      &quot;id&quot;: &quot;g_region_1&quot;,
+      &quot;mapset_size&quot;: 376982871,
+      &quot;parameter&quot;: [
+        &quot;raster=B04&quot;,
+        &quot;-g&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.10027408599853516,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;projection=99\nzone=0\nn=269280\ns=155130\nw=769610\ne=883770\nnsres=10\newres=10\nrows=11415\ncols=11416\ncells=130313640\n&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;r.mapcalc&quot;,
+      &quot;id&quot;: &quot;rmapcalc_1&quot;,
+      &quot;mapset_size&quot;: 808176157,
+      &quot;parameter&quot;: [
+        &quot;expression=NDVI = float((B08 - B04))/(B08 + B04)&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 25.457623958587646,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;r.univar&quot;,
+      &quot;id&quot;: &quot;r_univar_sentinel2&quot;,
+      &quot;mapset_size&quot;: 808176157,
+      &quot;parameter&quot;: [
+        &quot;map=NDVI&quot;,
+        &quot;-g&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 5.166007995605469,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;n=120547065\nnull_cells=9766575\ncells=130313640\nmin=-0.468370884656906\nmax=0.720661163330078\nrange=1.18903204798698\nmean=0.25310113195823\nmean_of_abs=0.283006503246459\nstddev=0.219731453415328\nvariance=0.0482819116200123\ncoeff_var=86.8156739226241\nsum=30510598.6057423\n&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;r.out.gdal&quot;,
+      &quot;id&quot;: &quot;exporter_raster_NDVI&quot;,
+      &quot;mapset_size&quot;: 808176157,
+      &quot;parameter&quot;: [
+        &quot;-fmt&quot;,
+        &quot;input=NDVI&quot;,
+        &quot;format=GTiff&quot;,
+        &quot;output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif&quot;,
+        &quot;overviews=5&quot;,
+        &quot;createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 20.729568481445312,
+      &quot;stderr&quot;: [
+        &quot;Checking GDAL data type and nodata value...&quot;,
+        &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+        &quot;Using GDAL data type &lt;Float32&gt;&quot;,
+        &quot;Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.&quot;,
+        &quot;Exporting raster data to GTiff format...&quot;,
+        &quot;ERROR 6: /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif, band 1: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.&quot;,
+        &quot;2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100&quot;,
+        &quot;Building overviews ...&quot;,
+        &quot;r.out.gdal complete. File &lt;/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif&gt; created.&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    }
+  ],
+  &quot;process_results&quot;: {},
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 8,
+    &quot;step&quot;: 8
+  },
+  &quot;resource_id&quot;: &quot;resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70&quot;,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 440.42616844177246,
+  &quot;timestamp&quot;: 1659017682.0043712,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [
+      &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70/NDVI.tif&quot;
+    ],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+</code></pre>
+<p>Use the Link at the end of the response under <code>"resources"</code> to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:</p>
+<p><img alt="image" src="../nc_s2_ndvi_actinia_process_chain.png" /></p>
+<p><strong>Footnotes</strong></p>
+<!---
+https://actinia.mundialis.de/api_docs/ is no longer generated
+--->
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../tutorial_strds_sampling/" class="btn btn-neutral float-left" title="Time-series sampling"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../license/" class="btn btn-neutral float-right" title="License">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../tutorial_strds_sampling/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../license/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
