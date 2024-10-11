@@ -31,7 +31,7 @@ jobs:
     - name: Build the Docker image
       run: docker build . --file docker/actinia-core-alpine/Dockerfile --tag localbuild/testimage:latest
     - name: Scan the image and upload dependency results
-      uses: anchore/sbom-action@4a914bc36a0527cbd2155e1f4665d7cc1e41615b
+      uses: anchore/sbom-action@f5e124a5e5e1d497a692818ae907d3c45829d033
       with:
         image: "localbuild/testimage:latest"
         artifact-name: image.cyclonedx.json
