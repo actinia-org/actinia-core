@@ -33,6 +33,9 @@ from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
+from actinia_core.rest.base.deprecated_locations import (
+    location_deprecated_decorator,
+)
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.rest.base.user_auth import create_dummy_user
 from actinia_core.core.common.app import auth
@@ -50,10 +53,11 @@ from actinia_core.models.response_models import (
 from actinia_core.rest.resource_streamer import RequestStreamerResource
 from actinia_core.rest.resource_management import ResourceManager
 
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -70,6 +74,9 @@ class ResourceBase(Resource):
     # decorators = [log_api_call, check_user_permissions, auth.login_required]
 
     decorators = []
+
+    # Add decorators for deprecated GRASS GIS locations
+    decorators.append(location_deprecated_decorator)
 
     if global_config.LOG_API_CALL is True:
         decorators.append(log_api_call)
