@@ -31,7 +31,7 @@ from pprint import pprint
 from actinia_core.core.common.app import flask_api
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
-from actinia_core.rest.location_management import (
+from actinia_core.rest.project_management import (
     ListProjectsResource,
     ProjectManagementResourceAdminUser,
     ProjectManagementResourceUser,
@@ -129,7 +129,8 @@ __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def create_project_endpoints(projects_url_part="projects"):

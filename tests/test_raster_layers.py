@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
@@ -46,7 +46,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         # Remove potentially existing raster layer
         rv = self.server.delete(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/%s"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/%s"
             % (mapset_name, raster_name),
             headers=self.user_auth_header,
         )
@@ -81,7 +81,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         }
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/processing_async" % mapset_name,
+            + "/projects/nc_spm_08/mapsets/%s/processing_async" % mapset_name,
             headers=self.user_auth_header,
             data=json_dumps(postbody),
             content_type="application/json",
@@ -105,7 +105,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
     def test_list_raster_layers(self):
         rv = self.server.get(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/PERMANENT/raster_layers",
+            + "/projects/nc_spm_08/mapsets/PERMANENT/raster_layers",
             headers=self.user_auth_header,
         )
         print(rv.data.decode())
@@ -126,7 +126,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_raster_layers_pattern(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
             "raster_layers?pattern=lsat*",
             headers=self.user_auth_header,
         )
@@ -148,7 +148,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_raster_layers_empty_list(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
             "raster_layers?pattern=NONE",
             headers=self.user_auth_header,
         )
@@ -177,7 +177,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # # Delete raster layers
         # rv = self.server.delete(
-        #     f"{URL_PREFIX}/locations/nc_spm_08/mapsets/user1/raster_layers?"
+        #     f"{URL_PREFIX}/projects/nc_spm_08/mapsets/user1/raster_layers?"
         #     "pattern=test_delete_layer_*",
         #     headers=self.user_auth_header
         # )
@@ -194,7 +194,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # List raster layer
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/{new_mapset}/"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{new_mapset}/"
             "raster_layers?pattern=test_delete_layer_*",
             headers=self.user_auth_header,
         )
@@ -216,7 +216,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         for map_name in map_list:
             rv = self.server.delete(
                 URL_PREFIX
-                + "/locations/nc_spm_08/mapsets/%s/raster_layers/%s"
+                + "/projects/nc_spm_08/mapsets/%s/raster_layers/%s"
                 % (new_mapset, map_name),
                 headers=self.user_auth_header,
             )
@@ -240,7 +240,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         # Rename raster layer
         rv = self.server.put(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers" % new_mapset,
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers" % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rename_map_list),
             content_type="application/json",
@@ -258,7 +258,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         # Rename raster layer
         rv = self.server.put(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers" % new_mapset,
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers" % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rename_map_list),
             content_type="application/json",
@@ -277,7 +277,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
         for map_name in new_map_list:
             rv = self.server.delete(
                 URL_PREFIX
-                + "/locations/nc_spm_08/mapsets/%s/raster_layers/%s"
+                + "/projects/nc_spm_08/mapsets/%s/raster_layers/%s"
                 % (new_mapset, map_name),
                 headers=self.user_auth_header,
             )

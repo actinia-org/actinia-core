@@ -61,6 +61,7 @@ __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ResourceManagerBase(Resource):
@@ -352,8 +353,8 @@ class ResourceManager(ResourceManagerBase):
             is None
         ):
             return None, None, None
-        # TODO project location
-        project = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        # TODO project project
+        project = re.findall(r"projects\/(.*?)\/", post_url)[0]
         processing_class = global_config.INTERIM_SAVING_ENDPOINTS[endpoint]
         if processing_class == "AsyncEphemeralResource":
             # /projects/<string:project_name>/processing_async

@@ -32,7 +32,7 @@ __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
-
+__email__ = "info@mundialis.de"
 
 USER_ROLES = ["superadmin", "admin", "user", "guest"]
 
@@ -194,7 +194,7 @@ class ActiniaUserBase(object):
         list
 
         Args:
-            project_name (str): Location name
+            project_name (str): Project name
             mapset_list (list): List of mapset names
 
         Example::
@@ -218,7 +218,7 @@ class ActiniaUserBase(object):
         """Remove mapsets from an existing project
 
         Args:
-            project_name (str): Location name
+            project_name (str): Project name
             mapset_list (list): List of mapset names that should be removed
 
         Example::
@@ -234,11 +234,11 @@ class ActiniaUserBase(object):
                 if mapset in self.accessible_datasets[project_name]:
                     self.accessible_datasets[project_name].remove(mapset)
 
-    def remove_location(self, project_name):
+    def remove_project(self, project_name):
         """Remove a project from the accessible datasets
 
         Args:
-            project_name (str): Location name
+            project_name (str): Project name
 
         Example::
 

@@ -40,7 +40,8 @@ __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann, Lina Krisztian"
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class PersistentProcessing(EphemeralProcessing):
@@ -107,7 +108,7 @@ class PersistentProcessing(EphemeralProcessing):
     def _generate_mapset_lock_id(self, user_group, project_name, mapset_name):
         """Generate a unique id to lock a mapset in the redis database
 
-        Locations are user group specific. Hence different user groups may have
+        Projects are user group specific. Hence different user groups may have
         projects with the same names and with equal mapset names.
 
         In the same user group, a project/mapset must be locked to grant

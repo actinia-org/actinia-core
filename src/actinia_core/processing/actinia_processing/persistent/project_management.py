@@ -22,7 +22,7 @@
 #######
 
 """
-Location management
+Project management
 
 TODO: Integrate into the ephemeral process chain approach
 """
@@ -42,7 +42,7 @@ __copyright__ = (
 __maintainer__ = "mundialis"
 
 
-class PersistentLocationCreator(PersistentProcessing):
+class PersistentProjectCreator(PersistentProcessing):
     """Create a new project based on EPSG code"""
 
     def __init__(self, *args):
@@ -51,7 +51,7 @@ class PersistentLocationCreator(PersistentProcessing):
     def _execute(self):
         new_project = self.project_name
 
-        self.project_name = self.config.GRASS_DEFAULT_LOCATION
+        self.project_name = self.config.GRASS_DEFAULT_PROJECT
 
         self._setup()
 

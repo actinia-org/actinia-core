@@ -25,20 +25,20 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
 
-## Access to locations and mapsets in the persistent database
+## Access to projects and mapsets in the persistent database
 
-The following API call lists all available locations in the actinia
+The following API call lists all available projects in the actinia
 persistent database (the `-i` includes the HTTP response headers):
 
 ```bash
- curl ${AUTH} -X GET -i "${ACTINIA_URL}/locations"
+ curl ${AUTH} -X GET -i "${ACTINIA_URL}/projects"
 ```
 
 The output should look similar to this:
 
 ```json
  {
-   "locations": [
+   "projects": [
      "latlong_wgs84",
      "ECAD",
      "nc_spm_08"
@@ -48,10 +48,10 @@ The output should look similar to this:
 ```
 
 To show the region settings and the projection of the GRASS GIS standard
-location *nc_spm_08* the following REST call must be used:
+project *nc_spm_08* the following REST call must be used:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/info"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/info"
 ```
 
 The JSON response is the standard response of the actinia REST API. Most
@@ -70,10 +70,10 @@ The output should look similar to this then:
    "accept_datetime": "2019-08-01 20:30:05.717499",
    "accept_timestamp": 1564691405.7174985,
    "api_info": {
-     "endpoint": "locationmanagementresourceuser",
+     "endpoint": "projectmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v3/locations/nc_spm_08/info",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/info"
+     "path": "/api/v3/projects/nc_spm_08/info",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/info"
    },
    "datetime": "2019-08-01 20:30:05.881138",
    "http_code": 200,
@@ -157,14 +157,14 @@ The output should look similar to this then:
  }
 ```
 
-To list all mapsets located in the location *nc_spm_08* the following
+To list all mapsets located in the project *nc_spm_08* the following
 API call is used:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/mapsets"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets"
 ```
 
-The response of this synchronous call lists all mapsets of the location
+The response of this synchronous call lists all mapsets of the project
 in the *process_results* section:
 
 ```json
@@ -174,8 +174,8 @@ in the *process_results* section:
    "api_info": {
      "endpoint": "listmapsetsresource",
      "method": "GET",
-     "path": "/api/v3/locations/nc_spm_08/mapsets",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/mapsets"
+     "path": "/api/v3/projects/nc_spm_08/mapsets",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets"
    },
    "datetime": "2019-08-01 20:31:11.430294",
    "http_code": 200,
@@ -232,11 +232,11 @@ Using the following API call will show all information about the mapset
 *PERMANENT*:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/nc_spm_08/mapsets/PERMANENT/info"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/PERMANENT/info"
 ```
 
 The response shows the region of the mapset and the projection of the
-location in the *process_results* section:
+project in the *process_results* section:
 
 ```json
  {
@@ -245,8 +245,8 @@ location in the *process_results* section:
    "api_info": {
      "endpoint": "mapsetmanagementresourceuser",
      "method": "GET",
-     "path": "/api/v3/locations/nc_spm_08/mapsets/PERMANENT/info",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/mapsets/PERMANENT/info"
+     "path": "/api/v3/projects/nc_spm_08/mapsets/PERMANENT/info",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/PERMANENT/info"
    },
    "datetime": "2019-08-01 20:31:51.810266",
    "http_code": 200,
@@ -332,12 +332,12 @@ location in the *process_results* section:
 
 ## Access to raster layers in the persistent database
 
-The location ECAD contains yearly climate data (precipitation and
+The project ECAD contains yearly climate data (precipitation and
 temperature) of Europe for 60 years. We list all raster layers of the
-location ECAD in mapset *PERMANENT*:
+project ECAD in mapset *PERMANENT*:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/raster_layers"
 ```
 
 The response lists all raster layers of the mapset in the
@@ -350,8 +350,8 @@ The response lists all raster layers of the mapset in the
    "api_info": {
      "endpoint": "rasterlayersresource",
      "method": "GET",
-     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers"
+     "path": "/api/v3/projects/ECAD/mapsets/PERMANENT/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/raster_layers"
    },
    "datetime": "2018-05-30 09:13:51.745702",
    "http_code": 200,
@@ -414,7 +414,7 @@ Show info about the raster layer
 *temperature_mean_yearly_celsius_60*:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
 ```
 
 The response lists information about the raster layer
@@ -428,8 +428,8 @@ section:
    "api_info": {
      "endpoint": "rasterlayerresource",
      "method": "GET",
-     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
+     "path": "/api/v3/projects/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/raster_layers/temperature_mean_yearly_celsius_60"
    },
    "datetime": "2018-05-30 09:17:15.437797",
    "http_code": 200,
@@ -471,7 +471,7 @@ section:
      "description": "\"generated by r.in.gdal\"",
      "east": "75.5",
      "ewres": "0.25",
-     "location": "ECAD",
+     "project": "ECAD",
      "map": "temperature_mean_yearly_celsius_60",
      "mapset": "PERMANENT",
      "max": "29.406963562753",
@@ -509,14 +509,14 @@ section:
 
 Actinia supports the analysis of time-series data based on the temporal
 framework of GRASS GIS[^3], [^4]. A time-series datatype is located in
-location *ECAD* with mapsets *PERMANENT*. The time-series datatype is
+project *ECAD* with mapsets *PERMANENT*. The time-series datatype is
 called space-time raster dataset (strds) and represents a time-stamped
 series of yearly temperature and precipitation data for Europe.
 
 We list all strds with the following API call:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds"
 ```
 
 We receive two strds in the *process_results* section of the JSON
@@ -529,8 +529,8 @@ response:
    "api_info": {
      "endpoint": "syncstrdslisterresource",
      "method": "GET",
-     "path": "api/v3/locations/ECAD/mapsets/PERMANENT/strds",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds"
+     "path": "api/v3/projects/ECAD/mapsets/PERMANENT/strds",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/strds"
    },
    "datetime": "2018-05-30 09:18:17.351918",
    "http_code": 200,
@@ -589,7 +589,7 @@ Use the following API call to receive information about the strds
 *temperature_mean_1950_2013_yearly_celsius*.
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
 ```
 
 All relevant information about strds
@@ -603,8 +603,8 @@ All relevant information about strds
    "api_info": {
      "endpoint": "strdsmanagementresource",
      "method": "GET",
-     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
+     "path": "/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius"
    },
    "datetime": "2018-05-30 09:19:25.519419",
    "http_code": 200,
@@ -688,7 +688,7 @@ List all raster layers that are registered in the strds
 *temperature_mean_1950_2013_yearly_celsius* with time-stamps:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
 ```
 
 A list of about 60 raster layers with minimum, maximum values,
@@ -702,8 +702,8 @@ section of the JSON response:
    "api_info": {
      "endpoint": "strdsrastermanagement",
      "method": "GET",
-     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
+     "path": "/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/raster_layers"
    },
    "datetime": "2018-05-30 09:20:31.197637",
    "http_code": 200,

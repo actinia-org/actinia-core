@@ -38,7 +38,7 @@ The source code is available here: <https://github.com/actinia-org/actinia-core>
 - Installation
 - Actinia database access
   - Using curl for HTTP requests
-  - Access to locations and mapsets in the persistent database
+  - Access to projects and mapsets in the persistent database
   - Access to raster layers in the persistent database
   - Access to raster time-series in the persistent database
 - Time-series sampling

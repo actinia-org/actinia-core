@@ -79,9 +79,9 @@ def main():
                                                  'parallel on a actinia Service',
                                      formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-    parser.add_argument("location",
+    parser.add_argument("project",
                         type=str,
-                        help="The name of the location to be used for processing")
+                        help="The name of the project to be used for processing")
 
     parser.add_argument("mapset",
                         type=str,
@@ -159,7 +159,7 @@ def main():
         pc[1]["inputs"]["expression"] = "%s"%args.expression
         pc[1]["inputs"]["basename"] = "%s"%args.basename
 
-        url = args.server + "/locations/" + args.location + "/processing_async"
+        url = args.server + "/projects/" + args.project + "/processing_async"
         param=[url, auth, q, 1, pc]
         p = Process(target=start_async_processing, args=param)
         p.start()
@@ -245,7 +245,7 @@ def main():
         # 3. Create new mapset
         start = time.time()
 
-        url = args.server + "/locations/" + args.location + "/mapsets/" + args.mapset
+        url = args.server + "/projects/" + args.project + "/mapsets/" + args.mapset
         print("Create mapset", url)
         r = requests.post(url, auth=auth)
         if r.status_code != 200:
@@ -262,7 +262,7 @@ def main():
         # 4. Merge source mapsets in target mapsets
         start = time.time()
 
-        url = args.server + "/locations/" + args.location + "/mapsets/" + args.mapset + "/merging_async"
+        url = args.server + "/projects/" + args.project + "/mapsets/" + args.mapset + "/merging_async"
         print("Merge mapsets %s into <%s> using URL %s"%(str(mapset_list), args.mapset, url))
         param=[url, auth, q, count + 1, mapset_list]
         p = Process(target=start_async_processing,
@@ -285,7 +285,7 @@ def main():
         # Create the new strds
         start = time.time()
 
-        url = args.server + "/locations/" + args.location + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
+        url = args.server + "/projects/" + args.project + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
               "?temporaltype=%s&title=title&description=description"%threads_list["STDS"]["temporal_type"]
         r = requests.post(url, auth=auth)
         if r.status_code != 200:
@@ -293,7 +293,7 @@ def main():
         else:
             print("Message: " + str(r.text))
 
-        url = args.server + "/locations/" + args.location + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
+        url = args.server + "/projects/" + args.project + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
               "/raster_layers"
         r = requests.put(url, auth=auth, data=simplejson.dumps(threads_list["register"]))
         if r.status_code != 200:
@@ -310,7 +310,7 @@ def main():
         # 6. List all maps from the STRDS
         start = time.time()
 
-        url = args.server + "/locations/" + args.location + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
+        url = args.server + "/projects/" + args.project + "/mapsets/" + args.mapset + "/strds/" + threads_list["STDS"]["name"] + \
               "/raster_layers"
         r = requests.get(url, auth=auth)
         if r.status_code != 200:
@@ -335,7 +335,7 @@ def main():
         if mapset_list:
             for mapset_name in mapset_list:
                 print("Remove temporary mapset", mapset_name)
-                url = args.server + "/locations/" + args.location + "/mapsets/" + mapset_name
+                url = args.server + "/projects/" + args.project + "/mapsets/" + mapset_name
                 r = requests.delete(url, auth=auth)
                 if r.status_code != 200:
                     print("Error code: " + str(r.status_code) + " message: " + str(r.text))
@@ -371,7 +371,7 @@ def mapcal_request(args, count, auth, threads_list,
     mapset_name = args.mapset + "_%s"%id_
     mapset_list.append(mapset_name)
 
-    url = args.server + "/locations/" + args.location + "/mapsets/" + mapset_name + "/processing_async"
+    url = args.server + "/projects/" + args.project + "/mapsets/" + mapset_name + "/processing_async"
 
     pchain = {}
     shift = 0

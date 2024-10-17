@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2021 mundialis GmbH & Co. KG
+# Copyright (c) 2021-2024 mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,9 +34,10 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Julia Haas, Guido Riembauer"
-__copyright__ = "Copyright 2021 mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__author__ = "Julia Haas, Guido Riembauer, Anika Weinmann"
+__copyright__ = "Copyright 2021-2024 mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class MapsetsTestCase(ActiniaResourceTestCaseBase):
@@ -47,9 +48,9 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         "latlong_wgs84": ["PERMANENT"],
     }
     ref_mapsets = []
-    for location in accessible_datasets:
-        for mapset in accessible_datasets[location]:
-            ref_mapsets.append(f"{location}/{mapset}")
+    for project in accessible_datasets:
+        for mapset in accessible_datasets[project]:
+            ref_mapsets.append(f"{project}/{mapset}")
 
     @classmethod
     def setUpClass(cls):
@@ -69,7 +70,7 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
     def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         existing_mapsets = json_load(rv.data)["process_results"]
@@ -77,13 +78,13 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
             if mapset in existing_mapsets:
                 rvdellock = self.server.delete(
                     URL_PREFIX
-                    + "/locations/nc_spm_08/mapsets/%s/lock" % mapset,
+                    + "/projects/nc_spm_08/mapsets/%s/lock" % mapset,
                     headers=self.admin_auth_header,
                 )
                 print(rvdellock.data.decode())
 
                 rvdel = self.server.delete(
-                    URL_PREFIX + "/locations/nc_spm_08/mapsets/%s" % mapset,
+                    URL_PREFIX + "/projects/nc_spm_08/mapsets/%s" % mapset,
                     headers=self.admin_auth_header,
                 )
                 print(rvdel.data.decode())
@@ -93,7 +94,7 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         for mapset in self.test_mapsets:
             self.create_new_mapset(mapset)
             self.server.post(
-                URL_PREFIX + "/locations/nc_spm_08/mapsets/%s/lock" % mapset,
+                URL_PREFIX + "/projects/nc_spm_08/mapsets/%s/lock" % mapset,
                 headers=self.root_auth_header,
             )
         rv = self.server.get(

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
@@ -106,7 +106,7 @@ process_chain_short = {
 class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
     def check_remove_test_mapset(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -124,7 +124,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         if "test_mapset" in mapsets:
             # Delete the mapset if it already exists
             rv = self.server.delete(
-                URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+                URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
                 headers=self.admin_auth_header,
             )
             print(rv.data)
@@ -148,7 +148,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/processing_async",
+            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -156,7 +156,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -175,7 +175,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         rv = self.server.get(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/raster_layers",
+            + "/projects/nc_spm_08/mapsets/test_mapset/raster_layers",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -195,7 +195,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Remove the mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -217,7 +217,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create new mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -234,7 +234,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         # Atemporary mapset will be created and merged in the existing
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/processing_async",
+            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -243,7 +243,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         rv = self.server.get(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/raster_layers",
+            + "/projects/nc_spm_08/mapsets/test_mapset/raster_layers",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -263,7 +263,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Remove the mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -286,7 +286,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create new mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -302,7 +302,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         # Run the processing inside the new mapset
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/processing_async",
+            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -330,7 +330,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         # Second runner
         rv_lock_1 = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/processing_async",
+            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_short),
             content_type="application/json",
@@ -350,7 +350,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         # Third runner
         rv_lock_2 = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/test_mapset/processing_async",
+            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -434,7 +434,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Remove the mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -450,7 +450,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
     def test_4_create_global_mapset(self):
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/PERMANENT/processing_async",
+            + "/projects/nc_spm_08/mapsets/PERMANENT/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",

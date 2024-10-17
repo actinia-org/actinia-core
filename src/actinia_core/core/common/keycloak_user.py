@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,8 +37,9 @@ from actinia_core.core.logging_interface import log
 from actinia_core.core.common.config import global_config
 
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def create_user_from_tokeninfo(token_info):
@@ -119,13 +120,13 @@ class ActiniaKeycloakUser(ActiniaUserBase):
             lm_list = accessible_datasets.split(",")
             for lm in lm_list:
                 if "/" in lm:
-                    location, mapset = lm.split("/")
+                    project, mapset = lm.split("/")
                 else:
-                    location = lm
+                    project = lm
                     mapset = None
-                if location not in datasets:
-                    datasets[location] = []
-                datasets[location].append(mapset)
+                if project not in datasets:
+                    datasets[project] = []
+                datasets[project].append(mapset)
         else:
             datasets = accessible_datasets
         if isinstance(accessible_modules, str):
@@ -239,11 +240,11 @@ class ActiniaKeycloakUser(ActiniaUserBase):
         return credentials
 
     def get_accessible_datasets(self):
-        """Return a dictionary of location:mapset list entries
+        """Return a dictionary of project:mapset list entries
 
         Returns:
             dict:
-            Return a dictionary of location:mapset list entries
+            Return a dictionary of project:mapset list entries
         """
         self._generate_permission_dict()
 

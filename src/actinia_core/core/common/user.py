@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,8 +37,9 @@ from actinia_core.core.common.user_base import (
 )
 
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = "Copyright 2016-2022, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ActiniaUser(ActiniaUserBase):
@@ -129,11 +130,11 @@ class ActiniaUser(ActiniaUserBase):
         return self.db.get_credentials(self.user_id)
 
     def get_accessible_datasets(self):
-        """Return a dictionary of location:mapset list entries
+        """Return a dictionary of project:mapset list entries
 
         Returns:
             dict:
-            Return a dictionary of location:mapset list entries
+            Return a dictionary of project:mapset list entries
         """
 
         self.permissions = self.db.get_credentials(self.user_id)["permissions"]
@@ -413,7 +414,7 @@ class ActiniaUser(ActiniaUserBase):
             user_group (str): The group of the user
             user_role (str): The password
             accessible_datasets (dict): The user role (admin, user, guest)
-            accessible_modules (list): Dict of location:mapset lists
+            accessible_modules (list): Dict of project:mapset lists
             cell_limit (int): Maximum number of cells to process
             process_num_limit (int): The maximum number of processes the user
                                      is allowed to run in a single chain

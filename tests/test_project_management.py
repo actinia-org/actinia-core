@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #######
 
 """
-Tests: Location test case
+Tests: Project test case
 """
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
@@ -35,16 +35,16 @@ except ModuleNotFoundError:
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class LocationTestCase(ActiniaResourceTestCaseBase):
-    def test_list_locations(self):
+class ProjectTestCase(ActiniaResourceTestCaseBase):
+    def test_list_projects(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations", headers=self.user_auth_header
+            URL_PREFIX + "/projects", headers=self.user_auth_header
         )
         print(rv.data)
         self.assertEqual(
@@ -56,14 +56,14 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-        if "nc_spm_08" in json_loads(rv.data)["locations"]:
-            location = "nc_spm_08"
+        if "nc_spm_08" in json_loads(rv.data)["projects"]:
+            project = "nc_spm_08"
 
-        self.assertEqual(location, "nc_spm_08", "Wrong location listed")
+        self.assertEqual(project, "nc_spm_08", "Wrong project listed")
 
-    def test_location_info(self):
+    def test_project_info(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/info",
+            URL_PREFIX + "/projects/nc_spm_08/info",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -84,11 +84,11 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertTrue("cols" in region_settings)
         self.assertTrue("rows" in region_settings)
 
-    def test_location_global_db_error(self):
-        # ERROR: Try to create a location as admin that exists in the global
+    def test_project_global_db_error(self):
+        # ERROR: Try to create a project as admin that exists in the global
         # database
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08",
+            URL_PREFIX + "/projects/nc_spm_08",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -103,16 +103,16 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-    def test_location_creation_and_deletion(self):
-        # Delete a potentially existing location
+    def test_project_creation_and_deletion(self):
+        # Delete a potentially existing project
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.admin_auth_header,
         )
 
-        # Create new location as admin
+        # Create new project as admin
         rv = self.server.post(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -127,9 +127,9 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-        # ERROR: Try to create a location as admin that already exists
+        # ERROR: Try to create a project as admin that already exists
         rv = self.server.post(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -144,9 +144,9 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-        # Delete location
+        # Delete project
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -159,9 +159,9 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-        # ERROR: Delete should fail, since location does not exists
+        # ERROR: Delete should fail, since project does not exists
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -174,16 +174,16 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-    def test_location_creation_and_deletion_as_user(self):
-        # Delete a potentially existing location
+    def test_project_creation_and_deletion_as_user(self):
+        # Delete a potentially existing project
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.user_auth_header,
         )
 
-        # Create new location as user
+        # Create new project as user
         rv = self.server.post(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.user_auth_header,
@@ -191,18 +191,18 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(
             rv.status_code,
             200,
-            "Location creation by user: HTML status code is wrong %i"
+            "Project creation by user: HTML status code is wrong %i"
             % rv.status_code,
         )
         self.assertEqual(
             rv.mimetype,
             "application/json",
-            "Location creation by user: Wrong mimetype %s" % rv.mimetype,
+            "Project creation by user: Wrong mimetype %s" % rv.mimetype,
         )
 
-        # ERROR: Try to create a location as user that already exists
+        # ERROR: Try to create a project as user that already exists
         rv = self.server.post(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.user_auth_header,
@@ -210,53 +210,53 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(
             rv.status_code,
             400,
-            "Location recreation by user: HTML status code is wrong %i"
+            "Project recreation by user: HTML status code is wrong %i"
             % rv.status_code,
         )
         self.assertEqual(
             rv.mimetype,
             "application/json",
-            "Location recreation by user: Wrong mimetype %s" % rv.mimetype,
+            "Project recreation by user: Wrong mimetype %s" % rv.mimetype,
         )
 
-        # Delete location
+        # Delete project
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.user_auth_header,
         )
         self.assertEqual(
             rv.status_code,
             200,
-            "Location deletion by user: HTML status code is wrong %i"
+            "Project deletion by user: HTML status code is wrong %i"
             % rv.status_code,
         )
         self.assertEqual(
             rv.mimetype,
             "application/json",
-            "Location deletion by user: Wrong mimetype %s" % rv.mimetype,
+            "Project deletion by user: Wrong mimetype %s" % rv.mimetype,
         )
 
-        # ERROR: Delete should fail, since location does not exists
+        # ERROR: Delete should fail, since project does not exists
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location",
+            URL_PREFIX + "/projects/test_project",
             headers=self.user_auth_header,
         )
         self.assertEqual(
             rv.status_code,
             400,
-            "Location redeletion by user: HTML status code is wrong %i"
+            "Project redeletion by user: HTML status code is wrong %i"
             % rv.status_code,
         )
         self.assertEqual(
             rv.mimetype,
             "application/json",
-            "Location redeletion by user: Wrong mimetype %s" % rv.mimetype,
+            "Project redeletion by user: Wrong mimetype %s" % rv.mimetype,
         )
 
-    def test_location_creation_and_deletion_as_guest(self):
-        # ERROR: Try to create a location as guest
+    def test_project_creation_and_deletion_as_guest(self):
+        # ERROR: Try to create a project as guest
         rv = self.server.post(
-            URL_PREFIX + "/locations/test_location_user",
+            URL_PREFIX + "/projects/test_project_user",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.guest_auth_header,
@@ -273,7 +273,7 @@ class LocationTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Delete should fail since the guest user is not authorized
         rv = self.server.delete(
-            URL_PREFIX + "/locations/test_location_user",
+            URL_PREFIX + "/projects/test_project_user",
             headers=self.guest_auth_header,
         )
         print(rv.data)

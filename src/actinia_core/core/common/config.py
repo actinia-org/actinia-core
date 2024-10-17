@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,9 +34,10 @@ from json import load as json_load
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 if os.environ.get("DEFAULT_CONFIG_PATH"):
     DEFAULT_CONFIG_PATH = os.environ["DEFAULT_CONFIG_PATH"]
@@ -260,15 +261,15 @@ class Configuration(object):
 
         """GRASS"""
         # The GRASS global database
-        # The GRASS database in which the user locations
+        # The GRASS database in which the user projects
         # are stored. This is the base path, der user group
         # will be added on runtime
         self.GRASS_DATABASE = "%s/actinia/grassdb" % home
-        # The default GRASS location in the global database that
-        # is used for location generation
+        # The default GRASS project in the global database that
+        # is used for project generation
         self.GRASS_USER_DATABASE = "%s/actinia/userdata" % home
         # The directory to store temporary GRASS databases
-        self.GRASS_DEFAULT_LOCATION = "nc_spm_08"
+        self.GRASS_DEFAULT_PROJECT = "nc_spm_08"
         # Directory to store exported resources
         self.GRASS_TMP_DATABASE = "%s/actinia/workspace/temp_db" % home
         self.GRASS_RESOURCE_DIR = "%s/actinia/resources" % home
@@ -532,7 +533,7 @@ class Configuration(object):
         config.set("GRASS", "GRASS_DATABASE", self.GRASS_DATABASE)
         config.set("GRASS", "GRASS_USER_DATABASE", self.GRASS_USER_DATABASE)
         config.set(
-            "GRASS", "GRASS_DEFAULT_LOCATION", self.GRASS_DEFAULT_LOCATION
+            "GRASS", "GRASS_DEFAULT_PROJECT", self.GRASS_DEFAULT_PROJECT
         )
         config.set("GRASS", "GRASS_TMP_DATABASE", self.GRASS_TMP_DATABASE)
         config.set("GRASS", "GRASS_RESOURCE_DIR", self.GRASS_RESOURCE_DIR)
@@ -727,9 +728,14 @@ class Configuration(object):
                     self.GRASS_USER_DATABASE = config.get(
                         "GRASS", "GRASS_USER_DATABASE"
                     )
+                # Deprecated location
                 if config.has_option("GRASS", "GRASS_DEFAULT_LOCATION"):
-                    self.GRASS_DEFAULT_LOCATION = config.get(
+                    self.GRASS_DEFAULT_PROJECT = config.get(
                         "GRASS", "GRASS_DEFAULT_LOCATION"
+                    )
+                elif config.has_option("GRASS", "GRASS_DEFAULT_PROJECT"):
+                    self.GRASS_DEFAULT_PROJECT = config.get(
+                        "GRASS", "GRASS_DEFAULT_PROJECT"
                     )
                 if config.has_option("GRASS", "GRASS_TMP_DATABASE"):
                     self.GRASS_TMP_DATABASE = config.get(

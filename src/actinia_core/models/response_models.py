@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,11 +35,12 @@ from actinia_api import URL_PREFIX
 from actinia_core.core.common.process_chain import GrassModule
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer"
+__author__ = "Sören Gebbert, Julia Haas, Guido Riembauer, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ProgressInfoModel(Schema):
@@ -211,7 +212,7 @@ class MapsetListResponseModel(Schema):
             "items": {"type": "string"},
             "description": (
                 "The names of all available mapsets with"
-                " corresponding locations in the global database"
+                " corresponding projects in the global database"
             ),
         },
     }
@@ -283,8 +284,8 @@ class ApiInfoModel(Schema):
     example = {
         "endpoint": "asyncephemeralresource",
         "method": "POST",
-        "path": f"{URL_PREFIX}/locations/nc_spm_08/processing_async",
-        "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+        "path": f"{URL_PREFIX}/projects/nc_spm_08/processing_async",
+        "request_url": f"http://localhost{URL_PREFIX}/projects/nc_spm_08/"
         "processing_async",
     }
 
@@ -420,8 +421,8 @@ class ProcessingResponseModel(Schema):
         "api_info": {
             "endpoint": "asyncephemeralresource",
             "method": "POST",
-            "path": "/locations/nc_spm_08/processing_async",
-            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+            "path": "/projects/nc_spm_08/processing_async",
+            "request_url": f"http://localhost{URL_PREFIX}/projects/nc_spm_08/"
             "processing_async",
         },
         "datetime": "2017-05-24 22:37:21.608717",
@@ -455,8 +456,8 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
-            "path": "/locations/nc_spm_08/mapsets/PERMANE/info",
-            "request_url": f"http://localhost{URL_PREFIX}/locations/nc_spm_08/"
+            "path": "/projects/nc_spm_08/mapsets/PERMANE/info",
+            "request_url": f"http://localhost{URL_PREFIX}/projects/nc_spm_08/"
             "mapsets/PERMANENT/info",
         },
         "datetime": "2018-05-06 22:02:14.398927",
@@ -810,7 +811,7 @@ class MapsetInfoModel(Schema):
     properties = {
         "projection": {
             "type": "string",
-            "description": "The location projection WKT string",
+            "description": "The project projection WKT string",
         },
         "region": RegionModel,
     }
@@ -874,8 +875,8 @@ class MapsetInfoResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "mapsetmanagementresourceuser",
             "method": "GET",
-            "path": f"{URL_PREFIX}/locations/ECAD/mapsets/PERMANENT/info",
-            "request_url": f"http://localhost{URL_PREFIX}/locations/ECAD/"
+            "path": f"{URL_PREFIX}/projects/ECAD/mapsets/PERMANENT/info",
+            "request_url": f"http://localhost{URL_PREFIX}/projects/ECAD/"
             "mapsets/PERMANENT/info",
         },
         "datetime": "2018-05-02 10:53:20.392509",
@@ -1136,8 +1137,8 @@ class StringListProcessingResultResponseModel(ProcessingResponseModel):
         "api_info": {
             "endpoint": "listmapsetsresource",
             "method": "GET",
-            "path": "/locations/nc_spm_08/mapsets",
-            "request_url": "http://localhost:5000/locations/nc_spm_08/mapsets",
+            "path": "/projects/nc_spm_08/mapsets",
+            "request_url": "http://localhost:5000/projects/nc_spm_08/mapsets",
         },
         "datetime": "2018-05-02 12:02:20.861017",
         "http_code": 200,
@@ -1351,7 +1352,7 @@ class UserInfoResponseModel(Schema):
                     "properties": {},
                     "description": "The persistent GRASS GIS databases the "
                     "user is allowed to use. Contains one object for each "
-                    "location name with an array of strings containing "
+                    "project name with an array of strings containing "
                     "all allowed mapset names. See example for more "
                     "information.",
                 },

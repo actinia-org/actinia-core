@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -28,16 +28,12 @@ Redis server lock interface
 import redis
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
-__credits__ = [
-    "Thünen Institutes of Climate-Smart Agriculture",
-    "https://www.ti.bund.de/en/ak/",
-]
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RedisLockingInterface(object):
@@ -48,7 +44,7 @@ class RedisLockingInterface(object):
     # Redis LUA script to lock e resource
     # Two keys must be provided, the name of the resource and the expiration
     # time in seconds
-    # lock_resource("location/mapset", 30)
+    # lock_resource("project/mapset", 30)
     # Return 1 for success and 0 for unable to acquire lock because
     # resource-lock already exists
     lua_lock_resource = """
@@ -63,7 +59,7 @@ class RedisLockingInterface(object):
     # LUA script to extend the lock valid time
     # Two keys must be provided, the name of the resource and the expiration
     # time in seconds
-    # extend_resource_lock("user/location/mapset", 30)
+    # extend_resource_lock("user/project/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
     local value_exists = redis.call('EXISTS', KEYS[1])
@@ -137,7 +133,7 @@ class RedisLockingInterface(object):
     The lock mechanism can be used to avoid concurrent access to GRASS GIS
     mapsets by several processes. A mapset has a unique id:
 
-        location/mapset
+        project/mapset
 
     That can be used to create a resource lock. Locking and lock checking
     are atomic operations. Hence, it is guaranteed that only a single
@@ -150,7 +146,7 @@ class RedisLockingInterface(object):
 
         Args:
             resource_id (str): Name of the resource to lock, for example
-                               "location/mapset"
+                               "project/mapset"
 
         Returns:
              bool:
@@ -170,7 +166,7 @@ class RedisLockingInterface(object):
 
         Args:
             resource_id (str): Name of the resource to lock, for example
-                               "location/mapset"
+                               "project/mapset"
             expiration (int): The time in seconds for which the lock is
                               acquired
 
@@ -193,7 +189,7 @@ class RedisLockingInterface(object):
 
         Args:
             resource_id (str): Name of the resource to extent the lock, for
-                               example "location/mapset"
+                               example "project/mapset"
             expiration (int): The time in seconds for which the lock is
                               acquired
 
@@ -217,7 +213,7 @@ class RedisLockingInterface(object):
 
         Args:
             resource_id (str): Name of the resource to remove the lock, for
-                               example "location/mapset"
+                               example "project/mapset"
 
         Returns:
             int:
@@ -236,7 +232,7 @@ class RedisLockingInterface(object):
 
 
 def test_locking(r):
-    resource = "location/mapset"
+    resource = "project/mapset"
 
     # Remove the lock if its present
     r.unlock(resource)
