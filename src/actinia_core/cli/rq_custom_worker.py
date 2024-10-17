@@ -62,7 +62,8 @@ __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = (
     "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def main():

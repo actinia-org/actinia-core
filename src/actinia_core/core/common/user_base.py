@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,10 +29,10 @@ from actinia_core.core.common.config import global_config
 
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
-
+__email__ = "info@mundialis.de"
 
 USER_ROLES = ["superadmin", "admin", "user", "guest"]
 
@@ -77,7 +77,7 @@ class ActiniaUserBase(object):
                            unique
             user_group (str): The group of the user
             user_role (str): The user role (superadmin, admin, user, guest)
-            accessible_datasets (dict): Dict of location:mapset lists
+            accessible_datasets (dict): Dict of project:mapset lists
             accessible_modules (list): A list of modules that are allowed to
                                        use
             cell_limit (int): Maximum number of cells to process
@@ -187,19 +187,19 @@ class ActiniaUserBase(object):
         """
         self.accessible_datasets = accessible_datasets
 
-    def add_accessible_dataset(self, location_name, mapset_list):
+    def add_accessible_dataset(self, project_name, mapset_list):
         """Add a dataset to the accessible datasets
 
         If the dataset exists, the mapsets will be extended by the provided
         list
 
         Args:
-            location_name (str): Location name
+            project_name (str): Project name
             mapset_list (list): List of mapset names
 
         Example::
 
-            location_name="nc_spm_08"
+            project_name="nc_spm_08"
 
             mapset_list = ["PERMANENT",
                           "user1",
@@ -207,47 +207,47 @@ class ActiniaUserBase(object):
 
         """
 
-        if location_name not in self.accessible_datasets:
-            self.accessible_datasets[location_name] = mapset_list
+        if project_name not in self.accessible_datasets:
+            self.accessible_datasets[project_name] = mapset_list
         else:
             for mapset in mapset_list:
-                if mapset not in self.accessible_datasets[location_name]:
-                    self.accessible_datasets[location_name].append(mapset)
+                if mapset not in self.accessible_datasets[project_name]:
+                    self.accessible_datasets[project_name].append(mapset)
 
-    def remove_mapsets_from_location(self, location_name, mapset_list):
-        """Remove mapsets from an existing location
+    def remove_mapsets_from_project(self, project_name, mapset_list):
+        """Remove mapsets from an existing project
 
         Args:
-            location_name (str): Location name
+            project_name (str): Project name
             mapset_list (list): List of mapset names that should be removed
 
         Example::
 
-            location_name="nc_spm_08"
+            project_name="nc_spm_08"
 
             mapset_list = ["landsat",]
 
         """
 
-        if location_name in self.accessible_datasets:
+        if project_name in self.accessible_datasets:
             for mapset in mapset_list:
-                if mapset in self.accessible_datasets[location_name]:
-                    self.accessible_datasets[location_name].remove(mapset)
+                if mapset in self.accessible_datasets[project_name]:
+                    self.accessible_datasets[project_name].remove(mapset)
 
-    def remove_location(self, location_name):
-        """Remove a location from the accessible datasets
+    def remove_project(self, project_name):
+        """Remove a project from the accessible datasets
 
         Args:
-            location_name (str): Location name
+            project_name (str): Project name
 
         Example::
 
-            location_name="nc_spm_08"
+            project_name="nc_spm_08"
 
         """
 
-        if location_name in self.accessible_datasets:
-            self.accessible_datasets.pop(location_name)
+        if project_name in self.accessible_datasets:
+            self.accessible_datasets.pop(project_name)
 
     def set_accessible_modules(self, accessible_modules):
         """Set the accessible modules

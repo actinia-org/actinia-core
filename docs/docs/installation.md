@@ -51,7 +51,7 @@ sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 1
 3. Compile and install GRASS GIS and additional modules:
 
 ```bash
-# or some other location of your choice, /tmp will not keep data between reboots
+# or some other project of your choice, /tmp will not keep data between reboots
 cd /tmp
 
 # fetch weekly generated latest snapshot of GRASS GIS stable
@@ -110,7 +110,7 @@ cd ../..
 sudo make install
 ```
 
-4. Download the test datasets ("locations") and place them into a
+4. Download the test datasets ("projects") and place them into a
    specific directory that will be used by actinia as a persistent database:
 
 ```bash
@@ -179,13 +179,13 @@ ACTINIA_VERSION="v3"
 export ACTINIA_URL="http://localhost:5000/api/${ACTINIA_VERSION}"
 export AUTH='-u superadmin:abcdefgh'
 
-curl ${AUTH} -X GET ${ACTINIA_URL}/locations
+curl ${AUTH} -X GET ${ACTINIA_URL}/projects
 ```
 
 The `curl` command call should report back:
 
 ```bash
-{"locations":["nc_spm_08","ECAD","latlong_wgs84"],"status":"success"}
+{"projects":["nc_spm_08","ECAD","latlong_wgs84"],"status":"success"}
 ```
 
 Success and welcome to actinia!

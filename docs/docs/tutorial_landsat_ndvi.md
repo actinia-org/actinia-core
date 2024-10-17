@@ -339,7 +339,7 @@ as well as univariate statistics of the computed NDVI scene.
        "run_time": 0.15161657333374023,
        "stderr": [
          "Default locale settings are missing. GRASS running with C locale.WARNING: Searched for a web browser, but none found",
-         "Creating new GRASS GIS location/mapset...",
+         "Creating new GRASS GIS project/mapset...",
          "Cleaning up temporary files...",
          ""
        ],

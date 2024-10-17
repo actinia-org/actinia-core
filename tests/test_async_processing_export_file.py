@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 # Module  example for r.out.ascii output file export
 file_export = {
@@ -92,7 +92,7 @@ file_export = {
 class AsyncProcessFileExportTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_file_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -123,7 +123,7 @@ class AsyncProcessFileExportTestCase(ActiniaResourceTestCaseBase):
 
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -159,7 +159,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export_s3",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_s3",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -189,7 +189,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     )
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export_s3",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_s3",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -225,7 +225,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export_gcs",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_gcs",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -255,7 +255,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     )
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export_gcs",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_gcs",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",

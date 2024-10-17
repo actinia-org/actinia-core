@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_list_mapsets(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -64,7 +64,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
     def test_mapsets_region_1(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/PERMANENT/info",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/info",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -86,7 +86,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
     def test_mapsets_region_2(self):
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/user1/info",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/user1/info",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -111,7 +111,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Mapset already exists
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -126,7 +126,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Delete mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -141,7 +141,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Delete should fail, since mapset does not exists
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -157,7 +157,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_creation_and_deletion_unprivileged(self):
         # Create new mapsets as unprivileged user
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.guest_auth_header,
         )
         print(rv.data)
@@ -169,7 +169,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Delete mapset as unprivileged user
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
             headers=self.guest_auth_header,
         )
         print(rv.data)
@@ -182,7 +182,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_deletion_permanent_error(self):
         # Delete PERMANENT
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/PERMANENT",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -195,7 +195,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_deletion_global_db_error(self):
         # Delete PERMANENT
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/user1",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/user1",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -208,21 +208,21 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
     def test_mapset_creation_and_locking(self):
         # Unlock mapset for deletion
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
 
         # Delete any existing mapsets
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2",
             headers=self.admin_auth_header,
         )
         print(rv.data)
 
         # Create new mapsets
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -237,7 +237,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Lock mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -252,7 +252,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock(False)
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -270,7 +270,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -285,7 +285,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock (False)
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -303,7 +303,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Delete mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -318,7 +318,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # get mapset lock (False)
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -339,7 +339,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
         # error is logged. Skip until fixed. TODO reactivate
         # https://github.com/actinia-org/actinia-core/issues/487
         # rv = self.server.post(
-        #     URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+        #     URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
         #     headers=self.admin_auth_header,
         # )
         # print(rv.data)
@@ -356,7 +356,7 @@ class MapsetTestCase(ActiniaResourceTestCaseBase):
 
         # Unlock mapset
         rv = self.server.delete(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/test_mapset_2/lock",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset_2/lock",
             headers=self.admin_auth_header,
         )
         print(rv.data)

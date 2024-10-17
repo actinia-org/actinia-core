@@ -34,7 +34,8 @@ from actinia_core.core.common.exceptions import AsyncProcessError
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Lina Krisztian"
 __copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def _change_mapsetname_in_raster_vrt(

@@ -58,7 +58,7 @@ The following user-roles are supported:
 ### 3. user
 - Can run computational tasks in ephemeral and user specific
   databases
-- Can create, modify and delete locations in a user specific
+- Can create, modify and delete projects in a user specific
   database
 - Can create, modify and delete mapsets in user
   specific databases
@@ -81,7 +81,7 @@ Overview table:
 |------|------------|-------|------|-------|------|
 | amount raster cells is unlimited | y | y | limited, selected via redis | limited, selected via redis | - |
 | database access is unlimited                              | y         | only to persistent databases that were granted by a superadmin | limited, defined in redis | limited, defined in redis | - |
-| location/mapset access is unlimited  | y | y | can create, modify and delete locations/mapsets in user specific databases, defined in redis | has access to persistent databases that were granted by a superadmin, defined in redis | - |
+| project/mapset access is unlimited  | y | y | can create, modify and delete projects/mapsets in user specific databases, defined in redis | has access to persistent databases that were granted by a superadmin, defined in redis | - |
 |module access is unlimited  | y | y | can run computational tasks in ephemeral and user specific databases | has very limited access to API calls | - |
 | get, create, delete a single user | y | users with the maximum user-role user of the same user group | n | n | Only normal users (role=user can be created) |
 
@@ -97,7 +97,7 @@ number_of_workers = 3
 
 ## The Actinia databases
 
-Actinia manages GRASS GIS locations in its *persistent database*. User
+Actinia manages GRASS GIS projects in its *persistent database*. User
 are not permitted to modify data in the actinia persistent database, but
 can access all data read-only for processing and visualization. Data in
 the persistent database can only be accessed via HTTP GET API calls.
@@ -113,7 +113,7 @@ database.
 **Summary**
 
 ### 1. Persistent database
-- Read only database with locations and mapsets that can be
+- Read only database with projects and mapsets that can be
   used as processing environment and data source
 - Data can only be accessed using HTTP GET API calls
 
@@ -124,16 +124,16 @@ database.
   removed after the processing is finished
 - Ephemeral databases use persistent databases as processing
   environments to access required data from mapsets in
-  persistent locations
+  persistent projects
 
 ### 3. User specific databases
 - Persistent databases that can be created and modified by a
   specific user group
-- The base for a location in a user specific database can be
-  a location from a persistent database, however mapsets
+- The base for a project in a user specific database can be
+  a project from a persistent database, however mapsets
   names must be unique.
 - A user group can only access a single database with any
-  number of locations
+  number of projects
 
 **Footnotes**
 

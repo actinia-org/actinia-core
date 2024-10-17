@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,12 +29,12 @@ from actinia_core.core.common.redis_base import RedisBaseInterface
 import pickle
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RedisUserInterface(RedisBaseInterface):
@@ -318,7 +318,7 @@ def test_management(r):
     password_hash = "hash"
     user_role = "admin"
     permissions = {
-        "locations": {
+        "projects": {
             "NC": {"mapsets": ["PERMANWENT", "user1"]},
             "ECAD": {"mapsets": ["Temp", "Prec"]},
         },
@@ -380,7 +380,7 @@ def test_management(r):
         password_hash="yellow",
         user_role="user",
         permissions={
-            "locations": {"utm32n": {"mapsets": ["PERMANWENT"]}},
+            "projects": {"utm32n": {"mapsets": ["PERMANWENT"]}},
             "modules": [
                 "i.vi",
             ],
@@ -398,7 +398,7 @@ def test_management(r):
         raise Exception("update does not work")
     if user_creds["user_role"] != "user":
         raise Exception("update does not work")
-    if "utm32n" not in user_creds["permissions"]["locations"]:
+    if "utm32n" not in user_creds["permissions"]["projects"]:
         raise Exception("update does not work")
 
     user_ids = r.list_all_ids()

@@ -6,7 +6,7 @@ Actinia provides the **process chain** approach to specify import,
 processing and export of geodata using the actinia GRASS GIS processing
 system. The process chain must be formulated in JSON. The processing is
 always performed in an ephemeral database. The computational environment
-is based on locations in the persistent database. If required, the
+is based on projects in the persistent database. If required, the
 ephemeral database can be moved into the persistent user database, so
 that the computational results can be used in further processing steps
 or visualized using the actinia rendering REST calls.
@@ -15,7 +15,7 @@ The ephemeral database will be removed after computation. However, all
 raster and vector data that was generated during the processing can be
 exported using gdal/ogr specific datatypes and stored in an object
 storage, outside the actinia environment. Within a process chain we have
-read only access to all raster maps of the persistent database location
+read only access to all raster maps of the persistent database project
 that is used as computational environment.
 
 A process chain is a list of GRASS GIS modules[^1] that will be executed in
@@ -195,8 +195,8 @@ response:
    "api_info": {
      "endpoint": "asyncephemeralresource",
      "method": "POST",
-     "path": "/api/v3/locations/nc_spm_08/processing_async",
-     "request_url": "http://localhost/api/v3/locations/nc_spm_08/processing_async"
+     "path": "/api/v3/projects/nc_spm_08/processing_async",
+     "request_url": "http://localhost/api/v3/projects/nc_spm_08/processing_async"
    },
    "datetime": "2018-06-28 14:11:03.878996",
    "http_code": 200,
@@ -609,7 +609,7 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 
 We create a process chain that computes the NDVI from a Sentinel-2A
 scene based on the bands 8 and 4 with the GRASS GIS module *r.mapcalc*. We
-use the North Carolina sample location **nc_spm_08** as processing
+use the North Carolina sample project **nc_spm_08** as processing
 environment and the computational region of sentinel band B04 for the
 NDVI processing. Then we calculate univariate statistics for the
 Sentinel-2A scene. The computed NDVI raster layer will be exported as
@@ -701,7 +701,7 @@ Run the process chain asynchronously:
           ],
  "version": "1"}'
 
-curl ${AUTH} -X POST "${ACTINIA_URL}/locations/nc_spm_08/processing_async_export" -H "accept: application/json" -H "content-type: application/json" -d "$JSON"
+curl ${AUTH} -X POST "${ACTINIA_URL}/projects/nc_spm_08/processing_async_export" -H "accept: application/json" -H "content-type: application/json" -d "$JSON"
 ```
 
 The response requires the polling of the status URL, since the API call
@@ -714,8 +714,8 @@ works asynchronously:
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v3/locations/nc_spm_08/processing_async_export",
-    "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export"
+    "path": "/api/v3/projects/nc_spm_08/processing_async_export",
+    "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/processing_async_export"
   },
   "datetime": "2022-07-28 14:07:21.580321",
   "http_code": 200,
@@ -751,8 +751,8 @@ The finished response should look like this:
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
-    "path": "/api/v3/locations/nc_spm_08/processing_async_export",
-    "request_url": "http://actinia.mundialis.de/api/v3/locations/nc_spm_08/processing_async_export"
+    "path": "/api/v3/projects/nc_spm_08/processing_async_export",
+    "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/processing_async_export"
   },
   "datetime": "2022-07-28 14:14:42.004376",
   "http_code": 200,

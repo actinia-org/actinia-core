@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,9 +35,10 @@ from actinia_core.processing.actinia_processing.ephemeral.persistent_processing 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class PersistentVectorDeleter(PersistentProcessing):
@@ -45,7 +46,7 @@ class PersistentVectorDeleter(PersistentProcessing):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-        """Delete a specific vector layer from a location in the user database
+        """Delete a specific vector layer from a project in the user database
 
         Use the original mapset for processing
         """

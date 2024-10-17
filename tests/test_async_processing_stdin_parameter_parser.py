@@ -36,6 +36,7 @@ __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 PC_RUNIVAR = {
     "list": [
@@ -105,7 +106,7 @@ PC_GLIST = {
 class AsyncProcessStdinParameterParserTestCase(ActiniaResourceTestCaseBase):
     def test_glist_parsing(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(PC_GLIST),
             content_type="application/json",
@@ -130,7 +131,7 @@ class AsyncProcessStdinParameterParserTestCase(ActiniaResourceTestCaseBase):
     def test_runivar_parsing(self):
         min, max = 0, 21
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(PC_RUNIVAR),
             content_type="application/json",

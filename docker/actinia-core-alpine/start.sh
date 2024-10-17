@@ -7,7 +7,7 @@ mkdir -p /actinia_core/workspace/temp_db
 mkdir -p /actinia_core/workspace/tmp
 mkdir -p /actinia_core/resources
 
-# Create default location in mounted (!) directory
+# Create default project in mounted (!) directory
 [ ! -d "/actinia_core/grassdb/nc_spm_08" ] && grass -e -c 'EPSG:3358' /actinia_core/grassdb/nc_spm_08
 
 actinia-user create -u actinia-gdi -w actinia-gdi -r superadmin -g superadmin -c 100000000000 -n 1000 -t 31536000

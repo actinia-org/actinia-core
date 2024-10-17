@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2021 mundialis GmbH & Co. KG
+# Copyright (c) 2021-2024 mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
 #######
 
 """
-Mapset resources for information across all locations
+Mapset resources for information across all projects
 
 * List all mapset locks
-* List all mapsets in all locations available to a user
+* List all mapsets in all projects available to a user
 """
 
 from flask import jsonify, make_response
@@ -54,9 +54,10 @@ from actinia_core.models.response_models import (
 
 
 __license__ = "GPLv3"
-__author__ = "Julia Haas, Guido Riembauer"
-__copyright__ = "Copyright 2021 mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__author__ = "Julia Haas, Guido Riembauer, Anika Weinmann"
+__copyright__ = "Copyright 2021-2024 mundialis GmbH & Co. KG"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class AllMapsetsListingResourceAdmin(ResourceBase):
@@ -160,9 +161,9 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
             ]["accessible_datasets"]
             redis_interface.disconnect()
             mapsets = []
-            for location in locs_mapsets:
-                for mapset in locs_mapsets[location]:
-                    mapsets.append(f"{location}/{mapset}")
+            for project in locs_mapsets:
+                for mapset in locs_mapsets[project]:
+                    mapsets.append(f"{project}/{mapset}")
             try:
                 return make_response(
                     jsonify(

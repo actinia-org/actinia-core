@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,18 +33,18 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RasterAsyncExport(ActiniaResourceTestCaseBase):
     def test_export(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevation/geotiff_async",
             headers=self.user_auth_header,
         )
@@ -72,7 +72,7 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
     def test_export_region(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevation/geotiff_async_orig",
             headers=self.user_auth_header,
         )
@@ -100,7 +100,7 @@ class RasterAsyncExport(ActiniaResourceTestCaseBase):
 
     def test_export_error(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
             "raster_layers/elevationion/geotiff_async",
             headers=self.user_auth_header,
         )

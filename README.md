@@ -63,28 +63,28 @@ Actinia is also available on [OSGeoLive](https://live.osgeo.org/en/overview/acti
 
 ### Data management
 
-- List all locations that are available in the actinia persistent database:
+- List all projects that are available in the actinia persistent database:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/projects"
 ```
 
-- List all mapsets in the location latlong_wgs84:
+- List all mapsets in the project latlong_wgs84:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/projects/latlong_wgs84/mapsets"
 ```
 
-- List all space-time raster datasets (STRDS) in location latlong_wgs84 and mapset Sentinel_timeseries:
+- List all space-time raster datasets (STRDS) in project latlong_wgs84 and mapset Sentinel_timeseries:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/projects/latlong_wgs84/mapsets/modis_ndvi_global/strds"
 ```
 
 - List all raster map layers of the STRDS:
 
 ```bash
-curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/locations/latlong_wgs84/mapsets/modis_ndvi_global/strds/ndvi_16_5600m/raster_layers"
+curl -u 'demouser:gu3st!pa55w0rd' -X GET "https://actinia.mundialis.de/api/v3/projects/latlong_wgs84/mapsets/modis_ndvi_global/strds/ndvi_16_5600m/raster_layers"
 ```
 
 ### Landsat and Sentinel-2 NDVI computation
