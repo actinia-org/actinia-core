@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ from actinia_core.processing.common.ephemeral_processing import start_job
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -47,7 +47,7 @@ class AsyncEphemeralResource(ResourceBase):
     def __init__(self, resource_id=None, iteration=None, post_url=None):
         ResourceBase.__init__(self, resource_id, iteration, post_url)
 
-    def post(self, location_name):
+    def post(self, project_name):
         """Start an async GRASS processing task, that is completely temporary.
         The generated mapset is only created temporally, all created resources
         will be deleted after the processing finished.
@@ -57,7 +57,7 @@ class AsyncEphemeralResource(ResourceBase):
             and tests!
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
 
         Returns:
             flask.Response:
@@ -169,7 +169,7 @@ class AsyncEphemeralResource(ResourceBase):
 
         """
         # Preprocess the post call
-        rdc = self.preprocess(location_name=location_name)
+        rdc = self.preprocess(project_name=project_name)
 
         if rdc:
             enqueue_job(self.job_timeout, start_job, rdc)

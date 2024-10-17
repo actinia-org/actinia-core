@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ from actinia_core.processing.common.persistent_processing import start_job
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -52,7 +52,7 @@ class AsyncPersistentResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", persistent_processing.post_doc))
-    def post(self, location_name, mapset_name):
+    def post(self, project_name, mapset_name):
         """Execute a user defined process chain that creates a new mapset or
         runs in an existing one.
 
@@ -60,7 +60,7 @@ class AsyncPersistentResource(ResourceBase):
         executed must be provided as JSON payload of the POST request.
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
             mapset_name (str): The name of the mapset
 
         Returns:
@@ -179,7 +179,7 @@ class AsyncPersistentResource(ResourceBase):
         """
         # Preprocess the post call
         rdc = self.preprocess(
-            has_json=True, location_name=location_name, mapset_name=mapset_name
+            has_json=True, project_name=project_name, mapset_name=mapset_name
         )
 
         if rdc:

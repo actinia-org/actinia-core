@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -45,9 +45,9 @@ from actinia_core.processing.common.strds_raster_management import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -57,14 +57,14 @@ class STRDSRasterManagement(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_raster_management.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, project_name, mapset_name, strds_name):
         """
         Get a list of all raster map layers that are registered in a STRDS
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )
@@ -87,14 +87,14 @@ class STRDSRasterManagement(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("put", strds_raster_management.put_doc))
-    def put(self, location_name, mapset_name, strds_name):
+    def put(self, project_name, mapset_name, strds_name):
         """Register raster map layers in a STRDS located in a specific
-        location/mapset.
+        project/mapset.
         """
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )
@@ -109,15 +109,15 @@ class STRDSRasterManagement(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_raster_management.delete_doc))
-    def delete(self, location_name, mapset_name, strds_name):
+    def delete(self, project_name, mapset_name, strds_name):
         """
         Unregister raster map layers from a STRDS located in a specific
-        location/mapset.
+        project/mapset.
         """
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )

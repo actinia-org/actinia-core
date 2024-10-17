@@ -34,7 +34,7 @@ except Exception:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Guido Riembauer"
-__copyright__ = "Copyright 2016-2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 geojson_data = """{
@@ -80,7 +80,7 @@ geojson_data = """{
 
 
 class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
-    location = "nc_spm_08"
+    project = "nc_spm_08"
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
     vector = "testvector"
@@ -126,11 +126,11 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
     def setUp(self):
         # create new temp mapset
         super(UploadVectorLayerTestCase, self).setUp()
-        self.create_new_mapset(self.tmp_mapset, location_name=self.location)
+        self.create_new_mapset(self.tmp_mapset, project_name=self.project)
 
     def tearDown(self):
         # delete mapset
-        self.delete_mapset(self.tmp_mapset, location_name=self.location)
+        self.delete_mapset(self.tmp_mapset, project_name=self.project)
         super(UploadVectorLayerTestCase, self).tearDown()
 
     def test_upload_vector_geojson_userdb(self):
@@ -138,7 +138,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GeoJSON upload and check against reference vector info
         """
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
             f"/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.local_geojson, "rb")}
@@ -156,7 +156,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         )
 
         self.assertVectorInfo(
-            self.location,
+            self.project,
             self.tmp_mapset,
             self.vector,
             self.ref_info,
@@ -168,7 +168,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GPKG upload and check against reference vector info
         """
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
             f"/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.gpkg_file, "rb")}
@@ -187,7 +187,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         )
 
         self.assertVectorInfo(
-            self.location,
+            self.project,
             self.tmp_mapset,
             self.vector,
             self.ref_info,
@@ -200,7 +200,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         vector info
         """
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
+            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
             f"/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.zipped_shp_file, "rb")}
@@ -224,7 +224,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
             {"column": "fid", "type": "DOUBLE PRECISION"},
         ]
         self.assertVectorInfo(
-            self.location,
+            self.project,
             self.tmp_mapset,
             self.vector,
             shp_ref_info,
@@ -234,7 +234,7 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_vector_globaldb_error(self):
         """Test Error if vector (GPKG) is uploaded to global DB"""
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
+            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.mapset}/"
             f"vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.gpkg_file, "rb")}

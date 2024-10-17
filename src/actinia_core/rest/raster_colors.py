@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,9 +41,9 @@ from actinia_core.processing.common.raster_colors import start_job_colors_out
 from actinia_core.processing.common.raster_colors import start_job_from_rules
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -53,11 +53,11 @@ class SyncPersistentRasterColorsResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_colors.get_doc))
-    def get(self, location_name, mapset_name, raster_name):
+    def get(self, project_name, mapset_name, raster_name):
         """Get the color definition of an existing raster map layer.
 
         Args:
-            location_name: Name of the location
+            project_name: Name of the project
             mapset_name: Name of the mapset
             raster_name: name of the raster map
 
@@ -65,7 +65,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=raster_name,
         )
@@ -81,7 +81,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", raster_colors.post_doc))
-    def post(self, location_name, mapset_name, raster_name):
+    def post(self, project_name, mapset_name, raster_name):
         """Set the color definition for an existing raster map layer.
 
         The JSON input should contain the color rules, a predefined color table
@@ -93,7 +93,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
 
 
         Args:
-            location_name: Name of the location
+            project_name: Name of the project
             mapset_name: Name of the mapset
             raster_name: name of the raster map
 
@@ -104,7 +104,7 @@ class SyncPersistentRasterColorsResource(ResourceBase):
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=raster_name,
         )

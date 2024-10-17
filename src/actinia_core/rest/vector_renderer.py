@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -40,9 +40,9 @@ from actinia_core.rest.base.renderer_base import RendererBaseResource
 from actinia_core.processing.common.vector_renderer import start_job
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -52,7 +52,7 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", vector_renderer.get_doc))
-    def get(self, location_name, mapset_name, vector_name):
+    def get(self, project_name, mapset_name, vector_name):
         """Render a single vector map layer"""
         parser = self.create_parser()
         args = parser.parse_args()
@@ -64,7 +64,7 @@ class SyncEphemeralVectorRendererResource(RendererBaseResource):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=vector_name,
         )

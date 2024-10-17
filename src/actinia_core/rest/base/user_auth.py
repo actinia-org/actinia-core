@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2023 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,7 +39,7 @@ from actinia_core.core.messages_logger import MessageLogger
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -263,11 +263,11 @@ def check_user_permissions(f):
     """Check the user permissions
 
     This decorator function verifies the user permissions
-    to access locations, mapsets and modules.
+    to access projects, mapsets and modules.
 
     The function arguments are checked if they contain:
 
-        - location_name
+        - project_name
         - mapset_name
         - module_name
 
@@ -283,12 +283,12 @@ def check_user_permissions(f):
 
     @wraps(f)
     def decorated_function(*args, **kwargs):
-        location_name = None
+        project_name = None
         mapset_name = None
         module_name = None
 
-        if "location_name" in kwargs:
-            location_name = kwargs["location_name"]
+        if "project_name" in kwargs:
+            project_name = kwargs["project_name"]
 
         if "mapset_name" in kwargs:
             mapset_name = kwargs["mapset_name"]
@@ -296,10 +296,10 @@ def check_user_permissions(f):
         if "module_name" in kwargs:
             module_name = kwargs["module_name"]
 
-        ret = check_location_mapset_module_access(
+        ret = check_project_mapset_module_access(
             user_credentials=g.user.get_credentials(),
             config=global_config,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             module_name=module_name,
         )
@@ -313,14 +313,14 @@ def check_user_permissions(f):
     return decorated_function
 
 
-def check_location_mapset_module_access(
+def check_project_mapset_module_access(
     user_credentials,
     config,
-    location_name=None,
+    project_name=None,
     mapset_name=None,
     module_name=None,
 ):
-    """Check the user permissions to access locations, mapsets and modules.
+    """Check the user permissions to access projects, mapsets and modules.
 
     If the user has an admin or superadmin role, the tests are skipped.
 
@@ -328,7 +328,7 @@ def check_location_mapset_module_access(
         user_credentials (dict): The user credentials dictionary
         config (actinia_core.core.common.config.Configuration): The actinia
                                                                 configuration
-        location_name (str): Name of the location to access
+        project_name (str): Name of the project to access
         mapset_name (str): Name of the mapset to access
         module_name (str): Name of the module to access
 
@@ -347,28 +347,28 @@ def check_location_mapset_module_access(
     ):
         return None
 
-    # Mapset without location results in error
-    if location_name is None and mapset_name is not None:
+    # Mapset without project results in error
+    if project_name is None and mapset_name is not None:
         resp = {
             "Status": "error",
-            "Messages": "Internal error, mapset definition without location",
+            "Messages": "Internal error, mapset definition without project",
         }
         return (500, resp)
 
-    if location_name:
-        # Check if the location exists in the global database, if not return
+    if project_name:
+        # Check if the project exists in the global database, if not return
         grass_data_base = config.GRASS_DATABASE
-        location_path = os.path.join(grass_data_base, location_name)
+        project_path = os.path.join(grass_data_base, project_name)
         if (
-            os.path.exists(location_path) is False
-            or os.path.isdir(location_path) is False
-            or os.access(location_path, os.R_OK & os.X_OK) is False
+            os.path.exists(project_path) is False
+            or os.path.isdir(project_path) is False
+            or os.access(project_path, os.R_OK & os.X_OK) is False
         ):
             return None
 
-        # Check if the mapset exists in the global location, if not return
+        # Check if the mapset exists in the global project, if not return
         if mapset_name:
-            mapset_path = os.path.join(location_path, mapset_name)
+            mapset_path = os.path.join(project_path, mapset_name)
 
             if (
                 os.path.exists(mapset_path) is False
@@ -377,16 +377,16 @@ def check_location_mapset_module_access(
             ):
                 return None
 
-        # Check permissions to the global database locations and mapsets
+        # Check permissions to the global database projects and mapsets
         accessible_datasets = user_credentials["permissions"][
             "accessible_datasets"
         ]
 
-        if location_name not in accessible_datasets:
+        if project_name not in accessible_datasets:
             resp = {
                 "Status": "error",
-                "Messages": "Unauthorized access to location <%s>"
-                % location_name,
+                "Messages": "Unauthorized access to project <%s>"
+                % project_name,
             }
             return (401, resp)
 
@@ -394,13 +394,13 @@ def check_location_mapset_module_access(
         if mapset_name:
             # Check if the mapset exists in the global database
             if (
-                not accessible_datasets[location_name]
-                or mapset_name not in accessible_datasets[location_name]
+                not accessible_datasets[project_name]
+                or mapset_name not in accessible_datasets[project_name]
             ):
                 resp = {
                     "Status": "error",
                     "Messages": "Unauthorized access to mapset "
-                    "<%s> in location <%s>" % (mapset_name, location_name),
+                    "<%s> in project <%s>" % (mapset_name, project_name),
                 }
                 return (401, resp)
 

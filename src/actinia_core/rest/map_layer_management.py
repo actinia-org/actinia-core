@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,9 +43,9 @@ from actinia_core.processing.common.map_layer_management import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -57,7 +57,7 @@ class MapsetLayersResource(ResourceBase):
         ResourceBase.__init__(self)
         self.layer_type = layer_type
 
-    def _get(self, location_name, mapset_name):
+    def _get(self, project_name, mapset_name):
         """Return a collection of all available layers
         in the provided mapset.
 
@@ -66,7 +66,7 @@ class MapsetLayersResource(ResourceBase):
             http://<url>?pattern="*"
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
             mapset_name (str): The name of the mapset
 
         Return:
@@ -93,7 +93,7 @@ class MapsetLayersResource(ResourceBase):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -112,7 +112,7 @@ class MapsetLayersResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    def _delete(self, location_name, mapset_name):
+    def _delete(self, project_name, mapset_name):
         """Remove a list of layers identified by a pattern
 
         The g.remove "pattern" parameters must be provided::
@@ -120,7 +120,7 @@ class MapsetLayersResource(ResourceBase):
             http://<url>?pattern="*"
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
             mapset_name (str): The name of the mapset
 
         Return:
@@ -130,7 +130,7 @@ class MapsetLayersResource(ResourceBase):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -149,7 +149,7 @@ class MapsetLayersResource(ResourceBase):
 
         return make_response(jsonify(response_model), http_code)
 
-    def _put(self, location_name, mapset_name):
+    def _put(self, project_name, mapset_name):
         """Rename a list of layers
 
         The old names and new names must be provided as a
@@ -158,7 +158,7 @@ class MapsetLayersResource(ResourceBase):
             [(a, a_new),(b, b_new),(c, c_new), ...]
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
             mapset_name (str): The name of the mapset
 
         Return:
@@ -168,7 +168,7 @@ class MapsetLayersResource(ResourceBase):
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -214,29 +214,29 @@ class RasterLayersResource(MapsetLayersResource):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", map_layer_management.raster_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """Get a list of raster map layer names that are located in a specific
-        location/mapset
+        project/mapset
         """
-        return self._get(location_name, mapset_name)
+        return self._get(project_name, mapset_name)
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("put", map_layer_management.raster_put_doc))
-    def put(self, location_name, mapset_name):
+    def put(self, project_name, mapset_name):
         """Rename a single raster map layer or a list of raster map layers that
-        are located in a specific location/mapset
+        are located in a specific project/mapset
         """
-        return self._put(location_name, mapset_name)
+        return self._put(project_name, mapset_name)
 
     @endpoint_decorator()
     @swagger.doc(
         check_endpoint("delete", map_layer_management.raster_delete_doc)
     )
-    def delete(self, location_name, mapset_name):
+    def delete(self, project_name, mapset_name):
         """Delete a single raster map layer or a list of raster map layer names
-        that are located in a specific location/mapset
+        that are located in a specific project/mapset
         """
-        return self._delete(location_name, mapset_name)
+        return self._delete(project_name, mapset_name)
 
 
 class VectorLayersResource(MapsetLayersResource):
@@ -247,26 +247,26 @@ class VectorLayersResource(MapsetLayersResource):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", map_layer_management.vector_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """Get a list of vector map layer names that are located in a specific
-        location/mapset
+        project/mapset
         """
-        return self._get(location_name, mapset_name)
+        return self._get(project_name, mapset_name)
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("put", map_layer_management.vector_put_doc))
-    def put(self, location_name, mapset_name):
+    def put(self, project_name, mapset_name):
         """Rename a single vector map layer or a list of vector map layers that
-        are located in a specific location/mapset
+        are located in a specific project/mapset
         """
-        return self._put(location_name, mapset_name)
+        return self._put(project_name, mapset_name)
 
     @endpoint_decorator()
     @swagger.doc(
         check_endpoint("delete", map_layer_management.vector_delete_doc)
     )
-    def delete(self, location_name, mapset_name):
+    def delete(self, project_name, mapset_name):
         """Delete a single vector map layer or a list of vector map layer names
-        that are located in a specific location/mapset
+        that are located in a specific project/mapset
         """
-        return self._delete(location_name, mapset_name)
+        return self._delete(project_name, mapset_name)

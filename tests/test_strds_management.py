@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,17 +39,17 @@ except ModuleNotFoundError:
     )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
-location = "nc_spm_08"
+project = "nc_spm_08"
 strds_mapset = "modis_lst"
-strds_url = URL_PREFIX + "/locations/%(location)s/mapsets/%(mapset)s/strds" % {
-    "location": location,
+strds_url = URL_PREFIX + "/projects/%(project)s/mapsets/%(mapset)s/strds" % {
+    "project": project,
     "mapset": strds_mapset,
 }
 strds_data = "LST_Day_monthly"
@@ -128,13 +128,13 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_strds_create_remove(self):
         new_mapset = "strds_test"
-        self.create_new_mapset(mapset_name=new_mapset, location_name=location)
+        self.create_new_mapset(mapset_name=new_mapset, project_name=project)
 
         # Create success
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.admin_auth_header,
             data=json_dumps(
                 {
@@ -158,8 +158,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Create failure since the strds already exists
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.admin_auth_header,
             data=json_dumps(
                 {
@@ -182,8 +182,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Read/check information of the new strds
         rv = self.server.get(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -202,8 +202,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Delete the strds
         rv = self.server.delete(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -218,8 +218,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         # Try to delete the strds again to produce an error
         rv = self.server.delete(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -234,8 +234,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.get(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/strds/test_strds"
-            % (location, new_mapset),
+            + "/projects/%s/mapsets/%s/strds/test_strds"
+            % (project, new_mapset),
             headers=self.user_auth_header,
         )
         print(rv.data)

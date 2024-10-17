@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,23 +35,23 @@ from actinia_core.processing.actinia_processing.ephemeral.persistent_processing 
 from actinia_core.core.common.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
 
 class PersistentLocationCreator(PersistentProcessing):
-    """Create a new location based on EPSG code"""
+    """Create a new project based on EPSG code"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
 
     def _execute(self):
-        new_location = self.location_name
+        new_project = self.project_name
 
-        self.location_name = self.config.GRASS_DEFAULT_LOCATION
+        self.project_name = self.config.GRASS_DEFAULT_LOCATION
 
         self._setup()
 
@@ -59,10 +59,11 @@ class PersistentLocationCreator(PersistentProcessing):
 
         self._create_temp_database()
 
+        # TODO replace old PC style
         pc = {
             "1": {
                 "module": "g.proj",
-                "inputs": {"epsg": epsg_code, "location": new_location},
+                "inputs": {"epsg": epsg_code, "project": new_project},
                 "flags": "t",
             }
         }
@@ -78,17 +79,17 @@ class PersistentLocationCreator(PersistentProcessing):
         self._execute_process_list(process_list)
 
         if os.path.isdir(
-            os.path.join(self.temp_grass_data_base, new_location)
+            os.path.join(self.temp_grass_data_base, new_project)
         ):
             shutil.move(
-                os.path.join(self.temp_grass_data_base, new_location),
+                os.path.join(self.temp_grass_data_base, new_project),
                 self.grass_user_data_base,
             )
         else:
             raise AsyncProcessError(
-                "Unable to create location <%s>" % new_location
+                "Unable to create project <%s>" % new_project
             )
 
         self.finish_message = (
-            "Location <%s> successfully created" % new_location
+            "Project <%s> successfully created" % new_project
         )

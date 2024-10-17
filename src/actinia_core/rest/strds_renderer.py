@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,9 +38,9 @@ from actinia_core.rest.base.endpoint_config import (
 from actinia_core.processing.common.strds_renderer import start_job
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -48,7 +48,7 @@ __maintainer__ = "mundialis"
 class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_renderer.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, project_name, mapset_name, strds_name):
         """
         Render the raster map layers of a specific STRDS as a single image.
         """
@@ -62,7 +62,7 @@ class SyncEphemeralSTRDSRendererResource(RendererBaseResource):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )

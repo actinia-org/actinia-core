@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,7 +38,7 @@ from actinia_core.core.mapset_merge_utils import change_mapsetname
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann, Lina Krisztian"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -48,7 +48,7 @@ class PersistentProcessing(EphemeralProcessing):
 
     This class is designed to run GRASS modules that are specified in a
     process chain in a temporary mapset that later on is copied into the
-    original location or merged into an existing mapset.
+    original project or merged into an existing mapset.
 
     Locking concept:
 
@@ -69,7 +69,7 @@ class PersistentProcessing(EphemeralProcessing):
     If target mapset does not exists:
 
         - After processing finished successfully, copy the
-          temporary mapset to the original user group specific location using
+          temporary mapset to the original user group specific project using
           the target mapset name
         - Unlock the two mapsets after processing is finished, terminated or
           raised an error
@@ -96,26 +96,26 @@ class PersistentProcessing(EphemeralProcessing):
         # We have two mapset lock ids. The target mapset and the temporary
         # mapset
         self.target_mapset_lock_id = self._generate_mapset_lock_id(
-            self.user_group, self.location_name, self.target_mapset_name
+            self.user_group, self.project_name, self.target_mapset_name
         )
 
         self.temp_mapset_lock_id = self._generate_mapset_lock_id(
-            self.user_group, self.location_name, self.temp_mapset_name
+            self.user_group, self.project_name, self.temp_mapset_name
         )
         self.temp_mapset_lock_set = False
 
-    def _generate_mapset_lock_id(self, user_group, location_name, mapset_name):
+    def _generate_mapset_lock_id(self, user_group, project_name, mapset_name):
         """Generate a unique id to lock a mapset in the redis database
 
         Locations are user group specific. Hence different user groups may have
-        locations with the same names and with equal mapset names.
+        projects with the same names and with equal mapset names.
 
-        In the same user group, a location/mapset must be locked to grant
+        In the same user group, a project/mapset must be locked to grant
         exclusive access rights.
 
         Args:
             user_group: The user group used for locking
-            location_name: The location name in which the mapset is located
+            project_name: The project name in which the mapset is located
                            for locking
             mapset_name: The mapset name that should be locked
 
@@ -123,7 +123,7 @@ class PersistentProcessing(EphemeralProcessing):
             The lock id
 
         """
-        return "%s/%s/%s" % (user_group, location_name, mapset_name)
+        return "%s/%s/%s" % (user_group, project_name, mapset_name)
 
     def _lock_temp_mapset(self):
         """Lock the temporary mapset
@@ -153,9 +153,9 @@ class PersistentProcessing(EphemeralProcessing):
         """Check if the target mapset exists
 
         This method will check if the target mapset exists in the global and
-        user group locations.
+        user group projects.
         If the mapset is in the global database, then an AsyncProcessError
-        will be raised, since global location/mapsets can not be modified.
+        will be raised, since global project/mapsets can not be modified.
 
         This method sets in case of success:
 
@@ -168,20 +168,20 @@ class PersistentProcessing(EphemeralProcessing):
         """
         mapset_exists = False
 
-        # Check if the global location is accessible and that the target mapset
+        # Check if the global project is accessible and that the target mapset
         # does not exist
         if self.is_global_database is True:
             # Break if the target mapset exists in the global database
             if (
-                os.path.exists(self.global_location_path)
-                and os.path.isdir(self.global_location_path)
+                os.path.exists(self.global_project_path)
+                and os.path.isdir(self.global_project_path)
                 and os.access(
-                    self.global_location_path, os.R_OK | os.X_OK | os.W_OK
+                    self.global_project_path, os.R_OK | os.X_OK | os.W_OK
                 )
                 is True
             ):
                 self.orig_mapset_path = os.path.join(
-                    self.global_location_path, mapset
+                    self.global_project_path, mapset
                 )
 
                 if os.path.exists(self.orig_mapset_path) is True:
@@ -197,20 +197,20 @@ class PersistentProcessing(EphemeralProcessing):
                         )
             else:
                 raise AsyncProcessError(
-                    "Unable to access global location <%s>"
-                    % self.location_name
+                    "Unable to access global project <%s>"
+                    % self.project_name
                 )
 
         # Always check if the target mapset already exists and set the flag
         # accordingly
         if (
-            os.path.exists(self.user_location_path)
-            and os.path.isdir(self.user_location_path)
-            and os.access(self.user_location_path, os.R_OK | os.X_OK | os.W_OK)
+            os.path.exists(self.user_project_path)
+            and os.path.isdir(self.user_project_path)
+            and os.access(self.user_project_path, os.R_OK | os.X_OK | os.W_OK)
             is True
         ):
             self.orig_mapset_path = os.path.join(
-                self.user_location_path, mapset
+                self.user_project_path, mapset
             )
 
             if os.path.exists(self.orig_mapset_path) is True:
@@ -233,7 +233,7 @@ class PersistentProcessing(EphemeralProcessing):
                 mapset_exists = False
         else:
             raise AsyncProcessError(
-                "Unable to access user location <%s>" % self.location_name
+                "Unable to access user project <%s>" % self.project_name
             )
 
         return mapset_exists
@@ -242,7 +242,7 @@ class PersistentProcessing(EphemeralProcessing):
         """Check if the target mapset exists
 
         This method will check if the target mapset exists in the global and
-        user location.
+        user project.
         If the mapset is in the global database, then an AsyncProcessError will
         be raised, since global mapsets can not be modified.
 
@@ -261,7 +261,7 @@ class PersistentProcessing(EphemeralProcessing):
         mapset
 
         This method will check if the target mapset exists in the global and
-        user location.
+        user project.
         If the mapset is in the global database, then an AsyncProcessError will
         be raised, since global mapsets can not be modified.
 
@@ -293,13 +293,13 @@ class PersistentProcessing(EphemeralProcessing):
 
         if ret == 0:
             raise AsyncProcessError(
-                "Unable to lock location/mapset <%s/%s>, "
+                "Unable to lock project/mapset <%s/%s>, "
                 "resource is already locked"
-                % (self.location_name, self.target_mapset_name)
+                % (self.project_name, self.target_mapset_name)
             )
         self.message_logger.info(
-            "location/mapset <%s/%s> locked"
-            % (self.location_name, self.target_mapset_name)
+            "project/mapset <%s/%s> locked"
+            % (self.project_name, self.target_mapset_name)
         )
 
         # if we manage to come here, the lock was correctly set
@@ -335,9 +335,9 @@ class PersistentProcessing(EphemeralProcessing):
 
         for directory in directories:
             source_path = os.path.join(
-                self.user_location_path, source_mapset, directory
+                self.user_project_path, source_mapset, directory
             )
-            target_path = os.path.join(self.user_location_path, target_mapset)
+            target_path = os.path.join(self.user_project_path, target_mapset)
 
             change_mapsetname(
                 source_path,
@@ -370,7 +370,7 @@ class PersistentProcessing(EphemeralProcessing):
                     )
 
     def _copy_merge_tmp_mapset_to_target_mapset(self):
-        """Copy the temporary mapset into the original location
+        """Copy the temporary mapset into the original project
 
         In case the mapset does not exists, then use the target mapset name,
         otherwise use the temporary mapset name for copying which is later on
@@ -402,7 +402,7 @@ class PersistentProcessing(EphemeralProcessing):
             "Copy temporary mapset from %s to %s"
             % (
                 self.temp_mapset_path,
-                os.path.join(self.user_location_path, self.target_mapset_name),
+                os.path.join(self.user_project_path, self.target_mapset_name),
             )
         )
 
@@ -412,18 +412,18 @@ class PersistentProcessing(EphemeralProcessing):
         # otherwise use the temporary mapset name for copying which is later
         # on merged into the target mapset and then removed
         if self.target_mapset_exists is True:
-            target_path = self.user_location_path + "/."
+            target_path = self.user_project_path + "/."
             message = (
-                "Copy temporary mapset <%s> to target location "
-                "<%s>" % (self.temp_mapset_name, self.location_name)
+                "Copy temporary mapset <%s> to target project "
+                "<%s>" % (self.temp_mapset_name, self.project_name)
             )
         else:
             target_path = os.path.join(
-                self.user_location_path, self.target_mapset_name
+                self.user_project_path, self.target_mapset_name
             )
             message = (
-                "Copy temporary mapset <%s> to target location "
-                "<%s>" % (self.target_mapset_name, self.location_name)
+                "Copy temporary mapset <%s> to target project "
+                "<%s>" % (self.target_mapset_name, self.project_name)
             )
 
         self._send_resource_update(message)
@@ -440,14 +440,14 @@ class PersistentProcessing(EphemeralProcessing):
             if p.returncode != 0:
                 raise AsyncProcessError(
                     "Unable to copy temporary mapset to "
-                    "original location. Copy error "
+                    "original project. Copy error "
                     "stdout: %s stderr: %s returncode: %i"
                     % (stdout_buff, stderr_buff, p.returncode)
                 )
         except Exception as e:
             raise AsyncProcessError(
                 "Unable to copy temporary mapset to "
-                "original location. Exception %s" % str(e)
+                "original project. Exception %s" % str(e)
             )
 
         # Merge the temp mapset into the target mapset in case the target
@@ -457,7 +457,7 @@ class PersistentProcessing(EphemeralProcessing):
                 self.temp_mapset_name, self.target_mapset_name
             )
             shutil.rmtree(
-                os.path.join(self.user_location_path, self.temp_mapset_name)
+                os.path.join(self.user_project_path, self.temp_mapset_name)
             )
             # remove interim results
             if self.interim_result.saving_interim_results is True:
@@ -588,7 +588,7 @@ class PersistentProcessing(EphemeralProcessing):
 
         # Execute the process list
         self._execute_process_list(process_list)
-        # Copy local mapset to original location, merge mapsets
+        # Copy local mapset to original project, merge mapsets
         # if necessary
         self._copy_merge_tmp_mapset_to_target_mapset()
         # Parse the module sdtout outputs and create the results

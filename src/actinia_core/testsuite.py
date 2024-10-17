@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2019 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,9 +43,9 @@ from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -339,9 +339,9 @@ class ActiniaTestCaseBase(unittest.TestCase):
         time.sleep(0.4)
         return resp_data
 
-    def assertRasterInfo(self, location, mapset, raster, ref_info, header):
+    def assertRasterInfo(self, project, mapset, raster, ref_info, header):
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
             f"raster_layers/{raster}"
         )
         rv = self.server.get(url, headers=header)
@@ -360,9 +360,9 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 ),
             )
 
-    def assertVectorInfo(self, location, mapset, vector, ref_info, header):
+    def assertVectorInfo(self, project, mapset, vector, ref_info, header):
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
             f"vector_layers/{vector}"
         )
         rv = self.server.get(url, headers=header)
@@ -381,34 +381,34 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 ),
             )
 
-    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
-        self.delete_mapset(mapset_name, location_name)
+    def create_new_mapset(self, mapset_name, project_name="nc_spm_08"):
+        self.delete_mapset(mapset_name, project_name)
         # Create new mapset
         self.server.post(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            + "/projects/%s/mapsets/%s" % (project_name, mapset_name),
             headers=self.admin_auth_header,
         )
 
-    def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
+    def delete_mapset(self, mapset_name, project_name="nc_spm_08"):
         # Unlock mapset for deletion
         self.server.delete(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s/lock" % (location_name, mapset_name),
+            + "/projects/%s/mapsets/%s/lock" % (project_name, mapset_name),
             headers=self.admin_auth_header,
         )
 
         # Delete existing mapset
         self.server.delete(
             URL_PREFIX
-            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            + "/projects/%s/mapsets/%s" % (project_name, mapset_name),
             headers=self.admin_auth_header,
         )
 
-    def create_vector_layer(self, location, mapset, vector, region, parameter):
+    def create_vector_layer(self, project, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
             f"vector_layers/{vector}"
         )
         rv = self.server.delete(url, headers=self.user_auth_header)
@@ -440,7 +440,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
             "version": "1",
         }
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
             f"processing_async"
         )
         rv = self.server.post(

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,9 +33,9 @@ from actinia_core.core.common.exceptions import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -45,7 +45,7 @@ class PersistentMapsetMerger(PersistentProcessing):
 
     This class is designed to run GRASS modules that are specified in a process
     chain in a temporary mapset that later on is copied into the original
-    location.
+    project.
 
     If the processing should be run in an existing mapset, the original mapset
     will be used for processing.
@@ -90,7 +90,7 @@ class PersistentMapsetMerger(PersistentProcessing):
         # maximum
         lock_id = "%s/%s/%s" % (
             self.user_group,
-            self.location_name,
+            self.project_name,
             mapset_name,
         )
         ret = self.lock_interface.lock(

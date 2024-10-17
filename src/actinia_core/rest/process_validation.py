@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -42,9 +42,9 @@ from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.process_validation import start_job
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
@@ -54,12 +54,12 @@ class AsyncProcessValidationResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", process_validation.post_doc))
-    def post(self, location_name):
+    def post(self, project_name):
         """Validate a process chain asynchronously, check the provided sources
         and the mapsets."""
 
         rdc = self.preprocess(
-            has_json=True, has_xml=True, location_name=location_name
+            has_json=True, has_xml=True, project_name=project_name
         )
 
         if rdc:
@@ -75,12 +75,12 @@ class SyncProcessValidationResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", process_validation.post_doc))
-    def post(self, location_name):
+    def post(self, project_name):
         """Validate a process chain synchronously, check the provided sources
         and the mapsets."""
 
         rdc = self.preprocess(
-            has_json=True, has_xml=True, location_name=location_name
+            has_json=True, has_xml=True, project_name=project_name
         )
 
         if rdc:

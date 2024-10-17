@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -55,29 +55,29 @@ from actinia_core.processing.common.mapset_management import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika, Julia Haas"
+__author__ = "Sören Gebbert, Carmen Tawalika, Julia Haas, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis"
 
 
 class ListMapsetsResource(ResourceBase):
-    """List all mapsets in a location"""
+    """List all mapsets in a project"""
 
     layer_type = None
 
     # @check_queue_type_overwrite()
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_doc))
-    def get(self, location_name):
+    def get(self, project_name):
         """
-        Get a list of all mapsets that are located in a specific location.
+        Get a list of all mapsets that are located in a specific project.
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name="PERMANENT",
         )
         if rdc:
@@ -102,15 +102,15 @@ class MapsetManagementResourceUser(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_user_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """
         Get the current computational region of the mapset and the projection
-        of the location as WKT string.
+        of the project as WKT string.
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -142,12 +142,12 @@ class MapsetManagementResourceAdmin(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", mapset_management.post_user_doc))
-    def post(self, location_name, mapset_name):
-        """Create a new mapset in an existing location."""
+    def post(self, project_name, mapset_name):
+        """Create a new mapset in an existing project."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -155,13 +155,13 @@ class MapsetManagementResourceAdmin(ResourceBase):
         http_code, response_model = self.wait_until_finish()
         return make_response(jsonify(response_model), http_code)
 
-    def put(self, location_name, mapset_name):
+    def put(self, project_name, mapset_name):
         """Modify the region of a mapset
 
         TODO: Implement region setting
 
         Args:
-            location_name (str): Name of the location
+            project_name (str): Name of the project
             mapset_name (str): Name of the mapset
 
         Returns:
@@ -173,12 +173,12 @@ class MapsetManagementResourceAdmin(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_user_doc))
-    def delete(self, location_name, mapset_name):
+    def delete(self, project_name, mapset_name):
         """Delete an existing mapset"""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -201,12 +201,12 @@ class MapsetLockManagementResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", mapset_management.get_lock_doc))
-    def get(self, location_name, mapset_name):
-        """Get the location/mapset lock status."""
+    def get(self, project_name, mapset_name):
+        """Get the project/mapset lock status."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -218,12 +218,12 @@ class MapsetLockManagementResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", mapset_management.post_lock_doc))
-    def post(self, location_name, mapset_name):
-        """Create a location/mapset lock."""
+    def post(self, project_name, mapset_name):
+        """Create a project/mapset lock."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -233,12 +233,12 @@ class MapsetLockManagementResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_lock_doc))
-    def delete(self, location_name, mapset_name):
-        """Delete a location/mapset lock."""
+    def delete(self, project_name, mapset_name):
+        """Delete a project/mapset lock."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 

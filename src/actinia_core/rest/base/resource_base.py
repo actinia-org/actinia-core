@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -306,7 +306,7 @@ class ResourceBase(Resource):
         self,
         has_json=True,
         has_xml=False,
-        location_name=None,
+        project_name=None,
         mapset_name=None,
         map_name=None,
         process_chain_list=None,
@@ -324,7 +324,7 @@ class ResourceBase(Resource):
                              otherwise
             has_xml (bool): Set True if the request has XML data, False
                             otherwise
-            location_name (str): The name of the location to work in
+            project_name (str): The name of the project to work in
             mapset_name (str): The name of the target mapset in which the
                                computation should be performed
             map_name: The name of the map or other resource (raster, vector,
@@ -423,7 +423,7 @@ class ResourceBase(Resource):
             orig_time=self.orig_time,
             orig_datetime=self.orig_datetime,
             config=global_config,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=map_name,
         )
