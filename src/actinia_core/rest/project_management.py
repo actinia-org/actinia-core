@@ -49,9 +49,9 @@ from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
 from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.core.utils import ensure_valid_path
-from actinia_core.processing.common.location_management import (
+from actinia_core.processing.common.project_management import (
     read_current_region,
-    create_location,
+    create_project,
 )
 
 __license__ = "GPLv3"
@@ -65,14 +65,14 @@ __email__ = "info@mundialis.de"
 
 class ListProjectsResource(ResourceBase):
     """This resource represents GRASS GIS database directory
-    that contains locations.
+    that contains projects.
     """
 
     def __init__(self):
         ResourceBase.__init__(self)
 
     """
-    Return a list of all available locations that are located in the GRASS
+    Return a list of all available projects that are located in the GRASS
     database
     """
     layer_type = None
@@ -80,8 +80,8 @@ class ListProjectsResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", location_management.get_doc))
     def get(self):
-        """Get a list of all available locations"""
-        locations = []
+        """Get a list of all available projects"""
+        projects = []
 
         if os.path.isdir(self.grass_data_base):
             dirs = os.listdir(self.grass_data_base)
@@ -96,7 +96,7 @@ class ListProjectsResource(ResourceBase):
                         mapset_path, os.R_OK & os.X_OK
                     ):
                         # Check access rights to the global database
-                        # Super admin can see all locations
+                        # Super admin can see all projects
                         if (
                             self.has_superadmin_role
                             or dir
@@ -104,8 +104,8 @@ class ListProjectsResource(ResourceBase):
                                 "accessible_datasets"
                             ]
                         ):
-                            locations.append(dir)
-        # List all locations in the user database
+                            projects.append(dir)
+        # List all projects in the user database
         user_database = os.path.join(
             self.grass_user_data_base, self.user_group
         )
@@ -121,12 +121,12 @@ class ListProjectsResource(ResourceBase):
                     if os.path.isdir(mapset_path) and os.access(
                         mapset_path, os.R_OK & os.X_OK
                     ):
-                        locations.append(dir)
-        if locations:
+                        projects.append(dir)
+        if projects:
             return make_response(
                 jsonify(
                     LocationListResponseModel(
-                        status="success", locations=locations
+                        status="success", projects=projects
                     )
                 ),
                 200,
@@ -144,22 +144,22 @@ class ListProjectsResource(ResourceBase):
 
 
 class ProjectManagementResourceUser(ResourceBase):
-    """This class returns information about a specific location"""
+    """This class returns information about a specific project"""
 
     def __init__(self):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", location_management.get_user_doc))
-    def get(self, location_name):
+    def get(self, project_name):
         """
-        Get the location projection and current computational region of the
+        Get the project projection and current computational region of the
         PERMANENT mapset
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name="PERMANENT",
         )
         if rdc:
@@ -177,7 +177,7 @@ class ProjectManagementResourceUser(ResourceBase):
 
 
 class ProjectManagementResourceAdminUser(ResourceBase):
-    """This class manages the creation, deletion and modification of locations
+    """This class manages the creation, deletion and modification of projects
 
     This is only allowed for administrators and users
     """
@@ -194,27 +194,27 @@ class ProjectManagementResourceAdminUser(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", location_management.delete_user_doc))
-    def delete(self, location_name):
+    def delete(self, project_name):
         """
-        Delete an existing location and everything inside from the user
+        Delete an existing project and everything inside from the user
         database.
         """
-        # Delete only locations from the user database
-        location = ensure_valid_path(
-            [self.grass_user_data_base, self.user_group, location_name]
+        # Delete only projects from the user database
+        project = ensure_valid_path(
+            [self.grass_user_data_base, self.user_group, project_name]
         )
-        permanent_mapset = ensure_valid_path([location, "PERMANENT"])
+        permanent_mapset = ensure_valid_path([project, "PERMANENT"])
         wind_file = ensure_valid_path([permanent_mapset, "WIND"])
-        # Check the location path, only "valid" locations can be deleted
-        if os.path.isdir(location):
+        # Check the project path, only "valid" projects can be deleted
+        if os.path.isdir(project):
             if os.path.isdir(permanent_mapset) and os.path.isfile(wind_file):
                 try:
-                    shutil.rmtree(location)
+                    shutil.rmtree(project)
                     return make_response(
                         jsonify(
                             SimpleResponseModel(
                                 status="success",
-                                message="location %s deleted" % location_name,
+                                message="Project %s deleted" % project_name,
                             )
                         ),
                         200,
@@ -224,8 +224,8 @@ class ProjectManagementResourceAdminUser(ResourceBase):
                         jsonify(
                             SimpleResponseModel(
                                 status="error",
-                                message="Unable to delete location "
-                                f"{location_name} Exception {e}",
+                                message="Unable to delete project "
+                                f"{project_name} Exception {e}",
                             )
                         ),
                         500,
@@ -235,7 +235,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
             jsonify(
                 SimpleResponseModel(
                     status="error",
-                    message="location %s does not exists" % location_name,
+                    message="Project %s does not exists" % project_name,
                 )
             ),
             400,
@@ -243,38 +243,38 @@ class ProjectManagementResourceAdminUser(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", location_management.post_user_doc))
-    def post(self, location_name):
-        """Create a new location based on EPSG code in the user database."""
-        # Create only new locations if they did not exist in the global
+    def post(self, project_name):
+        """Create a new project based on EPSG code in the user database."""
+        # Create only new projects if they did not exist in the global
         # database
-        location = ensure_valid_path([self.grass_data_base, location_name])
+        project = ensure_valid_path([self.grass_data_base, project_name])
 
-        # Check the location path
-        if os.path.isdir(location):
+        # Check the project path
+        if os.path.isdir(project):
             return self.get_error_response(
-                message="Unable to create location. "
-                "Location <%s> exists in global database." % location_name
+                message="Unable to create project. "
+                "Location <%s> exists in global database." % project_name
             )
 
         # Check also for the user database
-        location = ensure_valid_path(
-            [self.grass_user_data_base, self.user_group, location_name]
+        project = ensure_valid_path(
+            [self.grass_user_data_base, self.user_group, project_name]
         )
-        # Check the location path
-        if os.path.isdir(location):
+        # Check the project path
+        if os.path.isdir(project):
             return self.get_error_response(
-                message="Unable to create location. "
-                "Location <%s> exists in user database." % location_name
+                message="Unable to create project. "
+                "Location <%s> exists in user database." % project_name
             )
 
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name="PERMANENT",
         )
         if rdc:
-            enqueue_job(self.job_timeout, create_location, rdc)
+            enqueue_job(self.job_timeout, create_project, rdc)
             http_code, response_model = self.wait_until_finish()
         else:
             http_code, response_model = pickle.loads(self.response_data)

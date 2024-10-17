@@ -224,7 +224,8 @@ class GrassGisRC(ProcessLogging):
     def __write(self):
         try:
             gisrc = open(self.__gisrc_ile, "w")
-            gisrc.write("project_name: %s\n" % self.project_name)
+            # TODO with GRASS GIS 9
+            gisrc.write("LOCATION_NAME: %s\n" % self.project_name)
             gisrc.write("MAPSET: %s\n" % self.mapset)
             gisrc.write("DIGITIZER: none\n")
             gisrc.write("GISDBASE: %s\n" % self.gisdbase)
