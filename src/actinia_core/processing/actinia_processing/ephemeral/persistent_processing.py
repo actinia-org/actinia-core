@@ -198,8 +198,7 @@ class PersistentProcessing(EphemeralProcessing):
                         )
             else:
                 raise AsyncProcessError(
-                    "Unable to access global project <%s>"
-                    % self.project_name
+                    "Unable to access global project <%s>" % self.project_name
                 )
 
         # Always check if the target mapset already exists and set the flag

@@ -51,9 +51,7 @@ strds_data = "LST_Day_monthly"
 
 
 class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
-    def create_raster_layer(
-        self, project_name, mapset_name, raster_name, val
-    ):
+    def create_raster_layer(self, project_name, mapset_name, raster_name, val):
         # Remove potentially existing raster layer
         rv = self.server.delete(
             URL_PREFIX

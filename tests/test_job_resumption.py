@@ -1086,8 +1086,7 @@ class JobResumptionPersistentProcessingTestCase(
         if self.mapset_created is True:
             rv = self.server.delete(
                 URL_PREFIX
-                + "/projects/%s/mapsets/%s/lock"
-                % (self.project, self.mapset),
+                + "/projects/%s/mapsets/%s/lock" % (self.project, self.mapset),
                 headers=self.admin_auth_header,
             )
             self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)

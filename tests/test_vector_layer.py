@@ -152,8 +152,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     def test_layer_info(self):
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
             "boundary_county",
             headers=self.user_auth_header,
         )
@@ -178,8 +177,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_layer_info_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
             "boundary_county_nope",
             headers=self.user_auth_header,
         )

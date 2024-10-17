@@ -79,9 +79,7 @@ class PersistentProjectCreator(PersistentProcessing):
 
         self._execute_process_list(process_list)
 
-        if os.path.isdir(
-            os.path.join(self.temp_grass_data_base, new_project)
-        ):
+        if os.path.isdir(os.path.join(self.temp_grass_data_base, new_project)):
             shutil.move(
                 os.path.join(self.temp_grass_data_base, new_project),
                 self.grass_user_data_base,
@@ -91,6 +89,4 @@ class PersistentProjectCreator(PersistentProcessing):
                 "Unable to create project <%s>" % new_project
             )
 
-        self.finish_message = (
-            "Project <%s> successfully created" % new_project
-        )
+        self.finish_message = "Project <%s> successfully created" % new_project

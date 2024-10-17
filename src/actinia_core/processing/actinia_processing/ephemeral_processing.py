@@ -909,9 +909,7 @@ class EphemeralProcessing(object):
             # temporary project
             for mapset_path, mapset in mapsets_to_link:
                 if (
-                    os.path.isdir(
-                        os.path.join(self.temp_project_path, mapset)
-                    )
+                    os.path.isdir(os.path.join(self.temp_project_path, mapset))
                     is False
                 ):
                     os.symlink(
@@ -1027,13 +1025,10 @@ class EphemeralProcessing(object):
         else:
             if global_db is True:
                 msg = (
-                    "Unable to access global project <%s>"
-                    % self.project_name
+                    "Unable to access global project <%s>" % self.project_name
                 )
             else:
-                msg = (
-                    "Unable to access user project <%s>" % self.project_name
-                )
+                msg = "Unable to access user project <%s>" % self.project_name
             raise AsyncProcessError(msg)
         return mapsets, mapsets_to_link
 

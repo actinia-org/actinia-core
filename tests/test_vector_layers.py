@@ -44,8 +44,7 @@ __email__ = "info@mundialis.de"
 class VectorLayersTestCase(ActiniaResourceTestCaseBase):
     def test_list_vector_layers(self):
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers",
             headers=self.user_auth_header,
         )
         print(rv.data)

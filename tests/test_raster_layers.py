@@ -104,8 +104,7 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_raster_layers(self):
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/raster_layers",
+            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/raster_layers",
             headers=self.user_auth_header,
         )
         print(rv.data.decode())
