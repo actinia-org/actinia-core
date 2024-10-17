@@ -62,9 +62,10 @@ def location_deprecated_decorator(func):
         grass_version_s = G_VERSION["version"]
         grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
         if (
-                "locations" in current_url and grass_version >= [8, 4]
-                and grass_version < [9, 0]
-            ):
+            "locations" in current_url
+            and grass_version >= [8, 4]
+            and grass_version < [9, 0]
+        ):
             # deprecation warning inside headers for GRASS >= 8.4
             result = func(*args, **kwargs)
             result.headers.set("Deprecation", "With GRASS GIS 8.4")
@@ -88,7 +89,7 @@ def location_deprecated_decorator(func):
                     SimpleResponseModel(
                         status="error",
                         message="Not Found. The requested URL is only "
-                        "available from GRASS GIS version 8.4."
+                        "available from GRASS GIS version 8.4.",
                     )
                 ),
                 404,

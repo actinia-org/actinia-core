@@ -137,10 +137,14 @@ __maintainer__ = "mundialis"
 def create_core_endpoints():
 
     # Project management
-    flask_api.add_resource(ListLocationsResource, "/locations", endpoint="/locations")
+    flask_api.add_resource(
+        ListLocationsResource, "/locations", endpoint="/locations"
+    )
 
     # Deprectated locationmanagement
-    flask_api.add_resource(ListLocationsResource, "/projects", endpoint="/projects")
+    flask_api.add_resource(
+        ListLocationsResource, "/projects", endpoint="/projects"
+    )
     flask_api.add_resource(
         LocationManagementResourceUser,
         "/locations/<string:location_name>/info",
