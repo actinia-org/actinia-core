@@ -37,7 +37,8 @@ __author__ = "Sören Gebbert, Julia Haas"
 __copyright__ = (
     "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class VersionHealthTestCase(ActiniaResourceTestCaseBase):

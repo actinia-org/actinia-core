@@ -45,7 +45,8 @@ __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class SyncPersistentRasterColorsResource(ResourceBase):

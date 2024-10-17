@@ -33,7 +33,8 @@ __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann, Carmen Tawalika"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 PersistentProcessing = try_import(
