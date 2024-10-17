@@ -1,5 +1,5 @@
-ListLocationsResource;GET
-LocationManagementResourceUser;GET
+ListProjectsResource;GET
+ProjectManagementResourceUser;GET
 ListMapsetsResource;GET
 MapsetManagementResourceUser;GET
 RasterLayersResource;GET
