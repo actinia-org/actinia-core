@@ -367,6 +367,7 @@ def create_project_endpoints(projects_url_part="projects"):
         "geotiff_async_orig",
     )
 
+
 def create_core_endpoints():
 
     # Endpoints for project/location, mapset, raster, STRDS, vector management

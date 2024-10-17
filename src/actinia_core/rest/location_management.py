@@ -62,7 +62,7 @@ __copyright__ = (
 __maintainer__ = "mundialis"
 
 
-class ListLocationsResource(ResourceBase):
+class ListProjectsResource(ResourceBase):
     """This resource represents GRASS GIS database directory
     that contains locations.
     """
@@ -142,7 +142,7 @@ class ListLocationsResource(ResourceBase):
             )
 
 
-class LocationManagementResourceUser(ResourceBase):
+class ProjectManagementResourceUser(ResourceBase):
     """This class returns information about a specific location"""
 
     def __init__(self):
@@ -175,7 +175,7 @@ class LocationManagementResourceUser(ResourceBase):
         return make_response(jsonify(response_model), http_code)
 
 
-class LocationManagementResourceAdminUser(ResourceBase):
+class ProjectManagementResourceAdminUser(ResourceBase):
     """This class manages the creation, deletion and modification of locations
 
     This is only allowed for administrators and users
