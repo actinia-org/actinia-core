@@ -35,7 +35,7 @@ from werkzeug.datastructures import Headers
 from actinia_api import URL_PREFIX
 
 from .health_check import health_check
-from .version import version
+from .version import version, init_versions
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.config import global_config
@@ -137,6 +137,15 @@ class ActiniaTestCaseBase(unittest.TestCase):
     root = None
     auth_header = {}
     users_list = []
+    project_url_part = "projects"
+
+    # set project_url_part to "locations" if GRASS GIS version < 8.4
+    init_versions()
+    from .version import G_VERSION
+    grass_version_s = G_VERSION["version"]
+    grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+    if grass_version < [8, 4]:
+        project_url_part = "locations"
 
     if "ACTINIA_SERVER_TEST" in os.environ:
         server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
@@ -342,7 +351,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     def assertRasterInfo(self, project, mapset, raster, ref_info, header):
         url = (
-            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"raster_layers/{raster}"
         )
         rv = self.server.get(url, headers=header)
@@ -363,7 +372,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     def assertVectorInfo(self, project, mapset, vector, ref_info, header):
         url = (
-            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"vector_layers/{vector}"
         )
         rv = self.server.get(url, headers=header)
@@ -386,30 +395,30 @@ class ActiniaTestCaseBase(unittest.TestCase):
         self.delete_mapset(mapset_name, project_name)
         # Create new mapset
         self.server.post(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s" % (project_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/"
+            f"mapsets/{mapset_name}",
             headers=self.admin_auth_header,
         )
 
     def delete_mapset(self, mapset_name, project_name="nc_spm_08"):
         # Unlock mapset for deletion
         self.server.delete(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/lock" % (project_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets/"
+            f"{mapset_name}/lock",
             headers=self.admin_auth_header,
         )
 
         # Delete existing mapset
         self.server.delete(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s" % (project_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/"
+            f"mapsets/{mapset_name}",
             headers=self.admin_auth_header,
         )
 
     def create_vector_layer(self, project, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
         url = (
-            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"vector_layers/{vector}"
         )
         rv = self.server.delete(url, headers=self.user_auth_header)
@@ -441,7 +450,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
             "version": "1",
         }
         url = (
-            f"{URL_PREFIX}/projects/{project}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"processing_async"
         )
         rv = self.server.post(

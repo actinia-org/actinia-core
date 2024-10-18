@@ -70,6 +70,19 @@ def init_versions():
         ],
         capture_output=True,
     ).stdout
+    if not g_version:
+        # for GRASS GIS version < 8.4
+        g_version = subprocess.run(
+            [
+                "grass",
+                "--tmp-location",
+                "epsg:4326",
+                "--exec",
+                "g.version",
+                "-rge",
+            ],
+            capture_output=True,
+        ).stdout
     log.debug("Detecting GRASS GIS version")
     for i in g_version.decode("utf-8").strip("\n").split("\n"):
         try:
