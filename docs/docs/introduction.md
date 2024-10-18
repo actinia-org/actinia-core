@@ -17,9 +17,9 @@ provide problem specific services like Sentinel-2 and Landsat NDVI
 computation, spatio-temporal statistical analysis and many more.
 
 To use actinia the user must have an understanding of the GRASS GIS
-concept[^3] of location, mapsets, raster maps, space-time datasets and
+concept[^3] of project, mapsets, raster maps, space-time datasets and
 modules. The URLs that provide access to the GRASS database reflect
-these concepts. Hence, the location, the mapset and the required raster map
+these concepts. Hence, the project, the mapset and the required raster map
 are part of the URL to access the service.
 
 ## What is REST?
@@ -48,35 +48,35 @@ export AUTH='-u demouser:gu3st!pa55w0rd'
 
 **Data management**
 
-List all locations that are available in the actinia persistent database:
+List all projects that are available in the actinia persistent database:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects"
 ```
 
-List all mapsets in the location latlong_wgs84:
+List all mapsets in the project latlong_wgs84:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets"
 ```
 
-List all raster layers in location latlong_wgs84 and mapset Sentinel2A:
+List all raster layers in project latlong_wgs84 and mapset Sentinel2A:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 ```
 
-List all space-time raster datasets (STRDS) in location
+List all space-time raster datasets (STRDS) in project
 ECAD and mapset PERMANENT:
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds"
 ```
 
 List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
 
 ```bash
-curl ${AUTH} -X GET "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
+curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
 ```
 
 **Landsat and Sentinel-2A NDVI computation**
@@ -102,7 +102,7 @@ file in a cloud storage for download.
 
 [^1]: https://grass.osgeo.org/
 [^2]: https://en.wikipedia.org/wiki/Representational_State_Transfer
-[^3]: https://grass.osgeo.org/grass-stable/manuals/helptext.html#2.-background:-grass-gis-location-structure
+[^3]: https://grass.osgeo.org/grass-stable/manuals/helptext.html#2.-background:-grass-gis-project-structure
 [^4]: https://en.wikipedia.org/wiki/Representational_State_Transfer
 [^5]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol
 [^6]: https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods

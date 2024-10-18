@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,11 +43,12 @@ from actinia_core.processing.common.raster_renderer import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class SyncEphemeralRasterRendererResource(RendererBaseResource):
@@ -55,7 +56,7 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", raster_renderer.raster_render_get_doc))
-    def get(self, location_name, mapset_name, raster_name):
+    def get(self, project_name, mapset_name, raster_name):
         """Render a raster map layer as a PNG image."""
         parser = self.create_parser()
         args = parser.parse_args()
@@ -67,7 +68,7 @@ class SyncEphemeralRasterRendererResource(RendererBaseResource):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=raster_name,
         )
@@ -137,7 +138,7 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
     @swagger.doc(
         check_endpoint("get", raster_renderer.raster_rgb_render_get_doc)
     )
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """Render three raster map layer as composed RGB PNG image."""
 
         parser = self.create_parser()
@@ -173,7 +174,7 @@ class SyncEphemeralRasterRGBRendererResource(RendererBaseResource):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -235,7 +236,7 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
     @swagger.doc(
         check_endpoint("get", raster_renderer.raster_shade_render_get_doc)
     )
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """Render two raster layers as a composed shade PNG image"""
         parser = self.create_parser()
         parser.add_argument(
@@ -262,7 +263,7 @@ class SyncEphemeralRasterShapeRendererResource(RendererBaseResource):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 

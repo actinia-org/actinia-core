@@ -5,7 +5,7 @@ module_list = {
                 "keywords": "raster,cost surface,cumulative costs,cost "
                 "allocation",
                 "description": "Creates a raster map showing the cumulative "
-                "cost of  moving between different geographic locations on an "
+                "cost of  moving between different geographic projects on an "
                 "input raster map whose cell category values represent"
                 " cost.",
                 "module": "r.cost",
@@ -15,7 +15,7 @@ module_list = {
                 "allocation",
                 "description": "Creates a raster map showing the anisotropic "
                 "cumulative cost of moving between different geographic "
-                "locations on an input raster map whose cell category values "
+                "projects on an input raster map whose cell category values "
                 "represent cost.",
                 "module": "r.walk",
             },
@@ -23,8 +23,8 @@ module_list = {
         "projection": {
             "r.proj": {
                 "keywords": "raster,projection,transformation,import",
-                "description": "Re-projects a raster map from given location "
-                "to the current location.",
+                "description": "Re-projects a raster map from given project "
+                "to the current project.",
                 "module": "r.proj",
             }
         },
@@ -916,7 +916,7 @@ module_list = {
                 "keywords": "general,settings",
                 "description": "Changes/reports current mapset. Optionally "
                 "create new mapset or list available mapsets in given "
-                "location.",
+                "project.",
                 "module": "g.mapset",
             },
             "g.region": {
@@ -935,10 +935,10 @@ module_list = {
         },
         "projection": {
             "g.proj": {
-                "keywords": "general,projection,create location",
+                "keywords": "general,projection,create project",
                 "description": "Prints or modifies GRASS projection "
                 "information files (in various coordinate system descriptions"
-                "). Can also be used to create new GRASS locations.",
+                "). Can also be used to create new GRASS projects.",
                 "module": "g.proj",
             }
         },

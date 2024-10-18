@@ -5,7 +5,7 @@
 The actinia REST API provides an API call to sample a space-time raster
 dataset (STRDS) at coordinate points. The coordinates must be specified
 in JSON and must use the same coordinate reference system as the
-location that contains the STRDS.
+project that contains the STRDS.
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
 address:
@@ -25,7 +25,7 @@ different coordinates.
                   ["b", "9.9681980", "51.666166"],
                   ["c", "24.859647", "52.699099"]]}'
 
- curl ${AUTH} -X POST "${ACTINIA_URL}/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
+ curl ${AUTH} -X POST "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync" -H  "accept: application/json" -H  "content-type: application/json" -d "$JSON"
 ```
 
 The result of the sampling is a list of time stamped values, that are
@@ -38,8 +38,8 @@ located in the *process_results* section of the JSON response:
    "api_info": {
      "endpoint": "syncephemeralstrdssamplingresource",
      "method": "POST",
-     "path": "/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
-     "request_url": "http://actinia.mundialis.de/api/v3/locations/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
+     "path": "/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync",
+     "request_url": "http://actinia.mundialis.de/api/v3/projects/ECAD/mapsets/PERMANENT/strds/temperature_mean_1950_2013_yearly_celsius/sampling_sync"
    },
    "datetime": "2018-05-30 10:33:24.503297",
    "http_code": 200,

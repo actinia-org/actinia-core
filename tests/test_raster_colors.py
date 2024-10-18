@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -36,18 +36,18 @@ except ModuleNotFoundError:
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Soeren Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_get_colors(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevation/colors",
             headers=self.user_auth_header,
         )
@@ -95,7 +95,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         }
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
+            + "/projects/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(postbody),
             content_type="application/json",
@@ -126,7 +126,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         # Set the color table
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -148,7 +148,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         # Set the color table
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -170,7 +170,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         # Set the color table
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -190,7 +190,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         # Delete
         rv = self.server.delete(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer"
             % new_mapset,
             headers=self.user_auth_header,
         )
@@ -235,7 +235,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         }
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
+            + "/projects/nc_spm_08/mapsets/%s/processing_async" % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(postbody),
             content_type="application/json",
@@ -264,7 +264,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -288,7 +288,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -310,7 +310,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -332,7 +332,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -354,7 +354,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -376,7 +376,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -401,7 +401,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         rv = self.server.post(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer/colors"
             % new_mapset,
             headers=self.user_auth_header,
             data=json_dumps(rules),
@@ -421,7 +421,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         # Delete
         rv = self.server.delete(
             URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/%s/raster_layers/test_layer"
+            + "/projects/nc_spm_08/mapsets/%s/raster_layers/test_layer"
             % new_mapset,
             headers=self.user_auth_header,
         )
@@ -438,7 +438,7 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_colors_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
+            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
             "/elevat/colors",
             headers=self.user_auth_header,
         )

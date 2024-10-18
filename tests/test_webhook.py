@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #######
 
 """
-Tests: Async process test case
+Tests: Webhook
 """
 import unittest
 
@@ -40,8 +40,9 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 port = "5006"
 
@@ -144,7 +145,7 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #         time.sleep(3)
     #     tm = Template(json_dumps(pc))
     #     rv = self.server.post(
-    #         URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+    #         URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
     #         headers=self.admin_auth_header,
     #         data=tm.render(sleep=1),
     #         content_type="application/json",
@@ -157,7 +158,7 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         """
         tm = Template(json_dumps(pc))
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
             headers=self.admin_auth_header,
             data=tm.render(sleep=30),
             content_type="application/json",

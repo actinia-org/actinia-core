@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,9 +29,9 @@ from .storage_interface_aws_s3 import ResourceStorageS3
 from .storage_interface_gcs import ResourceStorageGCS
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
@@ -59,7 +59,7 @@ class ResourceDataContainer(object):
         orig_datetime,
         user_credentials,
         config,
-        location_name,
+        project_name,
         mapset_name,
         map_name,
     ):
@@ -67,9 +67,9 @@ class ResourceDataContainer(object):
 
         Args:
             grass_data_base (str): GRASS GIS database root directory that
-                                   contains global locations
+                                   contains global projects
             grass_user_data_base (str): GRASS GIS database user directory that
-                                        contains group specific locations
+                                        contains group specific projects
             grass_base_dir (str): The installation directory of GRASS GIS
             request_data (dict): The module chain dictionary
             user_id (str): The user id
@@ -84,7 +84,7 @@ class ResourceDataContainer(object):
             user_credentials (dict): The user credentials dict
             config (actinia_core.core.config.Configuration): The actinia
                                                              configuration
-            location_name (str): The name of the location to work in
+            project_name (str): The name of the project to work in
             mapset_name (str): The name of the target mapset in which the
                                computation should be performed
             map_name: The name of the map or other resource (raster, vector,
@@ -105,7 +105,7 @@ class ResourceDataContainer(object):
         self.resource_url_base = resource_url_base
         self.user_credentials = user_credentials
         self.config = config
-        self.location_name = location_name
+        self.project_name = project_name
         self.mapset_name = mapset_name
         self.map_name = map_name
         self.orig_time = orig_time

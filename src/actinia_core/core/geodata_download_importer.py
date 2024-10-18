@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,9 +37,10 @@ from actinia_core.core.utils import get_wget_process, get_mv_process
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 # Mimetypes supported for download
 SUPPORTED_MIMETYPES = [
@@ -179,7 +180,7 @@ class GeoDataDownloadImportSupport(object):
 
     def get_download_process_list(self):
         """Create the process list to download, import and preprocess
-        geodata location on a remote location
+        geodata project on a remote project
 
         The downloaded files will be stored in a temporary directory. After the
         download of all files completes, the downloaded files will be moved to

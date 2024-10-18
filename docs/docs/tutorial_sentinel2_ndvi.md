@@ -193,7 +193,7 @@ as well as univariate statistics of the computed NDVI scene.
        "run_time": 0.36118006706237793,
        "stderr": [
          "Default locale settings are missing. GRASS running with C locale.WARNING: Searched for a web browser, but none found",
-         "Creating new GRASS GIS location/mapset...",
+         "Creating new GRASS GIS project/mapset...",
          "Cleaning up temporary files...",
          ""
        ],
@@ -209,9 +209,9 @@ as well as univariate statistics of the computed NDVI scene.
        "return_code": 0,
        "run_time": 0.3551313877105713,
        "stderr": [
-         "WARNING: Projection of dataset does not appear to match current location.",
+         "WARNING: Projection of dataset does not appear to match current project.",
          "",
-         "Location PROJ_INFO is:",
+         "Project PROJ_INFO is:",
          "name: WGS 84 / UTM zone 50N",
          "datum: wgs84",
          "ellps: wgs84",

@@ -371,25 +371,25 @@ def start_query_processing_async_export(base_url, auth, q, id, type, polling):
     start = time.time()
 
     if type == "long_export":
-        url = base_url + "/locations/nc_spm_08/processing_async_export"
+        url = base_url + "/projects/nc_spm_08/processing_async_export"
         pc = PROCESS_CHAIN_LONG
     elif type == "long":
-        url = base_url + "/locations/nc_spm_08/processing_async"
+        url = base_url + "/projects/nc_spm_08/processing_async"
         pc = PROCESS_CHAIN_LONG
     elif type == "short_export":
-        url = base_url + "/locations/nc_spm_08/processing_async_export"
+        url = base_url + "/projects/nc_spm_08/processing_async_export"
         pc = PROCESS_CHAIN_SHORT
     elif type == "short":
-        url = base_url + "/locations/nc_spm_08/processing_async"
+        url = base_url + "/projects/nc_spm_08/processing_async"
         pc = PROCESS_CHAIN_SHORT
     elif type == "ndvi_sent":
-        url = base_url + "/locations/utm32N/processing_async"
+        url = base_url + "/projects/utm32N/processing_async"
         pc = SENTINEL_NDVI
     elif type == "ndvi_sent_export":
-        url = base_url + "/locations/utm32N/processing_async_export"
+        url = base_url + "/projects/utm32N/processing_async_export"
         pc = SENTINEL_NDVI
     elif type == "error":
-        url = base_url + "/locations/utm32N/processing_async"
+        url = base_url + "/projects/utm32N/processing_async"
         pc = PROCESS_CHAIN_ERROR
 
     try:
