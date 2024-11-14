@@ -48,8 +48,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_layer_info(self):
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -73,8 +73,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_info_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/PERMANENT/raster_layers/elevat",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevat",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))

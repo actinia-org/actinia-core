@@ -53,6 +53,7 @@ from actinia_core.processing.common.project_management import (
     read_current_region,
     create_project,
 )
+from actinia_core.version import G_VERSION
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
@@ -123,12 +124,15 @@ class ListProjectsResource(ResourceBase):
                     ):
                         projects.append(dir)
         if projects:
+            param = {"status": "success"}
+            grass_version_s = G_VERSION["version"]
+            grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+            if grass_version >= [8, 4]:
+                param["projects"] = projects
+            else:
+                param["locations"] = projects
             return make_response(
-                jsonify(
-                    LocationListResponseModel(
-                        status="success", projects=projects
-                    )
-                ),
+                jsonify(LocationListResponseModel(**param)),
                 200,
             )
         else:

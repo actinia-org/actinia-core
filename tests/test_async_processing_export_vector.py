@@ -178,7 +178,8 @@ vector_layer_clean = {
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     def test_vector_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(vector_layer_export),
             content_type="application/json",
@@ -210,7 +211,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_vector_buffer(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/latlong_wgs84/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/latlong_wgs84/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(vector_layer_buffer),
             content_type="application/json",
@@ -245,7 +247,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_vector_clean(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/latlong_wgs84/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/latlong_wgs84/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(vector_layer_clean),
             content_type="application/json",

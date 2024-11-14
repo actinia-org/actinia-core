@@ -188,7 +188,7 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
 
     def test_02_list_projects(self):
         """Test list project endpoint"""
-        rv = self.server.get(f"{URL_PREFIX}/projects")
+        rv = self.server.get(f"{URL_PREFIX}/{self.project_url_part}")
         self.assertEqual(
             rv.status_code,
             200,
@@ -198,14 +198,16 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
         self.assertIn(
-            "projects", json_loads(rv.data), "No projects in response"
+            self.project_url_part,
+            json_loads(rv.data),
+            f"No {self.project_url_part} in response",
         )
-        projects = json_loads(rv.data)["projects"]
+        projects = json_loads(rv.data)[self.project_url_part]
         self.assertIn("nc_spm_08", projects, "Wrong project listed")
 
     def test_03_processing_ephemeral(self):
         """Test job resumption with processing_async endpoint and stdout"""
-        endpoint = "/projects/nc_spm_08/processing_async"
+        endpoint = f"{self.project_url_part}/nc_spm_08/processing_async"
         rv = self.server.post(
             f"{URL_PREFIX}{endpoint}",
             data=json_dumps(PC),
@@ -222,7 +224,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         """Test job resumption with persistent processing_async endpoint and
         stdout
         """
-        endpoint = "/projects/nc_spm_08/mapsets/test/processing_async"
+        endpoint = (
+            f"{self.project_url_part}/nc_spm_08/mapsets/test/processing_async"
+        )
         rv = self.server.post(
             f"{URL_PREFIX}{endpoint}",
             data=json_dumps(PC),
@@ -235,7 +239,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         )
         self.compare_stdout(resp)
         # check processing mapset
-        rv2 = self.server.get(f"{URL_PREFIX}/projects/nc_spm_08/mapsets")
+        rv2 = self.server.get(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets"
+        )
         self.assertEqual(
             rv2.status_code,
             200,
@@ -247,7 +253,8 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         )
         # check created raster
         rv3 = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/test/raster_layers"
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test/"
+            "raster_layers"
         )
         self.assertEqual(
             rv3.status_code,
@@ -261,7 +268,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         # delete test mapset
         self.admin_auth_header = None
         self.delete_mapset("test", "nc_spm_08")
-        rv4 = self.server.get(f"{URL_PREFIX}/projects/nc_spm_08/mapsets")
+        rv4 = self.server.get(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets"
+        )
         self.assertEqual(
             rv4.status_code,
             200,

@@ -45,8 +45,8 @@ __email__ = "info@mundialis.de"
 class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_no_args(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend",
             headers=self.user_auth_header,
         )
 
@@ -61,8 +61,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_1(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend?at=0,100,0,20",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?at=0,100,0,20",
             headers=self.user_auth_header,
         )
 
@@ -77,8 +77,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_2(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend?range=100,120",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?range=100,120",
             headers=self.user_auth_header,
         )
 
@@ -93,8 +93,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_3(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?&use=100,110,120",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?&use=100,110,120",
             headers=self.user_auth_header,
         )
 
@@ -109,8 +109,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_4(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?&fontsize=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?&fontsize=100",
             headers=self.user_auth_header,
         )
 
@@ -125,8 +125,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_5(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=100&height=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?width=100&height=100",
             headers=self.user_auth_header,
         )
 
@@ -141,9 +141,9 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_6(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=100&height=100&range=100,120&"
-            "use=105,110,115&at=0,100,0,30",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?width=100&height=100&"
+            "range=100,120&use=105,110,115&at=0,100,0,30",
             headers=self.user_auth_header,
         )
 
@@ -158,8 +158,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_7(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?labelnum=4",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?labelnum=4",
             headers=self.user_auth_header,
         )
 
@@ -175,8 +175,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_1(self):
         # Wrong "at" parameter
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?at=-0,-0",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?at=-0,-0",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -194,8 +194,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_2(self):
         # Wrong witdth
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=-20&at=20,40,20,40",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?width=-20&at=20,40,20,40",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -213,8 +213,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_3(self):
         # Wrong range and use
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?range=100,120&use=90,130,115",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?range=100,120&use=90,130,115",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -232,8 +232,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_4(self):
         # Wrong labelnum
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?labelnum=-4",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?labelnum=-4",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))

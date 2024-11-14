@@ -392,7 +392,17 @@ class ActiniaTestCaseBase(unittest.TestCase):
             )
 
     def create_new_mapset(self, mapset_name, project_name="nc_spm_08"):
-        self.delete_mapset(mapset_name, project_name)
+        get_url = f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets"
+        rv_get = self.server.get(get_url, headers=self.user_auth_header)
+        self.assertEqual(
+            rv_get.status_code,
+            200,
+            "HTML status code is wrong %i" % rv_get.status_code,
+        )
+        resp = json_loads(rv_get.data.decode())
+        if mapset_name in resp["process_results"]:
+            self.delete_mapset(mapset_name, project_name)
+
         # Create new mapset
         self.server.post(
             f"{URL_PREFIX}/{self.project_url_part}/{project_name}/"
@@ -417,11 +427,20 @@ class ActiniaTestCaseBase(unittest.TestCase):
 
     def create_vector_layer(self, project, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
-        url = (
+        vl_url = (
             f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
-            f"vector_layers/{vector}"
+            f"vector_layers"
         )
-        rv = self.server.delete(url, headers=self.user_auth_header)
+        url = f"{vl_url}/{vector}"
+        rv_get = self.server.get(vl_url, headers=self.user_auth_header)
+        self.assertEqual(
+            rv_get.status_code,
+            200,
+            "HTML status code is wrong %i" % rv_get.status_code,
+        )
+        resp = json_loads(rv_get.data.decode())
+        if vector in resp["process_results"]:
+            rv = self.server.delete(url, headers=self.user_auth_header)
 
         parameter["column"] = "z"
         region["res"] = 100000
@@ -451,7 +470,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         }
         url = (
             f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
-            f"processing_async"
+            "processing_async"
         )
         rv = self.server.post(
             url,
@@ -461,7 +480,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
         )
         self.waitAsyncStatusAssertHTTP(
             rv,
-            headers=self.admin_auth_header,
+            headers=self.user_auth_header,
+            # headers=self.admin_auth_header,
             http_status=200,
             status="finished",
         )

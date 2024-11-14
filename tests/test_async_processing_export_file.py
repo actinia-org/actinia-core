@@ -92,7 +92,8 @@ file_export = {
 class AsyncProcessFileExportTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_file_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -123,7 +124,8 @@ class AsyncProcessFileExportTestCase(ActiniaResourceTestCaseBase):
 
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -159,7 +161,8 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_s3",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export_s3",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -189,7 +192,8 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
     )
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_s3",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export_s3",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -197,8 +201,7 @@ class AsyncProcessExportTestCaseAdminS3(ActiniaResourceTestCaseBase):
         resp = json_loads(rv.data)
         # Send the termination request
         self.server.delete(
-            URL_PREFIX
-            + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+            f"URL_PREFIX/resources/{resp['user_id']}/{resp['resource_id']}",
             headers=self.admin_auth_header,
         )
 
@@ -225,7 +228,8 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_gcs",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export_gcs",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -255,7 +259,8 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
     )
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export_gcs",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export_gcs",
             headers=self.admin_auth_header,
             data=json_dumps(file_export),
             content_type="application/json",
@@ -263,8 +268,7 @@ class AsyncProcessExportTestCaseAdminGCS(ActiniaResourceTestCaseBase):
         resp = json_loads(rv.data)
         # Send the termination request
         self.server.delete(
-            URL_PREFIX
-            + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+            f"{URL_PREFIX}/resources/{resp['user_id']}/{resp['resource_id']}",
             headers=self.admin_auth_header,
         )
 

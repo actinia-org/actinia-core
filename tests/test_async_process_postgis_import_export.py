@@ -95,7 +95,8 @@ class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
     # # TODO fix test and comment the test in (postgres DB is needed)
     # def test_1_async_processing_postgis_validation(self):
     #     rv = self.server.post(
-    #         f"{URL_PREFIX}/projects/nc_spm_08/process_chain_validation_async",
+    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+    #         "process_chain_validation_async",
     #         headers=self.admin_auth_header,
     #         data=json_dumps(process_chain_postgis),
     #         content_type="application/json",
@@ -115,7 +116,8 @@ class AsyncProcessingPostGISTestCase(ActiniaResourceTestCaseBase):
     #     self.gen_output_layer_name()
     #
     #     rv = self.server.post(
-    #         URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+    #         "processing_async_export",
     #         headers=self.admin_auth_header,
     #         data=json_dumps(process_chain_postgis),
     #         content_type="application/json",

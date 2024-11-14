@@ -44,7 +44,8 @@ __email__ = "info@mundialis.de"
 class VectorLayersTestCase(ActiniaResourceTestCaseBase):
     def test_list_vector_layers(self):
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -65,8 +66,8 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_vector_layers_pattern(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
-            "vector_layers?pattern=elev_*",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers?pattern=elev_*",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -89,8 +90,8 @@ class VectorLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_vector_layers_empty_list(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/"
-            "vector_layers?pattern=NONE",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers?pattern=NONE",
             headers=self.user_auth_header,
         )
         print(rv.data)

@@ -56,46 +56,11 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
         self.create_vector_layer(
             "nc_spm_08", new_mapset, "test_layer", region, parameter
         )
-        # rv = self.server.post(
-        #     URL_PREFIX
-        #     + "/projects/nc_spm_08/mapsets/%s/vector_layers/test_layer"
-        #     % new_mapset,
-        #     headers=self.user_auth_header,
-        #     data=json_dumps(
-        #         {
-        #             "region": {
-        #                 "n": 228500,
-        #                 "s": 215000,
-        #                 "e": 645000,
-        #                 "w": 630000,
-        #             },
-        #             "parameter": {
-        #                 "npoints": 1,
-        #                 "zmin": 1,
-        #                 "zmax": 1,
-        #                 "seed": 1,
-        #             },
-        #         }
-        #     ),
-        #     content_type="application/json",
-        # )
-        # print(rv.data)
-        # self.assertEqual(
-        #     rv.status_code,
-        #     200,
-        #     "HTML status code is wrong %i" % rv.status_code,
-        # )
-        # self.assertEqual(
-        #     rv.mimetype,
-        #     "application/json",
-        #     "Wrong mimetype %s" % rv.mimetype
-        # )
 
         # Check
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/%s/vector_layers/test_layer"
-            % new_mapset,
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{new_mapset}/vector_layers/test_layer",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -118,9 +83,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         # Delete
         rv = self.server.delete(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/%s/vector_layers/test_layer"
-            % new_mapset,
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{new_mapset}/vector_layers/test_layer",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -135,9 +99,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
         # Delete fail
         rv = self.server.delete(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/%s/vector_layers/test_layer"
-            % new_mapset,
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{new_mapset}/vector_layers/test_layer",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -152,8 +115,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     def test_layer_info(self):
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
-            "boundary_county",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -177,8 +140,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_layer_info_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets/PERMANENT/vector_layers/"
-            "boundary_county_nope",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county_nope",
             headers=self.user_auth_header,
         )
         print(rv.data)

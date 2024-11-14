@@ -101,8 +101,8 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GeoTIFF upload and check against reference raster info
         """
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
-            f"/raster_layers/{self.raster}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+            f"{self.tmp_mapset}/raster_layers/{self.raster}"
         )
         multipart_form_data = {"file": open(self.local_raster, "rb")}
         rv = self.server.post(
@@ -130,8 +130,8 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_raster_globaldb_error(self):
         """Test Error if raster is uploaded to global DB"""
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.mapset}/"
-            f"raster_layers/{self.raster}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+            f"{self.mapset}/raster_layers/{self.raster}"
         )
         multipart_form_data = {"file": open(self.local_raster, "rb")}
         rv = self.server.post(

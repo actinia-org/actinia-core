@@ -48,16 +48,16 @@ __email__ = "soerengebbert@googlemail.com"
 
 project = "nc_spm_08"
 strds_mapset = "modis_lst"
-strds_url = URL_PREFIX + "/projects/%(project)s/mapsets/%(mapset)s/strds" % {
-    "project": project,
-    "mapset": strds_mapset,
-}
+strds_endpoint = f"{project}/mapsets/{strds_mapset}/strds"
 strds_data = "LST_Day_monthly"
 
 
 class STRDSTestCase(ActiniaResourceTestCaseBase):
     def test_list_strds(self):
-        rv = self.server.get(strds_url, headers=self.user_auth_header)
+        rv = self.server.get(
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}",
+            headers=self.user_auth_header,
+        )
         print(rv.data)
         self.assertEqual(
             rv.status_code,
@@ -73,7 +73,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_strds_where_1(self):
         rv = self.server.get(
-            strds_url + "?where=start_time == '2015-01-01 00:00:00'",
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}?"
+            "where=start_time == '2015-01-01 00:00:00'",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -91,7 +92,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_strds_where_2(self):
         rv = self.server.get(
-            strds_url + "?where=start_time > '2016-01-01'",
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}?"
+            "where=start_time > '2016-01-01'",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -110,7 +112,9 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
     def test_strds_info(self):
         rv = self.server.get(
-            strds_url + "/%s" % strds_data, headers=self.user_auth_header
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}"
+            f"/{strds_data}",
+            headers=self.user_auth_header,
         )
         print(rv.data)
         self.assertEqual(
@@ -132,9 +136,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         # Create success
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.admin_auth_header,
             data=json_dumps(
                 {
@@ -157,9 +160,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
 
         # Create failure since the strds already exists
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.admin_auth_header,
             data=json_dumps(
                 {
@@ -181,9 +183,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         )
         # Read/check information of the new strds
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -201,9 +202,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         self.assertEqual(start_time, "'None'")
         # Delete the strds
         rv = self.server.delete(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -217,9 +217,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         )
         # Try to delete the strds again to produce an error
         rv = self.server.delete(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -233,9 +232,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
         )
 
         rv = self.server.get(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/strds/test_strds"
-            % (project, new_mapset),
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -251,7 +249,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     def test_strds_info_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            strds_url + "/precipitation_1950_2013_yearly_mm_nope",
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}/"
+            "precipitation_1950_2013_yearly_mm_nope",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -267,7 +266,8 @@ class STRDSTestCase(ActiniaResourceTestCaseBase):
     def test_list_strds_where_error_1(self):
         # Wrong where statement
         rv = self.server.get(
-            strds_url + "?where=start_timing > '2000-01-01'",
+            f"{URL_PREFIX}/{self.project_url_part}/{strds_endpoint}?"
+            "where=start_timing > '2000-01-01'",
             headers=self.user_auth_header,
         )
         print(rv.data)

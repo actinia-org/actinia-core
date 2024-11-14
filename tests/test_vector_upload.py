@@ -138,8 +138,8 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GeoJSON upload and check against reference vector info
         """
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
-            f"/vector_layers/{self.vector}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/"
+            f"mapsets/{self.tmp_mapset}/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.local_geojson, "rb")}
         rv = self.server.post(
@@ -168,8 +168,8 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GPKG upload and check against reference vector info
         """
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
-            f"/vector_layers/{self.vector}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/"
+            f"mapsets/{self.tmp_mapset}/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.gpkg_file, "rb")}
         rv = self.server.post(
@@ -200,8 +200,8 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
         vector info
         """
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.tmp_mapset}"
-            f"/vector_layers/{self.vector}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/"
+            f"mapsets/{self.tmp_mapset}/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.zipped_shp_file, "rb")}
         rv = self.server.post(
@@ -234,8 +234,8 @@ class UploadVectorLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_vector_globaldb_error(self):
         """Test Error if vector (GPKG) is uploaded to global DB"""
         url = (
-            f"{URL_PREFIX}/projects/{self.project}/mapsets/{self.mapset}/"
-            f"vector_layers/{self.vector}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/"
+            f"mapsets/{self.mapset}/vector_layers/{self.vector}"
         )
         multipart_form_data = {"file": open(self.gpkg_file, "rb")}
         rv = self.server.post(

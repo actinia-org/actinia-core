@@ -652,7 +652,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_raster_import_export_sentinel_ndvi(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 process_chain_sentinel_import_export_sentinel_ndvi
@@ -675,7 +676,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_raster_import_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_sentinel_import_export),
             content_type="application/json",
@@ -690,7 +692,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_raster_import_info),
             content_type="application/json",
@@ -705,7 +708,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_import_nofile(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_raster_import_error_no_file),
             content_type="application/json",
@@ -717,7 +721,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_import_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_raster_import_export),
             content_type="application/json",
@@ -732,7 +737,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_vector_import(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_vector_import_info),
             content_type="application/json",
@@ -753,7 +759,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_sentinel_import_info(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_sentinel_import_info),
             content_type="application/json",
@@ -774,7 +781,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_sentinel_import_univar(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_sentinel_import_univar),
             content_type="application/json",
@@ -795,7 +803,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_sentinel_import_stats(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_sentinel_import_stats),
             content_type="application/json",
@@ -816,7 +825,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     )
     def test_sentinel_import_error(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_sentinel_import_error),
             content_type="application/json",
@@ -833,7 +843,10 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         Test of STAC collection import with http response 200
         """
 
-        endpoint = URL_PREFIX + "/projects/nc_spm_08/processing_async_export"
+        endpoint = (
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export"
+        )
         rv = self.server.post(
             endpoint,
             headers=self.admin_auth_header,
@@ -854,7 +867,10 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         Test of STAC collection import with http response 400,
         raising error on wrongly structured, undefined, or missing source ID.
         """
-        endpoint = URL_PREFIX + "/projects/nc_spm_08/processing_async_export"
+        endpoint = (
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export"
+        )
         rv = self.server.post(
             endpoint,
             headers=self.admin_auth_header,
@@ -874,7 +890,10 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         or wrong Spatial coordinates in bbox.
 
         """
-        endpoint = URL_PREFIX + "/projects/nc_spm_08/processing_async_export"
+        endpoint = (
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export"
+        )
         rv = self.server.post(
             endpoint,
             headers=self.admin_auth_header,
@@ -892,7 +911,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         resolution method, with http response 200
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_raster_import_resample_resolution),
             content_type="application/json",
@@ -911,7 +931,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         resampling and resolution info
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 process_chain_raster_import_resample_resolution_info
@@ -953,7 +974,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         in options
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 process_chain_raster_import_resample_resolution_error_resamp
@@ -972,7 +994,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         in options
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 process_chain_raster_import_resample_resolution_error_resol
@@ -991,7 +1014,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         resolution set to value
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 pc_raster_import_resample_resolution_error_val_missing
@@ -1010,7 +1034,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         convertible to float
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 pc_raster_import_resample_resolution_error_val_not_float
@@ -1029,7 +1054,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         value set
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 pc_raster_import_resample_resolution_error_resol_not_set
@@ -1048,7 +1074,8 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         "value" when value set
         """
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(
                 pc_raster_import_resample_resolution_error_resol_not_val

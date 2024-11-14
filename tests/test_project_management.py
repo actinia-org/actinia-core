@@ -44,7 +44,8 @@ __email__ = "soerengebbert@googlemail.com"
 class ProjectTestCase(ActiniaResourceTestCaseBase):
     def test_list_projects(self):
         rv = self.server.get(
-            URL_PREFIX + "/projects", headers=self.user_auth_header
+            f"{URL_PREFIX}/{self.project_url_part}",
+            headers=self.user_auth_header,
         )
         print(rv.data)
         self.assertEqual(
@@ -56,14 +57,14 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
 
-        if "nc_spm_08" in json_loads(rv.data)["projects"]:
+        if "nc_spm_08" in json_loads(rv.data)[self.project_url_part]:
             project = "nc_spm_08"
 
         self.assertEqual(project, "nc_spm_08", "Wrong project listed")
 
     def test_project_info(self):
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/info",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/info",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -88,7 +89,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
         # ERROR: Try to create a project as admin that exists in the global
         # database
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -106,13 +107,13 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
     def test_project_creation_and_deletion(self):
         # Delete a potentially existing project
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.admin_auth_header,
         )
 
         # Create new project as admin
         rv = self.server.post(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -129,7 +130,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Try to create a project as admin that already exists
         rv = self.server.post(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -146,7 +147,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # Delete project
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -161,7 +162,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Delete should fail, since project does not exists
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -177,13 +178,13 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
     def test_project_creation_and_deletion_as_user(self):
         # Delete a potentially existing project
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.user_auth_header,
         )
 
         # Create new project as user
         rv = self.server.post(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.user_auth_header,
@@ -202,7 +203,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Try to create a project as user that already exists
         rv = self.server.post(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.user_auth_header,
@@ -221,7 +222,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # Delete project
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.user_auth_header,
         )
         self.assertEqual(
@@ -238,7 +239,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Delete should fail, since project does not exists
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project",
             headers=self.user_auth_header,
         )
         self.assertEqual(
@@ -256,7 +257,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
     def test_project_creation_and_deletion_as_guest(self):
         # ERROR: Try to create a project as guest
         rv = self.server.post(
-            URL_PREFIX + "/projects/test_project_user",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project_user",
             data=json_dumps({"epsg": "4326"}),
             content_type="application/json",
             headers=self.guest_auth_header,
@@ -273,7 +274,7 @@ class ProjectTestCase(ActiniaResourceTestCaseBase):
 
         # ERROR: Delete should fail since the guest user is not authorized
         rv = self.server.delete(
-            URL_PREFIX + "/projects/test_project_user",
+            f"{URL_PREFIX}/{self.project_url_part}/test_project_user",
             headers=self.guest_auth_header,
         )
         print(rv.data)

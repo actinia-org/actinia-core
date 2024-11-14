@@ -1167,9 +1167,10 @@ class EphemeralProcessing(object):
         # Set the vector database connection to vector map specific databases
         self.ginit.run_module(
             "db.connect",
+            # TODO GRASS GIS 9.0
             [
                 "driver=sqlite",
-                "database=$GISDBASE/$project_name/$MAPSET/vector/$MAP/"
+                "database=$GISDBASE/$LOCATION_NAME/$MAPSET/vector/$MAP/"
                 "sqlite.db",
             ],
         )

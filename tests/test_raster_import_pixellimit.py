@@ -49,7 +49,7 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
     project = "nc_spm_08"
     tmp_mapset = "mapset_rasterimport_pixellimit"
-    endpoint = f"/projects/{project}/mapsets/{tmp_mapset}/processing_async"
+    endpoint = f"{project}/mapsets/{tmp_mapset}/processing_async"
     rimport_inp = "elevation"
     # import resolution with which the process should fail:
     rimport_res_fail = 0.1
@@ -91,7 +91,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -139,7 +139,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -183,7 +183,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",

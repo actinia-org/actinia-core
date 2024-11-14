@@ -33,6 +33,7 @@ from actinia_core.processing.actinia_processing.ephemeral.persistent_processing 
     PersistentProcessing,
 )
 from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_core.version import G_VERSION
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
@@ -60,13 +61,20 @@ class PersistentProjectCreator(PersistentProcessing):
 
         self._create_temp_database()
 
-        # TODO replace old PC style
+        grass_version_s = G_VERSION["version"]
+        grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+        project_param = "location" if grass_version < [8, 4] else "project"
         pc = {
-            "1": {
+            "version": 1,
+            "list": [{
+                "id": "1",
                 "module": "g.proj",
-                "inputs": {"epsg": epsg_code, "project": new_project},
+                "inputs": [
+                    {"param": "epsg", "value": epsg_code},
+                    {"param": project_param, "value": new_project},
+                ],
                 "flags": "t",
-            }
+            }]
         }
 
         process_list = self._validate_process_chain(

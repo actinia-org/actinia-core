@@ -43,10 +43,9 @@ __email__ = "soerengebbert@googlemail.com"
 
 project = "nc_spm_08"
 strds_mapset = "modis_lst"
-strds_url = URL_PREFIX + "/projects/%(project)s/mapsets/%(mapset)s/strds" % {
-    "project": project,
-    "mapset": strds_mapset,
-}
+# strds_url = (
+#     f"{URL_PREFIX}/PROJECT_URL_PART/{project}/mapsets/{strds_mapset}/strds"
+# )
 strds_data = "LST_Day_monthly"
 
 
@@ -54,9 +53,8 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
     def create_raster_layer(self, project_name, mapset_name, raster_name, val):
         # Remove potentially existing raster layer
         rv = self.server.delete(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/raster_layers/%s"
-            % (project_name, mapset_name, raster_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets/"
+            f"{mapset_name}/raster_layers/{raster_name}",
             headers=self.admin_auth_header,
         )
         # print(rv.data)
@@ -89,9 +87,8 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
             "version": "1",
         }
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/%s/mapsets/%s/processing_async"
-            % (project_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets/"
+            f"{mapset_name}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(postbody),
             content_type="application/json",
@@ -118,8 +115,8 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
 
         # Create success
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/{project}/mapsets/{new_mapset}/strds/"
-            "test_strds_register",
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds_register",
             headers=self.admin_auth_header,
             data=json_dumps(
                 {
@@ -164,8 +161,8 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
         ]
 
         rv = self.server.put(
-            f"{URL_PREFIX}/projects/{project}/mapsets/{new_mapset}/strds/"
-            "test_strds_register/raster_layers",
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds_register/raster_layers",
             data=json_dumps(raster_layers),
             content_type="application/json",
             headers=self.admin_auth_header,
@@ -182,8 +179,9 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
 
         # Check strds
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/{project}/mapsets/{new_mapset}/strds/"
-            "test_strds_register/render?width=100&height=100",
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds_register/render?width=100&"
+            "height=100",
             headers=self.admin_auth_header,
         )
 
@@ -198,8 +196,9 @@ class STRDSRenderTestCase(ActiniaResourceTestCaseBase):
 
         # Check strds
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/{project}/mapsets/{new_mapset}/strds/"
-            "test_strds_register/render?width=100&height=100&"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/"
+            f"{new_mapset}/strds/test_strds_register/render?"
+            "width=100&height=100&"
             "start_time=2000-01-01 00:00:00&end_time=2000-01-02 00:00:00",
             headers=self.admin_auth_header,
         )

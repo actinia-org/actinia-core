@@ -45,8 +45,8 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_vectorlayer_image_no_args(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render",
             headers=self.user_auth_header,
         )
 
@@ -61,8 +61,9 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_1(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render?n=228500&s=215000&w=630000&e=645000",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render?"
+            "n=228500&s=215000&w=630000&e=645000",
             headers=self.user_auth_header,
         )
 
@@ -77,9 +78,9 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_2(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render?n=228500&s=215000&w=630000&e=645000&"
-            "width=100&height=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render?"
+            "n=228500&s=215000&w=630000&e=645000&width=100&height=100",
             headers=self.user_auth_header,
         )
 
@@ -94,8 +95,9 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
 
     def test_vectorlayer_image_args_3(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render?width=100&height=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render?"
+            "width=100&height=100",
             headers=self.user_auth_header,
         )
 
@@ -111,8 +113,9 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_vectorlayer_image_args_error_1(self):
         # North is smaller then south
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render?n=-228500&s=215000",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render?"
+            "n=-228500&s=215000",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -128,8 +131,9 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_vectorlayer_image_args_error_2(self):
         # Negative size
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county/render?&width=-100&height=-100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county/render?"
+            "&width=-100&height=-100",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -145,8 +149,8 @@ class VectorLayerRendererTestCase(ActiniaResourceTestCaseBase):
     def test_vectorlayer_image_args_error_3(self):
         # Raster does not exist
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/PERMANENT/vector_layers"
-            "/boundary_county_nomap/render?",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/vector_layers/boundary_county_nomap/render?",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))

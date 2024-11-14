@@ -106,7 +106,7 @@ process_chain_short = {
 class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
     def check_remove_test_mapset(self):
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -124,7 +124,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         if "test_mapset" in mapsets:
             # Delete the mapset if it already exists
             rv = self.server.delete(
-                URL_PREFIX + "/projects/nc_spm_08/mapsets/test_mapset",
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+                "test_mapset",
                 headers=self.admin_auth_header,
             )
             print(rv.data)
@@ -147,8 +148,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.check_remove_test_mapset()
 
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/nc_spm_08/mapsets/test_mapset/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -156,7 +156,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",
             headers=self.admin_auth_header,
         )
         print(rv.data)
