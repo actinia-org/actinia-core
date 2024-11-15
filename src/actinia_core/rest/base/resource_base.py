@@ -183,7 +183,9 @@ class ResourceBase(Resource):
 
         # Put API information in the response for later accounting
         kwargs = {
-            "endpoint": request.endpoint,
+            # For depricated location endpoints remove "_locations" from
+            # endpoint class name
+            "endpoint": request.endpoint.replace("_locations", ""),
             "method": request.method,
             "path": request.path,
             "request_url": self.request_url,
