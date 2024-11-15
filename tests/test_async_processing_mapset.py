@@ -148,7 +148,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.check_remove_test_mapset()
 
         rv = self.server.post(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test_mapset/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "test_mapset/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",

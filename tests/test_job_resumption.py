@@ -365,18 +365,18 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         step = 4
         tpl = Template(json_dumps(process_chain_1))
         # self.server.get(f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",headers=self.admin_auth_header,content_type="application/json")
-        rv1 = self.server.post(
+        rv = self.server.post(
             f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum555"),
             content_type="application/json",
         )
         self.waitAsyncStatusAssertHTTP(
-            rv1, headers=self.admin_auth_header, http_status=400, status="error"
+            rv, headers=self.admin_auth_header, http_status=400, status="error"
         )
 
         # check if interim results are saved
-        resp_data = json_loads(rv1.data)
+        resp_data = json_loads(rv.data)
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(

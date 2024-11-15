@@ -152,11 +152,6 @@ def create_project_endpoints(projects_url_part="projects"):
                                  URL; to add deprecated location endpoints set
                                  it to "locations"
     """
-    endpoint_str = ""
-    if projects_url_part != "projects":
-        endpoint_str = projects_url_part.title()
-
-
     # Project management
     flask_api.add_resource(
         ListProjectsResource,

@@ -125,8 +125,8 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_raster_layers_pattern(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers?pattern=lsat*",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers?pattern=lsat*",
             headers=self.user_auth_header,
         )
         print(rv.data.decode())
@@ -147,8 +147,8 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
     def test_list_raster_layers_empty_list(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers?pattern=NONE",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers?pattern=NONE",
             headers=self.user_auth_header,
         )
         print(rv.data.decode())
@@ -193,8 +193,8 @@ class ListRasterLayersTestCase(ActiniaResourceTestCaseBase):
 
         # List raster layer
         rv = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/{new_mapset}/"
-            "raster_layers?pattern=test_delete_layer_*",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{new_mapset}/raster_layers?pattern=test_delete_layer_*",
             headers=self.user_auth_header,
         )
         print(rv.data.decode())

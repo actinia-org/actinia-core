@@ -66,15 +66,17 @@ class PersistentProjectCreator(PersistentProcessing):
         project_param = "location" if grass_version < [8, 4] else "project"
         pc = {
             "version": 1,
-            "list": [{
-                "id": "1",
-                "module": "g.proj",
-                "inputs": [
-                    {"param": "epsg", "value": epsg_code},
-                    {"param": project_param, "value": new_project},
-                ],
-                "flags": "t",
-            }]
+            "list": [
+                {
+                    "id": "1",
+                    "module": "g.proj",
+                    "inputs": [
+                        {"param": "epsg", "value": epsg_code},
+                        {"param": project_param, "value": new_project},
+                    ],
+                    "flags": "t",
+                }
+            ],
         }
 
         process_list = self._validate_process_chain(

@@ -126,7 +126,9 @@ class ListProjectsResource(ResourceBase):
         if projects:
             param = {"status": "success"}
             grass_version_s = G_VERSION["version"]
-            grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+            grass_version = [
+                int(item) for item in grass_version_s.split(".")[:2]
+            ]
             if grass_version >= [8, 4]:
                 param["projects"] = projects
             else:
