@@ -371,11 +371,11 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
             content_type="application/json",
         )
         self.waitAsyncStatusAssertHTTP(
-            rv, headers=self.admin_auth_header, http_status=400, status="error"
+            rv1, headers=self.admin_auth_header, http_status=400, status="error"
         )
 
         # check if interim results are saved
-        resp_data = json_loads(rv.data)
+        resp_data = json_loads(rv1.data)
         rv_user_id = resp_data["user_id"]
         rv_resource_id = resp_data["resource_id"]
         interim_dir = os.path.join(
