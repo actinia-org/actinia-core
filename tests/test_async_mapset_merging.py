@@ -149,115 +149,115 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
                     "Wrong mimetype %s" % rv.mimetype,
                 )
 
-    # def test_1_merge_no_access_to_target_mapset_error(self):
-    #     """No access to target mapset error test"""
-    #     # Try merge source mapsets into target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/user1/"
-    #         "merging_async",
-    #         headers=self.user_auth_header,
-    #         data=json_dumps(["Source_A", "Source_B"]),
-    #         content_type="application/json",
-    #     )
+    def test_1_merge_no_access_to_target_mapset_error(self):
+        """No access to target mapset error test"""
+        # Try merge source mapsets into target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/user1/"
+            "merging_async",
+            headers=self.user_auth_header,
+            data=json_dumps(["Source_A", "Source_B"]),
+            content_type="application/json",
+        )
 
-    #     print(rv.data)
-    #     self.waitAsyncStatusAssertHTTP(
-    #         rv,
-    #         headers=self.user_auth_header,
-    #         http_status=400,
-    #         status="error",
-    #         message_check="AsyncProcessError",
-    #     )
+        print(rv.data)
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.user_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError",
+        )
 
-    # def test_2_merge_missing_target_mapset_error(self):
-    #     """Missing target mapset test"""
-    #     self.check_remove_test_mapsets()
+    def test_2_merge_missing_target_mapset_error(self):
+        """Missing target mapset test"""
+        self.check_remove_test_mapsets()
 
-    #     # Try merge source mapsets into target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
-    #         "merging_async",
-    #         headers=self.admin_auth_header,
-    #         data=json_dumps(["Source_A", "Source_B"]),
-    #         content_type="application/json",
-    #     )
-    #     self.waitAsyncStatusAssertHTTP(
-    #         rv,
-    #         headers=self.admin_auth_header,
-    #         http_status=400,
-    #         status="error",
-    #         message_check="AsyncProcessError",
-    #     )
+        # Try merge source mapsets into target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
+            headers=self.admin_auth_header,
+            data=json_dumps(["Source_A", "Source_B"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError",
+        )
 
-    # def test_3_merge_missing_source_mapsets_error(self):
-    #     """Test error for missing source mapsets"""
-    #     self.check_remove_test_mapsets()
+    def test_3_merge_missing_source_mapsets_error(self):
+        """Test error for missing source mapsets"""
+        self.check_remove_test_mapsets()
 
-    #     # Create target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
-    #         headers=self.admin_auth_header,
-    #     )
-    #     print(rv.data)
-    #     self.assertEqual(
-    #         rv.status_code,
-    #         200,
-    #         "HTML status code is wrong %i" % rv.status_code,
-    #     )
-    #     self.assertEqual(
-    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-    #     )
+        # Create target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
+            headers=self.admin_auth_header,
+        )
+        print(rv.data)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-    #     # Try merge source mapsets into target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
-    #         "merging_async",
-    #         headers=self.admin_auth_header,
-    #         data=json_dumps(["Source_A", "Source_B"]),
-    #         content_type="application/json",
-    #     )
-    #     self.waitAsyncStatusAssertHTTP(
-    #         rv,
-    #         headers=self.admin_auth_header,
-    #         http_status=400,
-    #         status="error",
-    #         message_check="AsyncProcessError",
-    #     )
+        # Try merge source mapsets into target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
+            headers=self.admin_auth_header,
+            data=json_dumps(["Source_A", "Source_B"]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError",
+        )
 
-    # def test_4_merge_empty_mapset_list(self):
-    #     """Test error for missing source mapsets"""
-    #     self.check_remove_test_mapsets()
+    def test_4_merge_empty_mapset_list(self):
+        """Test error for missing source mapsets"""
+        self.check_remove_test_mapsets()
 
-    #     # Create target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
-    #         headers=self.admin_auth_header,
-    #     )
-    #     print(rv.data)
-    #     self.assertEqual(
-    #         rv.status_code,
-    #         200,
-    #         "HTML status code is wrong %i" % rv.status_code,
-    #     )
-    #     self.assertEqual(
-    #         rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-    #     )
+        # Create target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
+            headers=self.admin_auth_header,
+        )
+        print(rv.data)
+        self.assertEqual(
+            rv.status_code,
+            200,
+            "HTML status code is wrong %i" % rv.status_code,
+        )
+        self.assertEqual(
+            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        )
 
-    #     # Try merge source mapsets into target mapset
-    #     rv = self.server.post(
-    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
-    #         "merging_async",
-    #         headers=self.admin_auth_header,
-    #         data=json_dumps([]),
-    #         content_type="application/json",
-    #     )
-    #     self.waitAsyncStatusAssertHTTP(
-    #         rv,
-    #         headers=self.admin_auth_header,
-    #         http_status=400,
-    #         status="error",
-    #         message_check="AsyncProcessError",
-    #     )
+        # Try merge source mapsets into target mapset
+        rv = self.server.post(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
+            headers=self.admin_auth_header,
+            data=json_dumps([]),
+            content_type="application/json",
+        )
+        self.waitAsyncStatusAssertHTTP(
+            rv,
+            headers=self.admin_auth_header,
+            http_status=400,
+            status="error",
+            message_check="AsyncProcessError",
+        )
 
     def test_5_merge_two_mapsets(self):
         """Test the merging of two mapsets into a target mapset"""
