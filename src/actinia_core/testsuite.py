@@ -481,7 +481,6 @@ class ActiniaTestCaseBase(unittest.TestCase):
         self.waitAsyncStatusAssertHTTP(
             rv,
             headers=self.user_auth_header,
-            # headers=self.admin_auth_header,
             http_status=200,
             status="finished",
         )
