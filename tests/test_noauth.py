@@ -22,7 +22,7 @@
 #######
 
 """
-Tests: Projct test case
+Tests: No authentication test case
 """
 import os
 from flask.json import dumps as json_dumps

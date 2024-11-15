@@ -174,7 +174,7 @@ process_chain_region = {
 class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -188,7 +188,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -210,7 +210,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
         while True:
             rv = self.server.get(
-                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                f"{URL_PREFIX}/resources/{rv_user_id}/{rv_resource_id}",
                 headers=self.admin_auth_header,
             )
             print("Get", rv.data.decode())
@@ -226,7 +226,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
             # Send the termination request, again and again :)
             rv = self.server.delete(
-                URL_PREFIX + "/resources/%s/%s" % (rv_user_id, rv_resource_id),
+                f"{URL_PREFIX}/resources/{rv_user_id}/{rv_resource_id}",
                 headers=self.admin_auth_header,
             )
             print("Delete", rv.data.decode())
@@ -245,7 +245,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_large_region(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_region),
             content_type="application/json",
@@ -265,7 +265,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         """
 
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_1),
             content_type="application/json",
@@ -285,7 +285,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         """
 
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_2),
             content_type="application/json",
@@ -300,7 +300,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_error_3(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_3),
             content_type="application/json",
@@ -315,7 +315,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_error_4(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_4),
             content_type="application/json",
@@ -332,7 +332,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         """No JSON payload error"""
 
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
         )
 
@@ -348,7 +348,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_error_6(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_5),
             content_type="application/json",
@@ -363,7 +363,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_error_7(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_6),
             content_type="application/json",
@@ -385,7 +385,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         pc[3]["inputs"]["elevation"] = "elevation@NO_Mapset"
 
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(pc),
             content_type="application/json",
@@ -408,7 +408,7 @@ class AsyncProcessTestCase(ActiniaResourceTestCaseBase):
         pc[1]["flags"] = "p"
 
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.user_auth_header,
             data=json_dumps(pc),
             content_type="application/json",

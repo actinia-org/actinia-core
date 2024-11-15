@@ -156,13 +156,13 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     )
             else:
                 user = self.user.get_id()
-            locs_mapsets = redis_interface.get_credentials(user)[
+            projects_mapsets = redis_interface.get_credentials(user)[
                 "permissions"
             ]["accessible_datasets"]
             redis_interface.disconnect()
             mapsets = []
-            for project in locs_mapsets:
-                for mapset in locs_mapsets[project]:
+            for project in projects_mapsets:
+                for mapset in projects_mapsets[project]:
                     mapsets.append(f"{project}/{mapset}")
             try:
                 return make_response(

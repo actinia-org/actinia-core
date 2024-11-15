@@ -54,6 +54,7 @@ from actinia_core.models.response_models import (
     ProcessingResponseListModel,
 )
 from actinia_core.core.interim_results import InterimResult
+from actinia_core.version import G_VERSION
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
@@ -353,8 +354,18 @@ class ResourceManager(ResourceManagerBase):
             is None
         ):
             return None, None, None
-        # TODO project project
-        project = re.findall(r"projects\/(.*?)\/", post_url)[0]
+        # check grass version for project / location
+        grass_version_s = G_VERSION["version"]
+        grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+        if grass_version < [8, 4]:
+            project = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        elif grass_version < [9, 0]:
+            project = None
+            project = re.findall(r"projects\/(.*?)\/", post_url)[0]
+            if not project:
+                project = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        else:
+            project = re.findall(r"projects\/(.*?)\/", post_url)[0]
         processing_class = global_config.INTERIM_SAVING_ENDPOINTS[endpoint]
         if processing_class == "AsyncEphemeralResource":
             # /projects/<string:project_name>/processing_async

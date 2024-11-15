@@ -145,7 +145,8 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
     #         time.sleep(3)
     #     tm = Template(json_dumps(pc))
     #     rv = self.server.post(
-    #         URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+    #         f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+    #         "processing_async_export",
     #         headers=self.admin_auth_header,
     #         data=tm.render(sleep=1),
     #         content_type="application/json",
@@ -158,7 +159,8 @@ class WebhookTestCase(ActiniaResourceTestCaseBase):
         """
         tm = Template(json_dumps(pc))
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=tm.render(sleep=30),
             content_type="application/json",

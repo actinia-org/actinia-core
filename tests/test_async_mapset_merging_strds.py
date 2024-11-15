@@ -258,21 +258,21 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
     def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         existing_mapsets = json_load(rv.data)["process_results"]
         if self.user_mapset in existing_mapsets:
             rvdellock = self.server.delete(
-                URL_PREFIX
-                + "/projects/nc_spm_08/mapsets/%s/lock" % self.user_mapset,
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+                f"{self.user_mapset}/lock",
                 headers=self.admin_auth_header,
             )
             print(rvdellock.data.decode())
 
             rvdel = self.server.delete(
-                URL_PREFIX
-                + "/projects/nc_spm_08/mapsets/%s" % self.user_mapset,
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+                f"mapsets/{self.user_mapset}",
                 headers=self.admin_auth_header,
             )
             print(rvdel.data.decode())
@@ -282,8 +282,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         rv = dict()
         for strds_name in strds_names:
             rv[strds_name] = self.server.get(
-                URL_PREFIX
-                + f"/projects/nc_spm_08/mapsets/{self.user_mapset}/strds",
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+                f"mapsets/{self.user_mapset}/strds",
                 headers=self.user_auth_header,
             )
             strds = json_load(rv[strds_name].data)["process_results"]
@@ -296,8 +296,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
     def check_modis_strds(self, raster_dict, strds_name):
         # check if correct maps are listed in strds strds
         rv = self.server.get(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            f"strds/{strds_name}/raster_layers",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/strds/{strds_name}/raster_layers",
             headers=self.user_auth_header,
         )
         strds_rasters = json_load(rv.data)["process_results"]
@@ -318,8 +318,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
     def test_create_strds_in_persistent_user_db(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json",
@@ -339,8 +339,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
     def test_create_strds_in_persistent_user_db_and_list_it(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json",
@@ -354,8 +354,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         )
 
         rv2 = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_list),
             content_type="application/json",
@@ -374,8 +374,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
     def test_create_strds_in_persistent_user_db_2(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json",
@@ -389,8 +389,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         )
 
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds2),
             content_type="application/json",
@@ -411,8 +411,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
 
     def test_create_strds_in_persistent_user_db_3(self):
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds1),
             content_type="application/json",
@@ -431,8 +431,8 @@ class AsyncMapsetMergingSTRDS(ActiniaResourceTestCaseBase):
         self.check_modis_strds(self.raster_dict_modis, "modis")
 
         rv = self.server.post(
-            f"{URL_PREFIX}/projects/nc_spm_08/mapsets/{self.user_mapset}/"
-            "processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            f"{self.user_mapset}/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_create_strds3),
             content_type="application/json",

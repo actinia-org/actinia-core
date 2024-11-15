@@ -360,7 +360,8 @@ process_chain_landsat = {
 class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     def test_async_processing_legacy(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/process_chain_validation_sync",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "process_chain_validation_sync",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_legacy),
             content_type="application/json",
@@ -376,7 +377,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
 
     def test_async_processing_new(self):
         rv = self.server.post(
-            URL_PREFIX + "/projects/nc_spm_08/process_chain_validation_sync",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "process_chain_validation_sync",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_new),
             content_type="application/json",
@@ -398,8 +400,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_new_ndvi(self):
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/latlong_wgs84/process_chain_validation_async",
+            f"{URL_PREFIX}/{self.project_url_part}/latlong_wgs84/"
+            "process_chain_validation_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_ndvi),
             content_type="application/json",
@@ -422,8 +424,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_new_ndvi_export_landsat(self):
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/latlong_wgs84/process_chain_validation_async",
+            f"{URL_PREFIX}/{self.project_url_part}/latlong_wgs84/"
+            "process_chain_validation_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_ndvi_landsat),
             content_type="application/json",
@@ -445,8 +447,8 @@ class AsyncProcessValidationTestCase(ActiniaResourceTestCaseBase):
     )
     def test_async_processing_landsat(self):
         rv = self.server.post(
-            URL_PREFIX
-            + "/projects/latlong_wgs84/process_chain_validation_async",
+            f"{URL_PREFIX}/{self.project_url_part}/latlong_wgs84/"
+            "process_chain_validation_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_landsat),
             content_type="application/json",

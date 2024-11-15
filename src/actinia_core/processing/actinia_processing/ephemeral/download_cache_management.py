@@ -44,8 +44,6 @@ __copyright__ = (
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
-__maintainer__ = "mundialis GmbH & Co. KG"
-__email__ = "info@mundialis.de"
 
 
 class DownloadCacheSize(EphemeralProcessing):

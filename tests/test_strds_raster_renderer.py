@@ -43,9 +43,6 @@ __email__ = "soerengebbert@googlemail.com"
 
 project = "nc_spm_08"
 strds_mapset = "modis_lst"
-# strds_url = (
-#     f"{URL_PREFIX}/PROJECT_URL_PART/{project}/mapsets/{strds_mapset}/strds"
-# )
 strds_data = "LST_Day_monthly"
 
 

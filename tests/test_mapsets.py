@@ -70,21 +70,22 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
     def tearDown(self):
         # unlock and delete the test mapsets
         rv = self.server.get(
-            URL_PREFIX + "/projects/nc_spm_08/mapsets",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         existing_mapsets = json_load(rv.data)["process_results"]
         for mapset in self.test_mapsets:
             if mapset in existing_mapsets:
                 rvdellock = self.server.delete(
-                    URL_PREFIX
-                    + "/projects/nc_spm_08/mapsets/%s/lock" % mapset,
+                    f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+                    f"{mapset}/lock",
                     headers=self.admin_auth_header,
                 )
                 print(rvdellock.data.decode())
 
                 rvdel = self.server.delete(
-                    URL_PREFIX + "/projects/nc_spm_08/mapsets/%s" % mapset,
+                    f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets"
+                    f"/{mapset}",
                     headers=self.admin_auth_header,
                 )
                 print(rvdel.data.decode())
@@ -94,11 +95,12 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
         for mapset in self.test_mapsets:
             self.create_new_mapset(mapset)
             self.server.post(
-                URL_PREFIX + "/projects/nc_spm_08/mapsets/%s/lock" % mapset,
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+                f"{mapset}/lock",
                 headers=self.root_auth_header,
             )
         rv = self.server.get(
-            URL_PREFIX + "/mapsets?status=locked",
+            f"{URL_PREFIX}/mapsets?status=locked",
             headers=self.root_auth_header,
         )
         self.assertEqual(
@@ -116,7 +118,7 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
             self.assertIn(
                 ref_mapset,
                 mapset_list,
-                "%s is not in the list of locked mapsets" % ref_mapset,
+                f"{ref_mapset} is not in the list of locked mapsets",
             )
 
         message = rvdata["message"]
@@ -133,22 +135,22 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
     def test_user_error(self):
         # Test correct behaviour if user role is not admin
         rv = self.server.get(
-            URL_PREFIX + "/mapsets?status=locked",
+            f"{URL_PREFIX}/mapsets?status=locked",
             headers=self.user_auth_header,
         )
         self.assertEqual(
-            rv.status_code, 401, "Status code is not 401: %s" % rv.status_code
+            rv.status_code, 401, f"Status code is not 401: {rv.status_code}"
         )
 
     def test_user_own_mapsets(self):
         """Test if user can list available mapsets"""
         rv = self.server.get(
-            URL_PREFIX + "/mapsets", headers=self.test_user_auth_header
+            f"{URL_PREFIX}/mapsets", headers=self.test_user_auth_header
         )
         self.assertEqual(
             rv.status_code,
             200,
-            "HTML status code is wrong %i" % rv.status_code,
+            f"HTML status code is wrong {rv.status_code}",
         )
         rvdata = json_load(rv.data)
         mapsets = rvdata["available_mapsets"]
@@ -161,13 +163,13 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
     def test_superadmin_user_mapsets(self):
         """Test if superadmin can list available mapsets from test_user"""
         rv = self.server.get(
-            URL_PREFIX + f"/mapsets?user={self.test_user}",
+            f"{URL_PREFIX}/mapsets?user={self.test_user}",
             headers=self.root_auth_header,
         )
         self.assertEqual(
             rv.status_code,
             200,
-            "HTML status code is wrong %i" % rv.status_code,
+            f"HTML status code is wrong {rv.status_code}",
         )
         rvdata = json_load(rv.data)
         mapsets = rvdata["available_mapsets"]
@@ -180,11 +182,11 @@ class MapsetsTestCase(ActiniaResourceTestCaseBase):
     def test_user_user_mapsets(self):
         # Test if test_user can list available mapsets from user
         rv = self.server.get(
-            URL_PREFIX + f"/mapsets?user={self.test_user}",
+            f"{URL_PREFIX}/mapsets?user={self.test_user}",
             headers=self.user_auth_header,
         )
         self.assertEqual(
-            rv.status_code, 401, "Status code is not 401: %s" % rv.status_code
+            rv.status_code, 401, f"Status code is not 401: {rv.status_code}"
         )
 
 
