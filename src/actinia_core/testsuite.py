@@ -142,6 +142,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
     # set project_url_part to "locations" if GRASS GIS version < 8.4
     init_versions()
     from .version import G_VERSION
+
     grass_version_s = G_VERSION["version"]
     grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
     if grass_version < [8, 4]:
