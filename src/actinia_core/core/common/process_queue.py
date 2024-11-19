@@ -37,7 +37,6 @@ from datetime import datetime
 import queue as standard_queue
 from multiprocessing import Process, Queue
 from threading import Thread, Lock
-import logging
 import atexit
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.logging_interface import log
@@ -47,8 +46,8 @@ has_fluent = False
 
 try:
     from fluent import handler
-
-    has_fluent = True
+    if handler:
+        has_fluent = True
 except Exception:
     print("Fluent is not available")
     has_fluent = False

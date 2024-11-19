@@ -25,6 +25,16 @@
 App configuration of flask, flask_restful, redis server connection
 and global settings
 """
+from flask_httpauth import HTTPBasicAuth
+from flask_httpauth import HTTPTokenAuth
+from flask_cors import CORS
+from flask import Flask
+from flask_restful_swagger_2 import Api
+
+from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
+
+from actinia_api import API_VERSION, URL_PREFIX
+
 actinia_string = """Actinia"""
 
 actinia_description = """
@@ -104,16 +114,6 @@ S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
 The results of the asynchronous computations are available as GeoTIFF file in
 a cloud storage for download.
 """
-
-from flask_httpauth import HTTPBasicAuth
-from flask_httpauth import HTTPTokenAuth
-from flask_cors import CORS
-from flask import Flask
-from flask_restful_swagger_2 import Api
-
-from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
-
-from actinia_api import API_VERSION, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Julia Haas, Anika Weinmann"

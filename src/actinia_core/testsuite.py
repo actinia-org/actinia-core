@@ -34,8 +34,7 @@ from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
 from actinia_api import URL_PREFIX
 
-from .health_check import health_check
-from .version import version, init_versions
+from .version import init_versions
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.config import global_config

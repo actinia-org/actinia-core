@@ -137,8 +137,8 @@ class EphemeralProcessing(object):
         # Fluentd hack to work in a multiprocessing environment
         try:
             from fluent import sender
-
-            self.has_fluent = True
+            if sender:
+                self.has_fluent = True
         except Exception:
             self.has_fluent = False
 
