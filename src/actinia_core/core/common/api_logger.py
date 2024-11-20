@@ -110,7 +110,7 @@ class ApiLogger(RedisFluentLoggerBase):
 
         """
         api_info = {
-            # For depricated location endpoints remove "_locations" from
+            # For deprecated location endpoints remove "_locations" from
             # endpoint class name
             "endpoint": http_request.endpoint.replace("_locations", ""),
             "method": http_request.method,
