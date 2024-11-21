@@ -209,7 +209,7 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         """Test job resumption with processing_async endpoint and stdout"""
         endpoint = f"{self.project_url_part}/nc_spm_08/processing_async"
         rv = self.server.post(
-            f"{URL_PREFIX}{endpoint}",
+            f"{URL_PREFIX}/{endpoint}",
             data=json_dumps(PC),
             content_type="application/json",
         )
@@ -228,7 +228,7 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
             f"{self.project_url_part}/nc_spm_08/mapsets/test/processing_async"
         )
         rv = self.server.post(
-            f"{URL_PREFIX}{endpoint}",
+            f"{URL_PREFIX}/{endpoint}",
             data=json_dumps(PC),
             content_type="application/json",
         )

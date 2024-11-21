@@ -364,7 +364,6 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """Test if the interim results are not saved correctly"""
         step = 4
         tpl = Template(json_dumps(process_chain_1))
-        # self.server.get(f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",headers=self.admin_auth_header,content_type="application/json")
         rv = self.server.post(
             f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
