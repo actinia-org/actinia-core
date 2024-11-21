@@ -10,7 +10,7 @@ on:
 jobs:
 
   # Unittests for GRASS 8.3
-  alpine-unittests-G8.3:
+  alpine-unittests-G83:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
@@ -55,7 +55,7 @@ jobs:
         # pull: true
 
   # Integration tests for GRASS 8.3
-  alpine-integration-tests-G8.3:
+  alpine-integration-tests-G83:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
