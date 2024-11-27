@@ -288,7 +288,7 @@ class MapsetSizeRenderResource(ResourceManager):
         response_data = self.resource_logger.get(user_id, resource_id)
 
         if response_data is not None:
-            http_code, pc_response_model = pickle.loads(response_data)
+            _, pc_response_model = pickle.loads(response_data)
 
             pc_status = pc_response_model["status"]
             if pc_status in ["accepted", "running"]:
@@ -369,7 +369,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         response_data = self.resource_logger.get(user_id, resource_id)
 
         if response_data is not None:
-            http_code, pc_response_model = pickle.loads(response_data)
+            _, pc_response_model = pickle.loads(response_data)
 
             pc_status = pc_response_model["status"]
             if pc_status in ["accepted", "running"]:

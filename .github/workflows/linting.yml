@@ -1,4 +1,4 @@
-name: Linting and code quality check
+name: Linting and code quality check and post PR code suggestions
 
 on: [push, pull_request]
 
@@ -9,3 +9,8 @@ jobs:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
       BASH_SEVERITY: 'warning'
+
+  post-pr-reviews:
+    needs: lint
+    if: ${{ needs.lint.result == 'failure' }}
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main

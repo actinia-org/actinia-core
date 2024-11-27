@@ -137,7 +137,7 @@ class PersistentRenameLayers(PersistentProcessing):
     def _execute(self):
         self._setup()
 
-        args, layer_type = self.data
+        _, layer_type = self.data
         self.required_mapsets.append(self.target_mapset_name)
 
         # List format must be

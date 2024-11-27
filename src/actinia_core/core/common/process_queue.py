@@ -247,7 +247,7 @@ class EnqueuedProcess(object):
             )
 
             if response_data is not None:
-                http_code, response_model = pickle.loads(response_data)
+                _, response_model = pickle.loads(response_data)
                 if (
                     response_model["status"] != "error"
                     and response_model["status"] != "terminated"

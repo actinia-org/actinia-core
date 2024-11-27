@@ -599,7 +599,7 @@ class GrassInitializer(ProcessLogging):
 
         """
         # Safe the current region in a temporary region that can be overwritten
-        errorid, stdout_buff, stderr_buff = self.run_module(
+        errorid, _, _ = self.run_module(
             "g.region", ["save=%s" % self.tmp_region_name, "--o"]
         )
 

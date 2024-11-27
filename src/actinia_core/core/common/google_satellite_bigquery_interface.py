@@ -827,7 +827,7 @@ class GoogleSatelliteBigQueryInterface(object):
                     # The whole XML content is returned as well
                     (
                         gml,
-                        xml_metadata,
+                        _,
                         bbox,
                     ) = self._generate_sentinel2_footprint(base_url=base_url)
                     result[product_id]["gml_footprint"] = gml
