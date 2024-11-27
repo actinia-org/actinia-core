@@ -6,8 +6,6 @@ jobs:
   lint:
     uses: mundialis/github-workflows/.github/workflows/linting.yml@main
     with:
-      # set pylint-version to empty string to skip the pylint workflow
-      pylint-version: ''
       BASH_SEVERITY: 'warning'
 
   post-pr-reviews:
