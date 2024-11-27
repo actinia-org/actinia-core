@@ -28,7 +28,7 @@ import atexit
 import os
 import signal
 import time
-from actinia_core.testsuite import ActiniaTestCaseBase
+from actinia_core.testsuite import ActiniaTestCaseBase, URL_PREFIX
 from actinia_core.core.common.config import global_config
 from actinia_core.endpoints import create_endpoints
 
@@ -103,6 +103,7 @@ atexit.register(stop_redis)
 # Setup the environment
 setup_environment()
 
+URL_PREFIX = URL_PREFIX
 
 class ActiniaResourceTestCaseBase(ActiniaTestCaseBase):
     pass
