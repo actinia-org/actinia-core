@@ -46,6 +46,7 @@ has_fluent = False
 
 try:
     from fluent import handler
+
     if handler:
         has_fluent = True
 except Exception:

@@ -35,6 +35,7 @@ from actinia_core.core.redis_fluentd_logger_base import RedisFluentLoggerBase
 try:
     from fluent import sender
     from fluent import event
+
     if sender and event:
         has_fluent = True
 except Exception:

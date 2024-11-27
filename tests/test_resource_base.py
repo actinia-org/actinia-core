@@ -105,5 +105,6 @@ setup_environment()
 
 URL_PREFIX = URL_PREFIX
 
+
 class ActiniaResourceTestCaseBase(ActiniaTestCaseBase):
     pass

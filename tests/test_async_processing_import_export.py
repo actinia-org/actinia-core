@@ -43,6 +43,7 @@ except ModuleNotFoundError:
 
 try:
     import actinia_stac_plugin
+
     if actinia_stac_plugin:
         no_stac_plugin = False
 except Exception:

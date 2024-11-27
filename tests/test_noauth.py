@@ -34,6 +34,7 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.process_queue import create_process_queue
 from actinia_core.testsuite import ActiniaRequests
+
 try:
     from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 except Exception:
