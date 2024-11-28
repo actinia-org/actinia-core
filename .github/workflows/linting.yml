@@ -1,4 +1,4 @@
-name: Linting and code quality check and post PR code suggestions
+name: Linting and code quality check
 
 on:
   push:

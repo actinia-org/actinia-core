@@ -2,7 +2,7 @@ name: Post PR code suggestions
 
 on:
   workflow_run:
-    workflows: ["Linting and code quality check and post PR code suggestions"]
+    workflows: ["Linting and code quality check"]
     types:
       - completed
 
