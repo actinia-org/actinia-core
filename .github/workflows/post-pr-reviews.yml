@@ -1,0 +1,11 @@
+name: Post PR code suggestions
+
+on:
+  workflow_run:
+    workflows: ["Linting and code quality check and post PR code suggestions"]
+    types:
+      - completed
+
+jobs:
+  post-pr-reviews:
+    uses: mmacata/github-workflows/.github/workflows/post-pr-reviews.yml@post-pr

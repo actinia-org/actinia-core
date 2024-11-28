@@ -1,6 +1,11 @@
 name: Linting and code quality check and post PR code suggestions
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
 
 jobs:
   lint:
@@ -9,7 +14,3 @@ jobs:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
       BASH_SEVERITY: 'warning'
-
-  post-pr-reviews:
-    needs: lint
-    uses: mmacata/github-workflows/.github/workflows/post-pr-reviews.yml@post-pr
