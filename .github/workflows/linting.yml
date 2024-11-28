@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   lint:
-    uses: mmacata/github-workflows/.github/workflows/linting.yml@no-diff-ruff
+    uses: mmacata/github-workflows/.github/workflows/linting.yml@post-pr
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
@@ -13,4 +13,4 @@ jobs:
   post-pr-reviews:
     needs: lint
     if: ${{ needs.lint.result == 'failure' }}
-    uses: mmacata/github-workflows/.github/workflows/post-pr-reviews.yml@no-diff-ruff
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@post-pr
