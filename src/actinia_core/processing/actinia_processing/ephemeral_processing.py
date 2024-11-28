@@ -1367,7 +1367,7 @@ class EphemeralProcessing(object):
         if self.skip_region_check is True:
             return
 
-        errorid, stdout_buff, dummyvalue1 = self.ginit.run_module("g.region", ["-ug"])
+        errorid, stdout_buff, _ = self.ginit.run_module("g.region", ["-ug"])
 
         if errorid != 0:
             raise AsyncProcessError(
