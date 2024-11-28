@@ -12,5 +12,4 @@ jobs:
 
   post-pr-reviews:
     needs: lint
-    if: ${{ needs.lint.result == 'failure' }}
     uses: mmacata/github-workflows/.github/workflows/post-pr-reviews.yml@post-pr
