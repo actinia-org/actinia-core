@@ -135,9 +135,7 @@ __email__ = "info@mundialis.de"
 
 def get_endpoint_class_name(endpoint_class, projects_url_part="projects"):
     endpoint_class_name = endpoint_class.__name__.lower()
-    if "project" in endpoint_class_name:
-        name = endpoint_class_name.replace("project", projects_url_part[:-1])
-    elif projects_url_part != "projects":
+    if projects_url_part != "projects":
         name = f"{endpoint_class_name}_{projects_url_part}"
     else:
         name = endpoint_class_name
