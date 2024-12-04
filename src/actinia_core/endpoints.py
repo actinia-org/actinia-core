@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,12 +31,10 @@ from pprint import pprint
 from actinia_core.core.common.app import flask_api
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
-from actinia_core.rest.location_management import (
-    ListLocationsResource,
-    LocationManagementResourceUser,
-)
-from actinia_core.rest.location_management import (
-    LocationManagementResourceAdminUser,
+from actinia_core.rest.project_management import (
+    ListProjectsResource,
+    ProjectManagementResourceAdminUser,
+    ProjectManagementResourceUser,
 )
 from actinia_core.rest.mapsets import AllMapsetsListingResourceAdmin
 from actinia_core.rest.mapset_management import (
@@ -129,164 +127,300 @@ from actinia_core.rest.process_chain_monitoring import (
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
-def create_core_endpoints():
-    # Locationmanagement
-    flask_api.add_resource(ListLocationsResource, "/locations")
+def get_endpoint_class_name(endpoint_class, projects_url_part="projects"):
+    endpoint_class_name = endpoint_class.__name__.lower()
+    if projects_url_part != "projects":
+        name = f"{endpoint_class_name}_{projects_url_part}"
+    else:
+        name = endpoint_class_name
+    return name
+
+
+def create_project_endpoints(projects_url_part="projects"):
+    """Function to add resources with "project" inside the endpoint url.
+
+    Args:
+        projects_url_part (str): The name of the projects inside the endpoint
+                                 URL; to add deprecated location endpoints set
+                                 it to "locations"
+    """
+    # Project management
     flask_api.add_resource(
-        LocationManagementResourceUser,
-        "/locations/<string:location_name>/info",
+        ListProjectsResource,
+        f"/{projects_url_part}",
+        endpoint=get_endpoint_class_name(
+            ListProjectsResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
-        LocationManagementResourceAdminUser,
-        "/locations/<string:location_name>",
+        ProjectManagementResourceUser,
+        f"/{projects_url_part}/<string:project_name>/info",
+        endpoint=get_endpoint_class_name(
+            ProjectManagementResourceUser, projects_url_part
+        ),
     )
+    flask_api.add_resource(
+        ProjectManagementResourceAdminUser,
+        f"/{projects_url_part}/<string:project_name>",
+        endpoint=get_endpoint_class_name(
+            ProjectManagementResourceAdminUser, projects_url_part
+        ),
+    )
+
     # Mapset management
     flask_api.add_resource(
-        ListMapsetsResource, "/locations/<string:location_name>/mapsets"
+        ListMapsetsResource,
+        f"/{projects_url_part}/<string:project_name>/mapsets",
+        endpoint=get_endpoint_class_name(
+            ListMapsetsResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         MapsetManagementResourceUser,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/info",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/info",
+        endpoint=get_endpoint_class_name(
+            MapsetManagementResourceUser, projects_url_part
+        ),
     )
     flask_api.add_resource(
         MapsetManagementResourceAdmin,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>",
+        endpoint=get_endpoint_class_name(
+            MapsetManagementResourceAdmin, projects_url_part
+        ),
     )
     flask_api.add_resource(
         MapsetLockManagementResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/lock",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/lock",
+        endpoint=get_endpoint_class_name(
+            MapsetLockManagementResource, projects_url_part
+        ),
     )
 
     # Raster management
     flask_api.add_resource(
         RasterLayersResource,
-        "/locations/<string:location_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers",
+        endpoint=get_endpoint_class_name(
+            RasterLayersResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         RasterLayerResource,
-        "/locations/<string:location_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>",
+        endpoint=get_endpoint_class_name(
+            RasterLayerResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralRasterLegendResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "raster_layers/<string:raster_name>/legend",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/raster_layers/<string:raster_name>/legend",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralRasterLegendResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncPersistentRasterColorsResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "raster_layers/<string:raster_name>/colors",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/raster_layers/<string:raster_name>/colors",
+        endpoint=get_endpoint_class_name(
+            SyncPersistentRasterColorsResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralRasterRendererResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "raster_layers/<string:raster_name>/render",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/raster_layers/<string:raster_name>/render",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralRasterRendererResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralRasterRGBRendererResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "render_rgb",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/render_rgb",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralRasterRGBRendererResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralRasterShapeRendererResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "render_shade",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/render_shade",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralRasterShapeRendererResource, projects_url_part
+        ),
     )
     # STRDS management
     flask_api.add_resource(
         SyncSTRDSListerResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/strds",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/strds",
+        endpoint=get_endpoint_class_name(
+            SyncSTRDSListerResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         STRDSManagementResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/strds/"
-        "<string:strds_name>",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/strds/<string:strds_name>",
+        endpoint=get_endpoint_class_name(
+            STRDSManagementResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         STRDSRasterManagement,
-        "/locations/<string:location_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/strds/<string:strds_name>/raster_layers",
+        endpoint=get_endpoint_class_name(
+            STRDSRasterManagement, projects_url_part
+        ),
     )
     # Vector management
     flask_api.add_resource(
         VectorLayersResource,
-        "/locations/<string:location_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/vector_layers",
+        endpoint=get_endpoint_class_name(
+            VectorLayersResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         VectorLayerResource,
-        "/locations/<string:location_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/vector_layers/<string:vector_name>",
+        endpoint=get_endpoint_class_name(
+            VectorLayerResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralVectorRendererResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "vector_layers/<string:vector_name>/render",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/vector_layers/<string:vector_name>/render",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralVectorRendererResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         SyncEphemeralSTRDSRendererResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "strds/<string:strds_name>/render",
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/strds/<string:strds_name>/render",
+        endpoint=get_endpoint_class_name(
+            SyncEphemeralSTRDSRendererResource, projects_url_part
+        ),
     )
 
     # Validation
     flask_api.add_resource(
         AsyncProcessValidationResource,
-        "/locations/<string:location_name>/process_chain_validation_async",
+        f"/{projects_url_part}/<string:project_name>/"
+        "process_chain_validation_async",
+        endpoint=get_endpoint_class_name(
+            AsyncProcessValidationResource, projects_url_part
+        ),
     )
 
     flask_api.add_resource(
         SyncProcessValidationResource,
-        "/locations/<string:location_name>/process_chain_validation_sync",
+        f"/{projects_url_part}/<string:project_name>/"
+        "process_chain_validation_sync",
+        endpoint=get_endpoint_class_name(
+            SyncProcessValidationResource, projects_url_part
+        ),
     )
+
+    # Async processing
+    flask_api.add_resource(
+        AsyncEphemeralResource,
+        f"/{projects_url_part}/<string:project_name>/processing_async",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncEphemeralExportResource,
+        f"/{projects_url_part}/<string:project_name>/processing_async_export",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralExportResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncEphemeralExportS3Resource,
+        f"/{projects_url_part}/<string:project_name>/"
+        "processing_async_export_s3",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralExportS3Resource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncEphemeralExportGCSResource,
+        f"/{projects_url_part}/<string:project_name>/"
+        "processing_async_export_gcs",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralExportGCSResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncPersistentResource,
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/processing_async",
+        endpoint=get_endpoint_class_name(
+            AsyncPersistentResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncPersistentMapsetMergerResource,
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/merging_async",
+        endpoint=get_endpoint_class_name(
+            AsyncPersistentMapsetMergerResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncEphemeralRasterLayerExporterResource,
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/raster_layers/<string:raster_name>/"
+        "geotiff_async",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralRasterLayerExporterResource, projects_url_part
+        ),
+    )
+    flask_api.add_resource(
+        AsyncEphemeralRasterLayerRegionExporterResource,
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
+        "<string:mapset_name>/raster_layers/<string:raster_name>/"
+        "geotiff_async_orig",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralRasterLayerRegionExporterResource, projects_url_part
+        ),
+    )
+
+
+def create_core_endpoints():
+
+    # Endpoints for project/location, mapset, raster, STRDS, vector management
+    # and processing including validation
+    create_project_endpoints()
+    create_project_endpoints(projects_url_part="locations")
+
     # Async processing
     flask_api.add_resource(
         AsyncEphemeralCustomResource, "/custom_process/<string:executable>"
     )
-    flask_api.add_resource(
-        AsyncEphemeralResource,
-        "/locations/<string:location_name>/processing_async",
-    )
-    flask_api.add_resource(
-        AsyncEphemeralExportResource,
-        "/locations/<string:location_name>/processing_async_export",
-    )
-    flask_api.add_resource(
-        AsyncEphemeralExportS3Resource,
-        "/locations/<string:location_name>/processing_async_export_s3",
-    )
-    flask_api.add_resource(
-        AsyncEphemeralExportGCSResource,
-        "/locations/<string:location_name>/processing_async_export_gcs",
-    )
-    flask_api.add_resource(
-        AsyncPersistentResource,
-        "/locations/<string:location_name>/mapsets/"
-        "<string:mapset_name>/processing_async",
-    )
-    flask_api.add_resource(
-        AsyncPersistentMapsetMergerResource,
-        "/locations/<string:location_name>/mapsets/"
-        "<string:mapset_name>/merging_async",
-    )
-    flask_api.add_resource(
-        AsyncEphemeralRasterLayerExporterResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>/"
-        "raster_layers/<string:raster_name>/geotiff_async",
-    )
-    flask_api.add_resource(
-        AsyncEphemeralRasterLayerRegionExporterResource,
-        "/locations/<string:location_name>/mapsets/<string:mapset_name>"
-        "/raster_layers/<string:raster_name>/geotiff_async_orig",
-    )
 
-    # all mapsets across all locations listing
+    # all mapsets across all projects listing
     flask_api.add_resource(AllMapsetsListingResourceAdmin, "/mapsets")
 
     # User management

@@ -20,7 +20,7 @@ curl http://127.0.0.1:8088/api/v3/version
 - Want to __start developing__? Look for [Local dev-setup with docker](#local-dev-setup) below.
 - For __production deployment__, see [Production deployment](#production-deployment) below.
 
-On startup, some GRASS GIS locations are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis) below.
+On startup, some GRASS GIS projects are created by default but they are still empty. How to get some geodata to start processing, see in [Testing GRASS GIS inside a container](#grass-gis) below.
 
 ## Adding a user
 
@@ -192,7 +192,7 @@ You now have some data which you can access through actinia. To get information
 via API, start actinia with gunicorn and run
 
 ```bash
-curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v3/locations/nc_spm_08/mapsets
+curl -u actinia-gdi:actinia-gdi http://127.0.0.1:8088/api/v3/projects/nc_spm_08/mapsets
 ```
 
 The folder where you downloaded the data into (`/actinia_core/grassdb`) is mounted into your docker container via the compose file, so all data is kept, even if your docker container restarts.

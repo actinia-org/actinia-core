@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,16 +29,17 @@ from actinia_core.processing.actinia_processing.ephemeral_processing import (
 )
 from actinia_core.core.common.exceptions import AsyncProcessError
 from actinia_core.rest.base.user_auth import (
-    check_location_mapset_module_access,
+    check_project_mapset_module_access,
 )
 from actinia_core.core.common.process_object import Process
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class EphemeralCustomProcessing(EphemeralProcessing):
@@ -68,7 +69,7 @@ class EphemeralCustomProcessing(EphemeralProcessing):
         self._setup(init_grass=False)
 
         # Check if the user has access to the required process executable
-        resp = check_location_mapset_module_access(
+        resp = check_project_mapset_module_access(
             self.user_credentials, self.config, module_name=self.executable
         )
 

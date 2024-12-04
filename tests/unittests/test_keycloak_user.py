@@ -37,7 +37,8 @@ from actinia_core.core.common.keycloak_user import (
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 @pytest.mark.unittest

@@ -1,5 +1,5 @@
-FROM mundialis/actinia:alpine-dependencies-2023-12-06 as build-base
-FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
+FROM mundialis/actinia:alpine-dependencies-2024-08-14 as build-base
+FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
 
 FROM build-base as requirements
 
@@ -16,12 +16,12 @@ ENV GISBASE ""
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
 RUN ln -s /usr/local/grass "$(grass --config path)"
-RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
+RUN grass --tmp-project EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python --version
 
 # Install GRASS GIS addon d.rast.multi (needed for STRDS render endpoint)
-RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
+RUN grass --tmp-project EPSG:4326 --exec g.extension -s \
     extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
 
 

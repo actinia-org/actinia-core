@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,6 +33,9 @@ from flask import make_response, jsonify
 from flask import request, g
 from flask.json import loads as json_loads
 from flask_restful_swagger_2 import Resource
+from actinia_core.rest.base.deprecated_locations import (
+    location_deprecated_decorator,
+)
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.rest.base.user_auth import create_dummy_user
 from actinia_core.core.common.app import auth
@@ -50,12 +53,14 @@ from actinia_core.models.response_models import (
 from actinia_core.rest.resource_streamer import RequestStreamerResource
 from actinia_core.rest.resource_management import ResourceManager
 
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ResourceBase(Resource):
@@ -70,6 +75,9 @@ class ResourceBase(Resource):
     # decorators = [log_api_call, check_user_permissions, auth.login_required]
 
     decorators = []
+
+    # Add decorators for deprecated GRASS GIS locations
+    decorators.append(location_deprecated_decorator)
 
     if global_config.LOG_API_CALL is True:
         decorators.append(log_api_call)
@@ -175,7 +183,9 @@ class ResourceBase(Resource):
 
         # Put API information in the response for later accounting
         kwargs = {
-            "endpoint": request.endpoint,
+            # For deprecated location endpoints remove "_locations" from
+            # endpoint class name
+            "endpoint": request.endpoint.replace("_locations", ""),
             "method": request.method,
             "path": request.path,
             "request_url": self.request_url,
@@ -299,7 +309,7 @@ class ResourceBase(Resource):
         self,
         has_json=True,
         has_xml=False,
-        location_name=None,
+        project_name=None,
         mapset_name=None,
         map_name=None,
         process_chain_list=None,
@@ -317,7 +327,7 @@ class ResourceBase(Resource):
                              otherwise
             has_xml (bool): Set True if the request has XML data, False
                             otherwise
-            location_name (str): The name of the location to work in
+            project_name (str): The name of the project to work in
             mapset_name (str): The name of the target mapset in which the
                                computation should be performed
             map_name: The name of the map or other resource (raster, vector,
@@ -416,7 +426,7 @@ class ResourceBase(Resource):
             orig_time=self.orig_time,
             orig_datetime=self.orig_datetime,
             config=global_config,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=map_name,
         )

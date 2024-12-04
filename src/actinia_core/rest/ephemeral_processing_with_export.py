@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -44,11 +44,11 @@ from actinia_core.processing.common.ephemeral_processing_with_export import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
@@ -65,11 +65,11 @@ class AsyncEphemeralExportResource(ResourceBase):
     @swagger.doc(
         check_endpoint("post", ephemeral_processing_with_export.post_doc)
     )
-    def post(self, location_name):
-        """Execute a user defined process chain in an ephemeral location/mapset
+    def post(self, project_name):
+        """Execute a user defined process chain in an ephemeral project/mapset
         and store the processing results for download.
         """
-        rdc = self.preprocess(has_json=True, location_name=location_name)
+        rdc = self.preprocess(has_json=True, project_name=project_name)
 
         if rdc:
             rdc.set_storage_model_to_file()
@@ -93,11 +93,11 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
     @swagger.doc(
         check_endpoint("post", ephemeral_processing_with_export.post_doc)
     )
-    def post(self, location_name):
-        """Execute a user defined process chain in an ephemeral location/mapset
+    def post(self, project_name):
+        """Execute a user defined process chain in an ephemeral project/mapset
         and store the processing result in an Amazon S3 bucket
         """
-        rdc = self.preprocess(has_json=True, location_name=location_name)
+        rdc = self.preprocess(has_json=True, project_name=project_name)
         rdc.set_storage_model_to_s3()
 
         enqueue_job(self.job_timeout, start_job, rdc)
@@ -120,11 +120,11 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
     @swagger.doc(
         check_endpoint("post", ephemeral_processing_with_export.post_doc)
     )
-    def post(self, location_name):
-        """Execute a user defined process chain in an ephemeral location/mapset
+    def post(self, project_name):
+        """Execute a user defined process chain in an ephemeral project/mapset
         and store the processing result in an Google cloud storage bucket
         """
-        rdc = self.preprocess(has_json=True, location_name=location_name)
+        rdc = self.preprocess(has_json=True, project_name=project_name)
         rdc.set_storage_model_to_gcs()
 
         enqueue_job(self.job_timeout, start_job, rdc)

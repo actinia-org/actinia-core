@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -50,9 +50,10 @@ from actinia_core.processing.common.vector_layer import (
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class VectorLayerResource(MapLayerRegionResourceBase):
@@ -60,12 +61,12 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", vector_layer.get_doc))
-    def get(self, location_name, mapset_name, vector_name):
+    def get(self, project_name, mapset_name, vector_name):
         """Get information about an existing vector map layer."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=vector_name,
         )
@@ -85,12 +86,12 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", vector_layer.delete_dop))
-    def delete(self, location_name, mapset_name, vector_name):
+    def delete(self, project_name, mapset_name, vector_name):
         """Delete an existing vector map layer."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=vector_name,
         )
@@ -110,7 +111,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", vector_layer.post_doc))
-    def post(self, location_name, mapset_name, vector_name):
+    def post(self, project_name, mapset_name, vector_name):
         """Create a new vector layer by uploading a GPKG, zipped Shapefile,
         or GeoJSON.
         """
@@ -216,7 +217,7 @@ class VectorLayerResource(MapLayerRegionResourceBase):
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=vector_name,
         )

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -43,12 +43,12 @@ except Exception:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Guido Riembauer"
-__copyright__ = "Copyright 2016-2021, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2016-2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
-    location = "nc_spm_08"
+    project = "nc_spm_08"
     mapset = "PERMANENT"
     tmp_mapset = "mapset_upload"
     raster = "elev_ned_30m"
@@ -89,11 +89,11 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     def setUp(self):
         # create new temp mapset
         super(UploadRasterLayerTestCase, self).setUp()
-        self.create_new_mapset(self.tmp_mapset, location_name=self.location)
+        self.create_new_mapset(self.tmp_mapset, project_name=self.project)
 
     def tearDown(self):
         # delete mapset
-        self.delete_mapset(self.tmp_mapset, location_name=self.location)
+        self.delete_mapset(self.tmp_mapset, project_name=self.project)
         super(UploadRasterLayerTestCase, self).tearDown()
 
     def test_upload_raster_userdb(self):
@@ -101,8 +101,8 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
         Test successful GeoTIFF upload and check against reference raster info
         """
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.tmp_mapset}"
-            f"/raster_layers/{self.raster}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+            f"{self.tmp_mapset}/raster_layers/{self.raster}"
         )
         multipart_form_data = {"file": open(self.local_raster, "rb")}
         rv = self.server.post(
@@ -120,7 +120,7 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
         )
 
         self.assertRasterInfo(
-            self.location,
+            self.project,
             self.tmp_mapset,
             self.raster,
             self.ref_info,
@@ -130,8 +130,8 @@ class UploadRasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_upload_raster_globaldb_error(self):
         """Test Error if raster is uploaded to global DB"""
         url = (
-            f"{URL_PREFIX}/locations/{self.location}/mapsets/{self.mapset}/"
-            f"raster_layers/{self.raster}"
+            f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+            f"{self.mapset}/raster_layers/{self.raster}"
         )
         multipart_form_data = {"file": open(self.local_raster, "rb")}
         rv = self.server.post(

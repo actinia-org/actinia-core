@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2023 Lina Krisztian and mundialis GmbH & Co. KG
+# Copyright (c) 2023-2024 mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,15 +41,15 @@ except Exception:
     )
 
 __license__ = "GPLv3"
-__author__ = "Lina Krisztian"
-__copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
+__author__ = "Lina Krisztian, Anika Weinmann"
+__copyright__ = "Copyright 2023 - 2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 
 class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
-    location = "nc_spm_08"
+    project = "nc_spm_08"
     tmp_mapset = "mapset_rasterimport_pixellimit"
-    endpoint = f"/locations/{location}/mapsets/{tmp_mapset}/processing_async"
+    endpoint = f"{project}/mapsets/{tmp_mapset}/processing_async"
     rimport_inp = "elevation"
     # import resolution with which the process should fail:
     rimport_res_fail = 0.1
@@ -57,11 +57,11 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
     def setUp(self):
         # create new temp mapset
         super(ImportRasterLayerPixellimitTestCase, self).setUp()
-        self.create_new_mapset(self.tmp_mapset, location_name=self.location)
+        self.create_new_mapset(self.tmp_mapset, project_name=self.project)
 
     def tearDown(self):
         # delete mapset
-        self.delete_mapset(self.tmp_mapset, location_name=self.location)
+        self.delete_mapset(self.tmp_mapset, project_name=self.project)
         super(ImportRasterLayerPixellimitTestCase, self).tearDown()
 
     def test_pixellimit_allowed(self):
@@ -91,7 +91,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -139,7 +139,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -183,7 +183,7 @@ class ImportRasterLayerPixellimitTestCase(ActiniaResourceTestCaseBase):
             ],
         }
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",

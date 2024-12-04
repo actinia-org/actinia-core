@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Soeren Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Soeren Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,11 +35,12 @@ import pprint
 import sys
 
 __license__ = "GPLv3"
-__author__ = "Soeren Gebbert"
+__author__ = "Soeren Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def verify_password(username_or_token, password):
@@ -74,7 +75,7 @@ def set_user_credentials(user, args, method):
         user (actinia.core.user.ActiniaUser()): The user object
         args: The command line arguments
         method (str): "create", "update", "update_add",
-                      "update_rm", "update_rm_location"
+                      "update_rm", "update_rm_project"
 
     """
 
@@ -95,19 +96,19 @@ def set_user_credentials(user, args, method):
 
         for lm in lm_list:
             if "/" not in lm:
-                sys.stderr.write("Wrong location mapset format for datasets\n")
+                sys.stderr.write("Wrong project mapset format for datasets\n")
                 return
 
             if "/" in lm:
-                location, mapset = lm.split("/")
+                project, mapset = lm.split("/")
             else:
-                location = lm
+                project = lm
                 mapset = None
 
-            if location not in datasets:
-                datasets[location] = []
+            if project not in datasets:
+                datasets[project] = []
 
-            datasets[location].append(mapset)
+            datasets[project].append(mapset)
 
         if method == "update" or method == "create":
             user.set_accessible_datasets(datasets)
@@ -116,10 +117,10 @@ def set_user_credentials(user, args, method):
                 user.add_accessible_dataset(dataset, datasets[dataset])
         if method == "update_rm":
             for dataset in datasets:
-                user.remove_mapsets_from_location(dataset, datasets[dataset])
-        if method == "update_rm_location":
+                user.remove_mapsets_from_project(dataset, datasets[dataset])
+        if method == "update_rm_project":
             for dataset in datasets:
-                user.remove_location(dataset)
+                user.remove_project(dataset)
 
     if args.modules:
         modules = args.modules.split(",")
@@ -150,7 +151,7 @@ def main():
             "update",
             "update_add",
             "update_rm",
-            "update_rm_location",
+            "update_rm_project",
             "pwcheck",
         ],
         help="The action that should be performed:"
@@ -162,8 +163,8 @@ def main():
         " and add datasets or/and modules"
         " * update_rm: Update a user with the provided parameters"
         " and remove mapsets or/and modules"
-        " * update_rm_location: Update a user with the provided parameters"
-        " and remove locations or/and modules"
+        " * update_rm_project: Update a user with the provided parameters"
+        " and remove projects or/and modules"
         " * pwcheck: Check the password of the user",
     )
     parser.add_argument(
@@ -247,7 +248,7 @@ def main():
         type=str,
         required=False,
         help="The datasets the user is allowed to access."
-        " Format: location/mapset,location/mapset",
+        " Format: project/mapset,project/mapset",
     )
     parser.add_argument(
         "-m",
@@ -330,7 +331,7 @@ def main():
         args.action == "update"
         or args.action == "update_add"
         or args.action == "update_rm"
-        or args.action == "update_rm_location"
+        or args.action == "update_rm_project"
     ):
         if args.user_id is None:
             sys.stderr.write("You need to provide a user id\n")

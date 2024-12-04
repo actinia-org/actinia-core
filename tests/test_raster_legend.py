@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,19 +34,19 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Soeren Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_no_args(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend",
             headers=self.user_auth_header,
         )
 
@@ -61,8 +61,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_1(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend?at=0,100,0,20",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?at=0,100,0,20",
             headers=self.user_auth_header,
         )
 
@@ -77,8 +77,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_2(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/"
-            "raster_layers/elevation/legend?range=100,120",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?range=100,120",
             headers=self.user_auth_header,
         )
 
@@ -93,8 +93,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_3(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?&use=100,110,120",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?&use=100,110,120",
             headers=self.user_auth_header,
         )
 
@@ -109,8 +109,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_4(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?&fontsize=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?&fontsize=100",
             headers=self.user_auth_header,
         )
 
@@ -125,8 +125,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_5(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=100&height=100",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?width=100&height=100",
             headers=self.user_auth_header,
         )
 
@@ -141,9 +141,9 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_6(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=100&height=100&range=100,120&"
-            "use=105,110,115&at=0,100,0,30",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?width=100&height=100&"
+            "range=100,120&use=105,110,115&at=0,100,0,30",
             headers=self.user_auth_header,
         )
 
@@ -158,8 +158,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_legend_args_7(self):
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?labelnum=4",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?labelnum=4",
             headers=self.user_auth_header,
         )
 
@@ -175,8 +175,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_1(self):
         # Wrong "at" parameter
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?at=-0,-0",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation/legend?at=-0,-0",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -194,8 +194,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_2(self):
         # Wrong witdth
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?width=-20&at=20,40,20,40",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?width=-20&at=20,40,20,40",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -213,8 +213,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_3(self):
         # Wrong range and use
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?range=100,120&use=90,130,115",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?range=100,120&use=90,130,115",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -232,8 +232,8 @@ class RasterLegendTestCase(ActiniaResourceTestCaseBase):
     def test_raster_legend_args_error_4(self):
         # Wrong labelnum
         rv = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/PERMANENT/raster_layers"
-            "/elevation/legend?labelnum=-4",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/PERMANENT"
+            "/raster_layers/elevation/legend?labelnum=-4",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))

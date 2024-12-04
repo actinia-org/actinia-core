@@ -68,7 +68,7 @@ from actinia_core.models.response_models import (
 )
 from actinia_core.core.interim_results import InterimResult, get_directory_size
 from actinia_core.rest.base.user_auth import (
-    check_location_mapset_module_access,
+    check_project_mapset_module_access,
 )
 
 __license__ = "GPLv3"
@@ -92,23 +92,23 @@ class EphemeralProcessing(object):
 
        e.g: /tmp/soeren_disdbase
 
-    2. Create the required location directory
+    2. Create the required project directory
 
        e.g: /tmp/soeren_temp_gisdbase/ECAD
 
     3. Softlink the PERMANENT and all required mapsets into the
-       new location directory from the original location,
+       new project directory from the original project,
        check the input parameter of the module for which mapsets must be linked
 
-       e.g: /mount/groups/[user group]/locations/ECAD/PERMANENT
+       e.g: /mount/groups/[user group]/projects/ECAD/PERMANENT
         -> /tmp/soeren_temp_gisdbase/ECAD/PERMANENT
-       e.g: /mount/groups/[user group]/locations/ECAD/Temperature
+       e.g: /mount/groups/[user group]/projects/ECAD/Temperature
         -> /tmp/soeren_temp_gisdbase/ECAD/Temperature
 
     4. Set the GRASS GIS environmental variables to point to the new gisdbase,
-       location and PERMANENT mapset
+       project and PERMANENT mapset
 
-    5. Create a new mapset with g.mapset in the temporary location directory
+    5. Create a new mapset with g.mapset in the temporary project directory
 
        e.g: /tmp/soeren_temp_gisdbase/ECAD/MyMapset
 
@@ -178,7 +178,7 @@ class EphemeralProcessing(object):
         # extended with the user group name in the setup
         self.grass_base_dir = self.rdc.grass_base_dir
 
-        self.location_name = self.rdc.location_name
+        self.project_name = self.rdc.project_name
         self.mapset_name = self.rdc.mapset_name
         # Set this True if the work is performed based on global database
         self.is_global_database = False
@@ -204,12 +204,12 @@ class EphemeralProcessing(object):
         self.temp_grass_data_base = (
             None  # Path to the temporary grass database
         )
-        self.temp_location_path = None  # Path to the temporary location
+        self.temp_project_path = None  # Path to the temporary project
         self.temp_file_path = None  # The path to store temporary created files
-        self.global_location_path = (
-            None  # The path to the global location to link
+        self.global_project_path = (
+            None  # The path to the global project to link
         )
-        self.user_location_path = None  # The path to the user location to link
+        self.user_project_path = None  # The path to the user project to link
 
         # List of resources that should be created
         self.resource_export_list = list()
@@ -239,7 +239,7 @@ class EphemeralProcessing(object):
             list()
         )  # The process chain analysis will provide
         # a list of required mapsets that must be
-        # linked in the temporary location
+        # linked in the temporary project
 
         # The module that was called in the process chain, to detect g.region
         # calls and check for correct region settings
@@ -675,7 +675,7 @@ class EphemeralProcessing(object):
             if process.exec_type == "grass" or process.exec_type == "exec":
                 if skip_permission_check is False:
                     if process.skip_permission_check is False:
-                        resp = check_location_mapset_module_access(
+                        resp = check_project_mapset_module_access(
                             user_credentials=self.user_credentials,
                             config=self.config,
                             module_name=process.executable,
@@ -715,23 +715,23 @@ class EphemeralProcessing(object):
         - Create the redis lock interface for resource locking
         - Set cell limit, process number limit and process time limit from user
           credentials.
-        - Create all required paths to original and temporary location and
+        - Create all required paths to original and temporary project and
           mapsets.
-            - temp_location_path
-            - global_location_path
+            - temp_project_path
+            - global_project_path
             - grass_user_data_base <- This path will be created if it does not
               exist
-            - user_location_path <- This path will be created if it does not
+            - user_project_path <- This path will be created if it does not
               exist
             - temp_grass_data_base <- This path will be created
             - temp_file_path <- This path will be created
-            - Check if the current working location is in a persistent (global)
+            - Check if the current working project is in a persistent (global)
               GRASS GIS database (is_global_database)
         - Create the process chain to process list converter
 
         Args:
             init_grass (bool): Set true to initialize the user credentials
-                               and the temporary database and location paths
+                               and the temporary database and project paths
 
         """
         # The setup should only be executed once
@@ -776,7 +776,7 @@ class EphemeralProcessing(object):
         )
 
         # Check and create all required paths to global, user and temporary
-        # locations
+        # projects
         if init_grass is True:
             self._setup_paths()
 
@@ -806,12 +806,12 @@ class EphemeralProcessing(object):
         )
         self.temp_file_path = os.path.join(self.temp_grass_data_base, ".tmp")
 
-        if self.location_name:
-            self.temp_location_path = os.path.join(
-                self.temp_grass_data_base, self.location_name
+        if self.project_name:
+            self.temp_project_path = os.path.join(
+                self.temp_grass_data_base, self.project_name
             )
-            self.global_location_path = os.path.join(
-                self.grass_data_base, self.location_name
+            self.global_project_path = os.path.join(
+                self.grass_data_base, self.project_name
             )
             # Create the user database path if it does not exist
             if not os.path.exists(self.grass_user_data_base):
@@ -823,48 +823,48 @@ class EphemeralProcessing(object):
             )
             if not os.path.exists(self.grass_user_data_base):
                 os.mkdir(self.grass_user_data_base)
-            # Create the user group specific location path, if it does not
+            # Create the user group specific project path, if it does not
             # exist
-            self.user_location_path = os.path.join(
-                self.grass_user_data_base, self.location_name
+            self.user_project_path = os.path.join(
+                self.grass_user_data_base, self.project_name
             )
-            if not os.path.exists(self.user_location_path):
-                os.mkdir(self.user_location_path)
-            # Check if the location is located in the global database
+            if not os.path.exists(self.user_project_path):
+                os.mkdir(self.user_project_path)
+            # Check if the project is located in the global database
             self.is_global_database = False
-            location = os.path.join(self.grass_data_base, self.location_name)
-            if os.path.isdir(location):
+            project = os.path.join(self.grass_data_base, self.project_name)
+            if os.path.isdir(project):
                 self.is_global_database = True
-        # Create the database, location and temporary file directories
+        # Create the database, project and temporary file directories
         os.mkdir(self.temp_grass_data_base)
         os.mkdir(self.temp_file_path)
 
     def _create_temp_database(self, mapsets=None):
-        """Create a temporary gis database with location and mapsets
+        """Create a temporary gis database with project and mapsets
         from the global and user group database for processing.
 
         IMPORTANT: All processing and mapaste management is performed within a
         temporary database!
 
-        Link the required existing mapsets of global and user group locations
-        into the temporary location directory.
+        Link the required existing mapsets of global and user group projects
+        into the temporary project directory.
 
         Linking is performed in two steps:
-            1.) If the location is a global location, then the mapsets from the
-                global location are linked in the temporary locations
-            2.) Then link all required mapsets from the user group location
-                into the temporary location
+            1.) If the project is a global project, then the mapsets from the
+                global project are linked in the temporary projects
+            2.) Then link all required mapsets from the user group project
+                into the temporary project
 
-        Only mapsets from the global location are linked into the temporary
-        location to which the user group has access.
+        Only mapsets from the global project are linked into the temporary
+        project to which the user group has access.
         It checks for access in the global database but not in the user group
         database. The user can always access its own data of its group.
 
         Args:
             mapsets: A list of mapset names that should be linked into
-                     the temporary location. If the list is empty, all
+                     the temporary project. If the list is empty, all
                      available user accessible mapsets of the global
-                     and user group specific location will be linked.
+                     and user group specific project will be linked.
 
         Raises:
             This function raises AsyncProcessError in case of an error.
@@ -875,8 +875,8 @@ class EphemeralProcessing(object):
             mapsets = []
 
         try:
-            # Create the temporary location directory
-            os.mkdir(self.temp_location_path)
+            # Create the temporary project directory
+            os.mkdir(self.temp_project_path)
 
             # Always link the PERMANENT mapset
             if len(mapsets) > 0 and "PERMANENT" not in mapsets:
@@ -887,7 +887,7 @@ class EphemeralProcessing(object):
             if not mapsets:
                 check_all_mapsets = True
 
-            # User and global location mapset linking
+            # User and global project mapset linking
             self._link_mapsets(mapsets, mapsets_to_link, check_all_mapsets)
 
             # Check if we missed some of the required mapsets
@@ -900,23 +900,21 @@ class EphemeralProcessing(object):
                     if mapset not in mapset_list:
                         raise AsyncProcessError(
                             "Unable to link all required mapsets into "
-                            "temporary location. Missing or un-accessible "
-                            f"mapset <{mapset}> in location "
-                            f"<{self.location_name}>"
+                            "temporary project. Missing or un-accessible "
+                            f"mapset <{mapset}> in project "
+                            f"<{self.project_name}>"
                         )
 
             # Link the original mapsets from global and user database into the
-            # temporary location
+            # temporary project
             for mapset_path, mapset in mapsets_to_link:
                 if (
-                    os.path.isdir(
-                        os.path.join(self.temp_location_path, mapset)
-                    )
+                    os.path.isdir(os.path.join(self.temp_project_path, mapset))
                     is False
                 ):
                     os.symlink(
                         mapset_path,
-                        os.path.join(self.temp_location_path, mapset),
+                        os.path.join(self.temp_project_path, mapset),
                     )
 
         except Exception as e:
@@ -926,23 +924,23 @@ class EphemeralProcessing(object):
             )
 
     def _link_mapsets(self, mapsets, mapsets_to_link, check_all_mapsets):
-        """Helper method to link locations mapsets
+        """Helper method to link projects mapsets
 
         Args:
-            mapsets (list): List of mapsets in location
+            mapsets (list): List of mapsets in project
             mapsets_to_link (list): List of mapsets paths to link
             check_all_mapsets (bool): If set True, the mapsets list is created
-                                      with all locations on location_path
+                                      with all projects on project_path
 
         Returns:
-            mapsets (list): List of mapsets in location
+            mapsets (list): List of mapsets in project
             mapsets_to_link (list): List of mapsets paths to link
         """
-        # Global location mapset linking
+        # Global project mapset linking
         if self.is_global_database is True:
-            # List all available mapsets in the global location
+            # List all available mapsets in the global project
             mapsets, mapsets_to_link = self._list_all_available_mapsets(
-                self.global_location_path,
+                self.global_project_path,
                 mapsets,
                 check_all_mapsets,
                 mapsets_to_link,
@@ -953,9 +951,9 @@ class EphemeralProcessing(object):
         for mapset in mapsets:
             if mapset not in mapsets_to_link:
                 left_over_mapsets.append(mapset)
-        # List all available mapsets in the user location
+        # List all available mapsets in the user project
         mapsets, mapsets_to_link = self._list_all_available_mapsets(
-            self.user_location_path,
+            self.user_project_path,
             left_over_mapsets,
             check_all_mapsets,
             mapsets_to_link,
@@ -965,7 +963,7 @@ class EphemeralProcessing(object):
 
     def _list_all_available_mapsets(
         self,
-        location_path,
+        project_path,
         mapsets,
         check_all_mapsets,
         mapsets_to_link,
@@ -975,26 +973,26 @@ class EphemeralProcessing(object):
         it is checked if the mapset can be accessed.
 
         Args:
-            location_path (str): Path to location (global or user)
+            project_path (str): Path to project (global or user)
             mapsets (list): List of mapsets names to link.
                             The mapsets list can be empty, if check_all_mapsets
                             is True the list is filled with all mapsets from
-                            the location_path
+                            the project_path
             check_all_mapsets (bool): If set True, the mapsets list is created
-                                      with all locations on location_path
+                                      with all projects on project_path
             mapsets_to_link (list): List of mapset paths to link
-            global_db (bool): If set True, the location/mapset access is
+            global_db (bool): If set True, the project/mapset access is
                               checked
 
         Returns:
-            mapsets (list): List of mapsets in location
+            mapsets (list): List of mapsets in project
             mapsets_to_link (list): List of mapsets paths to link
         """
-        if os.path.isdir(location_path):
+        if os.path.isdir(project_path):
             if check_all_mapsets is True:
-                mapsets = os.listdir(location_path)
+                mapsets = os.listdir(project_path)
             for mapset in mapsets:
-                mapset_path = os.path.join(location_path, mapset)
+                mapset_path = os.path.join(project_path, mapset)
                 if os.path.isdir(mapset_path) and os.access(
                     mapset_path, os.R_OK & os.X_OK
                 ):
@@ -1006,10 +1004,10 @@ class EphemeralProcessing(object):
                         if mapset not in mapsets_to_link and global_db is True:
                             # Link the mapset from the global database
                             # only if it can be accessed
-                            resp = check_location_mapset_module_access(
+                            resp = check_project_mapset_module_access(
                                 user_credentials=self.user_credentials,
                                 config=self.config,
-                                location_name=self.location_name,
+                                project_name=self.project_name,
                                 mapset_name=mapset,
                             )
                             if resp is None:
@@ -1021,19 +1019,16 @@ class EphemeralProcessing(object):
                             mapsets_to_link.append((mapset_path, mapset))
                     else:
                         raise AsyncProcessError(
-                            "Invalid mapset <%s> in location <%s>"
-                            % (mapset, self.location_name)
+                            "Invalid mapset <%s> in project <%s>"
+                            % (mapset, self.project_name)
                         )
         else:
             if global_db is True:
                 msg = (
-                    "Unable to access global location <%s>"
-                    % self.location_name
+                    "Unable to access global project <%s>" % self.project_name
                 )
             else:
-                msg = (
-                    "Unable to access user location <%s>" % self.location_name
-                )
+                msg = "Unable to access user project <%s>" % self.project_name
             raise AsyncProcessError(msg)
         return mapsets, mapsets_to_link
 
@@ -1052,14 +1047,14 @@ class EphemeralProcessing(object):
 
         """
         self.message_logger.info(
-            "Initlialize GRASS grass_data_base: %s; location: %s; mapset: %s"
-            % (grass_data_base, self.location_name, mapset_name)
+            "Initlialize GRASS grass_data_base: %s; project: %s; mapset: %s"
+            % (grass_data_base, self.project_name, mapset_name)
         )
 
         self.ginit = GrassInitializer(
             grass_data_base=grass_data_base,
             grass_base_dir=self.config.GRASS_GIS_BASE,
-            location_name=self.location_name,
+            project_name=self.project_name,
             mapset_name=mapset_name,
             config=self.config,
             grass_addon_path=self.config.GRASS_ADDON_PATH,
@@ -1110,7 +1105,7 @@ class EphemeralProcessing(object):
 
         """
         self.temp_mapset_path = os.path.join(
-            self.temp_location_path, temp_mapset_name
+            self.temp_project_path, temp_mapset_name
         )
 
         # if interim_result_mapset is set copy the mapset from the interim
@@ -1172,6 +1167,7 @@ class EphemeralProcessing(object):
         # Set the vector database connection to vector map specific databases
         self.ginit.run_module(
             "db.connect",
+            # TODO GRASS GIS 9.0
             [
                 "driver=sqlite",
                 "database=$GISDBASE/$LOCATION_NAME/$MAPSET/vector/$MAP/"
@@ -1185,7 +1181,7 @@ class EphemeralProcessing(object):
         # to the temporary mapset
         if source_mapset_name is not None and interim_result_mapset is None:
             source_mapset_path = os.path.join(
-                self.temp_location_path, source_mapset_name
+                self.temp_project_path, source_mapset_name
             )
             if os.path.exists(os.path.join(source_mapset_path, "WIND")):
                 shutil.copyfile(
@@ -1830,7 +1826,7 @@ class EphemeralProcessing(object):
             3. Create temporary mapset
 
         This method will link the required mapsets that are
-        defined in *self.required_mapsets* into the location.
+        defined in *self.required_mapsets* into the project.
         The mapsets may be from the global and/or user database.
 
         Args:

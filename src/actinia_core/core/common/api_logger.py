@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,11 +41,12 @@ except Exception:
     has_fluent = False
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def log_api_call(f):
@@ -97,8 +98,8 @@ class ApiLogger(RedisFluentLoggerBase):
             example = {
                 "endpoint": "asyncephemeralresource",
                 "method": "POST",
-                "path": "/locations/nc_spm_08/processing_async",
-                "request_url": "http://localhost/locations/nc_spm_08/"
+                "path": "/projects/nc_spm_08/processing_async",
+                "request_url": "http://localhost/projects/nc_spm_08/"
                 "processing_async"
               }
 
@@ -109,7 +110,9 @@ class ApiLogger(RedisFluentLoggerBase):
 
         """
         api_info = {
-            "endpoint": http_request.endpoint,
+            # For deprecated location endpoints remove "_locations" from
+            # endpoint class name
+            "endpoint": http_request.endpoint.replace("_locations", ""),
             "method": http_request.method,
             "path": http_request.path,
             "request_url": http_request.url,

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,12 +34,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 # Module change example for r.slope.aspect with g.region adjustment
 process_chain_long = {
@@ -326,7 +326,8 @@ process_chain_error_4 = {
 class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_short),
             content_type="application/json",
@@ -356,7 +357,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         # The process num limit exceeds the credentials settings of the user
 
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -373,7 +375,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         # The process time limit exceeds the credentials settings of the user
 
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_short_long_run),
             content_type="application/json",
@@ -390,7 +393,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         # The cell limit exceeds the credentials settings of the user
 
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_short_large_region),
             content_type="application/json",
@@ -405,7 +409,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_termination_1(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_short_long_run),
             content_type="application/json",
@@ -413,8 +418,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         resp = json_loads(rv.data)
         # Send the termination request
         self.server.delete(
-            URL_PREFIX
-            + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+            f"{URL_PREFIX}/resources/{resp['user_id']}/{resp['resource_id']}",
             headers=self.admin_auth_header,
         )
 
@@ -428,7 +432,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_termination_2(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_short_long_run),
             content_type="application/json",
@@ -436,8 +441,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         resp = json_loads(rv.data)
         # Send the termination request
         self.server.delete(
-            URL_PREFIX
-            + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+            f"{URL_PREFIX}/resources/{resp['user_id']}/{resp['resource_id']}",
             headers=self.user_auth_header,
         )
 
@@ -451,7 +455,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_termination_3(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.root_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -459,8 +464,7 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
         resp = json_loads(rv.data)
         # Send the termination request
         self.server.delete(
-            URL_PREFIX
-            + "/resources/%s/%s" % (resp["user_id"], resp["resource_id"]),
+            f"{URL_PREFIX}/resources/{resp['user_id']}/{resp['resource_id']}",
             headers=self.root_auth_header,
         )
 
@@ -474,7 +478,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_error_1(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_1),
             content_type="application/json",
@@ -489,7 +494,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_error_2(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_2),
             content_type="application/json",
@@ -504,7 +510,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_error_3(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_3),
             content_type="application/json",
@@ -519,7 +526,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_error_4(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_error_4),
             content_type="application/json",
@@ -535,7 +543,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 
     def test_stac_export(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.user_auth_header,
             data=json_dumps(process_chain_short_stac),
             content_type="application/json",
@@ -562,7 +571,8 @@ class AsyncProcessExportTestCaseUser(ActiniaResourceTestCaseBase):
 class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
     def test_async_processing(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -588,7 +598,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_termination(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_long),
             content_type="application/json",
@@ -611,7 +622,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_error_1(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_error_1),
             content_type="application/json",
@@ -626,7 +638,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_error_2(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_error_2),
             content_type="application/json",
@@ -641,7 +654,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_error_3(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_error_3),
             content_type="application/json",
@@ -656,7 +670,8 @@ class AsyncProcessExportTestCaseAdmin(ActiniaResourceTestCaseBase):
 
     def test_error_4(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async_export",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+            "processing_async_export",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_error_4),
             content_type="application/json",
