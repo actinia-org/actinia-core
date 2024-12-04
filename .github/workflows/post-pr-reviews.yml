@@ -8,4 +8,4 @@ on:
 
 jobs:
   post-pr-reviews:
-    uses: mmacata/github-workflows/.github/workflows/post-pr-reviews.yml@post-pr
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main
