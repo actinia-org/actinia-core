@@ -33,11 +33,12 @@ from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.process_queue import create_process_queue
-from actinia_core.testsuite import (
-    ActiniaRequests,
-    ActiniaTestCaseBase,
-    URL_PREFIX,
-)
+from actinia_core.testsuite import ActiniaRequests
+
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+except Exception:
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
@@ -92,7 +93,7 @@ PC = {
 }
 
 
-class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
+class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
     """Test base class to test actinia without autentication"""
 
     server_test = False

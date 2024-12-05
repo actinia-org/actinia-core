@@ -91,7 +91,7 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
             message_logger=MessageDummy(),
         )
         # download commands
-        result, maps = gsqi.get_sentinel2_download_process_list()
+        result, _ = gsqi.get_sentinel2_download_process_list()
         print(len(result))
         for p in result:
             print(str(p))

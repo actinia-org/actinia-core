@@ -440,7 +440,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         resource["export"]["format"],
                     )
                     self._send_resource_update(message)
-                    output_name, output_path = self._export_raster(
+                    _, output_path = self._export_raster(
                         raster_name=file_name,
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region,
@@ -470,14 +470,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                             resource["export"]["format"],
                         )
                         self._send_resource_update(message)
-                        output_name, output_path = self._export_vector(
+                        _, output_path = self._export_vector(
                             vector_name=file_name,
                             format=resource["export"]["format"],
                         )
                 elif output_type == "file":
                     file_name = resource["file_name"]
                     tmp_file = resource["tmp_file"]
-                    output_name, output_path = self._export_file(
+                    _, output_path = self._export_file(
                         tmp_file=tmp_file, file_name=file_name
                     )
                 elif output_type == "strds":
@@ -486,7 +486,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         resource["export"]["format"],
                     )
                     self._send_resource_update(message)
-                    output_name, output_path = self._export_strds(
+                    _, output_path = self._export_strds(
                         strds_name=file_name,
                         format=resource["export"]["format"],
                     )

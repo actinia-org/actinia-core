@@ -110,7 +110,7 @@ class ResourceLogger(RedisFluentLoggerBase):
             user_id, resource_id, iteration
         )
         redis_return = bool(self.db.set(db_resource_id, document, expiration))
-        http_code, data = pickle.loads(document)
+        _, data = pickle.loads(document)
         data["logger"] = "resources_logger"
         self.send_to_logger("RESOURCE_LOG", data)
         return redis_return
@@ -232,7 +232,7 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         if resource_list_pickled:
             for entry in resource_list_pickled:
-                http_code, data = pickle.loads(entry)
+                _, data = pickle.loads(entry)
                 resource_list.append(data)
 
         return resource_list
@@ -251,7 +251,7 @@ class ResourceLogger(RedisFluentLoggerBase):
 
         if resource_list_pickled:
             for entry in resource_list_pickled:
-                http_code, data = pickle.loads(entry)
+                _, data = pickle.loads(entry)
                 resource_list.append(data)
 
         return resource_list

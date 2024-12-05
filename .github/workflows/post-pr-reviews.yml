@@ -1,0 +1,11 @@
+name: Post PR code suggestions
+
+on:
+  workflow_run:
+    workflows: ["Linting and code quality check"]
+    types:
+      - completed
+
+jobs:
+  post-pr-reviews:
+    uses: mundialis/github-workflows/.github/workflows/post-pr-reviews.yml@main

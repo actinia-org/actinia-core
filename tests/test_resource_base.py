@@ -103,6 +103,8 @@ atexit.register(stop_redis)
 # Setup the environment
 setup_environment()
 
+URL_PREFIX = URL_PREFIX
+
 
 class ActiniaResourceTestCaseBase(ActiniaTestCaseBase):
     pass

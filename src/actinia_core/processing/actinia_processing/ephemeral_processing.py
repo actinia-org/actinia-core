@@ -138,7 +138,8 @@ class EphemeralProcessing(object):
         try:
             from fluent import sender
 
-            self.has_fluent = True
+            if sender:
+                self.has_fluent = True
         except Exception:
             self.has_fluent = False
 
@@ -507,7 +508,7 @@ class EphemeralProcessing(object):
             webhook_retries = 1
             webhook_sleep = 0
 
-        http_code, response_model = pickle.loads(document)
+        _, response_model = pickle.loads(document)
 
         webhook_not_reached = True
         retry = 0
@@ -1238,7 +1239,7 @@ class EphemeralProcessing(object):
         # if extent=region set, vrt only for region, not complete input
         if extent_region:
             # first query region extents
-            errorid, stdout_gregion, stderr_gregion = self.ginit.run_module(
+            errorid, stdout_gregion, _ = self.ginit.run_module(
                 "g.region", ["-ug"]
             )
             if errorid != 0:
@@ -1258,13 +1259,13 @@ class EphemeralProcessing(object):
         # build vrt with previous defined parameters
         (
             errorid,
-            stdout_gdalbuildvrt,
-            stderr_gdalbuildvrt,
+            _,
+            _,
         ) = self.ginit.run_module("/usr/bin/gdalbuildvrt", gdabuildvrt_params)
 
         # gdalinfo for created vrt
         gdalinfo_params = [vrt_out]
-        errorid, stdout_gdalinfo, stderr_gdalinfo = self.ginit.run_module(
+        errorid, stdout_gdalinfo, _ = self.ginit.run_module(
             "/usr/bin/gdalinfo", gdalinfo_params
         )
         # parse "Size" output of gdalinfo
@@ -1284,7 +1285,7 @@ class EphemeralProcessing(object):
         # If raster exceeds cell limit already in original resolution, next part can be skipped
         if rimport_res and (rastersize < self.cell_limit):
             # determine estimated resolution
-            errorid, stdout_estres, stderr_estres = self.ginit.run_module(
+            errorid, _, stderr_estres = self.ginit.run_module(
                 "r.import", [vrt_out, "-e"]
             )
             if "Estimated" in stderr_estres:
@@ -1320,7 +1321,7 @@ class EphemeralProcessing(object):
                     (
                         errorid,
                         stdout_gregion,
-                        stderr_gregion,
+                        _,
                     ) = self.ginit.run_module("g.region", ["-ug"])
                 res_val_ns = float(
                     [x for x in stdout_gregion.split("\n") if "nsres=" in x][
@@ -1366,9 +1367,7 @@ class EphemeralProcessing(object):
         if self.skip_region_check is True:
             return
 
-        errorid, stdout_buff, stderr_buff = self.ginit.run_module(
-            "g.region", ["-ug"]
-        )
+        errorid, stdout_buff, _ = self.ginit.run_module("g.region", ["-ug"])
 
         if errorid != 0:
             raise AsyncProcessError(
@@ -1690,7 +1689,7 @@ class EphemeralProcessing(object):
                 for i in range(len(process.executable_params)):
                     param = process.executable_params[i]
                     if func_name in param:
-                        par, val = param.split("=", 1)
+                        _, val = param.split("=", 1)
                         par_val = func().strip()
                         val_splitted = val.split(func_name)
                         for j in range(1, len(val_splitted)):

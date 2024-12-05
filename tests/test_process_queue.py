@@ -41,6 +41,8 @@ try:
 except ModuleNotFoundError:
     from test_resource_base import global_config
 
+global_config = global_config
+
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (

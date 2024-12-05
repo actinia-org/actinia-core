@@ -36,7 +36,8 @@ try:
     from fluent import sender
     from fluent import event
 
-    has_fluent = True
+    if sender and event:
+        has_fluent = True
 except Exception:
     has_fluent = False
 
