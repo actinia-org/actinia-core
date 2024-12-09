@@ -35,7 +35,7 @@ keywords = [
     "osgeo",
 ]
 dependencies = [
-    "actinia-api==3.5.0",
+    "actinia-api==3.5.1",
     "Flask>=3.0.0",
     "boto3>=1.6.6",
     "colorlog>=4.2.1",
