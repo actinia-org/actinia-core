@@ -24,6 +24,57 @@ Types of changes
 
 ## [Unreleased]
 
+## [5.0.0](https://github.com/actinia-org/actinia-core/releases/tag/5.0.0) - 2024-12-09
+released from main
+### Added
+* Test super-linter workflow by @mmacata in https://github.com/actinia-org/actinia-core/pull/536
+* Introduce ruff by @mmacata in https://github.com/actinia-org/actinia-core/pull/574
+
+### Changed
+* Renamed GRASS GIS locations to projects by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/565
+
+### Removed
+* Remove requirements.txt by @mmacata in https://github.com/actinia-org/actinia-core/pull/530
+
+### Updated
+* chore(deps): update mundialis/actinia-core docker tag to v4.14.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/537
+* chore(deps): update dependency setuptools to v70.1.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/538
+* chore(deps): update anchore/sbom-action digest to 95b086a by @renovate in https://github.com/actinia-org/actinia-core/pull/542
+* chore(deps): update anchore/sbom-action digest to ee41e6a by @renovate in https://github.com/actinia-org/actinia-core/pull/543
+* chore(deps): update anchore/sbom-action digest to d94f46e by @renovate in https://github.com/actinia-org/actinia-core/pull/544
+* chore(deps): update docker/build-push-action action to v6 by @renovate in https://github.com/actinia-org/actinia-core/pull/529
+* chore(deps): update anchore/sbom-action digest to f2d02cb by @renovate in https://github.com/actinia-org/actinia-core/pull/546
+* chore(deps): update anchore/sbom-action digest to fe5e7c3 by @renovate in https://github.com/actinia-org/actinia-core/pull/549
+* chore(deps): update anchore/sbom-action digest to ab9d16d by @renovate in https://github.com/actinia-org/actinia-core/pull/550
+* chore(deps): update anchore/sbom-action digest to 4a914bc by @renovate in https://github.com/actinia-org/actinia-core/pull/552
+* chore(deps): update actions/checkout digest to eef6144 by @renovate in https://github.com/actinia-org/actinia-core/pull/561
+* chore(deps): update pre-commit hook pre-commit/pre-commit-hooks to v5 by @renovate in https://github.com/actinia-org/actinia-core/pull/560
+* chore(deps): update dependency pystac to v1.11.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/559
+* chore(deps): update anchore/sbom-action digest to f5e124a by @renovate in https://github.com/actinia-org/actinia-core/pull/562
+* chore(deps): update actions/checkout digest to 11bd719 by @renovate in https://github.com/actinia-org/actinia-core/pull/566
+* fix(deps): update dependency werkzeug to v3.0.6 [security] by @renovate in https://github.com/actinia-org/actinia-core/pull/567
+* chore(deps): update anchore/sbom-action digest to 251a468 by @renovate in https://github.com/actinia-org/actinia-core/pull/564
+* fix(deps): update dependency setuptools to v75 by @renovate in https://github.com/actinia-org/actinia-core/pull/556
+* chore(deps): update anchore/sbom-action digest to fc46e51 by @renovate in https://github.com/actinia-org/actinia-core/pull/568
+* fix(deps): update dependency google-cloud-bigquery to <=3.26.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/523
+* fix(deps): update dependency matplotlib to v3.9.2 by @renovate in https://github.com/actinia-org/actinia-core/pull/541
+* fix(deps): update dependency werkzeug to v3.1.2 by @renovate in https://github.com/actinia-org/actinia-core/pull/553
+* fix(deps): update dependency rasterio to v1.4.2 by @renovate in https://github.com/actinia-org/actinia-core/pull/555
+* fix(deps): update dependency werkzeug to v3.1.3 by @renovate in https://github.com/actinia-org/actinia-core/pull/569
+* fix(deps): update dependency google-cloud-bigquery to <=3.27.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/570
+* fix(deps): update dependency setuptools to v75.5.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/571
+* fix(deps): update dependency setuptools to v75.6.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/575
+* chore(deps): update anchore/sbom-action digest to 55dc4ee by @renovate in https://github.com/actinia-org/actinia-core/pull/577
+* fix(deps): update dependency rasterio to v1.4.3 by @renovate in https://github.com/actinia-org/actinia-core/pull/580
+* fix(deps): update dependency matplotlib to v3.9.3 by @renovate in https://github.com/actinia-org/actinia-core/pull/579
+* chore(deps): update pre-commit hook mundialis/github-workflows to v1.3.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/578
+* chore(deps): update anchore/sbom-action digest to a5bbe18 by @renovate in https://github.com/actinia-org/actinia-core/pull/581
+
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.14.1...5.0.0
+
+"generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="5.0.0" -f target_commitish=main -q .body`"
+
 
 ## [4.14.1](https://github.com/actinia-org/actinia-core/releases/tag/4.14.1) - 2024-06-21
 
