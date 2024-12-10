@@ -52,3 +52,7 @@ docker/redis_queue_data/dump.rdb
 !docker/actinia-core-dev/actinia.cfg
 !docker/actinia-core-dev/endpoints.csv
 !docker/actinia-core-tests/*.cfg
+
+# linting with shared config file
+ruff-github-workflows.toml
+ruff-merged.toml
