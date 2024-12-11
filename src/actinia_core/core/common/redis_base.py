@@ -25,7 +25,7 @@
 Redis base class
 """
 
-import redis
+import valkey
 from actinia_core.core.logging_interface import log
 
 __license__ = "GPLv3"
@@ -60,18 +60,18 @@ class RedisBaseInterface(object):
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        self.connection_pool = redis.ConnectionPool(**kwargs)
+        self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = redis.StrictRedis(
+        self.redis_server = valkey.StrictRedis(
             connection_pool=self.connection_pool
         )
         try:
             self.redis_server.ping()
-        except redis.exceptions.ResponseError as e:
+        except valkey.exceptions.ResponseError as e:
             log.error("Could not connect to " + host, port, str(e))
-        except redis.exceptions.AuthenticationError:
+        except valkey.exceptions.AuthenticationError:
             log.error("Invalid password")
-        except redis.exceptions.ConnectionError as e:
+        except valkey.exceptions.ConnectionError as e:
             log.error(str(e))
 
     def disconnect(self):
