@@ -22,10 +22,10 @@ run_tests_worker (){
   mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
 }
 
-# start redis server
-redis-server &
+# start valkey server
+valkey-server &
 sleep 1
-redis-cli ping
+valkey-cli ping
 
 # start webhook server
 webhook-server --host "0.0.0.0" --port "5005" &
@@ -64,8 +64,8 @@ else
   TEST_RES=$?
 fi
 
-# stop redis server
-redis-cli shutdown
+# stop valkey server
+valkey-cli shutdown
 
 # stop webhook server
 curl http://0.0.0.0:5005/shutdown
