@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 # Module change example for r.slope.aspect with g.region adjustment
 
@@ -106,14 +106,14 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         for mapset in test_mapsets:
             # Unlock mapset for deletion
             rv = self.server.delete(
-                URL_PREFIX
-                + "/locations/%s/mapsets/%s/lock" % ("nc_spm_08", mapset),
+                f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+                f"{mapset}/lock",
                 headers=self.admin_auth_header,
             )
             print(rv.data)
 
         rv = self.server.get(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets",
             headers=self.user_auth_header,
         )
         print(rv.data)
@@ -132,7 +132,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             if mapset in mapsets:
                 # Delete the mapset if it already exists
                 rv = self.server.delete(
-                    URL_PREFIX + "/locations/nc_spm_08/mapsets/%s" % mapset,
+                    f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/"
+                    f"mapsets/{mapset}",
                     headers=self.admin_auth_header,
                 )
                 print(rv.data)
@@ -152,7 +153,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         """No access to target mapset error test"""
         # Try merge source mapsets into target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/user1/merging_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/user1/"
+            "merging_async",
             headers=self.user_auth_header,
             data=json_dumps(["Source_A", "Source_B"]),
             content_type="application/json",
@@ -173,7 +175,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Try merge source mapsets into target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target/merging_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
             headers=self.admin_auth_header,
             data=json_dumps(["Source_A", "Source_B"]),
             content_type="application/json",
@@ -192,7 +195,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -207,7 +210,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Try merge source mapsets into target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target/merging_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
             headers=self.admin_auth_header,
             data=json_dumps(["Source_A", "Source_B"]),
             content_type="application/json",
@@ -226,7 +230,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -241,7 +245,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Try merge source mapsets into target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target/merging_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
             headers=self.admin_auth_header,
             data=json_dumps([]),
             content_type="application/json",
@@ -260,8 +265,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create the source mapsets
         rv = self.server.post(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Source_A/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Source_A/"
+            "processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_short_1),
             content_type="application/json",
@@ -269,8 +274,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
         rv = self.server.post(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Source_B/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Source_B/"
+            "processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain_short_2),
             content_type="application/json",
@@ -279,7 +284,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Create target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -294,7 +299,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Merge source mapsets into target mapset
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/mapsets/Target/merging_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "merging_async",
             headers=self.admin_auth_header,
             data=json_dumps(["Source_A", "Source_B"]),
             content_type="application/json",
@@ -303,8 +309,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         # Check copied raster
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_1",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "raster_layers/my_aspect_1",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -312,8 +318,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             "my_aspect_1", json_load(rv.data)["process_results"]["map"]
         )
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Target/raster_layers/my_aspect_2",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "raster_layers/my_aspect_2",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -321,8 +327,8 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             "my_aspect_2", json_load(rv.data)["process_results"]["map"]
         )
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_1",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "raster_layers/my_slope_1",
             headers=self.admin_auth_header,
         )
         print(rv.data)
@@ -330,15 +336,14 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
             "my_slope_1", json_load(rv.data)["process_results"]["map"]
         )
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/Target/raster_layers/my_slope_2",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/Target/"
+            "raster_layers/my_slope_2",
             headers=self.admin_auth_header,
         )
         print(rv.data)
         self.assertTrue(
             "my_slope_2", json_load(rv.data)["process_results"]["map"]
         )
-
         time.sleep(1)
 
 

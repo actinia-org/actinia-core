@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,28 +47,29 @@ from actinia_core.processing.common.strds_management import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class SyncSTRDSListerResource(ResourceBase):
-    """List all STRDS in a location/mapset"""
+    """List all STRDS in a project/mapset"""
 
     layer_type = None
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.list_get_doc))
-    def get(self, location_name, mapset_name):
+    def get(self, project_name, mapset_name):
         """
-        Get a list of all STRDS that are located in a specific location/mapset.
+        Get a list of all STRDS that are located in a specific project/mapset.
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
         )
 
@@ -104,19 +105,19 @@ recursive_parser.add_argument(
 
 
 class STRDSManagementResource(ResourceBase):
-    """List all STRDS in a location/mapset"""
+    """List all STRDS in a project/mapset"""
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", strds_management.get_doc))
-    def get(self, location_name, mapset_name, strds_name):
+    def get(self, project_name, mapset_name, strds_name):
         """
         Get information about a STRDS that is located in a specific
-        location/mapset.
+        project/mapset.
         """
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )
@@ -132,12 +133,12 @@ class STRDSManagementResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", strds_management.delete_doc))
-    def delete(self, location_name, mapset_name, strds_name):
-        """Delete a STRDS that is located in a specific location/mapset."""
+    def delete(self, project_name, mapset_name, strds_name):
+        """Delete a STRDS that is located in a specific project/mapset."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )
@@ -157,12 +158,12 @@ class STRDSManagementResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", strds_management.post_doc))
-    def post(self, location_name, mapset_name, strds_name):
-        """Create a new STRDS in a specific location/mapset."""
+    def post(self, project_name, mapset_name, strds_name):
+        """Create a new STRDS in a specific project/mapset."""
         rdc = self.preprocess(
             has_json=True,
             has_xml=False,
-            location_name=location_name,
+            project_name=project_name,
             mapset_name=mapset_name,
             map_name=strds_name,
         )

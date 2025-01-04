@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2019 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,8 +34,8 @@ from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers
 from actinia_api import URL_PREFIX
 
+from .version import init_versions
 from .health_check import health_check
-from .version import version
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.config import global_config
@@ -43,11 +43,12 @@ from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ActiniaRequests(object):
@@ -136,6 +137,17 @@ class ActiniaTestCaseBase(unittest.TestCase):
     root = None
     auth_header = {}
     users_list = []
+    project_url_part = "projects"
+
+    # set project_url_part to "locations" if GRASS GIS version < 8.4
+    init_versions()
+    health_check = health_check
+    from .version import G_VERSION
+
+    grass_version_s = G_VERSION["version"]
+    grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+    if grass_version < [8, 4]:
+        project_url_part = "locations"
 
     if "ACTINIA_SERVER_TEST" in os.environ:
         server_test = bool(os.environ["ACTINIA_SERVER_TEST"])
@@ -339,9 +351,9 @@ class ActiniaTestCaseBase(unittest.TestCase):
         time.sleep(0.4)
         return resp_data
 
-    def assertRasterInfo(self, location, mapset, raster, ref_info, header):
+    def assertRasterInfo(self, project, mapset, raster, ref_info, header):
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"raster_layers/{raster}"
         )
         rv = self.server.get(url, headers=header)
@@ -360,9 +372,9 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 ),
             )
 
-    def assertVectorInfo(self, location, mapset, vector, ref_info, header):
+    def assertVectorInfo(self, project, mapset, vector, ref_info, header):
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
             f"vector_layers/{vector}"
         )
         rv = self.server.get(url, headers=header)
@@ -381,37 +393,58 @@ class ActiniaTestCaseBase(unittest.TestCase):
                 ),
             )
 
-    def create_new_mapset(self, mapset_name, location_name="nc_spm_08"):
-        self.delete_mapset(mapset_name, location_name)
+    def create_new_mapset(self, mapset_name, project_name="nc_spm_08"):
+        get_url = (
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets"
+        )
+        rv_get = self.server.get(get_url, headers=self.user_auth_header)
+        self.assertEqual(
+            rv_get.status_code,
+            200,
+            "HTML status code is wrong %i" % rv_get.status_code,
+        )
+        resp = json_loads(rv_get.data.decode())
+        if mapset_name in resp["process_results"]:
+            self.delete_mapset(mapset_name, project_name)
+
         # Create new mapset
         self.server.post(
-            URL_PREFIX
-            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/"
+            f"mapsets/{mapset_name}",
             headers=self.admin_auth_header,
         )
 
-    def delete_mapset(self, mapset_name, location_name="nc_spm_08"):
+    def delete_mapset(self, mapset_name, project_name="nc_spm_08"):
         # Unlock mapset for deletion
         self.server.delete(
-            URL_PREFIX
-            + "/locations/%s/mapsets/%s/lock" % (location_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/mapsets/"
+            f"{mapset_name}/lock",
             headers=self.admin_auth_header,
         )
 
         # Delete existing mapset
         self.server.delete(
-            URL_PREFIX
-            + "/locations/%s/mapsets/%s" % (location_name, mapset_name),
+            f"{URL_PREFIX}/{self.project_url_part}/{project_name}/"
+            f"mapsets/{mapset_name}",
             headers=self.admin_auth_header,
         )
 
-    def create_vector_layer(self, location, mapset, vector, region, parameter):
+    def create_vector_layer(self, project, mapset, vector, region, parameter):
         # Remove potentially existing vector layer
-        url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
-            f"vector_layers/{vector}"
+        vl_url = (
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
+            f"vector_layers"
         )
-        rv = self.server.delete(url, headers=self.user_auth_header)
+        url = f"{vl_url}/{vector}"
+        rv_get = self.server.get(vl_url, headers=self.user_auth_header)
+        self.assertEqual(
+            rv_get.status_code,
+            200,
+            "HTML status code is wrong %i" % rv_get.status_code,
+        )
+        resp = json_loads(rv_get.data.decode())
+        if vector in resp["process_results"]:
+            rv = self.server.delete(url, headers=self.user_auth_header)
 
         parameter["column"] = "z"
         region["res"] = 100000
@@ -440,8 +473,8 @@ class ActiniaTestCaseBase(unittest.TestCase):
             "version": "1",
         }
         url = (
-            f"{URL_PREFIX}/locations/{location}/mapsets/{mapset}/"
-            f"processing_async"
+            f"{URL_PREFIX}/{self.project_url_part}/{project}/mapsets/{mapset}/"
+            "processing_async"
         )
         rv = self.server.post(
             url,
@@ -451,7 +484,7 @@ class ActiniaTestCaseBase(unittest.TestCase):
         )
         self.waitAsyncStatusAssertHTTP(
             rv,
-            headers=self.admin_auth_header,
+            headers=self.user_auth_header,
             http_status=200,
             status="finished",
         )

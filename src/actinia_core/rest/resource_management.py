@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -54,13 +54,15 @@ from actinia_core.models.response_models import (
     ProcessingResponseListModel,
 )
 from actinia_core.core.interim_results import InterimResult
+from actinia_core.version import G_VERSION
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class ResourceManagerBase(Resource):
@@ -352,10 +354,21 @@ class ResourceManager(ResourceManagerBase):
             is None
         ):
             return None, None, None
-        location = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        # check grass version for project / location
+        grass_version_s = G_VERSION["version"]
+        grass_version = [int(item) for item in grass_version_s.split(".")[:2]]
+        if grass_version < [8, 4]:
+            project = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        elif grass_version < [9, 0]:
+            project = None
+            project = re.findall(r"projects\/(.*?)\/", post_url)[0]
+            if not project:
+                project = re.findall(r"locations\/(.*?)\/", post_url)[0]
+        else:
+            project = re.findall(r"projects\/(.*?)\/", post_url)[0]
         processing_class = global_config.INTERIM_SAVING_ENDPOINTS[endpoint]
         if processing_class == "AsyncEphemeralResource":
-            # /locations/<string:location_name>/processing_async
+            # /projects/<string:project_name>/processing_async
             from .ephemeral_processing import AsyncEphemeralResource
             from ..processing.common.ephemeral_processing import start_job
 
@@ -363,10 +376,10 @@ class ResourceManager(ResourceManagerBase):
                 resource_id, iteration, post_url
             )
             rdc = processing_resource.preprocess(
-                location_name=location, **preprocess_kwargs
+                project_name=project, **preprocess_kwargs
             )
         elif processing_class == "AsyncPersistentResource":
-            # /locations/{location_name}/mapsets/{mapset_name}/processing_async
+            # /projects/{project_name}/mapsets/{mapset_name}/processing_async
             from .persistent_processing import AsyncPersistentResource
             from ..processing.common.persistent_processing import start_job
 
@@ -375,11 +388,11 @@ class ResourceManager(ResourceManagerBase):
             )
             mapset = re.findall(r"mapsets\/(.*?)\/", post_url)[0]
             rdc = processing_resource.preprocess(
-                location_name=location, mapset_name=mapset, **preprocess_kwargs
+                project_name=project, mapset_name=mapset, **preprocess_kwargs
             )
 
         elif processing_class == "AsyncEphemeralExportResource":
-            # /locations/{location_name}/processing_async_export
+            # /projects/{project_name}/processing_async_export
             from .ephemeral_processing_with_export import (
                 AsyncEphemeralExportResource,
             )
@@ -391,7 +404,7 @@ class ResourceManager(ResourceManagerBase):
                 resource_id, iteration, post_url
             )
             rdc = processing_resource.preprocess(
-                location_name=location, **preprocess_kwargs
+                project_name=project, **preprocess_kwargs
             )
         else:
             return make_response(

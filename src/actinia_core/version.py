@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,11 +27,12 @@ Returns the version information and the roles that are activated
 """
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 from flask import make_response, jsonify, request
 from importlib import metadata
@@ -61,7 +62,7 @@ def init_versions():
     g_version = subprocess.run(
         [
             "grass",
-            "--tmp-location",
+            "--tmp-project",
             "epsg:4326",
             "--exec",
             "g.version",
@@ -69,6 +70,19 @@ def init_versions():
         ],
         capture_output=True,
     ).stdout
+    if not g_version:
+        # for GRASS GIS version < 8.4
+        g_version = subprocess.run(
+            [
+                "grass",
+                "--tmp-location",
+                "epsg:4326",
+                "--exec",
+                "g.version",
+                "-rge",
+            ],
+            capture_output=True,
+        ).stdout
     log.debug("Detecting GRASS GIS version")
     for i in g_version.decode("utf-8").strip("\n").split("\n"):
         try:

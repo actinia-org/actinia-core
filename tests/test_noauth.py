@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2023 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2023-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
 #######
 
 """
-Tests: Location test case
+Tests: No authentication test case
 """
 import os
 from flask.json import dumps as json_dumps
@@ -33,15 +33,16 @@ from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config
 from actinia_core.core.common import redis_interface
 from actinia_core.core.common.process_queue import create_process_queue
-from actinia_core.testsuite import (
-    ActiniaRequests,
-    ActiniaTestCaseBase,
-    URL_PREFIX,
-)
+from actinia_core.testsuite import ActiniaRequests
+
+try:
+    from .test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
+except Exception:
+    from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2023-2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
@@ -92,7 +93,7 @@ PC = {
 }
 
 
-class ActiniaWithoutAuthentication(ActiniaTestCaseBase):
+class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
     """Test base class to test actinia without autentication"""
 
     server_test = False
@@ -186,9 +187,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         self.assertIn("version", data)
         self.assertIn("grass_version", data)
 
-    def test_02_list_locations(self):
-        """Test list location endpoint"""
-        rv = self.server.get(f"{URL_PREFIX}/locations")
+    def test_02_list_projects(self):
+        """Test list project endpoint"""
+        rv = self.server.get(f"{URL_PREFIX}/{self.project_url_part}")
         self.assertEqual(
             rv.status_code,
             200,
@@ -198,16 +199,18 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
             rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
         )
         self.assertIn(
-            "locations", json_loads(rv.data), "No locations in response"
+            self.project_url_part,
+            json_loads(rv.data),
+            f"No {self.project_url_part} in response",
         )
-        locations = json_loads(rv.data)["locations"]
-        self.assertIn("nc_spm_08", locations, "Wrong location listed")
+        projects = json_loads(rv.data)[self.project_url_part]
+        self.assertIn("nc_spm_08", projects, "Wrong project listed")
 
     def test_03_processing_ephemeral(self):
         """Test job resumption with processing_async endpoint and stdout"""
-        endpoint = "/locations/nc_spm_08/processing_async"
+        endpoint = f"{self.project_url_part}/nc_spm_08/processing_async"
         rv = self.server.post(
-            f"{URL_PREFIX}{endpoint}",
+            f"{URL_PREFIX}/{endpoint}",
             data=json_dumps(PC),
             content_type="application/json",
         )
@@ -222,9 +225,11 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         """Test job resumption with persistent processing_async endpoint and
         stdout
         """
-        endpoint = "/locations/nc_spm_08/mapsets/test/processing_async"
+        endpoint = (
+            f"{self.project_url_part}/nc_spm_08/mapsets/test/processing_async"
+        )
         rv = self.server.post(
-            f"{URL_PREFIX}{endpoint}",
+            f"{URL_PREFIX}/{endpoint}",
             data=json_dumps(PC),
             content_type="application/json",
         )
@@ -235,7 +240,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         )
         self.compare_stdout(resp)
         # check processing mapset
-        rv2 = self.server.get(f"{URL_PREFIX}/locations/nc_spm_08/mapsets")
+        rv2 = self.server.get(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets"
+        )
         self.assertEqual(
             rv2.status_code,
             200,
@@ -247,7 +254,8 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         )
         # check created raster
         rv3 = self.server.get(
-            f"{URL_PREFIX}/locations/nc_spm_08/mapsets/test/raster_layers"
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test/"
+            "raster_layers"
         )
         self.assertEqual(
             rv3.status_code,
@@ -261,7 +269,9 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         # delete test mapset
         self.admin_auth_header = None
         self.delete_mapset("test", "nc_spm_08")
-        rv4 = self.server.get(f"{URL_PREFIX}/locations/nc_spm_08/mapsets")
+        rv4 = self.server.get(
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets"
+        )
         self.assertEqual(
             rv4.status_code,
             200,

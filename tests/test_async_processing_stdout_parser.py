@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,12 +33,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase, URL_PREFIX
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 process_chain = {
     "version": 1,
@@ -129,7 +129,7 @@ r_what = {
 class AsyncProcessStdoutParserTestCase(ActiniaResourceTestCaseBase):
     def test_output_parsing(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(process_chain),
             content_type="application/json",
@@ -156,7 +156,7 @@ class AsyncProcessStdoutParserTestCase(ActiniaResourceTestCaseBase):
 
     def test_output_parsing_r_what(self):
         rv = self.server.post(
-            URL_PREFIX + "/locations/nc_spm_08/processing_async",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/processing_async",
             headers=self.admin_auth_header,
             data=json_dumps(r_what),
             content_type="application/json",

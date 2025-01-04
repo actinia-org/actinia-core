@@ -38,7 +38,8 @@ __author__ = "Sören Gebbert"
 __copyright__ = (
     "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class PersistentListLayers(PersistentProcessing):
@@ -136,7 +137,7 @@ class PersistentRenameLayers(PersistentProcessing):
     def _execute(self):
         self._setup()
 
-        args, layer_type = self.data
+        _, layer_type = self.data
         self.required_mapsets.append(self.target_mapset_name)
 
         # List format must be

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2021-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,7 +49,7 @@ except ModuleNotFoundError:
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann"
-__copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
+__copyright__ = "Copyright 2021-2024, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
@@ -288,8 +288,8 @@ process_chain_5_stdout = {
 class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
     cfg_file = os.environ.get("DEFAULT_CONFIG_PATH", "/etc/default/actinia")
     tmp_cfg_file = "%s_tmp" % cfg_file
+    endpoint = "nc_spm_08/processing_async"
     save_interim_results_value = None
-    endpoint = "/locations/nc_spm_08/processing_async"
     resource_user_id = None
     resource_resource_id = None
     sleep_time = 15
@@ -333,7 +333,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -365,7 +365,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         step = 4
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum555"),
             content_type="application/json",
@@ -407,7 +407,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """Test job resumption with processing_async endpoint"""
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -450,7 +450,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """Test job 2 times resumption with processing_async endpoint"""
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -512,7 +512,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """
         tpl = Template(json_dumps(process_chain_2_error))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(seconds=self.sleep_time),
             content_type="application/json",
@@ -559,7 +559,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """Test job resumption with processing_async endpoint and importer"""
         tpl = Template(json_dumps(process_chain_3_importer))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -604,7 +604,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """
         tpl = Template(json_dumps(process_chain_3_importer))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -729,7 +729,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """Test job resumption with processing_async endpoint and stdout"""
         tpl = Template(json_dumps(process_chain_5_stdout))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -775,7 +775,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
         """
         tpl = Template(json_dumps(process_chain_5_stdout))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -916,7 +916,7 @@ class JobResumptionProcessingTestCase(ActiniaResourceTestCaseBase):
 
 
 class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
-    endpoint = "/locations/nc_spm_08/processing_async_export"
+    endpoint = "nc_spm_08/processing_async_export"
     resource_user_id = None
     resource_resource_id = None
 
@@ -926,7 +926,7 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         """
         tpl = Template(json_dumps(process_chain_4_exporter))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -993,7 +993,7 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
         """
         tpl = Template(json_dumps(process_chain_4_exporter))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -1075,9 +1075,9 @@ class JobResumptionProcessingExportTestCase(JobResumptionProcessingTestCase):
 class JobResumptionPersistentProcessingTestCase(
     JobResumptionProcessingTestCase
 ):
-    location = "nc_spm_08"
+    project = "nc_spm_08"
     mapset = "test_mapset"
-    endpoint = "/locations/%s/mapsets/%s/processing_async" % (location, mapset)
+    endpoint = f"{project}/mapsets/{mapset}/processing_async"
     resource_user_id = None
     resource_resource_id = None
     mapset_created = True
@@ -1085,15 +1085,14 @@ class JobResumptionPersistentProcessingTestCase(
     def tearDown(self):
         if self.mapset_created is True:
             rv = self.server.delete(
-                URL_PREFIX
-                + "/locations/%s/mapsets/%s/lock"
-                % (self.location, self.mapset),
+                f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+                f"{self.mapset}/lock",
                 headers=self.admin_auth_header,
             )
             self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
             rv2 = self.server.delete(
-                URL_PREFIX
-                + "/locations/%s/mapsets/%s" % (self.location, self.mapset),
+                f"{URL_PREFIX}/{self.project_url_part}/{self.project}/mapsets/"
+                f"{self.mapset}",
                 headers=self.admin_auth_header,
             )
             self.waitAsyncStatusAssertHTTP(rv2, headers=self.admin_auth_header)
@@ -1103,10 +1102,10 @@ class JobResumptionPersistentProcessingTestCase(
 
     def test_saved_interim_results(self):
         """Test if the interim results are removed"""
-        self.create_new_mapset(self.mapset, self.location)
+        self.create_new_mapset(self.mapset, self.project)
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation@PERMANENT", map2="baum"),
             content_type="application/json",
@@ -1149,7 +1148,7 @@ class JobResumptionPersistentProcessingTestCase(
 
 
 class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
-    endpoint = "/locations/nc_spm_08/processing_async"
+    endpoint = "nc_spm_08/processing_async"
 
     def test_job_resumption_config_error(self):
         """Test if the job resumption fails if save_interim_results is set to
@@ -1157,7 +1156,7 @@ class JobResumptionErrorTestCase(ActiniaResourceTestCaseBase):
         """
         tpl = Template(json_dumps(process_chain_1))
         rv = self.server.post(
-            URL_PREFIX + self.endpoint,
+            f"{URL_PREFIX}/{self.project_url_part}/{self.endpoint}",
             headers=self.admin_auth_header,
             data=tpl.render(map1="elevation2@PERMANENT", map2="baum"),
             content_type="application/json",

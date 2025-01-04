@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -37,7 +37,6 @@ from datetime import datetime
 import queue as standard_queue
 from multiprocessing import Process, Queue
 from threading import Thread, Lock
-import logging
 import atexit
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.logging_interface import log
@@ -48,14 +47,15 @@ has_fluent = False
 try:
     from fluent import handler
 
-    has_fluent = True
+    if handler:
+        has_fluent = True
 except Exception:
     print("Fluent is not available")
     has_fluent = False
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-present, Sören Gebbert and mundialis GmbH & Co. KG"
 )
@@ -102,7 +102,7 @@ def enqueue_job(timeout, func, *args):
     # # for debugging in ephemeral_processing.py (see also grass_init.py)
     # # only uncomment ONE of the following endpoints:
 
-    # # for '/locations/<string:location_name>/processing_async'
+    # # for '/projects/<string:project_name>/processing_async'
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource
     # from ...processing.common.ephemeral_processing import start_job
@@ -111,13 +111,13 @@ def enqueue_job(timeout, func, *args):
     # processing = EphemeralProcessing(*args)
     # processing.run()
 
-    # # for '/locations/<string:location_name>/processing_async_export'
+    # # for '/projects/<string:project_name>/processing_async_export'
     # from ...processing.actinia_processing.ephemeral.\
     #     ephemeral_processing_with_export import EphemeralProcessingWithExport
     # processing = EphemeralProcessingWithExport(*args)
     # processing.run()
 
-    # # for /locations/{location_name}/mapsets/{mapset_name}/processing_async
+    # # for /projects/{project_name}/mapsets/{mapset_name}/processing_async
     # from ...processing.actinia_processing.ephemeral.persistent_processing \
     #     import PersistentProcessing
     # processing = PersistentProcessing(*args)
@@ -247,7 +247,7 @@ class EnqueuedProcess(object):
             )
 
             if response_data is not None:
-                http_code, response_model = pickle.loads(response_data)
+                _, response_model = pickle.loads(response_data)
                 if (
                     response_model["status"] != "error"
                     and response_model["status"] != "terminated"

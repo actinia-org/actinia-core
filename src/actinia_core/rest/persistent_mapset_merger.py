@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -32,24 +32,25 @@ from actinia_core.core.common.redis_interface import enqueue_job
 from actinia_core.processing.common.persistent_mapset_merger import start_job
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class AsyncPersistentMapsetMergerResource(ResourceBase):
     def __init__(self):
         ResourceBase.__init__(self)
 
-    def post(self, location_name, mapset_name):
+    def post(self, project_name, mapset_name):
         """Merge several existing mapsets into a single one.
         All mapsets that should be merged and the target mapset will be locked
         for the processing.
 
         Args:
-            location_name (str): The name of the location
+            project_name (str): The name of the project
             target_mapset_name (str): The name of the target mapset, into other
                                       mapsets should be merged
 
@@ -82,7 +83,7 @@ class AsyncPersistentMapsetMergerResource(ResourceBase):
         """
         # Preprocess the post call
         rdc = self.preprocess(
-            has_json=True, location_name=location_name, mapset_name=mapset_name
+            has_json=True, project_name=project_name, mapset_name=mapset_name
         )
 
         if rdc:

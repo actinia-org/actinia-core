@@ -34,21 +34,21 @@ from actinia_core.core.common.exceptions import AsyncProcessTermination
 from actinia_core.core.stac_exporter_interface import STACExporter
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
 class EphemeralProcessingWithExport(EphemeralProcessing):
     """
     This class processes GRASS data on the local machine in an temporary mapset
-    and copies the exported results to a dedicated storage location.
+    and copies the exported results to a dedicated storage project.
 
     The temporary mapset will be removed by this class when the processing
-    finished and the results are stored in the dedicated storage location.
+    finished and the results are stored in the dedicated storage project.
 
     TODO: Implement the export of arbitrary files that were generated in the
           processing of the process chain
@@ -440,7 +440,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         resource["export"]["format"],
                     )
                     self._send_resource_update(message)
-                    output_name, output_path = self._export_raster(
+                    _, output_path = self._export_raster(
                         raster_name=file_name,
                         format=resource["export"]["format"],
                         use_raster_region=use_raster_region,
@@ -470,14 +470,14 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                             resource["export"]["format"],
                         )
                         self._send_resource_update(message)
-                        output_name, output_path = self._export_vector(
+                        _, output_path = self._export_vector(
                             vector_name=file_name,
                             format=resource["export"]["format"],
                         )
                 elif output_type == "file":
                     file_name = resource["file_name"]
                     tmp_file = resource["tmp_file"]
-                    output_name, output_path = self._export_file(
+                    _, output_path = self._export_file(
                         tmp_file=tmp_file, file_name=file_name
                     )
                 elif output_type == "strds":
@@ -486,7 +486,7 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
                         resource["export"]["format"],
                     )
                     self._send_resource_update(message)
-                    output_name, output_path = self._export_strds(
+                    _, output_path = self._export_strds(
                         strds_name=file_name,
                         format=resource["export"]["format"],
                     )

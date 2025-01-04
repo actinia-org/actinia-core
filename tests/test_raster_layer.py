@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,12 +35,12 @@ except ModuleNotFoundError:
 
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class RasterLayerTestCase(ActiniaResourceTestCaseBase):
@@ -48,8 +48,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
 
     def test_raster_layer_info(self):
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevation",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevation",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))
@@ -73,8 +73,8 @@ class RasterLayerTestCase(ActiniaResourceTestCaseBase):
     def test_raster_layer_info_error_1(self):
         # Raster does not exist
         rv = self.server.get(
-            URL_PREFIX
-            + "/locations/nc_spm_08/mapsets/PERMANENT/raster_layers/elevat",
+            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+            "PERMANENT/raster_layers/elevat",
             headers=self.user_auth_header,
         )
         pprint(json_load(rv.data))

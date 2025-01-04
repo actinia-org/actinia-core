@@ -58,7 +58,8 @@ __author__ = (
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def get_param_stdin_part(text):
@@ -274,7 +275,7 @@ class ProcessChainConverter(object):
             scene_id=scene,
         )
 
-        download_commands, import_file_info = lp.get_download_process_list()
+        download_commands, _ = lp.get_download_process_list()
         import_commands = lp.get_import_process_list()
         atcor_commands = lp.get_i_landsat_toar_process_list(atcor)
         landsat_commands = download_commands
@@ -331,7 +332,7 @@ class ProcessChainConverter(object):
         import_commands = sp.get_sentinel2_import_process_list()
         sentinel_commands.extend(import_commands)
 
-        input_file, map_name = import_file_info[band]
+        _, map_name = import_file_info[band]
         p = Process(
             exec_type="grass",
             executable="g.rename",

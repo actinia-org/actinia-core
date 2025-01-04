@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,12 +34,12 @@ except ModuleNotFoundError:
     from test_resource_base import ActiniaResourceTestCaseBase
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "Sören Gebbert"
-__email__ = "soerengebbert@googlemail.com"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class UserTestCase(ActiniaResourceTestCaseBase):
@@ -215,8 +215,8 @@ class UserTestCase(ActiniaResourceTestCaseBase):
 
         user = ActiniaUser(user_id=self.user_id)
         user.read_from_db()
-        user.remove_location("utm32n")
-        user.remove_mapsets_from_location(
+        user.remove_project("utm32n")
+        user.remove_mapsets_from_project(
             "nc_spm_08",
             [
                 "user1",

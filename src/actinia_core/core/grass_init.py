@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,12 +34,13 @@ import uuid
 from .messages_logger import MessageLogger
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert, Anika Weinmann and mundialis GmbH & "
+    "Copyright 2016-2024, Sören Gebbert, Anika Weinmann and mundialis GmbH & "
     "Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class GrassInitError(Exception):
@@ -190,9 +191,9 @@ class GrassGisRC(ProcessLogging):
     to allow map registering from none-current mapsets
     """
 
-    def __init__(self, gisdbase, location_name, mapset):
+    def __init__(self, gisdbase, project_name, mapset):
         ProcessLogging.__init__(self)
-        self.location_name = location_name
+        self.project_name = project_name
         self.mapset = mapset
         self.gisdbase = gisdbase
         self.__gisrc_ile = ""
@@ -223,7 +224,8 @@ class GrassGisRC(ProcessLogging):
     def __write(self):
         try:
             gisrc = open(self.__gisrc_ile, "w")
-            gisrc.write("LOCATION_NAME: %s\n" % self.location_name)
+            # TODO with GRASS GIS 9
+            gisrc.write("LOCATION_NAME: %s\n" % self.project_name)
             gisrc.write("MAPSET: %s\n" % self.mapset)
             gisrc.write("DIGITIZER: none\n")
             gisrc.write("GISDBASE: %s\n" % self.gisdbase)
@@ -246,12 +248,12 @@ class GrassWindFile(ProcessLogging):
     """This class takes care of the correct creation of grass WIND and
     DEFAULT_WIND files using a dummy region"""
 
-    def __init__(self, gisdbase, location, mapset):
+    def __init__(self, gisdbase, project, mapset):
         """
 
         Args:
             gisdbase (str): The GRASS database
-            location (str): The location name
+            project (str): The project name
             mapset (str): The name of the mapset
 
         Raises:
@@ -267,11 +269,11 @@ class GrassWindFile(ProcessLogging):
             # If PERMANENT is used as mapset, the DEFAULT_WIND file will be
             # created too
             self.__windFile = os.path.join(
-                gisdbase, location, mapset, "DEFAULT_WIND"
+                gisdbase, project, mapset, "DEFAULT_WIND"
             )
             self.__write()
 
-        self.__windFile = os.path.join(gisdbase, location, mapset, "WIND")
+        self.__windFile = os.path.join(gisdbase, project, mapset, "WIND")
         self.__write()
 
         try:
@@ -470,7 +472,7 @@ class GrassInitializer(ProcessLogging):
         self,
         grass_data_base,
         grass_base_dir,
-        location_name,
+        project_name,
         mapset_name,
         grass_addon_path="",
         config=None,
@@ -484,9 +486,9 @@ class GrassInitializer(ProcessLogging):
 
         Args:
             grass_data_base (str): GRASS GIS database root directory that
-                                   contains locations
+                                   contains projects
             grass_base_dir (str): The installation directory of GRASS GIS
-            location_name (str): The name of the location to work in
+            project_name (str): The name of the project to work in
             mapset_name (str): The name of the mapset to work in
             grass_addon_path (str): The path to GRASS GIS addons
 
@@ -497,7 +499,7 @@ class GrassInitializer(ProcessLogging):
         self.gisrc_path = None
         self.grass_data_base = grass_data_base
         self.grass_base_dir = grass_base_dir
-        self.location_name = location_name
+        self.project_name = project_name
         self.mapset_name = mapset_name
         self.grass_addon_path = grass_addon_path
         self.has_temp_region = False
@@ -510,7 +512,7 @@ class GrassInitializer(ProcessLogging):
         self.gisrc_path = tempfile.mkdtemp()
 
         self.mapset_path = os.path.join(
-            self.grass_data_base, self.location_name, self.mapset_name
+            self.grass_data_base, self.project_name, self.mapset_name
         )
 
         # Generate a temporary region name
@@ -522,7 +524,7 @@ class GrassInitializer(ProcessLogging):
         )
 
         self.gisrc = GrassGisRC(
-            self.grass_data_base, self.location_name, self.mapset_name
+            self.grass_data_base, self.project_name, self.mapset_name
         )
         self.gisrc.write(self.gisrc_path)
 
@@ -597,7 +599,7 @@ class GrassInitializer(ProcessLogging):
 
         """
         # Safe the current region in a temporary region that can be overwritten
-        errorid, stdout_buff, stderr_buff = self.run_module(
+        errorid, _, _ = self.run_module(
             "g.region", ["save=%s" % self.tmp_region_name, "--o"]
         )
 

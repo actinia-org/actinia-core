@@ -277,7 +277,7 @@ class STACExporter:
     def _set_raster_extention(raster_path, item):
         with rasterio.open(raster_path) as raster:
             band = raster.read(1)
-            pixelSizeX, pixelSizeY = raster.res
+            pixelSizeX, _ = raster.res
 
             nodata = np.count_nonzero(np.isnan(band))
             spatial_resolution = pixelSizeX

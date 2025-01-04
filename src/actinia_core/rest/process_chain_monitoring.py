@@ -47,7 +47,8 @@ from actinia_core.models.response_models import SimpleResponseModel
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Carmen Tawalika"
 __copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 def create_scatter_plot(x, y, xlabel, ylabel, title):
@@ -287,7 +288,7 @@ class MapsetSizeRenderResource(ResourceManager):
         response_data = self.resource_logger.get(user_id, resource_id)
 
         if response_data is not None:
-            http_code, pc_response_model = pickle.loads(response_data)
+            _, pc_response_model = pickle.loads(response_data)
 
             pc_status = pc_response_model["status"]
             if pc_status in ["accepted", "running"]:
@@ -368,7 +369,7 @@ class MapsetSizeDiffRenderResource(ResourceManager):
         response_data = self.resource_logger.get(user_id, resource_id)
 
         if response_data is not None:
-            http_code, pc_response_model = pickle.loads(response_data)
+            _, pc_response_model = pickle.loads(response_data)
 
             pc_status = pc_response_model["status"]
             if pc_status in ["accepted", "running"]:

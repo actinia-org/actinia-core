@@ -37,7 +37,8 @@ __author__ = "Sören Gebbert"
 __copyright__ = (
     "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 GML_BODY = """<?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
@@ -826,7 +827,7 @@ class GoogleSatelliteBigQueryInterface(object):
                     # The whole XML content is returned as well
                     (
                         gml,
-                        xml_metadata,
+                        _,
                         bbox,
                     ) = self._generate_sentinel2_footprint(base_url=base_url)
                     result[product_id]["gml_footprint"] = gml

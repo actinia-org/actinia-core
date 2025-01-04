@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2022 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,15 +41,16 @@ from actinia_core.models.response_models import (
 )
 
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert, Carmen Tawalika"
+__author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
-__maintainer__ = "mundialis"
+__maintainer__ = "mundialis GmbH & Co. KG"
+__email__ = "info@mundialis.de"
 
 
 class PersistentMapsetLister(PersistentProcessing):
-    """List all mapsets in a location"""
+    """List all mapsets in a project"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -162,7 +163,7 @@ class PersistentGetProjectionRegionInfo(PersistentProcessing):
 
 
 class PersistentMapsetCreator(PersistentProcessing):
-    """Create a mapset in an existing location"""
+    """Create a mapset in an existing project"""
 
     def __init__(self, *args):
         PersistentProcessing.__init__(self, *args)
@@ -195,7 +196,7 @@ class PersistentMapsetCreator(PersistentProcessing):
             )
 
         # Create the new temporary mapset and merge it into the user database
-        # location
+        # project
         self._check_lock_target_mapset()
         self.required_mapsets = ["PERMANENT"]
         self._create_temporary_mapset(temp_mapset_name=self.temp_mapset_name)
@@ -207,7 +208,7 @@ class PersistentMapsetCreator(PersistentProcessing):
 
 
 class PersistentMapsetDeleter(PersistentProcessing):
-    """Delete a mapset from a location
+    """Delete a mapset from a project
 
     1. Create temporary database
     2. Check if PERMANENT mapset or global mapset which are not allowed to be
@@ -227,7 +228,7 @@ class PersistentMapsetDeleter(PersistentProcessing):
         if "PERMANENT" == self.target_mapset_name:
             raise AsyncProcessError(
                 "The PERMANENT mapset can not be deleted. "
-                "You must remove the location to get rid of it."
+                "You must remove the project to get rid of it."
             )
 
         # Delete existing mapset
@@ -258,7 +259,7 @@ class PersistentGetMapsetLock(PersistentProcessing):
         if self.target_mapset_exists is False:
             raise AsyncProcessError(
                 f"Unable to get lock status of mapset <{self.mapset_name}>"
-                f" in location <{self.location_name}>: Mapset does not "
+                f" in project <{self.project_name}>: Mapset does not "
                 "exist"
             )
         else:
@@ -309,10 +310,10 @@ class PersistentMapsetUnlocker(PersistentProcessing):
         if self.target_mapset_exists is False:
             raise AsyncProcessError(
                 (
-                    "Unable to unlock mapset <%s> in location <%s>:"
+                    "Unable to unlock mapset <%s> in project <%s>:"
                     " Mapset does not exist"
                 )
-                % (self.mapset_name, self.location_name)
+                % (self.mapset_name, self.project_name)
             )
         else:
             self.lock_interface.unlock(self.target_mapset_lock_id)

@@ -9,13 +9,35 @@ on:
 
 jobs:
 
+  # Unittests for GRASS 8.3
+  alpine-unittests-G83:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Replace run only unittest command
+      run: |
+        sed -i "1s+.*+FROM mundialis/actinia-core:4.14.1 AS actinia_test+" docker/actinia-core-tests/Dockerfile
+        sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
+    - name: Unittests of actinia
+      id: docker_build
+      uses: docker/build-push-action@v6
+      with:
+        push: false
+        tags: actinia-core-tests:alpine
+        context: .
+        file: docker/actinia-core-tests/Dockerfile
+        no-cache: true
+        # pull: true
+
+  # Unittests for GRASS 8.4
   alpine-unittests:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      # with:
-      #   path: "."
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Replace run only unittest command
@@ -32,13 +54,35 @@ jobs:
         no-cache: true
         # pull: true
 
+  # Integration tests for GRASS 8.3
+  alpine-integration-tests-G83:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+    - name: Replace run integration test command
+      run: |
+        sed -i "1s+.*+FROM mundialis/actinia-core:4.14.1 AS actinia_test+" docker/actinia-core-tests/Dockerfile
+        sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
+    - name: Integration tests of actinia
+      id: docker_build
+      uses: docker/build-push-action@v6
+      with:
+        push: false
+        tags: actinia-core-tests:alpine
+        context: .
+        file: docker/actinia-core-tests/Dockerfile
+        no-cache: true
+        # pull: true
+
+  # Integration tests for GRASS 8.4
   alpine-integration-tests:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
-      # with:
-      #   path: "."
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
     - name: Replace run integration test command

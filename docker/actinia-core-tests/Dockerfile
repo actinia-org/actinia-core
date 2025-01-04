@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:4.14.1 AS actinia_test
+FROM mundialis/actinia-core:grass8.4 AS actinia_test
 
 LABEL authors="Carmen Tawalika,Anika Weinmann"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de"
@@ -21,6 +21,7 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset
 RUN chown -R 1001:1001 nc_spm_08/modis_lst && chmod -R g+w nc_spm_08/modis_lst
 
 # install GRASS addons required for tests
+# TODO use --tmp-project if actinia-core uses GRASS 8.4
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld
 
 # install things only for tests

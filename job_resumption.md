@@ -114,9 +114,9 @@ URL=http://127.0.0.1:8088/api/v3
 
 The job resumption works for the following endpoints:
 
-- ephemeral processing: `ENDPOINT=locations/nc_spm_08/processing_async`
-- ephemeral processing with export: `ENDPOINT=locations/nc_spm_08/processing_async_export`
-- persistent processing: `ENDPOINT=locations/nc_spm_08/mapsets/test44/processing_async`
+- ephemeral processing: `ENDPOINT=projects/nc_spm_08/processing_async`
+- ephemeral processing with export: `ENDPOINT=projects/nc_spm_08/processing_async_export`
+- persistent processing: `ENDPOINT=projects/nc_spm_08/mapsets/test44/processing_async`
 
 `pc_error.json`: process chain with error
 
@@ -554,7 +554,7 @@ actiniadelete $AUTH $URL/resource_storage
 ```bash
 # processing (which ends with error)
 JSON=pc_template_error.json
-actiniapost $AUTH $JSON $URL/locations/nc_spm_08/processing_export
+actiniapost $AUTH $JSON $URL/projects/nc_spm_08/processing_export
 
 # job resumption (with complete process chain)
 JSONPUT=pc_template_forput.json

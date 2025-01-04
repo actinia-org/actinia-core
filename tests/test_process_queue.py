@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -41,10 +41,12 @@ try:
 except ModuleNotFoundError:
     from test_resource_base import global_config
 
+global_config = global_config
+
 __license__ = "GPLv3"
-__author__ = "Sören Gebbert"
+__author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2024, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
@@ -98,7 +100,7 @@ class ProcessQueueTestCase(unittest.TestCase):
             orig_time=time.time(),
             orig_datetime=datetime.datetime.now(),
             config=global_config,
-            location_name="location_name",
+            project_name="project_name",
             mapset_name="mapset_name",
             map_name="map_name",
         )
