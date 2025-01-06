@@ -20,7 +20,7 @@ services:
       - redis
 
   redis:
-    image: redis:7.2.5-alpine
+    image: redis:7.4.2-alpine
     volumes:
       - ./redis_data:/data
     environment:
