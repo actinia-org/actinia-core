@@ -5,9 +5,9 @@ title: actinia-core
 abstract: Actinia is an open source REST API for scalable, distributed, high performance processing of geographical data.
 message: If you use this software, please cite it using the metadata from this file.
 type: software
-version: 5.0.0
+version: 5.0.1
 doi: 10.5281/zenodo.7437895
-date-released: 2024-12-09
+date-released: 2025-03-24
 license: GPL-3.0
 repository-code: https://github.com/actinia-org/actinia-core
 keywords:
