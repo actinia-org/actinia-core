@@ -24,6 +24,24 @@ Types of changes
 
 ## [Unreleased]
 
+## [5.1.0](https://github.com/actinia-org/actinia-core/releases/tag/5.1.0) - 2025-03-24
+released from main
+### Changed
+* Use valkey instead of redis - functional adjustments by @mmacata in https://github.com/actinia-org/actinia-core/pull/585
+
+### Fixed
+* Ignore local linting config for pre-commit by @mmacata in https://github.com/actinia-org/actinia-core/pull/582
+
+### Updated
+* chore(deps): update pre-commit hook mundialis/github-workflows to v1.4.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/584
+* fix(deps): update dependency matplotlib to v3.9.4 by @renovate in https://github.com/actinia-org/actinia-core/pull/587
+* chore(deps): update anchore/sbom-action digest to df80a98 by @renovate in https://github.com/actinia-org/actinia-core/pull/588
+* fix(deps): update dependency matplotlib to v3.10.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/589
+* fix(deps): update dependency setuptools to v75.8.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/590
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/5.0.0...5.1.0 
+
+
 ## [5.0.0](https://github.com/actinia-org/actinia-core/releases/tag/5.0.0) - 2024-12-09
 released from main
 ### Added
