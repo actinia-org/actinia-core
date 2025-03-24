@@ -1,5 +1,5 @@
-FROM mundialis/actinia:alpine-dependencies-2024-05-24 as build-base
-FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass
+FROM mundialis/actinia:alpine-dependencies-2024-12-14 as build-base
+FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
 
 FROM build-base as requirements
 
@@ -29,6 +29,7 @@ FROM build-base as build
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
+RUN apk update && apk upgrade
 # DL3018: Pin versions in apk add
 # hadolint ignore=DL3018
 RUN apk add --no-cache py3-build && python -m build --outdir /build .

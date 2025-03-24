@@ -105,7 +105,7 @@ The results of the asynchronous computations are available as GeoTIFF file in a 
 
 ### List of available endpoints
 
-To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v3/swagger.json); or, to list the available endpoints on command line, run
+To see a simple **list of endpoints** (and more), consult the "paths" section in the [API JSON](https://actinia.mundialis.de/api/v3/swagger.json); or, to list the available endpoints on command line, run:
 
 ```bash
 # sudo npm install -g json

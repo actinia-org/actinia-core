@@ -71,6 +71,7 @@ dependencies = [
     "pandas",
     "sentinelsat",
     "tqdm",
+    "valkey",
 ]
 
 [project.optional-dependencies]
@@ -79,6 +80,7 @@ plugins = [
     # "actinia-metadata-plugin @ https://github.com/actinia-org/actinia-metadata-plugin/releases/download/1.0.2/actinia_metadata_plugin.wsgi-1.0.2-py2.py3-none-any.whl",
     # "actinia-satellite-plugin @ https://github.com/actinia-org/actinia_satellite_plugin/releases/download/0.1.0/actinia_satellite_plugin-0.1.0-py2.py3-none-any.whl",
     # "actinia-statistic-plugin @ https://github.com/actinia-org/actinia_statistic_plugin/releases/download/0.2.0/actinia_statistic_plugin-0.2.0-py2.py3-none-any.whl",
+    "valkey-cli",
 ]
 
 [project.scripts]
