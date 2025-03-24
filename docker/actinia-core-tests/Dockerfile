@@ -25,6 +25,7 @@ RUN chown -R 1001:1001 nc_spm_08/modis_lst && chmod -R g+w nc_spm_08/modis_lst
 RUN grass --tmp-location EPSG:4326 --exec g.extension -s extension=r.colors.out_sld
 
 # install things only for tests
+RUN apk update && apk upgrade
 # DL3013 # Pin versions in pip
 # DL3018: Pin versions in apk add
 # hadolint ignore=DL3013,DL3018
