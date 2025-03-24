@@ -29,6 +29,7 @@ FROM build-base as build
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
+RUN apk update && apk upgrade
 # DL3018: Pin versions in apk add
 # hadolint ignore=DL3018
 RUN apk add --no-cache py3-build && python -m build --outdir /build .
