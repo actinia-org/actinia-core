@@ -64,7 +64,7 @@ __email__ = "info@mundialis.de"
 
 def get_param_stdin_part(text):
     """Function to get method and filter from parameter value"""
-    for delimiter in ["::", " ", "+", "-", "*", ":", "(", ")"]:
+    for delimiter in {"::", " ", "+", "-", "*", ":", "(", ")", "/", "\\"}:
         text = text.split(delimiter, 1)[0]
     return text
 
