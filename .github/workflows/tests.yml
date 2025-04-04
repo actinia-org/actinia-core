@@ -19,7 +19,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
     - name: Replace run only unittest command
       run: |
-        sed -i "1s+.*+FROM mundialis/actinia-core:grass83 AS actinia_test+" docker/actinia-core-tests/Dockerfile
+        sed -i "1s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
         sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
     - name: Unittests of actinia
       id: docker_build
@@ -64,7 +64,7 @@ jobs:
       uses: docker/setup-buildx-action@v3
     - name: Replace run integration test command
       run: |
-        sed -i "1s+.*+FROM mundialis/actinia-core:grass83 AS actinia_test+" docker/actinia-core-tests/Dockerfile
+        sed -i "1s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
         sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
     - name: Integration tests of actinia
       id: docker_build
