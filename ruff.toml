@@ -124,6 +124,7 @@ lint.ignore = [
     "PTH122",
     "PTH123",
     "PTH202",
+    "PTH208",
     "RET503",
     "RET504",
     "RET505",
