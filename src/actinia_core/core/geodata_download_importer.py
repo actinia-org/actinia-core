@@ -28,6 +28,7 @@ import os
 import requests
 import zipfile
 import magic
+import mimetypes
 from urllib.request import urlopen
 from urllib.parse import urlsplit
 from actinia_core.core.common.exceptions import AsyncProcessError
@@ -161,11 +162,16 @@ class GeoDataDownloadImportSupport(object):
                     "The URL <%s> can not be accessed." % url
                 )
 
-            # Download 256 bytes from the url and check its mimetype
-            response = urlopen(url)
-            mime_type = magic.from_buffer(
-                response.read(256), mime=True
-            ).lower()
+            # Check mimetype of url:
+            # first use package 'mimetypes' to ensure correct mimetype of zips
+            mime_type = mimetypes.guess_type(url)[0]
+            # if mimetype not supported by 'mimetypes', check with 'magic'
+            if not mime_type:
+                # Download 256 bytes from the url and check its mimetype
+                response = urlopen(url)
+                mime_type = magic.from_buffer(
+                    response.read(256), mime=True
+                ).lower()
             if self.message_logger:
                 self.message_logger.info(mime_type)
 
