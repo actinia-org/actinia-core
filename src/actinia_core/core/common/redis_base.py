@@ -62,7 +62,7 @@ class RedisBaseInterface(object):
             kwargs["password"] = password
         self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = valkey.StrictRedis(
+        self.redis_server = valkey.StrictValkey(
             connection_pool=self.connection_pool
         )
         try:
