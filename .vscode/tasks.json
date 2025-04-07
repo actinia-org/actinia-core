@@ -12,9 +12,9 @@
 			}
 		},
 		{
-			"label": "start-redis",
+			"label": "start-kvdb",
 			"type": "shell",
-			"command": "docker-compose -f docker/docker-compose-dev.yml up -d redis redis-queue",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d kvdb kvdb-queue",
 			"isBackground": true
 		},
 		{
@@ -22,7 +22,7 @@
 			"label": "docker-run: debug",
 			"dependsOn": [
 				"docker-build",
-				"start-redis"
+				"start-kvdb"
 			],
 			"python": {
 				"module": "flask",

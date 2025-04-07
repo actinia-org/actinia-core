@@ -22,10 +22,10 @@
 #######
 
 """
-Redis server user interface
+Kvdb server user interface
 """
 
-from actinia_core.core.common.redis_base import RedisBaseInterface
+from actinia_core.core.common.kvdb_base import KvdbBaseInterface
 import pickle
 
 __license__ = "GPLv3"
@@ -37,8 +37,8 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-class RedisUserInterface(RedisBaseInterface):
-    """The Redis user database interface
+class KvdbUserInterface(KvdbBaseInterface):
+    """The Kvdb user database interface
 
     A single user is stored as Hash with several entries:
         - User id aka user name that must be unique
@@ -56,7 +56,7 @@ class RedisUserInterface(RedisBaseInterface):
     user_id_db = "USER-ID-DATABASE"
 
     def __init__(self):
-        RedisBaseInterface.__init__(self)
+        KvdbBaseInterface.__init__(self)
 
     def get_password_hash(self, user_id):
         """Return the password hash of the user_id
@@ -70,7 +70,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The password hash of the user id
         """
-        return self.redis_server.hget(
+        return self.kvdb_server.hget(
             self.user_id_hash_prefix + user_id, "password_hash"
         ).decode()
 
@@ -86,7 +86,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The api key of the user id
         """
-        return self.redis_server.hget(
+        return self.kvdb_server.hget(
             self.user_id_hash_prefix + user_id, "user_role"
         ).decode()
 
@@ -102,7 +102,7 @@ class RedisUserInterface(RedisBaseInterface):
              str:
              The user group
         """
-        return self.redis_server.hget(
+        return self.kvdb_server.hget(
             self.user_id_hash_prefix + user_id, "user_group"
         ).decode()
 
@@ -119,7 +119,7 @@ class RedisUserInterface(RedisBaseInterface):
             A dictionary that contains the user credentials
         """
         creds = {}
-        user_creds = self.redis_server.hgetall(
+        user_creds = self.kvdb_server.hgetall(
             self.user_id_hash_prefix + user_id
         )
 
@@ -151,16 +151,16 @@ class RedisUserInterface(RedisBaseInterface):
             True is success, False if user is already in the database
         """
         if (
-            self.redis_server.exists(self.user_id_hash_prefix + user_id)
+            self.kvdb_server.exists(self.user_id_hash_prefix + user_id)
             is True
         ):
             return False
         pstring = pickle.dumps(permissions)
 
-        lock = self.redis_server.lock(name="add_user_lock", timeout=1)
+        lock = self.kvdb_server.lock(name="add_user_lock", timeout=1)
         lock.acquire()
         # First add the user-id to the user id database
-        self.redis_server.hset(self.user_id_db, user_id, user_id)
+        self.kvdb_server.hset(self.user_id_db, user_id, user_id)
 
         mapping = {
             "user_id": user_id,
@@ -170,7 +170,7 @@ class RedisUserInterface(RedisBaseInterface):
             "permissions": pstring,
         }
         # Make the database entry
-        self.redis_server.hset(
+        self.kvdb_server.hset(
             self.user_id_hash_prefix + user_id, mapping=mapping
         )
         lock.release()
@@ -209,7 +209,7 @@ class RedisUserInterface(RedisBaseInterface):
 
         """
         if (
-            self.redis_server.exists(self.user_id_hash_prefix + user_id)
+            self.kvdb_server.exists(self.user_id_hash_prefix + user_id)
             is False
         ):
             return False
@@ -230,7 +230,7 @@ class RedisUserInterface(RedisBaseInterface):
 
         pstring = pickle.dumps(permissions)
 
-        lock = self.redis_server.lock(name="update_user_lock", timeout=1)
+        lock = self.kvdb_server.lock(name="update_user_lock", timeout=1)
         lock.acquire()
 
         mapping = {
@@ -241,7 +241,7 @@ class RedisUserInterface(RedisBaseInterface):
             "permissions": pstring,
         }
         # Update the database entry
-        self.redis_server.hset(
+        self.kvdb_server.hset(
             self.user_id_hash_prefix + user_id, mapping=mapping
         )
 
@@ -259,7 +259,7 @@ class RedisUserInterface(RedisBaseInterface):
             bool:
             True is user exists, False otherwise
         """
-        return self.redis_server.exists(self.user_id_hash_prefix + user_id)
+        return self.kvdb_server.exists(self.user_id_hash_prefix + user_id)
 
     def delete(self, user_id):
         """Remove a user id from the database
@@ -277,12 +277,12 @@ class RedisUserInterface(RedisBaseInterface):
         if self.exists(user_id) is False:
             return False
 
-        lock = self.redis_server.lock(name="delete_user_lock", timeout=1)
+        lock = self.kvdb_server.lock(name="delete_user_lock", timeout=1)
         lock.acquire()
         # Delete the entry from the user id database
-        self.redis_server.hdel(self.user_id_db, user_id)
+        self.kvdb_server.hdel(self.user_id_db, user_id)
         # Delete the actual user entry
-        self.redis_server.delete(self.user_id_hash_prefix + user_id)
+        self.kvdb_server.delete(self.user_id_hash_prefix + user_id)
         lock.release()
 
         return True
@@ -298,7 +298,7 @@ class RedisUserInterface(RedisBaseInterface):
             A list of all user ids in the database
         """
         values = []
-        l_entries = self.redis_server.hkeys(self.user_id_db)
+        l_entries = self.kvdb_server.hkeys(self.user_id_db)
         print(l_entries)
         for entry in l_entries:
             if entry:
@@ -308,8 +308,8 @@ class RedisUserInterface(RedisBaseInterface):
         return values
 
 
-# Create the Redis interface instance
-redis_user_interface = RedisUserInterface()
+# Create the Kvdb interface instance
+kvdb_user_interface = KvdbUserInterface()
 
 
 def test_management(r):
@@ -457,13 +457,13 @@ if __name__ == "__main__":
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+        os.P_NOWAIT, "/usr/bin/kvdb-server", "./kvdb.conf", "--port 7000"
     )
 
     time.sleep(1)
 
     try:
-        r = RedisUserInterface()
+        r = KvdbUserInterface()
         r.connect(host="localhost", port=7000)
         test_management(r)
         r.disconnect()

@@ -49,7 +49,7 @@ class ActiniaUserBase(object):
     """
     The Actinia Core user management base class
 
-    This class manages the user base where the users stored in Redis database
+    This class manages the user base where the users stored in Kvdb database
     or keycloak are based on.
     """
 

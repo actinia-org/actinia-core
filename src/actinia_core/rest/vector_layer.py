@@ -37,7 +37,7 @@ from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.core.utils import allowed_file
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.map_layer_base import MapLayerRegionResourceBase

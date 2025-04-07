@@ -42,7 +42,7 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 # Create endpoints
 create_endpoints()
 
-redis_pid = None
+kvdb_pid = None
 server_test = False
 
 # If this environmental variable is set, then a real http request will be send
@@ -68,7 +68,7 @@ additional_external_data = {
 
 
 def setup_environment():
-    global redis_pid
+    global kvdb_pid
 
     # GRASS GIS
     # Setup the test environment
@@ -80,26 +80,26 @@ def setup_environment():
     # TODO: never secretly overwrite config parameters
     custom_actinia_cfg = True
     if server_test is False and custom_actinia_cfg is False:
-        # Start the redis server for user and logging management
-        redis_pid = os.spawnl(
+        # Start the kvdb server for user and logging management
+        kvdb_pid = os.spawnl(
             os.P_NOWAIT,
-            "/usr/bin/redis-server",
-            "common/redis.conf",
-            "--port %i" % global_config.REDIS_SERVER_PORT,
+            "/usr/bin/kvdb-server",
+            "common/kvdb.conf",
+            "--port %i" % global_config.KVDB_SERVER_PORT,
         )
         time.sleep(1)
 
 
-def stop_redis():
+def stop_kvdb():
     if server_test is False:
-        global redis_pid
-        # Kill th redis server
-        if redis_pid is not None:
-            os.kill(redis_pid, signal.SIGTERM)
+        global kvdb_pid
+        # Kill th kvdb server
+        if kvdb_pid is not None:
+            os.kill(kvdb_pid, signal.SIGTERM)
 
 
-# Register the redis stop function
-atexit.register(stop_redis)
+# Register the kvdb stop function
+atexit.register(stop_kvdb)
 # Setup the environment
 setup_environment()
 

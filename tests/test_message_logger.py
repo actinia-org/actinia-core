@@ -40,7 +40,7 @@ __email__ = "soerengebbert@googlemail.com"
 class MessageLoggerTestCase(unittest.TestCase):
     """
     This class tests the user interface, the creation and deletion
-    of a user entry in a Redis database
+    of a user entry in a Kvdb database
     """
 
     def test_change_loglevel(self):

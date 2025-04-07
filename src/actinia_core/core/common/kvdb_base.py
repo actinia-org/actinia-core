@@ -22,7 +22,7 @@
 #######
 
 """
-Redis base class
+Kvdb base class
 """
 
 import valkey
@@ -37,17 +37,17 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class RedisBaseInterface(object):
+class KvdbBaseInterface(object):
     """
-    The base class for most redis database interfaces
+    The base class for most kvdb database interfaces
     """
 
     def __init__(self):
         self.connection_pool = None
-        self.redis_server = None
+        self.kvdb_server = None
 
     def connect(self, host="localhost", port=6379, password=None):
-        """Connect to a specific redis server
+        """Connect to a specific kvdb server
 
         Args:
             host (str): The host name or IP address
@@ -62,11 +62,11 @@ class RedisBaseInterface(object):
             kwargs["password"] = password
         self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = valkey.StrictRedis(
+        self.kvdb_server = valkey.StrictKvdb(
             connection_pool=self.connection_pool
         )
         try:
-            self.redis_server.ping()
+            self.kvdb_server.ping()
         except valkey.exceptions.ResponseError as e:
             log.error("Could not connect to " + host, port, str(e))
         except valkey.exceptions.AuthenticationError:

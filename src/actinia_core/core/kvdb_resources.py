@@ -22,10 +22,10 @@
 #######
 
 """
-Redis server resource logging interface
+Kvdb server resource logging interface
 """
 
-from actinia_core.core.common.redis_base import RedisBaseInterface
+from actinia_core.core.common.kvdb_base import KvdbBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -36,9 +36,9 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class RedisResourceInterface(RedisBaseInterface):
+class KvdbResourceInterface(KvdbBaseInterface):
     """
-    The Redis resource database interface
+    The Kvdb resource database interface
     """
 
     # The database to store the long pending resource status and results
@@ -119,7 +119,7 @@ class RedisResourceInterface(RedisBaseInterface):
         (RAM, HD) will be freed.
 
         """
-        RedisBaseInterface.__init__(self)
+        KvdbBaseInterface.__init__(self)
 
     def set(self, resource_id, resource_entry, expiration=864000):
         """Set or update a resource entry
@@ -131,7 +131,7 @@ class RedisResourceInterface(RedisBaseInterface):
                               expire
 
         """
-        return self.redis_server.setex(
+        return self.kvdb_server.setex(
             self.resource_id_prefix + resource_id, expiration, resource_entry
         )
 
@@ -148,7 +148,7 @@ class RedisResourceInterface(RedisBaseInterface):
                               expire
 
         """
-        return self.redis_server.setex(
+        return self.kvdb_server.setex(
             self.resource_id_termination_prefix + resource_id, expiration, 1
         )
 
@@ -162,7 +162,7 @@ class RedisResourceInterface(RedisBaseInterface):
             str:
             The resource entry or None
         """
-        value = self.redis_server.get(self.resource_id_prefix + resource_id)
+        value = self.kvdb_server.get(self.resource_id_prefix + resource_id)
         return value
 
     def get_keys_from_pattern(self, resource_id_pattern):
@@ -175,7 +175,7 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             The list of the matching kesy
         """
-        values = self.redis_server.scan_iter(
+        values = self.kvdb_server.scan_iter(
             self.resource_id_prefix + resource_id_pattern
         )
         resource_keys = list()
@@ -195,11 +195,11 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             A list of resource entries
         """
-        key_list = self.redis_server.keys(self.resource_id_prefix + regexpr)
+        key_list = self.kvdb_server.keys(self.resource_id_prefix + regexpr)
         resource_list = []
         if key_list:
             for key in key_list:
-                value = self.redis_server.get(key.decode())
+                value = self.kvdb_server.get(key.decode())
                 resource_list.append(value)
         return resource_list
 
@@ -217,7 +217,7 @@ class RedisResourceInterface(RedisBaseInterface):
             True or False
         """
         return bool(
-            self.redis_server.get(
+            self.kvdb_server.get(
                 self.resource_id_termination_prefix + resource_id
             )
         )
@@ -232,7 +232,7 @@ class RedisResourceInterface(RedisBaseInterface):
             list:
             A list of resource entries
         """
-        term_key_list = self.redis_server.keys(
+        term_key_list = self.kvdb_server.keys(
             self.resource_id_termination_prefix + regexpr
         )
 
@@ -250,7 +250,7 @@ class RedisResourceInterface(RedisBaseInterface):
             resource_id (str): The unique id of the resource
 
         """
-        return self.redis_server.delete(self.resource_id_prefix + resource_id)
+        return self.kvdb_server.delete(self.resource_id_prefix + resource_id)
 
     def delete_termination(self, resource_id):
         """Delete a termination resource entry
@@ -259,13 +259,13 @@ class RedisResourceInterface(RedisBaseInterface):
             resource_id (str): The unique id of the resource
 
         """
-        return self.redis_server.delete(
+        return self.kvdb_server.delete(
             self.resource_id_termination_prefix + resource_id
         )
 
 
-# Create the Redis interface instance
-# redis_resource_interface = RedisResourceInterface()
+# Create the Kvdb interface instance
+# kvdb_resource_interface = KvdbResourceInterface()
 
 
 def test_resource_entries(r):
@@ -356,13 +356,13 @@ if __name__ == "__main__":
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+        os.P_NOWAIT, "/usr/bin/kvdb-server", "./kvdb.conf", "--port 7000"
     )
 
     time.sleep(1)
 
     try:
-        r = RedisResourceInterface()
+        r = KvdbResourceInterface()
         r.connect(host="localhost", port=7000)
         test_resource_entries(r)
         r.disconnect()
