@@ -118,7 +118,7 @@ def main():
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
     with Connection(
-        Kvdb(
+        Redis(
             conf.KVDB_QUEUE_SERVER_URL,
             conf.KVDB_QUEUE_SERVER_PORT,
             password=conf.KVDB_QUEUE_SERVER_PASSWORD,

@@ -87,7 +87,7 @@ def __create_job_queue(queue_name):
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        kvdb_conn = Kvdb(**kwargs)
+        kvdb_conn = Redis(**kwargs)
 
         string = "Create queue %s with server %s:%s" % (queue_name, host, port)
         log.info(string)
