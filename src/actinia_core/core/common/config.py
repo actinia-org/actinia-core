@@ -935,7 +935,6 @@ class Configuration(object):
                         "QUEUE", "REDIS_QUEUE_JOB_TTL"
                     )
 
-
             if config.has_section("MISC"):
                 if config.has_option("MISC", "DOWNLOAD_CACHE"):
                     self.DOWNLOAD_CACHE = config.get("MISC", "DOWNLOAD_CACHE")
