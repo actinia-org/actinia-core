@@ -934,7 +934,7 @@ class Configuration(object):
                     self.KVDB_QUEUE_JOB_TTL = config.get(
                         "QUEUE", "REDIS_QUEUE_JOB_TTL"
                     )
-                
+
 
             if config.has_section("MISC"):
                 if config.has_option("MISC", "DOWNLOAD_CACHE"):
@@ -1098,7 +1098,7 @@ class Configuration(object):
             self.KVDB_QUEUE_SERVER_PASSWORD = os.environ[
                 "KVDB_QUEUE_SERVER_PW"
             ]
-        
+
         # REDIS - deprecated in future
         if os.environ.get("REDIS_SERVER_URL") and not os.environ.get("KVDB_SERVER_URL"):
             print_warning("REDIS", "REDIS_SERVER_URL")
