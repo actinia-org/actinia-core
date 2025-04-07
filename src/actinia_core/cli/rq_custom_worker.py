@@ -26,7 +26,7 @@
 Redis Queue server custom worker
 """
 from rq import Connection, Worker
-from redis import Redis
+from valkey import Valkey
 
 # We need to append the path to the actinia_core package, since
 # flask API does not send the correct module and package paths
@@ -118,7 +118,7 @@ def main():
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
     with Connection(
-        Redis(
+        Valkey(
             conf.REDIS_QUEUE_SERVER_URL,
             conf.REDIS_QUEUE_SERVER_PORT,
             password=conf.REDIS_QUEUE_SERVER_PASSWORD,
