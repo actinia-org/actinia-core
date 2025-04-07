@@ -53,6 +53,7 @@ SUPPORTED_MIMETYPES = [
     "application/xml",
     "text/plain",
     "text/x-python",
+    "application/json",
 ]
 # Suffixes supported in zip files
 SUPPORTED_SUFFIXES = [
