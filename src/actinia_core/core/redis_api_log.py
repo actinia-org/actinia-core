@@ -196,7 +196,7 @@ if __name__ == "__main__":
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+        os.P_NOWAIT, "/usr/bin/valkey-server", "./valkey.conf", "--port 7000"
     )
 
     time.sleep(1)

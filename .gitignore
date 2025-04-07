@@ -44,8 +44,8 @@ MANIFEST
 # docker
 dev
 docker/actinia-core-data
-docker/redis_data/dump.rdb
-docker/redis_queue_data/dump.rdb
+docker/valkey_data/dump.rdb
+docker/valkey_queue_data/dump.rdb
 
 # do not ignore docker config files
 !docker/actinia-core-alpine/actinia.cfg
