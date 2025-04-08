@@ -48,9 +48,9 @@ class RedisLockingInterface(object):
     # Return 1 for success and 0 for unable to acquire lock because
     # resource-lock already exists
     lua_lock_resource = """
-    local value_exists = valkey.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
-      valkey.call("SETEX", KEYS[1], KEYS[2], 1)
+      server.call("SETEX", KEYS[1], KEYS[2], 1)
       return 1
     end
     return 0
@@ -62,11 +62,11 @@ class RedisLockingInterface(object):
     # extend_resource_lock("user/project/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
-    local value_exists = valkey.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      valkey.call("EXPIRE", KEYS[1], KEYS[2])
+      server.call("EXPIRE", KEYS[1], KEYS[2])
       return 1
     end
     """
@@ -74,11 +74,11 @@ class RedisLockingInterface(object):
     # LUA script to unlock a resource
     # Return 1 for success, 0 for resource does not exists
     lua_unlock_resource = """
-    local value_exists = valkey.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      valkey.call("DEL", KEYS[1])
+      server.call("DEL", KEYS[1])
       return 1
     end
     """
