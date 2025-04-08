@@ -29,7 +29,7 @@ User management for no authentication
 # import jwt
 # from datetime import datetime, timezone, timedelta
 from actinia_core.core.common.config import global_config
-from actinia_core.core.redis_user import redis_user_interface
+from actinia_core.core.kvdb_user import kvdb_user_interface
 from actinia_core.core.common.user import ActiniaUser
 
 
@@ -43,7 +43,7 @@ class ActiniaUserNoAuth(ActiniaUser):
     The Actinia Core user management class for no authentication
     """
 
-    db = redis_user_interface
+    db = kvdb_user_interface
 
     def __init__(self):
         """Constructor

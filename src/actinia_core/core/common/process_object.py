@@ -22,7 +22,7 @@
 #######
 
 """
-Redis server interface for API logging
+Kvdb server interface for API logging
 """
 
 __license__ = "GPLv3"

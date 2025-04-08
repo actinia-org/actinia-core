@@ -44,8 +44,8 @@ from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
-from actinia_core.core.redis_lock import RedisLockingInterface
-from actinia_core.core.redis_user import RedisUserInterface
+from actinia_core.core.kvdb_lock import KvdbLockingInterface
+from actinia_core.core.kvdb_user import KvdbUserInterface
 from actinia_core.models.response_models import (
     SimpleResponseModel,
     MapsetListResponseModel,
@@ -84,20 +84,20 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                         ),
                         401,
                     )
-                redis_interface = RedisLockingInterface()
+                kvdb_interface = KvdbLockingInterface()
                 kwargs = dict()
-                kwargs["host"] = global_config.REDIS_SERVER_URL
-                kwargs["port"] = global_config.REDIS_SERVER_PORT
+                kwargs["host"] = global_config.KVDB_SERVER_URL
+                kwargs["port"] = global_config.KVDB_SERVER_PORT
                 if (
-                    global_config.REDIS_SERVER_PW
-                    and global_config.REDIS_SERVER_PW is not None
+                    global_config.KVDB_SERVER_PW
+                    and global_config.KVDB_SERVER_PW is not None
                 ):
-                    kwargs["password"] = global_config.REDIS_SERVER_PW
+                    kwargs["password"] = global_config.KVDB_SERVER_PW
 
-                redis_interface.connect(**kwargs)
-                redis_connection = redis_interface.redis_server
-                keys_locked = redis_connection.keys("RESOURCE-LOCK*")
-                redis_interface.disconnect()
+                kvdb_interface.connect(**kwargs)
+                kvdb_connection = kvdb_interface.kvdb_server
+                keys_locked = kvdb_connection.keys("RESOURCE-LOCK*")
+                kvdb_interface.disconnect()
                 keys_locked_dec = [key.decode() for key in keys_locked]
                 mapsets_locked = [
                     "/".join(key.split("/")[-2:]) for key in keys_locked_dec
@@ -127,20 +127,20 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                         500,
                     )
         else:
-            redis_interface = RedisUserInterface()
+            kvdb_interface = KvdbUserInterface()
             kwargs = dict()
-            kwargs["host"] = global_config.REDIS_SERVER_URL
-            kwargs["port"] = global_config.REDIS_SERVER_PORT
+            kwargs["host"] = global_config.KVDB_SERVER_URL
+            kwargs["port"] = global_config.KVDB_SERVER_PORT
             if (
-                global_config.REDIS_SERVER_PW
-                and global_config.REDIS_SERVER_PW is not None
+                global_config.KVDB_SERVER_PW
+                and global_config.KVDB_SERVER_PW is not None
             ):
-                kwargs["password"] = global_config.REDIS_SERVER_PW
-            redis_interface.connect(**kwargs)
+                kwargs["password"] = global_config.KVDB_SERVER_PW
+            kvdb_interface.connect(**kwargs)
             if "user" in request.args:
                 user = request.args["user"]
                 if self.user.has_superadmin_role() is False:
-                    redis_interface.disconnect()
+                    kvdb_interface.disconnect()
                     return make_response(
                         jsonify(
                             SimpleResponseModel(
@@ -156,10 +156,10 @@ class AllMapsetsListingResourceAdmin(ResourceBase):
                     )
             else:
                 user = self.user.get_id()
-            projects_mapsets = redis_interface.get_credentials(user)[
+            projects_mapsets = kvdb_interface.get_credentials(user)[
                 "permissions"
             ]["accessible_datasets"]
-            redis_interface.disconnect()
+            kvdb_interface.disconnect()
             mapsets = []
             for project in projects_mapsets:
                 for mapset in projects_mapsets[project]:

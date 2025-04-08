@@ -38,7 +38,7 @@ __email__ = "soerengebbert@googlemail.com"
 class ConfigurationTestCase(unittest.TestCase):
     """
     This class tests the user interface, the creation and deletion
-    of a user entry in a Redis database
+    of a user entry in a Kvdb database
     """
 
     file_name = "/tmp/actinia_test.cfg"

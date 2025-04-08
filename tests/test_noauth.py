@@ -31,7 +31,7 @@ import pytest
 import unittest
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config
-from actinia_core.core.common import redis_interface
+from actinia_core.core.common import kvdb_interface
 from actinia_core.core.common.process_queue import create_process_queue
 from actinia_core.testsuite import ActiniaRequests
 
@@ -103,18 +103,18 @@ class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
 
     @classmethod
     def setUpClass(cls):
-        # Start the redis interface
-        redis_args = (
-            global_config.REDIS_SERVER_URL,
-            global_config.REDIS_SERVER_PORT,
+        # Start the kvdb interface
+        kvdb_args = (
+            global_config.KVDB_SERVER_URL,
+            global_config.KVDB_SERVER_PORT,
         )
         if (
-            global_config.REDIS_SERVER_PW
-            and global_config.REDIS_SERVER_PW is not None
+            global_config.KVDB_SERVER_PW
+            and global_config.KVDB_SERVER_PW is not None
         ):
-            redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+            kvdb_args = (*kvdb_args, global_config.KVDB_SERVER_PW)
 
-        redis_interface.connect(*redis_args)
+        kvdb_interface.connect(*kvdb_args)
 
         # Process queue
         create_process_queue(config=global_config)
@@ -122,7 +122,7 @@ class ActiniaWithoutAuthentication(ActiniaResourceTestCaseBase):
     @classmethod
     def tearDownClass(cls):
         if cls.server_test is False:
-            redis_interface.disconnect()
+            kvdb_interface.disconnect()
 
     def setUp(self):
         # We need to set the application context

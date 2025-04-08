@@ -41,7 +41,7 @@ def try_import(actinia_module, actinia_class):
     """Tries to import module, if module not found, throw exception
     if local queue is used.
     This is used to import processing classes. When job receiver
-    cannot import it and redis queue is used, this is not a problem.
+    cannot import it and kvdb queue is used, this is not a problem.
     When job receiver cannot import it and local queue is used, processing
     wouldn't work and the exception is thrown.
     Job executor needs to have it installed either way.

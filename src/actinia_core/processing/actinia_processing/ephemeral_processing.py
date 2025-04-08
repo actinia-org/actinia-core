@@ -44,7 +44,7 @@ from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.process_object import Process
 from actinia_core.core.grass_init import GrassInitializer
 from actinia_core.core.messages_logger import MessageLogger
-from actinia_core.core.redis_lock import RedisLockingInterface
+from actinia_core.core.kvdb_lock import KvdbLockingInterface
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.mapset_merge_utils import change_mapsetname
 from actinia_core.core.common.process_chain import (
@@ -461,7 +461,7 @@ class EphemeralProcessing(object):
             resource_id=self.resource_id,
             iteration=self.iteration,
             document=document,
-            expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME,
+            expiration=self.config.KVDB_RESOURCE_EXPIRE_TIME,
         )
 
         # Call the webhook after the final result was send to the database
@@ -713,7 +713,7 @@ class EphemeralProcessing(object):
         What is done:
 
         - Create the resource and message logger
-        - Create the redis lock interface for resource locking
+        - Create the kvdb lock interface for resource locking
         - Set cell limit, process number limit and process time limit from user
           credentials.
         - Create all required paths to original and temporary project and
@@ -752,13 +752,13 @@ class EphemeralProcessing(object):
                 port=self.config.LOG_FLUENT_PORT,
             )
         kwargs = dict()
-        kwargs["host"] = self.config.REDIS_SERVER_URL
-        kwargs["port"] = self.config.REDIS_SERVER_PORT
+        kwargs["host"] = self.config.KVDB_SERVER_URL
+        kwargs["port"] = self.config.KVDB_SERVER_PORT
         if (
-            self.config.REDIS_SERVER_PW
-            and self.config.REDIS_SERVER_PW is not None
+            self.config.KVDB_SERVER_PW
+            and self.config.KVDB_SERVER_PW is not None
         ):
-            kwargs["password"] = self.config.REDIS_SERVER_PW
+            kwargs["password"] = self.config.KVDB_SERVER_PW
         self.resource_logger = ResourceLogger(
             **kwargs, fluent_sender=fluent_sender
         )
@@ -769,7 +769,7 @@ class EphemeralProcessing(object):
             fluent_sender=fluent_sender,
         )
 
-        self.lock_interface = RedisLockingInterface()
+        self.lock_interface = KvdbLockingInterface()
         self.lock_interface.connect(**kwargs)
         del kwargs
         self.process_time_limit = int(

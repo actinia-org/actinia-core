@@ -47,7 +47,7 @@ from actinia_core.rest.base.user_auth import check_user_role
 from actinia_core.rest.base.user_auth import check_user_permissions
 from actinia_core.models.response_models import SimpleResponseModel
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.core.utils import ensure_valid_path
 from actinia_core.processing.common.project_management import (
     read_current_region,

@@ -22,7 +22,7 @@
 #######
 
 """
-App configuration of flask, flask_restful, redis server connection
+App configuration of flask, flask_restful, kvdb server connection
 and global settings
 """
 from flask_httpauth import HTTPBasicAuth

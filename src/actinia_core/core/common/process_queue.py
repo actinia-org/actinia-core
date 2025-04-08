@@ -301,7 +301,7 @@ class EnqueuedProcess(object):
                 resource_id=self.resource_id,
                 iteration=self.iteration,
                 document=document,
-                expiration=self.config.REDIS_RESOURCE_EXPIRE_TIME,
+                expiration=self.config.KVDB_RESOURCE_EXPIRE_TIME,
             )
 
 
@@ -373,10 +373,10 @@ def start_process_queue_manager(config, queue, use_logger):
         pass
     # We need the resource logger to send updates to the resource database
     kwargs = dict()
-    kwargs["host"] = config.REDIS_SERVER_URL
-    kwargs["port"] = config.REDIS_SERVER_PORT
-    if config.REDIS_SERVER_PW and config.REDIS_SERVER_PW is not None:
-        kwargs["password"] = config.REDIS_SERVER_PW
+    kwargs["host"] = config.KVDB_SERVER_URL
+    kwargs["port"] = config.KVDB_SERVER_PORT
+    if config.KVDB_SERVER_PW and config.KVDB_SERVER_PW is not None:
+        kwargs["password"] = config.KVDB_SERVER_PW
     # Seems to log only on rare occasions: when a job waits too long in the
     # queue and terminates itself.
     resource_logger = ResourceLogger(**kwargs, fluent_sender=fluent_sender)

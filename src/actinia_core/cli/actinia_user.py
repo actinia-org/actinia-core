@@ -24,12 +24,12 @@
 
 """
 Purpose: Command line program to manage actinia user
-         entries in the Redis database
+         entries in the Kvdb database
 """
 
 from actinia_core.core.common.config import Configuration
 from actinia_core.core.common.user import ActiniaUser
-from actinia_core.core.redis_user import redis_user_interface
+from actinia_core.core.kvdb_user import kvdb_user_interface
 import argparse
 import pprint
 import sys
@@ -135,7 +135,7 @@ def set_user_credentials(user, args, method):
 def main():
     """User management"""
     parser = argparse.ArgumentParser(
-        description="Manage actinia users in the Redis database.",
+        description="Manage actinia users in the Kvdb database.",
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
@@ -172,7 +172,7 @@ def main():
         "--server",
         type=str,
         required=False,
-        help="The host name of the redis server,"
+        help="The host name of the kvdb server,"
         " default is the value from the actinia config file",
     )
     parser.add_argument(
@@ -180,15 +180,15 @@ def main():
         "--port",
         type=int,
         required=False,
-        help="The port of the redis server,"
+        help="The port of the kvdb server,"
         " default is the value from the actinia config file",
     )
     parser.add_argument(
         "-a",
-        "--redis_password",
+        "--kvdb_password",
         type=str,
         required=False,
-        help="The password of the redis server,"
+        help="The password of the kvdb server,"
         " default is the value from the actinia config file or None",
     )
     parser.add_argument(
@@ -267,23 +267,23 @@ def main():
     except Exception:
         pass
 
-    server = conf.REDIS_SERVER_URL
-    port = conf.REDIS_SERVER_PORT
-    if conf.REDIS_SERVER_PW:
-        redis_password = conf.REDIS_SERVER_PW
+    server = conf.KVDB_SERVER_URL
+    port = conf.KVDB_SERVER_PORT
+    if conf.KVDB_SERVER_PW:
+        kvdb_password = conf.KVDB_SERVER_PW
     else:
-        redis_password = None
+        kvdb_password = None
 
     if args.server:
         server = args.server
     if args.port:
         port = args.port
-    if args.redis_password:
-        redis_password = args.redis_password
-    redis_user_interface.connect(
+    if args.kvdb_password:
+        kvdb_password = args.kvdb_password
+    kvdb_user_interface.connect(
         host=server,
         port=port,
-        password=redis_password,
+        password=kvdb_password,
     )
 
     # CREATE ############################

@@ -47,9 +47,9 @@ from actinia_core.core.common.app import API_VERSION
 from actinia_core.version import G_VERSION
 
 try:
-    from actinia_stac_plugin.core.common import connectRedis
-    from actinia_stac_plugin.core.stac_redis_interface import (
-        redis_actinia_interface,
+    from actinia_stac_plugin.core.common import connectKvdb
+    from actinia_stac_plugin.core.stac_kvdb_interface import (
+        kvdb_actinia_interface,
     )
     from pystac.extensions.projection import (
         ItemProjectionExtension as ProjectionItemExt,
@@ -116,20 +116,20 @@ class STACExporter:
             # Adding the Processing Extension
             item = self._set_processing_extention(item)
 
-            # Read catalog from REDIS
-            catalog_dict = redis_actinia_interface.read("result-catalog")
+            # Read catalog from KVDB
+            catalog_dict = kvdb_actinia_interface.read("result-catalog")
 
             # Create Catalog Object
             catalog = read_dict(catalog_dict)
 
-            redis_items = self._save_items_redis(item, item_name)
+            kvdb_items = self._save_items_kvdb(item, item_name)
 
-            if redis_items:
+            if kvdb_items:
                 # Add item to Catalog
                 catalog.add_item(item)
 
-                # Update redis catalog
-                self._update_catalog_redis(catalog)
+                # Update kvdb catalog
+                self._update_catalog_kvdb(catalog)
 
                 return item.to_dict()
 
@@ -156,9 +156,9 @@ class STACExporter:
 
         Code uses pystac as base for the creation of stac catalogs
         """
-        connectRedis()
+        connectKvdb()
 
-        result_catalog_validation = redis_actinia_interface.exists(
+        result_catalog_validation = kvdb_actinia_interface.exists(
             "result-catalog"
         )
 
@@ -166,7 +166,7 @@ class STACExporter:
             results = Catalog(id="result-catalog", description="STAC catalog")
             results.normalize_and_save("/stac/catalogs")
 
-            redis_actinia_interface.create(
+            kvdb_actinia_interface.create(
                 "result-catalog",
                 results.to_dict(),
             )
@@ -175,17 +175,17 @@ class STACExporter:
             return "result-catalog is already created"
 
     @staticmethod
-    def _save_items_redis(item, item_name):
+    def _save_items_kvdb(item, item_name):
         try:
-            connectRedis()
+            connectKvdb()
 
-            exist = redis_actinia_interface.exists(item_name)
+            exist = kvdb_actinia_interface.exists(item_name)
 
             if exist:
-                redis_actinia_interface.update(item_name, item.to_dict())
+                kvdb_actinia_interface.update(item_name, item.to_dict())
                 return False
 
-            redis_actinia_interface.create(
+            kvdb_actinia_interface.create(
                 item_name,
                 item.to_dict(),
             )
@@ -251,9 +251,9 @@ class STACExporter:
         return geom, bbox_raster
 
     @staticmethod
-    def _update_catalog_redis(catalog):
+    def _update_catalog_kvdb(catalog):
         new_catalog = catalog.to_dict()
-        redis_actinia_interface.update("result-catalog", new_catalog)
+        kvdb_actinia_interface.update("result-catalog", new_catalog)
 
     @staticmethod
     def _set_processing_extention(item):

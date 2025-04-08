@@ -106,7 +106,7 @@ class PersistentProcessing(EphemeralProcessing):
         self.temp_mapset_lock_set = False
 
     def _generate_mapset_lock_id(self, user_group, project_name, mapset_name):
-        """Generate a unique id to lock a mapset in the redis database
+        """Generate a unique id to lock a mapset in the kvdb database
 
         Projects are user group specific. Hence different user groups may have
         projects with the same names and with equal mapset names.

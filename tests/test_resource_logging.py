@@ -60,14 +60,14 @@ class ResourceLoggingTestCase(ActiniaResourceTestCaseBase):
             [200, {"Status": "running", "URL": "/bla/bla"}]
         )
 
-        redis_args = (
-            global_config.REDIS_SERVER_URL,
-            global_config.REDIS_SERVER_PORT,
+        kvdb_args = (
+            global_config.KVDB_SERVER_URL,
+            global_config.KVDB_SERVER_PORT,
         )
-        if global_config.REDIS_SERVER_PW is not None:
-            redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
-        self.log = ResourceLogger(*redis_args)
-        del redis_args
+        if global_config.KVDB_SERVER_PW is not None:
+            kvdb_args = (*kvdb_args, global_config.KVDB_SERVER_PW)
+        self.log = ResourceLogger(*kvdb_args)
+        del kvdb_args
 
     def tearDown(self):
         self.app_context.pop()

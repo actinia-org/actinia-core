@@ -45,7 +45,7 @@ from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.common.user import ActiniaUser
@@ -75,13 +75,13 @@ class ResourceManagerBase(Resource):
         Resource.__init__(self)
 
         kwargs = dict()
-        kwargs["host"] = global_config.REDIS_SERVER_URL
-        kwargs["port"] = global_config.REDIS_SERVER_PORT
+        kwargs["host"] = global_config.KVDB_SERVER_URL
+        kwargs["port"] = global_config.KVDB_SERVER_PORT
         if (
-            global_config.REDIS_SERVER_PW
-            and global_config.REDIS_SERVER_PW is not None
+            global_config.KVDB_SERVER_PW
+            and global_config.KVDB_SERVER_PW is not None
         ):
-            kwargs["password"] = global_config.REDIS_SERVER_PW
+            kwargs["password"] = global_config.KVDB_SERVER_PW
         self.resource_logger = ResourceLogger(**kwargs)
         del kwargs
 
@@ -291,13 +291,13 @@ class ResourceManager(ResourceManagerBase):
                     "The process no longer seems to be "
                     "running and has therefore been set to error."
                 )
-                redis_return = self.resource_logger.commit(
+                kvdb_return = self.resource_logger.commit(
                     user_id,
                     resource_id,
                     iteration,
                     pickle.dumps([200, response_model2]),
                 )
-                if redis_return is True:
+                if kvdb_return is True:
                     pass
                 else:
                     error_msg = (

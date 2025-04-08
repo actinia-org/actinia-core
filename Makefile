@@ -10,19 +10,19 @@ install:
 	pip3 install .
 
 test:
-	sh ./tests_with_redis.sh
+	sh ./tests_with_kvdb.sh
 
 unittest:
 	pytest -m unittest
 
 devtest:
-	sh ./tests_with_redis.sh dev
+	sh ./tests_with_kvdb.sh dev
 
 noauthtest:
-	sh ./tests_with_redis.sh noauth
+	sh ./tests_with_kvdb.sh noauth
 
 integrationtest:
-	sh ./tests_with_redis.sh integrationtest
+	sh ./tests_with_kvdb.sh integrationtest
 
 workertest:
-	sh ./tests_with_redis.sh worker
+	sh ./tests_with_kvdb.sh worker

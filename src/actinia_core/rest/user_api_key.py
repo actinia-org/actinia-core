@@ -25,7 +25,7 @@
 The user specific resources
 
 This module specifies all endpoints to manage user accounts
-in the redis database via REST API calls.
+in the kvdb database via REST API calls.
 
 TODO: Implement POST full permission creation
       Implement PUT to modify existing users

@@ -24,7 +24,7 @@
 
 
 """
-Redis Queue starter
+Kvdb Queue starter
 """
 import os
 import signal
@@ -60,7 +60,7 @@ def create_workers(config_file):
             "defaults instead, IOError: %s" % str(e)
         )
 
-    # Redis work queue
+    # Kvdb work queue
     global worker_pids
 
     for i in range(conf.NUMBER_OF_WORKERS):

@@ -41,8 +41,8 @@ __copyright__ = (
 )
 
 
-class RedisFluentLoggerBase(object):
-    """Base class for all logger that use Redis and fluentd for logging"""
+class KvdbFluentLoggerBase(object):
+    """Base class for all logger that use Kvdb and fluentd for logging"""
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
         if config is None:
