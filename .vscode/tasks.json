@@ -12,9 +12,9 @@
 			}
 		},
 		{
-			"label": "start-kvdb",
+			"label": "start-valkey",
 			"type": "shell",
-			"command": "docker-compose -f docker/docker-compose-dev.yml up -d kvdb kvdb-queue",
+			"command": "docker-compose -f docker/docker-compose-dev.yml up -d valkey valkey-queue",
 			"isBackground": true
 		},
 		{
@@ -22,7 +22,7 @@
 			"label": "docker-run: debug",
 			"dependsOn": [
 				"docker-build",
-				"start-kvdb"
+				"start-valkey"
 			],
 			"python": {
 				"module": "flask",
