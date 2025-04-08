@@ -25,7 +25,7 @@
 Kvdb connection interface
 """
 import rq
-from redis import Redis
+from valkey import Valkey
 from actinia_core.core.kvdb_user import kvdb_user_interface
 from actinia_core.core.kvdb_api_log import kvdb_api_log_interface
 from actinia_core.core.logging_interface import log
@@ -87,7 +87,7 @@ def __create_job_queue(queue_name):
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        kvdb_conn = Redis(**kwargs)
+        kvdb_conn = Valkey(**kwargs)
 
         string = "Create queue %s with server %s:%s" % (queue_name, host, port)
         log.info(string)

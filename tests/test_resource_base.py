@@ -83,8 +83,8 @@ def setup_environment():
         # Start the kvdb server for user and logging management
         kvdb_pid = os.spawnl(
             os.P_NOWAIT,
-            "/usr/bin/redis-server",
-            "common/redis.conf",
+            "/usr/bin/valkey-server",
+            "common/valkey.conf",
             "--port %i" % global_config.KVDB_SERVER_PORT,
         )
         time.sleep(1)

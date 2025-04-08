@@ -25,7 +25,7 @@
 Kvdb server lock interface
 """
 
-import redis
+import valkey
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
@@ -48,9 +48,9 @@ class KvdbLockingInterface(object):
     # Return 1 for success and 0 for unable to acquire lock because
     # resource-lock already exists
     lua_lock_resource = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = valkey.call('EXISTS', KEYS[1])
     if value_exists == 0 then
-      redis.call("SETEX", KEYS[1], KEYS[2], 1)
+      valkey.call("SETEX", KEYS[1], KEYS[2], 1)
       return 1
     end
     return 0
@@ -62,11 +62,11 @@ class KvdbLockingInterface(object):
     # extend_resource_lock("user/project/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = valkey.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      redis.call("EXPIRE", KEYS[1], KEYS[2])
+      valkey.call("EXPIRE", KEYS[1], KEYS[2])
       return 1
     end
     """
@@ -74,11 +74,11 @@ class KvdbLockingInterface(object):
     # LUA script to unlock a resource
     # Return 1 for success, 0 for resource does not exists
     lua_unlock_resource = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = valkey.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      redis.call("DEL", KEYS[1])
+      valkey.call("DEL", KEYS[1])
       return 1
     end
     """
@@ -108,9 +108,9 @@ class KvdbLockingInterface(object):
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        self.connection_pool = redis.ConnectionPool(**kwargs)
+        self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.kvdb_server = redis.StrictRedis(
+        self.kvdb_server = valkey.StrictRedis(
             connection_pool=self.connection_pool
         )
 
@@ -274,7 +274,7 @@ if __name__ == "__main__":
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+        os.P_NOWAIT, "/usr/bin/valkey-server", "./valkey.conf", "--port 7000"
     )
 
     time.sleep(1)

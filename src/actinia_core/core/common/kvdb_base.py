@@ -62,7 +62,7 @@ class KvdbBaseInterface(object):
             kwargs["password"] = password
         self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.kvdb_server = valkey.StrictKvdb(
+        self.kvdb_server = valkey.StrictValkey(
             connection_pool=self.connection_pool
         )
         try:
