@@ -110,7 +110,7 @@ python3 setup.py install
 sh /src/start.sh
 ```
 
-Now you have a running actinia instance locally! Check with
+Now you have a running actinia instance locally! Check with:
 
 ```bash
 curl http://127.0.0.1:8088/api/v3/version
