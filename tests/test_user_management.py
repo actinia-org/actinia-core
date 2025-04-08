@@ -45,7 +45,7 @@ __email__ = "info@mundialis.de"
 class UserTestCase(ActiniaResourceTestCaseBase):
     """
     This class tests the user interface, the creation and deletion
-    of a user entry in a Redis database
+    of a user entry in a Kvdb database
     """
 
     def setUp(self):
@@ -142,7 +142,7 @@ class UserTestCase(ActiniaResourceTestCaseBase):
         self.assertFalse(user_3.delete())
 
     def test_create_update_user(self):
-        """Test the creation and update of a user in the redis database"""
+        """Test the creation and update of a user in the kvdb database"""
 
         user = ActiniaUser(self.user_id)
         if user.exists():

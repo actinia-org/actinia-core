@@ -28,7 +28,7 @@ import pickle
 from flask import jsonify, make_response
 
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.processing.common.ephemeral_custom_processing import (
     start_job,
 )

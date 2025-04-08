@@ -25,8 +25,8 @@
 Resource logger and management interface
 """
 import pickle
-from .redis_resources import RedisResourceInterface
-from .redis_fluentd_logger_base import RedisFluentLoggerBase
+from .kvdb_resources import KvdbResourceInterface
+from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
@@ -35,7 +35,7 @@ __copyright__ = (
 )
 
 
-class ResourceLogger(RedisFluentLoggerBase):
+class ResourceLogger(KvdbFluentLoggerBase):
     """Write, update, receive and delete entries in the resource database"""
 
     def __init__(
@@ -47,16 +47,16 @@ class ResourceLogger(RedisFluentLoggerBase):
         user_id=None,
         fluent_sender=None,
     ):
-        RedisFluentLoggerBase.__init__(
+        KvdbFluentLoggerBase.__init__(
             self, config=config, user_id=user_id, fluent_sender=fluent_sender
         )
-        # Connect to a redis database
-        self.db = RedisResourceInterface()
-        redis_args = (host, port)
+        # Connect to a kvdb database
+        self.db = KvdbResourceInterface()
+        kvdb_args = (host, port)
         if password is not None:
-            redis_args = (*redis_args, password)
-        self.db.connect(*redis_args)
-        del redis_args
+            kvdb_args = (*kvdb_args, password)
+        self.db.connect(*kvdb_args)
+        del kvdb_args
 
     @staticmethod
     def _generate_db_resource_id(user_id, resource_id, iteration=None):
@@ -109,11 +109,11 @@ class ResourceLogger(RedisFluentLoggerBase):
         db_resource_id = self._generate_db_resource_id(
             user_id, resource_id, iteration
         )
-        redis_return = bool(self.db.set(db_resource_id, document, expiration))
+        kvdb_return = bool(self.db.set(db_resource_id, document, expiration))
         _, data = pickle.loads(document)
         data["logger"] = "resources_logger"
         self.send_to_logger("RESOURCE_LOG", data)
-        return redis_return
+        return kvdb_return
 
     def commit_termination(
         self, user_id, resource_id, iteration=None, expiration=3600

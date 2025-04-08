@@ -22,7 +22,7 @@
 #######
 
 """
-Redis server lock interface
+Kvdb server lock interface
 """
 
 import valkey
@@ -36,12 +36,12 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-class RedisLockingInterface(object):
+class KvdbLockingInterface(object):
     """
-    The Redis locking database interface
+    The Kvdb locking database interface
     """
 
-    # Redis LUA script to lock e resource
+    # Kvdb LUA script to lock e resource
     # Two keys must be provided, the name of the resource and the expiration
     # time in seconds
     # lock_resource("project/mapset", 30)
@@ -83,19 +83,19 @@ class RedisLockingInterface(object):
     end
     """
 
-    # Locks are Key-Value pairs in the Redis database using SET and DEl for
+    # Locks are Key-Value pairs in the Kvdb database using SET and DEl for
     # management
     lock_prefix = "RESOURCE-LOCK::"
 
     def __init__(self):
         self.connection_pool = None
-        self.redis_server = None
+        self.kvdb_server = None
         self.call_lock_resource = None
         self.call_extend_resource_lock = None
         self.call_unlock_resource = None
 
     def connect(self, host, port, password=None):
-        """Connect to a specific redis server
+        """Connect to a specific kvdb server
 
         Args:
             host (str): The host name or IP address
@@ -110,18 +110,18 @@ class RedisLockingInterface(object):
             kwargs["password"] = password
         self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = valkey.StrictValkey(
+        self.kvdb_server = valkey.StrictValkey(
             connection_pool=self.connection_pool
         )
 
-        # Register the resource lock scripts in Redis
-        self.call_lock_resource = self.redis_server.register_script(
+        # Register the resource lock scripts in Kvdb
+        self.call_lock_resource = self.kvdb_server.register_script(
             self.lua_lock_resource
         )
-        self.call_extend_resource_lock = self.redis_server.register_script(
+        self.call_extend_resource_lock = self.kvdb_server.register_script(
             self.lua_extend_resource_lock
         )
-        self.call_unlock_resource = self.redis_server.register_script(
+        self.call_unlock_resource = self.kvdb_server.register_script(
             self.lua_unlock_resource
         )
 
@@ -153,7 +153,7 @@ class RedisLockingInterface(object):
              True if resource is locked, False otherwise
 
         """
-        return bool(self.redis_server.get(self.lock_prefix + str(resource_id)))
+        return bool(self.kvdb_server.get(self.lock_prefix + str(resource_id)))
 
     def lock(self, resource_id, expiration=30):
         """Lock a resource for a specific time frame
@@ -162,7 +162,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to lock, for example
@@ -185,7 +185,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to extent the lock, for
@@ -209,7 +209,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to remove the lock, for
@@ -227,8 +227,8 @@ class RedisLockingInterface(object):
         return self.call_unlock_resource(keys=keys)
 
 
-# Create the Redis interface instance
-# redis_lock_interface = RedisLockingInterface()
+# Create the Kvdb interface instance
+# kvdb_lock_interface = KvdbLockingInterface()
 
 
 def test_locking(r):
@@ -280,7 +280,7 @@ if __name__ == "__main__":
     time.sleep(1)
 
     try:
-        r = RedisLockingInterface()
+        r = KvdbLockingInterface()
         r.connect(host="localhost", port=7000)
         test_locking(r)
         r.disconnect()

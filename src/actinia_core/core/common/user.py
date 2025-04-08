@@ -31,7 +31,7 @@ from passlib.apps import custom_app_context as pwd_context
 import jwt
 from datetime import datetime, timezone, timedelta
 from actinia_core.core.common.config import global_config
-from actinia_core.core.redis_user import redis_user_interface
+from actinia_core.core.kvdb_user import kvdb_user_interface
 from actinia_core.core.common.user_base import (
     ActiniaUserBase,
 )
@@ -47,10 +47,10 @@ class ActiniaUser(ActiniaUserBase):
     The Actinia Core user management class
 
     This class manages the user which are stored in the
-    Redis database
+    Kvdb database
     """
 
-    db = redis_user_interface
+    db = kvdb_user_interface
 
     def read_from_db(self):
         creds = self.db.get_credentials(self.user_id)

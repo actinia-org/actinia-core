@@ -34,7 +34,7 @@ from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
 from actinia_core.processing.common.raster_renderer import (
     start_job,

@@ -48,7 +48,7 @@ def health_check():
     # TODO: Add checks of the Actinia Core compute node state
     #       - is the config correct
     #       - Are the queues running
-    #       - Is redis available
+    #       - Is kvdb available
     # TODO: This check must be triggered to respond with 404 for node
     #       replacement in case of an update or bugfix.
     #       Hence, the load balance will not deliver any content to this node

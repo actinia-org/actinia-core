@@ -22,10 +22,10 @@
 #######
 
 """
-Redis server interface for API logging
+Kvdb server interface for API logging
 """
 
-from actinia_core.core.common.redis_base import RedisBaseInterface
+from actinia_core.core.common.kvdb_base import KvdbBaseInterface
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
@@ -36,17 +36,17 @@ __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
 
-class RedisAPILogInterface(RedisBaseInterface):
+class KvdbAPILogInterface(KvdbBaseInterface):
     """
-    The Redis API log database interface
+    The Kvdb API log database interface
     """
 
-    # API logging entries are lists in the Redis database using LPUSH, LTRIM,
+    # API logging entries are lists in the Kvdb database using LPUSH, LTRIM,
     # LRANGE for management
     api_log_prefix = "API-LOG-LIST::"
 
     def __init__(self):
-        RedisBaseInterface.__init__(self)
+        KvdbBaseInterface.__init__(self)
 
     """
     ########################## API  LOG #######################################
@@ -73,7 +73,7 @@ class RedisAPILogInterface(RedisBaseInterface):
     """
 
     def add(self, user_id, log_entry):
-        """Add a API log entry to a user specific  API log list in the Redis
+        """Add a API log entry to a user specific  API log list in the Kvdb
         server
 
         Args:
@@ -85,7 +85,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             The index of the new entry in the api log list
 
         """
-        return self.redis_server.lpush(
+        return self.kvdb_server.lpush(
             self.api_log_prefix + user_id, log_entry
         )
 
@@ -102,7 +102,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             A list of user specific API log entries
 
         """
-        return self.redis_server.lrange(
+        return self.kvdb_server.lrange(
             self.api_log_prefix + user_id, start, end
         )
 
@@ -119,7 +119,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             True in any case
 
         """
-        return self.redis_server.ltrim(
+        return self.kvdb_server.ltrim(
             self.api_log_prefix + user_id, start, end
         )
 
@@ -134,7 +134,7 @@ class RedisAPILogInterface(RedisBaseInterface):
             The number of entries in the api log list
 
         """
-        return self.redis_server.llen(self.api_log_prefix + user_id)
+        return self.kvdb_server.llen(self.api_log_prefix + user_id)
 
     def delete(self, user_id):
         """Remove the log list
@@ -147,11 +147,11 @@ class RedisAPILogInterface(RedisBaseInterface):
             True in case of success, False otherwise
 
         """
-        return bool(self.redis_server.delete(self.api_log_prefix + user_id))
+        return bool(self.kvdb_server.delete(self.api_log_prefix + user_id))
 
 
-# Create the Redis interface instance
-redis_api_log_interface = RedisAPILogInterface()
+# Create the Kvdb interface instance
+kvdb_api_log_interface = KvdbAPILogInterface()
 
 
 def test_api_logging(r):
@@ -202,7 +202,7 @@ if __name__ == "__main__":
     time.sleep(1)
 
     try:
-        r = RedisAPILogInterface()
+        r = KvdbAPILogInterface()
         r.connect(host="localhost", port=7000)
         test_api_logging(r)
         r.disconnect()

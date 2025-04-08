@@ -71,10 +71,10 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
 
 ## How to fix common startup errors
 
-- if a redis db is running locally this will fail. Run and try again:
+- if a valkey db is running locally this will fail. Run and try again:
 
 ```bash
-/etc/init.d/redis-server stop
+/etc/init.d/valkey-server stop
 ```
 
 - if you see an error like "max virtual memory areas vm.max_map_count \[65530\] is too low, increase to at least \[262144\]", run
@@ -139,13 +139,13 @@ To lint your local changes, run
 (cd ../src && flake8 --config=../.flake8 --count --statistics --show-source --jobs=$(nproc) .)
 ```
 
-### Local dev-setup with redis queue
+### Local dev-setup with kvdb queue
 
-- change queue type to redis in `docker/actinia-core-dev/actinia.cfg`
+- change queue type to kvdb in `docker/actinia-core-dev/actinia.cfg`
 - start one actinia-core instance (the job receiver) as usual, eg. with vscode
 - open actinia-core on the command line and run
   `docker compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
-- inside this container, reinstall actinia-core and start the redis-queue-worker
+- inside this container, reinstall actinia-core and start the kvdb-queue-worker
   ```bash
   pip3 uninstall actinia_core
   cd /src/actinia_core && pip3 install .

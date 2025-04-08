@@ -36,7 +36,7 @@ from actinia_api.swagger2.actinia_core.apidocs import (
 )
 
 from actinia_core.rest.base.resource_base import ResourceBase
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.processing.common.resource_storage_management import (
     start_resource_storage_size,
     start_resource_storage_remove,

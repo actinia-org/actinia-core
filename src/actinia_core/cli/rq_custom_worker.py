@@ -23,7 +23,7 @@
 #######
 
 """
-Redis Queue server custom worker
+Kvdb Queue server custom worker
 """
 from rq import Connection, Worker
 from valkey import Valkey
@@ -119,9 +119,9 @@ def main():
     # similar to rq worker
     with Connection(
         Valkey(
-            conf.REDIS_QUEUE_SERVER_URL,
-            conf.REDIS_QUEUE_SERVER_PORT,
-            password=conf.REDIS_QUEUE_SERVER_PASSWORD,
+            conf.KVDB_QUEUE_SERVER_URL,
+            conf.KVDB_QUEUE_SERVER_PORT,
+            password=conf.KVDB_QUEUE_SERVER_PASSWORD,
         )
     ):
         logger = logging.getLogger("rq.worker")
@@ -159,8 +159,8 @@ def main():
             "logging into %s"
             % (
                 args.queue,
-                conf.REDIS_QUEUE_SERVER_URL,
-                conf.REDIS_QUEUE_SERVER_PORT,
+                conf.KVDB_QUEUE_SERVER_URL,
+                conf.KVDB_QUEUE_SERVER_PORT,
                 log_file_name,
             )
         )
