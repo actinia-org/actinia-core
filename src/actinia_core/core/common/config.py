@@ -393,7 +393,7 @@ class Configuration(object):
         # Type of queue.
         # "local":  Single queue for all jobs, processed by same actinia
         #           instance via multiprocessing.
-        # "kvdb":  Number of queues is equal to number of workers as set
+        # "kvdb":   Number of queues is equal to number of workers as set
         #           in config NUMBER_OF_WORKERS, processed by different
         #           actinia instances (actinia worker).
         # "per_job": Separate queue for each job, config for NUMBER_OF_WORKERS
