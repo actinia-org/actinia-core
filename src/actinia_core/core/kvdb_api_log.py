@@ -85,9 +85,7 @@ class KvdbAPILogInterface(KvdbBaseInterface):
             The index of the new entry in the api log list
 
         """
-        return self.kvdb_server.lpush(
-            self.api_log_prefix + user_id, log_entry
-        )
+        return self.kvdb_server.lpush(self.api_log_prefix + user_id, log_entry)
 
     def list(self, user_id, start, end):
         """Return all API log entries between start and end indices

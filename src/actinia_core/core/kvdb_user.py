@@ -150,10 +150,7 @@ class KvdbUserInterface(KvdbBaseInterface):
             bool:
             True is success, False if user is already in the database
         """
-        if (
-            self.kvdb_server.exists(self.user_id_hash_prefix + user_id)
-            is True
-        ):
+        if self.kvdb_server.exists(self.user_id_hash_prefix + user_id) is True:
             return False
         pstring = pickle.dumps(permissions)
 
