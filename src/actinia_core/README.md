@@ -33,8 +33,8 @@ ______________________________________________________________________
 | actinia_core.core.common.process_chain | GrassModule, ProcessChainConverter |
 | actinia_core.core.common.process_object | Process |
 | actinia_core.core.common.process_queue | create_process_queue |
-| actinia_core.core.common.kvdb_base | KvdbBaseInterface |
-| actinia_core.core.common.kvdb_interface | connect, disconnect, enqueue_job |
+| actinia_core.core.common.kvdb_base (former redis_base) | KvdbBaseInterface (former RedisBaseInterface) |
+| actinia_core.core.common.kvdb_interface (former redis_interface)| connect, disconnect, enqueue_job |
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
