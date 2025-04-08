@@ -51,7 +51,7 @@ ______________________________________________________________________
 | actinia_core.processing.actinia_processing.persistent.mapset_management | PersistentMapsetDeleter, PersistentMapsetUnlocker |
 | actinia_core.processing.common.ephemeral_processing_with_export | start_job |
 | actinia_core.processing.common.persistent_processing | start_job |
-| actinia_core.core.kvdb_user | KvdbUserInterface |
+| actinia_core.core.kvdb_user (former redis_user) | KvdbUserInterface (former RedisUserInterface) |
 | actinia_core.rest.base.resource_base | ResourceBase |
 | actinia_core.rest.base.user_auth | create_dummy_user |
 | actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
