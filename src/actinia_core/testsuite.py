@@ -94,7 +94,7 @@ class ActiniaRequests(object):
 
     def _request(self, url, method, **kargs):
         if "content_type" in kargs:
-            del kargs["content_type"]
+            kargs.pop("content_type", None)
 
         if "http" not in url:
             server_url = self.actinia_server + url

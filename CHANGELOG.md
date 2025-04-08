@@ -5,6 +5,7 @@
   "MD034": false # no-bare-urls
 }
 -->
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -22,39 +23,49 @@ Types of changes
 * **Security** in case of vulnerabilities.
 * **Updated** for updates of dependencies.
 
-## [Unreleased]
+## \[Unreleased\]
 
 ## [5.1.0](https://github.com/actinia-org/actinia-core/releases/tag/5.1.0) - 2025-03-24
+
 released from main
+
 ### Changed
+
 * Use valkey instead of redis - functional adjustments by @mmacata in https://github.com/actinia-org/actinia-core/pull/585
 
 ### Fixed
+
 * Ignore local linting config for pre-commit by @mmacata in https://github.com/actinia-org/actinia-core/pull/582
 
 ### Updated
+
 * chore(deps): update pre-commit hook mundialis/github-workflows to v1.4.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/584
 * fix(deps): update dependency matplotlib to v3.9.4 by @renovate in https://github.com/actinia-org/actinia-core/pull/587
 * chore(deps): update anchore/sbom-action digest to df80a98 by @renovate in https://github.com/actinia-org/actinia-core/pull/588
 * fix(deps): update dependency matplotlib to v3.10.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/589
 * fix(deps): update dependency setuptools to v75.8.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/590
 
-**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/5.0.0...5.1.0 
-
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/5.0.0...5.1.0
 
 ## [5.0.0](https://github.com/actinia-org/actinia-core/releases/tag/5.0.0) - 2024-12-09
+
 released from main
+
 ### Added
+
 * Test super-linter workflow by @mmacata in https://github.com/actinia-org/actinia-core/pull/536
 * Introduce ruff by @mmacata in https://github.com/actinia-org/actinia-core/pull/574
 
 ### Changed
+
 * Renamed GRASS GIS locations to projects by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/565
 
 ### Removed
+
 * Remove requirements.txt by @mmacata in https://github.com/actinia-org/actinia-core/pull/530
 
 ### Updated
+
 * chore(deps): update mundialis/actinia-core docker tag to v4.14.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/537
 * chore(deps): update dependency setuptools to v70.1.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/538
 * chore(deps): update anchore/sbom-action digest to 95b086a by @renovate in https://github.com/actinia-org/actinia-core/pull/542
@@ -88,11 +99,9 @@ released from main
 * chore(deps): update pre-commit hook mundialis/github-workflows to v1.3.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/578
 * chore(deps): update anchore/sbom-action digest to a5bbe18 by @renovate in https://github.com/actinia-org/actinia-core/pull/581
 
-
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/4.14.1...5.0.0
 
 "generated with `gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="5.0.0" -f target_commitish=main -q .body`"
-
 
 ## [4.14.1](https://github.com/actinia-org/actinia-core/releases/tag/4.14.1) - 2024-06-21
 
@@ -780,7 +789,6 @@ released from main
 * Use separate repo for api docs by @mmacata in https://github.com/actinia-org/actinia-core/pull/278
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/2.0.0...2.0.1
-
 
 ## [2.0.0](https://github.com/actinia-org/actinia-core/releases/tag/2.0.0) - 2021-10-13
 
