@@ -110,7 +110,7 @@ class KvdbLockingInterface(object):
             kwargs["password"] = password
         self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.kvdb_server = valkey.StrictRedis(
+        self.kvdb_server = valkey.StrictValkey(
             connection_pool=self.connection_pool
         )
 
