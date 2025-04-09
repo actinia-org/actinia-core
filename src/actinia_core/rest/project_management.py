@@ -22,7 +22,7 @@
 #######
 
 """
-Location management
+Project management
 
 TODO: Integrate into the ephemeral process chain approach
 """
@@ -259,7 +259,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
         if os.path.isdir(project):
             return self.get_error_response(
                 message="Unable to create project. "
-                "Location <%s> exists in global database." % project_name
+                "Project <%s> exists in global database." % project_name
             )
 
         # Check also for the user database
@@ -270,7 +270,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
         if os.path.isdir(project):
             return self.get_error_response(
                 message="Unable to create project. "
-                "Location <%s> exists in user database." % project_name
+                "Project <%s> exists in user database." % project_name
             )
 
         rdc = self.preprocess(
