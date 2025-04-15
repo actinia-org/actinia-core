@@ -25,6 +25,66 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [6.0.0](https://github.com/actinia-org/actinia-core/releases/tag/6.0.0) - 2025-04-15
+released from main
+### Changed
+* Remaining changes for switch of redis to valkey by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/601
+  * `actinia_core.core.common.kvdb_base` (former `redis_base`)
+    * `KvdbBaseInterface` (former `RedisBaseInterface`)
+  * `actinia_core.core.common.kvdb_interface` (former `redis_interface`)
+    * `__enqueue_job_kvdb` (former `__enqueue_job_redis`)
+  * `actinia_core.core.kvdb_user` (former `redis_user`)
+    * `KvdbUserInterface` (former `RedisUserInterface`)
+    * `kvdb_user_interface` (former `redis_user_interface`)
+  * `actinia_core.core.kvdb_api_log` (former `redis_api_log`)
+    * `kvdb_api_log_interface` (former `redis_api_log_interface`)
+    * `KvdbAPILogInterface` (former `RedisAPILogInterface`)
+  * `actinia_core.core.kvdb_fluentd_logger_base` (former `redis_fluentd_logger_base`)
+    * `KvdbFluentLoggerBase` (former `RedisFluentLoggerBase`)
+  * `actinia_core.core.kvdb_lock` (former `redis_lock`)
+    * `KvdbLockingInterface` (former `RedisLockingInterface`)
+    * `kvdb_lock_interface` (former `redis_lock_interface`)
+  * `actinia_core.core.kvdb_resources` (former `redis_resources`)
+    * `KvdbResourceInterface` (former `RedisResourceInterface`)
+    * `kvdb_resource_interface` (former `redis_resource_interface`)
+* Config changed
+  * from:
+      ```ini
+     [REDIS]
+     redis_server_url =  localhost
+     redis_server_pw = pass
+     redis_resource_expire_time = 864001
+
+     [QUEUE]
+     queue_type = redis
+     redis_queue_server_url = localhost
+     ```
+  * to:
+      ```ini
+     [KVDB]
+     kvdb_server_url =  localhost
+     kvdb_server_pw = pass
+     kvdb_resource_expire_time = 864001
+
+     [QUEUE]
+     queue_type = kvdb
+     kvdb_queue_server_url = localhost
+     ```
+    but config is backwards compatible and REDIS-section can still be used
+
+* Update location imports from actinia-api by @mmacata in https://github.com/actinia-org/actinia-core/pull/606
+### Fixed
+* Update actinia-core image for g83 tests by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/600
+### Updated
+* fix(deps): update dependency setuptools to v78 by @renovate in https://github.com/actinia-org/actinia-core/pull/599
+* chore(deps): update anchore/sbom-action digest to 5aeee89 by @renovate in https://github.com/actinia-org/actinia-core/pull/593
+* fix(deps): update dependency matplotlib to v3.10.1 - autoclosed by @renovate in https://github.com/actinia-org/actinia-core/pull/596
+* fix(deps): update dependency pystac to v1.12.2 by @renovate in https://github.com/actinia-org/actinia-core/pull/594
+* fix(deps): update dependency google-cloud-bigquery to <=3.31.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/592
+
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/5.1.0...6.0.0
+
 ## [5.1.0](https://github.com/actinia-org/actinia-core/releases/tag/5.1.0) - 2025-03-24
 
 released from main
