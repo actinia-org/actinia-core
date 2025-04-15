@@ -22,10 +22,10 @@
 #######
 
 """
-Redis server lock interface
+Kvdb server lock interface
 """
 
-import redis
+import valkey
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
@@ -36,21 +36,21 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-class RedisLockingInterface(object):
+class KvdbLockingInterface(object):
     """
-    The Redis locking database interface
+    The Kvdb locking database interface
     """
 
-    # Redis LUA script to lock e resource
+    # Kvdb LUA script to lock e resource
     # Two keys must be provided, the name of the resource and the expiration
     # time in seconds
     # lock_resource("project/mapset", 30)
     # Return 1 for success and 0 for unable to acquire lock because
     # resource-lock already exists
     lua_lock_resource = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
-      redis.call("SETEX", KEYS[1], KEYS[2], 1)
+      server.call("SETEX", KEYS[1], KEYS[2], 1)
       return 1
     end
     return 0
@@ -62,11 +62,11 @@ class RedisLockingInterface(object):
     # extend_resource_lock("user/project/mapset", 30)
     # Return 1 for success, 0 for resource does not exists
     lua_extend_resource_lock = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      redis.call("EXPIRE", KEYS[1], KEYS[2])
+      server.call("EXPIRE", KEYS[1], KEYS[2])
       return 1
     end
     """
@@ -74,28 +74,28 @@ class RedisLockingInterface(object):
     # LUA script to unlock a resource
     # Return 1 for success, 0 for resource does not exists
     lua_unlock_resource = """
-    local value_exists = redis.call('EXISTS', KEYS[1])
+    local value_exists = server.call('EXISTS', KEYS[1])
     if value_exists == 0 then
         return 0
     else
-      redis.call("DEL", KEYS[1])
+      server.call("DEL", KEYS[1])
       return 1
     end
     """
 
-    # Locks are Key-Value pairs in the Redis database using SET and DEl for
+    # Locks are Key-Value pairs in the Kvdb database using SET and DEl for
     # management
     lock_prefix = "RESOURCE-LOCK::"
 
     def __init__(self):
         self.connection_pool = None
-        self.redis_server = None
+        self.kvdb_server = None
         self.call_lock_resource = None
         self.call_extend_resource_lock = None
         self.call_unlock_resource = None
 
     def connect(self, host, port, password=None):
-        """Connect to a specific redis server
+        """Connect to a specific kvdb server
 
         Args:
             host (str): The host name or IP address
@@ -108,20 +108,20 @@ class RedisLockingInterface(object):
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        self.connection_pool = redis.ConnectionPool(**kwargs)
+        self.connection_pool = valkey.ConnectionPool(**kwargs)
         del kwargs
-        self.redis_server = redis.StrictRedis(
+        self.kvdb_server = valkey.StrictValkey(
             connection_pool=self.connection_pool
         )
 
-        # Register the resource lock scripts in Redis
-        self.call_lock_resource = self.redis_server.register_script(
+        # Register the resource lock scripts in Kvdb
+        self.call_lock_resource = self.kvdb_server.register_script(
             self.lua_lock_resource
         )
-        self.call_extend_resource_lock = self.redis_server.register_script(
+        self.call_extend_resource_lock = self.kvdb_server.register_script(
             self.lua_extend_resource_lock
         )
-        self.call_unlock_resource = self.redis_server.register_script(
+        self.call_unlock_resource = self.kvdb_server.register_script(
             self.lua_unlock_resource
         )
 
@@ -153,7 +153,7 @@ class RedisLockingInterface(object):
              True if resource is locked, False otherwise
 
         """
-        return bool(self.redis_server.get(self.lock_prefix + str(resource_id)))
+        return bool(self.kvdb_server.get(self.lock_prefix + str(resource_id)))
 
     def lock(self, resource_id, expiration=30):
         """Lock a resource for a specific time frame
@@ -162,7 +162,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to lock, for example
@@ -185,7 +185,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to extent the lock, for
@@ -209,7 +209,7 @@ class RedisLockingInterface(object):
 
         This function will put a prefix before the resource name
         to avoid key conflicts with other resources that are logged
-        in the Redis database.
+        in the Kvdb database.
 
         Args:
             resource_id (str): Name of the resource to remove the lock, for
@@ -227,8 +227,8 @@ class RedisLockingInterface(object):
         return self.call_unlock_resource(keys=keys)
 
 
-# Create the Redis interface instance
-# redis_lock_interface = RedisLockingInterface()
+# Create the Kvdb interface instance
+# kvdb_lock_interface = KvdbLockingInterface()
 
 
 def test_locking(r):
@@ -274,13 +274,13 @@ if __name__ == "__main__":
     import time
 
     pid = os.spawnl(
-        os.P_NOWAIT, "/usr/bin/redis-server", "./redis.conf", "--port 7000"
+        os.P_NOWAIT, "/usr/bin/valkey-server", "./valkey.conf", "--port 7000"
     )
 
     time.sleep(1)
 
     try:
-        r = RedisLockingInterface()
+        r = KvdbLockingInterface()
         r.connect(host="localhost", port=7000)
         test_locking(r)
         r.disconnect()

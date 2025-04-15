@@ -106,13 +106,13 @@ class ResourceBase(Resource):
         self.orig_datetime = str(datetime.now())
 
         kwargs = dict()
-        kwargs["host"] = global_config.REDIS_SERVER_URL
-        kwargs["port"] = global_config.REDIS_SERVER_PORT
+        kwargs["host"] = global_config.KVDB_SERVER_URL
+        kwargs["port"] = global_config.KVDB_SERVER_PORT
         if (
-            global_config.REDIS_SERVER_PW
-            and global_config.REDIS_SERVER_PW is not None
+            global_config.KVDB_SERVER_PW
+            and global_config.KVDB_SERVER_PW is not None
         ):
-            kwargs["password"] = global_config.REDIS_SERVER_PW
+            kwargs["password"] = global_config.KVDB_SERVER_PW
         self.resource_logger = ResourceLogger(**kwargs)
         del kwargs
 
@@ -145,7 +145,7 @@ class ResourceBase(Resource):
                 global_config.WORKER_QUEUE_PREFIX,
                 self.user_id,
             )
-        elif global_config.QUEUE_TYPE == "redis":
+        elif global_config.QUEUE_TYPE == "kvdb":
             self.queue = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, "count")
         else:
             self.queue = "local"
@@ -320,7 +320,7 @@ class ResourceBase(Resource):
             - Check if the module chain description can be loaded
             - Initialize the response and request ids as well as the
               url for status polls
-            - Send an accept entry to the resource redis database
+            - Send an accept entry to the resource kvdb database
 
         Args:
             has_json (bool): Set True if the request has JSON data, False
@@ -454,14 +454,14 @@ class ResourceBase(Resource):
         method should wait for it
 
         Args:
-            poll_time (float): Time to sleep between Redis db polls for process
+            poll_time (float): Time to sleep between Kvdb db polls for process
                                status requests
 
         Returns:
             (int, dict)
             The http_code and the generated data dictionary
         """
-        # Wait for the async process by asking the redis database for updates
+        # Wait for the async process by asking the kvdb database for updates
         while True:
             response_data = self.resource_logger.get(
                 self.user_id, self.resource_id, self.iteration

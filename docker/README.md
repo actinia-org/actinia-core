@@ -1,13 +1,13 @@
 # Installation
 
-Requirements: docker and docker-compose
+Requirements: `docker` and `docker compose`
 
 To build and deploy actinia, run
 
 ```bash
 git clone https://github.com/actinia-org/actinia-core.git
 cd actinia-core
-docker-compose -f docker/docker-compose.yml up
+docker compose -f docker/docker-compose.yml up
 ```
 
 Now you have a running actinia instance locally! Check with
@@ -65,16 +65,16 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
         context: ..
         dockerfile: docker/actinia-core-alpine/Dockerfile
   ```
-  and run `docker-compose -f docker/docker-compose.yml up`
+  and run `docker compose -f docker/docker-compose.yml up`
 
 <a id="startup-errors"></a>
 
 ## How to fix common startup errors
 
-- if a redis db is running locally this will fail. Run and try again:
+- if a valkey db is running locally this will fail. Run and try again:
 
 ```bash
-/etc/init.d/redis-server stop
+/etc/init.d/valkey-server stop
 ```
 
 - if you see an error like "max virtual memory areas vm.max_map_count \[65530\] is too low, increase to at least \[262144\]", run
@@ -98,8 +98,8 @@ __If not stated otherwise, you need to be in folder `actinia-core/docker`__
 To overwrite default config and uninstall actinia-core to use local source code, build a Dockerimage with the docker-compose-dev.yml file:
 
 ```bash
-docker-compose -f docker-compose-dev.yml build
-docker-compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
+docker compose -f docker-compose-dev.yml build
+docker compose -f docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia
 ```
 
 Be aware, that your local actinia source code is now mounted in the docker container!
@@ -139,13 +139,13 @@ To lint your local changes, run
 (cd ../src && flake8 --config=../.flake8 --count --statistics --show-source --jobs=$(nproc) .)
 ```
 
-### Local dev-setup with redis queue
+### Local dev-setup with kvdb queue
 
-- change queue type to redis in `docker/actinia-core-dev/actinia.cfg`
+- change queue type to kvdb in `docker/actinia-core-dev/actinia.cfg`
 - start one actinia-core instance (the job receiver) as usual, eg. with vscode
 - open actinia-core on the command line and run
-  `docker-compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
-- inside this container, reinstall actinia-core and start the redis-queue-worker
+  `docker compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
+- inside this container, reinstall actinia-core and start the kvdb-queue-worker
   ```bash
   pip3 uninstall actinia_core
   cd /src/actinia_core && pip3 install .

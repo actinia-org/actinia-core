@@ -29,8 +29,8 @@ import pickle
 from functools import wraps
 from flask import g, abort, request
 import platform
-from actinia_core.core.redis_api_log import redis_api_log_interface
-from actinia_core.core.redis_fluentd_logger_base import RedisFluentLoggerBase
+from actinia_core.core.kvdb_api_log import kvdb_api_log_interface
+from actinia_core.core.kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
 try:
     from fluent import sender
@@ -80,11 +80,11 @@ def log_api_call(f):
     return decorated_function
 
 
-class ApiLogger(RedisFluentLoggerBase):
-    db = redis_api_log_interface
+class ApiLogger(KvdbFluentLoggerBase):
+    db = kvdb_api_log_interface
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(
+        KvdbFluentLoggerBase.__init__(
             self, config=config, user_id=user_id, fluent_sender=fluent_sender
         )
 
@@ -132,11 +132,11 @@ class ApiLogger(RedisFluentLoggerBase):
         # Serialize the entry
         pentry = pickle.dumps(entry)
 
-        redis_return = bool(self.db.add(user_id, pentry))
+        kvdb_return = bool(self.db.add(user_id, pentry))
 
         entry["time_stamp"] = str(entry["time_stamp"])
         self.send_to_logger("API_LOG", entry)
-        return redis_return
+        return kvdb_return
 
     def list(self, user_id, start, end):
         """

@@ -27,7 +27,7 @@ Log messages as debug, info, warning and error
 
 import time
 import platform
-from .redis_fluentd_logger_base import RedisFluentLoggerBase
+from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
@@ -36,11 +36,11 @@ __copyright__ = (
 )
 
 
-class MessageLogger(RedisFluentLoggerBase):
+class MessageLogger(KvdbFluentLoggerBase):
     """Message logger that puts are logs to stderr"""
 
     def __init__(self, config=None, user_id=None, fluent_sender=None):
-        RedisFluentLoggerBase.__init__(
+        KvdbFluentLoggerBase.__init__(
             self, config=config, user_id=user_id, fluent_sender=fluent_sender
         )
 

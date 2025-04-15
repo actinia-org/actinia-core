@@ -43,9 +43,9 @@ https://github.com/actinia-org/actinia-core/blob/main/src/actinia_core/resources
 ### Dev / Debug Hints
 
 - one disadvantage of general actinia logging implementation is, that log messages
-  are passed to `redis_fluentd_logger_base` where they are initially logged.
+  are passed to `kvdb_fluentd_logger_base` where they are initially logged.
   This way, it always logs as source
-  `/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:104`
+  `/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:104`
   instead of where the message was generated. To change this, refactoring would be necessary.
 
 ### Examples
@@ -116,9 +116,9 @@ __messages_logger INFO__
   "time": "2020-05-06T09:07:34.891945Z",
   "level": "INFO",
   "component": "actinia-core",
-  "module": "redis_fluentd_logger_base",
+  "module": "kvdb_fluentd_logger_base",
   "message": "{id: v_what_vect_1, module: v.what.vect, inputs: [{param: map, value: point}, {param: column, value: isIn}, {param: query_map, value: polygon}, {param: query_column, value: polygon}]}",
-  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py",
+  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py",
   "lineno": 109,
   "processName": "Process-1:1",
   "threadName": "MainThread",
@@ -132,7 +132,7 @@ __messages_logger INFO__
 ```
 
 ```text
-[2020-05-08 09:19:48,512] INFO      : actinia-core.redis_fluentd_logger_base -{'node': '3f3e57b7ab83', 'ctime': 'Fri May  8 09:19:48 2020', 'user_id': 'actinia-gdi', 'log_level': 'INFO', 'status': 'message', 'message': "{'id': 'v_what_vect_1', 'module': 'v.what.vect', 'inputs': [{'param': 'map', 'value': 'point'}, {'param': 'column', 'value': 'isIn'}, {'param': 'query_map', 'value': 'polygon'}, {'param': 'query_column', 'value': 'polygon'}]}", 'logger': 'messages_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:99]
+[2020-05-08 09:19:48,512] INFO      : actinia-core.kvdb_fluentd_logger_base -{'node': '3f3e57b7ab83', 'ctime': 'Fri May  8 09:19:48 2020', 'user_id': 'actinia-gdi', 'log_level': 'INFO', 'status': 'message', 'message': "{'id': 'v_what_vect_1', 'module': 'v.what.vect', 'inputs': [{'param': 'map', 'value': 'point'}, {'param': 'column', 'value': 'isIn'}, {'param': 'query_map', 'value': 'polygon'}, {'param': 'query_column', 'value': 'polygon'}]}", 'logger': 'messages_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:99]
 ```
 
 __api_logger__
@@ -142,9 +142,9 @@ __api_logger__
   "time": "2020-05-06T09:07:34.829927Z",
   "level": "INFO",
   "component": "actinia-core",
-  "module": "redis_fluentd_logger_base",
+  "module": "kvdb_fluentd_logger_base",
   "message": null,
-  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py",
+  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py",
   "lineno": 98,
   "processName": "MainProcess",
   "threadName": "ThreadPoolExecutor-0_0",
@@ -164,7 +164,7 @@ __api_logger__
 ```
 
 ```text
-[2020-05-08 09:19:48,419] INFO      : actinia-core.redis_fluentd_logger_base -{'time_stamp': '2020-05-08 09:19:48.419294', 'node': '3f3e57b7ab83', 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'request_str': "<Request 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export' [POST]>", 'user_id': 'actinia-gdi', 'status': 'api_call', 'logger': 'api_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:94]
+[2020-05-08 09:19:48,419] INFO      : actinia-core.kvdb_fluentd_logger_base -{'time_stamp': '2020-05-08 09:19:48.419294', 'node': '3f3e57b7ab83', 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'request_str': "<Request 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export' [POST]>", 'user_id': 'actinia-gdi', 'status': 'api_call', 'logger': 'api_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:94]
 ```
 
 __resources_logger "accepted"__
@@ -174,9 +174,9 @@ __resources_logger "accepted"__
   "time": "2020-05-06T09:07:34.835133Z",
   "level": "INFO",
   "component": "actinia-core",
-  "module": "redis_fluentd_logger_base",
+  "module": "kvdb_fluentd_logger_base",
   "message": "Resource accepted",
-  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py",
+  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py",
   "lineno": 94,
   "processName": "MainProcess",
   "threadName": "ThreadPoolExecutor-0_0",
@@ -206,7 +206,7 @@ __resources_logger "accepted"__
 ```
 
 ```text
-[2020-05-08 09:19:48,424] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'accepted', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.4238856, 'datetime': '2020-05-08 09:19:48.423887', 'message': 'Resource accepted', 'time_delta': 0.002741098403930664, 'process_results': {}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v3/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
+[2020-05-08 09:19:48,424] INFO      : actinia-core.kvdb_fluentd_logger_base -{'status': 'accepted', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.4238856, 'datetime': '2020-05-08 09:19:48.423887', 'message': 'Resource accepted', 'time_delta': 0.002741098403930664, 'process_results': {}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v3/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:91]
 ```
 
 __resources_logger "running"__
@@ -216,9 +216,9 @@ __resources_logger "running"__
   "time": "2020-05-06T09:07:35.188501Z",
   "level": "INFO",
   "component": "actinia-core",
-  "module": "redis_fluentd_logger_base",
+  "module": "kvdb_fluentd_logger_base",
   "message": "Checking access to URL: https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/pointInBonn.geojson",
-  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py",
+  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py",
   "lineno": 94,
   "processName": "Process-1:1",
   "threadName": "MainThread",
@@ -251,7 +251,7 @@ __resources_logger "running"__
 ```
 
 ```text
-[2020-05-08 09:19:48,514] INFO      : actinia-core.redis_fluentd_logger_base -{'status': 'running', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.5140734, 'datetime': '2020-05-08 09:19:48.514093', 'message': 'Checking access to URL: https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/bonn.geojson', 'time_delta': 0.09295296669006348, 'progress': {'step': 0, 'num_of_steps': 0}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v3/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:91]
+[2020-05-08 09:19:48,514] INFO      : actinia-core.kvdb_fluentd_logger_base -{'status': 'running', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929588.5140734, 'datetime': '2020-05-08 09:19:48.514093', 'message': 'Checking access to URL: https://raw.githubusercontent.com/mmacata/pagestest/gh-pages/bonn.geojson', 'time_delta': 0.09295296669006348, 'progress': {'step': 0, 'num_of_steps': 0}, 'process_chain_list': [], 'http_code': 200, 'urls': {'resources': [], 'status': 'http://127.0.0.1:8088/api/v3/resources/actinia-gdi/resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a'}, 'api_info': {'endpoint': 'asyncephemeralexportresource', 'method': 'POST', 'path': '/api/v3/projects/latlong_wgs84/processing_async_export', 'request_url': 'http://127.0.0.1:8088/api/v3/projects/latlong_wgs84/processing_async_export'}, 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:91]
 ```
 
 __resources_logger "error" shortened__
@@ -261,9 +261,9 @@ __resources_logger "error" shortened__
   "time": "2020-05-06T09:07:38.357543Z",
   "level": "ERROR",
   "component": "actinia-core",
-  "module": "redis_fluentd_logger_base",
+  "module": "kvdb_fluentd_logger_base",
   "message": "[Errno 2] No such file or directory: /usr/bin/zip",
-  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py",
+  "pathname": "/usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev18+g4d82691.dirty-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py",
   "lineno": 90,
   "processName": "Process-1:1",
   "threadName": "MainThread",
@@ -322,7 +322,7 @@ __resources_logger "error" shortened__
 ```
 
 ```text
-[2020-05-08 09:19:54,787] ERROR     : actinia-core.redis_fluentd_logger_base -{'status': 'error', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929594.7862213, 'datetime': '2020-05-08 09:19:54.786227', 'message': "[Errno 2] No such file or directory: '/usr/bin/zip'", ..., 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/redis_fluentd_logger_base.py:87]
+[2020-05-08 09:19:54,787] ERROR     : actinia-core.kvdb_fluentd_logger_base -{'status': 'error', 'user_id': 'actinia-gdi', 'resource_id': 'resource_id-53e2a5ae-d4c0-4b9d-8d24-03030a4b314a', 'accept_timestamp': 1588929588.421158, 'accept_datetime': '2020-05-08 09:19:48.421166', 'timestamp': 1588929594.7862213, 'datetime': '2020-05-08 09:19:54.786227', 'message': "[Errno 2] No such file or directory: '/usr/bin/zip'", ..., 'logger': 'resources_logger'} [in /usr/lib/python3.8/site-packages/actinia_core-0.99.5.post0.dev20+gacc075c-py3.8.egg/actinia_core/resources/common/kvdb_fluentd_logger_base.py:87]
 ```
 
 __stderr_logger one random line of stacktrace__

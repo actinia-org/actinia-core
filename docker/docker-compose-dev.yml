@@ -17,8 +17,8 @@ services:
     ports:
       - "8088:8088"
     depends_on:
-      - redis
-      - redis-queue
+      - valkey
+      - valkey-queue
     cap_add:
       - SYS_PTRACE
     networks:
@@ -38,23 +38,23 @@ services:
       - ./actinia-core-data/resources:/actinia_core/resources
       - ../.:/src/actinia_core/.
     depends_on:
-      - redis
-      - redis-queue
+      - valkey
+      - valkey-queue
     networks:
     -   actinia-dev
 
-  redis:
-    image: redis:7.2.5-alpine
+  valkey:
+    image: valkey/valkey:8.0-alpine
     volumes:
-      - ./redis_data:/data
+      - ./valkey_data:/data
     environment:
-      - REDIS_PASS_FILE=/data/config/.redis
+      - VALKEY_PASS_FILE=/data/config/.valkey
     command: [
       "sh", "-c",
       '
       docker-entrypoint.sh
-      "/data/config/redis.conf"
-      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      "/data/config/valkey.conf"
+      --requirepass "$$(cat $$VALKEY_PASS_FILE)"
       '
     ]
     ports:
@@ -62,18 +62,18 @@ services:
     networks:
     -   actinia-dev
 
-  redis-queue:
-    image: redis:7.2.5-alpine
+  valkey-queue:
+    image: valkey/valkey:8.0-alpine
     volumes:
-      - ./redis_queue_data:/data
+      - ./valkey_queue_data:/data
     environment:
-      - REDIS_PASS_FILE=/data/config/.redis
+      - VALKEY_PASS_FILE=/data/config/.valkey
     command: [
       "sh", "-c",
       '
       docker-entrypoint.sh
-      "/data/config/redis.conf"
-      --requirepass "$$(cat $$REDIS_PASS_FILE)"
+      "/data/config/valkey.conf"
+      --requirepass "$$(cat $$VALKEY_PASS_FILE)"
       '
     ]
     ports:

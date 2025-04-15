@@ -31,7 +31,7 @@ from flask_restful_swagger_2 import swagger
 from flask import jsonify, make_response
 from actinia_api.swagger2.actinia_core.apidocs import raster_colors
 
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,

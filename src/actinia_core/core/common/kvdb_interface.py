@@ -22,12 +22,12 @@
 #######
 
 """
-Redis connection interface
+Kvdb connection interface
 """
 import rq
-from redis import Redis
-from actinia_core.core.redis_user import redis_user_interface
-from actinia_core.core.redis_api_log import redis_api_log_interface
+from valkey import Valkey
+from actinia_core.core.kvdb_user import kvdb_user_interface
+from actinia_core.core.kvdb_api_log import kvdb_api_log_interface
 from actinia_core.core.logging_interface import log
 from .config import global_config
 from .process_queue import enqueue_job as enqueue_job_local
@@ -41,30 +41,30 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 job_queues = []
-redis_conn = None
+kvdb_conn = None
 
 
 def connect(host, port, pw=None):
-    """Connect all required redis interfaces that should be used
+    """Connect all required kvdb interfaces that should be used
        in the main server process.
 
        These interfaces are connected here for performance reasons.
-       The redis job queue is initialized here as well.
+       The kvdb job queue is initialized here as well.
 
     Args:
-        host (str): The hostname of the redis server
-        port (str): The port of the redis server
-        pw (str): The password of the redis server
+        host (str): The hostname of the kvdb server
+        port (str): The port of the kvdb server
+        pw (str): The password of the kvdb server
 
     """
-    redis_user_interface.connect(host, port, pw)
-    redis_api_log_interface.connect(host, port, pw)
+    kvdb_user_interface.connect(host, port, pw)
+    kvdb_api_log_interface.connect(host, port, pw)
 
 
 def disconnect():
-    """Disconnect all required redis interfaces"""
-    redis_user_interface.disconnect()
-    redis_api_log_interface.disconnect()
+    """Disconnect all required kvdb interfaces"""
+    kvdb_user_interface.disconnect()
+    kvdb_api_log_interface.disconnect()
 
 
 def __create_job_queue(queue_name):
@@ -74,28 +74,28 @@ def __create_job_queue(queue_name):
         queue_name: The name of the queue
 
     """
-    # Redis work queue and connection
-    global job_queues, redis_conn
+    # Kvdb work queue and connection
+    global job_queues, kvdb_conn
 
     if not any(q.name == queue_name for q in job_queues):
-        host = global_config.REDIS_QUEUE_SERVER_URL
-        port = global_config.REDIS_QUEUE_SERVER_PORT
-        password = global_config.REDIS_QUEUE_SERVER_PASSWORD
+        host = global_config.KVDB_QUEUE_SERVER_URL
+        port = global_config.KVDB_QUEUE_SERVER_PORT
+        password = global_config.KVDB_QUEUE_SERVER_PASSWORD
 
         kwargs = dict()
         kwargs["host"] = host
         kwargs["port"] = port
         if password and password is not None:
             kwargs["password"] = password
-        redis_conn = Redis(**kwargs)
+        kvdb_conn = Valkey(**kwargs)
 
         string = "Create queue %s with server %s:%s" % (queue_name, host, port)
         log.info(string)
-        queue = rq.Queue(queue_name, connection=redis_conn)
+        queue = rq.Queue(queue_name, connection=kvdb_conn)
         job_queues.append(queue)
 
 
-def __enqueue_job_redis(queue, timeout, func, *args):
+def __enqueue_job_kvdb(queue, timeout, func, *args):
     """Enqueue a job in the job queues
 
     Args:
@@ -116,8 +116,8 @@ def __enqueue_job_redis(queue, timeout, func, *args):
         func,
         *args,
         job_timeout=timeout,
-        ttl=global_config.REDIS_QUEUE_JOB_TTL,
-        result_ttl=global_config.REDIS_QUEUE_JOB_TTL,
+        ttl=global_config.KVDB_QUEUE_JOB_TTL,
+        result_ttl=global_config.KVDB_QUEUE_JOB_TTL,
     )
     log.info(ret)
 
@@ -130,7 +130,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         func: The function to call from the subprocess/worker
         *args: The function arguments
     """
-    global job_queues, redis_conn
+    global job_queues, kvdb_conn
     num_queues = global_config.NUMBER_OF_WORKERS
     queue_type = global_config.QUEUE_TYPE
     queue_name = "local"
@@ -144,7 +144,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         for i in job_queues:
             if i.name == queue_name:
                 args[0].set_queue_name(queue_name)
-                __enqueue_job_redis(i, timeout, func, *args)
+                __enqueue_job_kvdb(i, timeout, func, *args)
 
     elif queue_type == "per_user":
         user_id = args[0].user_id
@@ -155,19 +155,19 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         for i in job_queues:
             if i.name == queue_name:
                 args[0].set_queue_name(queue_name)
-                __enqueue_job_redis(i, timeout, func, *args)
+                __enqueue_job_kvdb(i, timeout, func, *args)
 
-    elif queue_type == "redis":
+    elif queue_type == "kvdb":
         if job_queues == []:
             for i in range(num_queues):
                 queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, i)
                 __create_job_queue(queue_name)
-        # The redis incr approach is used here
+        # The kvdb incr approach is used here
         # to chose for each job a different queue
-        num = redis_conn.incr("actinia_worker_count", 1)
+        num = kvdb_conn.incr("actinia_worker_count", 1)
         current_queue = num % num_queues
         args[0].set_queue_name(job_queues[current_queue].name)
-        __enqueue_job_redis(job_queues[current_queue], timeout, func, *args)
+        __enqueue_job_kvdb(job_queues[current_queue], timeout, func, *args)
 
     elif queue_type == "local":
         # __enqueue_job_local(timeout, func, *args)

@@ -57,7 +57,6 @@ dependencies = [
     "python-keycloak>=2.6.0",
     "python-magic>=0.4.15",
     "Sphinx>=1.7.1",
-    "redis>=2.10.6",
     "requests>=2.20.0",
     "rq>=0.10.0",
     "setuptools==78.1.0",

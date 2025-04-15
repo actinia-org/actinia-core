@@ -25,7 +25,7 @@
 Raster map renderer
 """
 from flask import jsonify, make_response, Response
-from actinia_core.core.common.redis_interface import enqueue_job
+from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.rest.base.renderer_base import RendererBaseResource
 import os
 from flask_restful_swagger_2 import swagger

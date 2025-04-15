@@ -33,8 +33,8 @@ ______________________________________________________________________
 | actinia_core.core.common.process_chain | GrassModule, ProcessChainConverter |
 | actinia_core.core.common.process_object | Process |
 | actinia_core.core.common.process_queue | create_process_queue |
-| actinia_core.core.common.redis_base | RedisBaseInterface |
-| actinia_core.core.common.redis_interface | connect, disconnect, enqueue_job |
+| actinia_core.core.common.kvdb_base (former redis_base) | KvdbBaseInterface (former RedisBaseInterface) |
+| actinia_core.core.common.kvdb_interface (former redis_interface)| connect, disconnect, enqueue_job |
 | actinia_core.core.common.response_models | create_response_from_model, ProcessingErrorResponseModel, ProcessingResponseModel, SimpleResponseModel, StringListProcessingResultResponseModel, UnivarResultModel |
 | actinia_core.core.common.sentinel_processing_library | Sentinel2Processing |
 | actinia_core.core.common.user | ActiniaUser |
@@ -51,7 +51,7 @@ ______________________________________________________________________
 | actinia_core.processing.actinia_processing.persistent.mapset_management | PersistentMapsetDeleter, PersistentMapsetUnlocker |
 | actinia_core.processing.common.ephemeral_processing_with_export | start_job |
 | actinia_core.processing.common.persistent_processing | start_job |
-| actinia_core.core.redis_user | RedisUserInterface |
+| actinia_core.core.kvdb_user (former redis_user) | KvdbUserInterface (former RedisUserInterface) |
 | actinia_core.rest.base.resource_base | ResourceBase |
 | actinia_core.rest.base.user_auth | create_dummy_user |
 | actinia_core.rest.ephemeral_processing_with_export | SCHEMA_DOC |
@@ -70,7 +70,7 @@ actinia_core.endpoints import create_endpoints
 actinia_core.rest.base.resource_base import ResourceBase
 actinia_core.core.common.app import flask_app
 actinia_core.core.common.config import global_config
-actinia_core.core.common.redis_interface import enqueue_job
+actinia_core.core.common.kvdb_interface import enqueue_job
 actinia_core.core.common.response_models import ProcessingResponseModel
 ```
 
@@ -91,12 +91,12 @@ actinia_api import URL_PREFIX
 actinia_core.core.common.config import Configuration
 actinia_core.core.common.process_chain import GrassModule
 /# from actinia_core.core.common.process_queue import create_process_queue
-actinia_core.core.common.redis_base import RedisBaseInterface
-actinia_core.core.common.redis_interface import enqueue_job, connect, disconnect
+actinia_core.core.common.kvdb_base import KvdbBaseInterface
+actinia_core.core.common.kvdb_interface import enqueue_job, connect, disconnect
 actinia_core.core.common.response_models import create_response_from_model
 actinia_core.core.common.response_models import StringListProcessingResultResponseModel
 actinia_core.core.common.user import ActiniaUser
-actinia_core.core.redis_user import RedisUserInterface
+actinia_core.core.kvdb_user import KvdbUserInterface
 ```
 
 __satellite, statistic__
@@ -121,7 +121,7 @@ actinia_core.core.common.google_satellite_bigquery_interface import GoogleSatell
 actinia_core.core.common.landsat_processing_library import LandsatProcessing, SCENE_BANDS, extract_sensor_id_from_scene_id, RASTER_SUFFIXES
 actinia_core.core.common.process_object import Process
 actinia_core.core.common.process_queue import create_process_queue
-actinia_core.core.common.redis_interface import connect
+actinia_core.core.common.kvdb_interface import connect
 actinia_core.core.common.response_models import SimpleResponseModel
 actinia_core.core.common.response_models import UnivarResultModel
 actinia_core.core.common.sentinel_processing_library import Sentinel2Processing
@@ -131,7 +131,7 @@ __stac__
 
 ```text
 actinia_core.rest.base.resource_base import ResourceBase
-actinia_core.core.common.redis_base import RedisBaseInterface
+actinia_core.core.common.kvdb_base import KvdbBaseInterface
 actinia_core.core.common.config import Configuration
 ```
 
@@ -146,7 +146,7 @@ __tiling__
 ```text
 actinia_core.core.common.config import global_config
 actinia_core.core.common.process_chain import ProcessChainConverter
-actinia_core.core.common.redis_interface import enqueue_job
+actinia_core.core.common.kvdb_interface import enqueue_job
 actinia_core.endpoints import create_endpoints
 actinia_core.models.process_chain import IOParameterBase
 actinia_core.models.response_models import ProcessingErrorResponseModel
@@ -163,7 +163,7 @@ __parallel__
 ```text
 actinia_core.core.common.app import auth
 actinia_core.core.common.config import global_config
-actinia_core.core.common.redis_interface import enqueue_job
+actinia_core.core.common.kvdb_interface import enqueue_job
 actinia_core.core.messages_logger import MessageLogger
 actinia_core.core.resource_data_container import ResourceDataContainer
 actinia_core.core.resources_logger import ResourceLogger

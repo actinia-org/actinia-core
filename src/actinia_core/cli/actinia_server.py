@@ -33,7 +33,7 @@ import os
 from actinia_core.endpoints import create_endpoints
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
-from actinia_core.core.common.redis_interface import connect
+from actinia_core.core.common.kvdb_interface import connect
 from actinia_core.core.common.process_queue import create_process_queue
 
 __license__ = "GPLv3"
@@ -47,7 +47,7 @@ __email__ = "info@mundialis.de"
 
 def main():
     parser = argparse.ArgumentParser(
-        description="Start actinia server. A running redis server"
+        description="Start actinia server. A running kvdb server"
         + " is required."
     )
 
@@ -85,19 +85,19 @@ def main():
     # Create the endpoints based on the global config
     create_endpoints()
 
-    # Connect the redis interfaces
-    redis_args = (
-        global_config.REDIS_SERVER_URL,
-        global_config.REDIS_SERVER_PORT,
+    # Connect the kvdb interfaces
+    kvdb_args = (
+        global_config.KVDB_SERVER_URL,
+        global_config.KVDB_SERVER_PORT,
     )
     if (
-        global_config.REDIS_SERVER_PW
-        and global_config.REDIS_SERVER_PW is not None
+        global_config.KVDB_SERVER_PW
+        and global_config.KVDB_SERVER_PW is not None
     ):
-        redis_args = (*redis_args, global_config.REDIS_SERVER_PW)
+        kvdb_args = (*kvdb_args, global_config.KVDB_SERVER_PW)
 
-    connect(*redis_args)
-    del redis_args
+    connect(*kvdb_args)
+    del kvdb_args
 
     # Create the process queue
     create_process_queue(global_config)

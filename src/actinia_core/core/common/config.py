@@ -343,30 +343,30 @@ class Configuration(object):
         self.KEYCLOAK_CLIENT_SECRET_KEY = None
 
         """
-        REDIS
+        KVDB
         """
-        # The hostname of the redis server
-        self.REDIS_SERVER_URL = "127.0.0.1"
-        # The port of the redis server
-        self.REDIS_SERVER_PORT = 6379
-        # The password of the redis server
-        self.REDIS_SERVER_PW = None
+        # The hostname of the kvdb server
+        self.KVDB_SERVER_URL = "127.0.0.1"
+        # The port of the kvdb server
+        self.KVDB_SERVER_PORT = 6379
+        # The password of the kvdb server
+        self.KVDB_SERVER_PW = None
         # Default expire time is 10 days for resource logs, that are used for
         # calculating the price of resource usage
-        self.REDIS_RESOURCE_EXPIRE_TIME = 864000
-        # The hostname of the redis work queue server
-        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"
-        # The port of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PORT = 6379
-        # The password of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PASSWORD = None
-        # This is the time the rq:job will be stored in the redis
-        self.REDIS_QUEUE_JOB_TTL = None
-        # The base name of the redis worker queue, it will be extended by a
+        self.KVDB_RESOURCE_EXPIRE_TIME = 864000
+        # The hostname of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_URL = "127.0.0.1"
+        # The port of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_PORT = 6379
+        # The password of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_PASSWORD = None
+        # This is the time the rq:job will be stored in the kvdb
+        self.KVDB_QUEUE_JOB_TTL = None
+        # The base name of the kvdb worker queue, it will be extended by a
         # numerical suffix that represents the worker id/number database to
         # re-queue it, usually this is not necessary
         self.WORKER_QUEUE_PREFIX = "job_queue"
-        # The base name of the redis worker queue logfile, it will be extended
+        # The base name of the kvdb worker queue logfile, it will be extended
         # by a numerical suffix that represents the worker id/number
         self.WORKER_LOGFILE = "%s/actinia/workspace/tmp/worker.log" % home
 
@@ -375,15 +375,15 @@ class Configuration(object):
         """
         # The number of queues that process jobs
         self.NUMBER_OF_WORKERS = 3
-        # The hostname of the redis work queue server
-        self.REDIS_QUEUE_SERVER_URL = "127.0.0.1"
-        # The port of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PORT = 6379
-        # The password of the redis work queue server
-        self.REDIS_QUEUE_SERVER_PASSWORD = None
-        # This is the time the rq:job will be stored in redis
-        self.REDIS_QUEUE_JOB_TTL = None
-        # The prefix for the name of the redis worker queue.
+        # The hostname of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_URL = "127.0.0.1"
+        # The port of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_PORT = 6379
+        # The password of the kvdb work queue server
+        self.KVDB_QUEUE_SERVER_PASSWORD = None
+        # This is the time the rq:job will be stored in kvdb
+        self.KVDB_QUEUE_JOB_TTL = None
+        # The prefix for the name of the kvdb worker queue.
         # It will be extended by a numerical suffix that represents
         # the worker id/number database to re-queue it, usually this is not
         # necessary. If QUEUE_TYPE = per_job, it is extended by the
@@ -393,7 +393,7 @@ class Configuration(object):
         # Type of queue.
         # "local":  Single queue for all jobs, processed by same actinia
         #           instance via multiprocessing.
-        # "redis":  Number of queues is equal to number of workers as set
+        # "kvdb":   Number of queues is equal to number of workers as set
         #           in config NUMBER_OF_WORKERS, processed by different
         #           actinia instances (actinia worker).
         # "per_job": Separate queue for each job, config for NUMBER_OF_WORKERS
@@ -405,8 +405,8 @@ class Configuration(object):
         #           (actinia worker). User_id will be added to above
         #           WORKER_QUEUE_PREFIX.
         # future ideas
-        # - redis separate queue per process type
-        # - redis separate queue per resource consumption
+        # - kvdb separate queue per process type
+        # - kvdb separate queue per resource consumption
         self.QUEUE_TYPE = "local"
         # Separate configuration for queue_type for synchronous requests which
         # might not want to be queued.
@@ -602,35 +602,33 @@ class Configuration(object):
             str(self.KEYCLOAK_CLIENT_SECRET_KEY),
         )
 
-        config.add_section("REDIS")
-        config.set("REDIS", "REDIS_SERVER_URL", self.REDIS_SERVER_URL)
-        config.set("REDIS", "REDIS_SERVER_PORT", str(self.REDIS_SERVER_PORT))
-        config.set("REDIS", "REDIS_SERVER_PW", str(self.REDIS_SERVER_PW))
+        config.add_section("KVDB")
+        config.set("KVDB", "KVDB_SERVER_URL", self.KVDB_SERVER_URL)
+        config.set("KVDB", "KVDB_SERVER_PORT", str(self.KVDB_SERVER_PORT))
+        config.set("KVDB", "KVDB_SERVER_PW", str(self.KVDB_SERVER_PW))
         config.set(
-            "REDIS",
-            "REDIS_RESOURCE_EXPIRE_TIME",
-            str(self.REDIS_RESOURCE_EXPIRE_TIME),
+            "KVDB",
+            "KVDB_RESOURCE_EXPIRE_TIME",
+            str(self.KVDB_RESOURCE_EXPIRE_TIME),
         )
-        config.set("REDIS", "WORKER_LOGFILE", str(self.WORKER_LOGFILE))
+        config.set("KVDB", "WORKER_LOGFILE", str(self.WORKER_LOGFILE))
 
         config.add_section("QUEUE")
         config.set("QUEUE", "NUMBER_OF_WORKERS", str(self.NUMBER_OF_WORKERS))
         config.set(
-            "QUEUE", "REDIS_QUEUE_SERVER_URL", self.REDIS_QUEUE_SERVER_URL
+            "QUEUE", "KVDB_QUEUE_SERVER_URL", self.KVDB_QUEUE_SERVER_URL
         )
         config.set(
             "QUEUE",
-            "REDIS_QUEUE_SERVER_PORT",
-            str(self.REDIS_QUEUE_SERVER_PORT),
+            "KVDB_QUEUE_SERVER_PORT",
+            str(self.KVDB_QUEUE_SERVER_PORT),
         )
         config.set(
             "QUEUE",
-            "REDIS_QUEUE_SERVER_PASSWORD",
-            str(self.REDIS_QUEUE_SERVER_PASSWORD),
+            "KVDB_QUEUE_SERVER_PASSWORD",
+            str(self.KVDB_QUEUE_SERVER_PASSWORD),
         )
-        config.set(
-            "QUEUE", "REDIS_QUEUE_JOB_TTL", str(self.REDIS_QUEUE_JOB_TTL)
-        )
+        config.set("QUEUE", "KVDB_QUEUE_JOB_TTL", str(self.KVDB_QUEUE_JOB_TTL))
         config.set(
             "QUEUE", "WORKER_QUEUE_PREFIX", str(self.WORKER_QUEUE_PREFIX)
         )
@@ -833,7 +831,7 @@ class Configuration(object):
                     else:
                         print(
                             "Keycloak is configured, but configfile is not "
-                            "an existing file! Using Redis for user "
+                            "an existing file! Using Kvdb for user "
                             "management."
                         )
                 if config.has_option("KEYCLOAK", "GROUP_PREFIX"):
@@ -845,46 +843,65 @@ class Configuration(object):
                         "KEYCLOAK", "ATTR_PREFIX"
                     )
 
-            if config.has_section("REDIS"):
+            # REDIS - deprecated in future
+            if config.has_section("REDIS") and not config.has_section("KVDB"):
                 if config.has_option("REDIS", "REDIS_SERVER_URL"):
-                    self.REDIS_SERVER_URL = config.get(
+                    self.KVDB_SERVER_URL = config.get(
                         "REDIS", "REDIS_SERVER_URL"
                     )
                 if config.has_option("REDIS", "REDIS_SERVER_PORT"):
-                    self.REDIS_SERVER_PORT = config.getint(
+                    self.KVDB_SERVER_PORT = config.getint(
                         "REDIS", "REDIS_SERVER_PORT"
                     )
                 if config.has_option("REDIS", "REDIS_SERVER_PW"):
-                    self.REDIS_SERVER_PW = config.get(
+                    self.KVDB_SERVER_PW = config.get(
                         "REDIS", "REDIS_SERVER_PW"
                     )
                 if config.has_option("REDIS", "REDIS_RESOURCE_EXPIRE_TIME"):
-                    self.REDIS_RESOURCE_EXPIRE_TIME = config.getint(
+                    self.KVDB_RESOURCE_EXPIRE_TIME = config.getint(
                         "REDIS", "REDIS_RESOURCE_EXPIRE_TIME"
                     )
                 if config.has_option("REDIS", "WORKER_LOGFILE"):
                     self.WORKER_LOGFILE = config.get("REDIS", "WORKER_LOGFILE")
+
+            if config.has_section("KVDB"):
+                if config.has_option("KVDB", "KVDB_SERVER_URL"):
+                    self.KVDB_SERVER_URL = config.get(
+                        "KVDB", "KVDB_SERVER_URL"
+                    )
+                if config.has_option("KVDB", "KVDB_SERVER_PORT"):
+                    self.KVDB_SERVER_PORT = config.getint(
+                        "KVDB", "KVDB_SERVER_PORT"
+                    )
+                if config.has_option("KVDB", "KVDB_SERVER_PW"):
+                    self.KVDB_SERVER_PW = config.get("KVDB", "KVDB_SERVER_PW")
+                if config.has_option("KVDB", "KVDB_RESOURCE_EXPIRE_TIME"):
+                    self.KVDB_RESOURCE_EXPIRE_TIME = config.getint(
+                        "KVDB", "KVDB_RESOURCE_EXPIRE_TIME"
+                    )
+                if config.has_option("KVDB", "WORKER_LOGFILE"):
+                    self.WORKER_LOGFILE = config.get("KVDB", "WORKER_LOGFILE")
 
             if config.has_section("QUEUE"):
                 if config.has_option("QUEUE", "NUMBER_OF_WORKERS"):
                     self.NUMBER_OF_WORKERS = config.getint(
                         "QUEUE", "NUMBER_OF_WORKERS"
                     )
-                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_URL"):
-                    self.REDIS_QUEUE_SERVER_URL = config.get(
-                        "QUEUE", "REDIS_QUEUE_SERVER_URL"
+                if config.has_option("QUEUE", "KVDB_QUEUE_SERVER_URL"):
+                    self.KVDB_QUEUE_SERVER_URL = config.get(
+                        "QUEUE", "KVDB_QUEUE_SERVER_URL"
                     )
-                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_PORT"):
-                    self.REDIS_QUEUE_SERVER_PORT = config.get(
-                        "QUEUE", "REDIS_QUEUE_SERVER_PORT"
+                if config.has_option("QUEUE", "KVDB_QUEUE_SERVER_PORT"):
+                    self.KVDB_QUEUE_SERVER_PORT = config.get(
+                        "QUEUE", "KVDB_QUEUE_SERVER_PORT"
                     )
-                if config.has_option("QUEUE", "REDIS_QUEUE_SERVER_PASSWORD"):
-                    self.REDIS_QUEUE_SERVER_PASSWORD = config.get(
-                        "QUEUE", "REDIS_QUEUE_SERVER_PASSWORD"
+                if config.has_option("QUEUE", "KVDB_QUEUE_SERVER_PASSWORD"):
+                    self.KVDB_QUEUE_SERVER_PASSWORD = config.get(
+                        "QUEUE", "KVDB_QUEUE_SERVER_PASSWORD"
                     )
-                if config.has_option("QUEUE", "REDIS_QUEUE_JOB_TTL"):
-                    self.REDIS_QUEUE_JOB_TTL = config.get(
-                        "QUEUE", "REDIS_QUEUE_JOB_TTL"
+                if config.has_option("QUEUE", "KVDB_QUEUE_JOB_TTL"):
+                    self.KVDB_QUEUE_JOB_TTL = config.get(
+                        "QUEUE", "KVDB_QUEUE_JOB_TTL"
                     )
                 if config.has_option("QUEUE", "WORKER_QUEUE_PREFIX"):
                     self.WORKER_QUEUE_PREFIX = config.get(
@@ -895,6 +912,33 @@ class Configuration(object):
                 if config.has_option("QUEUE", "QUEUE_TYPE_OVERWRITE"):
                     self.QUEUE_TYPE_OVERWRITE = config.get(
                         "QUEUE", "QUEUE_TYPE_OVERWRITE"
+                    )
+                # REDIS - deprecated in future
+                if config.has_option(
+                    "QUEUE", "REDIS_QUEUE_SERVER_URL"
+                ) and not config.has_option("QUEUE", "KVDB_QUEUE_SERVER_URL"):
+                    self.KVDB_QUEUE_SERVER_URL = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_URL"
+                    )
+                if config.has_option(
+                    "QUEUE", "REDIS_QUEUE_SERVER_PORT"
+                ) and not config.has_option("QUEUE", "KVDB_QUEUE_SERVER_PORT"):
+                    self.KVDB_QUEUE_SERVER_PORT = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_PORT"
+                    )
+                if config.has_option(
+                    "QUEUE", "REDIS_QUEUE_SERVER_PASSWORD"
+                ) and not config.has_option(
+                    "QUEUE", "KVDB_QUEUE_SERVER_PASSWORD"
+                ):
+                    self.KVDB_QUEUE_SERVER_PASSWORD = config.get(
+                        "QUEUE", "REDIS_QUEUE_SERVER_PASSWORD"
+                    )
+                if config.has_option(
+                    "QUEUE", "REDIS_QUEUE_JOB_TTL"
+                ) and not config.has_option("QUEUE", "KVDB_QUEUE_JOB_TTL"):
+                    self.KVDB_QUEUE_JOB_TTL = config.get(
+                        "QUEUE", "REDIS_QUEUE_JOB_TTL"
                     )
 
             if config.has_section("MISC"):
@@ -1032,31 +1076,68 @@ class Configuration(object):
                 )
 
         # Overwrite values with environment variables if exist:
-        if os.environ.get("REDIS_SERVER_URL"):
-            print_warning("REDIS", "REDIS_SERVER_URL")
-            self.REDIS_SERVER_URL = os.environ["REDIS_SERVER_URL"]
+        if os.environ.get("KVDB_SERVER_URL"):
+            print_warning("KVDB", "KVDB_SERVER_URL")
+            self.KVDB_SERVER_URL = os.environ["KVDB_SERVER_URL"]
 
-        if os.environ.get("REDIS_SERVER_PORT"):
-            print_warning("REDIS", "REDIS_SERVER_PORT")
-            self.REDIS_SERVER_PORT = os.environ["REDIS_SERVER_PORT"]
+        if os.environ.get("KVDB_SERVER_PORT"):
+            print_warning("KVDB", "KVDB_SERVER_PORT")
+            self.KVDB_SERVER_PORT = os.environ["KVDB_SERVER_PORT"]
 
-        if os.environ.get("REDIS_SERVER_PW"):
-            print_warning("REDIS", "REDIS_SERVER_PW", "XXX", "XXX")
-            self.REDIS_SERVER_PW = os.environ["REDIS_SERVER_PW"]
+        if os.environ.get("KVDB_SERVER_PW"):
+            print_warning("KVDB", "KVDB_SERVER_PW", "XXX", "XXX")
+            self.KVDB_SERVER_PW = os.environ["KVDB_SERVER_PW"]
 
-        if os.environ.get("REDIS_QUEUE_SERVER_URL"):
-            print_warning("QUEUE", "REDIS_QUEUE_SERVER_URL")
-            self.REDIS_QUEUE_SERVER_URL = os.environ["REDIS_QUEUE_SERVER_URL"]
+        if os.environ.get("KVDB_QUEUE_SERVER_URL"):
+            print_warning("QUEUE", "KVDB_QUEUE_SERVER_URL")
+            self.KVDB_QUEUE_SERVER_URL = os.environ["KVDB_QUEUE_SERVER_URL"]
 
-        if os.environ.get("REDIS_QUEUE_SERVER_PORT"):
-            print_warning("QUEUE", "REDIS_QUEUE_SERVER_PORT")
-            self.REDIS_QUEUE_SERVER_PORT = os.environ[
-                "REDIS_QUEUE_SERVER_PORT"
+        if os.environ.get("KVDB_QUEUE_SERVER_PORT"):
+            print_warning("QUEUE", "KVDB_QUEUE_SERVER_PORT")
+            self.KVDB_QUEUE_SERVER_PORT = os.environ["KVDB_QUEUE_SERVER_PORT"]
+
+        if os.environ.get("KVDB_QUEUE_SERVER_PW"):
+            print_warning("QUEUE", "KVDB_QUEUE_SERVER_PASSWORD", "XXX", "XXX")
+            self.KVDB_QUEUE_SERVER_PASSWORD = os.environ[
+                "KVDB_QUEUE_SERVER_PW"
             ]
 
-        if os.environ.get("REDIS_QUEUE_SERVER_PW"):
+        # REDIS - deprecated in future
+        if os.environ.get("REDIS_SERVER_URL") and not os.environ.get(
+            "KVDB_SERVER_URL"
+        ):
+            print_warning("REDIS", "REDIS_SERVER_URL")
+            self.KVDB_SERVER_URL = os.environ["REDIS_SERVER_URL"]
+
+        if os.environ.get("REDIS_SERVER_PORT") and not os.environ.get(
+            "KVDB_SERVER_PORT"
+        ):
+            print_warning("REDIS", "REDIS_SERVER_PORT")
+            self.KVDB_SERVER_PORT = os.environ["REDIS_SERVER_PORT"]
+
+        if os.environ.get("REDIS_SERVER_PW") and not os.environ.get(
+            "KVDB_SERVER_PW"
+        ):
+            print_warning("REDIS", "REDIS_SERVER_PW", "XXX", "XXX")
+            self.KVDB_SERVER_PW = os.environ["REDIS_SERVER_PW"]
+
+        if os.environ.get("REDIS_QUEUE_SERVER_URL") and not os.environ.get(
+            "KVDB_QUEUE_SERVER_URL"
+        ):
+            print_warning("QUEUE", "REDIS_QUEUE_SERVER_URL")
+            self.KVDB_QUEUE_SERVER_URL = os.environ["REDIS_QUEUE_SERVER_URL"]
+
+        if os.environ.get("REDIS_QUEUE_SERVER_PORT") and not os.environ.get(
+            "KVDB_QUEUE_SERVER_PORT"
+        ):
+            print_warning("QUEUE", "REDIS_QUEUE_SERVER_PORT")
+            self.KVDB_QUEUE_SERVER_PORT = os.environ["REDIS_QUEUE_SERVER_PORT"]
+
+        if os.environ.get("REDIS_QUEUE_SERVER_PW") and not os.environ.get(
+            "KVDB_QUEUE_SERVER_PW"
+        ):
             print_warning("QUEUE", "REDIS_QUEUE_SERVER_PASSWORD", "XXX", "XXX")
-            self.REDIS_QUEUE_SERVER_PASSWORD = os.environ[
+            self.KVDB_QUEUE_SERVER_PASSWORD = os.environ[
                 "REDIS_QUEUE_SERVER_PW"
             ]
 
