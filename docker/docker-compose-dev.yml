@@ -44,7 +44,7 @@ services:
     -   actinia-dev
 
   valkey:
-    image: valkey/valkey:8.0-alpine
+    image: valkey/valkey:8.1-alpine
     volumes:
       - ./valkey_data:/data
     environment:
@@ -63,7 +63,7 @@ services:
     -   actinia-dev
 
   valkey-queue:
-    image: valkey/valkey:8.0-alpine
+    image: valkey/valkey:8.1-alpine
     volumes:
       - ./valkey_queue_data:/data
     environment:
