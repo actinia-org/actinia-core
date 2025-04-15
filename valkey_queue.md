@@ -1,4 +1,4 @@
-# Redis Queue for Jobs
+# Key Value Database (KVDB) Queue for Jobs
 
 ## Dev setup
 
@@ -6,8 +6,8 @@
 
 ```ini
 [QUEUE]
-redis_queue_server_url = redis-queue
-redis_queue_server_password = pass
+kvdb_queue_server_url = valkey-queue
+kvdb_queue_server_password = pass
 worker_prefix = job_queue
 queue_type = per_job
 ```
@@ -17,7 +17,7 @@ or
 ```ini
 [QUEUE]
 number_of_workers = 1
-queue_type = redis
+queue_type = kvdb
 ```
 
 - Startup actinia with above config in preferred way, e.g.
@@ -42,10 +42,10 @@ QUEUE_NAME=job_queue_0
 actinia-worker $QUEUE_NAME -c /etc/default/actinia --quit
 ```
 
-## Redis Details
+## Kvdb Details
 
 ```bash
-redis-cli -a 'pass'
+valkey-cli -a 'pass'
 
 127.0.0.1:6379> KEYS *
 3) "actinia_worker_count"
@@ -62,7 +62,7 @@ redis-cli -a 'pass'
 
 ### actinia_worker_count
 
-- only in redis_interface for current queue
+- only in kvdb_interface for current queue
 - created at first HTTP POST request
 - currently outcommented
 
