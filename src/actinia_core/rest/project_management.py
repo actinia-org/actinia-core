@@ -32,9 +32,9 @@ import os
 import shutil
 import pickle
 from flask_restful_swagger_2 import swagger
-from actinia_api.swagger2.actinia_core.apidocs import location_management
-from actinia_api.swagger2.actinia_core.schemas.location_management import (
-    LocationListResponseModel,
+from actinia_api.swagger2.actinia_core.apidocs import project_management
+from actinia_api.swagger2.actinia_core.schemas.project_management import (
+    ProjectListResponseModel,
 )
 
 from actinia_core.core.common.app import auth
@@ -79,7 +79,7 @@ class ListProjectsResource(ResourceBase):
     layer_type = None
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("get", location_management.get_doc))
+    @swagger.doc(check_endpoint("get", project_management.get_doc))
     def get(self):
         """Get a list of all available projects"""
         projects = []
@@ -134,7 +134,7 @@ class ListProjectsResource(ResourceBase):
             else:
                 param["locations"] = projects
             return make_response(
-                jsonify(LocationListResponseModel(**param)),
+                jsonify(ProjectListResponseModel(**param)),
                 200,
             )
         else:
@@ -156,7 +156,7 @@ class ProjectManagementResourceUser(ResourceBase):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("get", location_management.get_user_doc))
+    @swagger.doc(check_endpoint("get", project_management.get_user_doc))
     def get(self, project_name):
         """
         Get the project projection and current computational region of the
@@ -199,7 +199,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
         ResourceBase.__init__(self)
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("delete", location_management.delete_user_doc))
+    @swagger.doc(check_endpoint("delete", project_management.delete_user_doc))
     def delete(self, project_name):
         """
         Delete an existing project and everything inside from the user
@@ -248,7 +248,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
         )
 
     @endpoint_decorator()
-    @swagger.doc(check_endpoint("post", location_management.post_user_doc))
+    @swagger.doc(check_endpoint("post", project_management.post_user_doc))
     def post(self, project_name):
         """Create a new project based on EPSG code in the user database."""
         # Create only new projects if they did not exist in the global
