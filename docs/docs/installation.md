@@ -155,15 +155,15 @@ cd actinia-api
 python setup.py install
 ```
 
-7. Make sure that a redis service is running and create a user with
+7. Make sure that a valkey service is running and create a user with
    actinia-user tool
 
 ```bash
 cd /tmp
 
-# install and start redis server
-apt-get install -y redis
-redis-server &
+# install and start kvdb server
+apt-get install -y valkey
+valkey-server &
 
 # Create the superuser
 actinia-user create -u superadmin -w abcdefgh -r superadmin -g admin -c 100000000000 -n 1000 -t 6000

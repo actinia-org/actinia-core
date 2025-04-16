@@ -49,17 +49,17 @@ make devtest
 
 ## Problems
 
-Redis authorization is set by `from actinia_core.core.common import redis_interface`:
+Kvdb authorization is set by `from actinia_core.core.common import kvdb_interface`:
 
 - so this does set the password:
   ```python
   import os
-  from actinia_core.core.common import redis_interface # PROBLEM!!!!
+  from actinia_core.core.common import kvdb_interface # PROBLEM!!!!
   from actinia_core.core.common.config import global_config
 
   custom_actinia_cfg = str(os.environ["DEFAULT_CONFIG_PATH"])
   global_config.read(custom_actinia_cfg)
-  global_config.REDIS_SERVER_PW
+  global_config.KVDB_SERVER_PW
   ```
 - and this works fine:
   ```python
@@ -68,7 +68,7 @@ Redis authorization is set by `from actinia_core.core.common import redis_interf
 
   custom_actinia_cfg = str(os.environ["DEFAULT_CONFIG_PATH"])
   global_config.read(custom_actinia_cfg)
-  global_config.REDIS_SERVER_PW
+  global_config.KVDB_SERVER_PW
   ```
 
 ## Not working processes
