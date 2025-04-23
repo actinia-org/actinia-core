@@ -14,11 +14,6 @@ RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_08_mic
   rm -f nc_spm_08_micro.zip && \
   mv nc_spm_08_micro nc_spm_08
 RUN grass -e -c 'EPSG:4326' latlong_wgs84
-RUN wget --quiet https://grass.osgeo.org/sampledata/north_carolina/nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
-  unzip nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
-  rm -f nc_spm_mapset_modis2015_2016_lst_grass8.zip && \
-  mv  modis_lst nc_spm_08/modis_lst
-RUN chown -R 1001:1001 nc_spm_08/modis_lst && chmod -R g+w nc_spm_08/modis_lst
 
 # install GRASS addons required for tests
 # TODO use --tmp-project if actinia-core uses GRASS 8.4
