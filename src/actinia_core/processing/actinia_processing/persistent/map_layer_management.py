@@ -120,8 +120,13 @@ class PersistentRemoveLayers(PersistentProcessing):
 
         self._execute_process_list(process_list)
 
-        if "WARNING: No data base element files found" in "\n".join(
-            self.module_output_log[0]["stderr"]
+        # TODO: check for error code if g.remove is updated
+        # instead of using string which might change
+        # self.module_output_log[0]["return_code"] != 0
+        error_output = "\n".join(self.module_output_log[0]["stderr"])
+        if (
+            "WARNING: No data base element files found" in error_output
+            or "No file(s) found for type(s)" in error_output
         ):
             raise AsyncProcessError("<%s> layer not found" % layer_type)
 
