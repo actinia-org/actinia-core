@@ -58,32 +58,65 @@ class EphemeralVectorInfo(EphemeralProcessing):
         vector_name = self.rdc.map_name
         self.required_mapsets.append(self.mapset_name)
 
-        pc = {}
-        pc["1"] = {
-            "module": "v.info",
+        pc_1 = {}
+        pc_1["1"] = {
+            "module": "v.db.connect",
             "inputs": {"map": vector_name + "@" + self.mapset_name},
-            "flags": "gte",
-        }
-
-        pc["2"] = {
-            "module": "v.info",
-            "inputs": {"map": vector_name + "@" + self.mapset_name},
-            "flags": "h",
-        }
-
-        pc["3"] = {
-            "module": "v.info",
-            "inputs": {"map": vector_name + "@" + self.mapset_name},
-            "flags": "c",
+            "flags": "g"
         }
 
         self.skip_region_check = True
         process_list = (
             self._create_temporary_grass_environment_and_process_list(
-                process_chain=pc, skip_permission_check=True
+                process_chain=pc_1, skip_permission_check=True
             )
         )
         self._execute_process_list(process_list)
+
+        kv_list = self.module_output_log[0]["stdout"].split("\n")
+
+        pc_2 = {}
+        pc_2["1"] = {
+            "module": "v.info",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "gte",
+        }
+
+        pc_2["2"] = {
+            "module": "v.info",
+            "inputs": {"map": vector_name + "@" + self.mapset_name},
+            "flags": "h",
+        }
+        # case 1: no layer (len(kv_list)==1)
+        # ==> nothing to be added to the results
+        if len(kv_list) == 2:
+            # case 2: single layer
+            pc_2["3"] = {
+                "module": "v.info",
+                "inputs": {"map": vector_name + "@" + self.mapset_name},
+                "flags": "c",
+            }
+        elif len(kv_list) > 2:
+            # case 3: multiple layers
+            pc_2["3"] = {
+                "module": "v.db.connect",
+                "inputs": {"map": vector_name + "@" + self.mapset_name},
+                "flags": "g",
+            }
+
+        process_list = self._validate_process_chain(
+            process_chain=pc_2, skip_permission_check=True
+        )
+        self._execute_process_list(process_list)
+
+        # TODO: check index x of self.modul_output_log[x]
+        #       due to more output (v.db.connect), this index probably doesn't
+        #       fit anymore
+        #       Additional: depending on number of layers,
+        #                   the amount of output changes;
+        #                   have to be considered; e.g. with addtional
+        #                   key-value pair in vector_info
+        #                   AND for muliptle layers multiple output
 
         kv_list = self.module_output_log[0]["stdout"].split("\n")
 
