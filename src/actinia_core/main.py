@@ -28,6 +28,7 @@ Actinia Core
 
 import os
 from .endpoints import create_endpoints
+from .health_check import health_check
 from .version import init_versions
 from actinia_core.core.common.app import flask_app
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
@@ -70,6 +71,9 @@ del kvdb_args
 
 # Create the process queue
 create_process_queue(global_config)
+
+# use import to make linter happy (needed to create endpoint)
+health_check = health_check
 
 ###############################################################################
 if __name__ == "__main__":
