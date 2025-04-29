@@ -25,6 +25,23 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [6.0.1](https://github.com/actinia-org/actinia-core/releases/tag/6.0.1) - 2025-04-29
+released from main
+### Fixed
+* Rename redis to kvdb/valkey by @mmacata in https://github.com/actinia-org/actinia-core/pull/610
+* Fix g.remove error msg check by @mmacata in https://github.com/actinia-org/actinia-core/pull/616
+* Readd health-check by @mmacata in https://github.com/actinia-org/actinia-core/pull/619
+
+### Updated
+* chore(deps): update valkey/valkey docker tag to v8.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/608
+* fix(deps): update dependency pystac to v1.13.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/611
+* chore(deps): update mundialis/actinia-core docker tag to v6 by @renovate in https://github.com/actinia-org/actinia-core/pull/609
+* fix(deps): update dependency setuptools to v79 by @renovate in https://github.com/actinia-org/actinia-core/pull/613
+* fix(deps): update dependency setuptools to v79.0.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/615
+* chore(deps): update anchore/sbom-action digest to 9f73021 by @renovate in https://github.com/actinia-org/actinia-core/pull/617
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.0...6.0.1 
+
 ## [6.0.0](https://github.com/actinia-org/actinia-core/releases/tag/6.0.0) - 2025-04-15
 released from main
 ### Changed
@@ -81,7 +98,6 @@ released from main
 * fix(deps): update dependency matplotlib to v3.10.1 - autoclosed by @renovate in https://github.com/actinia-org/actinia-core/pull/596
 * fix(deps): update dependency pystac to v1.12.2 by @renovate in https://github.com/actinia-org/actinia-core/pull/594
 * fix(deps): update dependency google-cloud-bigquery to <=3.31.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/592
-
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/5.1.0...6.0.0
 
