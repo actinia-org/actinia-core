@@ -40,7 +40,7 @@ released from main
 * fix(deps): update dependency setuptools to v79.0.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/615
 * chore(deps): update anchore/sbom-action digest to 9f73021 by @renovate in https://github.com/actinia-org/actinia-core/pull/617
 
-**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.0...6.0.1 
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.0...6.0.1
 
 ## [6.0.0](https://github.com/actinia-org/actinia-core/releases/tag/6.0.0) - 2025-04-15
 released from main
