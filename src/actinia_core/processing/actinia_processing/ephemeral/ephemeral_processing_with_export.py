@@ -367,6 +367,10 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
             AsyncProcessError: If a GRASS module return status is not 0
 
         """
+        # switch into the temporary working directory to allow relative
+        # path for output file
+        os.chdir(self.temp_file_path)
+
         if format == "PDF":
             output_file_name = file_name
             executable = "/bin/cp"
