@@ -1406,10 +1406,13 @@ class ProcessChainConverter(object):
                 # the output dict
                 if "export" in output:
                     output["tmp_file"] = self.temporary_pc_files[file_id]
-                    output["file_name"] = "%s.%s" % (
-                        file_id,
-                        output["export"]["format"].lower(),
-                    )
+                    if output["export"]["format"].lower() != "pdf":
+                        output["file_name"] = "%s.%s" % (
+                            file_id,
+                            output["export"]["format"].lower(),
+                        )
+                    else:
+                        output["file_name"] = file_id
             elif "::" in value and value.split("::")[1] in [
                 "stdout",
                 "stderr",
