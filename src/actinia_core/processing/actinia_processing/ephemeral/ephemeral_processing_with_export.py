@@ -374,9 +374,6 @@ class EphemeralProcessingWithExport(EphemeralProcessing):
 
         else:
             output_file_name = file_name + ".zip"
-            # switch into the temporary working directory to use relative
-            # path for zip
-            # os.chdir(self.temp_file_path)
             executable = "/usr/bin/zip"
             args = ["-rj", output_file_name, tmp_file]
 
