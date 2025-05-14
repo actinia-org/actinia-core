@@ -79,7 +79,6 @@ class UserRequestsTestCase(ActiniaResourceTestCaseBase):
                     "PERMANENT",
                     "user1",
                     "landsat",
-                    "modis_lst",
                     "test_mapset",
                 ],
                 "ECAD": ["PERMANENT"],
