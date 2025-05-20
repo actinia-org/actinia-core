@@ -45,15 +45,6 @@ from actinia_core.rest.mapset_management import (
     MapsetLockManagementResource,
     MapsetManagementResourceAdmin,
 )
-from actinia_core.rest.strds_management import (
-    STRDSManagementResource,
-    SyncSTRDSListerResource,
-)
-from actinia_core.rest.strds_raster_management import STRDSRasterManagement
-from actinia_core.rest.raster_layer import RasterLayerResource
-from actinia_core.rest.map_layer_management import RasterLayersResource
-from actinia_core.rest.map_layer_management import VectorLayersResource
-from actinia_core.rest.vector_layer import VectorLayerResource
 from actinia_core.rest.ephemeral_processing import AsyncEphemeralResource
 from actinia_core.rest.ephemeral_processing_with_export import (
     AsyncEphemeralExportResource,
@@ -100,21 +91,6 @@ from actinia_core.rest.download_cache_management import (
 from actinia_core.rest.resource_storage_management import (
     SyncResourceStorageResource,
 )
-from actinia_core.rest.vector_renderer import (
-    SyncEphemeralVectorRendererResource,
-)
-from actinia_core.rest.raster_legend import SyncEphemeralRasterLegendResource
-from actinia_core.rest.raster_colors import SyncPersistentRasterColorsResource
-from actinia_core.rest.raster_renderer import (
-    SyncEphemeralRasterRendererResource,
-)
-from actinia_core.rest.raster_renderer import (
-    SyncEphemeralRasterRGBRendererResource,
-)
-from actinia_core.rest.raster_renderer import (
-    SyncEphemeralRasterShapeRendererResource,
-)
-from actinia_core.rest.strds_renderer import SyncEphemeralSTRDSRendererResource
 from actinia_core.rest.process_chain_monitoring import (
     MaxMapsetSizeResource,
     MapsetSizeResource,
@@ -203,122 +179,6 @@ def create_project_endpoints(projects_url_part="projects"):
         "<string:mapset_name>/lock",
         endpoint=get_endpoint_class_name(
             MapsetLockManagementResource, projects_url_part
-        ),
-    )
-
-    # Raster management
-    flask_api.add_resource(
-        RasterLayersResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers",
-        endpoint=get_endpoint_class_name(
-            RasterLayersResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        RasterLayerResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>",
-        endpoint=get_endpoint_class_name(
-            RasterLayerResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralRasterLegendResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>/legend",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralRasterLegendResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncPersistentRasterColorsResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>/colors",
-        endpoint=get_endpoint_class_name(
-            SyncPersistentRasterColorsResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralRasterRendererResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>/render",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralRasterRendererResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralRasterRGBRendererResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/render_rgb",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralRasterRGBRendererResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralRasterShapeRendererResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/render_shade",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralRasterShapeRendererResource, projects_url_part
-        ),
-    )
-    # STRDS management
-    flask_api.add_resource(
-        SyncSTRDSListerResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/strds",
-        endpoint=get_endpoint_class_name(
-            SyncSTRDSListerResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        STRDSManagementResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/strds/<string:strds_name>",
-        endpoint=get_endpoint_class_name(
-            STRDSManagementResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        STRDSRasterManagement,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/strds/<string:strds_name>/raster_layers",
-        endpoint=get_endpoint_class_name(
-            STRDSRasterManagement, projects_url_part
-        ),
-    )
-    # Vector management
-    flask_api.add_resource(
-        VectorLayersResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/vector_layers",
-        endpoint=get_endpoint_class_name(
-            VectorLayersResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        VectorLayerResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/vector_layers/<string:vector_name>",
-        endpoint=get_endpoint_class_name(
-            VectorLayerResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralVectorRendererResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/vector_layers/<string:vector_name>/render",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralVectorRendererResource, projects_url_part
-        ),
-    )
-    flask_api.add_resource(
-        SyncEphemeralSTRDSRendererResource,
-        f"/{projects_url_part}/<string:project_name>/mapsets/"
-        "<string:mapset_name>/strds/<string:strds_name>/render",
-        endpoint=get_endpoint_class_name(
-            SyncEphemeralSTRDSRendererResource, projects_url_part
         ),
     )
 
