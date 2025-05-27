@@ -59,7 +59,7 @@ dependencies = [
     "Sphinx>=1.7.1",
     "requests>=2.20.0",
     "rq>=0.10.0",
-    "setuptools==79.0.1",
+    "setuptools==80.9.0",
     "uWSGI>=2.0.17",
     "wheel",
     "geopandas",
