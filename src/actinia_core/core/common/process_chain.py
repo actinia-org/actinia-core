@@ -29,7 +29,7 @@ import requests
 
 from actinia_core.core.stac_importer_interface import STACImporter as STAC
 from .process_object import Process
-from .exceptions import AsyncProcessError
+from actinia_processing_lib.exceptions import AsyncProcessError
 from actinia_core.core.geodata_download_importer import (
     GeoDataDownloadImportSupport,
 )

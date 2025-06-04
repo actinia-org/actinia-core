@@ -34,11 +34,11 @@ from actinia_api.swagger2.actinia_core.apidocs import (
 )
 
 from actinia_core.core.common.kvdb_interface import enqueue_job
-from actinia_core.rest.base.endpoint_config import (
+from actinia_rest_lib.rest.base.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
-from actinia_core.rest.base.resource_base import ResourceBase
+from actinia_rest_lib.rest.base.resource_base import ResourceBase
 from actinia_core.processing.common.ephemeral_processing_with_export import (
     start_job,
 )

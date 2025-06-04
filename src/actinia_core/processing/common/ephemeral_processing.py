@@ -25,7 +25,7 @@
 Base class for asynchronous processing
 """
 
-from actinia_core.processing.common.utils import try_import
+from actinia_processing_lib.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann, Carmen Tawalika"
@@ -37,7 +37,7 @@ __email__ = "info@mundialis.de"
 
 
 EphemeralProcessing = try_import(
-    ("actinia_core.processing.actinia_processing.ephemeral_processing"),
+    "actinia_processing_lib.ephemeral_processing",
     "EphemeralProcessing",
 )
 

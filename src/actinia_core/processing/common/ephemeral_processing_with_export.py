@@ -26,7 +26,7 @@ Asynchronous computation in specific temporary generated mapsets
 with export of required map layers.
 """
 
-from actinia_core.processing.common.utils import try_import
+from actinia_processing_lib.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
@@ -38,10 +38,7 @@ __email__ = "info@mundialis.de"
 
 
 EphemeralProcessingWithExport = try_import(
-    (
-        "actinia_core.processing.actinia_processing.ephemeral"
-        + ".ephemeral_processing_with_export"
-    ),
+    "actinia_processing_lib.ephemeral_processing_with_export",
     "EphemeralProcessingWithExport",
 )
 
