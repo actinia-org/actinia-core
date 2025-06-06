@@ -31,7 +31,7 @@ from .google_satellite_bigquery_interface import (
     GoogleSatelliteBigQueryInterface,
 )
 from .aws_sentinel_interface import AWSSentinel2AInterface
-from .exceptions import AsyncProcessError
+from actinia_processing_lib.exceptions import AsyncProcessError
 from .process_object import Process
 
 

@@ -27,7 +27,7 @@ Asynchronous merging of several mapsets into a single one
 import pickle
 from flask import jsonify, make_response
 
-from actinia_core.rest.base.resource_base import ResourceBase
+from actinia_rest_lib.resource_base import ResourceBase
 from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.processing.common.persistent_mapset_merger import start_job
 

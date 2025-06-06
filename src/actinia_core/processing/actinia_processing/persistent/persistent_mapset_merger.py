@@ -24,10 +24,10 @@
 """
 Asynchronous merging of several mapsets into a single one
 """
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+from actinia_processing_lib.persistent_processing import (
     PersistentProcessing,
 )
-from actinia_core.core.common.exceptions import (
+from actinia_processing_lib.exceptions import (
     AsyncProcessError,
     AsyncProcessTermination,
 )

@@ -106,19 +106,19 @@ def enqueue_job(timeout, func, *args):
     # from ...rest.ephemeral_processing import \
     #     AsyncEphemeralResource
     # from ...processing.common.ephemeral_processing import start_job
-    # from ...processing.actinia_processing.ephemeral_processing \
+    # from actinia_processing_lib.ephemeral_processing \
     #      import EphemeralProcessing
     # processing = EphemeralProcessing(*args)
     # processing.run()
 
     # # for '/projects/<string:project_name>/processing_async_export'
-    # from ...processing.actinia_processing.ephemeral.\
-    #     ephemeral_processing_with_export import EphemeralProcessingWithExport
+    # from actinia_processing_lib.ephemeral_processing_with_export \
+    #      import EphemeralProcessingWithExport
     # processing = EphemeralProcessingWithExport(*args)
     # processing.run()
 
     # # for /projects/{project_name}/mapsets/{mapset_name}/processing_async
-    # from ...processing.actinia_processing.ephemeral.persistent_processing \
+    # from actinia_processing_lib.persistent_processing \
     #     import PersistentProcessing
     # processing = PersistentProcessing(*args)
     # processing.run()

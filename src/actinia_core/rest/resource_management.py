@@ -41,7 +41,7 @@ from actinia_api.swagger2.actinia_core.apidocs import resource_management
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
-from actinia_core.rest.base.endpoint_config import (
+from actinia_rest_lib.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )

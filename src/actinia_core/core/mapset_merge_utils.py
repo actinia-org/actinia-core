@@ -29,7 +29,7 @@ import fileinput
 import os
 import sqlite3
 
-from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_processing_lib.exceptions import AsyncProcessError
 
 __license__ = "GPLv3"
 __author__ = "Anika Weinmann, Lina Krisztian"

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2018 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2025 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -29,20 +29,20 @@ related to the Actinia Core functionality
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
 __copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2025, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-class AsyncProcessError(Exception):
-    """
-    Raise this exception in case the asynchronous processing faces an error
-    """
+# class AsyncProcessError(Exception):
+#     """
+#     Raise this exception in case the asynchronous processing faces an error
+#     """
 
-    def __init__(self, message):
-        message = "%s:  %s" % (str(self.__class__.__name__), message)
-        Exception.__init__(self, message)
+#     def __init__(self, message):
+#         message = "%s:  %s" % (str(self.__class__.__name__), message)
+#         Exception.__init__(self, message)
 
 
 class RsyncError(Exception):
@@ -53,23 +53,23 @@ class RsyncError(Exception):
         Exception.__init__(self, message)
 
 
-class AsyncProcessTermination(Exception):
-    """
-    Raise this exception in case the termination requests was executed
-    successfully
-    """
+# class AsyncProcessTermination(Exception):
+#     """
+#     Raise this exception in case the termination requests was executed
+#     successfully
+#     """
 
-    def __init__(self, message):
-        message = "%s:  %s" % (str(self.__class__.__name__), message)
-        Exception.__init__(self, message)
+#     def __init__(self, message):
+#         message = "%s:  %s" % (str(self.__class__.__name__), message)
+#         Exception.__init__(self, message)
 
 
-class AsyncProcessTimeLimit(Exception):
-    """Raise this exception in case the process time limit was reached"""
+# class AsyncProcessTimeLimit(Exception):
+#     """Raise this exception in case the process time limit was reached"""
 
-    def __init__(self, message):
-        message = "%s:  %s" % (str(self.__class__.__name__), message)
-        Exception.__init__(self, message)
+#     def __init__(self, message):
+#         message = "%s:  %s" % (str(self.__class__.__name__), message)
+#         Exception.__init__(self, message)
 
 
 class GoogleCloudAPIError(Exception):

@@ -27,7 +27,7 @@ Running a custom UNIX process outside the GRASS GIS environment
 import pickle
 from flask import jsonify, make_response
 
-from actinia_core.rest.base.resource_base import ResourceBase
+from actinia_rest_lib.resource_base import ResourceBase
 from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.processing.common.ephemeral_custom_processing import (
     start_job,
