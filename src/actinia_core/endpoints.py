@@ -28,6 +28,8 @@ Actinia core Endpoint definitions
 import traceback
 import sys
 from pprint import pprint
+from flask_restful import Resource
+
 from actinia_core.core.common.app import flask_api
 from actinia_core.core.common.config import global_config
 from actinia_core.core.logging_interface import log
@@ -109,7 +111,11 @@ __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 
 
-def get_endpoint_class_name(endpoint_class, projects_url_part="projects"):
+def get_endpoint_class_name(
+    endpoint_class: Resource,
+    projects_url_part: str = "projects",
+) -> str:
+    """Create the name for the given endpoint class."""
     endpoint_class_name = endpoint_class.__name__.lower()
     if projects_url_part != "projects":
         name = f"{endpoint_class_name}_{projects_url_part}"
