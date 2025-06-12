@@ -28,7 +28,7 @@ The region settings of the mapset
 or the raster layer region are used for export.
 """
 
-from actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export import (
+from actinia_processing_lib.ephemeral_processing_with_export import (
     EphemeralProcessingWithExport,
 )
 

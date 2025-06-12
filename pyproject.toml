@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "actinia-core"
-version = "6.0.0"
+version = "6.0.1"
 description = "Actinia Core is an open source REST API for scalable, distributed, high performance processing of geographical data that uses mainly GRASS GIS for computational tasks"
 readme = "README.md"
 authors = [
@@ -36,6 +36,8 @@ keywords = [
 ]
 dependencies = [
     "actinia-api==3.7.0",
+    "actinia-rest-lib>=1.0.0",
+    "actinia-processing-lib>=1.0.0",
     "Flask>=3.0.0",
     "boto3>=1.6.6",
     "colorlog>=4.2.1",
@@ -59,7 +61,7 @@ dependencies = [
     "Sphinx>=1.7.1",
     "requests>=2.20.0",
     "rq>=0.10.0",
-    "setuptools==78.1.0",
+    "setuptools==79.0.1",
     "uWSGI>=2.0.17",
     "wheel",
     "geopandas",

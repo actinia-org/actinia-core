@@ -36,7 +36,7 @@ from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import user_management
 
 from actinia_core.core.common.config import global_config
-from actinia_core.rest.base.endpoint_config import (
+from actinia_rest_lib.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )

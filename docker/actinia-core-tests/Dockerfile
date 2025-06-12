@@ -24,7 +24,7 @@ RUN apk update && apk upgrade
 # DL3013 # Pin versions in pip
 # DL3018: Pin versions in apk add
 # hadolint ignore=DL3013,DL3018
-RUN apk add --no-cache valkey &&  \
+RUN apk add --no-cache valkey valkey-cli &&  \
     pip install --no-cache-dir pytest pytest-cov iniconfig
 
 # uninstall actinia-core and directories from FROM-image

@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# Copyright (c) 2016-2021 Sören Gebbert and mundialis GmbH & Co. KG
+# Copyright (c) 2016-2025 Sören Gebbert and mundialis GmbH & Co. KG
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -33,7 +33,7 @@ from actinia_core.core.common.config import global_config
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
-    "Copyright 2016-2021, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2025, Sören Gebbert and mundialis GmbH & Co. KG"
 )
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
@@ -185,19 +185,3 @@ def get_mv_process(source, dest):
         skip_permission_check=True,
     )
     return p
-
-
-def allowed_file(filename, allowed_extensions):
-    """The function checks if the file has an allowed extension.
-
-    Args:
-        filename (str): The file name
-        allowed_extensions (list): The list of allowed extensions
-
-    Returns:
-        (bool): Returns True, if file extension is allowed
-    """
-    return (
-        "." in filename
-        and filename.rsplit(".", 1)[1].lower() in allowed_extensions
-    )

@@ -35,7 +35,7 @@ from actinia_api.swagger2.actinia_core.apidocs import (
     resource_storage_management,
 )
 
-from actinia_core.rest.base.resource_base import ResourceBase
+from actinia_rest_lib.resource_base import ResourceBase
 from actinia_core.core.common.kvdb_interface import enqueue_job
 from actinia_core.processing.common.resource_storage_management import (
     start_resource_storage_size,
@@ -44,7 +44,7 @@ from actinia_core.processing.common.resource_storage_management import (
 
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
-from actinia_core.rest.base.endpoint_config import (
+from actinia_rest_lib.endpoint_config import (
     check_endpoint,
     endpoint_decorator,
 )
