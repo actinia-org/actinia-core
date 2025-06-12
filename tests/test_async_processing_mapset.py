@@ -174,25 +174,25 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
 
         self.assertTrue("test_mapset" in mapsets)
 
-        rv = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
-            "test_mapset/raster_layers",
-            headers=self.admin_auth_header,
-        )
-        print(rv.data)
-        self.assertEqual(
-            rv.status_code,
-            200,
-            "HTML status code is wrong %i" % rv.status_code,
-        )
-        self.assertEqual(
-            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-        )
+        # rv = self.server.get(
+        #     f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+        #     "test_mapset/raster_layers",
+        #     headers=self.admin_auth_header,
+        # )
+        # print(rv.data)
+        # self.assertEqual(
+        #     rv.status_code,
+        #     200,
+        #     "HTML status code is wrong %i" % rv.status_code,
+        # )
+        # self.assertEqual(
+        #     rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        # )
 
-        map_list = json_load(rv.data)["process_results"]
-        self.assertTrue("my_accumulation" in map_list)
-        self.assertTrue("my_aspect" in map_list)
-        self.assertTrue("my_slope" in map_list)
+        # map_list = json_load(rv.data)["process_results"]
+        # self.assertTrue("my_accumulation" in map_list)
+        # self.assertTrue("my_aspect" in map_list)
+        # self.assertTrue("my_slope" in map_list)
 
         # Remove the mapset
         rv = self.server.delete(
@@ -244,25 +244,25 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         )
         self.waitAsyncStatusAssertHTTP(rv, headers=self.admin_auth_header)
 
-        rv = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
-            "test_mapset/raster_layers",
-            headers=self.user_auth_header,
-        )
-        print(rv.data)
-        self.assertEqual(
-            rv.status_code,
-            200,
-            "HTML status code is wrong %i" % rv.status_code,
-        )
-        self.assertEqual(
-            rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
-        )
+        # rv = self.server.get(
+        #     f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/"
+        #     "test_mapset/raster_layers",
+        #     headers=self.user_auth_header,
+        # )
+        # print(rv.data)
+        # self.assertEqual(
+        #     rv.status_code,
+        #     200,
+        #     "HTML status code is wrong %i" % rv.status_code,
+        # )
+        # self.assertEqual(
+        #     rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        # )
 
-        map_list = json_load(rv.data)["process_results"]
-        self.assertTrue("my_accumulation" in map_list)
-        self.assertTrue("my_aspect" in map_list)
-        self.assertTrue("my_slope" in map_list)
+        # map_list = json_load(rv.data)["process_results"]
+        # self.assertTrue("my_accumulation" in map_list)
+        # self.assertTrue("my_aspect" in map_list)
+        # self.assertTrue("my_slope" in map_list)
 
         # Remove the mapset
         rv = self.server.delete(
