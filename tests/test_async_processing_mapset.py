@@ -186,7 +186,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         #     "HTML status code is wrong %i" % rv.status_code,
         # )
         # self.assertEqual(
-        #     rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        #     rv.mimetype, "application/json", f"Wrong mimetype {rv.mimetype}"
         # )
 
         # map_list = json_load(rv.data)["process_results"]
@@ -256,7 +256,7 @@ class AsyncProcessMapsetTestCaseAdmin(ActiniaResourceTestCaseBase):
         #     "HTML status code is wrong %i" % rv.status_code,
         # )
         # self.assertEqual(
-        #     rv.mimetype, "application/json", "Wrong mimetype %s" % rv.mimetype
+        #     rv.mimetype, "application/json", "Wrong mimetype {rv.mimetype}"
         # )
 
         # map_list = json_load(rv.data)["process_results"]
