@@ -28,11 +28,11 @@ TODO: Tests required
 """
 
 import os
-from actinia_core.processing.actinia_processing.ephemeral.persistent_processing import (
+from actinia_processing_lib.persistent_processing import (
     PersistentProcessing,
 )
 from actinia_core.core.common.process_object import Process
-from actinia_core.core.common.exceptions import AsyncProcessError
+from actinia_processing_lib.exceptions import AsyncProcessError
 
 
 __license__ = "GPLv3"
