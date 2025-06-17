@@ -50,7 +50,7 @@ for i in actinia-api actinia-processing-lib actinia-rest-lib actinia-cloudevent-
 Or to generate this overview table, run
 ```bash
 for i in actinia-api actinia-processing-lib actinia-rest-lib actinia-cloudevent-plugin actinia-example-plugin actinia-grassdata-management-plugin actinia-metadata-plugin actinia-module-plugin actinia-parallel-plugin actinia-satellite-plugin actinia-stac-plugin actinia-statistic-plugin actinia-tiling-plugin
-  do (cd $i;IFS=","; findimports -C 2>/dev/null| grep actinia_core | while read module import;do echo "$import,$i" ;done); done | sort -u | grep actinia_core` > imports.csv
+  do (cd $i;IFS=","; findimports -C 2>/dev/null| grep actinia_core | while read module import;do echo "$import,$i" ;done); done | sort -u | grep actinia_core > imports.csv
 IFS=",";cat imports.csv | while read import plugin;do echo $import;done | sort -u > imports_unique.csv
 IFS=",";cat imports_unique.csv | while read i;do echo -n "| $i |"; cat imports.csv | while read import plugin;do if [ "$i" == "$import" ];then echo -n $plugin,;fi;done; echo -n "|";echo;done
 ```
@@ -61,7 +61,7 @@ IFS=",";cat imports_unique.csv | while read i;do echo -n "| $i |"; cat imports.c
 | actinia_core.core.common.app.auth |actinia-parallel-plugin,actinia-rest-lib,actinia-satellite-plugin,actinia-statistic-plugin,|
 | actinia_core.core.common.app.flask_api |actinia-rest-lib,actinia-statistic-plugin,|
 | actinia_core.core.common.app.flask_app |actinia-cloudevent-plugin,actinia-example-plugin,actinia-grassdata-management-plugin,actinia-module-plugin,actinia-processing-lib,actinia-rest-lib,actinia-satellite-plugin,actinia-stac-plugin,|
-| actinia_core.core.common.app.URL_PREFIX |actinia-module-plugin,actinia-tiling-plugin,|
+| actinia_core.core.common.app.URL_PREFIX |actinia-module-plugin,|
 | actinia_core.core.common.aws_sentinel_interface.AWSSentinel2AInterface |actinia-satellite-plugin,|
 | actinia_core.core.common.config.Configuration |actinia-module-plugin,actinia-stac-plugin,|
 | actinia_core.core.common.config.DEFAULT_CONFIG_PATH |actinia-processing-lib,actinia-satellite-plugin,|
@@ -83,8 +83,6 @@ IFS=",";cat imports_unique.csv | while read i;do echo -n "| $i |"; cat imports.c
 | actinia_core.core.common.process_chain.ProcessChainModel |actinia-api,|
 | actinia_core.core.common.process_object.Process |actinia-processing-lib,actinia-satellite-plugin,|
 | actinia_core.core.common.process_queue.create_process_queue |actinia-module-plugin,actinia-satellite-plugin,|
-| actinia_core.core.common.redis_base.RedisBaseInterface |actinia-module-plugin,|
-| actinia_core.core.common.redis_interface.enqueue_job |actinia-tiling-plugin,|
 | actinia_core.core.common.sentinel_processing_library.Sentinel2Processing |actinia-satellite-plugin,|
 | actinia_core.core.common.user.ActiniaUser |actinia-cloudevent-plugin,actinia-example-plugin,actinia-grassdata-management-plugin,actinia-module-plugin,actinia-parallel-plugin,actinia-processing-lib,actinia-rest-lib,actinia-stac-plugin,actinia-tiling-plugin,|
 | actinia_core.core.grass_init.GrassInitializer |actinia-processing-lib,|
@@ -94,7 +92,6 @@ IFS=",";cat imports_unique.csv | while read i;do echo -n "| $i |"; cat imports.c
 | actinia_core.core.kvdb_user.KvdbUserInterface |actinia-module-plugin,|
 | actinia_core.core.mapset_merge_utils.change_mapsetname |actinia-processing-lib,|
 | actinia_core.core.messages_logger.MessageLogger |actinia-parallel-plugin,actinia-processing-lib,actinia-rest-lib,|
-| actinia_core.core.redis_user.RedisUserInterface |actinia-module-plugin,|
 | actinia_core.core.resource_data_container.ResourceDataContainer |actinia-parallel-plugin,actinia-rest-lib,|
 | actinia_core.core.resources_logger.ResourceLogger |actinia-parallel-plugin,actinia-processing-lib,actinia-rest-lib,|
 | actinia_core.core.stac_exporter_interface.STACExporter |actinia-processing-lib,|
@@ -125,9 +122,6 @@ IFS=",";cat imports_unique.csv | while read i;do echo -n "| $i |"; cat imports.c
 | actinia_core.rest.base.user_auth.check_project_mapset_module_access |actinia-processing-lib,|
 | actinia_core.rest.base.user_auth.check_user_permissions |actinia-rest-lib,|
 | actinia_core.rest.base.user_auth.create_dummy_user |actinia-parallel-plugin,actinia-rest-lib,|
-| actinia_core.rest.ephemeral_processing.EphemeralProcessing |actinia-module-plugin,|
-| actinia_core.rest.persistent_processing.PersistentProcessing |actinia-tiling-plugin,|
-| actinia_core.rest.resource_base.ResourceBase |actinia-tiling-plugin,|
 | actinia_core.rest.resource_management.ResourceManager |actinia-rest-lib,|
 | actinia_core.rest.resource_management.ResourceManagerBase |actinia-parallel-plugin,|
 | actinia_core.rest.resource_streamer.RequestStreamerResource |actinia-rest-lib,|
