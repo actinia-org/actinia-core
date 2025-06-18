@@ -19,7 +19,7 @@ if [ $status -ne 0 ]; then
 fi
 
 # optimized gunicorn settings (http://docs.gunicorn.org/en/stable/design.html)
-# run only 1 worker for debugging reasons. This is overwritten for production  deployment.
+# to run only 1 worker for debugging reasons, change "-w" to "1"
 gunicorn -b 0.0.0.0:8088 -w 8 --access-logfile=- -k gthread actinia_core.main:flask_app
 status=$?
 if [ $status -ne 0 ]; then
