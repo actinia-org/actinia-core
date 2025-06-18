@@ -26,7 +26,7 @@ Asynchronous computation in specific temporary generated and then copied
 or original mapsets
 """
 
-from actinia_core.processing.common.utils import try_import
+from actinia_processing_lib.utils import try_import
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Guido Riembauer, Anika Weinmann, Carmen Tawalika"
@@ -38,10 +38,7 @@ __email__ = "info@mundialis.de"
 
 
 PersistentProcessing = try_import(
-    (
-        "actinia_core.processing.actinia_processing.ephemeral"
-        + ".persistent_processing"
-    ),
+    "actinia_processing_lib.persistent_processing",
     "PersistentProcessing",
 )
 

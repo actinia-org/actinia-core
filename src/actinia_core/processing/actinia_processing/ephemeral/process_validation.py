@@ -26,7 +26,7 @@ Compute areal categorical statistics on a raster map layer based on an input
 polygon.
 """
 
-from actinia_core.processing.actinia_processing.ephemeral_processing import (
+from actinia_processing_lib.ephemeral_processing import (
     EphemeralProcessing,
 )
 

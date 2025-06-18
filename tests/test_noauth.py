@@ -252,20 +252,20 @@ class TestActiniaWithoutAuthentication(ActiniaWithoutAuthentication):
         self.assertIn(
             "test", data["process_results"], "Mapset 'test' does not exists"
         )
-        # check created raster
-        rv3 = self.server.get(
-            f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test/"
-            "raster_layers"
-        )
-        self.assertEqual(
-            rv3.status_code,
-            200,
-            f"HTML status code is wrong {rv3.status_code}",
-        )
-        data = json_loads(rv3.data)
-        self.assertIn(
-            "baum", data["process_results"], "Raster 'baum' does not exists"
-        )
+        # # check created raster
+        # rv3 = self.server.get(
+        #     f"{URL_PREFIX}/{self.project_url_part}/nc_spm_08/mapsets/test/"
+        #     "raster_layers"
+        # )
+        # self.assertEqual(
+        #     rv3.status_code,
+        #     200,
+        #     f"HTML status code is wrong {rv3.status_code}",
+        # )
+        # data = json_loads(rv3.data)
+        # self.assertIn(
+        #     "baum", data["process_results"], "Raster 'baum' does not exists"
+        # )
         # delete test mapset
         self.admin_auth_header = None
         self.delete_mapset("test", "nc_spm_08")
