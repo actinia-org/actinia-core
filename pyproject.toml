@@ -10,13 +10,14 @@ readme = "README.md"
 authors = [
     { name = "Carmen Tawalika"},
     { name = "Anika Weinmann"},
+    { name = "Markus Neteler"},
     { name = "Guido Riembauer"},
     { name = "Markus Metz"},
     { name = "Julia Haas"},
     { name = "Marc Jansen"},
+    { name = "Lina Krisztian"},
     { name = "Jorge A. Herrera Maldonado"},
     { name = "Sören Gebbert"},
-    { name = "Markus Neteler"},
     { name = "Momen Mawad"},
     { name = "and more"}
 ]
