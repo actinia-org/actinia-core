@@ -25,6 +25,32 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.0.0](https://github.com/actinia-org/actinia-core/releases/tag/7.0.0) - 2025-06-18
+released from main
+### Changed
+* Extract
+  * [actinia-grassdata-management-plugin](https://github.com/actinia-org/actinia-grassdata-management-plugin)
+    ‼️ all endpoints including the resources `raster_layer`, `vector_layer` and `strds` were moved to this new plugin,
+     e.g. `/api/v3/projects/nc_spm_08/mapsets/PERMANENT/raster_layers`. If you used these endpoints before, now install
+     this plugin via `pip install actinia-grassdata-management-plugin` and add to `plugins` section in actinia.cfg file ‼️
+  * [actinia-processing-lib](https://github.com/actinia-org/actinia-processing-lib) and
+  * [actinia-rest-lib](https://github.com/actinia-org/actinia-rest-lib) by @mmacata in https://github.com/actinia-org/actinia-core/pull/628
+
+### Added
+* Enable PDF export by @mmacata in https://github.com/actinia-org/actinia-core/pull/621 (already moved to actinia-processing-lib)
+
+### Updated
+* chore(deps): update mundialis/actinia-core docker tag to v6.0.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/620
+* fix(deps): update dependency matplotlib to v3.10.3 by @renovate in https://github.com/actinia-org/actinia-core/pull/622
+* fix(deps): update dependency google-cloud-bigquery to <=3.32.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/623
+* chore(deps): update anchore/sbom-action digest to e11c554 by @renovate in https://github.com/actinia-org/actinia-core/pull/624
+* fix(deps): update dependency google-cloud-bigquery to <=3.33.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/625
+* fix(deps): update dependency google-cloud-bigquery to <=3.34.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/626
+* chore(deps): update anchore/sbom-action digest to 5f8d644 by @renovate in https://github.com/actinia-org/actinia-core/pull/629
+* chore(deps): update anchore/sbom-action digest to 9246b90 by @renovate in https://github.com/actinia-org/actinia-core/pull/630
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.1...7.0.0
+
 ## [6.0.1](https://github.com/actinia-org/actinia-core/releases/tag/6.0.1) - 2025-04-29
 released from main
 ### Fixed
