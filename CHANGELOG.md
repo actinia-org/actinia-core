@@ -28,13 +28,103 @@ Types of changes
 ## [7.0.0](https://github.com/actinia-org/actinia-core/releases/tag/7.0.0) - 2025-06-18
 released from main
 ### Changed
-* Extract
+* Extract actinia-grassdata-management-plugin, actinia-processing-lib and actinia-rest-lib by @mmacata in https://github.com/actinia-org/actinia-core/pull/628 (including https://github.com/actinia-org/actinia-core/pull/614 and https://github.com/actinia-org/actinia-core/pull/627)
   * [actinia-grassdata-management-plugin](https://github.com/actinia-org/actinia-grassdata-management-plugin)
-    ‼️ all endpoints including the resources `raster_layer`, `vector_layer` and `strds` were moved to this new plugin,
-     e.g. `/api/v3/projects/nc_spm_08/mapsets/PERMANENT/raster_layers`. If you used these endpoints before, now install
-     this plugin via `pip install actinia-grassdata-management-plugin` and add to `plugins` section in actinia.cfg file ‼️
+    ‼️ all endpoints concerning the grassdata management including the resources `raster_layer`, `vector_layer` and `strds`
+     were moved to this new plugin, e.g. `/api/v3/projects/nc_spm_08/mapsets/PERMANENT/raster_layers`.
+     If you used these endpoints before, now install this plugin via `pip install actinia-grassdata-management-plugin`
+     and add to `plugins` section in actinia.cfg file ‼️
   * [actinia-processing-lib](https://github.com/actinia-org/actinia-processing-lib) and
-  * [actinia-rest-lib](https://github.com/actinia-org/actinia-rest-lib) by @mmacata in https://github.com/actinia-org/actinia-core/pull/628
+  * [actinia-rest-lib](https://github.com/actinia-org/actinia-rest-lib)
+  * See also:
+    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/3
+    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/5
+    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/6
+    - https://github.com/actinia-org/actinia-api/pull/33
+    - https://github.com/actinia-org/actinia-processing-lib/pull/2
+    - https://github.com/actinia-org/actinia-rest-lib/pull/2
+
+The following modules or methods were moved
+**To actinia_rest_lib:**
+- actinia_core.rest.base.endpoint_config -> actinia_rest_lib.endpoint_config
+- actinia_core.rest.base.resource_base -> actinia_rest_lib.resource_base
+- actinia_core.rest.base.deprecated_locations -> actinia_rest_lib.deprecated_locations
+
+**To actinia_processing_lib:**
+- actinia_core.core.common.exceptions (AsyncProcessError, AsyncProcessTermination, AsyncProcessTimeLimit) split up file -> actinia_processing_lib.exceptions
+- actinia_core.processing.common.utils -> actinia_processing_lib.utils (only try_import)
+- actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export -> actinia_processing_lib.ephemeral_processing_with_export
+- actinia_core.processing.actinia_processing.ephemeral_processing -> actinia_processing_lib.ephemeral_processing
+- actinia_core.processing.actinia_processing.ephemeral.persistent_processing -> actinia_processing_lib.persistent_processing
+
+**To actinia_grassdata_management_plugin:**
+- actinia_core.rest.base.renderer_base -> actinia_grassdata_management_plugin.rest.base.renderer_base
+- actinia_core.core.utils allowed_file (split up file) -> actinia_grassdata_management_plugin.core.utils allowed_file
+- actinia_core.core.request_parser
+  - either in actinia_grassdata_management_plugin.core.request_parser (where_parser, glist_parser, extract_glist_parameters)
+  - or removed/outcommented as no usage found anywhere
+  (extract_where_parameters, start_script_parser, extract_start_script_parameters, t_create_parser, extract_t_create_parameters, t_register_parser, extract_t_register_parameters)
+
+- Also moved to actinia_grassdata_management_plugin, same module structure:
+  - actinia_core.processing.actinia_processing.ephemeral.base.renderer_base
+  - actinia_core.processing.actinia_processing.ephemeral.raster_colors
+  - actinia_core.processing.actinia_processing.ephemeral.raster_layer
+  - actinia_core.processing.actinia_processing.ephemeral.raster_legend
+  - actinia_core.processing.actinia_processing.ephemeral.vector_layer
+  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.raster_renderer
+  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.strds_renderer
+  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.vector_renderer
+  - actinia_core.processing.actinia_processing.persistent.map_layer_management
+  - actinia_core.processing.actinia_processing.persistent.raster_colors
+  - actinia_core.processing.actinia_processing.persistent.raster_layer
+  - actinia_core.processing.actinia_processing.persistent.strds_management
+  - actinia_core.processing.actinia_processing.persistent.strds_raster_management
+  - actinia_core.processing.actinia_processing.persistent.vector_layer
+  - actinia_core.processing.common.map_layer_management
+  - actinia_core.processing.common.raster_colors
+  - actinia_core.processing.common.raster_layer
+  - actinia_core.processing.common.raster_legend
+  - actinia_core.processing.common.raster_renderer
+  - actinia_core.processing.common.strds_management
+  - actinia_core.processing.common.strds_raster_management
+  - actinia_core.processing.common.strds_renderer
+  - actinia_core.processing.common.vector_layer
+  - actinia_core.processing.common.vector_renderer
+  - actinia_core.rest.base.map_layer_base
+  - actinia_core.rest.map_layer_management
+  - actinia_core.rest.raster_colors
+  - actinia_core.rest.raster_layer
+  - actinia_core.rest.raster_legend
+  - actinia_core.rest.raster_renderer
+  - actinia_core.rest.strds_management
+  - actinia_core.rest.strds_raster_management
+  - actinia_core.rest.strds_renderer
+  - actinia_core.rest.vector_layer
+  - actinia_core.rest.vector_renderer
+- Also moved all related tests
+
+The following endpoints were moved to actinia_grassdata_management_plugin. To use them, add actinia_grassdata_management_plugin to the actinia config:
+```
+[API]
+plugins = ["actinia_grassdata_management_plugin"]
+```
+
+```
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>/legend",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>/colors",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>/render",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/render_rgb",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/render_shade",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/strds",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/strds/<string:strds_name>",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/strds/<string:strds_name>/raster_layers",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/vector_layers",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/vector_layers/<string:vector_name>",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/vector_layers/<string:vector_name>/render",
+"/projects/<string:project_name>/mapsets/<string:mapset_name>/strds/<string:strds_name>/render",
+```
 
 ### Added
 * Enable PDF export by @mmacata in https://github.com/actinia-org/actinia-core/pull/621 (already moved to actinia-processing-lib)
@@ -49,7 +139,10 @@ released from main
 * chore(deps): update anchore/sbom-action digest to 5f8d644 by @renovate in https://github.com/actinia-org/actinia-core/pull/629
 * chore(deps): update anchore/sbom-action digest to 9246b90 by @renovate in https://github.com/actinia-org/actinia-core/pull/630
 
+
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.1...7.0.0
+
 
 ## [6.0.1](https://github.com/actinia-org/actinia-core/releases/tag/6.0.1) - 2025-04-29
 released from main
