@@ -1,4 +1,4 @@
-FROM mundialis/actinia-core:6.0.1
+FROM mundialis/actinia-core:7.0.0
 
 # # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
