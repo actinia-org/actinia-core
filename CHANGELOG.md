@@ -104,12 +104,12 @@ The following modules or methods were moved
 - Also moved all related tests
 
 The following endpoints were moved to actinia_grassdata_management_plugin. To use them, add actinia_grassdata_management_plugin to the actinia config:
-```
+```ini
 [API]
 plugins = ["actinia_grassdata_management_plugin"]
 ```
 
-```
+```bash
 "/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers",
 "/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>",
 "/projects/<string:project_name>/mapsets/<string:mapset_name>/raster_layers/<string:raster_name>/legend",
