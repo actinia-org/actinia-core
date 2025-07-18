@@ -25,6 +25,18 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.0.1](https://github.com/actinia-org/actinia-core/releases/tag/7.0.1) - 2025-07-18
+released from main
+### Fixed
+* docker/actinia-core-alpine/start.sh: fix missing --text in grass call by @neteler in https://github.com/actinia-org/actinia-core/pull/632
+* Pin rq version by @mmacata in https://github.com/actinia-org/actinia-core/pull/639
+### Updated
+* chore(deps): update mundialis/actinia-core docker tag to v7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/634
+* chore(deps): update anchore/sbom-action digest to cee1b8e by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/635
+* chore(deps): update anchore/sbom-action digest to 9e07fd7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/636
+* fix(deps): update dependency google-cloud-bigquery to <=3.35.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/637
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.0...7.0.1
+
 ## [7.0.0](https://github.com/actinia-org/actinia-core/releases/tag/7.0.0) - 2025-06-18
 released from main
 ### Changed
