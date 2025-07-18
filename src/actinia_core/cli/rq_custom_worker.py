@@ -28,6 +28,11 @@ Kvdb Queue server custom worker
 from rq import Connection, Worker
 from valkey import Valkey
 
+# TODO: Adjust usage for recent rq version
+# ImportError: cannot import name 'Connection' from 'rq'
+# (/opt/venv/lib/python3.12/site-packages/rq/__init__.py).
+# Did you mean: 'connections'?
+
 # We need to append the path to the actinia_core package, since
 # flask API does not send the correct module and package paths
 # to the worker, so the workers are unable to de-serialize
