@@ -38,7 +38,7 @@ To use actinia, ensure you have the following installed:
 
 Additional system packages required for Alpine:
 
-```
+```bash
 apk add python3-dev gcc musl-dev linux-headers build-base gdal gdal-tools gdal-dev proj proj-util proj-dev geos-dev py3-numpy-dev
 ```
 
