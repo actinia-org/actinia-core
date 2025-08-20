@@ -48,7 +48,7 @@ dependencies = [
     "Flask-Cors>=3.0.3",
     "fluent-logger>=0.9.4",
     "google-cloud>=0.32.0",
-    "google-cloud-bigquery<=3.35.1",
+    "google-cloud-bigquery<=3.36.0",
     "google-cloud-storage>=1.6.0",
     "gunicorn>=22.0.0",
     "matplotlib==3.10.5",
