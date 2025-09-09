@@ -51,7 +51,7 @@ dependencies = [
     "google-cloud-bigquery<=3.35.1",
     "google-cloud-storage>=1.6.0",
     "gunicorn>=22.0.0",
-    "matplotlib==3.10.5",
+    "matplotlib==3.10.6",
     "passlib>=1.7.1",
     "psutil>=5.7.0",
     "python-json-logger",
