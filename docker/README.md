@@ -2,6 +2,21 @@
 
 Requirements: `docker` and `docker compose`
 
+
+On Fedora, in `actinia-core` directory, run these commmands first:
+
+```bash
+# get rid of valkey overcommit warning
+sudo sysctl vm.overcommit_memory=1
+echo "vm.overcommit_memory = 1" | sudo tee -a /etc/sysctl.conf
+# sandbox valkey_data/config/.valkey file
+chmod 600 valkey_data/config/.valkey
+sudo chcon -t svirt_sandbox_file_t valkey_data/config/.valkey
+```
+
+Also, you may set the `valkey` password by modifying `docker-compose.yml` and
+`valkey_data/config/.valkey`
+
 To build and deploy actinia, run
 
 ```bash
@@ -9,6 +24,8 @@ git clone https://github.com/actinia-org/actinia-core.git
 cd actinia-core
 docker compose -f docker/docker-compose.yml up
 ```
+
+
 
 Now you have a running actinia instance locally! Check with
 
