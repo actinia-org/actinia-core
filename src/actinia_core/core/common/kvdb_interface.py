@@ -149,7 +149,7 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
     elif queue_type == "per_user":
         user_id = args[0].user_id
         queue_name = "%s_%s" % (global_config.WORKER_QUEUE_PREFIX, user_id)
-        # Run __create_job_queue everytime.
+        # Run __create_job_queue every time.
         # If queue already exists, it does nothing.
         __create_job_queue(queue_name)
         for i in job_queues:

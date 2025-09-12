@@ -23,6 +23,9 @@ exclude =
     pydispatch,
     testsuite,
 
+# ignore E203 (see https://github.com/psf/black/issues/315)
+extend-ignore = E203
+
 per-file-ignores =
     ./src/actinia_core/core/common/api_logger.py: F401
     ./src/actinia_core/core/common/app.py: E402

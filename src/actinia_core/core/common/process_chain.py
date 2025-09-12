@@ -1233,7 +1233,7 @@ class ProcessChainConverter(object):
             params (list): The list of the grass module inputs parameters with
                            param=value entries (here the input parameter are
                            added)
-            param_stdin_funcs (dict): The dictonary with the stdin parameter
+            param_stdin_funcs (dict): The dictionary with the stdin parameter
                                       functions
             id (str): The id of this process in the process chain
         """
@@ -1333,7 +1333,7 @@ class ProcessChainConverter(object):
             params (list): The list of the grass module parameters with
                            param=value entries (here the output parameter are
                            added)
-            param_stdin_funcs (dict): The dictonary with the stdin parameter
+            param_stdin_funcs (dict): The dictionary with the stdin parameter
                                       functions
             id (str): The id of this process in the process chain
             module_name (str): The name of the grass module
