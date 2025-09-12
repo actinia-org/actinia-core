@@ -309,7 +309,7 @@ class InterimResult(object):
     def _get_included_additional_mapset_paths(
         self, temp_mapset_path, progress_step
     ):
-        """Returns lists with source paths of hte additional mapsets and
+        """Returns lists with source paths of the additional mapsets and
         destination paths for them"""
 
         if self.include_additional_mapset_pattern:

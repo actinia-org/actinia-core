@@ -103,7 +103,7 @@ def main():
         "--quit",
         action="store_true",
         required=False,
-        help="Wether or not the worker should exit when the queue is emptied.",
+        help="Whether or not the worker should exit when the queue is emptied",
     )
 
     args = parser.parse_args()

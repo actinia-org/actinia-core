@@ -168,7 +168,7 @@ class GrassEnvironment(ProcessLogging):
     def set(self):
         for key in self.env:
             value = self.env[key]
-            # use self.env and enviroment variable values
+            # use self.env and environment variable values
             if key in ["PATH", "PYTHONPATH"]:
                 origValue = os.getenv(key, None)
                 if origValue:
