@@ -1,4 +1,3 @@
-version: "3"
 services:
 
   actinia:
@@ -8,28 +7,31 @@ services:
     #   dockerfile: docker/actinia-core-alpine/Dockerfile
     volumes:
       - ./actinia-core-data/grassdb:/actinia_core/grassdb:Z
-      - ./actinia-core-data/userdata:/actinia_core/userdata
+      - ./actinia-core-data/userdata:/actinia_core/userdata:Z
       - ./actinia-core-data/pgpass:/mnt/pgpass:Z
       - ./actinia-core-data/geodata_dir:/mnt/geodata:Z
-      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db
-      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp
-      - ./actinia-core-data/resources:/actinia_core/resources
+      - ./actinia-core-data/workspace/temp_db:/actinia_core/workspace/temp_db:Z
+      - ./actinia-core-data/workspace/tmp:/actinia_core/workspace/tmp:Z
+      - ./actinia-core-data/resources:/actinia_core/resources:Z
     ports:
       - "8088:8088"
     depends_on:
       - valkey
-
+    environment:
+      - VALKEY_HOST=valkey
+      - VALKEY_PORT=6379
+      # password below must match password in valkey_data/config/.valkey
+      - VALKEY_PASSWORD=YOUR_SECURE_VALKEY_PASSWORD
   valkey:
     image: valkey/valkey:9.0-alpine
     volumes:
-      - ./valkey_data:/data
+      - ./valkey_data:/data:Z
     environment:
       - VALKEY_PASS_FILE=/data/config/.valkey
     command: [
       "sh", "-c",
-      '
-      docker-entrypoint.sh
-      "/data/config/valkey.conf"
-      --requirepass "$$(cat $$VALKEY_PASS_FILE)"
-      '
+      "mkdir -p /var/run/valkey && chmod -R 777 /var/run/valkey && docker-entrypoint.sh /data/config/valkey.conf --requirepass \"$(cat /data/config/.valkey)\" --protected-mode no --pidfile /var/run/valkey/valkey.pid"
     ]
+volumes:
+  valkey-data:
+  actinia-data:
