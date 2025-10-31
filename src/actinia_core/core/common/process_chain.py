@@ -64,7 +64,7 @@ __email__ = "info@mundialis.de"
 
 def get_param_stdin_part(text):
     """Function to get method and filter from parameter value"""
-    for delimiter in ["::", " ", "+", "-", "*", ":", "(", ")"]:
+    for delimiter in ["::", " ", "+", "-", "*", ":", "(", ")", ","]:
         text = text.split(delimiter, 1)[0]
     return text
 
@@ -1269,10 +1269,7 @@ class ProcessChainConverter(object):
                         self.generate_temp_file_path()
                     )
                 param = "%s=%s" % (param, self.temporary_pc_files[file_id])
-            elif "::" in value and value.split("::")[1] in [
-                "stdout",
-                "stderr",
-            ]:
+            elif "::stdout" in value or "::stderr" in value:
                 param_val = self._create_param_stdin_process(
                     param_stdin_funcs, value, param
                 )
