@@ -52,10 +52,14 @@ G_REGION = {
     "verbose": False,
 }
 
-# actinia-algebra.py -s http://104.199.28.149:80 latlong_wgs84 S2A_NDVI_1 "ndvi = (S2A_B08@S2A - S2A_B04@S2A)/(S2A_B08@S2A + S2A_B04@S2A)" ndvi -n 121  # noqa: E731
+# actinia-algebra.py -s http://104.199.28.149:80 latlong_wgs84 S2A_NDVI_1 \
+#      "ndvi = (S2A_B08@S2A - S2A_B04@S2A)/(S2A_B08@S2A + S2A_B04@S2A)" \
+#      ndvi -n 121
 
 # Example with ECAD dataset
-# actinia-algebra.py ECAD algebra_test 'A = temperature_mean_1950_2013_monthly_celsius@PERMANENT * 1' test precipitation_monthly_mm_0 -n 3  # noqa: E731
+# actinia-algebra.py ECAD algebra_test \
+#    'A = temperature_mean_1950_2013_monthly_celsius@PERMANENT * 1' \
+#    test precipitation_monthly_mm_0 -n 3
 
 
 def main():
