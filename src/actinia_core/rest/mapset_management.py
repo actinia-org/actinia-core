@@ -45,9 +45,7 @@ from actinia_core.processing.common.mapset_management import (
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Julia Haas, Anika Weinmann"
-__copyright__ = (
-    "Copyright 2016-2024, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2024, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 

@@ -34,9 +34,7 @@ global_config = global_config
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Anika Weinmann"
-__copyright__ = (
-    "Copyright 2016-2024, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2024, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 

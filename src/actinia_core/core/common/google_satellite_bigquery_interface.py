@@ -23,9 +23,7 @@ import dateutil.parser as dtparser
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 __email__ = "info@mundialis.de"
 

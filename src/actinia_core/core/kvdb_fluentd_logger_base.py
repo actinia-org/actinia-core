@@ -25,9 +25,7 @@ if global_config.LOG_INTERFACE == "fluentd":
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
-__copyright__ = (
-    "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 
 
 class KvdbFluentLoggerBase(object):

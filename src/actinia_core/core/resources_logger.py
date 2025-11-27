@@ -19,9 +19,7 @@ from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
-__copyright__ = (
-    "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 
 
 class ResourceLogger(KvdbFluentLoggerBase):

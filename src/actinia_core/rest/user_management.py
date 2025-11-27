@@ -46,9 +46,7 @@ from actinia_core.models.response_models import (
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 

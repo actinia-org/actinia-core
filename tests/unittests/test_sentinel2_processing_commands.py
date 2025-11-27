@@ -23,9 +23,7 @@ import pytest
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Guido Riembauer"
-__copyright__ = (
-    "Copyright 2016-2022, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2022, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
 
 

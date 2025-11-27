@@ -25,9 +25,7 @@ from urllib.request import urlopen
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = (
-    "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "Soeren Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 

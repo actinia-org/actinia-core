@@ -22,9 +22,7 @@ from actinia_core.rest.base.user_auth import check_admin_role
 
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert"
-__copyright__ = (
-    "Copyright 2016-2018, Sören Gebbert & mundialis GmbH & Co. KG"
-)
+__copyright__ = "Copyright 2016-2018, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "Sören Gebbert"
 __email__ = "soerengebbert@googlemail.com"
 
