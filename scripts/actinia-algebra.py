@@ -5,7 +5,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# SPDX-FileCopyrightText: (c) 2016-2019 Soeren Gebbert & mundialis GmbH & Co. KG
+# SPDX-FileCopyrightText: (c) 2016-2019 Sören Gebbert & mundialis GmbH & Co. KG
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
@@ -52,9 +52,11 @@ G_REGION = {
     "verbose": False,
 }
 
+# noqa: E731
 # actinia-algebra.py -s http://104.199.28.149:80 latlong_wgs84 S2A_NDVI_1 "ndvi = (S2A_B08@S2A - S2A_B04@S2A)/(S2A_B08@S2A + S2A_B04@S2A)" ndvi -n 121
 
 # Example with ECAD dataset
+# noqa: E731
 # actinia-algebra.py ECAD algebra_test 'A = temperature_mean_1950_2013_monthly_celsius@PERMANENT * 1' test precipitation_monthly_mm_0 -n 3
 
 
@@ -133,7 +135,8 @@ def main():
         "--rasterwindow",
         type=str,
         required=False,
-        help="The name of a raster layer used for computational region settings",
+        help="The name of a raster layer used for computational region "
+        "settings",
     )
 
     parser.add_argument(
@@ -151,7 +154,8 @@ def main():
         default=False,
         type=bool,
         required=False,
-        help="Set this flag True to enable the processing. Otherwise only a dry run is performed.",
+        help="Set this flag True to enable the processing. Otherwise "
+        "only a dry run is performed.",
     )
 
     args = parser.parse_args()
@@ -165,7 +169,7 @@ def main():
     time_list = {}
 
     try:
-        ###########################################################################
+        ################################################################
         # 1. Start the t.rast.algebra threads first
         q = Queue()
 
@@ -201,7 +205,7 @@ def main():
             pprint.pprint(data)
             return
 
-        ###########################################################################
+        ################################################################
         # 2. Run r.mapcalc requests parallel in new mapsets
         start = time.time()
 
@@ -273,7 +277,7 @@ def main():
 
         time_list["r.mapcalc run time in seconds"] = end - start
 
-        ###########################################################################
+        ################################################################
         # 3. Create new mapset
         start = time.time()
 
@@ -301,7 +305,7 @@ def main():
 
         time_list["mapset creation in seconds"] = end - start
 
-        ###########################################################################
+        ################################################################
         # 4. Merge source mapsets in target mapsets
         start = time.time()
 
@@ -336,7 +340,7 @@ def main():
 
         time_list["mapset mergin in seconds"] = end - start
 
-        ###########################################################################
+        ################################################################
         # 5. Register the maps in a new space time dataset
         # TODO
         # Create the new strds
@@ -392,7 +396,7 @@ def main():
 
         time_list["strds creation in seconds"] = end - start
 
-        ###########################################################################
+        ################################################################
         # 6. List all maps from the STRDS
         start = time.time()
 
@@ -425,9 +429,10 @@ def main():
         time_list["strds raster listing in seconds"] = end - start
 
     except Exception as e:
+        print(str(e))
         raise
     finally:
-        ###########################################################################
+        ################################################################
         # 6. Remove the temporary mapsets
         start = time.time()
 
