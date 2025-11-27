@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# SPDX-FileCopyrightText: (c) 2016-2025 Sören Gebbert and mundialis GmbH & Co. KG
+# SPDX-FileCopyrightText: (c) 2016-2025 Sören Gebbert & mundialis GmbH & Co. KG
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
@@ -26,7 +26,7 @@ if global_config.LOG_INTERFACE == "fluentd":
 __license__ = "GPLv3"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = (
-    "Copyright 2016-2025, Sören Gebbert and mundialis GmbH & Co. KG"
+    "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 )
 
 

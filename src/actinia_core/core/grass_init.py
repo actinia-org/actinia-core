@@ -4,7 +4,7 @@
 # performance processing of geographical data that uses GRASS GIS for
 # computational tasks. For details, see https://actinia.mundialis.de/
 #
-# SPDX-FileCopyrightText: (c) 2016-2024 Sören Gebbert and mundialis GmbH & Co. KG
+# SPDX-FileCopyrightText: (c) 2016-2024 Sören Gebbert & mundialis GmbH & Co. KG
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 #
