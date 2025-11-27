@@ -1,4 +1,21 @@
 #!/usr/bin/env sh
+########################################################################
+#
+# MODULE:       tests_with_kvdb.sh
+#
+# AUTHOR(S):    Anika Weinmann
+#               mundialis GmbH & Co. KG, Bonn
+#               https://www.mundialis.de
+#
+# PURPOSE:      This script tests the kvdb (valkey) server
+#
+# SPDX-FileCopyrightText: (c) 2022 by mundialis GmbH & Co. KG
+#
+# REQUIREMENTS: sudo apt install valkey-server
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+########################################################################
 
 run_tests_noauth (){
   # change config run tests and change config back
