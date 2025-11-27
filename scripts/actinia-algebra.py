@@ -18,6 +18,7 @@ import time
 import pprint
 import copy
 import uuid
+import ast
 from multiprocessing import Process, Queue
 
 __author__ = "Soeren Gebbert"
@@ -214,7 +215,7 @@ def main():
         # Evaluate the stdout to extract the Python dictionary
         stdout = data["process_log"][0]["stdout"]
         stdout = "{" + stdout.split("{", 1)[1]
-        threads_list = eval(stdout)
+        threads_list = ast.literal_eval(stdout)
 
         pprint.pprint(threads_list)
 
