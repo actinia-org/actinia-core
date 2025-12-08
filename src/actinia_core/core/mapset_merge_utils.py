@@ -20,7 +20,7 @@ import sqlite3
 
 from actinia_processing_lib.exceptions import AsyncProcessError
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Anika Weinmann, Lina Krisztian"
 __copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

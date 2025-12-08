@@ -33,7 +33,7 @@ from actinia_rest_lib.endpoint_config import (
 from actinia_core.rest.resource_management import ResourceManager
 from actinia_core.models.response_models import SimpleResponseModel
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Anika Weinmann, Carmen Tawalika"
 __copyright__ = "Copyright 2021, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

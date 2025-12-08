@@ -17,7 +17,7 @@ from urllib.request import urlopen
 from flask.json import loads as json_loads
 from flask.json import dumps as json_dumps
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2021, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

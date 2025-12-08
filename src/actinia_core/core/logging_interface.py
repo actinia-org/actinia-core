@@ -39,7 +39,7 @@ if global_config.LOG_INTERFACE == "fluentd":
     from fluent import handler
 
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 

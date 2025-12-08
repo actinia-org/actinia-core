@@ -36,7 +36,7 @@ from actinia_core.processing.common.download_cache_management import (
     start_download_cache_remove,
 )
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

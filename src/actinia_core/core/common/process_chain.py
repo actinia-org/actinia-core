@@ -39,7 +39,7 @@ from actinia_core.models.process_chain import (
     SUPPORTED_EXPORT_FORMATS,
 )
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = (
     "Sören Gebbert, Carmen Tawalika, Guido Riembauer, Julia Haas,"
     " Anika Weinmann"

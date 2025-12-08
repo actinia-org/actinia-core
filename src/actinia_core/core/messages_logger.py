@@ -18,7 +18,7 @@ import time
 import platform
 from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Carmen Tawalika"
 __copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 

@@ -22,7 +22,7 @@ import shutil
 import uuid
 from .messages_logger import MessageLogger
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = (
     "Copyright 2016-2024, Sören Gebbert, Anika Weinmann and mundialis GmbH & "

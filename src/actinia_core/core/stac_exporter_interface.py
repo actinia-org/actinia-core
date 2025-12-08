@@ -16,7 +16,7 @@ to export and manage the STAC items a global collection configuration
 
 """
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Jorge Herrera"
 __copyright__ = "Copyright 2021-2022, mundialis GmbH & Co. KG"
 __maintainer__ = "__mundialis__"

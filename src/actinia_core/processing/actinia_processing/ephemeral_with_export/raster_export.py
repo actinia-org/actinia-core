@@ -21,7 +21,7 @@ from actinia_processing_lib.ephemeral_processing_with_export import (
     EphemeralProcessingWithExport,
 )
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2024, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

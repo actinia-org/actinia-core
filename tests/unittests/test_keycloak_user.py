@@ -23,7 +23,7 @@ from actinia_core.core.common.keycloak_user import (
     create_user_from_tokeninfo,
 )
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2022, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

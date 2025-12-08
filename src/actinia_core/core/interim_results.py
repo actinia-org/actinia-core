@@ -23,7 +23,7 @@ from actinia_core.core.common.config import global_config, DEFAULT_CONFIG_PATH
 from actinia_core.core.common.exceptions import RsyncError
 from actinia_core.core.mapset_merge_utils import change_mapsetname
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Anika Weinmann, Lina Krisztian"
 __copyright__ = "Copyright 2021-2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

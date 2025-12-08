@@ -22,7 +22,7 @@ from werkzeug.exceptions import BadRequest, UnsupportedMediaType
 
 from pprint import pprint
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Soeren Gebbert, Anika Weinmann, Carmen Tawalika"
 __copyright__ = "Copyright 2016-2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

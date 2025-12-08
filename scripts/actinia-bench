@@ -20,7 +20,7 @@ import simplejson
 import time
 from multiprocessing import Process, Queue
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"
 __copyright__ = (
     "Copyright 2016-2018, Sören Gebbert and mundialis GmbH & Co. KG"

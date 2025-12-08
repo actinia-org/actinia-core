@@ -17,7 +17,7 @@ import pickle
 from .kvdb_resources import KvdbResourceInterface
 from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Carmen Tawalika, Anika Weinmann"
 __copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 

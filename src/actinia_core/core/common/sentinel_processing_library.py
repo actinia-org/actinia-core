@@ -24,7 +24,7 @@ from actinia_processing_lib.exceptions import AsyncProcessError
 from .process_object import Process
 
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Guido Riembauer"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

@@ -15,7 +15,7 @@ Actinia Core Exceptions that should be used in case an error occurs that is
 related to the Actinia Core functionality
 """
 
-__license__ = "GPLv3"
+__license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2025, Sören Gebbert & mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"
