@@ -7,7 +7,7 @@
 #               mundialis GmbH & Co. KG, Bonn
 #               https://www.mundialis.de
 #
-# PURPOSE:      This script tests the kvdb (valkey) server
+# PURPOSE:      This script sets up a test environment including the kvdb (valkey) server
 #
 # SPDX-FileCopyrightText: (c) 2022 by mundialis GmbH & Co. KG
 #
@@ -39,7 +39,7 @@ run_tests_worker (){
   mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
 }
 
-# start valkey server
+# start kvdb server
 valkey-server &
 sleep 1
 valkey-cli ping
@@ -49,15 +49,16 @@ webhook-server --host "0.0.0.0" --port "5005" &
 sleep 10
 
 # run tests
-# echo $DEFAULT_CONFIG_PATH
+# echo "${ACTINIA_CUSTOM_TEST_CFG}"
+# echo "${DEFAULT_CONFIG_PATH}"
 
 TEST_RES=1
-if [ "$1" = "dev" ]
+if [ "$1" == "dev" ]
 then
   echo "Executing only 'dev' tests ..."
-  pytest -m 'dev'
+  pytest -m "dev"
   TEST_RES=$?
-elif [ "$1" = "integrationtest" ]
+elif [ "$1" == "integrationtest" ]
 then
   pytest -m 'not unittest and not noauth'
   TEST_RES=$?
@@ -68,11 +69,11 @@ then
   else
     echo "Skipping tests without authentication since other tests failed"
   fi
-elif [ "$1" = "noauth" ]
+elif [ "$1" == "noauth" ]
 then
   run_tests_noauth
   TEST_RES=$?
-elif [ "$1" = "worker" ]
+elif [ "$1" == "worker" ]
 then
   run_tests_worker
   TEST_RES=$?
@@ -81,7 +82,7 @@ else
   TEST_RES=$?
 fi
 
-# stop valkey server
+# stop kvdb server
 valkey-cli shutdown
 
 # stop webhook server
