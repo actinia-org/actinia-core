@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: (c) 2019-2025 by mundialis GmbH & Co. KG
+# SPDX-License-Identifier: GPL-3.0-or-later
+
 FROM mundialis/actinia:alpine-dependencies-2025-12-18-alpine-3.23 as build-base
 FROM osgeo/grass-gis:main-alpine as grass
 
