@@ -61,7 +61,7 @@ dependencies = [
     "rq==1.16.2",
     "setuptools==80.9.0",
     "geopandas",
-    "rasterio==1.4.4",
+    "rasterio==1.5.0",
     "pystac==1.14.2",
     "PyJWT",
     "werkzeug==3.1.4",
