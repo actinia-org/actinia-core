@@ -545,13 +545,16 @@ class ResourceManager(ResourceManagerBase):
         )
 
         if doc is None:
+            status_code = 400
+            if iteration == 0:
+                status_code = 404
             return make_response(
                 jsonify(
                     SimpleResponseModel(
                         status="error", message="Resource does not exist"
                     )
                 ),
-                400,
+                status_code,
             )
 
         self.resource_logger.commit_termination(
