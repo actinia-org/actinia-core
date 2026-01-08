@@ -19,7 +19,11 @@ ENV GISBASE ""
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
 
-RUN apk add parallel && \
+# DL4006: Set the SHELL option -o pipefail before RUN with a pipe in it -
+# can be ignored for alpine as pipe fails on error
+# DL3018: Pin versions in apk add
+# hadolint ignore=DL3018,DL4006
+RUN apk add --no-cache parallel && \
    find /usr/local/ -type f -print0 | parallel -0 'file {}' \; | \
    grep ":.* ASCII text" | cut -d: -f1 | \
    xargs sed -i "s+/grass8.+/grass+g" && \
