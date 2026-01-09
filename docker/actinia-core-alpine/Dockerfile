@@ -1,8 +1,8 @@
 # SPDX-FileCopyrightText: (c) 2019-2025 by mundialis GmbH & Co. KG
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM mundialis/actinia:alpine-dependencies-2024-12-14 as build-base
-FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
+FROM mundialis/actinia:alpine-dependencies-2025-12-19 as build-base
+FROM osgeo/grass-gis:main-alpine as grass
 
 FROM build-base as requirements
 
@@ -18,7 +18,17 @@ ENV GISBASE ""
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
 COPY --from=grass /usr/local/grass* /usr/local/grass/
-RUN ln -s /usr/local/grass "$(grass --config path)"
+
+# DL4006: Set the SHELL option -o pipefail before RUN with a pipe in it -
+# can be ignored for alpine as pipe fails on error
+# DL3018: Pin versions in apk add
+# hadolint ignore=DL3018,DL4006
+RUN apk add --no-cache parallel && \
+   find /usr/local/ -type f -print0 | parallel -0 'file {}' \; | \
+   grep ":.* ASCII text" | cut -d: -f1 | \
+   xargs sed -i "s+/grass8.+/grass+g" && \
+   apk del parallel
+
 RUN grass --tmp-location EPSG:4326 --exec g.version -rge && \
     pdal --version && \
     python --version
