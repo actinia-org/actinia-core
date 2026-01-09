@@ -64,7 +64,7 @@ dependencies = [
     "rasterio==1.5.0",
     "pystac==1.14.2",
     "PyJWT",
-    "werkzeug==3.1.4",
+    "werkzeug==3.1.5",
     "pandas",
     "tqdm",
     "valkey",
