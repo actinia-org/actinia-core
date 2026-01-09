@@ -1,19 +1,19 @@
 # SPDX-FileCopyrightText: (c) 2019-2025 by mundialis GmbH & Co. KG
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM mundialis/actinia:alpine-dependencies-2024-12-14 as build-base
-FROM osgeo/grass-gis:releasebranch_8_4-alpine as grass
+FROM mundialis/actinia:alpine-dependencies-2024-12-14 AS build-base
+FROM osgeo/grass-gis:releasebranch_8_4-alpine AS grass
 
-FROM build-base as requirements
+FROM build-base AS requirements
 
 LABEL authors="Carmen Tawalika,Anika Weinmann,Markus Neteler,Sören Gebbert"
 LABEL maintainer="tawalika@mundialis.de,weinmann@mundialis.de,neteler@mundialis.de"
 
-ENV LC_ALL "en_US.UTF-8"
+ENV LC_ALL="en_US.UTF-8"
 ENV GDAL_CACHEMAX=2000
 ENV GRASS_COMPRESSOR=ZSTD
-ENV GRASS_SKIP_MAPSET_OWNER_CHECK 1
-ENV GISBASE ""
+ENV GRASS_SKIP_MAPSET_OWNER_CHECK=1
+ENV GISBASE=""
 
 # GRASS GIS SETUP
 COPY --from=grass /usr/local/bin/grass /usr/local/bin/grass
@@ -28,7 +28,7 @@ RUN grass --tmp-location EPSG:4326 --exec g.extension -s \
     extension=d.rast.multi url=https://github.com/mundialis/d_rast_multi
 
 
-FROM build-base as build
+FROM build-base AS build
 
 COPY . /src/actinia_core
 WORKDIR /src/actinia_core
@@ -39,7 +39,7 @@ RUN apk add --no-cache py3-build && python -m build --outdir /build .
 RUN for i in /build/UNKNOWN*; do if [ -e "$i" ];then echo "ERROR - Check actinia-core build"; exit 1;fi;done
 
 
-FROM requirements as actinia
+FROM requirements AS actinia
 
 ENV PATH="/opt/venv/bin:$PATH"
 RUN /usr/bin/python -m venv --system-site-packages --without-pip /opt/venv
