@@ -162,7 +162,9 @@ class ResourceLogger(KvdbFluentLoggerBase):
             user_id, resource_id, None
         )
         db_keys = self.db.get_keys_from_pattern(db_resource_id_pattern)
-        if len(db_keys) == 1:
+        if len(db_keys) == 0:
+            return 0, None
+        elif len(db_keys) == 1:
             db_resource_id = db_keys[0]
         else:
             db_resource_id = max(db_keys)
