@@ -206,12 +206,14 @@ class ResourceManager(ResourceManagerBase):
             )
 
         if resp_data is not None:
+            # if AsyncProcessError occured, also http code 400 is returned
             http_code, response_model = pickle.loads(resp_data)
             return make_response(jsonify(response_model), http_code)
         else:
             status_code = 400
             if iteration == 0:
-                status_code = 404
+                # TODO: decide if 404 is better here
+                status_code = 400
             return make_response(
                 jsonify(
                     SimpleResponseModel(
@@ -547,7 +549,8 @@ class ResourceManager(ResourceManagerBase):
         if doc is None:
             status_code = 400
             if iteration == 0:
-                status_code = 404
+                # TODO: decide if 404 is better here
+                status_code = 400
             return make_response(
                 jsonify(
                     SimpleResponseModel(
