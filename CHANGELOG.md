@@ -25,6 +25,55 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.0.2](https://github.com/actinia-org/actinia-core/releases/tag/7.0.2) - 2026-01-13
+released from main
+### Fixed
+* docs: fix typos and pin linting version by @neteler in https://github.com/actinia-org/actinia-core/pull/659
+* Adjust stdin for Parameters by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/665
+* README.md: structural and wording updates by @neteler in https://github.com/actinia-org/actinia-core/pull/644
+* SPDX: license declaration cleanup by @neteler in https://github.com/actinia-org/actinia-core/pull/669
+* tests_with_kvdb.sh: fix comparison in shell by @neteler in https://github.com/actinia-org/actinia-core/pull/682
+* Fix test setup for GRASS 8.3 by @mmacata in https://github.com/actinia-org/actinia-core/pull/681
+* Update alpine and grass version in Dockerfile by @mmacata in https://github.com/actinia-org/actinia-core/pull/683
+* Dockerfile: update formatting to non-legacy style by @neteler in https://github.com/actinia-org/actinia-core/pull/690
+* Catch error if resource does not exist by @mmacata in https://github.com/actinia-org/actinia-core/pull/685
+### Updated
+* chore(deps): update mundialis/actinia-core docker tag to v7.0.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/641
+* chore(deps): update anchore/sbom-action digest to 7b36ad6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/642
+* fix(deps): update dependency google-cloud-bigquery to <=3.35.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/643
+* fix(deps): update dependency matplotlib to v3.10.5 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/645
+* chore(deps): update dependency matplotlib to v3.10.6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/654
+* chore(deps): update dependency google-cloud-bigquery to <=3.36.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/653
+* chore(deps): update anchore/sbom-action digest to da167ea by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/650
+* chore(deps): update pre-commit hook pre-commit/pre-commit-hooks to v6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/647
+* chore(deps): update pre-commit hook mundialis/github-workflows to v1.4.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/646
+* chore(deps): update actions/checkout action to v5 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/649
+* chore(deps): update actions/setup-python action to v6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/657
+* chore(deps): update valkey/valkey docker tag to v9 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/651
+* chore(deps): update anchore/sbom-action digest to c73dd3f by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/655
+* chore(deps): update dependency google-cloud-bigquery to <=3.38.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/656
+* chore(deps): update dependency pystac to v1.14.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/660
+* chore(deps): update github/codeql-action action to v4 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/661
+* chore(deps): update dependency matplotlib to v3.10.7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/662
+* chore(deps): update anchore/sbom-action digest to 8e94d75 - autoclosed by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/663
+* chore(deps): update actions/checkout digest to 93cb6ef by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/666
+* chore(deps): update anchore/sbom-action digest to fbfd9c6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/667
+* chore(deps): update actions/checkout action to v6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/668
+* chore(deps): update dependency werkzeug to v3.1.4 [security] by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/671
+* chore(deps): update dependency matplotlib to v3.10.8 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/673
+* chore(deps): update dependency pystac to v1.14.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/677
+* chore(deps): update dependency google-cloud-bigquery to <=3.39.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/676
+* chore(deps): update anchore/sbom-action digest to 43a17d6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/672
+* chore(deps): update dependency rasterio to v1.4.4 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/675
+* chore(deps): update dependency rasterio to v1.5.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/680
+* chore(deps): update anchore/sbom-action digest to a930d0a by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/679
+* chore(deps): update dependency google-cloud-bigquery to <=3.40.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/684
+* chore(deps): update anchore/sbom-action digest to 0b82b0b by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/686
+* Bump werkzeug from 3.1.4 to 3.1.5 by @dependabot[bot] in https://github.com/actinia-org/actinia-core/pull/688
+* chore(deps): update dependency pystac to v1.14.3 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/691
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.1...7.0.2
+
+
 ## [7.0.1](https://github.com/actinia-org/actinia-core/releases/tag/7.0.1) - 2025-07-18
 released from main
 ### Fixed
