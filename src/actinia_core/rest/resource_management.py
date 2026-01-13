@@ -197,25 +197,30 @@ class ResourceManager(ResourceManagerBase):
 
         # the latest iteration should be given
         if resource_id.startswith("resource_id-"):
-            _, response_data = self.resource_logger.get_latest_iteration(
+            iteration, resp_data = self.resource_logger.get_latest_iteration(
                 user_id, resource_id
             )
         else:
-            response_data = self.resource_logger.get_all_iteration(
+            resp_data = self.resource_logger.get_all_iteration(
                 user_id, "resource_id-%s" % resource_id
             )
 
-        if response_data is not None:
-            http_code, response_model = pickle.loads(response_data)
+        if resp_data is not None:
+            # if AsyncProcessError occured, also http code 400 is returned
+            http_code, response_model = pickle.loads(resp_data)
             return make_response(jsonify(response_model), http_code)
         else:
+            status_code = 400
+            if iteration == 0:
+                # TODO: decide if 404 is better here
+                status_code = 400
             return make_response(
                 jsonify(
                     SimpleResponseModel(
                         status="error", message="Resource does not exist"
                     )
                 ),
-                400,
+                status_code,
             )
 
     def _check_possibility_of_new_iteration(
@@ -542,13 +547,17 @@ class ResourceManager(ResourceManagerBase):
         )
 
         if doc is None:
+            status_code = 400
+            if iteration == 0:
+                # TODO: decide if 404 is better here
+                status_code = 400
             return make_response(
                 jsonify(
                     SimpleResponseModel(
                         status="error", message="Resource does not exist"
                     )
                 ),
-                400,
+                status_code,
             )
 
         self.resource_logger.commit_termination(
