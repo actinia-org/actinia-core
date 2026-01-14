@@ -2,7 +2,7 @@ version: "3"
 services:
 
   actinia:
-    image: mundialis/actinia-core:7.0.1
+    image: mundialis/actinia-core:7.0.2
     # build:
     #   context: ..
     #   dockerfile: docker/actinia-core-alpine/Dockerfile
