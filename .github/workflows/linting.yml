@@ -9,7 +9,7 @@ on:
 
 jobs:
   lint:
-    uses: mundialis/github-workflows/.github/workflows/linting.yml@1.4.2
+    uses: mundialis/github-workflows/.github/workflows/linting.yml@1.5.0
     with:
       # set pylint-version to empty string to skip the pylint workflow
       pylint-version: ''
