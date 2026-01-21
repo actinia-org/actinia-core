@@ -59,7 +59,7 @@ dependencies = [
     "python-magic>=0.4.15",
     "requests>=2.20.0",
     "rq==1.16.2",
-    "setuptools==80.9.0",
+    "setuptools==80.10.1",
     "geopandas",
     "rasterio==1.5.0",
     "pystac==1.14.3",
