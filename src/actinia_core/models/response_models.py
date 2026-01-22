@@ -15,7 +15,7 @@ Response models
 """
 import pickle
 import time
-from datetime import datetime, timezone
+from datetime import datetime
 from flask import jsonify
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
@@ -386,7 +386,8 @@ class ProcessingResponseModel(Schema):
         "start_timestamp": {
             "type": "number",
             "format": "double",
-            "description": "The processing start time in seconds of the response",
+            "description": "The processing start time in seconds of the "
+            "response",
         },
         "start_datetime": {
             "type": "string",
@@ -1304,12 +1305,9 @@ def create_response_from_model(
         resp_dict["iteration"] = iteration
     if start_timestamp is not None:
         resp_dict["start_timestamp"] = start_timestamp
-        resp_dict["start_datetime"] = str(
-            datetime.fromtimestamp(start_timestamp, timezone.utc).replace(
-                tzinfo=None
-            )
-        )
         resp_dict["process_time_delta"] = time.time() - start_timestamp
+    if start_datetime is not None:
+        resp_dict["start_datetime"] = start_datetime
 
     if resp_type == "pickle":
         return pickle.dumps([http_code, resp_dict])
