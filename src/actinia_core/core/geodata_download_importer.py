@@ -33,6 +33,7 @@ __email__ = "info@mundialis.de"
 # Mimetypes supported for download
 SUPPORTED_MIMETYPES = [
     "application/zip",
+    "image/jp2",
     "image/tiff",
     "application/gml",
     "text/xml",
@@ -58,6 +59,7 @@ SUPPORTED_SUFFIXES = [
     ".prj",
     ".cpg",
     ".json",
+    ".jp2",
 ]
 
 
