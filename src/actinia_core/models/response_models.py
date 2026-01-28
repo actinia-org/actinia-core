@@ -383,6 +383,22 @@ class ProcessingResponseModel(Schema):
             "description": "The current timestamp of the response in human "
             "readable format",
         },
+        "start_timestamp": {
+            "type": "number",
+            "format": "double",
+            "description": "The processing start time in seconds of the "
+            "response",
+        },
+        "start_datetime": {
+            "type": "string",
+            "description": "The processing start timestamp of the response "
+            "in human readable format",
+        },
+        "process_time_delta": {
+            "type": "number",
+            "format": "double",
+            "description": "The time delta of the processing in seconds",
+        },
         "http_code": {
             "type": "number",
             "format": "int32",
@@ -1188,6 +1204,8 @@ def create_response_from_model(
     status_url=None,
     orig_time=None,
     orig_datetime=None,
+    start_timestamp=None,
+    start_datetime=None,
     resource_urls=[],
     api_info=None,
     process_chain_list=[],
@@ -1224,6 +1242,9 @@ def create_response_from_model(
         status_url (str): The url of this request
         orig_time (time): The time of origin (seconds)
         orig_datetime (datetime): The datetime of origin (datetime format)
+        start_timestamp (time): The time the processing started (seconds)
+        start_datetime (datetime): The datetime the processing started
+                                   (datetime format))
         resource_urls ([str]): The list of url of the new created resources
         api_info (ApiInfoModel): Information about the API call, important for
                                  accounting
@@ -1282,6 +1303,11 @@ def create_response_from_model(
         resp_dict["api_info"] = api_info
     if iteration is not None:
         resp_dict["iteration"] = iteration
+    if start_timestamp is not None:
+        resp_dict["start_timestamp"] = start_timestamp
+        resp_dict["process_time_delta"] = time.time() - start_timestamp
+    if start_datetime is not None:
+        resp_dict["start_datetime"] = start_datetime
 
     if resp_type == "pickle":
         return pickle.dumps([http_code, resp_dict])
