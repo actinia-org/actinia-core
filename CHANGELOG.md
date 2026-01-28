@@ -25,6 +25,21 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.1.0](https://github.com/actinia-org/actinia-core/releases/tag/7.1.0) - 2026-01-28
+released from main
+### Added
+* Add jp2 support to importer by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/698
+* Allow setting of start_timestamp for a resource by @mmacata in https://github.com/actinia-org/actinia-core/pull/696
+### Updated
+* chore(deps): update mundialis/actinia-core docker tag to v7.0.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/693
+* chore(deps): update anchore/sbom-action digest to 28b3d8f by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/694
+* chore(deps): update anchore/sbom-action digest to c618dc7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/697
+* chore(deps): update dependency setuptools to v80.10.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/695
+* chore(deps): update dependency setuptools to v80.10.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/699
+* chore(deps): update anchore/sbom-action digest to deef08a by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/700
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.2...7.1.0
+
+
 ## [7.0.2](https://github.com/actinia-org/actinia-core/releases/tag/7.0.2) - 2026-01-13
 released from main
 ### Fixed
