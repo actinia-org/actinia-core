@@ -13,6 +13,7 @@
 """
 This module is responsible to answer requests for file based resources.
 """
+
 from flask import jsonify, make_response
 from flask_restful import Resource
 from flask import send_from_directory
@@ -21,7 +22,6 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.common.app import auth
 from actinia_core.core.common.api_logger import log_api_call
 from actinia_core.core.utils import ensure_valid_path
-
 
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"

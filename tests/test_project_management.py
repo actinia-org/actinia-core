@@ -13,6 +13,7 @@
 """
 Tests: Project test case
 """
+
 from flask.json import loads as json_loads, dumps as json_dumps
 import unittest
 

@@ -13,6 +13,7 @@
 """
 Tests: Sentinel2 processing library test case
 """
+
 from actinia_core.core.common.sentinel_processing_library import (
     Sentinel2Processing,
 )

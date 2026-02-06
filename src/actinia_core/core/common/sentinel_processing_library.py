@@ -13,6 +13,7 @@
 """
 Sentinel-2A processing commands
 """
+
 import os
 import requests
 import dateutil.parser as dtparser
@@ -22,7 +23,6 @@ from .google_satellite_bigquery_interface import (
 from .aws_sentinel_interface import AWSSentinel2AInterface
 from actinia_processing_lib.exceptions import AsyncProcessError
 from .process_object import Process
-
 
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Guido Riembauer"

@@ -13,6 +13,7 @@
 """
 Running a custom UNIX process outside the GRASS GIS environment
 """
+
 from actinia_processing_lib.ephemeral_processing import (
     EphemeralProcessing,
 )

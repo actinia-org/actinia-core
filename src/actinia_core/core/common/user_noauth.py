@@ -21,7 +21,6 @@ from actinia_core.core.common.config import global_config
 from actinia_core.core.kvdb_user import kvdb_user_interface
 from actinia_core.core.common.user import ActiniaUser
 
-
 __author__ = "Anika Weinmann"
 __copyright__ = "Copyright 2023, mundialis GmbH & Co. KG"
 __maintainer__ = "mundialis GmbH & Co. KG"

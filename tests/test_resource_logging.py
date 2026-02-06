@@ -13,6 +13,7 @@
 """
 Tests: Resource logging test case
 """
+
 import unittest
 import pickle
 import uuid

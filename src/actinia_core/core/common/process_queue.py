@@ -30,7 +30,6 @@ import atexit
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.logging_interface import log
 
-
 has_fluent = False
 
 try:

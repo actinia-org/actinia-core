@@ -14,6 +14,7 @@
 """
 Kvdb Queue server custom worker
 """
+
 from rq import Connection, Worker
 from valkey import Valkey
 

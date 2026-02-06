@@ -13,6 +13,7 @@
 """
 Kvdb connection interface
 """
+
 import rq
 from valkey import Valkey
 from actinia_core.core.kvdb_user import kvdb_user_interface

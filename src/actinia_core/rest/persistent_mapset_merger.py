@@ -13,6 +13,7 @@
 """
 Asynchronous merging of several mapsets into a single one
 """
+
 import pickle
 from flask import jsonify, make_response
 

@@ -13,6 +13,7 @@
 """
 Tests: AWS Sentinel interface test case
 """
+
 from actinia_core.core.common.aws_sentinel_interface import (
     AWSSentinel2AInterface,
 )
@@ -93,8 +94,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(
             [
-                ("S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_"
-                "V20151207T003302_20151207T003302"),
+                (
+                    "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_"
+                    "V20151207T003302_20151207T003302"
+                ),
             ],
             ["B12", "B08"],
         )
@@ -116,8 +119,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(
             [
-                ("S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207"
-                "T003302_20151207T003302"),
+                (
+                    "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207"
+                    "T003302_20151207T003302"
+                ),
             ],
             ["B12", "B08"],
         )
@@ -164,8 +169,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(
             [
-                ("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212"
-                "T104138.SAFE"),
+                (
+                    "S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212"
+                    "T104138.SAFE"
+                ),
             ],
             ["B12", "B08"],
         )
@@ -209,8 +216,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         aws = AWSSentinel2AInterface(global_config)
         result = aws.get_sentinel_urls(
             [
-                ("S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030"
-                "T235752_20161030T235752"),
+                (
+                    "S2A_OPER_PRD_MSIL1C_PDMC_20161031T014722_R087_V20161030"
+                    "T235752_20161030T235752"
+                ),
             ],
             ["B12", "B08"],
         )
@@ -233,8 +242,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         result = aws.get_sentinel_urls(
             [
                 "S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_20170202T090155",
-                ("S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207"
-                "T003302_20151207T003302"),
+                (
+                    "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_V20151207"
+                    "T003302_20151207T003302"
+                ),
                 "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_20170218T143931",
             ],
             ["B04", "B08"],
@@ -267,8 +278,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         try:
             result = aws.get_sentinel_urls(
                 [
-                    ("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212"
-                    "T104138_NOPE"),
+                    (
+                        "S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212"
+                        "T104138_NOPE"
+                    ),
                 ],
                 ["B12", "B08"],
             )
@@ -292,12 +305,18 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         try:
             result = aws.get_sentinel_urls(
                 [
-                    ("S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_"
-                    "20170202T090155"),
-                    ("S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_"
-                    "V20151207T003302_20151207T003302"),
-                    ("S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_"
-                    "20170218T143931_NOPE"),
+                    (
+                        "S2A_MSIL1C_20170202T090201_N0204_R007_T36TVT_"
+                        "20170202T090155"
+                    ),
+                    (
+                        "S2A_OPER_PRD_MSIL1C_PDMC_20151207T031157_R102_"
+                        "V20151207T003302_20151207T003302"
+                    ),
+                    (
+                        "S2A_MSIL1C_20170218T143751_N0204_R096_T20PRT_"
+                        "20170218T143931_NOPE"
+                    ),
                 ],
                 ["B04", "B08"],
             )
@@ -321,8 +340,10 @@ class AWSSentinelInterfaceTestCase(unittest.TestCase):
         try:
             aws.get_sentinel_urls(
                 [
-                    ("S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_"
-                    "20170212T104138_NOPE"),
+                    (
+                        "S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_"
+                        "20170212T104138_NOPE"
+                    ),
                 ],
                 ["B120", "B080"],
             )

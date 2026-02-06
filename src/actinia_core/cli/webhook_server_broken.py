@@ -14,6 +14,7 @@
 """
 Dummy server to response HTTP code 200 to a POST call from an actinia webhook
 """
+
 import argparse
 import psutil
 from flask import Flask, make_response, jsonify, request, json

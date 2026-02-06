@@ -13,6 +13,7 @@
 """
 Base class for logger that uses fluentd/stdout for logging and resource storage
 """
+
 import time
 import logging
 

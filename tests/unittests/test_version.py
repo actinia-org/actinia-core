@@ -13,6 +13,7 @@
 """
 Tests: Version unittest case
 """
+
 import os
 import pytest
 
@@ -108,8 +109,10 @@ def test_parse_additional_version_info(env_value, expected):
             add_versions,
         ),
         (
-            (f'{"|".join([f"{k}:{v}" for k, v in add_versions.items()])}|'
-            "key_1:test"),
+            (
+                f'{"|".join([f"{k}:{v}" for k, v in add_versions.items()])}|'
+                "key_1:test"
+            ),
             add_versions,
         ),
     ],

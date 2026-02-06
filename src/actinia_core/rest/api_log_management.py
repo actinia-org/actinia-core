@@ -13,6 +13,7 @@
 """
 This module is designed to deliver the API calls of a specific user
 """
+
 from flask import g
 from flask import jsonify, make_response
 from flask_restful import Resource

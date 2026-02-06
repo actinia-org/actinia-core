@@ -13,6 +13,7 @@
 """
 Storage base class
 """
+
 from abc import ABCMeta, abstractmethod
 
 __license__ = "GPL-3.0-or-later"

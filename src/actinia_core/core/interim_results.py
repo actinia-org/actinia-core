@@ -387,5 +387,7 @@ class InterimResult(object):
             _, old_dests = self._get_included_additional_mapset_paths(
                 temp_mapset_path, progress_step - 1
             )
-            for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests, strict=False):
+            for m_src, m_dest, old_dest in zip(
+                addm_src, addm_dest, old_dests, strict=False
+            ):
                 self._saving_folder(m_src, m_dest, old_dest, progress_step)

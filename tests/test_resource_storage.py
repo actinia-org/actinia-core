@@ -13,6 +13,7 @@
 """
 Tests: Resource storage test case
 """
+
 from flask.json import loads as json_load
 from datetime import datetime, timedelta
 import unittest
