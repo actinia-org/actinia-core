@@ -13,6 +13,7 @@
 """
 Tests: API logging test case
 """
+
 import unittest
 from actinia_core.core.common.api_logger import ApiLogger
 from actinia_core.core.common.app import flask_app

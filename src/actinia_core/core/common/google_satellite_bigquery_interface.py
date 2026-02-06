@@ -13,13 +13,13 @@
 """
 Storage base class
 """
+
 import os
 from google.cloud import bigquery
 from google.cloud import storage
 import xml.etree.ElementTree as eTree
 from .exceptions import GoogleCloudAPIError
 import dateutil.parser as dtparser
-
 
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"

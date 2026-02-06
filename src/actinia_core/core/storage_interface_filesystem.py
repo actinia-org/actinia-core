@@ -13,6 +13,7 @@
 """
 Storage base class
 """
+
 import os
 import shutil
 from .storage_interface_base import ResourceStorageBase

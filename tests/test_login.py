@@ -13,6 +13,7 @@
 """
 Tests: Actinia user test case
 """
+
 from flask.json import loads as json_load
 from werkzeug.datastructures import Headers
 import unittest

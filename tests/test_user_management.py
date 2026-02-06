@@ -13,6 +13,7 @@
 """
 Tests: User test case
 """
+
 import unittest
 from actinia_core.core.common.user import ActiniaUser
 from actinia_core.core.common.app import flask_app

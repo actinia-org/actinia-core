@@ -791,7 +791,7 @@ section of the JSON response:
  }
 ```
 
-**Footnotes**
+## Footnotes
 
 [^1]: https://en.wikipedia.org/wiki/CURL
 [^2]: https://www.getpostman.com/apps

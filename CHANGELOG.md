@@ -26,23 +26,31 @@ Types of changes
 ## \[Unreleased\]
 
 ## [7.1.0](https://github.com/actinia-org/actinia-core/releases/tag/7.1.0) - 2026-01-28
+
 released from main
+
 ### Added
+
 * Add jp2 support to importer by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/698
 * Allow setting of start_timestamp for a resource by @mmacata in https://github.com/actinia-org/actinia-core/pull/696
+
 ### Updated
+
 * chore(deps): update mundialis/actinia-core docker tag to v7.0.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/693
 * chore(deps): update anchore/sbom-action digest to 28b3d8f by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/694
 * chore(deps): update anchore/sbom-action digest to c618dc7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/697
 * chore(deps): update dependency setuptools to v80.10.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/695
 * chore(deps): update dependency setuptools to v80.10.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/699
 * chore(deps): update anchore/sbom-action digest to deef08a by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/700
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.2...7.1.0
 
-
 ## [7.0.2](https://github.com/actinia-org/actinia-core/releases/tag/7.0.2) - 2026-01-13
+
 released from main
+
 ### Fixed
+
 * docs: fix typos and pin linting version by @neteler in https://github.com/actinia-org/actinia-core/pull/659
 * Adjust stdin for Parameters by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/665
 * README.md: structural and wording updates by @neteler in https://github.com/actinia-org/actinia-core/pull/644
@@ -52,7 +60,9 @@ released from main
 * Update alpine and grass version in Dockerfile by @mmacata in https://github.com/actinia-org/actinia-core/pull/683
 * Dockerfile: update formatting to non-legacy style by @neteler in https://github.com/actinia-org/actinia-core/pull/690
 * Catch error if resource does not exist by @mmacata in https://github.com/actinia-org/actinia-core/pull/685
+
 ### Updated
+
 * chore(deps): update mundialis/actinia-core docker tag to v7.0.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/641
 * chore(deps): update anchore/sbom-action digest to 7b36ad6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/642
 * fix(deps): update dependency google-cloud-bigquery to <=3.35.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/643
@@ -86,24 +96,33 @@ released from main
 * chore(deps): update anchore/sbom-action digest to 0b82b0b by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/686
 * Bump werkzeug from 3.1.4 to 3.1.5 by @dependabot[bot] in https://github.com/actinia-org/actinia-core/pull/688
 * chore(deps): update dependency pystac to v1.14.3 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/691
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.1...7.0.2
 
-
 ## [7.0.1](https://github.com/actinia-org/actinia-core/releases/tag/7.0.1) - 2025-07-18
+
 released from main
+
 ### Fixed
+
 * docker/actinia-core-alpine/start.sh: fix missing --text in grass call by @neteler in https://github.com/actinia-org/actinia-core/pull/632
 * Pin rq version by @mmacata in https://github.com/actinia-org/actinia-core/pull/639
+
 ### Updated
+
 * chore(deps): update mundialis/actinia-core docker tag to v7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/634
 * chore(deps): update anchore/sbom-action digest to cee1b8e by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/635
 * chore(deps): update anchore/sbom-action digest to 9e07fd7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/636
 * fix(deps): update dependency google-cloud-bigquery to <=3.35.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/637
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.0...7.0.1
 
 ## [7.0.0](https://github.com/actinia-org/actinia-core/releases/tag/7.0.0) - 2025-06-18
+
 released from main
+
 ### Changed
+
 * Extract actinia-grassdata-management-plugin, actinia-processing-lib and actinia-rest-lib by @mmacata in https://github.com/actinia-org/actinia-core/pull/628 (including https://github.com/actinia-org/actinia-core/pull/614 and https://github.com/actinia-org/actinia-core/pull/627)
   * [actinia-grassdata-management-plugin](https://github.com/actinia-org/actinia-grassdata-management-plugin)
     ‼️ all endpoints concerning the grassdata management including the resources `raster_layer`, `vector_layer` and `strds`
@@ -113,73 +132,77 @@ released from main
   * [actinia-processing-lib](https://github.com/actinia-org/actinia-processing-lib) and
   * [actinia-rest-lib](https://github.com/actinia-org/actinia-rest-lib)
   * See also:
-    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/3
-    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/5
-    - https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/6
-    - https://github.com/actinia-org/actinia-api/pull/33
-    - https://github.com/actinia-org/actinia-processing-lib/pull/2
-    - https://github.com/actinia-org/actinia-rest-lib/pull/2
+    * https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/3
+    * https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/5
+    * https://github.com/actinia-org/actinia-grassdata-management-plugin/pull/6
+    * https://github.com/actinia-org/actinia-api/pull/33
+    * https://github.com/actinia-org/actinia-processing-lib/pull/2
+    * https://github.com/actinia-org/actinia-rest-lib/pull/2
 
 The following modules or methods were moved
 **To actinia_rest_lib:**
-- actinia_core.rest.base.endpoint_config -> actinia_rest_lib.endpoint_config
-- actinia_core.rest.base.resource_base -> actinia_rest_lib.resource_base
-- actinia_core.rest.base.deprecated_locations -> actinia_rest_lib.deprecated_locations
+
+* actinia_core.rest.base.endpoint_config -> actinia_rest_lib.endpoint_config
+* actinia_core.rest.base.resource_base -> actinia_rest_lib.resource_base
+* actinia_core.rest.base.deprecated_locations -> actinia_rest_lib.deprecated_locations
 
 **To actinia_processing_lib:**
-- actinia_core.core.common.exceptions (AsyncProcessError, AsyncProcessTermination, AsyncProcessTimeLimit) split up file -> actinia_processing_lib.exceptions
-- actinia_core.processing.common.utils -> actinia_processing_lib.utils (only try_import)
-- actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export -> actinia_processing_lib.ephemeral_processing_with_export
-- actinia_core.processing.actinia_processing.ephemeral_processing -> actinia_processing_lib.ephemeral_processing
-- actinia_core.processing.actinia_processing.ephemeral.persistent_processing -> actinia_processing_lib.persistent_processing
+
+* actinia_core.core.common.exceptions (AsyncProcessError, AsyncProcessTermination, AsyncProcessTimeLimit) split up file -> actinia_processing_lib.exceptions
+* actinia_core.processing.common.utils -> actinia_processing_lib.utils (only try_import)
+* actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export -> actinia_processing_lib.ephemeral_processing_with_export
+* actinia_core.processing.actinia_processing.ephemeral_processing -> actinia_processing_lib.ephemeral_processing
+* actinia_core.processing.actinia_processing.ephemeral.persistent_processing -> actinia_processing_lib.persistent_processing
 
 **To actinia_grassdata_management_plugin:**
-- actinia_core.rest.base.renderer_base -> actinia_grassdata_management_plugin.rest.base.renderer_base
-- actinia_core.core.utils allowed_file (split up file) -> actinia_grassdata_management_plugin.core.utils allowed_file
-- actinia_core.core.request_parser
-  - either in actinia_grassdata_management_plugin.core.request_parser (where_parser, glist_parser, extract_glist_parameters)
-  - or removed/outcommented as no usage found anywhere
+
+* actinia_core.rest.base.renderer_base -> actinia_grassdata_management_plugin.rest.base.renderer_base
+* actinia_core.core.utils allowed_file (split up file) -> actinia_grassdata_management_plugin.core.utils allowed_file
+* actinia_core.core.request_parser
+  * either in actinia_grassdata_management_plugin.core.request_parser (where_parser, glist_parser, extract_glist_parameters)
+  * or removed/outcommented as no usage found anywhere
   (extract_where_parameters, start_script_parser, extract_start_script_parameters, t_create_parser, extract_t_create_parameters, t_register_parser, extract_t_register_parameters)
 
-- Also moved to actinia_grassdata_management_plugin, same module structure:
-  - actinia_core.processing.actinia_processing.ephemeral.base.renderer_base
-  - actinia_core.processing.actinia_processing.ephemeral.raster_colors
-  - actinia_core.processing.actinia_processing.ephemeral.raster_layer
-  - actinia_core.processing.actinia_processing.ephemeral.raster_legend
-  - actinia_core.processing.actinia_processing.ephemeral.vector_layer
-  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.raster_renderer
-  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.strds_renderer
-  - actinia_core.processing.actinia_processing.ephemeral_renderer_base.vector_renderer
-  - actinia_core.processing.actinia_processing.persistent.map_layer_management
-  - actinia_core.processing.actinia_processing.persistent.raster_colors
-  - actinia_core.processing.actinia_processing.persistent.raster_layer
-  - actinia_core.processing.actinia_processing.persistent.strds_management
-  - actinia_core.processing.actinia_processing.persistent.strds_raster_management
-  - actinia_core.processing.actinia_processing.persistent.vector_layer
-  - actinia_core.processing.common.map_layer_management
-  - actinia_core.processing.common.raster_colors
-  - actinia_core.processing.common.raster_layer
-  - actinia_core.processing.common.raster_legend
-  - actinia_core.processing.common.raster_renderer
-  - actinia_core.processing.common.strds_management
-  - actinia_core.processing.common.strds_raster_management
-  - actinia_core.processing.common.strds_renderer
-  - actinia_core.processing.common.vector_layer
-  - actinia_core.processing.common.vector_renderer
-  - actinia_core.rest.base.map_layer_base
-  - actinia_core.rest.map_layer_management
-  - actinia_core.rest.raster_colors
-  - actinia_core.rest.raster_layer
-  - actinia_core.rest.raster_legend
-  - actinia_core.rest.raster_renderer
-  - actinia_core.rest.strds_management
-  - actinia_core.rest.strds_raster_management
-  - actinia_core.rest.strds_renderer
-  - actinia_core.rest.vector_layer
-  - actinia_core.rest.vector_renderer
-- Also moved all related tests
+* Also moved to actinia_grassdata_management_plugin, same module structure:
+  * actinia_core.processing.actinia_processing.ephemeral.base.renderer_base
+  * actinia_core.processing.actinia_processing.ephemeral.raster_colors
+  * actinia_core.processing.actinia_processing.ephemeral.raster_layer
+  * actinia_core.processing.actinia_processing.ephemeral.raster_legend
+  * actinia_core.processing.actinia_processing.ephemeral.vector_layer
+  * actinia_core.processing.actinia_processing.ephemeral_renderer_base.raster_renderer
+  * actinia_core.processing.actinia_processing.ephemeral_renderer_base.strds_renderer
+  * actinia_core.processing.actinia_processing.ephemeral_renderer_base.vector_renderer
+  * actinia_core.processing.actinia_processing.persistent.map_layer_management
+  * actinia_core.processing.actinia_processing.persistent.raster_colors
+  * actinia_core.processing.actinia_processing.persistent.raster_layer
+  * actinia_core.processing.actinia_processing.persistent.strds_management
+  * actinia_core.processing.actinia_processing.persistent.strds_raster_management
+  * actinia_core.processing.actinia_processing.persistent.vector_layer
+  * actinia_core.processing.common.map_layer_management
+  * actinia_core.processing.common.raster_colors
+  * actinia_core.processing.common.raster_layer
+  * actinia_core.processing.common.raster_legend
+  * actinia_core.processing.common.raster_renderer
+  * actinia_core.processing.common.strds_management
+  * actinia_core.processing.common.strds_raster_management
+  * actinia_core.processing.common.strds_renderer
+  * actinia_core.processing.common.vector_layer
+  * actinia_core.processing.common.vector_renderer
+  * actinia_core.rest.base.map_layer_base
+  * actinia_core.rest.map_layer_management
+  * actinia_core.rest.raster_colors
+  * actinia_core.rest.raster_layer
+  * actinia_core.rest.raster_legend
+  * actinia_core.rest.raster_renderer
+  * actinia_core.rest.strds_management
+  * actinia_core.rest.strds_raster_management
+  * actinia_core.rest.strds_renderer
+  * actinia_core.rest.vector_layer
+  * actinia_core.rest.vector_renderer
+* Also moved all related tests
 
 The following endpoints were moved to actinia_grassdata_management_plugin. To use them, add actinia_grassdata_management_plugin to the actinia config:
+
 ```ini
 [API]
 plugins = ["actinia_grassdata_management_plugin"]
@@ -203,9 +226,11 @@ plugins = ["actinia_grassdata_management_plugin"]
 ```
 
 ### Added
+
 * Enable PDF export by @mmacata in https://github.com/actinia-org/actinia-core/pull/621 (already moved to actinia-processing-lib)
 
 ### Updated
+
 * chore(deps): update mundialis/actinia-core docker tag to v6.0.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/620
 * fix(deps): update dependency matplotlib to v3.10.3 by @renovate in https://github.com/actinia-org/actinia-core/pull/622
 * fix(deps): update dependency google-cloud-bigquery to <=3.32.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/623
@@ -215,19 +240,20 @@ plugins = ["actinia_grassdata_management_plugin"]
 * chore(deps): update anchore/sbom-action digest to 5f8d644 by @renovate in https://github.com/actinia-org/actinia-core/pull/629
 * chore(deps): update anchore/sbom-action digest to 9246b90 by @renovate in https://github.com/actinia-org/actinia-core/pull/630
 
-
-
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.1...7.0.0
 
-
 ## [6.0.1](https://github.com/actinia-org/actinia-core/releases/tag/6.0.1) - 2025-04-29
+
 released from main
+
 ### Fixed
+
 * Rename redis to kvdb/valkey by @mmacata in https://github.com/actinia-org/actinia-core/pull/610
 * Fix g.remove error msg check by @mmacata in https://github.com/actinia-org/actinia-core/pull/616
 * Readd health-check by @mmacata in https://github.com/actinia-org/actinia-core/pull/619
 
 ### Updated
+
 * chore(deps): update valkey/valkey docker tag to v8.1 by @renovate in https://github.com/actinia-org/actinia-core/pull/608
 * fix(deps): update dependency pystac to v1.13.0 by @renovate in https://github.com/actinia-org/actinia-core/pull/611
 * chore(deps): update mundialis/actinia-core docker tag to v6 by @renovate in https://github.com/actinia-org/actinia-core/pull/609
@@ -238,8 +264,11 @@ released from main
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/6.0.0...6.0.1
 
 ## [6.0.0](https://github.com/actinia-org/actinia-core/releases/tag/6.0.0) - 2025-04-15
+
 released from main
+
 ### Changed
+
 * Remaining changes for switch of redis to valkey by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/601
   * `actinia_core.core.common.kvdb_base` (former `redis_base`)
     * `KvdbBaseInterface` (former `RedisBaseInterface`)
@@ -261,6 +290,7 @@ released from main
     * `kvdb_resource_interface` (former `redis_resource_interface`)
 * Config changed
   * from:
+
       ```ini
      [REDIS]
      redis_server_url =  localhost
@@ -271,7 +301,9 @@ released from main
      queue_type = redis
      redis_queue_server_url = localhost
      ```
+
   * to:
+
       ```ini
      [KVDB]
      kvdb_server_url =  localhost
@@ -282,12 +314,17 @@ released from main
      queue_type = kvdb
      kvdb_queue_server_url = localhost
      ```
+
     but config is backwards compatible and REDIS-section can still be used
 
 * Update location imports from actinia-api by @mmacata in https://github.com/actinia-org/actinia-core/pull/606
+
 ### Fixed
+
 * Update actinia-core image for g83 tests by @linakrisztian in https://github.com/actinia-org/actinia-core/pull/600
+
 ### Updated
+
 * fix(deps): update dependency setuptools to v78 by @renovate in https://github.com/actinia-org/actinia-core/pull/599
 * chore(deps): update anchore/sbom-action digest to 5aeee89 by @renovate in https://github.com/actinia-org/actinia-core/pull/593
 * fix(deps): update dependency matplotlib to v3.10.1 - autoclosed by @renovate in https://github.com/actinia-org/actinia-core/pull/596

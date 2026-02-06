@@ -13,6 +13,7 @@
 """
 Tests: Async processing PostGIS test case
 """
+
 import unittest
 
 # from flask.json import dumps as json_dumps

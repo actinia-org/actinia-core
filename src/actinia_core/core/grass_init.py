@@ -328,7 +328,7 @@ class GrassModuleRunner(ProcessLogging):
             if raw is True:
                 return proc
 
-            (stdout_buff, stderr_buff) = proc.communicate()
+            stdout_buff, stderr_buff = proc.communicate()
             stdout_buff = stdout_buff.decode()
             stderr_buff = stderr_buff.decode()
 
@@ -445,12 +445,8 @@ class GrassModuleRunner(ProcessLogging):
             )
 
         if errorid != 0:
-            log = (
-                "Error while executing the grass module. "
-                " \
-            "
-                "The following error message was logged:\n" + stderr_buff
-            )
+            log = "Error while executing the grass module. " " \
+            " "The following error message was logged:\n" + stderr_buff
             raise GrassInitError(log)
 
         return errorid, stdout_buff, stderr_buff

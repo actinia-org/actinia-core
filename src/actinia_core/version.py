@@ -35,7 +35,6 @@ from actinia_core.core.logging_interface import log
 from actinia_core.models.response_models import LinkResponseModel
 from . import __version__
 
-
 G_VERSION = {}
 PLUGIN_VERSIONS = {}
 PYTHON_VERSION = ""

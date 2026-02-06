@@ -13,6 +13,7 @@
 """
 Tests: User requests test case
 """
+
 from pprint import pprint
 from flask.json import dumps as json_dumps
 from werkzeug.datastructures import Headers

@@ -14,6 +14,7 @@
 Tests: Message logger test case
 
 """
+
 import unittest
 from actinia_core.core.common.config import Configuration
 from actinia_core.core.messages_logger import MessageLogger

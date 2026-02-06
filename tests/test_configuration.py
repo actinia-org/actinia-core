@@ -12,6 +12,7 @@
 """
 Tests: Configuration test case
 """
+
 import unittest
 from actinia_core.core.common.config import Configuration
 

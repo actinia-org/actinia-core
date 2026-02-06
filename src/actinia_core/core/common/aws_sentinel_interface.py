@@ -13,6 +13,7 @@
 """
 Storage base class
 """
+
 from urllib.request import urlopen
 from flask.json import loads as json_loads
 from flask.json import dumps as json_dumps

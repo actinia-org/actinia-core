@@ -12,11 +12,11 @@
 #######
 
 """
-    Setup file for actinia_core.
+Setup file for actinia_core.
 
-    This file was generated with PyScaffold 3.0.1.
-    PyScaffold helps you to put up the scaffold of your new Python project.
-    Learn more under: http://pyscaffold.org/
+This file was generated with PyScaffold 3.0.1.
+PyScaffold helps you to put up the scaffold of your new Python project.
+Learn more under: http://pyscaffold.org/
 """
 
 from setuptools import setup

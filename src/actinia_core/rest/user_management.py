@@ -43,7 +43,6 @@ from actinia_core.models.response_models import (
     SimpleResponseModel,
 )
 
-
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert"
 __copyright__ = "Copyright 2016-2023, Sören Gebbert & mundialis GmbH & Co. KG"

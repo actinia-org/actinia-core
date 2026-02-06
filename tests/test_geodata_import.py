@@ -13,6 +13,7 @@
 """
 Tests: Geodata download import support test case
 """
+
 from actinia_core.core.geodata_download_importer import (
     GeoDataDownloadImportSupport,
 )
@@ -84,7 +85,7 @@ class GeoDataDownloadImportSupportTestCase(unittest.TestCase):
         )
         print("Process id: %i" % proc.pid)
 
-        (stdout_buff, stderr_buff) = proc.communicate()
+        stdout_buff, stderr_buff = proc.communicate()
         print(stdout_buff)
         print(stderr_buff)
         proc.wait()

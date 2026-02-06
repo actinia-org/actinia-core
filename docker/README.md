@@ -58,6 +58,7 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
   `FROM osgeo/grass-gis:releasebranch_8_3-alpine as grass` to
   `FROM osgeo/grass-gis:main-alpine as grass`
 - build the image locally. You can use the existing docker-compose file for this. Outcomment the used actinia image and incomment the build section in the [docker-compose.yml](docker-compose.yml)
+
   ```yaml
     actinia:
       # image: mundialis/actinia-core:4.10.0
@@ -65,6 +66,7 @@ The actinia Dockerimage is based on the latest stable releasebranch of GRASS GIS
         context: ..
         dockerfile: docker/actinia-core-alpine/Dockerfile
   ```
+
   and run `docker compose -f docker/docker-compose.yml up`
 
 <a id="startup-errors"></a>
@@ -146,6 +148,7 @@ To lint your local changes, run
 - open actinia-core on the command line and run
   `docker compose -f docker/docker-compose-dev.yml run --rm --service-ports --entrypoint sh actinia-worker` to start the container for job-execution
 - inside this container, reinstall actinia-core and start the kvdb-queue-worker
+
   ```bash
   pip3 uninstall actinia_core
   cd /src/actinia_core && pip3 install .
@@ -156,10 +159,12 @@ To lint your local changes, run
 
 - add an endpoints configuration csv file like `docker/actinia-core-dev/endpoints.csv`
   with all desired endpoints including method:
+
   ```text
   Class_of_the_endpoint;method1,method2
   Class_of_the_endpoint2;method1
   ```
+
 - make sure that the file is added in the `docker/actinia-core-dev/Dockerfile` with e.g. `COPY docker/actinia-core-dev/endpoints.csv /etc/default/actinia_endpoints.csv`
 - add `endpoints_config = /etc/default/actinia_endpoints.csv` to the `API` section in the `docker/actinia-core-dev/actinia.cfg` file
 - then build and run actinia dev-setup as usual.

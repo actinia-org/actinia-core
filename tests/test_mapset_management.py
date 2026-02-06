@@ -13,6 +13,7 @@
 """
 Tests: Mapset test case
 """
+
 from flask.json import loads as json_load
 import unittest
 

@@ -17,6 +17,7 @@ Possible TODOs: add list_all_users, delete, create_user (, exists).
         In this case, keycloak admin console would be needed and actinia would
         need to store keycloak admin credentials!
 """
+
 from keycloak import KeycloakOpenID
 
 from actinia_core.core.common.user_base import (

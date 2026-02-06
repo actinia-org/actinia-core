@@ -17,6 +17,7 @@ Actinia server script
 This script is for testing purpose only, since the actinia server should
 run behind the uwsgi application server.
 """
+
 import argparse
 import os
 from actinia_core.endpoints import create_endpoints

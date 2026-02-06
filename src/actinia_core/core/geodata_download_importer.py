@@ -13,6 +13,7 @@
 """
 Geodata processing commands
 """
+
 import os
 import requests
 import zipfile
@@ -224,7 +225,7 @@ class GeoDataDownloadImportSupport(object):
         self.import_file_info = []
 
         for mtype, (source, dest) in zip(
-            self.detected_mime_types, self.copy_file_list
+            self.detected_mime_types, self.copy_file_list, strict=False
         ):
             self.import_file_info.append((mtype, source, dest))
 

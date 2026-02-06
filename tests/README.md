@@ -4,9 +4,11 @@
 
 __If not stated otherwise, you need to be in folder `actinia_core`__
 
-When writing new tests it is useful to run selected tests locally and isolated. In this way it is also possible to debug interactively:
+When writing new tests it is useful to run selected tests locally and isolated.
+In this way it is also possible to debug interactively:
 
-1. In the `actinia_core/docker/actinia-core-tests/Dockerfile` comment out `RUN make test` (last line)
+1. In the `actinia_core/docker/actinia-core-tests/Dockerfile` comment out
+   `RUN make test` (last line)
 
 1. Then run `docker build`:
 
@@ -14,8 +16,9 @@ When writing new tests it is useful to run selected tests locally and isolated. 
 docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```
 
-3. To run only a few tests you can mark the tests for development with
-   `@pytest.mark.dev` and add `import pytest` to the `.py` file/s with the tests you want to run.
+1. To run only a few tests you can mark the tests for development with
+   `@pytest.mark.dev` and add `import pytest` to the `.py` file/s with the
+   tests you want to run.
    (For best practice examples on the use of pytest-decorators, see `unittests/test_version.py`)
 
 1. Start the docker container and mount your `tests` folder:
@@ -23,12 +26,13 @@ docker build -f docker/actinia-core-tests/Dockerfile -t actinia-test .
 ```bash
 docker run -it -v /path/to/tests:/src/actinia_core/tests actinia-test:latest -i
 
-# If you are not developing the tests you can run tests using the following command:
+# If you are not developing the tests you can run tests using the following
+# command:
 docker run -it actinia-test:latest -i
 
 ```
 
-5. To execute the test(s) run:
+1. To execute the test(s) run:
 
 ```bash
 # execute all tests
@@ -44,14 +48,17 @@ make unittest
 make devtest
 
 # If you added a debugger to your test it will stop there.
-# After making changes to the test, you need to close and restart the docker container (docker run ...) before testing again.
+# After making changes to the test, you need to close and restart the docker
+# container (docker run ...) before testing again.
 ```
 
 ## Problems
 
-Kvdb authorization is set by `from actinia_core.core.common import kvdb_interface`:
+Kvdb authorization is set by
+`from actinia_core.core.common import kvdb_interface`:
 
 - so this does set the password:
+
   ```python
   import os
   from actinia_core.core.common import kvdb_interface # PROBLEM!!!!
@@ -61,7 +68,9 @@ Kvdb authorization is set by `from actinia_core.core.common import kvdb_interfac
   global_config.read(custom_actinia_cfg)
   global_config.KVDB_SERVER_PW
   ```
+
 - and this works fine:
+
   ```python
   import os
   from actinia_core.core.common.config import global_config
@@ -75,4 +84,5 @@ Kvdb authorization is set by `from actinia_core.core.common import kvdb_interfac
 
 - test_login.py: test_create_get_delete_user
 - test_async_process_validation.py: test_async_processing_new (Webhook)
-- test_asynx_process_postgis_import_export.py: all tests cause of missing PostgreSQL db
+- test_asynx_process_postgis_import_export.py: all tests cause of missing
+PostgreSQL db

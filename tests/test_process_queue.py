@@ -13,6 +13,7 @@
 """
 Tests: process queue test queue
 """
+
 import unittest
 import time
 import datetime
@@ -69,7 +70,6 @@ class ProcessQueueTestCase(unittest.TestCase):
         # The test user
         self.user_id = "soeren"
 
-        global global_config
         global_config.NUMBER_OF_WORKERS = 1
 
         self.rdc = ResourceDataContainer(

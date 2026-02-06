@@ -13,6 +13,7 @@
 """
 Tests: Async process2 test case
 """
+
 import os
 import unittest
 from flask.json import dumps as json_dumps

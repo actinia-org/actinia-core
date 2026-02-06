@@ -26,8 +26,9 @@ queue_type = kvdb
 
 ```bash
 MY_ACTINIA_DATA=$HOME/actinia
+ACTINIA_CFG=$HOME/repos/actinia/actinia-docker/actinia-dev/actinia.cfg
 docker run --rm -it --entrypoint sh \
-    -v $HOME/repos/actinia/actinia-docker/actinia-dev/actinia.cfg:/etc/default/actinia \
+    -v $ACTINIA_CFG:/etc/default/actinia \
     -v $MY_ACTINIA_DATA/workspace:/actinia_core/workspace \
     -v $MY_ACTINIA_DATA/resources:/actinia_core/resources \
     -v $MY_ACTINIA_DATA/grassdb:/actinia_core/grassdb \
@@ -130,7 +131,9 @@ hash
  7) "data"
  8) "x\x9c\xed\x1a\xcbn\x1c\xc7\x91\xb2\xf9\x14\x1f\x1c......."
  9) "description"
-10) "actinia_core.rest.ephemeral_processing_with_export.start_job(<actinia_core.core.resource_data_container.ResourceDataContainer object at ...)"
+10) "actinia_core.rest.ephemeral_processing_with_export.start_job(
+  <actinia_core.core.resource_data_container.ResourceDataContainer
+  object at ...)"
 11) "timeout"
 12) "180"
 13) "last_heartbeat"

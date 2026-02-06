@@ -68,7 +68,7 @@ To verify a successful installation, check API accessibility via the provided en
 
 ## API Documentation
 
-The full API documentation is available [here](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json&nocors).
+The full API documentation is available under [actinia API documentation](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json&nocors).
 
 ## Examples
 

@@ -13,6 +13,7 @@
 """
 Asynchronous merging of several mapsets into a single one
 """
+
 from actinia_processing_lib.persistent_processing import (
     PersistentProcessing,
 )

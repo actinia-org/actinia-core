@@ -13,6 +13,7 @@
 """
 Tests: No authentication test case
 """
+
 import os
 from flask.json import dumps as json_dumps
 from flask.json import loads as json_loads
