@@ -154,8 +154,8 @@ class UrlModel(Schema):
     example = {
         "resources": [
             (
-                f"http://localhost{URL_PREFIX}/resource/user/resource_id-4846cbcc-"
-                "3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"
+                f"http://localhost{URL_PREFIX}/resource/user/resource_id-"
+                "4846cbcc-3918-4654-bf4d-7e1ba2b59ce6/my_slope.tiff"
             )
         ],
         "status": f"http://localhost{URL_PREFIX}/resources/user/resource_id-"
@@ -472,11 +472,12 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
             "<g.region>",
             "traceback": [
                 (
-                    '  File "/home/soeren/src/GRaaS/actinia_venv/lib/python3.5/'
-                    "site-packages/actinia_core-0.0.post0.dev37+g216eeae.dirty-"
-                    'py3.5.egg/actinia_core/resources/ephemeral_processing.py", '
-                    "line 1063, in _run_executable\n    raise AsyncProcessError("
-                    '"Error while running executable <%s>" % process.executable)\n'
+                    '  File "/home/soeren/src/GRaaS/actinia_venv/lib/'
+                    "python3.5/site-packages/actinia_core-0.0.post0.dev37+"
+                    "g216eeae.dirty-py3.5.egg/actinia_core/resources/"
+                    'ephemeral_processing.py", line 1063, in _run_executable\n'
+                    'raise AsyncProcessError("Error while running executable'
+                    '<%s>" % process.executable)\n'
                 )
             ],
             "type": "<class 'actinia_core.core.common.exceptions."
@@ -499,9 +500,9 @@ class ProcessingErrorResponseModel(ProcessingResponseModel):
                 "run_time": 0.05020904541015625,
                 "stderr": [
                     (
-                        "ERROR: MAPSET PERMANE not found at /home/soeren/actinia/"
-                        "workspace/temp_db/gisdbase_5c4c13bce6e54207aea2e1705cba"
-                        "0b8b/nc_spm_08"
+                        "ERROR: MAPSET PERMANE not found at /home/soeren/"
+                        "actinia/workspace/temp_db/gisdbase_5c4c13bce6e54207ae"
+                        "a2e1705cba0b8b/nc_spm_08"
                     ),
                     "",
                 ],

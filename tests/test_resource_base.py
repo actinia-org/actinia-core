@@ -80,7 +80,6 @@ def setup_environment():
 
 def stop_kvdb():
     if server_test is False:
-        global kvdb_pid
         # Kill th kvdb server
         if kvdb_pid is not None:
             os.kill(kvdb_pid, signal.SIGTERM)

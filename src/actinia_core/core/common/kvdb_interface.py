@@ -63,7 +63,7 @@ def __create_job_queue(queue_name):
 
     """
     # Kvdb work queue and connection
-    global job_queues, kvdb_conn
+    global kvdb_conn
 
     if not any(q.name == queue_name for q in job_queues):
         host = global_config.KVDB_QUEUE_SERVER_URL
@@ -118,7 +118,6 @@ def enqueue_job(timeout, func, *args, queue_type_overwrite=None):
         func: The function to call from the subprocess/worker
         *args: The function arguments
     """
-    global job_queues, kvdb_conn
     num_queues = global_config.NUMBER_OF_WORKERS
     queue_type = global_config.QUEUE_TYPE
     queue_name = "local"
