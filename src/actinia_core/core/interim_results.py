@@ -369,7 +369,7 @@ class InterimResult(object):
                 "Maspset %s and temp_file_path %s are copied"
                 % (temp_mapset_path, temp_file_path)
             )
-            for m_src, m_dest in zip(addm_src, addm_dest):
+            for m_src, m_dest in zip(addm_src, addm_dest, strict=False):
                 shutil.copytree(m_src, m_dest)
         else:
             old_dest_mapset = self._get_interim_mapset_path(progress_step - 1)
@@ -387,5 +387,5 @@ class InterimResult(object):
             _, old_dests = self._get_included_additional_mapset_paths(
                 temp_mapset_path, progress_step - 1
             )
-            for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests):
+            for m_src, m_dest, old_dest in zip(addm_src, addm_dest, old_dests, strict=False):
                 self._saving_folder(m_src, m_dest, old_dest, progress_step)
