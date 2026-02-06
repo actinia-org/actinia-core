@@ -42,6 +42,7 @@ released from main
 * chore(deps): update dependency setuptools to v80.10.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/695
 * chore(deps): update dependency setuptools to v80.10.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/699
 * chore(deps): update anchore/sbom-action digest to deef08a by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/700
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.2...7.1.0
 
 ## [7.0.2](https://github.com/actinia-org/actinia-core/releases/tag/7.0.2) - 2026-01-13
@@ -95,6 +96,7 @@ released from main
 * chore(deps): update anchore/sbom-action digest to 0b82b0b by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/686
 * Bump werkzeug from 3.1.4 to 3.1.5 by @dependabot[bot] in https://github.com/actinia-org/actinia-core/pull/688
 * chore(deps): update dependency pystac to v1.14.3 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/691
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.1...7.0.2
 
 ## [7.0.1](https://github.com/actinia-org/actinia-core/releases/tag/7.0.1) - 2025-07-18
@@ -112,6 +114,7 @@ released from main
 * chore(deps): update anchore/sbom-action digest to cee1b8e by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/635
 * chore(deps): update anchore/sbom-action digest to 9e07fd7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/636
 * fix(deps): update dependency google-cloud-bigquery to <=3.35.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/637
+
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.0.0...7.0.1
 
 ## [7.0.0](https://github.com/actinia-org/actinia-core/releases/tag/7.0.0) - 2025-06-18
@@ -138,11 +141,13 @@ released from main
 
 The following modules or methods were moved
 **To actinia_rest_lib:**
+
 * actinia_core.rest.base.endpoint_config -> actinia_rest_lib.endpoint_config
 * actinia_core.rest.base.resource_base -> actinia_rest_lib.resource_base
 * actinia_core.rest.base.deprecated_locations -> actinia_rest_lib.deprecated_locations
 
 **To actinia_processing_lib:**
+
 * actinia_core.core.common.exceptions (AsyncProcessError, AsyncProcessTermination, AsyncProcessTimeLimit) split up file -> actinia_processing_lib.exceptions
 * actinia_core.processing.common.utils -> actinia_processing_lib.utils (only try_import)
 * actinia_core.processing.actinia_processing.ephemeral.ephemeral_processing_with_export -> actinia_processing_lib.ephemeral_processing_with_export
@@ -150,6 +155,7 @@ The following modules or methods were moved
 * actinia_core.processing.actinia_processing.ephemeral.persistent_processing -> actinia_processing_lib.persistent_processing
 
 **To actinia_grassdata_management_plugin:**
+
 * actinia_core.rest.base.renderer_base -> actinia_grassdata_management_plugin.rest.base.renderer_base
 * actinia_core.core.utils allowed_file (split up file) -> actinia_grassdata_management_plugin.core.utils allowed_file
 * actinia_core.core.request_parser

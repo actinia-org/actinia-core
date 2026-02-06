@@ -44,11 +44,13 @@ always a specific user role and can be member of one single user-group.
 The following user-roles are supported:
 
 ### 1. superadmin
+
 - Can create, modify and delete users with all user-roles
 - Has access to all API calls and read/write access to all
   databases
 
 ### 2. admin
+
 - Can access all API calls
 - Can create, modify and delete users with the maximum
   user-role *user* of the same user group
@@ -56,6 +58,7 @@ The following user-roles are supported:
   superadmin
 
 ### 3. user
+
 - Can run computational tasks in ephemeral and user specific
   databases
 - Can create, modify and delete projects in a user specific
@@ -68,21 +71,21 @@ The following user-roles are supported:
   superadmin
 
 ### 4. guest
+
 - Has very limited access to API calls
 - Can not create, modify or delete mapsets
 - Can not create, modify or delete users
 - Has access to persistent databases that were granted by a
   superadmin
 
-
 Overview table:
 
-| task | superadmin | admin | user | guest |notes |
-|------|------------|-------|------|-------|------|
+| task | superadmin | admin | user | guest | notes |
+| ---- | ---------- | ----- | ---- | ----- | ---- |
 | amount raster cells is unlimited | y | y | limited, selected via kvdb | limited, selected via kvdb | - |
-| database access is unlimited                              | y         | only to persistent databases that were granted by a superadmin | limited, defined in kvdb | limited, defined in kvdb | - |
-| project/mapset access is unlimited  | y | y | can create, modify and delete projects/mapsets in user specific databases, defined in kvdb | has access to persistent databases that were granted by a superadmin, defined in kvdb | - |
-|module access is unlimited  | y | y | can run computational tasks in ephemeral and user specific databases | has very limited access to API calls | - |
+| database access is unlimited | y | only to persistent databases that were granted by a superadmin | limited, defined in kvdb | limited, defined in kvdb | - |
+| project/mapset access is unlimited | y | y | can create, modify and delete projects/mapsets in user specific databases, defined in kvdb | has access to persistent databases that were granted by a superadmin, defined in kvdb | - |
+| module access is unlimited | y | y | can run computational tasks in ephemeral and user specific databases | has very limited access to API calls | - |
 | get, create, delete a single user | y | users with the maximum user-role user of the same user group | n | n | Only normal users (role=user can be created) |
 
 In the file actinia.cfg, limits and more can be defined:
@@ -110,14 +113,16 @@ imported. The user can read-access all data from the persistent database
 while running analysis in the ephemeral database or user specific
 database.
 
-**Summary**
+### Summary
 
-### 1. Persistent database
+#### 1. Persistent database
+
 - Read only database with projects and mapsets that can be
   used as processing environment and data source
 - Data can only be accessed using HTTP GET API calls
 
-### 2. Ephemeral database
+#### 2. Ephemeral database
+
 - All processing is performed in ephemeral databases for
   performance and security reasons
 - Ephemeral databases are created for all API calls and
@@ -126,7 +131,8 @@ database.
   environments to access required data from mapsets in
   persistent projects
 
-### 3. User specific databases
+#### 3. User specific databases
+
 - Persistent databases that can be created and modified by a
   specific user group
 - The base for a project in a user specific database can be
@@ -135,7 +141,7 @@ database.
 - A user group can only access a single database with any
   number of projects
 
-**Footnotes**
+## Footnotes
 
 [^1]: https://www.openapis.org/
 [^2]: https://swagger.io
