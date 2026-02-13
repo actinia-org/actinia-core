@@ -13,6 +13,7 @@
 """
 Resource logger and management interface
 """
+
 import pickle
 from .kvdb_resources import KvdbResourceInterface
 from .kvdb_fluentd_logger_base import KvdbFluentLoggerBase

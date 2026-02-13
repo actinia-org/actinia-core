@@ -13,6 +13,7 @@
 """
 Base class for GRASS GIS REST API tests
 """
+
 import base64
 import os
 import requests

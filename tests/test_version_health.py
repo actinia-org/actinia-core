@@ -13,6 +13,7 @@
 """
 Tests: version health
 """
+
 import unittest
 
 try:

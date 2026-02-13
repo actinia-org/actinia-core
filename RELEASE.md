@@ -7,11 +7,13 @@
 ## 1. Prepare release and version
 
 - Run in terminal
+
   ```bash
   ESTIMATED_VERSION=3.0.1
 
   gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body
   ```
+
 - Go to https://github.com/actinia-org/actinia-core/releases/new
 - Copy the output of terminal command to the release description
 - Change heading `## What's Changed` to `### Changed`, `### Fixed`, `### Added`, `### Updated` or what applicable and sort list amongst these headings.
@@ -32,9 +34,11 @@
 ## 4. Update changelog
 
 - Run in terminal
+
   ```bash
   curl https://api.github.com/repos/actinia-org/actinia-core/releases/latest | jq -r '. | "## [\(.tag_name)] - \(.published_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d"))\nreleased from \(.target_commitish)\n\(.body) \n"'
   ```
+
 - Copy the output to the top of the release list in [CHANGELOG.md](https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md)
 - run `mdformat CHANGELOG.md` locally
 - Push changes in CHANGELOG.md to main branch (before, you might need to pull changes from CITATION.cff).

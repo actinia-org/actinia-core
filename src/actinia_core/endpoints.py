@@ -14,6 +14,7 @@
 """
 Actinia core Endpoint definitions
 """
+
 import traceback
 import sys
 from pprint import pprint
@@ -89,7 +90,6 @@ from actinia_core.rest.process_chain_monitoring import (
     MapsetSizeDiffResource,
     MapsetSizeDiffRenderResource,
 )
-
 
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Anika Weinmann"

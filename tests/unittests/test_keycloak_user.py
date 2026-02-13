@@ -13,6 +13,7 @@
 """
 Tests: Version unittest case
 """
+
 import os
 import pytest
 from datetime import datetime, timedelta

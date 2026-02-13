@@ -23,7 +23,6 @@ from actinia_processing_lib.persistent_processing import (
 from actinia_core.core.common.process_object import Process
 from actinia_processing_lib.exceptions import AsyncProcessError
 
-
 __license__ = "GPL-3.0-or-later"
 __author__ = "Sören Gebbert, Anika Weinmann"
 __copyright__ = "Copyright 2016-2022, Sören Gebbert & mundialis GmbH & Co. KG"

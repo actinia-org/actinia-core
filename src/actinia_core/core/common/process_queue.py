@@ -30,7 +30,6 @@ import atexit
 from actinia_core.core.resources_logger import ResourceLogger
 from actinia_core.core.logging_interface import log
 
-
 has_fluent = False
 
 try:
@@ -335,8 +334,6 @@ def start_process_queue_manager(config, queue, use_logger):
         use_logger: Create logifle and fluent logger to log the stderr of the
                     processes
     """
-    global finished_procs
-
     data_set = set()
     lock = Lock()
     # Start the thread that permanently listens to the queue

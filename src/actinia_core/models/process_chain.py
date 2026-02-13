@@ -13,6 +13,7 @@
 """
 Process chain
 """
+
 from flask_restful_swagger_2 import Schema
 from copy import deepcopy
 from actinia_api import URL_PREFIX

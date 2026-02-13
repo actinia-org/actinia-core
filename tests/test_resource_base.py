@@ -13,6 +13,7 @@
 """
 Tests: Actinia resource test case base
 """
+
 import atexit
 import os
 import signal
@@ -79,7 +80,6 @@ def setup_environment():
 
 def stop_kvdb():
     if server_test is False:
-        global kvdb_pid
         # Kill th kvdb server
         if kvdb_pid is not None:
             os.kill(kvdb_pid, signal.SIGTERM)

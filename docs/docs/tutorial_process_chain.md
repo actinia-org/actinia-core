@@ -54,7 +54,7 @@ mapset[^4] *PERMANENT*. The output of the module is named
  }
 ```
 
-**Import and export**
+### Import and export
 
 The actinia process chain supports the specification of URL's to raster
 layers in the input definition. The following process chain imports a
@@ -108,7 +108,7 @@ export as GeoTiff files.
  }
 ```
 
-**Output parsing**
+### Output parsing
 
 Many GRASS GIS modules produce textual output in form of lists, tables
 and key/value pairs. Actinia supports the analysis of this data and the
@@ -1024,7 +1024,7 @@ Use the Link at the end of the response under `"resources"` to download the fina
 
 ![image](nc_s2_ndvi_actinia_process_chain.png)
 
-**Footnotes**
+## Footnotes
 
 <!---
 https://actinia.mundialis.de/api_docs/ is no longer generated

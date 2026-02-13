@@ -11,9 +11,9 @@
 #
 #######
 """
-    Dummy conftest.py for actinia API.
+Dummy conftest.py for actinia API.
 
-    If you don't know what this is for, just leave it empty.
-    Read more about conftest.py under:
-    https://pytest.org/latest/plugins.html
+If you don't know what this is for, just leave it empty.
+Read more about conftest.py under:
+https://pytest.org/latest/plugins.html
 """

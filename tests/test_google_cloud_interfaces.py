@@ -13,6 +13,7 @@
 """
 Tests: Google Big Query interface test case
 """
+
 from actinia_core.core.common.google_satellite_bigquery_interface import (
     GoogleSatelliteBigQueryInterface,
 )
