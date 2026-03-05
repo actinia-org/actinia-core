@@ -25,6 +25,32 @@ Types of changes
 
 ## \[Unreleased\]
 
+
+## [7.1.1](https://github.com/actinia-org/actinia-core/releases/tag/7.1.1) - 2026-03-05
+
+released from main
+
+### Updated
+
+* chore(deps): update mundialis/actinia-core docker tag to v7.1.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/701
+* chore(deps): update anchore/sbom-action digest to 5620efe by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/702
+* chore(deps): update pre-commit hook mundialis/github-workflows to v1.5.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/664
+* CI: revert update pre-commit hook mundialis/github-workflows to v1.5.0 by @neteler in https://github.com/actinia-org/actinia-core/pull/703
+* chore(deps): update actions/checkout digest to de0fac2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/704
+* chore(deps): update anchore/sbom-action digest to 28d7154 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/705
+* chore(deps): update pre-commit hook mundialis/github-workflows to v1.6.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/706
+* fix(deps): update dependency google-cloud-bigquery to <=3.40.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/710
+* chore(deps): update anchore/sbom-action digest to 2d09430 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/709
+* chore(deps): update anchore/sbom-action digest to 60619e7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/711
+* fix(deps): update dependency werkzeug to v3.1.6 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/713
+* chore(deps): update anchore/sbom-action digest to 17ae174 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/712
+* Update actinia-processing-lib by @mmacata in https://github.com/actinia-org/actinia-core/pull/716
+* chore(deps): update docker/setup-buildx-action action to v4 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/717
+* chore(deps): update docker/setup-qemu-action action to v4 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/714
+* chore(deps): update docker/login-action action to v4 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/715
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.1.0...7.1.1
+
 ## [7.1.0](https://github.com/actinia-org/actinia-core/releases/tag/7.1.0) - 2026-01-28
 
 released from main
