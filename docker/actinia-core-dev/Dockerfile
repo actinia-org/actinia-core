@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: (c) 2019-2025 by mundialis GmbH & Co. KG
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-FROM mundialis/actinia-core:7.1.0
+FROM mundialis/actinia-core:7.1.1
 
 # # Keeps Python from generating .pyc files in the container
 ENV PYTHONDONTWRITEBYTECODE=1
