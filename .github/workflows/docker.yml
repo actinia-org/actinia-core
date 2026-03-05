@@ -77,7 +77,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
       - name: Create image and tag names
         id: meta
-        uses: docker/metadata-action@v5
+        uses: docker/metadata-action@v6
         with:
           # images: ${DOCKERHUB_REPOSITORY}
           images: mundialis/actinia-core
