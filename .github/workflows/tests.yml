@@ -16,7 +16,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Replace run only unittest command
       run: |
         sed -i "4s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
@@ -39,7 +39,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Replace run only unittest command
       run: |
         sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
@@ -61,7 +61,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Replace run integration test command
       run: |
         sed -i "4s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
@@ -84,7 +84,7 @@ jobs:
     - name: Checkout
       uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v3
+      uses: docker/setup-buildx-action@v4
     - name: Replace run integration test command
       run: |
         sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
