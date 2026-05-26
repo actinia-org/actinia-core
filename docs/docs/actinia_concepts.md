@@ -5,11 +5,11 @@
 Actinia is fully documented using the OpenAPI standard[^1], better known
 as swagger[^2]. The JSON definition of the API can be accessed here:
 
-<https://actinia.mundialis.de/latest/swagger.json>
+<https://actinia.mundialis.de/api/v3/swagger.json>
 
 A nicely rendered ReDoc version is available here:
 
-<https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>
+<https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/swagger.json>
 
 <!---
 no longer generated:
@@ -23,7 +23,7 @@ spectacle tool can be used:
 
 ```bash
  # Download the latest swagger definition from the actinia service
- wget  https://actinia.mundialis.de/latest/swagger.json -O /tmp/actinia.json
+ wget  https://actinia.mundialis.de/api/v3/swagger.json -O /tmp/actinia.json
 
  # Run spectacle docker image to generate the HTML documentation
  docker run -v /tmp:/tmp -t sourcey/spectacle spectacle /tmp/actinia.json -t /tmp

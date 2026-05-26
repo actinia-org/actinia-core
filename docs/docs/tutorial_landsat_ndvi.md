@@ -3,13 +3,13 @@
 Actinia provides several API calls to compute satellite specific
 parameters:
 
-<https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag-Satellite-Image-Algorithms>
+<https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/swagger.json#tag-Satellite-Image-Algorithms>
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
 address:
 
 ```bash
-export ACTINIA_URL=https://actinia.mundialis.de/latest
+export ACTINIA_URL=https://actinia.mundialis.de/api/v3
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
@@ -62,7 +62,7 @@ URL. Be aware that you have to use your status url as the resource id will chang
 calls.
 
 ```bash
- curl -L ${AUTH} -X GET "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
+ curl -L ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-a12d80c1-539a-45b9-a78c-ee4014f50d03"
 ```
 
 The final result will contain a complete processing list as well as

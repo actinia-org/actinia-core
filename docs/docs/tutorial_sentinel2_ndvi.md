@@ -4,7 +4,7 @@ We will use the Unix shell and curl to access the REST API. First open a shell o
 address:
 
 ```bash
-export ACTINIA_URL=https://actinia.mundialis.de/latest
+export ACTINIA_URL=https://actinia.mundialis.de/api/v3
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
@@ -51,7 +51,7 @@ Poll the status of the asynchronous API call by polling the status URL.
 Be aware that you have to change the status url as the resource id will change for different NDVI API calls.
 
 ```bash
- curl ${AUTH} -X GET http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce
+ curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-6b849585-576f-40b5-a514-34a7cf1f97ce"
 ```
 
 The final result will contain a complete processing list as well as

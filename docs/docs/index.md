@@ -25,24 +25,24 @@ example all Landsat 4-8 scenes as well as all Sentinel-2 scenes in an
 ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
-The full API documentation is available here: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>.
+The full API documentation is available here: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/swagger.json>.
 The source code is available here: <https://github.com/actinia-org/actinia-core>.
 
 - Introduction
-  - What is REST?
-  - Examples
+    - What is REST?
+    - Examples
 - Actinia concepts
-  - Actinia REST API documentation
-  - User, user-roles and user-groups
-  - The Actinia databases
+    - Actinia REST API documentation
+    - User, user-roles and user-groups
+    - The Actinia databases
 - Installation
 - Actinia database access
-  - Using curl for HTTP requests
-  - Access to projects and mapsets in the persistent database
-  - Access to raster layers in the persistent database
-  - Access to raster time-series in the persistent database
+    - Using curl for HTTP requests
+    - Access to projects and mapsets in the persistent database
+    - Access to raster layers in the persistent database
+    - Access to raster time-series in the persistent database
 - Time-series sampling
-  - Sampling of a STRDS with vector points
+    - Sampling of a STRDS with vector points
 
 <!---
 * Landsat NDVI computation
@@ -50,7 +50,7 @@ The source code is available here: <https://github.com/actinia-org/actinia-core>
 -->
 
 - User defined processing
-  - The actinia process chain
-  - Sentinel-2A NDVI process chain
+    - The actinia process chain
+    - Sentinel-2A NDVI process chain
 - License
 - Authors
