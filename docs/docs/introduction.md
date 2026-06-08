@@ -78,7 +78,7 @@ List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
 ```bash
 curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
 ```
-
+<!--
 ### Landsat and Sentinel-2A NDVI computation
 
 This API call will compute the NDVI of the top of athmosphere (TOAR)
@@ -97,7 +97,7 @@ curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/S2A_MSIL1C_20170212T
 
 The results of the asynchronous computations are available as GeoTIFF
 file in a cloud storage for download.
-
+-->
 ## Footnotes
 
 [^1]: https://grass.osgeo.org/
