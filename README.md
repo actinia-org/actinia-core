@@ -28,6 +28,8 @@ but no longer exists
 - [Article DOI](https://doi.org/10.5281/zenodo.2631917)
 - [API Documentation](https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json&nocors)
 - [Discussion forum](https://github.com/orgs/actinia-org/discussions)
+- [Tutorial](https://actinia-org.github.io/actinia-core/)
+- [Docker](https://hub.docker.com/r/mundialis/actinia-core)
 
 ## Prerequisites
 
