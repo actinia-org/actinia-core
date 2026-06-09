@@ -185,7 +185,7 @@ curl ${AUTH} -X GET ${ACTINIA_URL}/projects
 The `curl` command call should report back:
 
 ```bash
-{"projects":["nc_spm_08","ECAD","latlong_wgs84"],"status":"success"}
+{"projects":["nc_spm_08","latlong_wgs84"],"status":"success"}
 ```
 
 Success and welcome to actinia!
