@@ -25,7 +25,7 @@ example all Landsat 4-8 scenes as well as all Sentinel-2 scenes in an
 ephemeral databases. The computational results of ephemeral processing
 are available via object storage as GeoTIFF files.
 
-The full API documentation is available here: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json>.
+The full API documentation is available here: <https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/swagger.json>.
 The source code is available here: <https://github.com/actinia-org/actinia-core>.
 
 - Introduction

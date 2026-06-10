@@ -41,7 +41,7 @@ can simply change the IP and port if your server uses a different
 address:
 
 ```bash
-export ACTINIA_URL=https://actinia.mundialis.de/latest
+export ACTINIA_URL=https://actinia.mundialis.de/api/v3
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```

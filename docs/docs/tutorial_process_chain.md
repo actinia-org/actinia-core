@@ -602,7 +602,7 @@ We will use the Unix shell and curl to access the REST API. First open a shell o
 address:
 
 ```bash
-export ACTINIA_URL=https://actinia.mundialis.de/latest
+export ACTINIA_URL=https://actinia.mundialis.de/api/v3
 export AUTH='-u demouser:gu3st!pa55w0rd'
 # other user credentials can be provided in the same way
 ```
@@ -1031,7 +1031,7 @@ https://actinia.mundialis.de/api_docs/ is no longer generated
 --->
 
 [^1]: https://grass.osgeo.org/grass-stable/manuals/index.html
-[^2]: https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get
+[^2]: https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/swagger.json#tag/Module-Viewer/paths/~1grass_modules/get
 [^3]: https://grass.osgeo.org/grass-stable/manuals/r.slope.aspect.html
 [^4]: https://grass.osgeo.org/grass-stable/manuals/grass_database.html
 [^5]: https://grass.osgeo.org/grass-stable/manuals/g.region.html
