@@ -27,6 +27,9 @@ theme:     readthedocs
 # https://github.com/mkdocs/mkdocs/issues/991
 use_directory_urls: true
 extra_css: [extra.css]
+
+markdown_extensions:
+  - footnotes
 nav:
   - Home: 'index.md'
   - Introduction: 'introduction.md'
