@@ -42,8 +42,7 @@ class AsyncPersistentResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", persistent_processing.post_doc))
     def post(self, project_name, mapset_name):
-        """Execute a user defined process chain that creates a new mapset or
-        runs in an existing one.
+        """Execute a user-defined process chain in a new or existing mapset.
 
         The process chain that describes the GRASS modules that should be
         executed must be provided as JSON payload of the POST request.

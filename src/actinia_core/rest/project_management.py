@@ -68,7 +68,7 @@ class ListProjectsResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", project_management.get_doc))
     def get(self):
-        """Get a list of all available projects"""
+        """Get a list of all available projects."""
         projects = []
 
         if os.path.isdir(self.grass_data_base):
@@ -146,8 +146,7 @@ class ProjectManagementResourceUser(ResourceBase):
     @swagger.doc(check_endpoint("get", project_management.get_user_doc))
     def get(self, project_name):
         """
-        Get the project projection and current computational region of the
-        PERMANENT mapset
+        Get project projection and PERMANENT mapset region.
         """
         rdc = self.preprocess(
             has_json=False,
@@ -189,8 +188,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
     @swagger.doc(check_endpoint("delete", project_management.delete_user_doc))
     def delete(self, project_name):
         """
-        Delete an existing project and everything inside from the user
-        database.
+        Delete an existing project and its content.
         """
         # Delete only projects from the user database
         project = ensure_valid_path(

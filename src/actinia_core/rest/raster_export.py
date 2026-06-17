@@ -87,7 +87,6 @@ class AsyncEphemeralRasterLayerRegionExporterResource(
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", raster_export.region_post_doc))
     def post(self, project_name, mapset_name, raster_name):
-        """Export an existing raster map layer as GeoTiff using the raster
-        map specific region.
+        """Export a raster map layer using its raster-specific region.
         """
         return self._execute(project_name, mapset_name, raster_name, True)

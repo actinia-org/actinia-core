@@ -58,7 +58,7 @@ class SyncResourceStorageResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", resource_storage_management.get_doc))
     def get(self):
-        """Get the current size of the resource storage"""
+        """Get the current size of the resource storage."""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         if rdc:
@@ -99,7 +99,7 @@ class SyncResourceStorageResource(ResourceBase):
         check_endpoint("delete", resource_storage_management.delete_doc)
     )
     def delete(self):
-        """Clean the resource storage and remove all cached data"""
+        """Clean the resource storage and remove all cached data."""
         rdc = self.preprocess(has_json=False, has_xml=False)
 
         olderthan = None
