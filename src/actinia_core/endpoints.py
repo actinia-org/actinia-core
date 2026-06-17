@@ -155,7 +155,6 @@ def create_project_endpoints():
         endpoint=get_endpoint_class_name(MapsetManagementResourceAdmin),
     )
 
-
     flask_api.add_resource(
         MapsetLockManagementResource,
         "/projects/<string:project_name>/mapsets/"
