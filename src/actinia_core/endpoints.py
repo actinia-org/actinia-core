@@ -240,7 +240,7 @@ def create_project_endpoints():
         "/locations/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>/"
         "geotiff_async",
-        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerExporterResource),
+        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerExporterResource),  # noqa: E501
     )
     flask_api.add_resource(
         AsyncEphemeralRasterLayerRegionExporterResource,
@@ -250,7 +250,7 @@ def create_project_endpoints():
         "/locations/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>/"
         "geotiff_async_orig",
-        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerRegionExporterResource),
+        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerRegionExporterResource),  # noqa: E501
     )
 
 
@@ -259,7 +259,6 @@ def create_core_endpoints():
     # Endpoints for project/location, mapset, raster, STRDS, vector management
     # and processing including validation
     create_project_endpoints()
-    # create_project_endpoints(projects_url_part="locations")
 
     # Async processing
     flask_api.add_resource(

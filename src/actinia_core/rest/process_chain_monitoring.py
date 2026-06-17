@@ -22,7 +22,7 @@ from tempfile import NamedTemporaryFile
 from flask import jsonify, make_response, Response
 from flask_restful_swagger_2 import swagger
 from actinia_api.swagger2.actinia_core.apidocs import process_chain_monitoring
-from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import (
+from actinia_api.swagger2.actinia_core.schemas.process_chain_monitoring import (  # noqa: E501
     MapsetSizeResponseModel,
     MaxMapsetSizeResponseModel,
 )

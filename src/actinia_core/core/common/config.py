@@ -387,7 +387,7 @@ class Configuration(object):
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). Resource_id will be added to above
         #           WORKER_QUEUE_PREFIX.
-        # "per_user": Separate queue for each user, config for NUMBER_OF_WORKERS
+        # "per_user": Separate queue for each user, config for NUMBER_OF_WORKERS  # noqa: E501
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). User_id will be added to above
         #           WORKER_QUEUE_PREFIX.
@@ -416,7 +416,7 @@ class Configuration(object):
         self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = None
         self.INTERIM_SAVING_ENDPOINTS = {
             "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
-            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
+            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",  # noqa: E501
             "AsyncPersistentResource".lower(): "AsyncPersistentResource",
         }
         self.INCLUDE_ADDITIONAL_MAPSET_PATTERN = None
