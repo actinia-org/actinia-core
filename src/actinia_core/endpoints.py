@@ -260,7 +260,7 @@ def create_core_endpoints():
     # Endpoints for project/location, mapset, raster, STRDS, vector management
     # and processing including validation
     create_project_endpoints()
-    #create_project_endpoints(projects_url_part="locations")
+    # create_project_endpoints(projects_url_part="locations")
 
     # Async processing
     flask_api.add_resource(
