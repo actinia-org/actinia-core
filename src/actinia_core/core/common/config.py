@@ -387,7 +387,7 @@ class Configuration(object):
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). Resource_id will be added to above
         #           WORKER_QUEUE_PREFIX.
-        # "per_user": Separate queue for each user, config for NUMBER_OF_WORKERS  # noqa: E501
+        # "per_user": Separate queue for each user, config for NUMBER_OF_WORKERS
         #           is ignored. Processed by different actinia instance
         #           (actinia worker). User_id will be added to above
         #           WORKER_QUEUE_PREFIX.
