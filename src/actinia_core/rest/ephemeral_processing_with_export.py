@@ -51,11 +51,13 @@ class AsyncEphemeralExportResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(
-        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+        check_endpoint(
+            "post",
+            ephemeral_processing_with_export.post_doc,
+        )
     )
     def post(self, project_name):
-        """Execute an ephemeral process chain and store results for download.
-        """
+        """Run an ephemeral process chain and store results for download."""
         rdc = self.preprocess(has_json=True, project_name=project_name)
 
         if rdc:
@@ -78,11 +80,13 @@ class AsyncEphemeralExportS3Resource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(
-        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+        check_endpoint(
+            "post",
+            ephemeral_processing_with_export.post_doc,
+        )
     )
     def post(self, project_name):
-        """Execute an ephemeral process chain and store results in Amazon S3 bucket.
-        """
+        """Run an ephemeral process chain and store results in an S3 bucket."""
         rdc = self.preprocess(has_json=True, project_name=project_name)
         rdc.set_storage_model_to_s3()
 
@@ -104,7 +108,10 @@ class AsyncEphemeralExportGCSResource(ResourceBase):
 
     @endpoint_decorator()
     @swagger.doc(
-        check_endpoint("post", ephemeral_processing_with_export.post_doc)
+        check_endpoint(
+            "post",
+            ephemeral_processing_with_export.post_doc,
+        )
     )
     def post(self, project_name):
         """
