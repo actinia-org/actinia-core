@@ -125,8 +125,7 @@ def create_project_endpoints():
         ProjectManagementResourceAdminUser,
         "/projects/<string:project_name>",
         "/locations/<string:project_name>",
-        endpoint=get_endpoint_class_name(
-            ProjectManagementResourceAdminUser),
+        endpoint=get_endpoint_class_name(ProjectManagementResourceAdminUser),
     )
 
     # Mapset management
@@ -139,8 +138,7 @@ def create_project_endpoints():
 
     flask_api.add_resource(
         MapsetManagementResourceUser,
-        "/projects/<string:project_name>/mapsets/"
-        "<string:mapset_name>/info",
+        "/projects/<string:project_name>/mapsets/" "<string:mapset_name>/info",
         "/locations/<string:project_name>/mapsets/"
         "<string:mapset_name>/info",
         endpoint=get_endpoint_class_name(MapsetManagementResourceUser),
@@ -148,17 +146,14 @@ def create_project_endpoints():
 
     flask_api.add_resource(
         MapsetManagementResourceAdmin,
-        "/projects/<string:project_name>/mapsets/"
-        "<string:mapset_name>",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>",
+        "/projects/<string:project_name>/mapsets/" "<string:mapset_name>",
+        "/locations/<string:project_name>/mapsets/" "<string:mapset_name>",
         endpoint=get_endpoint_class_name(MapsetManagementResourceAdmin),
     )
 
     flask_api.add_resource(
         MapsetLockManagementResource,
-        "/projects/<string:project_name>/mapsets/"
-        "<string:mapset_name>/lock",
+        "/projects/<string:project_name>/mapsets/" "<string:mapset_name>/lock",
         "/locations/<string:project_name>/mapsets/"
         "<string:mapset_name>/lock",
         endpoint=get_endpoint_class_name(MapsetLockManagementResource),
@@ -167,19 +162,15 @@ def create_project_endpoints():
     # Validation
     flask_api.add_resource(
         AsyncProcessValidationResource,
-        "/projects/<string:project_name>/"
-        "process_chain_validation_async",
-        "/locations/<string:project_name>/"
-        "process_chain_validation_async",
+        "/projects/<string:project_name>/" "process_chain_validation_async",
+        "/locations/<string:project_name>/" "process_chain_validation_async",
         endpoint=get_endpoint_class_name(AsyncProcessValidationResource),
     )
 
     flask_api.add_resource(
         SyncProcessValidationResource,
-        "/projects/<string:project_name>/"
-        "process_chain_validation_sync",
-        "/locations/<string:project_name>/"
-        "process_chain_validation_sync",
+        "/projects/<string:project_name>/" "process_chain_validation_sync",
+        "/locations/<string:project_name>/" "process_chain_validation_sync",
         endpoint=get_endpoint_class_name(SyncProcessValidationResource),
     )
 
@@ -199,19 +190,14 @@ def create_project_endpoints():
 
     flask_api.add_resource(
         AsyncEphemeralExportS3Resource,
-        "/projects/<string:project_name>/"
-        "processing_async_export_s3",
-        "/locations/<string:project_name>/"
-        "processing_async_export_s3",
-        endpoint=get_endpoint_class_name(
-            AsyncEphemeralExportS3Resource),
+        "/projects/<string:project_name>/" "processing_async_export_s3",
+        "/locations/<string:project_name>/" "processing_async_export_s3",
+        endpoint=get_endpoint_class_name(AsyncEphemeralExportS3Resource),
     )
     flask_api.add_resource(
         AsyncEphemeralExportGCSResource,
-        "/projects/<string:project_name>/"
-        "processing_async_export_gcs",
-        "/locations/<string:project_name>/"
-        "processing_async_export_gcs",
+        "/projects/<string:project_name>/" "processing_async_export_gcs",
+        "/locations/<string:project_name>/" "processing_async_export_gcs",
         endpoint=get_endpoint_class_name(AsyncEphemeralExportGCSResource),
     )
 
@@ -329,8 +315,8 @@ def create_core_endpoints():
     )
     flask_api.add_resource(
         MapsetSizeDiffRenderResource,
-        "/resources/<string:user_id>/<string:resource_id>/mapsetsizes/diffs/"
-        "render",
+        "/resources/<string:user_id>/<string:resource_id>/"
+        "mapsetsizes/diffs/render",
     )
 
 
