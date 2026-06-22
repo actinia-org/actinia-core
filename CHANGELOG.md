@@ -49,7 +49,7 @@ released from main
 * chore(deps): update actions/checkout digest to df4cb1c by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/733
 * fix(deps): update dependency matplotlib to v3.11.0 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/735
 
-## New Contributors
+### New Contributors
 * @TaniaGithub0401 made their first contribution in https://github.com/actinia-org/actinia-core/pull/729
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.1.1...7.1.2
