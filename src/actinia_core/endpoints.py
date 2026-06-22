@@ -240,7 +240,7 @@ def create_project_endpoints():
         "/locations/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>/"
         "geotiff_async",
-        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerExporterResource),  # noqa: E501
+        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerExporterResource),
     )
     flask_api.add_resource(
         AsyncEphemeralRasterLayerRegionExporterResource,
