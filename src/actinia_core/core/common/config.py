@@ -416,7 +416,7 @@ class Configuration(object):
         self.SAVE_INTERIM_RESULTS_ENDPOINTS_CFG = None
         self.INTERIM_SAVING_ENDPOINTS = {
             "AsyncEphemeralResource".lower(): "AsyncEphemeralResource",
-            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",  # noqa: E501
+            "AsyncEphemeralExportResource".lower(): "AsyncEphemeralExportResource",
             "AsyncPersistentResource".lower(): "AsyncPersistentResource",
         }
         self.INCLUDE_ADDITIONAL_MAPSET_PATTERN = None
