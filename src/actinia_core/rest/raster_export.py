@@ -53,7 +53,9 @@ class AsyncEphemeralRasterLayerExporterResource(ResourceBase):
         """Export an existing raster map layer as GeoTiff."""
         return self._execute(project_name, mapset_name, raster_name, False)
 
-    def _execute(self, project_name, mapset_name, raster_name, use_raster_region):
+    def _execute(
+        self, project_name, mapset_name, raster_name, use_raster_region
+    ):
         rdc = self.preprocess(
             has_json=False,
             project_name=project_name,
