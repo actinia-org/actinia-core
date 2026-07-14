@@ -48,7 +48,7 @@ computational results of ephemeral processing are available via object storage
 as GeoTIFF files.
 
 The full API documentation is available here:
-https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/api/v3/\
+https://redocly.github.io/redoc/?url=https://actinia.mundialis.de/latest/
 swagger.json
 
 
@@ -57,45 +57,52 @@ Examples:
 
 To execute the examples, first setup login information, IP address and port:
 
-    export ACTINIA_URL=https://actinia.mundialis.de/api/v3
+    export ACTINIA_URL=https://actinia.mundialis.de/latest
     export AUTH='-u demouser:gu3st!pa55w0rd'
 
 **Data management**
 
 - List all projects that are available in the actinia persistent database:
 
-    ```bash 
     curl ${AUTH} -X GET "${ACTINIA_URL}/projects"
 
 - List all mapsets in the project latlong_wgs84:
 
-    ```bash 
     curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets"
 
 - List all raster layers in project latlong_wgs84 and mapset Sentinel2A
 
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
-    
+    curl ${AUTH} -X GET \
+    "${ACTINIA_URL}/projects/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 
-- List all space-time raster datasets (STRDS) in project nc_spm_08 and mapset modis_lst:
+- List all space-time raster datasets (STRDS) in project ECAD and mapset
+  PERMANENT:
 
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds"
-    
+    curl ${AUTH} -X GET \
+    "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/raster_layers"
 
-- List all raster map layers of the STRDS LST_Day_monthly:
+- List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
 
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers"
-    
+    curl ${AUTH} -X GET \
+    "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/precipitation_\
+    1950_2013_yearly_mm/raster_layers"
 
-- List raster map layers of the STRDS LST_Day_monthly with date filter
+**Landsat and Sentinel2A NDVI computation**
 
-    ```bash
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers?where=start_time>'2016-01-01'"
+This API call will compute the NDVI of the top of atmosphere (TOAR)
+corrected Landsat4 scene LC80440342016259LGN00:
 
+    curl ${AUTH} -X POST "${ACTINIA_URL}/landsat_process/\
+    LC80440342016259LGN00/TOAR/NDVI"
 
+NDVI computation of Sentinel2A scene
+S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138:
+
+    curl ${AUTH} -X POST "${ACTINIA_URL}/sentinel2_process/ndvi/\
+    S2A_MSIL1C_20170212T104141_N0204_R008_T31TGJ_20170212T104138"
+
+The results of the asynchronous computations are available as GeoTIFF file in
+a cloud storage for download.
 """
 
 __license__ = "GPL-3.0-or-later"
