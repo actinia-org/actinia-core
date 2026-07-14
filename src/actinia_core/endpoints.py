@@ -103,155 +103,161 @@ def get_endpoint_class_name(
     projects_url_part: str = "projects",
 ) -> str:
     """Create the name for the given endpoint class."""
-    return endpoint_class.__name__.lower()
+    endpoint_class_name = endpoint_class.__name__.lower()
+    if projects_url_part != "projects":
+        name = f"{endpoint_class_name}_{projects_url_part}"
+    else:
+        name = endpoint_class_name
+    return name
 
 
-def create_project_endpoints():
-    """Function to add resources with "project" inside the endpoint url."""
+def create_project_endpoints(projects_url_part="projects"):
+    """Function to add resources with "project" inside the endpoint url.
+
+    Args:
+        projects_url_part (str): The name of the projects inside the endpoint
+                                 URL; to add deprecated location endpoints set
+                                 it to "locations"
+    """
     # Project management
     flask_api.add_resource(
         ListProjectsResource,
-        "/projects",
-        "/locations",
-        endpoint=get_endpoint_class_name(ListProjectsResource),
+        f"/{projects_url_part}",
+        endpoint=get_endpoint_class_name(
+            ListProjectsResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         ProjectManagementResourceUser,
-        "/projects/<string:project_name>/info",
-        "/locations/<string:project_name>/info",
-        endpoint=get_endpoint_class_name(ProjectManagementResourceUser),
+        f"/{projects_url_part}/<string:project_name>/info",
+        endpoint=get_endpoint_class_name(
+            ProjectManagementResourceUser, projects_url_part
+        ),
     )
     flask_api.add_resource(
         ProjectManagementResourceAdminUser,
-        "/projects/<string:project_name>",
-        "/locations/<string:project_name>",
+        f"/{projects_url_part}/<string:project_name>",
         endpoint=get_endpoint_class_name(
-            ProjectManagementResourceAdminUser),
+            ProjectManagementResourceAdminUser, projects_url_part
+        ),
     )
 
     # Mapset management
     flask_api.add_resource(
         ListMapsetsResource,
-        "/projects/<string:project_name>/mapsets",
-        "/locations/<string:project_name>/mapsets",
-        endpoint=get_endpoint_class_name(ListMapsetsResource),
+        f"/{projects_url_part}/<string:project_name>/mapsets",
+        endpoint=get_endpoint_class_name(
+            ListMapsetsResource, projects_url_part
+        ),
     )
-
     flask_api.add_resource(
         MapsetManagementResourceUser,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/info",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/info",
-        endpoint=get_endpoint_class_name(MapsetManagementResourceUser),
+        endpoint=get_endpoint_class_name(
+            MapsetManagementResourceUser, projects_url_part
+        ),
     )
-
     flask_api.add_resource(
         MapsetManagementResourceAdmin,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>",
-        endpoint=get_endpoint_class_name(MapsetManagementResourceAdmin),
+        endpoint=get_endpoint_class_name(
+            MapsetManagementResourceAdmin, projects_url_part
+        ),
     )
-
-
     flask_api.add_resource(
         MapsetLockManagementResource,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/lock",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/lock",
-        endpoint=get_endpoint_class_name(MapsetLockManagementResource),
+        endpoint=get_endpoint_class_name(
+            MapsetLockManagementResource, projects_url_part
+        ),
     )
 
     # Validation
     flask_api.add_resource(
         AsyncProcessValidationResource,
-        "/projects/<string:project_name>/"
+        f"/{projects_url_part}/<string:project_name>/"
         "process_chain_validation_async",
-        "/locations/<string:project_name>/"
-        "process_chain_validation_async",
-        endpoint=get_endpoint_class_name(AsyncProcessValidationResource),
+        endpoint=get_endpoint_class_name(
+            AsyncProcessValidationResource, projects_url_part
+        ),
     )
 
     flask_api.add_resource(
         SyncProcessValidationResource,
-        "/projects/<string:project_name>/"
+        f"/{projects_url_part}/<string:project_name>/"
         "process_chain_validation_sync",
-        "/locations/<string:project_name>/"
-        "process_chain_validation_sync",
-        endpoint=get_endpoint_class_name(SyncProcessValidationResource),
+        endpoint=get_endpoint_class_name(
+            SyncProcessValidationResource, projects_url_part
+        ),
     )
 
     # Async processing
     flask_api.add_resource(
         AsyncEphemeralResource,
-        "/projects/<string:project_name>/processing_async",
-        "/locations/<string:project_name>/processing_async",
-        endpoint=get_endpoint_class_name(AsyncEphemeralResource),
+        f"/{projects_url_part}/<string:project_name>/processing_async",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         AsyncEphemeralExportResource,
-        "/projects/<string:project_name>/processing_async_export",
-        "/locations/<string:project_name>/processing_async_export",
-        endpoint=get_endpoint_class_name(AsyncEphemeralExportResource),
+        f"/{projects_url_part}/<string:project_name>/processing_async_export",
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralExportResource, projects_url_part
+        ),
     )
-
     flask_api.add_resource(
         AsyncEphemeralExportS3Resource,
-        "/projects/<string:project_name>/"
-        "processing_async_export_s3",
-        "/locations/<string:project_name>/"
+        f"/{projects_url_part}/<string:project_name>/"
         "processing_async_export_s3",
         endpoint=get_endpoint_class_name(
-            AsyncEphemeralExportS3Resource),
+            AsyncEphemeralExportS3Resource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         AsyncEphemeralExportGCSResource,
-        "/projects/<string:project_name>/"
+        f"/{projects_url_part}/<string:project_name>/"
         "processing_async_export_gcs",
-        "/locations/<string:project_name>/"
-        "processing_async_export_gcs",
-        endpoint=get_endpoint_class_name(AsyncEphemeralExportGCSResource),
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralExportGCSResource, projects_url_part
+        ),
     )
-
     flask_api.add_resource(
         AsyncPersistentResource,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/processing_async",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/processing_async",
-        endpoint=get_endpoint_class_name(AsyncPersistentResource),
+        endpoint=get_endpoint_class_name(
+            AsyncPersistentResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         AsyncPersistentMapsetMergerResource,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/merging_async",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/merging_async",
-        endpoint=get_endpoint_class_name(AsyncPersistentMapsetMergerResource),
+        endpoint=get_endpoint_class_name(
+            AsyncPersistentMapsetMergerResource, projects_url_part
+        ),
     )
-
     flask_api.add_resource(
         AsyncEphemeralRasterLayerExporterResource,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>/"
         "geotiff_async",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>/"
-        "geotiff_async",
-        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerExporterResource),
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralRasterLayerExporterResource, projects_url_part
+        ),
     )
     flask_api.add_resource(
         AsyncEphemeralRasterLayerRegionExporterResource,
-        "/projects/<string:project_name>/mapsets/"
+        f"/{projects_url_part}/<string:project_name>/mapsets/"
         "<string:mapset_name>/raster_layers/<string:raster_name>/"
         "geotiff_async_orig",
-        "/locations/<string:project_name>/mapsets/"
-        "<string:mapset_name>/raster_layers/<string:raster_name>/"
-        "geotiff_async_orig",
-        endpoint=get_endpoint_class_name(AsyncEphemeralRasterLayerRegionExporterResource),
+        endpoint=get_endpoint_class_name(
+            AsyncEphemeralRasterLayerRegionExporterResource, projects_url_part
+        ),
     )
 
 
@@ -260,7 +266,7 @@ def create_core_endpoints():
     # Endpoints for project/location, mapset, raster, STRDS, vector management
     # and processing including validation
     create_project_endpoints()
-    #create_project_endpoints(projects_url_part="locations")
+    create_project_endpoints(projects_url_part="locations")
 
     # Async processing
     flask_api.add_resource(
