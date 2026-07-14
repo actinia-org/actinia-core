@@ -595,7 +595,7 @@ response:
 
 The result of the stdout output parsing for each module is located in
 the "process_results" section of the json response.
-
+<!---
 ## Sentinel-2A NDVI process chain
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
@@ -1023,7 +1023,7 @@ The finished response should look like this:
 Use the Link at the end of the response under `"resources"` to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:
 
 ![image](nc_s2_ndvi_actinia_process_chain.png)
-
+--->
 ## Footnotes
 
 <!---
