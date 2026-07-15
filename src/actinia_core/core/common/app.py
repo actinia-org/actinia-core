@@ -72,12 +72,6 @@ To execute the examples, first setup login information, IP address and port:
     ```bash 
     curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets"
 
-- List all raster layers in project latlong_wgs84 and mapset Sentinel2A
-
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
-    
-
 - List all space-time raster datasets (STRDS) in project nc_spm_08 and mapset modis_lst:
 
     ```bash 
