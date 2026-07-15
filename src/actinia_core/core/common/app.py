@@ -64,30 +64,33 @@ To execute the examples, first setup login information, IP address and port:
 
 - List all projects that are available in the actinia persistent database:
 
-    ```bash 
+    ```bash
     curl ${AUTH} -X GET "${ACTINIA_URL}/projects"
 
 - List all mapsets in the project latlong_wgs84:
 
-    ```bash 
+    ```bash
     curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets"
 
-- List all space-time raster datasets (STRDS) in project nc_spm_08 and mapset modis_lst:
+- List all space-time raster datasets (STRDS) in project nc_spm_08 and
+mapset modis_lst:
 
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds"
-    
+    ```bash
+    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/"\
+    "modis_lst/strds"
 
 - List all raster map layers of the STRDS LST_Day_monthly:
 
-    ```bash 
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers"
-    
+    ```bash
+    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/"\
+    "modis_lst/strds/LST_Day_monthly/raster_layers"
 
 - List raster map layers of the STRDS LST_Day_monthly with date filter
 
     ```bash
-    curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers?where=start_time>'2016-01-01'"
+   curl ${AUTH} -X GET \
+    "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/"\
+    "LST_Day_monthly/raster_layers?where=start_time>'2016-01-01'"
 
 
 """
