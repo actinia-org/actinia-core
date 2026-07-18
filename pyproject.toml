@@ -48,7 +48,7 @@ dependencies = [
     "Flask-Cors>=3.0.3",
     "fluent-logger>=0.9.4",
     "gunicorn>=22.0.0",
-    "matplotlib==3.11.0",
+    "matplotlib==3.11.1",
     "passlib>=1.7.1",
     "psutil>=5.7.0",
     "python-json-logger",
