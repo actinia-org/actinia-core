@@ -1018,7 +1018,7 @@ The finished response should look like this:
 
 Use the Link at the end of the response under `"resources"` to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:
 
-![image](nc_s2_ndvi_actinia_process_chain.png)
+![image](nc_s2_ndvi_actinia_process_chain_02.png)
 
 ## Footnotes
 
