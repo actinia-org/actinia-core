@@ -73,7 +73,7 @@ export as GeoTiff files.
        "inputs": [
          {
            "import_descr": {
-             "source": "https://storage.googleapis.com/graas-geodata/elev_ned_30m.tif",
+             "source": "https://raw.githubusercontent.com/actinia-org/actinia_test_datasets/main/elev_ned_30m.tif",
              "type": "raster"
            },
            "param": "raster",
@@ -595,7 +595,7 @@ response:
 
 The result of the stdout output parsing for each module is located in
 the "process_results" section of the json response.
-<!---
+
 ## Sentinel-2A NDVI process chain
 
 We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
@@ -615,10 +615,10 @@ NDVI processing. Then we calculate univariate statistics for the
 Sentinel-2A scene. The computed NDVI raster layer will be exported as
 geotiff file that can be accessed via an URL.
 
-The following JSON code has 6 process definitions:
+The following JSON code has 5 process definitions:
 
 1. Import of two bands (B04 and B08) of the Sentinel-2A scene
-   *S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632*
+   *S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350*
 1. Set the computational region to imported raster layer B04
 1. Use *r.mapcalc* to compute the NDVI
 1. Use *r.univar* to compute univariate statistics of the computed NDVI
@@ -629,12 +629,12 @@ The following JSON code has 6 process definitions:
  {
   "list": [{"id": "importer_1",
            "module": "importer",
-           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                                         "type": "sentinel2",
                                         "sentinel_band": "B04"},
                        "param": "map",
                        "value": "B04"},
-                      {"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                      {"import_descr": {"source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                                         "type": "sentinel2",
                                         "sentinel_band": "B08"},
                        "param": "map",
@@ -669,12 +669,12 @@ Run the process chain asynchronously:
  JSON='{
  "list": [{"id": "importer_1",
            "module": "importer",
-           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+           "inputs": [{"import_descr": {"source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                                         "type": "sentinel2",
                                         "sentinel_band": "B04"},
                        "param": "map",
                        "value": "B04"},
-                      {"import_descr": {"source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                      {"import_descr": {"source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                                         "type": "sentinel2",
                                         "sentinel_band": "B08"},
                        "param": "map",
@@ -709,26 +709,26 @@ works asynchronously:
 
 ```json
 {
-  "accept_datetime": "2022-07-28 14:07:21.578233",
-  "accept_timestamp": 1659017241.5782313,
+  "accept_datetime": "2026-07-28 10:04:35.005956",
+  "accept_timestamp": 1785245354.1234252,
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
     "path": "/api/v3/projects/nc_spm_08/processing_async_export",
     "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/processing_async_export"
   },
-  "datetime": "2022-07-28 14:07:21.580321",
+  "datetime": "2026-07-28 10:04:35.006747",
   "http_code": 200,
   "message": "Resource accepted",
   "process_chain_list": [],
   "process_results": {},
-  "resource_id": "resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70",
+  "resource_id": "resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620",
   "status": "accepted",
-  "time_delta": 0.002097606658935547,
-  "timestamp": 1659017241.58032,
+  "time_delta": 0.0007781982421875,
+  "timestamp": 1785245354.1241977,
   "urls": {
     "resources": [],
-    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
+    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620"
   },
   "user_id": "demouser"
 }
@@ -739,22 +739,22 @@ Poll the status of the Sentinel-2A NDVI job and view the result of the
 computation (remember to use your own resource-id):
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/resources/demouser/resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620"
 ```
 
 The finished response should look like this:
 
 ```json
 {
-  "accept_datetime": "2022-07-28 14:07:21.578233",
-  "accept_timestamp": 1659017241.5782313,
+  "accept_datetime": "2026-07-28 10:25:09.801854",
+  "accept_timestamp": 1785245354.1234252,
   "api_info": {
     "endpoint": "asyncephemeralexportresource",
     "method": "POST",
     "path": "/api/v3/projects/nc_spm_08/processing_async_export",
     "request_url": "http://actinia.mundialis.de/api/v3/projects/nc_spm_08/processing_async_export"
   },
-  "datetime": "2022-07-28 14:14:42.004376",
+  "datetime": "2026-07-28 10:30:30.377049",
   "http_code": 200,
   "message": "Processing successfully finished",
   "process_chain_list": [
@@ -766,7 +766,7 @@ The finished response should look like this:
             {
               "import_descr": {
                 "sentinel_band": "B04",
-                "source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                "source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                 "type": "sentinel2"
               },
               "param": "map",
@@ -775,7 +775,7 @@ The finished response should look like this:
             {
               "import_descr": {
                 "sentinel_band": "B08",
-                "source": "S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
+                "source": "S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
                 "type": "sentinel2"
               },
               "param": "map",
@@ -837,93 +837,87 @@ The finished response should look like this:
   "process_log": [
     {
       "executable": "i.sentinel.download",
-      "id": "i_sentinel_download_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
-      "mapset_size": 421,
+      "id": "i_sentinel_download_S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
+      "mapset_size": 5827,
       "parameter": [
-        "datasource=GCS",
-        "query=identifier=S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
-        "output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1"
+        "datasource=ESA_CDSE",
+        "id=S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
+        "output=/actinia_core/workspace/temp_db/gisdbase_176c9b8ad8f945319665eafe63adb15b/.tmp/temp_file_1"
       ],
       "return_code": 0,
-      "run_time": 36.222164154052734,
+      "run_time": 74.66837954521179,
       "stderr": [
-        "Downloading data into </actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1>...",
-        "Downloading S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632...",
+        "Searching for S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
+        "\rDownloaded products:   0%|          | 0/1 [00:00<?, ?product/s]",
+        "\rS2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350: ",
         "\r  0%|          | 0/84 [00:00<?, ?it/s]\r  2%|▏         | 2/84 [00:00<00:09,  8.82it/s]\r  4%|▎ ...",
-        "Downloaded to /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1/S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632.SAFE",
+        "\rExtracting files from S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350.zip: 100%|██████████|",
+        "\r1008529051/1008529051 [04:13<00:00, 3038868.41file/s]\u001b[A",
+        "\rDownloaded products: 100%|██████████| 1/1 [00:53<00:00, 53.74s/product]
+        \rDownloaded products: 100%|██████████| 1/1 [00:53<00:00, 53.74s/product]",
         ""
       ],
       "stdout": ""
     },
     {
       "executable": "i.sentinel.import",
-      "id": "i_sentinel_import_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632",
-      "mapset_size": 376982877,
+      "id": "i_sentinel_import_S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350",
+      "mapset_size": 210130916,
       "parameter": [
-        "input=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/temp_file_1",
+        "input=/actinia_core/workspace/temp_db/gisdbase_176c9b8ad8f945319665eafe63adb15b/.tmp/temp_file_1",
         "pattern=(B04_10m|B08_10m)",
         "-r"
       ],
       "return_code": 0,
-      "run_time": 344.0564560890198,
+      "run_time": 172.89661169052124,
       "stderr": [
-        "Processing <T18SUE_20220420T154941_B08_10m>...",
-        "Importing raster map <T18SUE_20220420T154941_B08_10m>...",
+        "Processing <T17SPV_20240113T160621_B08_10m>...",
+        "Importing raster map <T17SPV_20240113T160621_B08_10m>...",
         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-        "Estimated target resolution for input band <T18SUE_20220420T154941_B08_10m>: 9.618686330457596",
-        "Using given resolution for input band <T18SUE_20220420T154941_B08_10m>: 10.0",
-        "Reprojecting <T18SUE_20220420T154941_B08_10m>...",
+        "Estimated target resolution for input band <T17SPV_20240113T160621_B08_10m>: 9.618686330457596",
+        "Using given resolution for input band <T17SPV_20240113T160621_B08_10m>: 10.0",
+        "Reprojecting <T17SPV_20240113T160621_B08_10m>...",
         "Rounding to integer after reprojection",
-        "Processing <T18SUE_20220420T154941_B04_10m>...",
-        "Importing raster map <T18SUE_20220420T154941_B04_10m>...",
+        "Processing <T17SPV_20240113T160621_B04_10m>...",
+        "Importing raster map <T17SPV_20240113T160621_B04_10m>...",
         "0..3..6..9..12..15..18..21..24..27..30..33..36..39..42..45..48..51..54..57..60..63..66..69..72..75..78..81..84..87..90..93..96..99..100",
-        "Estimated target resolution for input band <T18SUE_20220420T154941_B04_10m>: 9.618686330457596",
-        "Using given resolution for input band <T18SUE_20220420T154941_B04_10m>: 10.0",
-        "Reprojecting <T18SUE_20220420T154941_B04_10m>...",
+        "Estimated target resolution for input band <T17SPV_20240113T160621_B04_10m>: 9.618686330457596",
+        "Using given resolution for input band <T17SPV_20240113T160621_B04_10m>: 10.0",
+        "Reprojecting <T17SPV_20240113T160621_B04_10m>...",
         "Rounding to integer after reprojection",
         "Writing metadata to maps...",
-        "/usr/local/grass/scripts/i.sentinel.import:830: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
-        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
-        "  dtype=np.float,",
-        "/usr/local/grass/scripts/i.sentinel.import:834: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
-        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
-        "  dtype=np.float,",
-        "/usr/local/grass/scripts/i.sentinel.import:846: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
-        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
-        "  dtype=np.float,",
-        "/usr/local/grass/scripts/i.sentinel.import:850: DeprecationWarning: `np.float` is a deprecated alias for the builtin `float`. To silence this warning, use `float` by itself. Doing this will not modify any behavior and is safe. If you specifically wanted the numpy scalar type, use `np.float64` here.",
-        "Deprecated in NumPy 1.20; for more details and guidance: https://numpy.org/devdocs/release/1.20.0-notes.html#deprecations",
-        "  dtype=np.float,",
+        "/usr/local/grass/scripts/i.sentinel.import:846: DeprecationWarning: Testing an element's truth value will always return True in future versions.  Use specific 'len(elem)' or 'elem is not None' test instead.",
+        "  if image_qi:",
         ""
       ],
       "stdout": ""
     },
     {
       "executable": "g.rename",
-      "id": "rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B04",
-      "mapset_size": 376982877,
+      "id": "rename_S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350_B04",
+      "mapset_size": 210130916,
       "parameter": [
-        "raster=T18SUE_20220420T154941_B04_10m,B04"
+        "raster=T17SPV_20240113T160621_B04_10m,B04"
       ],
       "return_code": 0,
-      "run_time": 0.15042471885681152,
+      "run_time": 0.1001734733581543,
       "stderr": [
-        "Rename raster <T18SUE_20220420T154941_B04_10m> to <B04>",
+        "Rename raster <T17SPV_20240113T160621_B04_10m> to <B04>",
         ""
       ],
       "stdout": ""
     },
     {
       "executable": "g.rename",
-      "id": "rename_S2A_MSIL2A_20220420T154941_N0400_R054_T18SUE_20220421T000632_B08",
-      "mapset_size": 376982877,
+      "id": "rename_S2A_MSIL2A_20240113T160621_N0510_R097_T17SPV_20240113T212350_B08",
+      "mapset_size": 210130916,
       "parameter": [
-        "raster=T18SUE_20220420T154941_B08_10m,B08"
+        "raster=T17SPV_20240113T160621_B08_10m,B08"
       ],
       "return_code": 0,
-      "run_time": 0.15053868293762207,
+      "run_time": 0.10018467903137207,
       "stderr": [
-        "Rename raster <T18SUE_20220420T154941_B08_10m> to <B08>",
+        "Rename raster <T17SPV_20240113T160621_B08_10m> to <B08>",
         ""
       ],
       "stdout": ""
@@ -931,27 +925,27 @@ The finished response should look like this:
     {
       "executable": "g.region",
       "id": "g_region_1",
-      "mapset_size": 376982871,
+      "mapset_size": 210130956,
       "parameter": [
         "raster=B04",
         "-g"
       ],
       "return_code": 0,
-      "run_time": 0.10027408599853516,
+      "run_time": 0.10030817985534668,
       "stderr": [
         ""
       ],
-      "stdout": "projection=99\nzone=0\nn=269280\ns=155130\nw=769610\ne=883770\nnsres=10\newres=10\nrows=11415\ncols=11416\ncells=130313640\n"
+      "stdout": "projection=99\nzone=0\nn=265460\ns=153460\nw=527410\ne=639420\nnsres=10\newres=10\nrows=11200\ncols=11201\ncells=125451200\n"
     },
     {
       "executable": "r.mapcalc",
       "id": "rmapcalc_1",
-      "mapset_size": 808176157,
+      "mapset_size": 437730203,
       "parameter": [
         "expression=NDVI = float((B08 - B04))/(B08 + B04)"
       ],
       "return_code": 0,
-      "run_time": 25.457623958587646,
+      "run_time": 4.6097235679626465,
       "stderr": [
         ""
       ],
@@ -960,42 +954,44 @@ The finished response should look like this:
     {
       "executable": "r.univar",
       "id": "r_univar_sentinel2",
-      "mapset_size": 808176157,
+      "mapset_size": 437730203,,
       "parameter": [
         "map=NDVI",
         "-g"
       ],
       "return_code": 0,
-      "run_time": 5.166007995605469,
+      "run_time": 0.7013413906097412,
       "stderr": [
         ""
       ],
-      "stdout": "n=120547065\nnull_cells=9766575\ncells=130313640\nmin=-0.468370884656906\nmax=0.720661163330078\nrange=1.18903204798698\nmean=0.25310113195823\nmean_of_abs=0.283006503246459\nstddev=0.219731453415328\nvariance=0.0482819116200123\ncoeff_var=86.8156739226241\nsum=30510598.6057423\n"
+      "stdout": "n=65649278\nnull_cells=59801922\ncells=125451200\nmin=-0.912265002727509\nmax=1\nrange=1.91226500272751\nmean=0.294889441126912\nmean_of_abs=0.296570238146083\nstddev=0.110688761430093\nvariance=0.012252001906928\ncoeff_var=37.5356815107041\nsum=19359278.8998053\n"
+
+
     },
     {
       "executable": "r.out.gdal",
       "id": "exporter_raster_NDVI",
-      "mapset_size": 808176157,
+      "mapset_size": 437730203,
       "parameter": [
         "-fmt",
         "input=NDVI",
         "format=GTiff",
-        "output=/actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif",
+        "output=/actinia_core/workspace/temp_db/gisdbase_176c9b8ad8f945319665eafe63adb15b/.tmp/NDVI.tif",
         "overviews=5",
         "createopt=BIGTIFF=YES,COMPRESS=LZW,TILED=YES"
       ],
       "return_code": 0,
-      "run_time": 20.729568481445312,
+      "run_time": 8.817445039749146,
       "stderr": [
         "Checking GDAL data type and nodata value...",
         "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
         "Using GDAL data type <Float32>",
         "Input raster map contains cells with NULL-value (no-data). The value -nan will be used to represent no-data values in the input map. You can specify a nodata value with the nodata option.",
         "Exporting raster data to GTiff format...",
-        "ERROR 6: /actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif, band 1: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.",
+       "ERROR 6: NDVI.tif, band 1: SetColorTable() only supported for Byte or UInt16 bands in TIFF format.",
         "2..5..8..11..14..17..20..23..26..29..32..35..38..41..44..47..50..53..56..59..62..65..68..71..74..77..80..83..86..89..92..95..98..100",
         "Building overviews ...",
-        "r.out.gdal complete. File </actinia_core/workspace/temp_db/gisdbase_dbbd7bc372e942d0953fa0f7d019cacb/.tmp/NDVI.tif> created.",
+        "r.out.gdal complete. File </actinia_core/workspace/temp_db/gisdbase_176c9b8ad8f945319665eafe63adb15b/.tmp/NDVI.tif> created.",
         ""
       ],
       "stdout": ""
@@ -1006,15 +1002,15 @@ The finished response should look like this:
     "num_of_steps": 8,
     "step": 8
   },
-  "resource_id": "resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70",
+  "resource_id": "resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620",
   "status": "finished",
-  "time_delta": 440.42616844177246,
-  "timestamp": 1659017682.0043712,
+  "time_delta": 264.78445768356323,
+  "timestamp": 1785245618.9078715,
   "urls": {
     "resources": [
-      "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70/NDVI.tif"
+      "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620/NDVI.tif"
     ],
-    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-b7b3bfb6-5887-4bc7-b80d-54c0424bfd70"
+    "status": "https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-228fba26-33eb-4d6f-977b-cd90c2b78620"
   },
   "user_id": "demouser"
 }
@@ -1023,7 +1019,7 @@ The finished response should look like this:
 Use the Link at the end of the response under `"resources"` to download the final NDVI map to your local computer. You can load it into a GIS of your choice, it should look like this:
 
 ![image](nc_s2_ndvi_actinia_process_chain.png)
---->
+
 ## Footnotes
 
 <!---
