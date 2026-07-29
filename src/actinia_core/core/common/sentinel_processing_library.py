@@ -423,8 +423,8 @@ class Sentinel2Processing(object):
             exec_type="grass",
             executable="i.sentinel.download",
             executable_params=[
-                "datasource=GCS",
-                f"query=identifier={self.product_id}",
+                "datasource=ESA_CDSE",
+                f"id={self.product_id}",
                 f"output={self.user_download_cache_path}",
             ],
             id=f"i_sentinel_download_{self.product_id}",
