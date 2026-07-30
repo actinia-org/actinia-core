@@ -127,9 +127,9 @@ class Sentinel2ProcessingLibraryTestCase(unittest.TestCase):
             ("Download process executable is not " "i.sentinel.download"),
         )
         ref_params = [
-            "datasource=GCS",
+            "datasource=ESA_CDSE",
             (
-                "query=identifier=S2A_MSIL1C_20170212T104141"
+                "id=S2A_MSIL1C_20170212T104141"
                 "_N0204_R008_T31TGJ_20170212T104138"
             ),
             "output=/tmp",
