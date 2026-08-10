@@ -188,7 +188,7 @@ class ProjectManagementResourceAdminUser(ResourceBase):
     @swagger.doc(check_endpoint("delete", project_management.delete_user_doc))
     def delete(self, project_name):
         """
-        Delete an existing project and its content.
+        Delete an existing project and its content from the user database.
         """
         # Delete only projects from the user database
         project = ensure_valid_path(

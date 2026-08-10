@@ -43,8 +43,9 @@ class AsyncProcessValidationResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", process_validation.post_doc))
     def post(self, project_name):
-        """Validate process chain sources and mapsets asynchronously."""
+        """Validate process chain sources and mapsets asynchronously.
 
+        Also the provided sources and the mapsets are checked."""
         rdc = self.preprocess(
             has_json=True, has_xml=True, project_name=project_name
         )
@@ -63,8 +64,9 @@ class SyncProcessValidationResource(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("post", process_validation.post_doc))
     def post(self, project_name):
-        """Validate process chain sources and mapsets synchronously."""
+        """Validate process chain sources and mapsets synchronously.
 
+        Also the provided sources and the mapsets are checked."""
         rdc = self.preprocess(
             has_json=True, has_xml=True, project_name=project_name
         )
