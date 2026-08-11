@@ -15,8 +15,10 @@ name: Anchore Syft SBOM scan
 
 on:
   push:
-    branches: [ "main" ]
-
+    branches:
+      - main
+      - add-grype-vulnerability-scan
+  workflow_dispatch:
 permissions:
   contents: write
 
@@ -35,5 +37,12 @@ jobs:
       with:
         image: "localbuild/testimage:latest"
         artifact-name: image.cyclonedx.json
+        output-file: image.cyclonedx.json
         dependency-snapshot: true
         format: cyclonedx-json
+    - name: Scan SBOM for vulnerabilities
+      uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
+      with:
+        sbom: image.cyclonedx.json
+        fail-build: false
+        output-format: table
