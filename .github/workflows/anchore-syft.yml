@@ -15,7 +15,9 @@ name: Anchore Syft SBOM scan
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+      - add-grype-vulnerability-scan
       
 permissions:
   contents: write
@@ -24,6 +26,7 @@ jobs:
   Anchore-Build-Scan:
     permissions:
       contents: write # required to upload to the Dependency submission API
+      security-events: write
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the code
@@ -39,8 +42,13 @@ jobs:
         dependency-snapshot: true
         format: cyclonedx-json
     - name: Scan SBOM for vulnerabilities
+      id: vulnerability-scan
       uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
       with:
         sbom: image.cyclonedx.json
         fail-build: false
-        output-format: table
+        output-format: sarif
+    - name: Upload vulnerability report to GitHub Security
+      uses: github/codeql-action/upload-sarif@24ea975727876cf496b1eb0c5b36e96e01600b51
+      with:
+        sarif_file: ${{ steps.vulnerability-scan.outputs.sarif }}
