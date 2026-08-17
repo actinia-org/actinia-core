@@ -15,9 +15,7 @@ name: Anchore Syft SBOM scan
 
 on:
   push:
-    branches: 
-      - main
-      - add-grype-vulnerability-scan
+    branches: ["main"]
       
 permissions:
   contents: write
