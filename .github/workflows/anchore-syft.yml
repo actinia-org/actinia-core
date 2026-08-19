@@ -15,7 +15,9 @@ name: Anchore Syft SBOM scan
 
 on:
   push:
-    branches: ["main"]
+    branches:
+      - main
+      - my-fork-branch
       
 permissions:
   contents: write
