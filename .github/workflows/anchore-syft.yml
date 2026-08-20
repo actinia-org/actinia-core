@@ -14,8 +14,8 @@
 name: Anchore Syft SBOM scan
 
 on:
-  pull_request:
-    branches: [main]
+  push:
+    branches: [ "main" ]
       
 permissions:
   contents: write
