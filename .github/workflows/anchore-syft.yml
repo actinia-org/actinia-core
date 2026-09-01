@@ -11,42 +11,22 @@
 # and parameters, see https://github.com/anchore/sbom-action. For more
 # information about the Anchore SBOM tool, Syft, see
 # https://github.com/anchore/syft
-name: Anchore Syft SBOM scan
+name: SBOM Vulnerability Scan
 
 on:
   push:
-    branches: [ "main" ]
-      
-permissions:
-  contents: write
+    branches:
+      - main
+      - add-grype-vulnerability-scan
 
 jobs:
-  Anchore-Build-Scan:
+  sbom-scan:
     permissions:
-      contents: write # required to upload to the Dependency submission API
+      contents: read
       security-events: write
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout the code
-      uses: actions/checkout@v7
-    - name: Build the Docker image
-      run: docker build . --file docker/actinia-core-alpine/Dockerfile --tag localbuild/testimage:latest
-    - name: Scan the image and upload dependency results
-      uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610
-      with:
-        image: "localbuild/testimage:latest"
-        artifact-name: image.cyclonedx.json
-        output-file: image.cyclonedx.json
-        dependency-snapshot: true
-        format: cyclonedx-json
-    - name: Scan SBOM for vulnerabilities
-      id: vulnerability-scan
-      uses: anchore/scan-action@e1165082ffb1fe366ebaf02d8526e7c4989ea9d2
-      with:
-        sbom: image.cyclonedx.json
-        fail-build: false
-        output-format: sarif
-    - name: Upload vulnerability report to GitHub Security
-      uses: github/codeql-action/upload-sarif@24ea975727876cf496b1eb0c5b36e96e01600b51
-      with:
-        sarif_file: ${{ steps.vulnerability-scan.outputs.sarif }}
+
+    uses: TaniaGithub0401/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@add-reusable-sbom-vulnerability-workflow
+    with:
+      dockerfile: docker/actinia-core-alpine/Dockerfile
+      image: localbuild/testimage:latest
+      fail-build: false
