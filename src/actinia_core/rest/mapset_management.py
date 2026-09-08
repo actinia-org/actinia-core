@@ -92,8 +92,7 @@ class MapsetManagementResourceUser(ResourceBase):
     @swagger.doc(check_endpoint("get", mapset_management.get_user_doc))
     def get(self, project_name, mapset_name):
         """
-        Get the current computational region of the mapset and the projection
-        of the project as WKT string.
+        Get mapset region and project projection as WKT.
         """
         rdc = self.preprocess(
             has_json=False,
@@ -162,7 +161,7 @@ class MapsetManagementResourceAdmin(ResourceBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("delete", mapset_management.delete_user_doc))
     def delete(self, project_name, mapset_name):
-        """Delete an existing mapset"""
+        """Delete an existing mapset."""
         rdc = self.preprocess(
             has_json=False,
             has_xml=False,

@@ -59,7 +59,7 @@ class UserListResource(LoginBase):
     @endpoint_decorator()
     @swagger.doc(check_endpoint("get", user_management.user_list_get_doc))
     def get(self):
-        """List all users in the database
+        """List all users in the database.
 
         These methods work only if the
         authorized user has an admin role.
@@ -109,7 +109,7 @@ class UserManagementResource(LoginBase):
     @swagger.doc(check_endpoint("get", user_management.user_get_doc))
     @check_admin_role_or_own_userid
     def get(self, user_id):
-        """Return the credentials of a single user
+        """Return the credentials of a single user.
 
         These methods work only if the
         authorized user has an admin role or requests the own user ID.
@@ -167,7 +167,7 @@ class UserManagementResource(LoginBase):
     @swagger.doc(check_endpoint("post", user_management.user_post_doc))
     @check_admin_role
     def post(self, user_id):
-        """Create a user in the database
+        """Create a user in the database.
 
         These methods work only if the
         authorized user has an admin role.
@@ -254,7 +254,7 @@ class UserManagementResource(LoginBase):
     @swagger.doc(check_endpoint("delete", user_management.user_delete_doc))
     @check_admin_role
     def delete(self, user_id):
-        """Delete a specific user
+        """Delete a specific user.
 
         These methods work only if the
         authorized user has an admin role.
