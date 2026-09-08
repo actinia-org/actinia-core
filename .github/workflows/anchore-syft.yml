@@ -15,9 +15,7 @@ name: SBOM Vulnerability Scan
 
 on:
   push:
-    branches:
-      - main
-      - add-grype-vulnerability-scan
+    branches: [ "main" ]
 
 jobs:
   sbom-scan:
@@ -25,7 +23,7 @@ jobs:
       contents: read
       security-events: write
 
-    uses: TaniaGithub0401/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@add-reusable-sbom-vulnerability-workflow
+    uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
     with:
       dockerfile: docker/actinia-core-alpine/Dockerfile
       image: localbuild/testimage:latest
