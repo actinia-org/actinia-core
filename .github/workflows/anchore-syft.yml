@@ -11,29 +11,19 @@
 # and parameters, see https://github.com/anchore/sbom-action. For more
 # information about the Anchore SBOM tool, Syft, see
 # https://github.com/anchore/syft
-name: Anchore Syft SBOM scan
+name: SBOM Vulnerability Scan
 
 on:
   push:
     branches: [ "main" ]
 
-permissions:
-  contents: write
-
 jobs:
-  Anchore-Build-Scan:
+  sbom-scan:
     permissions:
-      contents: write # required to upload to the Dependency submission API
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout the code
-      uses: actions/checkout@v7
-    - name: Build the Docker image
-      run: docker build . --file docker/actinia-core-alpine/Dockerfile --tag localbuild/testimage:latest
-    - name: Scan the image and upload dependency results
-      uses: anchore/sbom-action@57aae528053a48a3f6235f2d9461b05fbcb7366d
-      with:
-        image: "localbuild/testimage:latest"
-        artifact-name: image.cyclonedx.json
-        dependency-snapshot: true
-        format: cyclonedx-json
+      contents: read
+      security-events: write
+
+    uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
+    with:
+      dockerfile: docker/actinia-core-alpine/Dockerfile
+      fail-build: false
