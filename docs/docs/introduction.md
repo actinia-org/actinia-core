@@ -66,17 +66,16 @@ List all raster layers in project latlong_wgs84 and mapset Sentinel2A:
  curl ${AUTH} -X GET "${ACTINIA_URL}/projects/latlong_wgs84/mapsets/Sentinel2A/raster_layers"
 ```
 
-List all space-time raster datasets (STRDS) in project
-ECAD and mapset PERMANENT:
+List all space-time raster datasets (STRDS) in project nc_spm_08 and mapset modis_lst::
 
 ```bash
- curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds"
+ curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds"
 ```
 
-List all raster map layers of the STRDS precipitation_1950_2013_yearly_mm:
+List all raster map layers of the STRDS LST_Day_monthly:
 
 ```bash
-curl ${AUTH} -X GET "${ACTINIA_URL}/projects/ECAD/mapsets/PERMANENT/strds/precipitation_1950_2013_yearly_mm/raster_layers"
+curl ${AUTH} -X GET "${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers"
 ```
 
 ## Footnotes
