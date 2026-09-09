@@ -26,5 +26,4 @@ jobs:
     uses: mundialis/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@main
     with:
       dockerfile: docker/actinia-core-alpine/Dockerfile
-      image: localbuild/testimage:latest
       fail-build: false
