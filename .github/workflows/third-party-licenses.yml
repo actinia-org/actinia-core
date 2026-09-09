@@ -8,6 +8,6 @@ jobs:
   generate-third-party-licenses:
     uses: mundialis/github-workflows/.github/workflows/third-party-licenses.yml@lincenses
     with:
-      # dockerfile: docker/actinia-core-alpine/Dockerfile
+      dockerfile: docker/actinia-core-alpine/Dockerfile
       # requirements: requirements.txt
-      pyproject: pyproject.toml
+      # pyproject: pyproject.toml
