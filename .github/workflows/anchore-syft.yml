@@ -27,7 +27,7 @@ jobs:
 
     uses: TaniaGithub0401/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@add-openvex-cra-reporting
     with:
-      dockerfile: pyproject.toml
+      pyproject: pyproject.toml
       fail-build: false
       generate-openvex: true
       product-id: "pkg:generic/actinia-core@test"
