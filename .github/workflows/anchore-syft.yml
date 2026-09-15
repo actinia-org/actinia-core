@@ -29,12 +29,12 @@ jobs:
     uses: TaniaGithub0401/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@add-openvex-cra-reporting
 
     with:
-      dockerfile: docker/actinia-core-alpine/Dockerfile
+      pyproject: pyproject.toml
       fail-build: false
       dependency-track: true
       dependency-track-url: https://dependency-track.mundialis.de
       dependency-track-project-name: actinia-core
-      dependency-track-project-version: test
+      dependency-track-project-version: python-test
 
     secrets:
       dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
