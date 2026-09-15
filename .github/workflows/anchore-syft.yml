@@ -19,6 +19,7 @@ on:
       - main
       - test-openvex-workflow
   workflow_dispatch:
+
 jobs:
   sbom-scan:
     permissions:
@@ -26,7 +27,14 @@ jobs:
       security-events: write
 
     uses: TaniaGithub0401/github-workflows/.github/workflows/sbom-vulnerability-scan.yml@add-openvex-cra-reporting
+
     with:
       dockerfile: docker/actinia-core-alpine/Dockerfile
       fail-build: false
-      generate-cyclonedx-vex: true
+      dependency-track: true
+      dependency-track-url: https://dependency-track.mundialis.de
+      dependency-track-project-name: actinia-core
+      dependency-track-project-version: test
+
+    secrets:
+      dependency-track-api-key: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
