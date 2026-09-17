@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/tutorial_strds_sampling/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Time-series sampling - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Time-series sampling";
+        var mkdocs_page_input_path = "tutorial_strds_sampling.md";
+        var mkdocs_page_url = "/tutorial/tutorial_strds_sampling/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_data_access/">Actinia database access</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Time-series sampling</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#sampling-of-a-strds-with-vector-points">Sampling of a STRDS with vector points</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Time-series sampling</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="time-series-sampling">Time-series sampling</h1>
+<h2 id="sampling-of-a-strds-with-vector-points">Sampling of a STRDS with vector points</h2>
+<p>The actinia REST API provides an API call to sample a space-time raster
+dataset (STRDS) at coordinate points. The coordinates must be specified
+in JSON and must use the same coordinate reference system as the
+project that contains the STRDS.</p>
+<p>We will use the Unix shell and curl to access the REST API. First open a shell of choice (we use bash here) and setup the login information, the  IP address and the port on which the actinia service is running, so you can simply change the IP and port if your server uses a different
+address:</p>
+<pre><code class="language-bash">export ACTINIA_URL=https://actinia.mundialis.de/api/v3
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+</code></pre>
+<p>The following example shows the synchronous API call that samples the
+MODIS land surface temperature STRDS <code>LST_Day_monthly</code> at three
+different coordinate points in the <code>nc_spm_08</code> project.</p>
+<pre><code class="language-bash"> JSON='{&quot;points&quot;:[[&quot;a&quot;, &quot;637000&quot;, &quot;221000&quot;],
+                  [&quot;b&quot;, &quot;642000&quot;, &quot;224000&quot;],
+                  [&quot;c&quot;, &quot;647000&quot;, &quot;227000&quot;]]}'
+
+ curl ${AUTH} -X POST &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/sampling_sync&quot; -H  &quot;accept: application/json&quot; -H  &quot;content-type: application/json&quot; -d &quot;$JSON&quot;
+</code></pre>
+<p>The result of the sampling is a list of time stamped values, that are
+located in the <em>process_results</em> section of the JSON response:</p>
+<pre><code class="language-json"> {
+  &quot;accept_datetime&quot;: &quot;2026-07-14 12:42:55.526473&quot;,
+  &quot;accept_timestamp&quot;: 1784032975.5264723,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;syncephemeralstrdssamplingresource&quot;,
+    &quot;method&quot;: &quot;POST&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/sampling_sync&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/sampling_sync&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 12:42:56.442646&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;list&quot;: [
+        {
+          &quot;id&quot;: &quot;v_in_ascii_1&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;param&quot;: &quot;input&quot;,
+              &quot;value&quot;: &quot;/actinia_core/workspace/temp_db/gisdbase_0fb7182eebde474eb93fd5e413bab9d0/.tmp/tmp6eq5k07c&quot;
+            },
+            {
+              &quot;param&quot;: &quot;format&quot;,
+              &quot;value&quot;: &quot;point&quot;
+            },
+            {
+              &quot;param&quot;: &quot;column&quot;,
+              &quot;value&quot;: &quot;id text, x double precision, y double precision&quot;
+            },
+            {
+              &quot;param&quot;: &quot;x&quot;,
+              &quot;value&quot;: &quot;2&quot;
+            },
+            {
+              &quot;param&quot;: &quot;y&quot;,
+              &quot;value&quot;: &quot;3&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;v.in.ascii&quot;,
+          &quot;outputs&quot;: [
+            {
+              &quot;param&quot;: &quot;output&quot;,
+              &quot;value&quot;: &quot;input_points&quot;
+            }
+          ],
+          &quot;superquiet&quot;: true
+        },
+        {
+          &quot;flags&quot;: &quot;rn&quot;,
+          &quot;id&quot;: &quot;t_rast_sample_2&quot;,
+          &quot;inputs&quot;: [
+            {
+              &quot;param&quot;: &quot;strds&quot;,
+              &quot;value&quot;: &quot;LST_Day_monthly@modis_lst&quot;
+            },
+            {
+              &quot;param&quot;: &quot;points&quot;,
+              &quot;value&quot;: &quot;input_points&quot;
+            },
+            {
+              &quot;param&quot;: &quot;column&quot;,
+              &quot;value&quot;: &quot;id&quot;
+            }
+          ],
+          &quot;module&quot;: &quot;t.rast.sample&quot;,
+          &quot;outputs&quot;: [
+            {
+              &quot;param&quot;: &quot;output&quot;,
+              &quot;value&quot;: &quot;/actinia_core/workspace/temp_db/gisdbase_0fb7182eebde474eb93fd5e413bab9d0/.tmp/tmpnqvxp9me&quot;
+            }
+          ],
+          &quot;superquiet&quot;: true
+        }
+      ],
+      &quot;version&quot;: &quot;1&quot;
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;v.in.ascii&quot;,
+      &quot;id&quot;: &quot;v_in_ascii_1&quot;,
+      &quot;mapset_size&quot;: 15867,
+      &quot;parameter&quot;: [
+        &quot;input=/actinia_core/workspace/temp_db/gisdbase_0fb7182eebde474eb93fd5e413bab9d0/.tmp/tmp6eq5k07c&quot;,
+        &quot;format=point&quot;,
+        &quot;column=id text, x double precision, y double precision&quot;,
+        &quot;x=2&quot;,
+        &quot;y=3&quot;,
+        &quot;output=input_points&quot;,
+        &quot;--qq&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.15046954154968262,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    },
+    {
+      &quot;executable&quot;: &quot;t.rast.sample&quot;,
+      &quot;id&quot;: &quot;t_rast_sample_2&quot;,
+      &quot;mapset_size&quot;: 495186,
+      &quot;parameter&quot;: [
+        &quot;strds=LST_Day_monthly@modis_lst&quot;,
+        &quot;points=input_points&quot;,
+        &quot;column=id&quot;,
+        &quot;output=/actinia_core/workspace/temp_db/gisdbase_0fb7182eebde474eb93fd5e413bab9d0/.tmp/tmpnqvxp9me&quot;,
+        &quot;-rn&quot;,
+        &quot;--qq&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.6018619537353516,
+      &quot;stderr&quot;: [&quot;...&quot;],
+      &quot;stdout&quot;: &quot;&quot;
+    }
+  ],
+  &quot;process_results&quot;: [
+    [
+      &quot;start_time&quot;,
+      &quot;end_time&quot;,
+      &quot;a&quot;,
+      &quot;b&quot;,
+      &quot;c&quot;
+    ],
+    [
+      &quot;2015-01-01 00:00:00&quot;,
+      &quot;2015-02-01 00:00:00&quot;,
+      &quot;14072&quot;,
+      &quot;14130&quot;,
+      &quot;14136&quot;
+    ],
+    [
+      &quot;...&quot;
+    ],
+    [
+      &quot;2016-12-01 00:00:00&quot;,
+      &quot;2017-01-01 00:00:00&quot;,
+      &quot;14224&quot;,
+      &quot;14250&quot;,
+      &quot;14267&quot;
+    ]
+  ],
+  &quot;process_time_delta&quot;: 0.756260871887207,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 2,
+    &quot;step&quot;: 2
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-f06b8015-cc36-44d7-8919-dd87c489f3d1&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 12:42:55.686427&quot;,
+  &quot;start_timestamp&quot;: 1784032975.686427,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.9161863327026367,
+  &quot;timestamp&quot;: 1784032976.4426425,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-f06b8015-cc36-44d7-8919-dd87c489f3d1&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../tutorial_data_access/" class="btn btn-neutral float-left" title="Actinia database access"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tutorial_process_chain/" class="btn btn-neutral float-right" title="User defined processing">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../tutorial_data_access/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tutorial_process_chain/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
