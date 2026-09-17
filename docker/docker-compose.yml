@@ -20,7 +20,7 @@ services:
       - valkey
 
   valkey:
-    image: valkey/valkey:9.1-alpine
+    image: valkey/valkey:9.2-alpine
     volumes:
       - ./valkey_data:/data
     environment:
