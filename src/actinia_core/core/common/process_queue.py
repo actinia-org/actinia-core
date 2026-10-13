@@ -113,19 +113,34 @@ def enqueue_job(timeout, func, *args):
 def stop_process_queue():
     """Destroy the process queue and terminate all running and enqueued jobs"""
     global process_queue_manager
-    # Send stop to the queue
-    process_queue.put("STOP")
-    # Wait for all joining processes
+
     if process_queue_manager:
-        # print("Waited for process_queue_manager")
+        # Send stop to the queue
+        process_queue.put("STOP")
+        # Wait for all joining processes
         process_queue_manager.join(3)
-        # print("Terminate process_queue_manager")
         process_queue_manager.terminate()
+
     process_queue_manager = None
 
 
 # Register the stop_process_queue in the exit handler
 atexit.register(stop_process_queue)
+
+
+def run_process(func, args, config, queue):
+    """Initialize process-local resources and run the job."""
+    global process_queue
+    process_queue = queue
+
+    from .kvdb_interface import connect
+
+    kvdb_args = (config.KVDB_SERVER_URL, config.KVDB_SERVER_PORT)
+    if config.KVDB_SERVER_PW:
+        kvdb_args = (*kvdb_args, config.KVDB_SERVER_PW)
+
+    connect(*kvdb_args)
+    func(*args)
 
 
 class EnqueuedProcess(object):
@@ -146,10 +161,14 @@ class EnqueuedProcess(object):
                             resource database about the termination
     """
 
-    def __init__(self, func, timeout, resource_logger, args):
-        self.process = Process(target=func, args=args)
+    def __init__(self, func, timeout, resource_logger, args, process_queue):
         self.timeout = timeout
         self.config = args[0].config
+
+        self.process = Process(
+            target=run_process,
+            args=(func, args, self.config, process_queue),
+        )
         self.resource_id = args[0].resource_id
         self.iteration = args[0].iteration
         self.user_id = args[0].user_id
@@ -299,7 +318,6 @@ def queue_watcher(queue, data_set, lock):
         data_set: The set to add the received data
         lock: The lock to be used for locking the set access
     """
-
     while True:
         try:
             # print("Check for new data in queue")
@@ -407,6 +425,7 @@ def start_process_queue_manager(config, queue, use_logger):
                         timeout=timeout,
                         resource_logger=resource_logger,
                         args=args,
+                        process_queue=queue,
                     )
                     waiting_processes.add(enqproc)
 
