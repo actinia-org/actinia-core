@@ -54,6 +54,8 @@ dependencies = [
     "python-json-logger",
     "python-keycloak>=2.6.0",
     "python-magic>=0.4.15",
+    "python-dateutil",
+    "pyproj>=3.6.1",
     "requests>=2.20.0",
     "rq==1.16.2",
     "geopandas",
