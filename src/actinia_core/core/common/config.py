@@ -225,6 +225,7 @@ allow_list = [
     "v.random",
     "v.rast.stats",
     "v.select",
+    "v.to.rast",
     "v.what.rast",
     "v.what.strds",
 ]
