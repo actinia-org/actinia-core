@@ -25,6 +25,43 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.2.0](https://github.com/actinia-org/actinia-core/releases/tag/7.2.0) - 2026-11-03
+released from main
+### Added
+* Update outdated tutorial data examples by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/745
+* third-party-licenses with pyproject.toml by @anikaweinmann in https://github.com/actinia-org/actinia-core/pull/756
+* Use reusable SBOM workflow for Docker and Python scans by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/760
+* CSAF settings configurable by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/762
+* Update workflow permissions and Dependency-Track configuration by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/767
+* Declare missing Python dependencies by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/766
+* Added v.to.rast to allow_list by @JonasPischke in https://github.com/actinia-org/actinia-core/pull/764
+
+### Fixed
+* Fix duplicate changelog heading by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/741
+* Remove deprecated google-cloud dependency by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/738
+* Update Sentinel-2 download datasource and id parameter by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/750
+* Redoc update by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/746
+* Fix duplicate swagger summaries by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/739
+* Fix process queue workers for Python 3.14 by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/765
+
+### Updated
+* Update actinia dependency image by @mmacata in https://github.com/actinia-org/actinia-core/pull/751
+* Update actions/setup-python action to v7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/748
+* Update actions/checkout digest to d23441a by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/749
+* Update actions/checkout action to v7 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/740
+* Update dependency matplotlib to v3.11.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/747
+* Update dependency rasterio to v1.5.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/753
+* Update alpine dependencies image tag by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/755
+* Update valkey/valkey Docker tag to v9.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/759
+* Update dependency werkzeug to v3.1.9 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/761
+* Update dependency rasterio to v1.5.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/763
+* Update dependency matplotlib to v3.11.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/757
+
+## New Contributors
+* @JonasPischke made their first contribution in https://github.com/actinia-org/actinia-core/pull/764
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.1.2...7.2.0
+
 ## [7.1.2](https://github.com/actinia-org/actinia-core/releases/tag/7.1.2) - 2026-06-17
 released from main
 ### Fixed
