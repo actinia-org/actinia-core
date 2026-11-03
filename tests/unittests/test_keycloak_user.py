@@ -102,7 +102,7 @@ def test_keycloak_superadmin():
         len(user.get_accessible_datasets()) == 3
     ), "Accessible datasets are wrong"
     assert (
-        len(user.get_accessible_modules()) == 193
+        len(user.get_accessible_modules()) == 194
     ), "Accessible modules are wrong"
     assert (
         user.get_cell_limit() == token_info["cell_limit"]
