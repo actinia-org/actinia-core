@@ -57,7 +57,7 @@ released from main
 * Update dependency rasterio to v1.5.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/763
 * Update dependency matplotlib to v3.11.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/757
 
-## New Contributors
+### New Contributors
 * @JonasPischke made their first contribution in https://github.com/actinia-org/actinia-core/pull/764
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.1.2...7.2.0
