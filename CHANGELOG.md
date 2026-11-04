@@ -25,6 +25,13 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.2.1](https://github.com/actinia-org/actinia-core/releases/tag/7.2.1) - 2026-11-04
+released from main
+### Fixed
+* Fix GRASS environment variables for newer GRASS versions by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/773
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.2.0...7.2.1
+
 ## [7.2.0](https://github.com/actinia-org/actinia-core/releases/tag/7.2.0) - 2026-11-03
 released from main
 ### Added
