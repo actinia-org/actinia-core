@@ -25,6 +25,17 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.2.2](https://github.com/actinia-org/actinia-core/releases/tag/7.2.2) - 2026-11-06
+released from main
+### Fixed
+* Add missing GRASS resource environment variables by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/777
+
+### Updated
+* Update CHANGELOG for version 7.2.1 release by @mmacata in https://github.com/actinia-org/actinia-core/pull/776
+* Update mundialis/actinia-core Docker tag to v7.2.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/772
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.2.1...7.2.2
+
 ## [7.2.1](https://github.com/actinia-org/actinia-core/releases/tag/7.2.1) - 2026-11-04
 released from main
 ### Fixed
