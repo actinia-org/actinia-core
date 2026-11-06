@@ -6,26 +6,18 @@
 
 ## 1. Prepare release and version
 
-- Run in terminal
-
-  ```bash
-  ESTIMATED_VERSION=3.0.1
-
-  gh api repos/actinia-org/actinia-core/releases/generate-notes -f tag_name="$ESTIMATED_VERSION" -f target_commitish=main -q .body
-  ```
-
 - Go to https://github.com/actinia-org/actinia-core/releases/new
-- Copy the output of terminal command to the release description
+- Fill in tag and release title with new version. We follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). You can also have a look at the milestones added to the included PRs. They indicate weather this single PR would lead to a major, minor or patch version increment.
+- Click `Generate release notes`
 - Change heading `## What's Changed` to `### Changed`, `### Fixed`, `### Added`, `### Updated` or what applicable and sort list amongst these headings.
-- You can [compare manually](https://github.com/actinia-org/actinia-core/compare/3.0.0...3.0.1) if all changes are included. If changes were pushed directly to main branch, they are not included.
-- Check if `ESTIMATED_VERSION` increase still fits - we follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html). You can also have a look at the milestones added to the included PRs. They indicate weather this single PR would lead to a major, minor or patch version increment.
-- Fill in tag and release title with this version
-- Make sure that the checkbox for "Set as the latest release" is checked so that this version appears on the main github repo page
-- DO NOT click "save" yet!!
+  - You can [compare manually](https://github.com/actinia-org/actinia-core/compare/3.0.0...3.0.1)
+  - Check again that the new version still fits
+- Make sure that "Release label" is set to "Latest" so that this version appears on the main github repo page
+- __DO NOT click "save" yet!!__
 
 ## 2. Prepare citation
 
-- In [CITATION.cff](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff), update [version](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff#L8) and [date-released](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff#L10) in main branch
+- In [CITATION.cff](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff), update [version](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff#L8) and [date-released](https://github.com/actinia-org/actinia-core/blob/main/CITATION.cff#L10) via PR
 
 ## 3. Release
 
@@ -36,12 +28,9 @@
 - Run in terminal
 
   ```bash
-  curl https://api.github.com/repos/actinia-org/actinia-core/releases/latest | jq -r '. | "## [\(.tag_name)] - \(.published_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d"))\nreleased from \(.target_commitish)\n\(.body) \n"'
-  ```
+  curl https://api.github.com/repos/actinia-org/actinia-core/releases/latest | jq -r '. | "## [\(.tag_name)](\(.html_url)) - \(.published_at | strptime("%Y-%m-%dT%H:%M:%SZ") | strftime("%Y-%m-%d"))\nreleased from \(.target_commitish)\n\(.body) \n"'  ```
 
-- Copy the output to the top of the release list in [CHANGELOG.md](https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md)
-- run `mdformat CHANGELOG.md` locally
-- Push changes in CHANGELOG.md to main branch (before, you might need to pull changes from CITATION.cff).
+- In [CHANGELOG.md](https://github.com/actinia-org/actinia-core/blob/main/CHANGELOG.md) add the cli output to the top of the release list via PR
 
 ## 5. Update GitHub Milestones
 
