@@ -9,29 +9,6 @@ on:
 
 jobs:
 
-  # Unittests for GRASS 8.3
-  alpine-unittests-G83:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
-    - name: Replace run only unittest command
-      run: |
-        sed -i "4s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
-        sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
-    - name: Unittests of actinia
-      id: docker_build
-      uses: docker/build-push-action@v7
-      with:
-        push: false
-        tags: actinia-core-tests:alpine
-        context: .
-        file: docker/actinia-core-tests/Dockerfile
-        no-cache: true
-        # pull: true
-
   # Unittests for GRASS 8.4
   alpine-unittests:
     runs-on: ubuntu-latest
@@ -44,29 +21,6 @@ jobs:
       run: |
         sed -i "s+# RUN make test+RUN make unittest+g" docker/actinia-core-tests/Dockerfile
     - name: Unittests of actinia
-      id: docker_build
-      uses: docker/build-push-action@v7
-      with:
-        push: false
-        tags: actinia-core-tests:alpine
-        context: .
-        file: docker/actinia-core-tests/Dockerfile
-        no-cache: true
-        # pull: true
-
-  # Integration tests for GRASS 8.3
-  alpine-integration-tests-G83:
-    runs-on: ubuntu-latest
-    steps:
-    - name: Checkout
-      uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v4
-    - name: Replace run integration test command
-      run: |
-        sed -i "4s+.*+FROM mundialis/actinia-core:grass8.3 AS actinia_test+" docker/actinia-core-tests/Dockerfile
-        sed -i "s+# RUN make test+RUN make integrationtest+g" docker/actinia-core-tests/Dockerfile
-    - name: Integration tests of actinia
       id: docker_build
       uses: docker/build-push-action@v7
       with:
