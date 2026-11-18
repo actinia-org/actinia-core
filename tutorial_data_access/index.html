@@ -1,0 +1,939 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><link rel="canonical" href="https://actinia.mundialis.de/tutorial/tutorial_data_access/" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Actinia database access - actinia tutorial</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+        <link href="../extra.css" rel="stylesheet" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Actinia database access";
+        var mkdocs_page_input_path = "tutorial_data_access.md";
+        var mkdocs_page_url = "/tutorial/tutorial_data_access/";
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> actinia tutorial
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../introduction/">Introduction</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../actinia_concepts/">Actinia concepts</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../installation/">Installation</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Actinia database access</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#using-curl-for-http-requests">Using curl for HTTP requests</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#access-to-projects-and-mapsets-in-the-persistent-database">Access to projects and mapsets in the persistent database</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#access-to-raster-layers-in-the-persistent-database">Access to raster layers in the persistent database</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#access-to-raster-time-series-in-the-persistent-database">Access to raster time-series in the persistent database</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#footnotes">Footnotes</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_strds_sampling/">Time-series sampling</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../tutorial_process_chain/">User defined processing</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../license/">License</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../authors/">Authors</a>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">actinia tutorial</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Actinia database access</li>
+    <li class="wy-breadcrumbs-aside">
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="tutorial">Tutorial</h1>
+<p>In the following tutorial we will access the persistent database
+analysing raster and raster-time-series data. We will use the import and
+export features of actinia-specific process chains to process
+Sentinel-2A scenes with several GRASS GIS modules and export the result
+as GeoTiff files.</p>
+<p>The following examples shows the REST service access using the command
+line tool <strong>curl</strong><sup id="fnref:1"><a class="footnote-ref" href="#fn:1">1</a></sup>. <strong>Curl</strong> should be available on many Linux
+systems. However, tools like <em>postman</em><sup id="fnref:2"><a class="footnote-ref" href="#fn:2">2</a></sup> allow a more comfortable way
+to access actinia.</p>
+<h2 id="using-curl-for-http-requests">Using curl for HTTP requests</h2>
+<p>We will use the Unix shell and curl to access the REST API. First open a
+shell of choice (we use bash here) and setup the login information, the
+IP address and the port on which the actinia service is running, so you
+can simply change the IP and port if your server uses a different
+address:</p>
+<pre><code class="language-bash">export ACTINIA_URL=https://actinia.mundialis.de/api/v3
+export AUTH='-u demouser:gu3st!pa55w0rd'
+# other user credentials can be provided in the same way
+</code></pre>
+<h2 id="access-to-projects-and-mapsets-in-the-persistent-database">Access to projects and mapsets in the persistent database</h2>
+<p>The following API call lists all available projects in the actinia
+persistent database (the <code>-i</code> includes the HTTP response headers):</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET -i &quot;${ACTINIA_URL}/projects&quot;
+</code></pre>
+<p>The output should look similar to this:</p>
+<pre><code class="language-json"> {
+   &quot;projects&quot;: [
+     &quot;latlong_wgs84&quot;,
+     &quot;nc_spm_08&quot;
+   ],
+   &quot;status&quot;: &quot;success&quot;
+ }
+</code></pre>
+<p>To show the region settings and the projection of the GRASS GIS standard
+project <em>nc_spm_08</em> the following REST call must be used:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/info&quot;
+</code></pre>
+<p>The JSON response is the standard response of the actinia REST API. Most
+API calls respond using this JSON structure. The difference between API
+calls is the result part that is located in the JSON section with the
+name <em>process_results</em>. The response includes all steps that were
+executed to receive the projection information and the region
+information. It is located in the <em>process_log</em> section of the JSON
+response. In addition API specific information as well as the processing
+time are available in the response. To make the JSON response more readable
+you can use parsing-tools like jq.</p>
+<p>The output should look similar to this then:</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2019-08-01 20:30:05.717499&quot;,
+   &quot;accept_timestamp&quot;: 1564691405.7174985,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;projectmanagementresourceuser&quot;,
+     &quot;method&quot;: &quot;GET&quot;,
+     &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/info&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/info&quot;
+   },
+   &quot;datetime&quot;: &quot;2019-08-01 20:30:05.881138&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;ug3&quot;,
+         &quot;module&quot;: &quot;g.region&quot;
+       },
+       &quot;2&quot;: {
+         &quot;flags&quot;: &quot;fw&quot;,
+         &quot;module&quot;: &quot;g.proj&quot;
+       }
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;-ug3&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05028104782104492,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=99\nzone=0\nn=221230\ns=219580\nw=637740\ne=639530\nt=1\nb=0\nnsres=1650\nnsres3=10\newres=1790\newres3=10\ntbres=1\nrows=1\nrows3=165\ncols=1\ncols3=179\ndepths=1\ncells=1\ncells3=29535\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.proj&quot;,
+       &quot;parameter&quot;: [
+         &quot;-fw&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05027127265930176,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;PROJCS[\&quot;NAD83(HARN) / North Carolina\&quot;,GEOGCS[\&quot;NAD83(HARN)\&quot;,DATUM[\&quot;NAD83_High_Accuracy_Reference_Network\&quot;,SPHEROID[\&quot;GRS 1980\&quot;,6378137,298.257222101,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7019\&quot;]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6152\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0,AUTHORITY[\&quot;EPSG\&quot;,\&quot;8901\&quot;]],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4152\&quot;]],PROJECTION[\&quot;Lambert_Conformal_Conic_2SP\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,36.16666666666666],PARAMETER[\&quot;standard_parallel_2\&quot;,34.33333333333334],PARAMETER[\&quot;latitude_of_origin\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-79],PARAMETER[\&quot;false_easting\&quot;,609601.22],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]],AXIS[\&quot;X\&quot;,EAST],AXIS[\&quot;Y\&quot;,NORTH],AUTHORITY[\&quot;EPSG\&quot;,\&quot;3358\&quot;]]\n&quot;
+     }
+   ],
+   &quot;process_results&quot;: {
+     &quot;projection&quot;: &quot;PROJCS[\&quot;NAD83(HARN) / North Carolina\&quot;,GEOGCS[\&quot;NAD83(HARN)\&quot;,DATUM[\&quot;NAD83_High_Accuracy_Reference_Network\&quot;,SPHEROID[\&quot;GRS 1980\&quot;,6378137,298.257222101,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7019\&quot;]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6152\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0,AUTHORITY[\&quot;EPSG\&quot;,\&quot;8901\&quot;]],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4152\&quot;]],PROJECTION[\&quot;Lambert_Conformal_Conic_2SP\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,36.16666666666666],PARAMETER[\&quot;standard_parallel_2\&quot;,34.33333333333334],PARAMETER[\&quot;latitude_of_origin\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-79],PARAMETER[\&quot;false_easting\&quot;,609601.22],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]],AXIS[\&quot;X\&quot;,EAST],AXIS[\&quot;Y\&quot;,NORTH],AUTHORITY[\&quot;EPSG\&quot;,\&quot;3358\&quot;]]\n&quot;,
+     &quot;region&quot;: {
+       &quot;b&quot;: 0.0,
+       &quot;cells&quot;: 1,
+       &quot;cells3&quot;: 29535,
+       &quot;cols&quot;: 1,
+       &quot;cols3&quot;: 179,
+       &quot;depths&quot;: 1,
+       &quot;e&quot;: 639530.0,
+       &quot;ewres&quot;: 1790.0,
+       &quot;ewres3&quot;: 10.0,
+       &quot;n&quot;: 221230.0,
+       &quot;nsres&quot;: 1650.0,
+       &quot;nsres3&quot;: 10.0,
+       &quot;projection&quot;: 99,
+       &quot;rows&quot;: 1,
+       &quot;rows3&quot;: 165,
+       &quot;s&quot;: 219580.0,
+       &quot;t&quot;: 1.0,
+       &quot;tbres&quot;: 1.0,
+       &quot;w&quot;: 637740.0,
+       &quot;zone&quot;: 0
+     }
+   },
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 2,
+     &quot;step&quot;: 2
+   },
+   &quot;resource_id&quot;: &quot;resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 0.16365694999694824,
+   &quot;timestamp&quot;: 1564691405.8811285,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-181a0936-9deb-481c-a1a6-6c9f46f97594&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>To list all mapsets located in the project <em>nc_spm_08</em> the following
+API call is used:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets&quot;
+</code></pre>
+<p>The response of this synchronous call lists all mapsets of the project
+in the <em>process_results</em> section:</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2019-08-01 20:31:11.325953&quot;,
+   &quot;accept_timestamp&quot;: 1564691471.325952,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;listmapsetsresource&quot;,
+     &quot;method&quot;: &quot;GET&quot;,
+     &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets&quot;
+   },
+   &quot;datetime&quot;: &quot;2019-08-01 20:31:11.430294&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;l&quot;,
+         &quot;inputs&quot;: {
+           &quot;separator&quot;: &quot;newline&quot;
+         },
+         &quot;module&quot;: &quot;g.mapsets&quot;
+       }
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;g.mapsets&quot;,
+       &quot;parameter&quot;: [
+         &quot;separator=newline&quot;,
+         &quot;-l&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05030035972595215,
+       &quot;stderr&quot;: [
+         &quot;Available mapsets:&quot;,
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;PERMANENT\nlandsat\nnew_user_mapset\n&quot;
+     }
+   ],
+   &quot;process_results&quot;: [
+     &quot;PERMANENT&quot;,
+     &quot;landsat&quot;,
+     &quot;new_user_mapset&quot;
+   ],
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 1,
+     &quot;step&quot;: 1
+   },
+   &quot;resource_id&quot;: &quot;resource_id-8365e42b-8111-4026-abb0-df86677ff3b9&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 0.10437250137329102,
+   &quot;timestamp&quot;: 1564691471.4302812,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-8365e42b-8111-4026-abb0-df86677ff3b9&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<p>Using the following API call will show all information about the mapset
+<em>PERMANENT</em>:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/PERMANENT/info&quot;
+</code></pre>
+<p>The response shows the region of the mapset and the projection of the
+project in the <em>process_results</em> section:</p>
+<pre><code class="language-json"> {
+   &quot;accept_datetime&quot;: &quot;2019-08-01 20:31:51.665042&quot;,
+   &quot;accept_timestamp&quot;: 1564691511.6650407,
+   &quot;api_info&quot;: {
+     &quot;endpoint&quot;: &quot;mapsetmanagementresourceuser&quot;,
+     &quot;method&quot;: &quot;GET&quot;,
+     &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/PERMANENT/info&quot;,
+     &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/PERMANENT/info&quot;
+   },
+   &quot;datetime&quot;: &quot;2019-08-01 20:31:51.810266&quot;,
+   &quot;http_code&quot;: 200,
+   &quot;message&quot;: &quot;Processing successfully finished&quot;,
+   &quot;process_chain_list&quot;: [
+     {
+       &quot;1&quot;: {
+         &quot;flags&quot;: &quot;ug3&quot;,
+         &quot;module&quot;: &quot;g.region&quot;
+       },
+       &quot;2&quot;: {
+         &quot;flags&quot;: &quot;fw&quot;,
+         &quot;module&quot;: &quot;g.proj&quot;
+       }
+     }
+   ],
+   &quot;process_log&quot;: [
+     {
+       &quot;executable&quot;: &quot;g.region&quot;,
+       &quot;parameter&quot;: [
+         &quot;-ug3&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05028796195983887,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;projection=99\nzone=0\nn=221230\ns=219580\nw=637740\ne=639530\nt=1\nb=0\nnsres=1650\nnsres3=10\newres=1790\newres3=10\ntbres=1\nrows=1\nrows3=165\ncols=1\ncols3=179\ndepths=1\ncells=1\ncells3=29535\n&quot;
+     },
+     {
+       &quot;executable&quot;: &quot;g.proj&quot;,
+       &quot;parameter&quot;: [
+         &quot;-fw&quot;
+       ],
+       &quot;return_code&quot;: 0,
+       &quot;run_time&quot;: 0.05027055740356445,
+       &quot;stderr&quot;: [
+         &quot;&quot;
+       ],
+       &quot;stdout&quot;: &quot;PROJCS[\&quot;NAD83(HARN) / North Carolina\&quot;,GEOGCS[\&quot;NAD83(HARN)\&quot;,DATUM[\&quot;NAD83_High_Accuracy_Reference_Network\&quot;,SPHEROID[\&quot;GRS 1980\&quot;,6378137,298.257222101,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7019\&quot;]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6152\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0,AUTHORITY[\&quot;EPSG\&quot;,\&quot;8901\&quot;]],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4152\&quot;]],PROJECTION[\&quot;Lambert_Conformal_Conic_2SP\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,36.16666666666666],PARAMETER[\&quot;standard_parallel_2\&quot;,34.33333333333334],PARAMETER[\&quot;latitude_of_origin\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-79],PARAMETER[\&quot;false_easting\&quot;,609601.22],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]],AXIS[\&quot;X\&quot;,EAST],AXIS[\&quot;Y\&quot;,NORTH],AUTHORITY[\&quot;EPSG\&quot;,\&quot;3358\&quot;]]\n&quot;
+     }
+   ],
+   &quot;process_results&quot;: {
+     &quot;projection&quot;: &quot;PROJCS[\&quot;NAD83(HARN) / North Carolina\&quot;,GEOGCS[\&quot;NAD83(HARN)\&quot;,DATUM[\&quot;NAD83_High_Accuracy_Reference_Network\&quot;,SPHEROID[\&quot;GRS 1980\&quot;,6378137,298.257222101,AUTHORITY[\&quot;EPSG\&quot;,\&quot;7019\&quot;]],TOWGS84[0,0,0,0,0,0,0],AUTHORITY[\&quot;EPSG\&quot;,\&quot;6152\&quot;]],PRIMEM[\&quot;Greenwich\&quot;,0,AUTHORITY[\&quot;EPSG\&quot;,\&quot;8901\&quot;]],UNIT[\&quot;degree\&quot;,0.0174532925199433,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9122\&quot;]],AUTHORITY[\&quot;EPSG\&quot;,\&quot;4152\&quot;]],PROJECTION[\&quot;Lambert_Conformal_Conic_2SP\&quot;],PARAMETER[\&quot;standard_parallel_1\&quot;,36.16666666666666],PARAMETER[\&quot;standard_parallel_2\&quot;,34.33333333333334],PARAMETER[\&quot;latitude_of_origin\&quot;,33.75],PARAMETER[\&quot;central_meridian\&quot;,-79],PARAMETER[\&quot;false_easting\&quot;,609601.22],PARAMETER[\&quot;false_northing\&quot;,0],UNIT[\&quot;metre\&quot;,1,AUTHORITY[\&quot;EPSG\&quot;,\&quot;9001\&quot;]],AXIS[\&quot;X\&quot;,EAST],AXIS[\&quot;Y\&quot;,NORTH],AUTHORITY[\&quot;EPSG\&quot;,\&quot;3358\&quot;]]\n&quot;,
+     &quot;region&quot;: {
+       &quot;b&quot;: 0.0,
+       &quot;cells&quot;: 1,
+       &quot;cells3&quot;: 29535,
+       &quot;cols&quot;: 1,
+       &quot;cols3&quot;: 179,
+       &quot;depths&quot;: 1,
+       &quot;e&quot;: 639530.0,
+       &quot;ewres&quot;: 1790.0,
+       &quot;ewres3&quot;: 10.0,
+       &quot;n&quot;: 221230.0,
+       &quot;nsres&quot;: 1650.0,
+       &quot;nsres3&quot;: 10.0,
+       &quot;projection&quot;: 99,
+       &quot;rows&quot;: 1,
+       &quot;rows3&quot;: 165,
+       &quot;s&quot;: 219580.0,
+       &quot;t&quot;: 1.0,
+       &quot;tbres&quot;: 1.0,
+       &quot;w&quot;: 637740.0,
+       &quot;zone&quot;: 0
+     }
+   },
+   &quot;progress&quot;: {
+     &quot;num_of_steps&quot;: 2,
+     &quot;step&quot;: 2
+   },
+   &quot;resource_id&quot;: &quot;resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a&quot;,
+   &quot;status&quot;: &quot;finished&quot;,
+   &quot;time_delta&quot;: 0.14524579048156738,
+   &quot;timestamp&quot;: 1564691511.8102555,
+   &quot;urls&quot;: {
+     &quot;resources&quot;: [],
+     &quot;status&quot;: &quot;http://actinia.mundialis.de/api/v3/resources/demouser/resource_id-d949c5c7-9ab9-4ca9-afbf-6b91d7abec5a&quot;
+   },
+   &quot;user_id&quot;: &quot;demouser&quot;
+ }
+</code></pre>
+<h2 id="access-to-raster-layers-in-the-persistent-database">Access to raster layers in the persistent database</h2>
+<p>The <code>modis_lst</code> mapset of the <code>nc_spm_08</code> project contains monthly
+MODIS land surface temperature data. The space-time raster dataset
+<code>LST_Day_monthly</code> consists of 24 raster layers covering the period
+from January 2015 to January 2017. We list all raster layers available
+in this mapset:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/raster_layers&quot;
+</code></pre>
+<p>The response lists all raster layers of the mapset in the
+<em>process_results</em> section:</p>
+<pre><code class="language-json"> {
+  &quot;accept_datetime&quot;: &quot;2026-07-14 13:03:50.622823&quot;,
+  &quot;accept_timestamp&quot;: 1784034230.6228213,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;rasterlayersresource&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/raster_layers&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/raster_layers&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 13:03:50.837373&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;1&quot;: {
+        &quot;inputs&quot;: {
+          &quot;mapset&quot;: &quot;modis_lst&quot;,
+          &quot;type&quot;: &quot;raster&quot;
+        },
+        &quot;module&quot;: &quot;g.list&quot;
+      }
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;g.list&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;parameter&quot;: [
+        &quot;mapset=modis_lst&quot;,
+        &quot;type=raster&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.15046429634094238,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;...&quot;
+    }
+  ],
+  &quot;process_results&quot;: [
+    &quot;MOD11B3.A2015001.h11v05.single_LST_Day_6km&quot;,
+    &quot;MOD11B3.A2015032.h11v05.single_LST_Day_6km&quot;,
+    &quot;...&quot;,
+    &quot;MOD11B3.A2016306.h11v05.single_LST_Day_6km&quot;,
+    &quot;MOD11B3.A2016336.h11v05.single_LST_Day_6km&quot;
+  ],
+  &quot;process_time_delta&quot;: 0.15128397941589355,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 1,
+    &quot;step&quot;: 1
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-0aea41a9-be71-4248-a12e-9378d193fbb6&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 13:03:50.686130&quot;,
+  &quot;start_timestamp&quot;: 1784034230.6861298,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.21456289291381836,
+  &quot;timestamp&quot;: 1784034230.8373697,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-0aea41a9-be71-4248-a12e-9378d193fbb6&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+<p>Show info about the raster layer
+<em>MOD11B3.A2016336.h11v05.single_LST_Day_6km</em>:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/raster_layers/MOD11B3.A2016336.h11v05.single_LST_Day_6km&quot;
+</code></pre>
+<p>The response lists information about the raster layer
+<em>MOD11B3.A2016336.h11v05.single_LST_Day_6km</em> in the <em>process_results</em>
+section:</p>
+<pre><code class="language-json">{
+  &quot;accept_datetime&quot;: &quot;2026-07-14 13:14:42.341554&quot;,
+  &quot;accept_timestamp&quot;: 1784034882.3415532,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;rasterlayerresource&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/raster_layers/MOD11B3.A2016336.h11v05.single_LST_Day_6km&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/raster_layers/MOD11B3.A2016336.h11v05.single_LST_Day_6km&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 13:14:42.525335&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;1&quot;: {
+        &quot;flags&quot;: &quot;gre&quot;,
+        &quot;inputs&quot;: {
+          &quot;map&quot;: &quot;MOD11B3.A2016336.h11v05.single_LST_Day_6km@modis_lst&quot;
+        },
+        &quot;module&quot;: &quot;r.info&quot;
+      }
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;r.info&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;mapset_size&quot;: 481,
+      &quot;parameter&quot;: [
+        &quot;map=MOD11B3.A2016336.h11v05.single_LST_Day_6km@modis_lst&quot;,
+        &quot;-gre&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.10122942924499512,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;...&quot;
+    }
+  ],
+  &quot;process_results&quot;: {
+    &quot;cells&quot;: &quot;74970&quot;,
+    &quot;cols&quot;: &quot;357&quot;,
+    &quot;comments&quot;: &quot;\&quot;r.in.gdal --overwrite --quiet input=\&quot;/home/veroandreo/MOD11B3.A20163\\36.h11v05.single_LST_Day_6km.tif\&quot; output=\&quot;MOD11B3.A2016336.h11v05.si\\ngle_LST_Day_6km\&quot; memory=300 offset=0 num_digits=0Imported with r.modis.import\&quot;&quot;,
+    &quot;creator&quot;: &quot;\&quot;veroandreo\&quot;&quot;,
+    &quot;database&quot;: &quot;/actinia_core/workspace/temp_db/gisdbase_a1be8b7dcb6646b79bbb6d12b9b96cff&quot;,
+    &quot;datatype&quot;: &quot;CELL&quot;,
+    &quot;date&quot;: &quot;\&quot;Tue May 23 11:12:16 2017\&quot;&quot;,
+    &quot;description&quot;: &quot;\&quot;generated by r.in.gdal\&quot;&quot;,
+    &quot;east&quot;: &quot;1550934.46411531&quot;,
+    &quot;ewres&quot;: &quot;5600&quot;,
+    &quot;location&quot;: &quot;nc_spm_08&quot;,
+    &quot;map&quot;: &quot;MOD11B3.A2016336.h11v05.single_LST_Day_6km&quot;,
+    &quot;mapset&quot;: &quot;modis_lst&quot;,
+    &quot;maptype&quot;: &quot;raster&quot;,
+    &quot;max&quot;: &quot;14564&quot;,
+    &quot;min&quot;: &quot;13429&quot;,
+    &quot;ncats&quot;: &quot;0&quot;,
+    &quot;north&quot;: &quot;760180.12411493&quot;,
+    &quot;nsres&quot;: &quot;5600&quot;,
+    &quot;project&quot;: &quot;nc_spm_08&quot;,
+    &quot;rows&quot;: &quot;210&quot;,
+    &quot;semantic_label&quot;: &quot;\&quot;none\&quot;&quot;,
+    &quot;source1&quot;: &quot;\&quot;MODIS NASA\&quot;&quot;,
+    &quot;source2&quot;: &quot;\&quot;\&quot;&quot;,
+    &quot;south&quot;: &quot;-415819.87588507&quot;,
+    &quot;timestamp&quot;: &quot;\&quot;1 Dec 2016 00:00:00 / 1 Jan 2017 00:00:00\&quot;&quot;,
+    &quot;title&quot;: &quot;\&quot;MOD11B3.A2016336.h11v05.single_LST_Day_6km\&quot;&quot;,
+    &quot;units&quot;: &quot;\&quot;none\&quot;&quot;,
+    &quot;vdatum&quot;: &quot;\&quot;none\&quot;&quot;,
+    &quot;west&quot;: &quot;-448265.53588469&quot;
+  },
+  &quot;process_time_delta&quot;: 0.10262918472290039,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 1,
+    &quot;step&quot;: 1
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-3588f1c6-7d49-4233-9a18-0618a81ee129&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 13:14:42.422749&quot;,
+  &quot;start_timestamp&quot;: 1784034882.4227493,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.18379592895507812,
+  &quot;timestamp&quot;: 1784034882.5253313,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-3588f1c6-7d49-4233-9a18-0618a81ee129&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+</code></pre>
+<h2 id="access-to-raster-time-series-in-the-persistent-database">Access to raster time-series in the persistent database</h2>
+<p>Actinia supports the analysis of time-series data based on the temporal
+framework of GRASS GIS<sup id="fnref:3"><a class="footnote-ref" href="#fn:3">3</a></sup>, <sup id="fnref:4"><a class="footnote-ref" href="#fn:4">4</a></sup>. A time-series dataset is available in
+the <code>modis_lst</code> mapset of the <code>nc_spm_08</code> project. The time-series datatype is
+called space-time raster dataset (strds) named <code>LST_Day_monthly</code>.
+It consists of 24 monthly raster layers covering the period from January
+2015 through December 2016.</p>
+<p>We list all strds with the following API call:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds&quot;
+</code></pre>
+<p>We receive two strds in the <em>process_results</em> section of the JSON
+response:</p>
+<pre><code class="language-json">{
+  &quot;accept_datetime&quot;: &quot;2026-07-14 13:29:09.482702&quot;,
+  &quot;accept_timestamp&quot;: 1784035749.4826996,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;syncstrdslisterresource&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 13:29:10.271687&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;1&quot;: {
+        &quot;inputs&quot;: {
+          &quot;column&quot;: &quot;name&quot;,
+          &quot;type&quot;: &quot;strds&quot;,
+          &quot;where&quot;: &quot;mapset='modis_lst'&quot;
+        },
+        &quot;module&quot;: &quot;t.list&quot;
+      }
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;t.list&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;parameter&quot;: [
+        &quot;type=strds&quot;,
+        &quot;column=name&quot;,
+        &quot;where=mapset='modis_lst'&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.6523523330688477,
+      &quot;stderr&quot;: [
+        &quot;----------------------------------------------&quot;,
+        &quot;Space time raster datasets with absolute time available in mapset &lt;modis_lst&gt;:&quot;,
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;LST_Day_monthly\n&quot;
+    }
+  ],
+  &quot;process_results&quot;: [
+    &quot;LST_Day_monthly&quot;
+  ],
+  &quot;process_time_delta&quot;: 0.6531558036804199,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 1,
+    &quot;step&quot;: 1
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-03597408-9f04-4d4b-9d88-0d7dc60a723f&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 13:29:09.618572&quot;,
+  &quot;start_timestamp&quot;: 1784035749.618572,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.7889983654022217,
+  &quot;timestamp&quot;: 1784035750.271684,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-03597408-9f04-4d4b-9d88-0d7dc60a723f&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+<p>Use the following API call to retrieve information about the strds
+<code>LST_Day_monthly</code>:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly&quot;
+
+</code></pre>
+<p>All relevant information about strds <code>LST_Day_monthly</code> is located in the
+<code>process_results</code> section of the JSON response:</p>
+<pre><code class="language-json"> {
+  &quot;accept_datetime&quot;: &quot;2026-07-14 13:39:07.173213&quot;,
+  &quot;accept_timestamp&quot;: 1784036347.1732125,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;strdsmanagementresource&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 13:39:07.922543&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Information gathering for STRDS &lt;LST_Day_monthly&gt; successful&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;1&quot;: {
+        &quot;flags&quot;: &quot;g&quot;,
+        &quot;inputs&quot;: {
+          &quot;input&quot;: &quot;LST_Day_monthly&quot;,
+          &quot;type&quot;: &quot;strds&quot;
+        },
+        &quot;module&quot;: &quot;t.info&quot;
+      }
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;t.info&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;parameter&quot;: [
+        &quot;type=strds&quot;,
+        &quot;input=LST_Day_monthly&quot;,
+        &quot;-g&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.6018106937408447,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;id=LST_Day_monthly@modis_lst\nname=LST_Day_monthly\nmapset=modis_lst\ncreator=mneteler\ntemporal_type=absolute\ncreation_time='2019-09-02 13:03:42.173278'\nmodification_time='2019-09-02 13:04:01.703962'\nsemantic_type=mean\nstart_time='2015-01-01 00:00:00'\nend_time='2017-01-01 00:00:00'\ngranularity='1 month'\nmap_time=interval\nnorth=760180.124115\nsouth=-415819.875885\neast=1550934.464115\nwest=-448265.535885\ntop=0.0\nbottom=0.0\nraster_register=raster_map_register_78a1d5e30c904a5db2d15b939b5b0a3b\nnsres_min=5600.0\nnsres_max=5600.0\newres_min=5600.0\newres_max=5600.0\nmin_min=12950.0\nmin_max=14714.0\nmax_min=14360.0\nmax_max=15650.0\naggregation_type=None\nnumber_of_semantic_labels=None\nsemantic_labels=None\nnumber_of_maps=24\n&quot;
+    }
+  ],
+  &quot;process_results&quot;: {
+    &quot;aggregation_type&quot;: &quot;None&quot;,
+    &quot;bottom&quot;: &quot;0.0&quot;,
+    &quot;creation_time&quot;: &quot;'2019-09-02 13:03:42.173278'&quot;,
+    &quot;creator&quot;: &quot;mneteler&quot;,
+    &quot;east&quot;: &quot;1550934.464115&quot;,
+    &quot;end_time&quot;: &quot;'2017-01-01 00:00:00'&quot;,
+    &quot;ewres_max&quot;: &quot;5600.0&quot;,
+    &quot;ewres_min&quot;: &quot;5600.0&quot;,
+    &quot;granularity&quot;: &quot;'1 month'&quot;,
+    &quot;id&quot;: &quot;LST_Day_monthly@modis_lst&quot;,
+    &quot;map_time&quot;: &quot;interval&quot;,
+    &quot;mapset&quot;: &quot;modis_lst&quot;,
+    &quot;max_max&quot;: &quot;15650.0&quot;,
+    &quot;max_min&quot;: &quot;14360.0&quot;,
+    &quot;min_max&quot;: &quot;14714.0&quot;,
+    &quot;min_min&quot;: &quot;12950.0&quot;,
+    &quot;modification_time&quot;: &quot;'2019-09-02 13:04:01.703962'&quot;,
+    &quot;name&quot;: &quot;LST_Day_monthly&quot;,
+    &quot;north&quot;: &quot;760180.124115&quot;,
+    &quot;nsres_max&quot;: &quot;5600.0&quot;,
+    &quot;nsres_min&quot;: &quot;5600.0&quot;,
+    &quot;number_of_maps&quot;: &quot;24&quot;,
+    &quot;number_of_semantic_labels&quot;: &quot;None&quot;,
+    &quot;raster_register&quot;: &quot;raster_map_register_78a1d5e30c904a5db2d15b939b5b0a3b&quot;,
+    &quot;semantic_labels&quot;: &quot;None&quot;,
+    &quot;semantic_type&quot;: &quot;mean&quot;,
+    &quot;south&quot;: &quot;-415819.875885&quot;,
+    &quot;start_time&quot;: &quot;'2015-01-01 00:00:00'&quot;,
+    &quot;temporal_type&quot;: &quot;absolute&quot;,
+    &quot;top&quot;: &quot;0.0&quot;,
+    &quot;west&quot;: &quot;-448265.535885&quot;
+  },
+  &quot;process_time_delta&quot;: 0.6027548313140869,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 1,
+    &quot;step&quot;: 1
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-91c3d30e-74b1-47c6-b086-27f90ce3dec4&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 13:39:07.319824&quot;,
+  &quot;start_timestamp&quot;: 1784036347.3198245,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.7493431568145752,
+  &quot;timestamp&quot;: 1784036347.9225404,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-91c3d30e-74b1-47c6-b086-27f90ce3dec4&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+<p>List all raster layers registered in the stdrs <code>LST_Day_monthly</code>,
+including their timestamps:</p>
+<pre><code class="language-bash"> curl ${AUTH} -X GET &quot;${ACTINIA_URL}/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers&quot;
+
+</code></pre>
+<p>A list of about 24 registered raster layers, including their minimum and
+maximum values, timestamps and spatial extent, is returned in the
+process_results section of the JSON response:</p>
+<pre><code class="language-json"> {
+  &quot;accept_datetime&quot;: &quot;2026-07-14 13:45:06.487105&quot;,
+  &quot;accept_timestamp&quot;: 1784036706.4871035,
+  &quot;api_info&quot;: {
+    &quot;endpoint&quot;: &quot;strdsrastermanagement&quot;,
+    &quot;method&quot;: &quot;GET&quot;,
+    &quot;path&quot;: &quot;/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers&quot;,
+    &quot;request_url&quot;: &quot;http://actinia.mundialis.de/api/v3/projects/nc_spm_08/mapsets/modis_lst/strds/LST_Day_monthly/raster_layers&quot;
+  },
+  &quot;datetime&quot;: &quot;2026-07-14 13:45:07.221363&quot;,
+  &quot;http_code&quot;: 200,
+  &quot;message&quot;: &quot;Processing successfully finished&quot;,
+  &quot;process_chain_list&quot;: [
+    {
+      &quot;1&quot;: {
+        &quot;flags&quot;: &quot;u&quot;,
+        &quot;inputs&quot;: {
+          &quot;columns&quot;: &quot;id,start_time,end_time,north,south,east,west,min,max,rows,cols&quot;,
+          &quot;input&quot;: &quot;LST_Day_monthly@modis_lst&quot;,
+          &quot;separator&quot;: &quot;|&quot;
+        },
+        &quot;module&quot;: &quot;t.rast.list&quot;,
+        &quot;outputs&quot;: {
+          &quot;output&quot;: {
+            &quot;name&quot;: &quot;/actinia_core/workspace/temp_db/gisdbase_94372f9dd3054f79b77b1759549de0c0/.tmp/tmp9hk2ewvh&quot;
+          }
+        }
+      }
+    }
+  ],
+  &quot;process_log&quot;: [
+    {
+      &quot;executable&quot;: &quot;t.rast.list&quot;,
+      &quot;id&quot;: &quot;1&quot;,
+      &quot;parameter&quot;: [
+        &quot;input=LST_Day_monthly@modis_lst&quot;,
+        &quot;columns=id,start_time,end_time,north,south,east,west,min,max,rows,cols&quot;,
+        &quot;separator=|&quot;,
+        &quot;output=/actinia_core/workspace/temp_db/gisdbase_94372f9dd3054f79b77b1759549de0c0/.tmp/tmp9hk2ewvh&quot;,
+        &quot;-u&quot;
+      ],
+      &quot;return_code&quot;: 0,
+      &quot;run_time&quot;: 0.601790189743042,
+      &quot;stderr&quot;: [
+        &quot;&quot;
+      ],
+      &quot;stdout&quot;: &quot;&quot;
+    }
+  ],
+  &quot;process_results&quot;: [
+    {
+      &quot;cols&quot;: &quot;210&quot;,
+      &quot;east&quot;: &quot;1550934.464115&quot;,
+      &quot;end_time&quot;: &quot;2015-02-01 00:00:00&quot;,
+      &quot;id&quot;: &quot;MOD11B3.A2015001.h11v05.single_LST_Day_6km@modis_lst&quot;,
+      &quot;max&quot;: &quot;14396.0&quot;,
+      &quot;min&quot;: &quot;13022.0&quot;,
+      &quot;north&quot;: &quot;760180.124115&quot;,
+      &quot;rows&quot;: &quot;357&quot;,
+      &quot;south&quot;: &quot;-415819.875885&quot;,
+      &quot;start_time&quot;: &quot;2015-01-01 00:00:00&quot;,
+      &quot;west&quot;: &quot;-448265.535885&quot;
+    },
+    {
+      &quot;...&quot;
+    },
+    {
+      &quot;cols&quot;: &quot;210&quot;,
+      &quot;east&quot;: &quot;1550934.464115&quot;,
+      &quot;end_time&quot;: &quot;2017-01-01 00:00:00&quot;,
+      &quot;id&quot;: &quot;MOD11B3.A2016336.h11v05.single_LST_Day_6km@modis_lst&quot;,
+      &quot;max&quot;: &quot;14564.0&quot;,
+      &quot;min&quot;: &quot;13429.0&quot;,
+      &quot;north&quot;: &quot;760180.124115&quot;,
+      &quot;rows&quot;: &quot;357&quot;,
+      &quot;south&quot;: &quot;-415819.875885&quot;,
+      &quot;start_time&quot;: &quot;2016-12-01 00:00:00&quot;,
+      &quot;west&quot;: &quot;-448265.535885&quot;
+    }
+  ],
+  &quot;process_time_delta&quot;: 0.6028850078582764,
+  &quot;progress&quot;: {
+    &quot;num_of_steps&quot;: 1,
+    &quot;step&quot;: 1
+  },
+  &quot;queue&quot;: &quot;local&quot;,
+  &quot;resource_id&quot;: &quot;resource_id-1f3b625a-e546-4a27-91ab-b353e0e66822&quot;,
+  &quot;start_datetime&quot;: &quot;2026-07-14 13:45:06.618505&quot;,
+  &quot;start_timestamp&quot;: 1784036706.6185048,
+  &quot;status&quot;: &quot;finished&quot;,
+  &quot;time_delta&quot;: 0.7342710494995117,
+  &quot;timestamp&quot;: 1784036707.2213552,
+  &quot;urls&quot;: {
+    &quot;resources&quot;: [],
+    &quot;status&quot;: &quot;https://actinia.mundialis.de/api/v3/resources/demouser/resource_id-1f3b625a-e546-4a27-91ab-b353e0e66822&quot;
+  },
+  &quot;user_id&quot;: &quot;demouser&quot;
+}
+
+</code></pre>
+<h2 id="footnotes">Footnotes</h2>
+<div class="footnote">
+<hr />
+<ol>
+<li id="fn:1">
+<p>https://en.wikipedia.org/wiki/CURL&#160;<a class="footnote-backref" href="#fnref:1" title="Jump back to footnote 1 in the text">&#8617;</a></p>
+</li>
+<li id="fn:2">
+<p>https://www.getpostman.com/apps&#160;<a class="footnote-backref" href="#fnref:2" title="Jump back to footnote 2 in the text">&#8617;</a></p>
+</li>
+<li id="fn:3">
+<p>http://www.sciencedirect.com/science/article/pii/S136481521300282X&#160;<a class="footnote-backref" href="#fnref:3" title="Jump back to footnote 3 in the text">&#8617;</a></p>
+</li>
+<li id="fn:4">
+<p>http://www.tandfonline.com/doi/abs/10.1080/13658816.2017.1306862?journalCode=tgis20&#160;<a class="footnote-backref" href="#fnref:4" title="Jump back to footnote 4 in the text">&#8617;</a></p>
+</li>
+</ol>
+</div>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../installation/" class="btn btn-neutral float-left" title="Installation"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../tutorial_strds_sampling/" class="btn btn-neutral float-right" title="Time-series sampling">Next <span class="icon icon-circle-arrow-right"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+    
+      <span><a href="../installation/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+      <span><a href="../tutorial_strds_sampling/" style="color: #fcfcfc">Next &raquo;</a></span>
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>
