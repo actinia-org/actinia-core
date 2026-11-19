@@ -57,7 +57,7 @@ dependencies = [
     "python-dateutil",
     "pyproj>=3.6.1",
     "requests>=2.20.0",
-    "rq==1.16.2",
+    "rq==3.0.0",
     "geopandas",
     "rasterio==1.5.2",
     "pystac==1.14.3",
