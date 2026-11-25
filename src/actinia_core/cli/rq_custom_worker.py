@@ -33,6 +33,7 @@ import logging
 import logging.handlers
 from actinia_core.core.common.config import Configuration
 from actinia_core.core.logging_interface import log
+from actinia_core.version import init_versions
 import os
 import argparse
 import platform
@@ -103,6 +104,7 @@ def main():
             "will use defaults instead, IOError: %s" % str(e)
         )
 
+    init_versions()
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
     kvdb_conn = Valkey(
