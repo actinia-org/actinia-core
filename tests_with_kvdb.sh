@@ -19,24 +19,64 @@
 
 run_tests_noauth (){
   # change config run tests and change config back
-  mv ${DEFAULT_CONFIG_PATH} ${DEFAULT_CONFIG_PATH}_tmp
-  cp /etc/default/actinia_test_noauth ${DEFAULT_CONFIG_PATH}
+  mv "${DEFAULT_CONFIG_PATH}" "${DEFAULT_CONFIG_PATH}_tmp" || return 1
+  cp /etc/default/actinia_test_noauth "${DEFAULT_CONFIG_PATH}" || {
+    mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}"
+    return 1
+  }
   pytest -m 'noauth'
-  mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
+  PYTEST_RES=$?
+  mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}" || return 1
+  return "$PYTEST_RES"
 }
 
 run_tests_worker (){
   # change config run tests and change config back
-  mv ${DEFAULT_CONFIG_PATH} ${DEFAULT_CONFIG_PATH}_tmp
-  cp /etc/default/actinia_test_worker_usedby_api ${DEFAULT_CONFIG_PATH}
-  echo "Starting worker..."
+  mv "${DEFAULT_CONFIG_PATH}" "${DEFAULT_CONFIG_PATH}_tmp" || return 1
+  cp /etc/default/actinia_test_worker_usedby_api "${DEFAULT_CONFIG_PATH}" || {
+    mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}"
+    return 1
+  }
+
+  NUMBER_OF_WORKERS=$(python3 -c '
+import configparser
+
+config = configparser.ConfigParser()
+config.read("/etc/default/actinia_test_worker_usedby_api")
+print(config.getint("QUEUE", "number_of_workers"))
+') || {
+    mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}"
+    return 1
+  }
+
+  if [ "$NUMBER_OF_WORKERS" -lt 1 ]; then
+    echo "ERROR: number_of_workers must be greater than 0"
+    mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}"
+    return 1
+  fi
+
+  echo "Starting ${NUMBER_OF_WORKERS} workers..."
+
+  WORKER_PIDS=""
+  i=0
+
   # TODO: make sure the worker is not overwriting config path from env var
-  actinia-worker job_queue_0 -c /etc/default/actinia_test_worker_usedby_worker &
-  WORKER_PID=$!
+  while [ "$i" -lt "$NUMBER_OF_WORKERS" ]; do
+    actinia-worker "job_queue_${i}" -c /etc/default/actinia_test_worker_usedby_worker &
+    WORKER_PIDS="$WORKER_PIDS $!"
+    i=$((i + 1))
+  done
+
   echo "Running tests"
   pytest -m 'not unittest and not noauth'
-  kill $WORKER_PID
-  mv ${DEFAULT_CONFIG_PATH}_tmp ${DEFAULT_CONFIG_PATH}
+  PYTEST_RES=$?
+
+  for pid in $WORKER_PIDS; do
+    kill "$pid"
+  done
+
+  mv "${DEFAULT_CONFIG_PATH}_tmp" "${DEFAULT_CONFIG_PATH}" || return 1
+  return "$PYTEST_RES"
 }
 
 # start kvdb server
