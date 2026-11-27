@@ -64,7 +64,6 @@ def setup_environment():
     global_config.GRASS_GIS_START_SCRIPT = "/usr/local/bin/grass"
     # global_config.GRASS_DATABASE= "/usr/local/grass_test_db"
     # global_config.GRASS_DATABASE = "%s/actinia/grass_test_db" % home
-    global_config.GRASS_TMP_DATABASE = "/tmp"
     # TODO: never secretly overwrite config parameters
     custom_actinia_cfg = True
     if server_test is False and custom_actinia_cfg is False:
