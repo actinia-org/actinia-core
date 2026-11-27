@@ -25,6 +25,15 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.2.4](https://github.com/actinia-org/actinia-core/releases/tag/7.2.4) - 2026-11-27
+released from main
+### Updated
+* Update CHANGELOG for version 7.2.3 release by @mmacata in https://github.com/actinia-org/actinia-core/pull/788
+* Update dependency pystac to v1.16.1 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/743
+* Restore Google Cloud dependencies by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/782
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.2.3...7.2.4
+
 ## [7.2.3](https://github.com/actinia-org/actinia-core/releases/tag/7.2.3) - 2026-11-27
 released from main
 ### Changed
