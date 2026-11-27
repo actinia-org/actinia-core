@@ -25,6 +25,29 @@ Types of changes
 
 ## \[Unreleased\]
 
+## [7.2.3](https://github.com/actinia-org/actinia-core/releases/tag/7.2.3) - 2026-11-27
+released from main
+### Changed
+* CI: remove EOL GRASS 8.3 test jobs by @by-ae in https://github.com/actinia-org/actinia-core/pull/768
+
+### Added
+* Add worker tests by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/785
+
+### Fixed
+* Fix worker grass initialization by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/783
+* Fix rq v3 compatibility by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/784
+* Fix PySTAC upgrade in Alpine tests by @TaniaGithub0401 in https://github.com/actinia-org/actinia-core/pull/786
+
+### Updated
+* Update CHANGELOG for version 7.2.2 release by @mmacata in https://github.com/actinia-org/actinia-core/pull/779
+* Update RELEASE.md by @mmacata in https://github.com/actinia-org/actinia-core/pull/780
+* Update mundialis/actinia-core Docker tag to v7.2.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/781
+
+### New Contributors
+* @by-ae made their first contribution in https://github.com/actinia-org/actinia-core/pull/768
+
+**Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.2.2...7.2.3
+
 ## [7.2.2](https://github.com/actinia-org/actinia-core/releases/tag/7.2.2) - 2026-11-06
 released from main
 ### Fixed
