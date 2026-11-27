@@ -15,13 +15,8 @@
 Kvdb Queue server custom worker
 """
 
-from rq import Connection, Worker
+from rq import Worker
 from valkey import Valkey
-
-# TODO: Adjust usage for recent rq version
-# ImportError: cannot import name 'Connection' from 'rq'
-# (/opt/venv/lib/python3.12/site-packages/rq/__init__.py).
-# Did you mean: 'connections'?
 
 # We need to append the path to the actinia_core package, since
 # flask API does not send the correct module and package paths
@@ -112,63 +107,60 @@ def main():
     init_versions()
     # Provide queue names to listen to as arguments to this script,
     # similar to rq worker
-    with Connection(
-        Valkey(
+    kvdb_conn = Valkey(
+        conf.KVDB_QUEUE_SERVER_URL,
+        conf.KVDB_QUEUE_SERVER_PORT,
+        password=conf.KVDB_QUEUE_SERVER_PASSWORD,
+    )
+    logger = logging.getLogger("rq.worker")
+    logger.setLevel(logging.ERROR)
+
+    node = platform.node()
+
+    if conf.LOG_INTERFACE == "fluentd" and has_fluent is True:
+        custom_format = {
+            "host": "%(hostname)s",
+            "where": "%(module)s.%(funcName)s",
+            "status": "%(levelname)s",
+            "stack_trace": "%(exc_text)s",
+        }
+        fh = handler.FluentHandler(
+            "%s::rq.worker" % node,
+            host=conf.LOG_FLUENT_HOST,
+            port=conf.LOG_FLUENT_PORT,
+        )
+        formatter = handler.FluentRecordFormatter(custom_format)
+        fh.setFormatter(formatter)
+        logger.addHandler(fh)
+
+    # Add the log message handler to the logger
+    log_file_name = "%s_%s.log" % (conf.WORKER_LOGFILE, args.queue)
+    lh = logging.handlers.RotatingFileHandler(
+        log_file_name,
+        maxBytes=2000000,
+        backupCount=5,
+    )
+    logger.addHandler(lh)
+    logger.fatal(
+        msg="Started rq.worker: %s\n"
+        "host %s port: %s \n"
+        "logging into %s"
+        % (
+            args.queue,
             conf.KVDB_QUEUE_SERVER_URL,
             conf.KVDB_QUEUE_SERVER_PORT,
-            password=conf.KVDB_QUEUE_SERVER_PASSWORD,
-        )
-    ):
-        logger = logging.getLogger("rq.worker")
-        logger.setLevel(logging.ERROR)
-
-        node = platform.node()
-
-        if conf.LOG_INTERFACE == "fluentd" and has_fluent is True:
-            custom_format = {
-                "host": "%(hostname)s",
-                "where": "%(module)s.%(funcName)s",
-                "status": "%(levelname)s",
-                "stack_trace": "%(exc_text)s",
-            }
-            fh = handler.FluentHandler(
-                "%s::rq.worker" % node,
-                host=conf.LOG_FLUENT_HOST,
-                port=conf.LOG_FLUENT_PORT,
-            )
-            formatter = handler.FluentRecordFormatter(custom_format)
-            fh.setFormatter(formatter)
-            logger.addHandler(fh)
-
-        # Add the log message handler to the logger
-        log_file_name = "%s_%s.log" % (conf.WORKER_LOGFILE, args.queue)
-        lh = logging.handlers.RotatingFileHandler(
             log_file_name,
-            maxBytes=2000000,
-            backupCount=5,
         )
-        logger.addHandler(lh)
-        logger.fatal(
-            msg="Started rq.worker: %s\n"
-            "host %s port: %s \n"
-            "logging into %s"
-            % (
-                args.queue,
-                conf.KVDB_QUEUE_SERVER_URL,
-                conf.KVDB_QUEUE_SERVER_PORT,
-                log_file_name,
-            )
-        )
+    )
 
-        actinia_worker = Worker(
-            [
-                args.queue,
-            ]
-        )
-        if bool(args.quit) is True:
-            actinia_worker.work(burst=True)
-        else:
-            actinia_worker.work()
+    actinia_worker = Worker(
+        [args.queue],
+        connection=kvdb_conn,
+    )
+    if bool(args.quit) is True:
+        actinia_worker.work(burst=True)
+    else:
+        actinia_worker.work()
 
 
 if __name__ == "__main__":
