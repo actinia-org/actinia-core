@@ -31,7 +31,7 @@ RUN apk add --no-cache valkey valkey-cli &&  \
     pip install --no-cache-dir pytest pytest-cov iniconfig
 
 # uninstall actinia-core and directories from FROM-image
-RUN pip uninstall actinia-core -y && \
+RUN pip uninstall actinia-core pystac -y && \
     rmdir /actinia_core/grassdb &&  \
     rmdir /actinia_core/userdata &&  \
     rmdir /actinia_core/resources &&  \
