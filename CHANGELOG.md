@@ -43,7 +43,7 @@ released from main
 * Update RELEASE.md by @mmacata in https://github.com/actinia-org/actinia-core/pull/780
 * Update mundialis/actinia-core Docker tag to v7.2.2 by @renovate[bot] in https://github.com/actinia-org/actinia-core/pull/781
 
-## New Contributors
+### New Contributors
 * @by-ae made their first contribution in https://github.com/actinia-org/actinia-core/pull/768
 
 **Full Changelog**: https://github.com/actinia-org/actinia-core/compare/7.2.2...7.2.3
